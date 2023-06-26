@@ -1,24 +1,24 @@
 /******************************************************************************
- *                 SOFA, Simulation Open-Framework Architecture                *
- *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
- *                                                                             *
- * This program is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This program is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
- *******************************************************************************
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
 
@@ -52,11 +52,11 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
-      , name(initData(&name,unnamed_label,"name","object name"))
-      , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
-      , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
-      , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
-      , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
+    , name(initData(&name,unnamed_label,"name","object name"))
+    , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
+    , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
+    , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
+    , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
     name.setAutoLink(false);
     d_componentState.setAutoLink(false);
@@ -67,7 +67,7 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
 
-            /// name change => component state update
+    /// name change => component state update
     addUpdateCallback("name", {&name}, [this](const DataTracker&){
         /// Increment the state counter but without changing the state.
         return d_componentState.getValue();
@@ -410,7 +410,7 @@ Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 bool Base::hasField( const std::string& attribute) const
 {
     return m_aliasData.find(attribute) != m_aliasData.end()
-           || m_aliasLink.find(attribute) != m_aliasLink.end();
+                                          || m_aliasLink.find(attribute) != m_aliasLink.end();
 }
 
 /// Assign one field value (Data or Link)
@@ -552,9 +552,9 @@ void  Base::parse ( BaseObjectDescription* arg )
         if(arg->getAttribute(attribute->m_name))
         {
             if(attribute->m_isRemoved)
-               msg_error() << "Attribute '" << attribute->m_name << "' has been removed. " << attribute->m_helptext;
+                msg_error() << "Attribute '" << attribute->m_name << "' has been removed. " << attribute->m_helptext;
             else
-               msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated. " << attribute->m_helptext;
+                msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated. " << attribute->m_helptext;
 
         }
     }
@@ -563,8 +563,8 @@ void  Base::parse ( BaseObjectDescription* arg )
     {
         const std::string& attrName = it.first;
 
-                // FIX: "type" is already used to define the type of object to instanciate, any Data with
-                // the same name cannot be extracted from BaseObjectDescription
+        // FIX: "type" is already used to define the type of object to instanciate, any Data with
+        // the same name cannot be extracted from BaseObjectDescription
         if (attrName == std::string("type"))
             continue;
         if (!hasField(attrName)) continue;
@@ -617,12 +617,12 @@ static std::string xmlencode(const std::string& str)
     {
         switch(str[i])
         {
-            case '<': res += "&lt;"; break;
-            case '>': res += "&gt;"; break;
-            case '&': res += "&amp;"; break;
-            case '"': res += "&quot;"; break;
-            case '\'': res += "&apos;"; break;
-            default:  res += str[i];
+        case '<': res += "&lt;"; break;
+        case '>': res += "&gt;"; break;
+        case '&': res += "&amp;"; break;
+        case '"': res += "&quot;"; break;
+        case '\'': res += "&apos;"; break;
+        default:  res += str[i];
         }
     }
     return res;
