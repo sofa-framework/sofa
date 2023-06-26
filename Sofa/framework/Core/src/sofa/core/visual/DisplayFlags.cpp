@@ -70,7 +70,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showBehavior(FlagTreeItem("showBehavior","hideBehavior",&m_showAll)),
     m_showBehaviorModels(FlagTreeItem("showBehaviorModels","hideBehaviorModels",&m_showBehavior)),
     m_showForceFields(FlagTreeItem("showForceFields","hideForceFields",&m_showBehavior)),
-    m_showInteractionForceFields(FlagTreeItem("showInteractionForceFields","hideInteractionForceFields",&m_showBehavior)),
+    m_showInteractionForceFields(FlagTreeItem("showContactInteractions","hideContactInteractions",&m_showBehavior)),
     m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
     m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
     m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
