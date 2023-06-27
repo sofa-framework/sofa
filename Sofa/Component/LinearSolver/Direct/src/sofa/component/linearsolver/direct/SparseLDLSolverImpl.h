@@ -27,6 +27,10 @@
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <csparse.h>
+#include <sofa/linearalgebra/DiagonalSystemSolver.h>
+#include <sofa/linearalgebra/TriangularSystemSolver.h>
+
+
 extern "C" {
 #include <metis.h>
 }
@@ -157,36 +161,38 @@ protected :
     {}
 
     template<class VecInt,class VecReal>
-    void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
+    void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data)
+    {
         int n = data->n;
-        const Real * invD = data->invD.data();
+        if (n == 0)
+        {
+            return;
+        }
+
         const int * perm = data->perm.data();
-        const int * L_colptr = data->L_colptr.data();
-        const int * L_rowind = data->L_rowind.data();
-        const Real * L_values = data->L_values.data();
-        const int * LT_colptr = data->LT_colptr.data();
-        const int * LT_rowind = data->LT_rowind.data();
-        const Real * LT_values = data->LT_values.data();
 
         Tmp.clear();
         Tmp.fastResize(n);
 
-        for (int j = 0 ; j < n ; j++) {
-            Real acc = b[perm[j]];
-            for (int p = LT_colptr [j] ; p < LT_colptr[j+1] ; p++) {
-                acc -= LT_values[p] * Tmp[LT_rowind[p]];
-            }
-            Tmp[j] = acc;
-        }
+        // A x = b
+        //   <=> (L * D * L^T) * x = b
+        //   <=> D * L^T * x = L^-1 * b         # Step 1: compute L^-1 * b
+        //   <=> L^T * x = D^-1 * L^-1 * b      # Step 2: compute D^-1 * L^-1 * b
+        //   <=> x = L^T^-1 * D^1 * L^-1 * b    # Step 3: compute L^T^-1 * D^1 * L^-1 * b
 
-        for (int j = n-1 ; j >= 0 ; j--) {
-            Tmp[j] *= invD[j];
+        // Step 1: compute L^-1 * b
+        sofa::linearalgebra::solveLowerTriangularSystem(n, b, perm, Tmp.data(), data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
 
-            for (int p = L_colptr[j] ; p < L_colptr[j+1] ; p++) {
-                Tmp[j] -= L_values[p] * Tmp[L_rowind[p]];
-            }
+        // Step 2: compute D^-1 * [L^-1 * b]
+        sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(n, Tmp.data(), Tmp.data(), data->invD.data());
 
-            x[perm[j]] = Tmp[j];
+        // Step 3: compute L^T^-1 * [D^1 * L^-1 * b]
+        sofa::linearalgebra::solveUpperTriangularSystem(n, Tmp.data(), Tmp.data(), data->L_colptr.data(), data->L_rowind.data(), data->L_values.data());
+
+        // apply the permutation to the solution
+        for (int i = 0; i < n; ++i)
+        {
+            x[perm[i]] = Tmp[i];
         }
     }
 
