@@ -124,6 +124,9 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root'>                                \n"
+                 "  <RequiredPlugin name=\"Sofa.Component.StateContainer\"/>"
+                 "  <RequiredPlugin name=\"Sofa.Component.SolidMechanics.FEM.Elastic\"/>"
+                 "  <DefaultAnimationLoop/>"
                  "  <Node name='FEMnode'>                               \n"
                  "    <MechanicalObject/>                               \n"
                  "    <TetrahedronFEMForceField name='fem' youngModulus='5000' poissonRatio='0.07'/>\n"
@@ -882,25 +885,25 @@ sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<defaultt
 
 
 // ========= Tests to run for each instanciated type
-//TYPED_TEST_SUITE(TetrahedronFEMForceField_stepTest, TestTypes);
-//
-//// test case
-//TYPED_TEST(TetrahedronFEMForceField_stepTest, extension )
-//{
-//    this->errorMax *= 1e6;
-//    this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
-//    this->debug = false;
-//
-//    // Young modulus, poisson ratio method
-//
-//    // run test
-//    this->test_valueForce();
-//}
-//
-//TYPED_TEST(TetrahedronFEMForceField_stepTest, checkGracefullHandlingWhenTopologyIsMissing)
-//{
-//    this->checkGracefullHandlingWhenTopologyIsMissing();
-//}
+TYPED_TEST_SUITE(TetrahedronFEMForceField_stepTest, TestTypes);
+
+// test case
+TYPED_TEST(TetrahedronFEMForceField_stepTest, extension )
+{
+    this->errorMax *= 1e6;
+    this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
+    this->debug = false;
+
+    // Young modulus, poisson ratio method
+
+    // run test
+    this->test_valueForce();
+}
+
+TYPED_TEST(TetrahedronFEMForceField_stepTest, checkGracefullHandlingWhenTopologyIsMissing)
+{
+    this->checkGracefullHandlingWhenTopologyIsMissing();
+}
 
 
 
