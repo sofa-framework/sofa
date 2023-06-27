@@ -8,22 +8,22 @@
 
 ### Highlighted contributions
 
-- [LinearSystem] Refactor matrix assembly [#2777](https://github.com/sofa-framework/sofa/pull/2777) 
-- [Core] Introduce parallel for each [#3548](https://github.com/sofa-framework/sofa/pull/3548) 
-- [MultiThreading] Introduce ParallelTetrahedronFEMForceField [#3552](https://github.com/sofa-framework/sofa/pull/3552) 
-- [examples] Apply Sofa/Component structure for all examples [#3588](https://github.com/sofa-framework/sofa/pull/3588) 
+- [LinearSystem] Refactor matrix assembly [#2777](https://github.com/sofa-framework/sofa/pull/2777)
+- [Core] Introduce parallel for each [#3548](https://github.com/sofa-framework/sofa/pull/3548)
+- [MultiThreading] Introduce ParallelTetrahedronFEMForceField [#3552](https://github.com/sofa-framework/sofa/pull/3552)
+- [examples] Apply Sofa/Component structure for all examples [#3588](https://github.com/sofa-framework/sofa/pull/3588)
 
 
 ### Breaking
 
 **Architecture**
-- [all] Lifecycle v23.06 1/n [#3634](https://github.com/sofa-framework/sofa/pull/3634) 
-- [all] Lifecycle v23.06 2/n [#3649](https://github.com/sofa-framework/sofa/pull/3649) 
--  [all] Lifecycle v23.06 3/n [#3654](https://github.com/sofa-framework/sofa/pull/3654) 
--  [all] Lifecycle v23.06 4/n  [#3655](https://github.com/sofa-framework/sofa/pull/3655) 
-- [Core] Use std::function for Link's Validator (and fix UB) [#3665](https://github.com/sofa-framework/sofa/pull/3665) 
-- [Helper] Improve OptionsGroup [#3737](https://github.com/sofa-framework/sofa/pull/3737) 
-- [Simulation] Suggest required plugin in the syntax of the scene loader [#3799](https://github.com/sofa-framework/sofa/pull/3799) 
+- [all] Lifecycle v23.06 1/n [#3634](https://github.com/sofa-framework/sofa/pull/3634)
+- [all] Lifecycle v23.06 2/n [#3649](https://github.com/sofa-framework/sofa/pull/3649)
+- [all] Lifecycle v23.06 3/n [#3654](https://github.com/sofa-framework/sofa/pull/3654)
+- [all] Lifecycle v23.06 4/n  [#3655](https://github.com/sofa-framework/sofa/pull/3655)
+- [Core] Use std::function for Link's Validator (and fix UB) [#3665](https://github.com/sofa-framework/sofa/pull/3665)
+- [Helper] Improve OptionsGroup [#3737](https://github.com/sofa-framework/sofa/pull/3737)
+- [Simulation] Suggest required plugin in the syntax of the scene loader [#3799](https://github.com/sofa-framework/sofa/pull/3799)
 
 **Modules**
 - [Mapping] Adds template to RigidMapping  [#3680](https://github.com/sofa-framework/sofa/pull/3680) 
@@ -190,6 +190,8 @@
 - [PreassembledMass] Make it external [#3802](https://github.com/sofa-framework/sofa/pull/3802) 
 - [SofaCUDA] Move explicit template instantiations from CudaTypes.cpp to CudaMultiMapping.cpp [#3807](https://github.com/sofa-framework/sofa/pull/3807) 
 - [plugins] Remove references to old plugins [#3960](https://github.com/sofa-framework/sofa/pull/3960)
+- [plugins] Remove references to external deleted plugins [#3980](https://github.com/sofa-framework/sofa/pull/3980)
+
 
 **Examples / Scenes**
 - [Tutorials] Fix CMake with Sofa.GUI [#3624](https://github.com/sofa-framework/sofa/pull/3624) 
