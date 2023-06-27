@@ -23,19 +23,15 @@ sofa_add_subdirectory(plugin SofaPython SofaPython EXTERNAL)
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
-sofa_add_subdirectory(plugin Compliant Compliant EXTERNAL)
 sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL)
 sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL)     # Depends on image
-sofa_add_subdirectory(plugin Flexible Flexible EXTERNAL)         # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_subdirectory(plugin Registration Registration EXTERNAL) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_subdirectory(plugin PreassembledMass PreassembledMass EXTERNAL) # Depends on Flexible and Compliant
 sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader)
 sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL)
 sofa_add_subdirectory(plugin ManifoldTopologies ManifoldTopologies EXTERNAL)
-sofa_add_subdirectory(plugin OptiTrackNatNet OptiTrackNatNet EXTERNAL)
 sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
 sofa_add_subdirectory(plugin SofaOpenCL SofaOpenCL)
 sofa_add_subdirectory(plugin Xitact Xitact)
@@ -45,14 +41,11 @@ sofa_add_subdirectory(plugin PersistentContact PersistentContact)
 sofa_add_subdirectory(plugin Sensable Sensable)
 sofa_add_subdirectory(plugin SensableEmulation SensableEmulation)
 sofa_add_subdirectory(plugin SofaHAPI SofaHAPI)
-sofa_add_subdirectory(plugin THMPGSpatialHashing THMPGSpatialHashing EXTERNAL)
 sofa_add_subdirectory(plugin SofaCarving SofaCarving)
-sofa_add_subdirectory(plugin RigidScale RigidScale EXTERNAL)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
 sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
-sofa_add_subdirectory(plugin OpenCTMPlugin OpenCTMPlugin EXTERNAL)
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL)
 
 sofa_add_subdirectory(plugin PSL PSL EXPERIMENTAL)
