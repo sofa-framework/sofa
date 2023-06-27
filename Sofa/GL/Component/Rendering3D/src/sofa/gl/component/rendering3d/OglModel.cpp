@@ -351,9 +351,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if(!VBOGenDone)
         return;
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
@@ -554,9 +551,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_TRUE);
     }
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     if (vparams->displayFlags().getShowNormals())
     {

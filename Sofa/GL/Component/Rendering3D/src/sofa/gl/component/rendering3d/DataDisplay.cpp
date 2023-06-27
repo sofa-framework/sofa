@@ -93,9 +93,6 @@ void DataDisplay::updateVisual()
 
 void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
     const VecPointData &ptData = f_pointData.getValue();
     const VecCellData &triData = f_triangleData.getValue();
@@ -444,9 +441,6 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     }
 
     glPopAttrib();
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DataDisplay::computeNormals()

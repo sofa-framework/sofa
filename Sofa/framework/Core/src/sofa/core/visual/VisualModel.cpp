@@ -46,6 +46,11 @@ void VisualModel::drawVisual(const VisualParams* vparams)
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, true);
+    }
+
     doDrawVisual(vparams);
 }
 
