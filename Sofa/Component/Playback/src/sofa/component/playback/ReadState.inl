@@ -77,7 +77,8 @@ void ReadState::init()
     d_componentState = sofa::core::objectmodel::ComponentState::Valid;
     Inherit1::init();
 
-    if (!getContext()->getMechanicalState())
+    mmodel = this->getContext()->getMechanicalState();
+    if (!mmodel)
     {
             msg_error() << "No mechanical state found in the context node.";
             d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
@@ -95,6 +96,12 @@ void ReadState::bwdInit()
 void ReadState::reset()
 {
     mmodel = this->getContext()->getMechanicalState();
+    if (!mmodel)
+    {
+            msg_error() << "No mechanical state found in the context node.";
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+            return;
+    }
     if (infile)
     {
         delete infile;
@@ -112,6 +119,7 @@ void ReadState::reset()
     if (filename.empty())
     {
         msg_error() << "ERROR: empty filename";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
     }
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -120,6 +128,7 @@ void ReadState::reset()
         if( !gzfile )
         {
             msg_error() << "Error opening compressed file "<<filename;
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
         }
     }
 #endif
@@ -129,6 +138,7 @@ void ReadState::reset()
         if( !infile->is_open() )
         {
             msg_error() << "Error opening file "<<filename;
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
             delete infile;
             infile = nullptr;
         }
@@ -140,17 +150,14 @@ void ReadState::reset()
 
 void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 {
+    if(!isComponentStateValid())
+        return;
+
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         processReadState();
     }
-    if (simulation::AnimateEndEvent::checkEventType(event))
-    {
-
-    }
 }
-
-
 
 void ReadState::setTime(double time)
 {
