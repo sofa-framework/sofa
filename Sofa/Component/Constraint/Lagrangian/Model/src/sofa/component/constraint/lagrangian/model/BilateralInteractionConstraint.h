@@ -111,12 +111,14 @@ protected:
 
     std::vector<Vec3d> prevForces;
 
-    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been deprecated, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
-    Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
-    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
-    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    Data<bool> derivative; ///< TEST: derivative
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been removed, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
+    sofa::core::objectmodel::lifecycle::RemovedData  activateAtIteration{this, "activateAtIteration", "use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327)."};
+
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    sofa::core::objectmodel::lifecycle::RemovedData  merge{this, "merge", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
+
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralInteractionConstraint(MechanicalState* object) ;
@@ -129,25 +131,6 @@ public:
     void bwdInit() override {}
 
     void reinit() override;
-
-    /// Temporary function to warn the user when old attribute names are used
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
-    {
-        Inherit::parse(arg);
-
-        if (arg->getAttribute("activateAtIteration"))
-        {
-            msg_warning() << "input data 'activateAtIteration' has been deprecated, please use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";
-        }
-        if (arg->getAttribute("merge"))
-        {
-            msg_warning() << "input Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
-        }
-        if (arg->getAttribute("derivative"))
-        {
-            msg_warning() << "input Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
-        }
-    }
 
     void buildConstraintMatrix(const ConstraintParams* cParams,
                                        DataMatrixDeriv &c1, DataMatrixDeriv &c2,
