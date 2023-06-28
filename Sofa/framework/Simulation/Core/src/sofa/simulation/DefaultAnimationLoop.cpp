@@ -61,7 +61,7 @@ namespace sofa::simulation
 int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
                                 .add<DefaultAnimationLoop>()
                                 .addDescription(R"(
-This loop does the following steps:
+This loop triggers the following steps:
 - build and solve all linear systems in the scene : collision and time integration to compute the new values of the dofs
 - update the context (dt++)
 - update the mappings
