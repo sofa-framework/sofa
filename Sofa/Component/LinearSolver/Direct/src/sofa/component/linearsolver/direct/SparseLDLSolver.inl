@@ -65,7 +65,7 @@ SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
                 msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
             }
         }
-        return d_componentState.getValue();
+        return this->d_componentState.getValue();
     },
     {});
 }
