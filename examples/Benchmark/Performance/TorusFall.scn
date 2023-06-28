@@ -10,7 +10,7 @@
   <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
   <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
   <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel TriangleCollisionModel] -->
-  <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+  <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
   <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
   <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
   <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MeshTetraStuffing] -->
@@ -34,7 +34,7 @@
   <CollisionPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
   <BVHNarrowPhase name="NarrowPhase" />
-  <DefaultContactManager name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0" />
+  <CollisionResponse name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0" />
   <NewProximityIntersection name="Intersection" alarmDistance="2.5" contactDistance="0.01" />
 
   <Node name="Mesh">

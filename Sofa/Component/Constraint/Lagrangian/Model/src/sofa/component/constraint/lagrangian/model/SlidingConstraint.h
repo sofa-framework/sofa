@@ -69,6 +69,18 @@ protected:
 
     virtual ~SlidingConstraint(){}
 
+
+
+    virtual type::vector<std::string> getSlidingIdentifiers() { return {}; }
+
+    virtual type::vector<std::string> getPairInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getSlidingIdentifiers();
+        ids.push_back("Sliding");
+        return ids;
+    }
+
+
 public:
     void init() override;
 

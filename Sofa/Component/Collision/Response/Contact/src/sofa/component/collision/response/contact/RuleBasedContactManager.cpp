@@ -132,7 +132,7 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
             return replaceVariables(it->response); // rule it matched
     }
     // no rule matched
-    return replaceVariables(DefaultContactManager::getContactResponse(model1, model2));
+    return replaceVariables(CollisionResponse::getContactResponse(model1, model2));
 }
 
 void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )

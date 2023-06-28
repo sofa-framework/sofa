@@ -18,6 +18,8 @@ Component/Collision/Response/FrictionContact.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralInteractionConstraint_NNCG.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralInteractionConstraint_PGS.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralInteractionConstraint_UGS.scn 100 1e-4 0 1
+Component/Constraint/Lagrangian/FrictionContact_LCP_with_friction.scn 500 1e-4 0 1
+Component/Constraint/Lagrangian/FrictionContact_LCP_without_friction.scn 500 1e-4 0 1
 Component/Constraint/Projective/FixedConstraint.scn 100 1e-4 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1

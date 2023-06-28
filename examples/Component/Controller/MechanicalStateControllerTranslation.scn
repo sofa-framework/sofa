@@ -2,7 +2,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Controller"/> <!-- Needed to use components [MechanicalStateController] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -18,7 +18,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="InstrumentEdgeSet">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>

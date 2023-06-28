@@ -142,10 +142,16 @@ TYPED_TEST( PartialFixedConstraint_test , testContraintExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-TYPED_TEST( PartialFixedConstraint_test , testContraintImplicit )
+TYPED_TEST( PartialFixedConstraint_test , testContraintImplicitWithCG )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit")) );
+}
+
+TYPED_TEST( PartialFixedConstraint_test , testContraintImplicitWithSparseLDL )
+{
+    EXPECT_MSG_NOEMIT(Error) ;
+    EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
 }
 
 }// namespace

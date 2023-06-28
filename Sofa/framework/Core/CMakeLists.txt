@@ -145,6 +145,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h
+    ${SRC_ROOT}/objectmodel/DeprecatedData.h
+    ${SRC_ROOT}/objectmodel/RemovedData.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
     ${SRC_ROOT}/objectmodel/GUIEvent.h
@@ -284,6 +286,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/DataFileNameVector.cpp
     ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
+    ${SRC_ROOT}/objectmodel/DeprecatedData.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp
     ${SRC_ROOT}/objectmodel/GUIEvent.cpp
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
