@@ -858,21 +858,21 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     }
 
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    MatrixDerivRowIterator rowItEnd = c.end();
-
-    Transformation Ri;
+    auto rowItEnd = c.end();
     const auto& rotations = rotationFinder->getRotations();
-    for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        MatrixDerivColIterator colItEnd = rowIt.end();
 
-        for (MatrixDerivColIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+    for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        auto rowWrite = c.writeLine(rowIt.index());
+        auto colItEnd = rowIt.end();
+
+        for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            Deriv& n = colIt.val();
+            Deriv n = colIt.val();
             const int localRowNodeIdx = colIt.index();
 
             // rotationFinder has been defined
-            Ri = rotations[localRowNodeIdx];
+            auto Ri = rotations[localRowNodeIdx];
 
             if(!back)
                 Ri.transpose();

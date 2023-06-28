@@ -34,6 +34,30 @@
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <algorithm>
 
+namespace // anonymous
+{
+    // Boiler-plate code to test if a type implements a method
+    // explanation https://stackoverflow.com/a/30848101
+
+    template <typename...>
+    using void_t = void;
+
+    // Primary template handles all types not supporting the operation.
+    template <typename, template <typename> class, typename = void_t<>>
+    struct detectMatrix : std::false_type {};
+
+    // Specialization recognizes/validates only types supporting the archetype.
+    template <typename T, template <typename> class Op>
+    struct detectMatrix<T, Op, void_t<Op<T>>> : std::true_type {};
+
+    // Actual test if T implements transposed() (hence is a type::Mat)
+    template <typename T>
+    using isMatrix_t = decltype(std::declval<T>().transposed());
+
+    template <typename T>
+    using isMatrix = detectMatrix<T, isMatrix_t>;
+} // anonymous
+
 namespace sofa::linearalgebra
 {
 
@@ -1101,7 +1125,6 @@ public:
             nBlockRow = 0;
             nBlockCol = 0;
             skipCompressZero = true;
-            if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
         }
 
         btemp.clear();
@@ -1370,13 +1393,13 @@ public:
 
     static auto blockMultTranspose(const TBlock& blockA, const TBlock& blockB)
     {
-        if constexpr (std::is_scalar_v<TBlock>)
+        if constexpr (isMatrix<Block>())
         {
-            return blockA * blockB;
+            return blockA.multTranspose(blockB);
         }
         else
         {
-            return blockA.multTranspose(blockB);
+            return blockA * blockB;
         }
     }
 

@@ -42,7 +42,7 @@
 
     <Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="0.01" />
-        <SparseLDLSolver />
+        <SparseLDLSolver template="CompressedRowSparseMatrix" />
         
         <MechanicalObject name="instrumentState" template="Rigid3" />
         <UniformMass name="mass" totalMass="0.5" />
@@ -60,8 +60,8 @@
             <MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-            <LineCollisionModel contactStiffness="100"/>            
-            <PointCollisionModel contactStiffness="100"/>
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />        
         </Node>       
     </Node> 
