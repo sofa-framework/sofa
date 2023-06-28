@@ -58,9 +58,9 @@ void OglLabel::parse(BaseObjectDescription *arg)
     const char* visible = arg->getAttribute("visible") ;
     if(visible!=nullptr)
     {
-        msg_deprecated() << "Attribute 'visible' is deprecated. Please update your code by using 'draw' instead";
+        msg_deprecated() << "Attribute 'visible' is deprecated. Please update your code by using 'enable' instead";
         arg->removeAttribute("visible");
-        arg->setAttribute("draw", visible);
+        arg->setAttribute("enable", visible);
     }
 
     // BACKWARD COMPATIBILITY April 2017

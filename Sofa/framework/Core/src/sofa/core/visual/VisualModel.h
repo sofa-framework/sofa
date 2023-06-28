@@ -49,7 +49,7 @@ public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 
-    Data<bool> d_draw; ///< Display the visual model or not
+    Data<bool> d_enable; ///< Display the visual model or not
 
     /**
      *  \brief Display the VisualModel object.

@@ -27,7 +27,7 @@ namespace sofa::core::visual
 {
 
 VisualModel::VisualModel():
-    d_draw(initData(&d_draw, true,  "draw", "Display the object or not"))
+    d_enable(initData(&d_enable, true,  "enable", "Display the object or not"))
 {}
 
 void VisualModel::drawVisual(const VisualParams* vparams)
@@ -41,7 +41,7 @@ void VisualModel::drawVisual(const VisualParams* vparams)
         return;
 
     // don't draw if this component is specifically configured to be disabled
-    if (!d_draw.getValue())
+    if (!d_enable.getValue())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
