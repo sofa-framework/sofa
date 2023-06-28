@@ -180,8 +180,14 @@ protected :
         //   <=> L^T * x = D^-1 * L^-1 * b      # Step 2: compute D^-1 * L^-1 * b
         //   <=> x = L^T^-1 * D^1 * L^-1 * b    # Step 3: compute L^T^-1 * D^1 * L^-1 * b
 
+        // apply the permutation to the right-hand side
+        for (int i = 0; i < n; ++i)
+        {
+            Tmp[i] = b[perm[i]];
+        }
+
         // Step 1: compute L^-1 * b
-        sofa::linearalgebra::solveLowerTriangularSystem(n, b, perm, Tmp.data(), data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
+        sofa::linearalgebra::solveLowerTriangularSystem(n, Tmp.data(), Tmp.data(), data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
 
         // Step 2: compute D^-1 * [L^-1 * b]
         sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(n, Tmp.data(), Tmp.data(), data->invD.data());

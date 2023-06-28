@@ -34,7 +34,6 @@ template<typename Real, typename Integer>
 void solveLowerTriangularSystem(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
-    const Integer* const permutationAppliedOnRHS,
     Real* solution,
     const Integer* const L_columns,
     const Integer* const L_row,
@@ -43,7 +42,7 @@ void solveLowerTriangularSystem(
 {
     for (sofa::Size i = 0; i < systemSize; ++i)
     {
-        Real x_i = rightHandSideVector[permutationAppliedOnRHS[i]];
+        Real x_i = rightHandSideVector[i];
         for (Integer p = L_columns[i]; p < L_columns[i + 1]; ++p)
         {
             x_i -= L_values[p] * solution[L_row[p]];
