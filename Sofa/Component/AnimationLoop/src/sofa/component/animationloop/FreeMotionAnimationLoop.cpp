@@ -322,7 +322,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 }
 
-void FreeMotionAnimationLoop::computefreeMotionAndCollisionDetection(const sofa::core::ExecParams* params,
+void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa::core::ExecParams* params,
                                                               const core::ConstraintParams& cparams, SReal dt,
                                                               sofa::core::MultiVecId pos,
                                                               sofa::core::MultiVecId freePos,

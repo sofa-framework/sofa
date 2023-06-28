@@ -59,7 +59,7 @@ protected:
     ///< The ConstraintSolver used in this animation loop (required)
     SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 
-    void computefreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
+    void computeFreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
                                          sofa::core::MultiVecId pos,
                                          sofa::core::MultiVecId freePos,
                                          sofa::core::MultiVecDerivId freeVel,
