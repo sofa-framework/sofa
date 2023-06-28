@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
 #include <sofa/component/engine/select/SphereROI.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -33,11 +34,9 @@ using namespace sofa::defaulttype;
 int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
         .add< SphereROI<Vec3Types> >()
         .add< SphereROI<Rigid3Types> >()
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Rigid3Types>;
  
-
-
 } //namespace sofa::component::engine::select

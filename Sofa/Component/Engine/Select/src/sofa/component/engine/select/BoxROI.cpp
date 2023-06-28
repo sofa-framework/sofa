@@ -23,6 +23,7 @@
 #include <sofa/component/engine/select/BoxROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::component::engine::select::boxroi
 {
@@ -35,8 +36,7 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
         .add< BoxROI<Vec1Types> >()
         .add< BoxROI<Rigid3Types> >()
         .add< BoxROI<Vec6Types> >()
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec2Types>;

@@ -77,11 +77,6 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues< type::
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<SReal>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<type::Vec2>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<type::Vec3>;
-// extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
-// extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
-// extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
-// extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
-
 #endif
 
 } //namespace sofa::component::engine::select

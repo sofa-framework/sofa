@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP
 #include <sofa/component/engine/select/SubsetTopology.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -33,8 +34,7 @@ using namespace sofa::defaulttype;
 int SubsetTopologyClass = core::RegisterObject("Engine used to create subset topology given box, sphere, plan, ...")
         .add< SubsetTopology<Vec3Types> >()
         .add< SubsetTopology<Rigid3Types> >()
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<Rigid3Types>;

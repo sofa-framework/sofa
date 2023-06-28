@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP
 #include <sofa/component/engine/select/PairBoxRoi.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::engine::select
@@ -31,15 +32,12 @@ using namespace sofa::defaulttype;
 
 int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
         .add< PairBoxROI<Vec3Types> >()
+        .add< PairBoxROI<Vec6Types> >()
         .add< PairBoxROI<Rigid3Types> >()
-        .add< PairBoxROI<Vec6Types> >() //Phuoc
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Rigid3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>; //Phuoc
  
-
-
 } //namespace sofa::component::engine::select

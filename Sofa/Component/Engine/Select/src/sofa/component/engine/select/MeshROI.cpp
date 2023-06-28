@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_MESHROI_CPP
 #include <sofa/component/engine/select/MeshROI.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::engine::select
@@ -33,8 +34,7 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
         .add< MeshROI<Vec3Types> >(true) //default template
         .add< MeshROI<Rigid3Types> >()
         .add< MeshROI<Vec6Types> >()
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Rigid3Types>;

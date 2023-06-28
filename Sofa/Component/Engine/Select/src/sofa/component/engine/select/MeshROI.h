@@ -67,25 +67,6 @@ public:
     void doUpdate() override;
     void draw(const core::visual::VisualParams*) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
 protected:
     bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
     bool isPointInMesh(const CPos& p);

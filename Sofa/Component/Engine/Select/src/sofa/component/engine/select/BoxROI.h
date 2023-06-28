@@ -86,25 +86,6 @@ public:
     void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
     void handleEvent(Event *event) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, BaseContext* context, BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
 public:
     //Input
     Data<vector<type::Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax

@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP
 #include <sofa/component/engine/select/ValuesFromPositions.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::engine::select
@@ -32,12 +33,9 @@ using namespace sofa::defaulttype;
 int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives (vertex/edge/triangle/tetrahedron) based on a linear interpolation of values along a direction")
         .add< ValuesFromPositions<Vec3Types> >()
         .add< ValuesFromPositions<Rigid3Types> >()
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<Rigid3Types>;
  
-
-
 } //namespace sofa::component::engine::select
