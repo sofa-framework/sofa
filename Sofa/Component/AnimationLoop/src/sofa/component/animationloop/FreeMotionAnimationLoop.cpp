@@ -261,7 +261,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         node->executeVisitor(&geometricStiffnessVisitor);
     }
 
-    computefreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
+    computeFreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
 
     // Solve constraints
     if (l_constraintSolver)
