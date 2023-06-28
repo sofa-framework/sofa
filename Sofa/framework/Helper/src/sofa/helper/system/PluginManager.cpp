@@ -408,12 +408,13 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
-    for (const auto & prefix : searchPaths) {
+    for (const auto & prefix : searchPaths)
+    {
         const std::array<std::string, 4> paths = {
-                prefix + "/" + libName,
-                prefix + "/" + pluginName + "/" + libName,
-                prefix + "/" + pluginName + "/bin/" + libName,
-                prefix + "/" + pluginName + "/lib/" + libName
+            FileSystem::append(prefix, libName),
+            FileSystem::append(prefix, pluginName, libName),
+            FileSystem::append(prefix, pluginName, "bin", libName),
+            FileSystem::append(prefix, pluginName, "lib", libName)
         };
         for (const auto & path : paths) {
             if (FileSystem::isFile(path)) {

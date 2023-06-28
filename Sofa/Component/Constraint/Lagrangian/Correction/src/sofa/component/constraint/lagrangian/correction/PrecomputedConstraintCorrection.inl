@@ -43,6 +43,7 @@
 #include <sstream>
 #include <list>
 #include <iomanip>
+#include <sofa/helper/system/FileSystem.h>
 
 //#define NEW_METHOD_UNBUILT
 
@@ -133,12 +134,13 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         std::string dir = fileDir.getValue();
         if (!dir.empty())
         {
-            std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
+            const std::string path = helper::system::FileSystem::append(dir, fileName);
+            std::ifstream compFileIn(path, std::ifstream::binary);
             if (compFileIn.is_open())
             {
                 invM->data = new Real[nbRows * nbCols];
 
-                msg_info() << "File " << dir + "/" + fileName << " found. Loading..." ;
+                msg_info() << "File " << path << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(Real));
                 compFileIn.close();
@@ -181,9 +183,14 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
     std::string filePathInSofaShare;
     std::string dir = fileDir.getValue();
     if (!dir.empty())
-        filePathInSofaShare = dir + "/" + fileName;
+    {
+        filePathInSofaShare = helper::system::FileSystem::append(dir, fileName);
+    }
     else
-        filePathInSofaShare  = sofa::helper::system::DataRepository.getFirstPath() + "/" + fileName;
+    {
+        filePathInSofaShare = helper::system::FileSystem::append(
+            sofa::helper::system::DataRepository.getFirstPath(), fileName);
+    }
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(Real));
