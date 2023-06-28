@@ -62,7 +62,7 @@ DefaultAnimationLoop::~DefaultAnimationLoop()
 
 void DefaultAnimationLoop::setNode( simulation::Node* n )
 {
-    l_node=n;
+    l_node.set(n);
 }
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
