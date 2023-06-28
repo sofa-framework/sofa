@@ -4,7 +4,7 @@
 	<BulletCollisionDetection name="bulletCollisionDetection0" />
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
 	<CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
-	<DefaultContactManager name="Response"  response="distanceLMConstraint" />
+	<CollisionResponse name="Response"  response="distanceLMConstraint" />
 	<!-- <TreeCollisionGroupManager name="Group" /> -->
 	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
 	<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>

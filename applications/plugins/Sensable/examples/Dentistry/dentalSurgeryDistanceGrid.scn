@@ -13,7 +13,7 @@
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager name="response" response="PenalityContactForceField" />
+	<CollisionResponse name="response" response="PenalityContactForceField" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 
 	<Node name="Tooth" >

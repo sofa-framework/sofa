@@ -25,9 +25,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params)
@@ -79,5 +77,4 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     node->f_bbox.endEdit();
 }
 
-}
 }

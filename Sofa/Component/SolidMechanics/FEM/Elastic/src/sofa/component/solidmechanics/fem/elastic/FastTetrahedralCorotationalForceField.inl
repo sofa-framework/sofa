@@ -201,7 +201,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
         m_decompositionMethod = QR_DECOMPOSITION;
     else if (method == "polar2")
         m_decompositionMethod = POLAR_DECOMPOSITION_MODIFIED;
-     else if ((method == "none") || (method == "linear"))
+     else if ((method == "none") || (method == "linear") || (method == "small"))
         m_decompositionMethod = LINEAR_ELASTIC;
     else
     {
@@ -489,6 +489,102 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
         addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()), r.offset);
     else
         msg_error() << "addKToMatrix found no valid matrix accessor.";
+}
+
+template <class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    const sofa::Size nbEdges = m_topology->getNbEdges();
+    const sofa::Size nbPoints = m_topology->getNbPoints();
+    const sofa::Size nbTetrahedra = m_topology->getNbTetrahedra();
+
+    helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > pointDfDx = pointInfo;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    Mat3x3NoInit tmp;
+    if (updateMatrix)
+    {
+        /// if not done in addDForce: update off-diagonal blocks ("edges") of each element matrix
+        updateMatrix = false;
+        // reset all edge matrices
+        for (auto& e : edgeDfDx)
+        {
+            e.clear();
+        }
+
+        for(sofa::Size i=0; i < nbTetrahedra; i++ )
+        {
+            TetrahedronRestInformation& tetinfo = tetrahedronInf[i];
+            const core::topology::BaseMeshTopology::EdgesInTetrahedron &tea = m_topology->getEdgesInTetrahedron(i);
+
+            for (sofa::Size j=0; j < EdgesInTetrahedron::size(); ++j)
+            {
+                unsigned int edgeID = tea[j];
+
+                // test if the tetrahedron edge has the same orientation as the global edge
+                tmp = tetinfo.linearDfDx[j]*tetinfo.rotation;
+
+                if (tetinfo.edgeOrientation[j]==1)
+                {
+                    // store the two edge matrices since the stiffness sub-matrix is not symmetric
+                    edgeDfDx[edgeID] += tetinfo.rotation.transposed()*tmp;
+                }
+                else
+                {
+                    edgeDfDx[edgeID] += tmp.transposed()*tetinfo.rotation;
+                }
+
+            }
+        }
+    }
+
+    /// must update point data since these are not computed in addDForce
+    for (auto& p : pointDfDx)
+    {
+        p.clear();
+    }
+
+    for(sofa::Size i = 0; i < nbTetrahedra; ++i)
+    {
+        const TetrahedronRestInformation& tetinfo = tetrahedronInf[i];
+        const core::topology::BaseMeshTopology::Tetrahedron& t = m_topology->getTetrahedron(i);
+
+        for (sofa::Size j = 0; j < Tetrahedron::size(); ++j)
+        {
+            const unsigned int Id = t[j];
+
+            tmp = tetinfo.rotation.transposed() * tetinfo.linearDfDxDiag[j] * tetinfo.rotation;
+            pointDfDx[Id] += tmp;
+        }
+    }
+
+    /// construct the diagonal blocks from point data
+    for (sofa::Size i=0; i<nbPoints; ++i)
+    {
+        dfdx(3 * i, 3 * i) += -pointDfDx[i];
+    }
+
+    /// construct the off-diagonal blocks from edge data
+    const auto& edges = m_topology->getEdges();
+    for(sofa::Size i=0; i < nbEdges; ++i )
+    {
+        const auto& edge = edges[i];
+        dfdx(3 * edge[0], 3 * edge[1]) += -edgeDfDx[i];
+        dfdx(3 * edge[1], 3 * edge[0]) += -edgeDfDx[i];
+    }
+}
+
+template <class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(
+    core::behavior::DampingMatrix* matrix)
+{
+    //no damping in this force field
+    SOFA_UNUSED(matrix);
 }
 
 

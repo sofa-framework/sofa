@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/DistanceFromTargetMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
@@ -276,6 +277,46 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readTotalForces();
+    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    for(sofa::Size i=0; i<indices.size(); i++)
+    {
+        const OutDeriv force_i = childForce[i];
+
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( force_i[0] < 0 || geometricStiffness==1 )
+        {
+            size_t idx = indices[i];
+
+            sofa::type::MatNoInit<Nin,Nin,Real> b;  // = (I - uu^T)
+            for(unsigned j=0; j<Nin; j++)
+            {
+                for(unsigned k=0; k<Nin; k++)
+                {
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                }
+            }
+            b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l
+
+            dJdx(idx * Nin, idx * Nin) += b;
+        }
+    }
 }
 
 template <class TIn, class TOut>

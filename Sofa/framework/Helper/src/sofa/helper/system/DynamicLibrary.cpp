@@ -29,11 +29,7 @@ using sofa::helper::system::FileSystem;
 #endif
 #include <string>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 
 
@@ -166,9 +162,5 @@ const std::string DynamicLibrary::prefix = "lib";
 
 std::string DynamicLibrary::m_lastError = std::string("");
 
-
-}
-
-}
 
 }

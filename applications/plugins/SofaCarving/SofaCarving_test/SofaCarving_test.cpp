@@ -96,7 +96,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
     createObject(m_root, "BruteForceBroadPhase", { { "name","Broad Phase Detection" } });
     createObject(m_root, "BVHNarrowPhase", { { "name","Narrow Phase Detection" } });
-    createObject(m_root, "DefaultContactManager", {
+    createObject(m_root, "CollisionResponse", {
         { "name", "Contact Manager" },
         { "response", "PenalityContactForceField" }
     });
@@ -250,7 +250,7 @@ void SofaCarving_test::ManagerInit()
     // create collision pipeline
     createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
-    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "CollisionResponse", { { "response","PenalityContactForceField" } });
     createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
     createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
@@ -306,7 +306,7 @@ void SofaCarving_test::ManagerInitWithLinks()
     // create collision pipeline
     createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
-    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "CollisionResponse", { { "response","PenalityContactForceField" } });
     createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
     createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
@@ -363,7 +363,7 @@ void SofaCarving_test::ManagerWrongInit()
     // create collision pipeline
     createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
-    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "CollisionResponse", { { "response","PenalityContactForceField" } });
     createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
     createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
