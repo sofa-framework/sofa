@@ -24,6 +24,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 
 namespace sofa::core::behavior
@@ -73,18 +74,18 @@ private:
     MultiLink< ConstraintCorrection<TDataTypes>, core::behavior::ConstraintSolver, BaseLink::FLAG_NONE > l_constraintsolvers;
 
 public:
- 
 
-    /// Compute the motion coming from the contact space lambda  
-    /// dx = A^-1 x J^t x lambda 
+
+    /// Compute the motion coming from the contact space lambda
+    /// dx = A^-1 x J^t x lambda
     /// where :
     /// - J is the constraint jacobian matrix ( ^t denotes the transposition operator )
     /// - A is the dynamic matrix. Usually for implicit integration A = M - h^2 x K with
-    /// -- M the mass matrix 
+    /// -- M the mass matrix
     /// -- K the stiffness matrix
     /// -- h the step size.
-    /// Usually this computation will be delegated to a LinearSolver instance 
-    /// 
+    /// Usually this computation will be delegated to a LinearSolver instance
+    ///
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
@@ -92,7 +93,7 @@ public:
 
 
     /// Compute the corrective motion coming from the motion space force
-   
+
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param f  is the VecId where the motion space force : f = J^t x lambda
@@ -137,17 +138,12 @@ public:
     /// @param lambda is the constraint space force vector
     void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
- 
-    /// Pre-construction check method called by ObjectFactory.
-    template< class T >
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    /// Specify this component and its child to deduce their template from the context's mechanical state
+    /// See ObjetFactor & ObjectFactoryTemplateDeduction.for more info
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr) {
-            arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) + "' found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromMechanicalState(context, description);
     }
 
     MechanicalState<DataTypes> *getMState() const

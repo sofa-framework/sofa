@@ -90,18 +90,6 @@ public:
     //float PointIndicesScale;
     float getIndicesScale() const;
 
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     /** \brief Called by the MechanicalObject state change callback to initialize added
      * points according to the topology (topology element & local coordinates) 
      */

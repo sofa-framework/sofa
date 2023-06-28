@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ using namespace core::behavior;
 
 int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
         .add< SpatialGridContainer<Vec3Types> >()
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_SPH_FLUID_API SpatialGridContainer< Vec3Types >;
 template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3Types > >;

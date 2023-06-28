@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core::behavior
 {
@@ -143,17 +144,12 @@ public:
         msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    /// Specify this component and its child to deduce their template from the context's mechanical state
+    /// See ObjetFactor & ObjectFactoryTemplateDeduction.for more info
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr){
-            arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) + "' found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromMechanicalState(context, description);
     }
 };
 

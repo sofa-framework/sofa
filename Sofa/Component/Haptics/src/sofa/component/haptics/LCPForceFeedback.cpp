@@ -23,6 +23,7 @@
 
 #include <sofa/component/haptics/LCPForceFeedback.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::haptics
@@ -68,7 +69,8 @@ void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::Sol
 
 int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
         .add< LCPForceFeedback<defaulttype::Vec1Types> >()
-        .add< LCPForceFeedback<defaulttype::Rigid3Types> >();
+        .add< LCPForceFeedback<defaulttype::Rigid3Types> >()
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;

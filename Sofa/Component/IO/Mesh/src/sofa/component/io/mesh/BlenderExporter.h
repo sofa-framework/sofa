@@ -94,20 +94,6 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T2>
-    static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<DataType*>(context->getState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + T::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
 protected:
 
     unsigned frameCounter;

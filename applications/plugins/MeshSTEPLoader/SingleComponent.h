@@ -51,12 +51,6 @@ public:
     virtual void reinit() override;
     virtual void doUpdate() override;
 
-    template <class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::DataEngine::canCreate(obj, context, arg);
-    }
-
     static std::string GetCustomTemplateName()
     {
         return "int";

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/io/mesh/BlenderExporter.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::component::_blenderexporter_
 {
@@ -29,6 +30,6 @@ using namespace defaulttype;
 int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
         .add< BlenderExporter<Vec3dTypes> >()
         .add< BlenderExporter<Rigid3Types> >()
-        ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 } // sofa::component::_blenderexporter_

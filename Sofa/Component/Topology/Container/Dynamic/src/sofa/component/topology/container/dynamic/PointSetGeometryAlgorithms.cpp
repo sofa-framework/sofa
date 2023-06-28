@@ -21,8 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
 #include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.inl>
-
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::topology::container::dynamic
@@ -30,11 +30,10 @@ namespace sofa::component::topology::container::dynamic
 
 using namespace sofa::defaulttype;
 int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
-        .add< PointSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< PointSetGeometryAlgorithms<Vec2Types> >()
-        .add< PointSetGeometryAlgorithms<Vec1Types> >()
-
-        ;
+                                      .add< PointSetGeometryAlgorithms<Vec3Types> >(true) // default template
+                                      .add< PointSetGeometryAlgorithms<Vec2Types> >()
+                                      .add< PointSetGeometryAlgorithms<Vec1Types> >()
+                                      .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Vec2Types>;
