@@ -47,18 +47,7 @@ public:
     /// Compute the total number of errors
     void processCompareTopology();
 
-    /** Pre-construction check method called by ObjectFactory.
-    Check that DataTypes matches the MechanicalTopology.*/
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMeshTopology() == nullptr)
-        {
-            arg->logError("Cannot find a mesh topology in the current context");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
+    void init() override;
 
     /// Return the total number of errors
     unsigned int getTotalError() {return TotalError;}

@@ -72,15 +72,18 @@ WriteState::~WriteState()
 
 void WriteState::init()
 {
-    validInit = true;
-    periodicExport = false;
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
     mmodel = this->getContext()->getMechanicalState();
-
-    // test the size and range of the DOFs to write in the file output
-    if (mmodel)
+    if(!mmodel)
     {
-        timeToTestEnergyIncrease = d_keperiod.getValue();
+        msg_error() << "Missing mechanical state in the current context";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
+
+    periodicExport = false;
+    timeToTestEnergyIncrease = d_keperiod.getValue();
     ///////////// end of the tests.
 
     const std::string& filename = d_filename.getFullPath();
@@ -186,14 +189,14 @@ void WriteState::init()
                     if(d_time.getValue()[i] != 0)
                     {
                         msg_error() << "time of export should always be zero or positive, no export will be done";
-                        validInit = false;
+                        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
                         return;
                     }
                 }
                 else
                 {
                     msg_error() << "time of export should always be positive, no export will be done";
-                    validInit = false;
+                    d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
                     return;
                 }
             }
@@ -240,7 +243,7 @@ void WriteState::reset()
 
 void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if(!validInit)
+    if(!isComponentStateValid())
         return;
 
     if (simulation::AnimateBeginEvent::checkEventType(event))

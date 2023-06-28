@@ -65,6 +65,9 @@ WriteTopology::~WriteTopology()
 
 void WriteTopology::init()
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -93,6 +96,8 @@ void WriteTopology::init()
         if( !gzfile )
         {
             msg_error() << "Unable to create the compressed file '"<<filename<<"'.";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
         }
         return;
     }
@@ -104,6 +109,8 @@ void WriteTopology::init()
         msg_error() << "Unable to create the file "<<filename;
         delete outfile;
         outfile = nullptr;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 }
 
@@ -117,6 +124,9 @@ void WriteTopology::reset()
 
 void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 {
+    if(!isComponentStateValid())
+        return;
+
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (!m_topology) return;

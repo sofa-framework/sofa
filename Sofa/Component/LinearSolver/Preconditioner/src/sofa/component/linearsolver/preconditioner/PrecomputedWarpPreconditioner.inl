@@ -282,18 +282,14 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 {
+    if(!this->isComponentStateValid())
+        return;
+
     usePrecond = false;//Don'Use precond during precomputing
 
     msg_info() << "Compute the initial invert matrix with solver" ;
 
-    if (mstate==nullptr)
-    {
-        msg_error() << "PrecomputedWarpPreconditioner can't find Mstate";
-        return;
-    }
-
     std::stringstream ss;
-    //ss << this->getContext()->getName() << "_CPP.comp";
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
@@ -659,17 +655,28 @@ template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::init()
 {
     Inherit1::init();
+
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
-    if (node != nullptr) mstate = node->get<MState> ();
+    if (node != nullptr)
+        mstate = node->get<MState> ();
+
+    if (!mstate)
+    {
+        msg_error() << "Missing mechanical state in the current context. ";
+        this->d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+    }
+    this->d_componentState = sofa::core::objectmodel::ComponentState::Valid;
 }
 
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
-    if (mstate==nullptr) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

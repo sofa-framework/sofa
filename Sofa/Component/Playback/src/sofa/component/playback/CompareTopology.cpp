@@ -34,7 +34,7 @@ namespace sofa::component::playback
 
 
 int CompareTopologyClass = core::RegisterObject("Compare Topology containers from a reference frame to the associated Topology")
-        .add< CompareTopology >();
+                           .add< CompareTopology >();
 
 CompareTopology::CompareTopology(): ReadTopology()
 {
@@ -46,6 +46,19 @@ CompareTopology::CompareTopology(): ReadTopology()
     TotalError = 0;
 }
 
+
+void CompareTopology::init()
+{
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    auto context = getContext();
+    if (context->getMeshTopology() == nullptr)
+    {
+        msg_error() << "Mising topology";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+    }
+}
 
 //-------------------------------- handleEvent-------------------------------------------
 void CompareTopology::handleEvent(sofa::core::objectmodel::Event* event)
@@ -297,11 +310,11 @@ void CompareTopology::processCompareTopology()
 CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+    #if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
-#else
+    #else
     , extension(".txt")
-#endif
+    #endif
     , createInMapping(false)
     , init(true)
     , counterCompareTopology(0)
@@ -311,11 +324,11 @@ CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
 CompareTopologyCreator::CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+    #if SOFAGENERALLOADER_HAVE_ZLIB
     , extension(".txt.gz")
-#else
+    #else
     , extension(".txt")
-#endif
+    #endif
     , createInMapping(false)
     , init(i)
     , counterCompareTopology(c)
@@ -345,7 +358,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-         CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
+        CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
         if (  ct == nullptr )
         {
             ct = sofa::core::objectmodel::New<CompareTopology>(); gnode->addObject(ct);

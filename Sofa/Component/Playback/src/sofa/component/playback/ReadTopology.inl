@@ -39,9 +39,9 @@ ReadTopology::ReadTopology()
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_topology(nullptr)
     , infile(nullptr)
-#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
+    #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , gzfile(nullptr)
-#endif
+    #endif
     , nextTime(0.0)
     , lastTime(0.0)
     , loopTime(0.0)
@@ -61,6 +61,15 @@ ReadTopology::~ReadTopology()
 
 void ReadTopology::init()
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    if (!getContext()->getMeshTopologyLink())
+    {
+        msg_error()  << "No mesh topology found in the context node.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
 
     reset();
 }
@@ -152,10 +161,10 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!m_topology) return false;
     if (!infile
-#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
+    #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
         && !gzfile
-#endif
-       )
+    #endif
+        )
         return false;
     lastTime = time;
     validLines.clear();

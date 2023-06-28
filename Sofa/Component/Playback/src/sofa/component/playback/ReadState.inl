@@ -74,6 +74,15 @@ ReadState::~ReadState()
 
 void ReadState::init()
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    if (!getContext()->getMechanicalState())
+    {
+            msg_error() << "No mechanical state found in the context node.";
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+            return;
+    }
     reset();
 }
 

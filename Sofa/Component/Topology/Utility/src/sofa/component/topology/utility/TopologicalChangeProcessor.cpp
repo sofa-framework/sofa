@@ -100,6 +100,9 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 
 void TopologicalChangeProcessor::init()
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -112,7 +115,7 @@ void TopologicalChangeProcessor::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
@@ -147,6 +150,8 @@ void TopologicalChangeProcessor::readDataFile()
     if (filename.empty())
     {
         msg_error() << "empty filename";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -155,6 +160,8 @@ void TopologicalChangeProcessor::readDataFile()
         if( !gzfile )
         {
             msg_error() << "TopologicalChangeProcessor: Error opening compressed file " << filename;
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+            return;
         }
     }
 #endif
@@ -166,6 +173,8 @@ void TopologicalChangeProcessor::readDataFile()
             msg_error() << "TopologicalChangeProcessor: Error opening file " << filename;
             delete infile;
             infile = nullptr;
+            d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+            return;
         }
     }
     nextTime = 0;
@@ -191,16 +200,15 @@ void TopologicalChangeProcessor::setTime(double time)
 
 void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if(!isComponentStateValid())
+        return;
+
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (m_useDataInputs.getValue())
             processTopologicalChanges(this->getTime());
         else
             processTopologicalChanges();
-    }
-    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
-    {
-
     }
 }
 
