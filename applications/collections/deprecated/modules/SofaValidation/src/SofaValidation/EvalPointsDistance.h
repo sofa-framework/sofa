@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/core/PathResolver.h>
@@ -112,25 +113,11 @@ public:
     core::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
     core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    /// Deduce type from contexte, this method is called by ObjectFactory.
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (!sofa::core::PathResolver::CheckPath(context, LinkMState::DestType::GetClass(), object1)) {
-            arg->logError("Data attribute 'object1' must point to a valid object.");
-            return false;
-        }
-
-        if (!sofa::core::PathResolver::CheckPath(context, LinkMState::DestType::GetClass(), object2)) {
-            arg->logError("Data attribute 'object2' must point to a valid object.");
-            return false;
-        }
-
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromLinkedMechanicalState("object1", context, description);
     }
 
     void setPathToMS1(const std::string &o) { mstate1.setPath(o); }

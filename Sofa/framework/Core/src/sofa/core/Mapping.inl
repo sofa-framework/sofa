@@ -98,6 +98,16 @@ type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    if( static_cast<void*>(toModel.get()) == static_cast<void*>(fromModel.get()) )
+    {
+        msg_error() << "Both the input and the output point to the same mechanical state ('"+toModel.get()->getName()+"').";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();

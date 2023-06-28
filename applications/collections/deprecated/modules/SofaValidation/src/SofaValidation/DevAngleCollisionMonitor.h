@@ -64,25 +64,11 @@ public:
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMState2() { return mstate2; }
     core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    /// Deduce type from contexte, this method is called by ObjectFactory.
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == nullptr)
-                return false;
-            if (dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2",".."))) == nullptr)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-                return false;
-        }
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromLinkedMechanicalState("object1", context, description);
     }
 
     /// Construction method called by ObjectFactory.

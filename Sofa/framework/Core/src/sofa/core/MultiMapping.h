@@ -25,6 +25,7 @@
 #include <sofa/core/config.h>
 #include <sofa/helper/fwd.h>
 #include <sofa/core/State.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core
 {
@@ -173,15 +174,7 @@ public:
     {
     }
 
-
     void init() override;
-
-    ///<TO REMOVE>
-    /// Apply the mapping to position and velocity vectors.
-    ///
-    /// This method call the internal apply(type::vector<VecId>& InPos, type::vector<VecId>& OutPos)
-    /// and applyJ(type::vector<VecId>& InDeriv, type::vector<VecId>& OutDeriv) methods.
-    //virtual void updateMapping();
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
@@ -197,38 +190,12 @@ public:
         return name;
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output models types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        std::string input  = arg->getAttribute("input","");
-        if (input.empty()) {
-            arg->logError("The 'input' data attribute is empty. It should contain a valid path "
-                          "to one or more mechanical states of type '" + std::string(TIn::Name()) + "'.");
-            return false;
-
-        } else if (!PathResolver::CheckPaths(context, LinkFromModels::DestType::GetClass(), input)) {
-            arg->logError("The 'input' data attribute does not contain a valid path to one or more mechanical "
-                          "states of type '" + std::string(TIn::Name()) + "'.");
-            return false;
-        }
-
-        std::string output = arg->getAttribute("output","");
-        if (output.empty()) {
-            arg->logError("The 'output' data attribute is empty. It should contain a valid path "
-                          "to one or more mechanical states. of type '" + std::string(TOut::Name()) + "'.");
-            return false;
-        } else if (!PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output)) {
-            arg->logError("The 'output' data attribute does not contain a valid path to one or more mechanical "
-                          "states of type '" + std::string(TOut::Name()) + "'.");
-            return false;
-        }
-
-        return BaseMapping::canCreate(obj, context, arg);
+        std::string in = sofa::core::getTemplateFromLink<BaseState>("input", "@../", context, description);
+        std::string out = sofa::core::getTemplateFromLink<BaseState>("output", "@./", context, description);
+        return in+","+out;
     }
 
     /// Construction method called by ObjectFactory.

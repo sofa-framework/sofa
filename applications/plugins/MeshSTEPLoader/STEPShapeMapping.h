@@ -38,44 +38,6 @@ public:
         return std::string("stepShapeExtractor");
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the input and output attributes and check
-    /// if they are compatible with the input and output model types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        loader::MeshSTEPLoader* loader = NULL;
-        topology::container::constant::MeshTopology* topology = NULL;
-
-        std::string inPath, outPath;
-
-        if (arg->getAttribute("input"))
-            inPath = arg->getAttribute("input");
-
-        context->findLinkDest(loader, inPath, NULL);
-
-        if (arg->getAttribute("output"))
-            outPath = arg->getAttribute("output");
-
-        context->findLinkDest(topology, outPath, NULL);
-
-        if (loader == NULL)
-        {
-            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::core::objectmodel::BaseClassNameHelper::getClassName<T>() << " as input model is missing or invalid.";
-            return false;
-        }
-
-        if (topology == NULL)
-        {
-            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::core::objectmodel::BaseClassNameHelper::getClassName<T>() << " as output model is missing or invalid.";
-            return false;
-        }
-
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
     /// Construction method called by ObjectFactory.
     ///
     /// This implementation read the input and output attributes to

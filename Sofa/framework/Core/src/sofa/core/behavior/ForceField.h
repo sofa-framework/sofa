@@ -184,35 +184,6 @@ public:
     virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
     /// @}
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        const std::string attributeName {"mstate"};
-        std::string mstateLink = arg->getAttribute(attributeName,"");
-        if (mstateLink.empty())
-        {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
-                    "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
-                return false;
-            }
-        }
-        else
-        {
-            MechanicalState<DataTypes>* mstate = nullptr;
-            context->findLinkDest(mstate, mstateLink, nullptr);
-            if (!mstate)
-            {
-                arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-                return false;
-            }
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {

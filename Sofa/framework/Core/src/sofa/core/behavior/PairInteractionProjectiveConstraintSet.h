@@ -24,8 +24,8 @@
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
 #include <sofa/core/behavior/PairStateAccessor.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core::behavior
 {
@@ -117,29 +117,11 @@ public:
 
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    /// Deduce type from contexte, this method is called by ObjectFactory.
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        MechanicalState<DataTypes>* mstate1 = nullptr;
-        MechanicalState<DataTypes>* mstate2 = nullptr;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-
-        context->findLinkDest(mstate1, object1, nullptr);
-        context->findLinkDest(mstate2, object2, nullptr);
-
-        if (!mstate1) {
-            arg->logError("Data attribute 'object1' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-        if (!mstate2) {
-            arg->logError("Data attribute 'object2' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-
-        return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromLink<BaseMechanicalState>("object1", "@./", context, description);
     }
 
     /// Construction method called by ObjectFactory.
@@ -179,8 +161,6 @@ extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defau
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec1Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Rigid2Types>;
-
-
 #endif
 
 } // namespace sofa::core::behavior

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core::topology
 {
@@ -58,6 +59,8 @@ protected:
     ~TopologicalMapping() override { }
 
 public:
+    void init() override;
+
     /// Specify the input and output models.
     virtual void setTopologies(In* from, Out* to);
 
@@ -106,54 +109,6 @@ public:
     virtual void getFromIndex( type::vector<Index>& /*fromIndices*/, const Index /*toIndex*/) const {}
 
     const std::map<Index, sofa::type::vector<Index> >& getIn2OutMap() { return In2OutMap;}
-
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation reads the "input" and "output" attributes and checks
-    /// that the corresponding objects exist, and are not the same object.
-    template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        In* stin = nullptr;
-        Out* stout = nullptr;
-
-        std::string inPath, outPath;
-
-        if (arg->getAttribute("input"))
-            inPath = arg->getAttribute("input");
-        else
-            inPath = "@../";
-
-        context->findLinkDest(stin, inPath, nullptr);
-
-        if (arg->getAttribute("output"))
-            outPath = arg->getAttribute("output");
-        else
-            outPath = "@./";
-
-        context->findLinkDest(stout, outPath, nullptr);
-
-        if (stin == nullptr)
-        {
-            arg->logError("Data attribute 'input' does not point to a valid mesh topology and none can be found in the parent node context.");
-            return false;
-        }
-
-        if (stout == nullptr)
-        {
-            arg->logError("Data attribute 'output' does not point to a valid mesh topology and none can be found in the current node context.");
-            return false;
-        }
-
-        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
-        {
-            // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            arg->logError("Both the input mesh and the output mesh points to the same mesh topology ('"+stin->getName()+"').");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
     /// Construction method called by ObjectFactory.
     ///

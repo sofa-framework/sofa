@@ -23,6 +23,7 @@
 
 #include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core::behavior
 {
@@ -36,6 +37,13 @@ class SingleStateAccessor : public virtual StateAccessor
 {
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
+
+
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
+    {
+        return sofa::core::getTemplateFromLinkedMechanicalState("mstate", context, description);
+    }
 
     void init() override
     {

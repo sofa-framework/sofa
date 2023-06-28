@@ -380,7 +380,10 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     if (link)
     {
         if (!link->parseString(path, &pathStr, &dataStr))
+        {
+            msg_error() << "MISING PARSE " << link->getName();
             return false;
+        }
     }
     else
     {

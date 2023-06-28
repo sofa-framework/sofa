@@ -32,8 +32,6 @@ void STEPShapeExtractor::init()
     MeshSTEPLoader* input = loader.get();
     MeshTopology* output = topology.get();
 
-
-
     if( input == NULL || output == NULL )
     {
         msg_error() << "init failed! NULL pointers.";

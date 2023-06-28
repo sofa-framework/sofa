@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/PairStateAccessor.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 
 namespace sofa::core::behavior
@@ -149,37 +150,13 @@ public:
     /// by the generic ForceField::getPotentialEnergy() method.
 
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
-
-
-
-
-
-
     /// @}
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    /// Deduce type from contexte, this method is called by ObjectFactory.
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        MechanicalState<DataTypes>* mstate1 = nullptr;
-        MechanicalState<DataTypes>* mstate2 = nullptr;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-
-        context->findLinkDest(mstate1, object1, nullptr);
-        context->findLinkDest(mstate2, object2, nullptr);
-
-        if (!mstate1) {
-            arg->logError("Data attribute 'object1' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-        if (!mstate2) {
-            arg->logError("Data attribute 'object2' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-
-        return BaseInteractionForceField::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromLink<BaseMechanicalState>("object1", "@./", context, description);
     }
 
     /// Construction method called by ObjectFactory.

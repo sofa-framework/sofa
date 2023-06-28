@@ -32,10 +32,10 @@ SOFA_CORE_API std::string getTemplateFromMeshTopology(sofa::core::objectmodel::B
 
 /// Deduce the object template from the object pointed by the linkName, if not set, use the provided defaultValue
 template<class TargetObject>
-std::string getTemplateFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+std::string getTemplateFromLink(const std::string& attributeName, const std::string defaultLinkPath, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     // get the template type from the object pointed by the linkPath
-    const std::string linkedPath = arg->getAttribute(attributeName, defaultValue.c_str());
+    const std::string linkedPath = arg->getAttribute(attributeName, defaultLinkPath.c_str());
     auto base = sofa::core::PathResolver::FindBaseFromClassAndPath(context, TargetObject::GetClass(), linkedPath);
     if(base!=nullptr)
         return base->getTemplateName();
@@ -43,10 +43,8 @@ std::string getTemplateFromLink(const std::string& attributeName, const std::str
     return "";
 }
 
-/// Deduce the object template from the object pointed by the linkName, if not set, use the provided defaultValue
-SOFA_CORE_API std::string getTemplateFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg);
-
 /// Deduce the object template from the object pointed by the linkName, then search in the current context for a MechanicalState
+SOFA_CORE_API std::string getTemplateFromLinkedMechanicalState(const std::string& attributeName, const std::string& defaultValue,  sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg);
 SOFA_CORE_API std::string getTemplateFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
 
 /// Deduce the object template from the object pointed by the linkName, then search in the current context for a BaseMeshTopology

@@ -40,11 +40,10 @@ std::string getTemplateFromMeshTopology(sofa::core::objectmodel::BaseContext* co
     return "";
 }
 
-
-std::string getTemplateFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+std::string getTemplateFromLinkedMechanicalState(const std::string& attributeName, const std::string& defaultValue,  sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     // get the template type from the object pointed by the linkPath
-    std::string linkedPath = arg->getAttribute(attributeName,"");
+    std::string linkedPath = arg->getAttribute(attributeName, defaultValue.c_str());
     if (!linkedPath.empty() )
     {
         auto base = sofa::core::PathResolver::FindBaseFromPath(context, linkedPath);
@@ -57,6 +56,11 @@ std::string getTemplateFromLinkedMechanicalState(const std::string& attributeNam
         return context->getMechanicalState()->getTemplateName();
 
     return "";
+}
+
+std::string getTemplateFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    return getTemplateFromLinkedMechanicalState(attributeName, "", context, arg);
 }
 
 std::string getTemplateFromLinkedBaseMeshTopology(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)

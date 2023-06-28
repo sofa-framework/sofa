@@ -39,7 +39,7 @@ using std::queue;
 using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
-Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
+Distances< DataTypes >::Distances () :
     showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
     showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
     showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),
@@ -53,10 +53,8 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
     harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
     fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
-    targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
-    target ( targetPointSet ) ,
-    hexaContainerPath(initData(&hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
-    hexaContainer ( hexaTopoContainer )
+    target(initLink("target", "The mechanical state to apply the computed distance")),
+    hexaContainer(initLink("hexaContainer", "A Dynamic Sprase Grid object"))
 {
     this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
@@ -64,19 +62,39 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     sofa::helper::OptionsGroup distanceTypeOptions{"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness"};
     distanceTypeOptions.setSelectedItem(TYPE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
-
-    this->f_printLog.setValue(true);
 }
-
 
 template<class DataTypes>
 void Distances< DataTypes >::init()
 {
-    if ( !hexaContainer ) return;
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    if (!target)
+        target = getContext()->template get<sofa::core::behavior::MechanicalState<DataTypes>>();
+
+    if(!target)
+    {
+        msg_error() << "Can not find a valid target mechanical state.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
+    if (!hexaContainer)
+        hexaContainer = getContext()->template get<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer>();
+
+    if(!hexaContainer)
+    {
+        msg_error() << "Can not find a valid DynamicSparseGridTopologyContainer.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
     hexaContainer->getContext()->get ( hexaGeoAlgo );
     if ( !hexaGeoAlgo )
     {
         msg_error() << "Can not find the hexahedron geometry algorithms component.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
 
@@ -85,11 +103,11 @@ void Distances< DataTypes >::init()
     if ( !voxelGridLoader )
     {
         msg_error() << "Can not find the Voxel Grid Loader component.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
         return;
     }
     densityValues = voxelGridLoader->getData();
     segmentIDData = voxelGridLoader->getSegmentID();
-
 
     // Init the DOFs at each voxel center according to the step
     if ( initTarget.getValue())

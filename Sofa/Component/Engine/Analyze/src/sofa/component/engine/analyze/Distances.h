@@ -23,6 +23,7 @@
 
 #include <sofa/component/engine/analyze/config.h>
 
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -71,8 +72,7 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
-
+    Distances ();
     ~Distances() override {}
 
 public:
@@ -121,39 +121,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output model types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    /// Deduce type from contexte, this method is called by ObjectFactory.
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        bool error = false;
-        if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr)
-        {
-            arg->logError("Cannot create " + T::GetClass()->className + " as the hexas container is missing.");
-            error = true;
-        }
-        else if ( dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
-        {
-            arg->logError("Object pointed by data attribute 'hexaContainerPath' is not of type "
-                + sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer::GetClass()->className);
-            error = true;
-        }
-
-        if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr)
-        {
-            arg->logError("Cannot create " + T::GetClass()->className + " as the target point set is missing.");
-            error = true;
-        }
-        else if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )
-        {
-            arg->logError("Data attribute 'targetPath' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) +"'.");
-            error = true;
-        }
-        return !error && core::DataEngine::canCreate(obj, context, arg);
+        return sofa::core::getTemplateFromLinkedMechanicalState("targetPath", context, description);
     }
+
     /// Construction method called by ObjectFactory.
     ///
     /// This implementation read the object1 and object2 attributes to
@@ -161,38 +135,28 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(
-                ( arg?dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
-                ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :nullptr ) );
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
-        if ( context ) context->addObject ( obj );
+        if ( context )
+            context->addObject ( obj );
 
-        if ( arg )
-        {
-            if ( arg->getAttribute ( "hexaContainerPath" ) )
-            {
-                obj->hexaContainerPath.setValue ( arg->getAttribute ( "hexaContainerPath" ) );
-                arg->removeAttribute ( "hexaContainerPath" );
-            }
-            if ( arg->getAttribute ( "targetPath" ) )
-            {
-                obj->targetPath.setValue ( arg->getAttribute ( "targetPath" ) );
-                arg->removeAttribute ( "targetPath" );
-            }
-            obj->parse ( arg );
-        }
+        obj->parse ( arg );
 
         return obj;
     }
 
 private:
     Data<std::string> fileDistance; ///< file containing the result of the computation of the distances
-    Data<std::string> targetPath; ///< path to the goal point set topology
-    core::behavior::MechanicalState<DataTypes>* target;
 
-    Data<std::string> hexaContainerPath; ///< path to the grid used to compute the distances
-    sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaContainer;
+    SingleLink<Distances<DataTypes>,  sofa::core::behavior::MechanicalState<DataTypes>,
+               BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> target;
+
+    SingleLink<Distances<DataTypes>,  sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer,
+               BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> hexaContainer;
+
     sofa::component::topology::container::dynamic::DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
+
+
     const unsigned char * densityValues; // Density values
     const unsigned char * segmentIDData; // Density values
 

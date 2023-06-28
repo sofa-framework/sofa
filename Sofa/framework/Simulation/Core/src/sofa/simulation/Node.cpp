@@ -393,7 +393,10 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
     if (link)
     {
         if (!link->parseString(path,&pathStr))
+        {
+            msg_error() << "Unable to parse link " << link->getName();
             return nullptr;
+        }
     }
     else
     {

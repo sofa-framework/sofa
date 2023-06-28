@@ -38,11 +38,11 @@ using namespace sofa::core::collision;
 
 int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
 
-ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
-    :  m_NarrowPhase(nullptr)
+ContactListener::ContactListener()
+    :  l_collisionModel1(initLink("collisionModel1", "Collision model one"))
+    ,  l_collisionModel2(initLink("collisionModel2", "Collision model two"))
+    ,  l_narrowPhase(initLink("narrowPhase", "Use a narrow phase (default=search in context)"))
 {
-    m_CollisionModel1 = collModel1;
-    m_CollisionModel2 = collModel2;
 }
 
 ContactListener::~ContactListener()
@@ -51,8 +51,33 @@ ContactListener::~ContactListener()
 
 void ContactListener::init(void)
 {
-    m_NarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
-    if ( m_NarrowPhase != nullptr )
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+
+    if(!l_collisionModel1)
+        l_collisionModel1 = getContext()->get<core::CollisionModel>();
+
+    if(!l_collisionModel1)
+    {
+        msg_error() << "missing 'collisionModel1' parameter and nothing in the context";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
+    if(!l_collisionModel2)
+        l_collisionModel2 = getContext()->get<core::CollisionModel>();
+
+    if(!l_collisionModel2)
+    {
+        msg_error() << "missing 'collisionModel2' parameter and nothing in the context";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
+    }
+
+    if( !l_narrowPhase )
+        l_narrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
+
+    if ( l_narrowPhase )
     {
         // add to the event listening
         f_listening.setValue(true);
@@ -61,6 +86,9 @@ void ContactListener::init(void)
 
 void ContactListener::handleEvent( core::objectmodel::Event* _event )
 {
+    if(!isComponentStateValid())
+        return;
+
     if (simulation::CollisionBeginEvent::checkEventType(_event))
     {
         m_ContactsVector.swap(m_ContactsVectorBuffer);
@@ -70,7 +98,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
     else if (simulation::CollisionEndEvent::checkEventType(_event))
     {
 
-        const auto& detectionOutputsMap = m_NarrowPhase->getDetectionOutputs();
+        const auto& detectionOutputsMap = l_narrowPhase->getDetectionOutputs();
 
         if ( detectionOutputsMap.empty() )
         {
@@ -78,7 +106,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
             return;
         }
 
-        if  ( m_CollisionModel2 == nullptr )
+        if  ( l_collisionModel2 == nullptr )
         {
             //// check only one collision model
             for (const auto & it : detectionOutputsMap)
@@ -86,7 +114,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 const CollisionModel* collMod1 = it.first.first;
                 const CollisionModel* collMod2 = it.first.second;
 
-                if ( m_CollisionModel1 == collMod1 || m_CollisionModel1 == collMod2 )
+                if ( l_collisionModel1 == collMod1 || l_collisionModel1 == collMod2 )
                 {
                     if ( const type::vector<DetectionOutput>* contacts = dynamic_cast<type::vector<DetectionOutput>*>(it.second) )
                     {
@@ -103,7 +131,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 const CollisionModel* collMod1 = it.first.first;
                 const CollisionModel* collMod2 = it.first.second;
 
-                if ( (m_CollisionModel1==collMod1 && m_CollisionModel2==collMod2) || (m_CollisionModel1==collMod2 && m_CollisionModel2==collMod1) )
+                if ( (l_collisionModel1==collMod1 && l_collisionModel2==collMod2) || (l_collisionModel1==collMod2 && l_collisionModel2==collMod1) )
                 {
                     if ( const type::vector<DetectionOutput>* contacts = dynamic_cast<type::vector<DetectionOutput>*>(it.second) )
                     {
@@ -121,7 +149,7 @@ sofa::Size ContactListener::getNumberOfContacts() const
     if (!m_ContactsVectorBuffer.empty())
     {
         const sofa::Size numberOfContacts = m_ContactsVectorBuffer[0].size();
-        if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+        if (0 < numberOfContacts && ((numberOfContacts <= l_collisionModel1->getSize()) || (numberOfContacts <= l_collisionModel2->getSize()))){
             return numberOfContacts;
         }
         else {
@@ -153,7 +181,7 @@ std::vector<std::tuple<unsigned int, sofa::type::Vec3, unsigned int, sofa::type:
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);
         for (const auto& c: m_ContactsVectorBuffer[0]){
-            unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
+            unsigned int firstID = l_collisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactPoints.emplace_back(firstID, c.point[0], secondID, c.point[1]);
         }
@@ -168,7 +196,7 @@ std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> 
     if (0 < numberOfContacts){ // can be 0
         contactElements.reserve(numberOfContacts);
         for (const auto& c: m_ContactsVectorBuffer[0]){
-            unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
+            unsigned int firstID = l_collisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactElements.emplace_back(firstID, c.elem.first.getIndex(), secondID, c.elem.second.getIndex());
         }

@@ -31,13 +31,22 @@ TopologicalMapping::TopologicalMapping()
 
 }
 
-
 void TopologicalMapping::setTopologies(In* from, Out* to)
 {
     this->fromModel.set(from);
     this->toModel.set(to);
 }
 
+void TopologicalMapping::init()
+{
+    d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+    Inherit1::init();
+    if( fromModel == toModel )
+    {
+        msg_error() << "Both input and output are pointing to the same component.";
+        d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+    }
+}
 
 Index TopologicalMapping::getGlobIndex(Index ind)
 {

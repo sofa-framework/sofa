@@ -25,6 +25,7 @@
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
 #include <sofa/core/State.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 namespace sofa::core
 {
@@ -210,42 +211,16 @@ public:
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
     void disable() override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output models types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
     {
-        static const sofa::type::fixed_array<std::tuple<const char*, const char*, const ::sofa::core::objectmodel::BaseClass*>, 3> attributes {
-            std::make_tuple("input1", In1::Name(), LinkFromModels1::DestType::GetClass()),
-            std::make_tuple("input2", In2::Name(), LinkFromModels2::DestType::GetClass()),
-            std::make_tuple("output", Out::Name(), LinkToModels::DestType::GetClass())
-        };
-
-        bool error = false;
-        for (const auto& [attribute, dataType, classDescription] : attributes)
-        {
-            const std::string attributeStr = arg->getAttribute(attribute,"");
-            if (!attributeStr.empty() && !PathResolver::CheckPaths(context, classDescription, attributeStr))
-            {
-                arg->logError("Data attribute '" + std::string(attribute) + "' does not point to a "
-                            "mechanical state of data type '" + std::string(dataType) + "'");
-                error = true;
-            }
-        }
-
-        const std::string attributeStr = arg->getAttribute("output","");
-        if (attributeStr.empty())
-        {
-            arg->logError("Data attribute 'output' is empty, but it is required to set it. "
-                        "Set this attribute to a mechanical state of data type '" + std::string(Out::Name()) + "'");
-            error = true;
-        }
-
-        return !error && BaseMapping::canCreate(obj, context, arg);
+        std::string in1 = sofa::core::getTemplateFromLink<BaseState>("input1", "", context, description);
+        std::string in2 = sofa::core::getTemplateFromLink<BaseState>("input2", "", context, description);
+        std::string out = sofa::core::getTemplateFromLink<BaseState>("output", "@./", context, description);
+        return in1+","+in2+","+out;
     }
+
     /// Construction method called by ObjectFactory.
     ///
     /// This implementation read the input and output attributes to

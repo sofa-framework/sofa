@@ -45,12 +45,10 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public vir
 public:
     SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);
 
-
-    ContactListener(core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
+    ContactListener();
     ~ContactListener() override ;
 
     void init(void) override;
-
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
@@ -76,68 +74,9 @@ public:
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> getContactElements() const; // model, id, model, id
 
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::CollisionModel* collModel1 = nullptr;
-        core::CollisionModel* collModel2 = nullptr;
-
-        std::string collModelPath1;
-        std::string collModelPath2;
-
-        if (arg->getAttribute("collisionModel1"))
-            collModelPath1 = arg->getAttribute("collisionModel1");
-        else
-            collModelPath1 = "";
-
-        context->findLinkDest(collModel1, collModelPath1, nullptr);
-
-        if (arg->getAttribute("collisionModel2"))
-            collModelPath2 = arg->getAttribute("collisionModel2");
-        else
-            collModelPath2 = "";
-
-        context->findLinkDest(collModel2, collModelPath2, nullptr);
-
-        if (collModel1 == nullptr && collModel2 == nullptr )
-        {
-            arg->logError("Data attributes 'collisionModel1' and 'collisionModel2' are not pointing to valid collision models.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    template<class T>
     static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::CollisionModel* collModel1 = nullptr;
-        core::CollisionModel* collModel2 = nullptr;
-
-        std::string collModelPath1;
-        std::string collModelPath2;
-
-        if(arg)
-        {
-            collModelPath1 = arg->getAttribute(std::string("collisionModel1"), nullptr );
-            collModelPath2 = arg->getAttribute(std::string("collisionModel2"), nullptr );
-
-            // now 3 cases
-            if ( strcmp( collModelPath1.c_str(),"" ) != 0  )
-            {
-                context->findLinkDest(collModel1, collModelPath1, nullptr);
-
-                if ( strcmp( collModelPath2.c_str(),"" ) != 0 )
-                {
-                    context->findLinkDest(collModel2, collModelPath2, nullptr);
-                }
-            }
-            else
-            {
-                context->findLinkDest(collModel1, collModelPath2, nullptr);
-            }
-        }
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>( collModel1, collModel2 );
-
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (context)
         {
             context->addObject(obj);
@@ -152,13 +91,13 @@ public:
     }
 
 protected:
-    const core::CollisionModel* m_CollisionModel1;
-    const core::CollisionModel* m_CollisionModel2;
+    SingleLink<ContactListener,  core::CollisionModel, BaseLink::FLAG_STOREPATH> l_collisionModel1;
+    SingleLink<ContactListener,  core::CollisionModel, BaseLink::FLAG_STOREPATH> l_collisionModel2;
+    SingleLink<ContactListener,  core::collision::NarrowPhaseDetection, BaseLink::FLAG_STOREPATH> l_narrowPhase;
 
 private:
     type::vector<type::vector<core::collision::DetectionOutput>> m_ContactsVector;
     type::vector<type::vector<core::collision::DetectionOutput>> m_ContactsVectorBuffer;
-    core::collision::NarrowPhaseDetection* m_NarrowPhase;
 
     virtual void beginContact(const type::vector<type::vector<core::collision::DetectionOutput>>& ) {}
     virtual void endContact(void*) {}
