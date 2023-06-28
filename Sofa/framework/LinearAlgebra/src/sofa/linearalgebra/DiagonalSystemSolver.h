@@ -25,6 +25,11 @@
 namespace sofa::linearalgebra
 {
 
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of entries in the diagonal
 template<typename Real>
 void solveDiagonalSystem(
     const sofa::Size systemSize,
@@ -38,6 +43,11 @@ void solveDiagonalSystem(
     }
 }
 
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of the inverse of the entries in the diagonal
 template<typename Real>
 void solveDiagonalSystemUsingInvertedValues(
     const sofa::Size systemSize,
