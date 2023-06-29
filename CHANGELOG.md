@@ -114,6 +114,7 @@
 - [Rendering3D] OglModel: Revert back to glBufferSubData [#3841](https://github.com/sofa-framework/sofa/pull/3841) 
 - [SolidMechanics.Spring] CMake: Fix package configuration [#3846](https://github.com/sofa-framework/sofa/pull/3846) 
 - [Spring] Remove unused dependencies [#3848](https://github.com/sofa-framework/sofa/pull/3848) 
+- [FEM.Linear] FIX & Minor refactor of buildStiffnessMatrix in TriangleFEMForceField [#3989](https://github.com/sofa-framework/sofa/pull/3989) 
 
 **Plugins / Projects**
 - [SofaEulerianFluid] Fix: rename shadow variable in Fluid2D [#3561](https://github.com/sofa-framework/sofa/pull/3561) 
