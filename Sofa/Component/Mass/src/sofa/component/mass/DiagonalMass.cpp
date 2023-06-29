@@ -131,6 +131,8 @@ template <class RigidTypes, class GeometricalTypes>
 template <class T>
 void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 {
+    Inherited::init();
+
     if(this->getContext()==nullptr)
     {
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
@@ -141,11 +143,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 
     if(this->mstate == nullptr )
     {
-        msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
+        msg_error(this) << "DiagonalMass component can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
-
-        //return;
     }
 
     if (l_topology.empty())
@@ -195,7 +195,6 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 
     if (!d_fileMass.getValue().empty())
         load(d_fileMass.getFullPath().c_str());
-    Inherited::init();
     initTopologyHandlers();
 
     // Initialize the f_mass vector. The f_mass vector is enlarged to contains

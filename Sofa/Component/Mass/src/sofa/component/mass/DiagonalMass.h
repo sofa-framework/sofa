@@ -159,6 +159,13 @@ public:
         return d_massDensity.getValue();
     }
 
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
+    {
+        std::string t = Inherit1::TemplateDeductionMethod(context, description);
+        return t+","+t;
+    }
+
 protected:
     bool checkTopology();
     void initTopologyHandlers();

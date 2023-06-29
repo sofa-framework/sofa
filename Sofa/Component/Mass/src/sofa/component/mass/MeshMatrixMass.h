@@ -238,6 +238,13 @@ public:
         parseMassTemplate<MassType>(arg, this);
     }
 
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
+    {
+        std::string t = Inherit1::TemplateDeductionMethod(context, description);
+        return t+","+t;
+    }
+
 protected:
     /** Method to initialize @sa MassType when a new Point is created to compute mass coefficient matrix.
     * Will be set as creation callback in the PointData @sa d_vertexMass
