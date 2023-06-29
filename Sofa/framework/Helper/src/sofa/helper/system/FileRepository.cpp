@@ -31,7 +31,16 @@
 #include <unistd.h>
 #endif
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
+
 #include <iterator>
 
 #include <cstring>
@@ -247,8 +256,8 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
 
-    std::filesystem::path p = std::filesystem::u8path(newfname);
-    if (std::filesystem::exists(p))
+    fs::path p = fs::u8path(newfname);
+    if (fs::exists(p))
     {
         // File found
         filename = newfname;
@@ -346,7 +355,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
 const std::string FileRepository::getTempPath() const
 {
-    return std::filesystem::temp_directory_path().string();
+    return fs::temp_directory_path().string();
 }
 
 } // namespace system

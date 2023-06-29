@@ -23,7 +23,15 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -318,9 +326,9 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
 bool FileSystem::removeAll(const std::string& path){
     try
     {
-        std::filesystem::remove_all(path);
+        fs::remove_all(path);
     }
-    catch(std::filesystem::filesystem_error const & /*e*/)
+    catch(fs::filesystem_error const & /*e*/)
     {
         return false ;
     }
