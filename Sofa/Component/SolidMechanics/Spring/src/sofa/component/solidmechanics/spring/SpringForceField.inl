@@ -395,6 +395,12 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
+}
 
 
 template<class DataTypes>
@@ -406,6 +412,8 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!((this->mstate1 == this->mstate2) ? vparams->displayFlags().getShowForceFields() : vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector< Vec3 > points[4];
     const bool external = (this->mstate1 != this->mstate2);

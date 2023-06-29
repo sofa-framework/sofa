@@ -181,6 +181,17 @@ public:
 
     unsigned int constraintId;
 protected:
+
+     virtual type::vector<std::string> getUnilateralInteractionIdentifiers() {return {};}
+
+     virtual type::vector<std::string> getPairInteractionIdentifiers() override final
+     {
+            type::vector<std::string> ids = getUnilateralInteractionIdentifiers();
+            ids.push_back("Unilateral");
+            return ids;
+     }
+
+
     UnilateralInteractionConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
     virtual ~UnilateralInteractionConstraint();
 

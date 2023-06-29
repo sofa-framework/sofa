@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 #include <iostream>
 
 namespace sofa::component::mapping::nonlinear

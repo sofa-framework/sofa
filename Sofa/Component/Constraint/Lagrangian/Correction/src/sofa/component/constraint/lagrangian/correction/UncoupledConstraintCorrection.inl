@@ -223,12 +223,12 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     msg_info() << "******\n Constraint before Merge  \n *******" ;
 
-    MatrixDerivRowIterator rowIt = constraints.begin();
-    MatrixDerivRowIterator rowItEnd = constraints.end();
+    auto rowIt = constraints.begin();
+    auto rowItEnd = constraints.end();
 
     while (rowIt != rowItEnd)
     {
-        constraintCopy.writeLine(rowIt.index(), rowIt.row());
+        constraintCopy.setLine(rowIt.index(), rowIt.row());
         ++rowIt;
     }
 
@@ -250,8 +250,8 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     {
         msg_info() << "constraint[" << group << "] : " ;
 
-        MatrixDerivRowIterator rowCopyIt = constraintCopy.begin();
-        MatrixDerivRowIterator rowCopyItEnd = constraintCopy.end();
+        auto rowCopyIt = constraintCopy.begin();
+        auto rowCopyItEnd = constraintCopy.end();
 
         while (rowCopyIt != rowCopyItEnd)
         {
@@ -277,7 +277,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     while (rowIt != rowItEnd)
     {
-        constraints.writeLine(rowIt.index(), rowIt.row());
+        constraints.setLine(rowIt.index(), rowIt.row());
         ++rowIt;
     }
 }

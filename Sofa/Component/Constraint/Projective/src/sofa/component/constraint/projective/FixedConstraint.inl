@@ -213,29 +213,18 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataMatrixDeriv> c (cData );
-    const SetIndexArray & indices = d_indices.getValue();
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
 
     if( d_fixAll.getValue() )
     {
         // fix everything
-        while (rowIt != rowItEnd)
-        {
-            rowIt.row().clear();
-            ++rowIt;
-        }
+        c->clear();
     }
     else
     {
-        while (rowIt != rowItEnd)
+        const SetIndexArray& indices = d_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                rowIt.row().erase(*it);
-            }
-            ++rowIt;
+            c->clearColBlock(*it);
         }
     }
 }

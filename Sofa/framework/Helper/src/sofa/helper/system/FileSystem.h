@@ -141,6 +141,19 @@ static std::string getParentDirectory(const std::string& path);
 /// E.g. /a/b/c --> c
 static std::string stripDirectory(const std::string& path);
 
+
+/// Appends a string to an existing path, ensuring exactly one directory
+/// separator (/) between each part.
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend);
+
+/// Appends strings to an existing path, ensuring exactly one directory
+/// separator (/) between each part.
+template<typename... Args>
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend, Args&&... args)
+{
+    return append(append(existingPath, toAppend), args...);
+}
+
 };
 
 

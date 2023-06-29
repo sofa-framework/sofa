@@ -62,8 +62,18 @@ public:
     typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
 protected:
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
-
     ~MixedInteractionConstraint() override;
+
+    virtual type::vector<std::string> getInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getMixedInteractionIdentifiers();
+        ids.push_back("Mixed");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getMixedInteractionIdentifiers(){ return {}; }
+
+
 public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing

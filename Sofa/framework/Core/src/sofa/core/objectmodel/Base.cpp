@@ -175,10 +175,10 @@ void Base::addData(BaseData* f, const std::string& name)
     if (!name.empty())
     {
         msg_warning_when(findData(name)) << "Data field name '" << name
-            << "' already used as a Data in this class or in a parent class";
+                                         << "' already used as a Data in this class or in a parent class";
 
         msg_warning_when(findLink(name)) << "Data field name '" << name
-            << "' already used as a Link in this class or in a parent class";
+                                         << "' already used as a Link in this class or in a parent class";
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -199,10 +199,10 @@ void Base::addLink(BaseLink* l)
     if (!name.empty())
     {
         msg_warning_when(findData(name)) << "Link name '" << name
-            << "' already used as a Data in this class or in a parent class";
+                                         << "' already used as a Data in this class or in a parent class";
 
         msg_warning_when(findLink(name)) << "Link name '" << name
-            << "' already used as a Link in this class or in a parent class";
+                                         << "' already used as a Link in this class or in a parent class";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
@@ -262,8 +262,8 @@ void Base::addMessage(const Message &m) const
 
 void Base::clearLoggedMessages() const
 {
-   m_messageslog.clear() ;
-   d_messageLogCount = 0;
+    m_messageslog.clear() ;
+    d_messageLogCount = 0;
 }
 
 
@@ -410,7 +410,7 @@ Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 bool Base::hasField( const std::string& attribute) const
 {
     return m_aliasData.find(attribute) != m_aliasData.end()
-            || m_aliasLink.find(attribute) != m_aliasLink.end();
+                                          || m_aliasLink.find(attribute) != m_aliasLink.end();
 }
 
 /// Assign one field value (Data or Link)
@@ -473,10 +473,10 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                 if (BaseData* parentData = dataVec[d]->getParent())
                 {
                     msg_info() << "Link from parent Data "
-                                    << value << " (" << parentData->getValueTypeInfo()->name() << ") "
-                                    << "to Data "
-                                    << attribute << " (" << dataVec[d]->getValueTypeInfo()->name() << ") "
-                                    << "OK";
+                               << value << " (" << parentData->getValueTypeInfo()->name() << ") "
+                               << "to Data "
+                               << attribute << " (" << dataVec[d]->getValueTypeInfo()->name() << ") "
+                               << "OK";
                 }
             }
             /* children Data cannot be modified changing the parent Data value */
@@ -539,9 +539,26 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
     }
 }
 
+void Base::addDeprecatedAttribute(lifecycle::DeprecatedData* attribute)
+{
+    m_oldAttributes.push_back(attribute);
+}
+
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 void  Base::parse ( BaseObjectDescription* arg )
 {
+    for(auto& attribute : m_oldAttributes)
+    {
+        if(arg->getAttribute(attribute->m_name))
+        {
+            if(attribute->m_isRemoved)
+                msg_error() << "Attribute '" << attribute->m_name << "' has been removed. " << attribute->m_helptext;
+            else
+                msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated. " << attribute->m_helptext;
+
+        }
+    }
+
     for( auto& it : arg->getAttributeMap() )
     {
         const std::string& attrName = it.first;

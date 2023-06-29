@@ -153,6 +153,16 @@ public:
     using Inherit2::getMechModel2;
 
 protected:
+
+     virtual type::vector<std::string> getInteractionIdentifiers() override final
+     {
+            type::vector<std::string> ids = getPairInteractionIdentifiers();
+            ids.push_back("Pair");
+            return ids;
+     }
+
+     virtual type::vector<std::string> getPairInteractionIdentifiers(){ return {}; }
+
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::linearalgebra::BaseVector* lambda);
 };

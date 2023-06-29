@@ -23,7 +23,15 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -318,9 +326,9 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
 bool FileSystem::removeAll(const std::string& path){
     try
     {
-        std::filesystem::remove_all(path);
+        fs::remove_all(path);
     }
-    catch(std::filesystem::filesystem_error const & /*e*/)
+    catch(fs::filesystem_error const & /*e*/)
     {
         return false ;
     }
@@ -432,6 +440,27 @@ std::string FileSystem::stripDirectory(const std::string& path)
             return path.substr(last_slash + 1, std::string::npos);
         return "";
     }
+}
+
+std::string FileSystem::append(const std::string_view& existingPath, const std::string_view& toAppend)
+{
+    if (toAppend.empty())
+    {
+        return std::string(existingPath);
+    }
+
+    constexpr auto isADirectorySeparator = [](const char c) { return c == '/' || c == '\\'; };
+
+    if (isADirectorySeparator(toAppend.front()))
+    {
+        return append(existingPath, toAppend.substr(1));
+    }
+
+    if (isADirectorySeparator(existingPath.back()))
+    {
+        return append(existingPath.substr(0, existingPath.size() - 1), toAppend);
+    }
+    return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
 

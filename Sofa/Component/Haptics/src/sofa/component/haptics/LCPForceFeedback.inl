@@ -382,6 +382,9 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         constraints.addLine(rowIt.index(), rowIt.row());
     }
 
+    // make sure the MatrixDeriv has been compressed
+    constraints.compress();
+
     // valid buffer
 
     {

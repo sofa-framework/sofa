@@ -19,25 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
-#include <sofa/component/engine/select/SphereROI.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-namespace sofa::component::engine::select
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+
+#include <sofa/core/objectmodel/RemovedData.h>
+using sofa::core::objectmodel::lifecycle::DeprecatedData;
+using sofa::core::objectmodel::lifecycle::RemovedData;
+
+namespace
 {
 
-using namespace sofa::defaulttype;
+class MyObject : public BaseObject
+{
+public:
+    SOFA_CLASS(MyObject, BaseObject);
 
-int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
-        .add< SphereROI<Vec3Types> >()
-        .add< SphereROI<Rigid3Types> >()
-        ;
+    DeprecatedData deprecatedData {this, "deprecatedData", "You should now use XXXX"};
+    RemovedData removedData {this, "removedData", "You should now use XXXX"};
+};
 
-template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Vec3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Rigid3Types>;
- 
+class RemoveData_test: public BaseTest
+{
+public:
+    MyObject m_object;
+};
 
+TEST_F(RemoveData_test, testRemoved)
+{
+    EXPECT_MSG_EMIT(Error);
+    EXPECT_MSG_NOEMIT(Deprecated);
 
-} //namespace sofa::component::engine::select
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    desc.setAttribute("removedData", "one");
+
+    m_object.parse(&desc);
+}
+
+TEST_F(RemoveData_test, testDeprecated)
+{
+    EXPECT_MSG_EMIT(Deprecated);
+    EXPECT_MSG_NOEMIT(Error);
+
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    desc.setAttribute("deprecatedData", "one");
+
+    m_object.parse(&desc);
+}
+
+}
+

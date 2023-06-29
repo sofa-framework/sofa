@@ -45,8 +45,15 @@ using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
 
-#include <filesystem>
-using namespace std::filesystem;
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  using namespace std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  using namespace std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 using namespace std ;
 

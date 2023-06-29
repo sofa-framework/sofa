@@ -44,3 +44,12 @@ namespace sofa::component::constraint::lagrangian::solver
     SOFA_ATTRIBUTE_DISABLED( \
         "v22.12", "v23.06", msg)
 #endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER
+
+// deprecate _mu as member
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER
+#define SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v23.12", "v24.06", "_mu is not a member anymore. Use the Data \"mu\" to get the friction value.")
+#endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER

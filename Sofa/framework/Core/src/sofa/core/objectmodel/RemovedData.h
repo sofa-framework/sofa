@@ -19,25 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
-#include <sofa/component/engine/select/SphereROI.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#pragma once
 
-namespace sofa::component::engine::select
+#include <string>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/DeprecatedData.h>
+
+namespace sofa::core::objectmodel::lifecycle
 {
 
-using namespace sofa::defaulttype;
+/// Placeholder for a Data<T> to indicate a Data is now removed
+///
+/// This will also register the data name into a dedicated structure of Base object
+/// so a warning will be issued if users continue accessing it;
+///
+/// Use case:
+///    RemovedData d_sofaIsGreatM(this, "sofaIsGreat", "")
+class SOFA_CORE_API RemovedData : public DeprecatedData
+{
+public:
+    RemovedData(Base* b, const std::string& name, const std::string& helptext) :
+        DeprecatedData(b,name,helptext)
+    {
+        m_isRemoved = true;
+    }
+};
 
-int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
-        .add< SphereROI<Vec3Types> >()
-        .add< SphereROI<Rigid3Types> >()
-        ;
-
-template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Vec3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Rigid3Types>;
- 
-
-
-} //namespace sofa::component::engine::select
+} // namespace sofa::core::objectmodel

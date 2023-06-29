@@ -38,16 +38,16 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
+    const auto rowItEnd = c.end();
 
-    const MatrixDerivRowIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        MatrixDerivColIterator colItEnd = rowIt.end();
+        auto rowWrite = c.writeLine(rowIt.index());
+        auto colItEnd = rowIt.end();
 
-        for (MatrixDerivColIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            Deriv& n = colIt.val();
+            Deriv n = colIt.val();
             const unsigned int localRowNodeIdx = colIt.index();
 
             sofa::type::Quat<SReal> q;
