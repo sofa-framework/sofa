@@ -26,10 +26,7 @@
 #include <sofa/core/objectmodel/Event.h>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -54,8 +51,6 @@ protected:
     sofa::core::objectmodel::Event* m_event;
 };
 
-
-}
 
 }
 

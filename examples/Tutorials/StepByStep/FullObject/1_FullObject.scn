@@ -2,7 +2,7 @@
 <Node name="root" gravity="0 0 -9.81" dt="0.001">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -20,7 +20,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="Object" gravity="0 -9.81 0">
         <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="100" tolerance="1e-5" threshold="1e-10"/>

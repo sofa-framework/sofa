@@ -3,7 +3,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -31,7 +31,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="Composite elements with 3 differents material stiffnesses">
         <SparseGridMultipleTopology n="6 3 3" fileTopology="mesh/bubille_out.obj" fileTopologies="mesh/bubille_out.obj mesh/bubille_in1.obj mesh/bubille_in2.obj" nbVirtualFinerLevels="3" finestConnectivity="false" stiffnessCoefs="1 0.0001 50" massCoefs="1 1 1" />
         <EulerImplicitSolver vdamping="0" rayleighMass="0" rayleighStiffness="0" />

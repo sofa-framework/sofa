@@ -461,7 +461,7 @@ void SofaPhysicsSimulation::createScene()
                                                                {"alarmDistance", "0.3"},
                                                                {"contactDistance", "0.2"} });
 
-    sofa::simpleapi::createObject(m_RootNode, "DefaultContactManager", {
+    sofa::simpleapi::createObject(m_RootNode, "CollisionResponse", {
                                 {"name", "Contact Manager"},
                                 {"response", "PenalityContactForceField"}
         });

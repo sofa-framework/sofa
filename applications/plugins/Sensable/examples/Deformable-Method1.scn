@@ -8,7 +8,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="PenalityContactForceField" />
+    <CollisionResponse response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -28,9 +28,7 @@
 #include <type_traits>
 #include <cstdlib>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 
@@ -248,8 +246,6 @@ void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::Spars
 
         ++rhsRowIt;
     }
-}
-
 }
 
 }

@@ -13,7 +13,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
-<!--	<DefaultContactManager name="Response" response="FrictionContactConstraint"/>-->
+<!--	<CollisionResponse name="Response" response="FrictionContactConstraint"/>-->
 	<RuleBasedContactManager name="Response" response="FrictionContactConstraint"
                              rules="1 * FrictionContact?mu=0.01
                                     " />

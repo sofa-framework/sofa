@@ -7,7 +7,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="6.0" contactDistance="1.5" coneFactor="0.5" angleCone="-0.001"/>
-	<DefaultContactManager name="Response" response="FrictionContactConstraint" />
+	<CollisionResponse name="Response" response="FrictionContactConstraint" />
 	
 	<Node name="BOX">
 		<MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
