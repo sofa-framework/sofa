@@ -36,12 +36,12 @@ void VisualModel::drawVisual(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowVisualModels())
         return;
 
-    // don't draw if the component is not in valid state
-    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
-        return;
-
     // don't draw if this component is specifically configured to be disabled
     if (!d_enable.getValue())
+        return;
+
+    // don't draw if the component is not in valid state
+    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
