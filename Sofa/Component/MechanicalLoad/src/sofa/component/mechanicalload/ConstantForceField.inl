@@ -52,12 +52,21 @@ ConstantForceField<DataTypes>::ConstantForceField()
     d_color.setGroup("Visualization");
 }
 
-
 template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-       
+
+    // init from ForceField
+    Inherit::init();
+
+    if (this->mstate.empty())
+    {
+        msg_error() << "No mstate";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -65,23 +74,19 @@ void ConstantForceField<DataTypes>::init()
     }
 
     // temprory pointer to topology
-
     if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize functions and parameters for topology data and handler
         d_indices.createTopologyHandler(_topology);
-
         m_systemSize = _topology->getNbPoints();
     }
-    else
+    else if(this->mstate.get())
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        const core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-        m_systemSize = state->getSize();
+        m_systemSize = this->mstate->getSize();
     }
-
 
     const VecIndex & indices = d_indices.getValue();
     const auto indicesSize = indices.size();
@@ -167,8 +172,6 @@ void ConstantForceField<DataTypes>::init()
         computeForceFromSingleForce();
     }
 
-    // init from ForceField
-    Inherit::init();
 
     // add to tracker
     this->trackInternalData(d_indices);

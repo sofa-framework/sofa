@@ -32,12 +32,12 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
 {
+    Inherit::init();
+
     assert( indexPairs.getValue().size()%2==0 );
     const auto indexPairSize = indexPairs.getValue().size()/2;
 
     this->toModels[0]->resize( indexPairSize );
-
-    Inherit::init();
 
     static constexpr auto Nin = TIn::deriv_total_size;
     static constexpr auto Nout = TOut::deriv_total_size;

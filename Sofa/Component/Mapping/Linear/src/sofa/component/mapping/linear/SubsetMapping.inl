@@ -69,6 +69,8 @@ int SubsetMapping<TIn, TOut>::addPoint(Index index)
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::init()
 {
+    this->Inherit::init();
+
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
     auto inSize = this->fromModel->getSize();
@@ -141,7 +143,6 @@ void SubsetMapping<TIn, TOut>::init()
         }
         f_indices.endEdit();
     }
-    this->Inherit::init();
     
     if (f_handleTopologyChange.getValue())
     {
@@ -183,11 +184,11 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     const IndexArray& indices = f_indices.getValue();
     
     if (f_resizeToModel.getValue() || this->toModel->getSize() < indices.size())
-    { 
-        if (this->toModel->getSize() != indices.size()) 
-        { 
-            this->toModel->resize(Size(indices.size())); 
-        } 
+    {
+        if (this->toModel->getSize() != indices.size())
+        {
+            this->toModel->resize(Size(indices.size()));
+        }
     }
     
     const InVecCoord& in = dIn.getValue();

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <string>
+#include "sofa/helper/StringUtils.h"
 #include <sofa/core/config.h>
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -35,7 +36,11 @@ template<class TargetObject>
 std::string getTemplateFromLink(const std::string& attributeName, const std::string defaultLinkPath, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     // get the template type from the object pointed by the linkPath
-    const std::string linkedPath = arg->getAttribute(attributeName, defaultLinkPath.c_str());
+    std::string linkedPath = arg->getAttribute(attributeName, defaultLinkPath.c_str());
+    if(linkedPath.empty())
+        return "";
+
+    linkedPath = sofa::helper::split(linkedPath, ' ')[0];
     auto base = sofa::core::PathResolver::FindBaseFromClassAndPath(context, TargetObject::GetClass(), linkedPath);
     if(base!=nullptr)
         return base->getTemplateName();

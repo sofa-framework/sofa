@@ -31,14 +31,12 @@ namespace sofa::component::mapping::linear
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    const auto n = this->fromModel->getSize();
-
-    this->toModel->resize( n );
-
     Inherit::init();
 
+    const auto n = this->fromModel->getSize();
+    this->toModel->resize( n );
 
-    // build J
+     // build J
     {
         static const unsigned N = std::min<unsigned>(NIn, NOut);
 

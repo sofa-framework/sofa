@@ -45,6 +45,9 @@ public:
     typedef type::vector<Real> VecPointData;
     typedef type::vector<Real> VecCellData;
 
+    /// Specify an explicit template name as DataDisplay is not a templated class,
+    /// but as it has a template hard coded in from VisualState<Vec3Types> then we should force that
+    static std::string GetCustomTemplateName(){ return defaulttype::Vec3Types::Name(); }
 public:
     Data<bool> f_maximalRange; ///< Keep the maximal range through all timesteps
     Data<VecPointData> f_pointData; ///< Data associated with nodes
