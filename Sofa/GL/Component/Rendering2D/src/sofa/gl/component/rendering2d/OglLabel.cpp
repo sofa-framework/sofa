@@ -47,7 +47,6 @@ OglLabel::OglLabel():
   ,d_color(initData(&d_color, sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
   ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
   ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
-  ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
   ,m_stepCounter(0)
 {
     f_listening.setValue(true);
@@ -55,14 +54,6 @@ OglLabel::OglLabel():
 
 void OglLabel::parse(BaseObjectDescription *arg)
 {
-    const char* visible = arg->getAttribute("visible") ;
-    if(visible!=nullptr)
-    {
-        msg_deprecated() << "Attribute 'visible' is deprecated. Please update your code by using 'enable' instead";
-        arg->removeAttribute("visible");
-        arg->setAttribute("enable", visible);
-    }
-
     // BACKWARD COMPATIBILITY April 2017
     const char* value = arg->getAttribute("color") ;
     if(value==nullptr || strcmp(value, "contrast")){

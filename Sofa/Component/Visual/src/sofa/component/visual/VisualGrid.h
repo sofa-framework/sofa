@@ -55,6 +55,8 @@ public:
 
     Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
     Data<float> d_thickness; ///< Thickness of the lines in the grid
+    core::objectmodel::lifecycle::RemovedData d_draw {this, "draw", "Use the 'enable' data field instead of 'draw'"};
+
 
     VisualGrid();
     ~VisualGrid() override = default;
