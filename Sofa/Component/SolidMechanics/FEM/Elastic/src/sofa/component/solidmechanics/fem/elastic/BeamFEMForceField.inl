@@ -217,6 +217,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(dataV);
 
+    if( !this->isComponentStateValid() )
+        return;
+
     if (!m_indexedElements)
         return;
 
@@ -258,6 +261,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     if (!m_indexedElements)
         return;
 
@@ -378,6 +384,9 @@ inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     type::Quat<SReal> quatA, quatB, dQ;
@@ -417,6 +426,9 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
@@ -520,6 +532,9 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     linearalgebra::BaseMatrix* mat = r.matrix;
@@ -639,6 +654,9 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     unsigned int i=0;
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
@@ -789,7 +807,8 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
     SOFA_UNUSED(params);
 
     if( !onlyVisible ) return;
-
+    if( !this->isComponentStateValid() )
+        return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();
@@ -818,6 +837,9 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >* points, const VecCoord& x)
 {
+    if( !this->isComponentStateValid() )
+        return;
+
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
     type::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
