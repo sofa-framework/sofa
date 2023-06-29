@@ -434,6 +434,27 @@ std::string FileSystem::stripDirectory(const std::string& path)
     }
 }
 
+std::string FileSystem::append(const std::string_view& existingPath, const std::string_view& toAppend)
+{
+    if (toAppend.empty())
+    {
+        return std::string(existingPath);
+    }
+
+    constexpr auto isADirectorySeparator = [](const char c) { return c == '/' || c == '\\'; };
+
+    if (isADirectorySeparator(toAppend.front()))
+    {
+        return append(existingPath, toAppend.substr(1));
+    }
+
+    if (isADirectorySeparator(existingPath.back()))
+    {
+        return append(existingPath.substr(0, existingPath.size() - 1), toAppend);
+    }
+    return std::string(existingPath) + "/" + std::string(toAppend);
+}
+
 
 } // namespace system
 } // namespace helper

@@ -28,6 +28,7 @@
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/common/BaseGUI.h>
 #include <sofa/component/visual/VisualStyle.h>
+#include <sofa/helper/system/FileSystem.h>
 
 using namespace sofa::gui::common;
 
@@ -514,8 +515,9 @@ const std::string SofaViewer::screenshotName()
 
 void SofaViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 {
-    const std::string fullPrefix = (prependDirectory) ? sofa::gui::common::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
-                                                      : prefix;
+    const std::string fullPrefix = (prependDirectory)
+       ? helper::system::FileSystem::append(sofa::gui::common::BaseGUI::getScreenshotDirectoryPath(), prefix)
+       : prefix;
 
     m_backend->setPrefix(fullPrefix);
 }

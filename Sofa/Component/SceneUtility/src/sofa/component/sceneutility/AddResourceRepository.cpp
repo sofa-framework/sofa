@@ -64,7 +64,7 @@ bool BaseAddResourceRepository::updateRepositoryPath()
     //else prepend (absolute) current directory to the given path and add it
     if (!sofa::helper::system::FileSystem::isAbsolute(tmpAddedPath))
     {
-        tmpAddedPath = sofa::helper::system::SetDirectory::GetCurrentDir() + "/" + tmpAddedPath;
+        tmpAddedPath = FileSystem::append(sofa::helper::system::SetDirectory::GetCurrentDir(), tmpAddedPath);
     }
     //second, check if the path exists
     if (!sofa::helper::system::FileSystem::exists(tmpAddedPath))
