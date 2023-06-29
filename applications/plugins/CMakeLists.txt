@@ -19,7 +19,6 @@ sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on Sof
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
-sofa_add_subdirectory(plugin SofaPython SofaPython EXTERNAL)
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
