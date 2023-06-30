@@ -60,14 +60,45 @@ void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/ , const DataVecDeriv& /*d_dx*/)
+void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    (void)mparams->kFactor(); // get rid of warning message
+    unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
+    Real bfactor = (Real)mparams->bFactor();
+
+    if( nbDampingCoeff && bfactor )
+    {
+        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+        const VecDeriv& dx = d_dx.getValue();
+
+        for(unsigned i=0; i<dx.size();i++)
+            for(unsigned j=0; j<Deriv::total_size; j++)
+                if( i<nbDampingCoeff )
+                    df[i][j] -= dx[i][j]*dampingCoefficients.getValue()[i][j]*bfactor;
+                else
+                    df[i][j] -= dx[i][j]*dampingCoefficients.getValue().back()[j]*bfactor;
+    }
 }
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
+void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
+    const unsigned int size = this->mstate->getSize();
+    unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
+
+    if( !nbDampingCoeff ) return;
+
+    for( unsigned i=0 ; i<size ; i++ )
+    {
+        unsigned blockrow = offset+i*Deriv::total_size;
+        for( unsigned j=0 ; j<Deriv::total_size ; j++ )
+        {
+            unsigned row = blockrow+j;
+            if( i<nbDampingCoeff )
+                mat->add( row, row, -dampingCoefficients.getValue()[i][j]*bFact );
+            else
+                mat->add( row, row, -dampingCoefficients.getValue().back()[j]*bFact );
+        }
+    }
 }
 
 template <class DataTypes>

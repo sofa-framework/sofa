@@ -58,6 +58,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
 
     void addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
 
