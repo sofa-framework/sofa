@@ -62,20 +62,29 @@ void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::Mechanic
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
-    Real bfactor = (Real)mparams->bFactor();
+    const auto& coefs = dampingCoefficients.getValue();
+    std::size_t nbDampingCoeff = coefs.size();
+    const Real bfactor = (Real)mparams->bFactor();
 
-    if( nbDampingCoeff && bfactor )
+    if (nbDampingCoeff && bfactor)
     {
         sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
         const VecDeriv& dx = d_dx.getValue();
 
-        for(unsigned i=0; i<dx.size();i++)
-            for(unsigned j=0; j<Deriv::total_size; j++)
-                if( i<nbDampingCoeff )
-                    df[i][j] -= dx[i][j]*dampingCoefficients.getValue()[i][j]*bfactor;
+        for (std::size_t i = 0; i < dx.size(); i++)
+        {
+            for (unsigned j = 0; j < Deriv::total_size; j++)
+            {
+                if (i < nbDampingCoeff)
+                {
+                    df[i][j] -= dx[i][j] * coefs[i][j] * bfactor;
+                }
                 else
-                    df[i][j] -= dx[i][j]*dampingCoefficients.getValue().back()[j]*bfactor;
+                {
+                    df[i][j] -= dx[i][j] * coefs.back()[j] * bfactor;
+                }
+            }
+        }
     }
 }
 
@@ -83,20 +92,28 @@ template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
     const unsigned int size = this->mstate->getSize();
-    unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
+    const auto& coefs = dampingCoefficients.getValue();
+    const std::size_t nbDampingCoeff = coefs.size();
 
-    if( !nbDampingCoeff ) return;
-
-    for( unsigned i=0 ; i<size ; i++ )
+    if (!nbDampingCoeff)
     {
-        unsigned blockrow = offset+i*Deriv::total_size;
-        for( unsigned j=0 ; j<Deriv::total_size ; j++ )
+        return;
+    }
+
+    for (std::size_t i = 0; i < size; i++)
+    {
+        const unsigned blockrow = offset + i * Deriv::total_size;
+        for (unsigned j = 0; j < Deriv::total_size; j++)
         {
-            unsigned row = blockrow+j;
-            if( i<nbDampingCoeff )
-                mat->add( row, row, -dampingCoefficients.getValue()[i][j]*bFact );
+            unsigned row = blockrow + j;
+            if (i < nbDampingCoeff)
+            {
+                mat->add(row, row, -coefs[i][j] * bFact);
+            }
             else
-                mat->add( row, row, -dampingCoefficients.getValue().back()[j]*bFact );
+            {
+                mat->add(row, row, -coefs.back()[j] * bFact);
+            }
         }
     }
 }
