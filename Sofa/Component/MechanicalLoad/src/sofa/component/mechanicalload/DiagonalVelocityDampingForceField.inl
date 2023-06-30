@@ -23,6 +23,7 @@
 
 #include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 
 namespace sofa::component::mechanicalload
@@ -91,7 +92,6 @@ void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::Mechani
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
-    const unsigned int size = this->mstate->getSize();
     const auto& coefs = dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
 
@@ -100,6 +100,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalge
         return;
     }
 
+    const unsigned int size = this->mstate->getSize();
     for (std::size_t i = 0; i < size; i++)
     {
         const unsigned blockrow = offset + i * Deriv::total_size;
@@ -113,6 +114,39 @@ void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalge
             else
             {
                 mat->add(row, row, -coefs.back()[j] * bFact);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void DiagonalVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
+{
+    const auto& coefs = dampingCoefficients.getValue();
+    const std::size_t nbDampingCoeff = coefs.size();
+
+    if (!nbDampingCoeff)
+    {
+        return;
+    }
+
+    auto dfdv = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToVelocityIn(this->mstate);
+
+    const unsigned int size = this->mstate->getSize();
+    for (std::size_t i = 0; i < size; i++)
+    {
+        const unsigned blockrow = i * Deriv::total_size;
+        for (unsigned j = 0; j < Deriv::total_size; j++)
+        {
+            const unsigned row = blockrow + j;
+            if (i < nbDampingCoeff)
+            {
+                dfdv(row, row) += -coefs[i][j];
+            }
+            else
+            {
+                dfdv(row, row) += -coefs.back()[j];
             }
         }
     }
