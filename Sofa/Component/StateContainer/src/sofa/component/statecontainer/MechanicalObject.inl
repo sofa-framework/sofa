@@ -2335,7 +2335,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
 template <class DataTypes>
 void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {
-    const auto N = Deriv::size();
+    static constexpr auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
 
     MatrixDeriv& jacobian = *cMatrix->beginEdit();
