@@ -84,9 +84,8 @@ struct DefaultDataTypeInfo
     typedef DataTypeInfo<BaseType> BaseTypeInfo;
     /// TypeInfo for ValueType
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
-    /**
-       \{
-     */
+
+    ///   \{
     enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
     enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
     enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
@@ -97,34 +96,27 @@ struct DefaultDataTypeInfo
     enum { Text            = 0 /**< 1 if this type uses text values*/ };
     enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
     enum { Container       = 0 /**< 1 if this type is a container*/ };
+    enum { UniqueKeyContainer = 0 /**< 1 if this type is a container*/ };
     enum { Size            = 1 /**< largest known fixed size for this type, as returned by size() */ };
-
-    // \}
+    /// \}
 
     static sofa::Size size() { return 1; }
     static sofa::Size byteSize() { return 1; }
 
+    /// Container API
     static sofa::Size size(const DataType& /*data*/) { return 1; }
+    static void clear(const DataType &) {}
 
-    template <typename T>
-    static void getValue(const DataType& /*data*/, Index /*index*/, T& /*value*/)
-    {
-    }
+    template <typename T> static void insertValue(DataType &, T& ) {}
 
+    /// FixedSize API
     static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
 
-    template<typename T>
-    static void setValue(DataType& /*data*/, Index /*index*/, const T& /*value*/)
-    {
-    }
-
-    static void getValueString(const DataType& /*data*/, Index /*index*/, std::string& /*value*/)
-    {
-    }
-
-    static void setValueString(DataType& /*data*/, Index /*index*/, const std::string& /*value*/)
-    {
-    }
+    /// IndexableContainer API
+    template <typename T> static void getValue(const DataType& /*data*/, Index /*index*/, T& /*value*/) {}
+    template<typename T> static void setValue(DataType& /*data*/, Index /*index*/, const T& /*value*/) {}
+    static void getValueString(const DataType& /*data*/, Index /*index*/, std::string& /*value*/) {}
+    static void setValueString(DataType& /*data*/, Index /*index*/, const std::string& /*value*/) {}
 
     static const void* getValuePtr(const DataType& /*type*/)
     {

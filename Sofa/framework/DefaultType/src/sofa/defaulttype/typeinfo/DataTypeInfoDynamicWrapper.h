@@ -25,6 +25,7 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoID.h>
 #include <string>
+#include <stdexcept>
 
 namespace sofa::defaulttype
 {
@@ -102,6 +103,7 @@ public:
     bool Text() const override            { return Info::Text; }
     bool CopyOnWrite() const override     { return Info::CopyOnWrite; }
     bool Container() const override       { return Info::Container; }
+    bool UniqueKeyContainer() const override { return Info::UniqueKeyContainer; }
 
     sofa::Size size() const override
     {
@@ -112,10 +114,18 @@ public:
         return Info::byteSize();
     }
 
+    /// UniqueKeyContainer API
+    void clear(void* data) const override
+    {
+        if constexpr ( Info::UniqueKeyContainer )
+            Info::clear(*(DataType*)data);
+    }
+
     sofa::Size size(const void* data) const override
     {
         return sofa::Size(Info::size(*(const DataType*)data));
     }
+
     bool setSize(void* data, sofa::Size size) const override
     {
         return Info::setSize(*(DataType*)data, size);
@@ -128,18 +138,42 @@ public:
         return v;
     }
 
-    double    getScalarValue (const void* data, Index index) const override
+    double getScalarValue (const void* data, Index index) const override
     {
         double v = 0;
         Info::getValue(*(const DataType*)data, index, v);
         return v;
     }
 
-    virtual std::string getTextValue   (const void* data, Index index) const override
+    std::string getTextValue   (const void* data, Index index) const override
     {
         std::string v;
         Info::getValueString(*(const DataType*)data, index, v);
         return v;
+    }
+
+    void insertIntegerValue(void* data, long long value) const override
+    {
+        if constexpr( Info::UniqueKeyContainer && std::is_integral_v<typename Info::ValueTypeInfo> )
+            Info::insertValue(*(DataType*)data, value );
+        else
+            std::runtime_error(std::string("Cannot insert 'integer' into ")+Info::name());
+    }
+
+    void insertScalarValue (void* data, double value) const override
+    {
+        if constexpr( Info::UniqueKeyContainer && std::is_floating_point_v<typename Info::ValueTypeInfo> )
+            Info::insertValue(*(DataType*)data, value);
+        else
+            std::runtime_error(std::string("Cannot insert 'scalar' into ")+Info::name());
+    }
+
+    void insertTextValue(void* data, const std::string& value) const override
+    {
+        if constexpr ( Info::UniqueKeyContainer && Info::Text )
+            Info::insertValue(*(DataType*)data, value);
+        else
+            std::runtime_error(std::string("Cannot insert 'string' into ")+Info::name());
     }
 
     void setIntegerValue(void* data, Index index, long long value) const override
@@ -152,7 +186,7 @@ public:
         Info::setValue(*(DataType*)data, index, value);
     }
 
-    virtual void setTextValue(void* data, Index index, const std::string& value) const override
+    void setTextValue(void* data, Index index, const std::string& value) const override
     {
         Info::setValueString(*(DataType*)data, index, value);
     }

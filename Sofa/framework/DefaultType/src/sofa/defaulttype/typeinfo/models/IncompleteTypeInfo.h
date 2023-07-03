@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <stdexcept>
 
 namespace sofa::defaulttype
 {
@@ -51,20 +52,29 @@ struct IncompleteTypeInfo
     enum { Text            = 0 /**< 1 if this type uses text values*/ };
     enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
     enum { Container       = 0 /**< 1 if this type is a container*/ };
+    enum { UniqueKeyContainer = 0 /**< 1 if this type is a container*/ };
     enum { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
 
+    static void clear(const DataType&) {}
     static sofa::Size size() { return 0; }
     static sofa::Size byteSize() { return 0; }
     static sofa::Size size(const DataType& /*data*/) { return 1; }
 
-    template <typename T>
-    static void getValue(const DataType& /*data*/, sofa::Size /*index*/, T& /*value*/)
-    {}
+    template <typename T> static void insertValue(DataType &, T&)
+    {
+        throw std::runtime_error("Invalid operation");
+    }
+
+    static void insertValueString(DataType&, const std::string&)
+    {
+        throw std::runtime_error("Invalid operation");
+    }
+
+    template <typename T> static void getValue(const DataType& /*data*/, sofa::Size /*index*/, T& /*value*/){}
 
     static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
 
-    template<typename T>
-    static void setValue(DataType& /*data*/, sofa::Size /*index*/, const T& /*value*/){}
+    template<typename T> static void setValue(DataType& /*data*/, sofa::Size /*index*/, const T& /*value*/){}
 
     static void getValueString(const DataType& /*data*/, sofa::Size /*index*/, std::string& /*value*/){}
 

@@ -36,6 +36,7 @@ struct BoundingBoxTypeInfo
     typedef type::Vec3 BaseType;
     typedef DataTypeInfo<type::Vec3d> BaseTypeInfo;
     typedef SReal ValueType;
+    typedef SReal ValueTypeInfo;
 
     enum
     {
@@ -79,6 +80,10 @@ struct BoundingBoxTypeInfo
     {
         Container = 1
     };  ///< 1 if this type is a container
+    enum
+    {
+        UniqueKeyContainer = 0
+    };  ///< 1 if this type is a container with key uniqueness
 
     enum
     {

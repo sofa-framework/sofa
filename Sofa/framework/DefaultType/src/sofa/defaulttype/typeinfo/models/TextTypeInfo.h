@@ -47,12 +47,21 @@ struct TextTypeInfo
     enum { Text            = 1 };
     enum { CopyOnWrite     = 1 };
     enum { Container       = 0 };
+    enum { UniqueKeyContainer = 0 };
 
     enum { Size = 1 };
+
+    static void clear(const DataType&) {}
+
     static sofa::Size size() { return 1; }
     static sofa::Size byteSize() { return 1; }
 
     static sofa::Size size(const DataType& /*data*/) { return 1; }
+
+    template <typename T> static void insertValue(DataType &, T&)
+    {
+        throw std::runtime_error("Invalid operation");
+    }
 
     static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
 
