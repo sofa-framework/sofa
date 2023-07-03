@@ -33,12 +33,12 @@ namespace sofa::type
 
 /// Output stream
 /// Specialization for writing vectors of unsigned char
-template<>
+template <>
 SOFA_TYPE_API std::ostream& vector<std::string>::write(std::ostream& os) const
 {
     std::string separator = "";
     os << "[";
-    for(auto& v : (*this))
+    for (auto& v : (*this))
     {
         os << separator << '"' << v << '"';
         separator = ", ";

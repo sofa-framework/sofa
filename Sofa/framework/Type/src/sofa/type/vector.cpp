@@ -24,6 +24,7 @@
 
 #include <sstream>
 
+
 namespace sofa::type
 {
 

@@ -23,19 +23,20 @@
 
 #include <sofa/type/vector.h>
 
+
 namespace sofa::type
 {
 
 //======================================================================
 /// Same as type::vector, + delimitors on serialization
 //======================================================================
-template<class T>
-class SVector: public type::vector<T, type::CPUMemoryManager<T> >
+template <class T>
+class SVector : public type::vector<T, type::CPUMemoryManager<T> >
 {
 public:
     using Inherit = type::vector<T, type::CPUMemoryManager<T> >;
 
-    typedef type::CPUMemoryManager<T>  Alloc;
+    typedef type::CPUMemoryManager<T> Alloc;
     /// Size
     typedef typename Inherit::Size Size;
     /// reference to a value (read-write)
@@ -44,19 +45,39 @@ public:
     //typedef typename Inherit::const_reference const_reference;
 
     /// Basic onstructor
-    SVector() : Inherit() {}
+    SVector()
+        : Inherit()
+    {}
+
     /// Constructor
-    SVector(Size n, const T& value): Inherit(n,value) {}
+    SVector(Size n, const T& value)
+        : Inherit(n, value)
+    {}
+
     /// Constructor
-    SVector(int n, const T& value): Inherit(n,value) {}
+    SVector(int n, const T& value)
+        : Inherit(n, value)
+    {}
+
     /// Constructor
-    SVector(long n, const T& value): Inherit(n,value) {}
+    SVector(long n, const T& value)
+        : Inherit(n, value)
+    {}
+
     /// Constructor
-    explicit SVector(Size n): Inherit(n) {}
+    explicit SVector(Size n)
+        : Inherit(n)
+    {}
+
     /// Constructor
-    SVector(const Inherit& x): Inherit(x) {}
+    SVector(const Inherit& x)
+        : Inherit(x)
+    {}
+
     /// Move constructor
-    SVector(Inherit&& v): Inherit(std::move(v)) {}
+    SVector(Inherit&& v)
+        : Inherit(std::move(v))
+    {}
 
 
     /// Copy operator
@@ -65,6 +86,7 @@ public:
         Inherit::operator=(x);
         return *this;
     }
+
     /// Move assignment operator
     SVector<T>& operator=(Inherit&& v)
     {
@@ -78,27 +100,29 @@ public:
     SVector(InputIterator first, InputIterator last): Inherit(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): Inherit(first,last) {}
+    SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last)
+        : Inherit(first, last)
+    {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
 
-    std::ostream& write ( std::ostream& os ) const
+    std::ostream& write(std::ostream& os) const
     {
-        if ( !this->empty() )
+        if (!this->empty())
         {
             typename SVector<T>::const_iterator i = this->begin();
             os << "[ " << *i;
             ++i;
-            for ( ; i!=this->end(); ++i )
+            for (; i != this->end(); ++i)
                 os << ", " << *i;
             os << " ]";
-
         }
-        else os << "[]"; // empty vector
+        else
+            os << "[]"; // empty vector
         return os;
     }
 
-    std::istream& read ( std::istream& in )
+    std::istream& read(std::istream& in)
     {
         T t;
         this->clear();
@@ -106,9 +130,10 @@ public:
 
         in >> c;
 
-        if( in.eof() ) return in; // empty stream
+        if (in.eof())
+            return in; // empty stream
 
-        if ( c != '[' )
+        if (c != '[')
         {
             std::cerr << "Error (SVector) " << "read : Bad begin character : " << c << ", expected  [" << std::endl;
             in.setstate(std::ios::failbit);
@@ -116,21 +141,21 @@ public:
         }
         std::streampos pos = in.tellg();
         in >> c;
-        if( c == ']' ) // empty vector
+        if (c == ']') // empty vector
         {
             return in;
         }
         else
         {
-            in.seekg( pos ); // coming-back to previous character
+            in.seekg(pos); // coming-back to previous character
             c = ',';
-            while( !in.eof() && c == ',')
+            while (!in.eof() && c == ',')
             {
                 in >> t;
-                this->push_back ( t );
+                this->push_back(t);
                 in >> c;
             }
-            if ( c != ']' )
+            if (c != ']')
             {
                 std::cerr << "Error (SVector) " << "read : Bad end character : " << c << ", expected  ]" << std::endl;
                 in.setstate(std::ios::failbit);
@@ -140,28 +165,29 @@ public:
         return in;
     }
 
-/// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const SVector<T>& vec )
+    /// Output stream
+    inline friend std::ostream& operator<<(std::ostream& os, const SVector<T>& vec)
     {
         return vec.write(os);
     }
 
-/// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, SVector<T>& vec )
+    /// Input stream
+    inline friend std::istream& operator>>(std::istream& in, SVector<T>& vec)
     {
         return vec.read(in);
     }
 
 };
 
+
 /// reading specialization for std::string
 /// SVector begins by [, ends by ] and separates elements with ,
 /// string elements must be delimited by ' or " (like a list of strings in python).
 /// example: ['string1' ,  "string 2 ",'etc...' ]
-template<>
-std::istream& SVector<std::string>::read( std::istream& in );
-template<>
-std::ostream& SVector<std::string>::write( std::ostream& os ) const;
+template <>
+std::istream& SVector<std::string>::read(std::istream& in);
+template <>
+std::ostream& SVector<std::string>::write(std::ostream& os) const;
 
 
 } // namespace sofa::type

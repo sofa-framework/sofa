@@ -27,6 +27,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Quat.h>
 
+
 namespace sofa::type
 {
 
@@ -42,84 +43,86 @@ class SOFA_TYPE_API Frame
 {
 public:
     typedef type::Quat<SReal> Quat;
-    typedef Mat<3,3,SReal> Mat33;
+    typedef Mat<3, 3, SReal> Mat33;
+
 private:
     Vec3 origin_;
     Mat33 basis_;
+
 public:
     /** Define the local frame using origin and basis vectors */
-    Frame (const Vec3 &origin, const Mat33& matrix );
+    Frame(const Vec3& origin, const Mat33& matrix);
 
     /** Define the local frame using three transforms */
-    Frame (const Vec3 &origin, const Quat &orientation, const Vec3& scale=Vec3(1_sreal,1_sreal,1_sreal) );
+    Frame(const Vec3& origin, const Quat& orientation, const Vec3& scale = Vec3(1_sreal, 1_sreal, 1_sreal));
 
     /** Define the local frame without rotation */
-    Frame (const Vec3 &origin );
+    Frame(const Vec3& origin);
 
     /// Default constructor set the transformation to identity
-    Frame ();
+    Frame();
 
     /** Define the local frame using three transforms */
-    void setTransform( const Vec3& origin, const Quat& orientation, const Vec3& scale );
+    void setTransform(const Vec3& origin, const Quat& orientation, const Vec3& scale);
 
     /// Reset the transformation to identity
     void clear();
 
     /// Origin of the local frame in the reference frame,
-    Vec3& getOrigin ();
+    Vec3& getOrigin();
 
     /// Origin of the local frame in the reference frame,
-    const Vec3& getOrigin () const;
+    const Vec3& getOrigin() const;
 
     /// Set the origin of the local frame in the reference frame,
-    void setOrigin( const Vec3& origin );
+    void setOrigin(const Vec3& origin);
 
     /// The columns represent the base vectors of the local frame wrt the reference frame
-    Mat33& getBasis ();
+    Mat33& getBasis();
 
     /// The columns represent the base vectors of the local frame wrt the reference frame
-    const Mat33& getBasis () const;
+    const Mat33& getBasis() const;
 
     /// The columns represent the base vectors of the local frame wrt the reference frame
-    void setBasis( const Mat33& m );
+    void setBasis(const Mat33& m);
 
     /// The identity transform
     static Frame identity();
 
     /// Apply a transformation defined in the child frame (mult. right)
-    void multRight( const Frame& c );
+    void multRight(const Frame& c);
 
     /// compute the product with another frame on the right
-    Frame mult( const Frame& c ) const;
+    Frame mult(const Frame& c) const;
 
     /// Write the OpenGL transformation matrix to a float[16]
-    void writeOpenGlMatrix( float* m ) const;
+    void writeOpenGlMatrix(float* m) const;
 
     /// Write the OpenGL transformation matrix to a double[16]
-    void writeOpenGlMatrix( double* m ) const;
+    void writeOpenGlMatrix(double* m) const;
 
     /// compute the projection of a vector from the local frame to the reference frame
-    template<class V>
-    V projectVector( const V& v ) const
+    template <class V>
+    V projectVector(const V& v) const
     {
         return V(
-                basis_[0][0]*v[0]+basis_[0][1]*v[1]+basis_[0][2]*v[2],
-                basis_[1][0]*v[0]+basis_[1][1]*v[1]+basis_[1][2]*v[2],
-                basis_[2][0]*v[0]+basis_[2][1]*v[1]+basis_[2][2]*v[2]
-                );
+            basis_[0][0] * v[0] + basis_[0][1] * v[1] + basis_[0][2] * v[2],
+            basis_[1][0] * v[0] + basis_[1][1] * v[1] + basis_[1][2] * v[2],
+            basis_[2][0] * v[0] + basis_[2][1] * v[1] + basis_[2][2] * v[2]
+        );
     }
 
     /// compute the projection of a point from the local frame to the reference frame
-    template<class V>
-    V projectPoint( const V& v ) const
+    template <class V>
+    V projectPoint(const V& v) const
     {
-        return projectVector(v)+origin_;
+        return projectVector(v) + origin_;
     }
 
     /// Transformation from the reference frame to the local frame
     Frame inversed() const;
 
-    friend std::ostream& operator << (std::ostream& out, const Frame& c );
+    friend std::ostream& operator <<(std::ostream& out, const Frame& c);
 };
 
 } // namespace sofa::type

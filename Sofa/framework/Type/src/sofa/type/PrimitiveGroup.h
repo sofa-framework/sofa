@@ -23,6 +23,7 @@
 #include <sofa/type/config.h>
 #include <string>
 
+
 namespace sofa::type
 {
 
@@ -34,8 +35,8 @@ public:
     std::string groupName;
     int materialId;
 
-    friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& out, const PrimitiveGroup &g);
-    friend SOFA_TYPE_API std::istream& operator>>(std::istream& in, PrimitiveGroup &g);
+    friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& out, const PrimitiveGroup& g);
+    friend SOFA_TYPE_API std::istream& operator>>(std::istream& in, PrimitiveGroup& g);
 
     bool operator<(const PrimitiveGroup& p) const;
 

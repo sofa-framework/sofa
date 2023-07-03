@@ -24,4 +24,3 @@
 
 template class SOFA_TYPE_API sofa::type::vector<float>;
 template class SOFA_TYPE_API sofa::type::vector<double>;
-

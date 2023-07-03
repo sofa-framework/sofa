@@ -28,6 +28,7 @@
 #include <sstream>
 #include <cstring>
 
+
 namespace sofa::type
 {
 
@@ -62,7 +63,8 @@ SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::strings
     const long long tmp = strtoll(attrstr, &end, 10);
 
     /// If there is minus sign we exit.
-    if (tmp < 0) {
+    if (tmp < 0)
+    {
         if (numErrors < 5)
             msg << "   - problem while parsing '" << s << "' as Unsigned Integer because the minus sign is not allowed'. Replaced by 0 instead." << "\n";
         if (numErrors == 5)
@@ -88,55 +90,55 @@ SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::strings
 
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
-template<>
-SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
+template <>
+SOFA_TYPE_API std::istream& vector<int>::read(std::istream& in)
 {
     int t;
     this->clear();
     std::string s;
     std::stringstream msg;
-    unsigned int numErrors=0;
+    unsigned int numErrors = 0;
 
     /// Cut the input stream in words using the standard's '<space>' token eparator.
-    while(in>>s)
+    while (in >> s)
     {
         /// Check if there is the sign '-' in the string s.
-        const std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-', 1);
 
         /// If there is no '-' in s
         if (hyphen == std::string::npos)
         {
             /// Convert the word into an integer number.
             /// Use strtol because it reports error in case of parsing problem.
-            t = getInteger(s, msg, numErrors) ;
+            t = getInteger(s, msg, numErrors);
             this->push_back(t);
         }
 
         /// If there is at least one '-'
         else
         {
-            int t1,t2,tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getInteger(s1, msg, numErrors) ;
-            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            int t1, t2, tinc;
+            std::string s1(s, 0, hyphen);
+            t1 = getInteger(s1, msg, numErrors);
+            const std::string::size_type hyphen2 = s.find_first_of('-', hyphen + 2);
             if (hyphen2 == std::string::npos)
             {
-                std::string s2(s,hyphen+1);
-                t2 = getInteger(s2, msg, numErrors) ;
-                tinc = (t1<t2) ? 1 : -1;
+                std::string s2(s, hyphen + 1);
+                t2 = getInteger(s2, msg, numErrors);
+                tinc = (t1 < t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
-                t2 =  getInteger(s2, msg, numErrors) ;
-                tinc =  getInteger(s3, msg, numErrors) ;
+                std::string s2(s, hyphen + 1, hyphen2 - hyphen - 1);
+                std::string s3(s, hyphen2 + 1);
+                t2 = getInteger(s2, msg, numErrors);
+                tinc = getInteger(s3, msg, numErrors);
                 if (tinc == 0)
                 {
-                    tinc = (t1<t2) ? 1 : -1;
-                    msg << "- Increment 0 is replaced by "<< tinc << "\n";
+                    tinc = (t1 < t2) ? 1 : -1;
+                    msg << "- Increment 0 is replaced by " << tinc << "\n";
                 }
-                if ((t2-t1)*tinc < 0)
+                if ((t2 - t1) * tinc < 0)
                 {
                     // increment not of the same sign as t2-t1 : swap t1<->t2
                     t = t1;
@@ -147,19 +149,22 @@ SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
 
             /// Go in backward order.
             if (tinc < 0)
-                for (t=t1; t>=t2; t+=tinc)
+                for (t = t1; t >= t2; t += tinc)
                     this->push_back(t);
-            /// Go in Forward order
+                /// Go in Forward order
             else
-                for (t=t1; t<=t2; t+=tinc)
+                for (t = t1; t <= t2; t += tinc)
                     this->push_back(t);
         }
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(numErrors!=0)
+    if (in.rdstate() & std::ios_base::eofbit)
+    {
+        in.clear();
+    }
+    if (numErrors != 0)
     {
         std::cerr << "Unable to parse values" << "\n"
-                  << msg.str();
+                << msg.str();
         in.setstate(std::ios::failbit);
     }
     return in;
@@ -168,49 +173,49 @@ SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
 
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
-template<>
-SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
+template <>
+SOFA_TYPE_API std::istream& vector<unsigned int>::read(std::istream& in)
 {
-    std::stringstream errmsg ;
-    unsigned int errcnt = 0 ;
-    unsigned int t = 0 ;
+    std::stringstream errmsg;
+    unsigned int errcnt = 0;
+    unsigned int t = 0;
 
     this->clear();
     std::string s;
 
-    while(in>>s)
+    while (in >> s)
     {
-        const std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-', 1);
         if (hyphen == std::string::npos)
         {
-            t = getUnsignedInteger(s, errmsg, errcnt) ;
+            t = getUnsignedInteger(s, errmsg, errcnt);
             this->push_back(t);
         }
         else
         {
-            unsigned int t1,t2;
+            unsigned int t1, t2;
             int tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getUnsignedInteger(s1, errmsg, errcnt) ;
-            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            std::string s1(s, 0, hyphen);
+            t1 = getUnsignedInteger(s1, errmsg, errcnt);
+            const std::string::size_type hyphen2 = s.find_first_of('-', hyphen + 2);
             if (hyphen2 == std::string::npos)
             {
-                std::string s2(s,hyphen+1);
+                std::string s2(s, hyphen + 1);
                 t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = (t1<=t2) ? 1 : -1;
+                tinc = (t1 <= t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
+                std::string s2(s, hyphen + 1, hyphen2 - hyphen - 1);
+                std::string s3(s, hyphen2 + 1);
                 t2 = getUnsignedInteger(s2, errmsg, errcnt);
                 tinc = getInteger(s3, errmsg, errcnt);
                 if (tinc == 0)
                 {
-                    tinc = (t1<=t2) ? 1 : -1;
-                    errmsg << "- problem while parsing '"<<s<<"': increment is 0. Use " << tinc << " instead." ;
+                    tinc = (t1 <= t2) ? 1 : -1;
+                    errmsg << "- problem while parsing '" << s << "': increment is 0. Use " << tinc << " instead.";
                 }
-                if (((int)(t2-t1))*tinc < 0)
+                if (((int)(t2 - t1)) * tinc < 0)
                 {
                     /// increment not of the same sign as t2-t1 : swap t1<->t2
                     t = t1;
@@ -218,21 +223,27 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
                     t2 = t;
                 }
             }
-            if (tinc < 0){
-                for (t=t1; t>t2; t=t+tinc)
+            if (tinc < 0)
+            {
+                for (t = t1; t > t2; t = t + tinc)
                     this->push_back(t);
                 this->push_back(t2);
-            } else {
-                for (t=t1; t<=t2; t=t+tinc)
+            }
+            else
+            {
+                for (t = t1; t <= t2; t = t + tinc)
                     this->push_back(t);
             }
         }
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(errcnt!=0)
+    if (in.rdstate() & std::ios_base::eofbit)
+    {
+        in.clear();
+    }
+    if (errcnt != 0)
     {
         std::cerr << "Unable to parse values" << "\n"
-                  << errmsg.str() ;
+                << errmsg.str();
         in.setstate(std::ios::failbit);
     }
 
@@ -241,32 +252,34 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
 
 /// Output stream
 /// Specialization for writing vectors of unsigned char
-template<>
+template <>
 SOFA_TYPE_API std::ostream& vector<unsigned char>::write(std::ostream& os) const
 {
-    if(!this->empty())
+    if (!this->empty())
     {
-        for (Size i = 0; i<this->size()-1; ++i)
-            os<<(int)(*this)[i]<<" ";
-        os<<(int)(*this)[this->size()-1];
+        for (Size i = 0; i < this->size() - 1; ++i)
+            os << (int)(*this)[i] << " ";
+        os << (int)(*this)[this->size() - 1];
     }
     return os;
 }
 
 
-
 /// Input stream
 /// Specialization for reading vectors of unsigned char
-template<>
+template <>
 SOFA_TYPE_API std::istream& vector<unsigned char>::read(std::istream& in)
 {
     int t;
     this->clear();
-    while(in>>t)
+    while (in >> t)
     {
         this->push_back((unsigned char)t);
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    if (in.rdstate() & std::ios_base::eofbit)
+    {
+        in.clear();
+    }
     return in;
 }
 

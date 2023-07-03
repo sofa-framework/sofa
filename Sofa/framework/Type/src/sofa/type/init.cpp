@@ -23,6 +23,7 @@
 
 #include <iostream>
 
+
 namespace sofa::type
 {
 
@@ -56,28 +57,28 @@ SOFA_TYPE_API bool isCleanedUp()
 }
 
 SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction)
+                                                    const std::string& initFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
+            << initFunction << " has never been called, see sofa/type/init.h)"
+            << std::endl;
 }
 
 SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction)
+                                                   const std::string& cleanupFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
+            << cleanupFunction << " has never been called, see sofa/type/init.h)"
+            << std::endl;
 }
+
 
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
     CleanupCheck()
-    {
+    { }
 
-    }
     ~CleanupCheck()
     {
         if (type::isInitialized() && !type::isCleanedUp())

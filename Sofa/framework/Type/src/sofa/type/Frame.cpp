@@ -25,25 +25,27 @@
 
 using std::endl;
 
+
 namespace sofa::type
 {
 
-Frame::Frame (const Vec3 &origin, const Mat33& matrix )
+Frame::Frame(const Vec3& origin, const Mat33& matrix)
     : origin_(origin)
     , basis_(matrix)
 {}
-Frame::Frame (const Vec3 &origin, const Quat &orientation, const Vec3& scale )
+
+Frame::Frame(const Vec3& origin, const Quat& orientation, const Vec3& scale)
 {
-    setTransform( origin, orientation, scale );
+    setTransform(origin, orientation, scale);
 }
 
-Frame::Frame (const Vec3 &origin )
+Frame::Frame(const Vec3& origin)
     : origin_(origin)
 {
     basis_.identity();
 }
 
-Frame::Frame ()
+Frame::Frame()
 {
     clear();
 }
@@ -56,44 +58,47 @@ void Frame::clear()
 
 //void clear() { origin_.clear(); basis__.clear(); scale_=Vec3(1,1,1); }
 
-Vec3& Frame::getOrigin ()
+Vec3& Frame::getOrigin()
 {
     return origin_;
 }
-const Vec3& Frame::getOrigin () const
+
+const Vec3& Frame::getOrigin() const
 {
     return origin_;
 }
-void Frame::setOrigin( const Vec3& origin )
+
+void Frame::setOrigin(const Vec3& origin)
 {
-    origin_=origin;
+    origin_ = origin;
 }
 
-Frame::Mat33& Frame::getBasis ()
+Frame::Mat33& Frame::getBasis()
 {
     return basis_;
 }
-const Frame::Mat33& Frame::getBasis () const
+
+const Frame::Mat33& Frame::getBasis() const
 {
     return basis_;
 }
-void Frame::setBasis( const Frame::Mat33& m )
+
+void Frame::setBasis(const Frame::Mat33& m)
 {
-    basis_=m;
+    basis_ = m;
 }
 
-void Frame::setTransform( const Vec3& origin, const Frame::Quat& orientation, const Vec3& scale )
+void Frame::setTransform(const Vec3& origin, const Frame::Quat& orientation, const Vec3& scale)
 {
     setOrigin(origin);
     orientation.toMatrix(basis_);
-    for( int i=0; i<3; i++ )
+    for (int i = 0; i < 3; i++)
     {
         basis_[i][0] *= scale[0];
         basis_[i][1] *= scale[1];
         basis_[i][2] *= scale[2];
     }
 }
-
 
 
 Frame Frame::identity()
@@ -104,14 +109,14 @@ Frame Frame::identity()
 }
 
 /// Apply a transformation defined in the child frame (mult. right)
-void Frame::multRight( const Frame& c )
+void Frame::multRight(const Frame& c)
 {
     origin_ += basis_ * c.getOrigin();
     basis_ = basis_ * c.getBasis();
 }
 
 /// compute the product with another frame on the right
-Frame Frame::mult( const Frame& c ) const
+Frame Frame::mult(const Frame& c) const
 {
     Frame r = (*this);
     r.multRight(c);
@@ -119,28 +124,28 @@ Frame Frame::mult( const Frame& c ) const
 }
 
 /// Write the OpenGL transformation matrix
-void Frame::writeOpenGlMatrix( float *m ) const
+void Frame::writeOpenGlMatrix(float* m) const
 {
-    m[0] = (float) basis_[0][0];
-    m[1] = (float) basis_[1][0];
-    m[2] = (float) basis_[2][0];
-    m[3] = (float) 0;
-    m[4] = (float) basis_[0][1];
-    m[5] = (float) basis_[1][1];
-    m[6] = (float) basis_[2][1];
-    m[7] = (float) 0;
-    m[8] = (float) basis_[0][2];
-    m[9] = (float) basis_[1][2];
-    m[10] = (float) basis_[2][2];
-    m[11] = (float) 0;
-    m[12] = (float) origin_[0];
-    m[13] = (float) origin_[1];
-    m[14] = (float) origin_[2];
-    m[15] = (float) 1;
+    m[0] = (float)basis_[0][0];
+    m[1] = (float)basis_[1][0];
+    m[2] = (float)basis_[2][0];
+    m[3] = (float)0;
+    m[4] = (float)basis_[0][1];
+    m[5] = (float)basis_[1][1];
+    m[6] = (float)basis_[2][1];
+    m[7] = (float)0;
+    m[8] = (float)basis_[0][2];
+    m[9] = (float)basis_[1][2];
+    m[10] = (float)basis_[2][2];
+    m[11] = (float)0;
+    m[12] = (float)origin_[0];
+    m[13] = (float)origin_[1];
+    m[14] = (float)origin_[2];
+    m[15] = (float)1;
 }
 
 /// Write the OpenGL transformation matrix
-void Frame::writeOpenGlMatrix( double *m ) const
+void Frame::writeOpenGlMatrix(double* m) const
 {
     m[0] = basis_[0][0];
     m[1] = basis_[1][0];
@@ -164,20 +169,20 @@ void Frame::writeOpenGlMatrix( double *m ) const
 Frame Frame::inversed() const
 {
     Mat33 inv;
-    const bool invertible = inv.invert( basis_ );
-    assert( invertible );
+    const bool invertible = inv.invert(basis_);
+    assert(invertible);
     SOFA_UNUSED(invertible);
-    return Frame( -(inv*origin_) , inv );
+    return Frame(-(inv * origin_), inv);
 }
 
-std::ostream& operator << (std::ostream& out, const sofa::type::Frame& c )
+std::ostream& operator <<(std::ostream& out, const sofa::type::Frame& c)
 {
-    out<<"origin = "<<c.getOrigin()<<", basis matrix="<<endl;
-    for( int i=0; i<3; i++ )
+    out << "origin = " << c.getOrigin() << ", basis matrix=" << endl;
+    for (int i = 0; i < 3; i++)
     {
-        for( int j=0; j<3; j++ )
-            out<<c.getBasis()[i][j]<<" ";
-        out<<endl;
+        for (int j = 0; j < 3; j++)
+            out << c.getBasis()[i][j] << " ";
+        out << endl;
     }
     return out;
 }

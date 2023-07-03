@@ -21,81 +21,103 @@
 ******************************************************************************/
 #include <sofa/type/Material.h>
 
+
 namespace sofa::type
 {
 
 void Material::setColor(const float r, const float g, const float b, const float a)
 {
-    ambient = RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
-    diffuse = RGBAColor(r,g,b,a);
-    specular = RGBAColor(r,g,b,a);
-    emissive = RGBAColor(r,g,b,a);
+    ambient = RGBAColor(r * 0.2f, g * 0.2f, b * 0.2f, a);
+    diffuse = RGBAColor(r, g, b, a);
+    specular = RGBAColor(r, g, b, a);
+    emissive = RGBAColor(r, g, b, a);
 }
 
-std::ostream&  operator << (std::ostream& out, const Material& m )
+std::ostream& operator <<(std::ostream& out, const Material& m)
 {
-    out   << m.name         << " ";
-    out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
-    out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
-    out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
-    out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-    out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
+    out << m.name << " ";
+    out << "Diffuse" << " " << m.useDiffuse << " " << m.diffuse << " ";
+    out << "Ambient" << " " << m.useAmbient << " " << m.ambient << " ";
+    out << "Specular" << " " << m.useSpecular << " " << m.specular << " ";
+    out << "Emissive" << " " << m.useEmissive << " " << m.emissive << " ";
+    out << "Shininess" << " " << m.useShininess << " " << m.shininess << " ";
     return out;
 }
 
-std::istream&  operator >> (std::istream& in, Material &m )
+std::istream& operator >>(std::istream& in, Material& m)
 {
     std::string element;
-    in  >>  m.name ;
-    for (unsigned int i=0; i<5; ++i)
+    in >> m.name;
+    for (unsigned int i = 0; i < 5; ++i)
     {
-        in  >>  element;
-        if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
-        else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
-        else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
-        else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
-        else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
+        in >> element;
+        if (element == std::string("Diffuse") || element == std::string("diffuse"))
+        {
+            in >> m.useDiffuse;
+            in >> m.diffuse;
+        }
+        else if (element == std::string("Ambient") || element == std::string("ambient"))
+        {
+            in >> m.useAmbient;
+            in >> m.ambient;
+        }
+        else if (element == std::string("Specular") || element == std::string("specular"))
+        {
+            in >> m.useSpecular;
+            in >> m.specular;
+        }
+        else if (element == std::string("Emissive") || element == std::string("emissive"))
+        {
+            in >> m.useEmissive;
+            in >> m.emissive;
+        }
+        else
+            if (element == std::string("Shininess") || element == std::string("shininess"))
+            {
+                in >> m.useShininess;
+                in >> m.shininess;
+            }
     }
     return in;
 }
 
 Material::Material()
 {
-    ambient =  RGBAColor( 0.2f,0.2f,0.2f,1.0f);
-    diffuse =  RGBAColor( 0.75f,0.75f,0.75f,1.0f);
-    specular =  RGBAColor::white();
-    emissive =  RGBAColor( 0.0f,0.0f,0.0f,0.0f);
+    ambient = RGBAColor(0.2f, 0.2f, 0.2f, 1.0f);
+    diffuse = RGBAColor(0.75f, 0.75f, 0.75f, 1.0f);
+    specular = RGBAColor::white();
+    emissive = RGBAColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    shininess =  45.0f;
+    shininess = 45.0f;
     name = "Default";
-    useAmbient =  true;
-    useDiffuse =  true;
-    useSpecular =  false;
-    useEmissive =  false;
-    useShininess =  false;
+    useAmbient = true;
+    useDiffuse = true;
+    useSpecular = false;
+    useEmissive = false;
+    useShininess = false;
     activated = false;
 
     useTexture = false;
-    textureFilename ="DEFAULT";
+    textureFilename = "DEFAULT";
 
     useBumpMapping = false;
-    bumpTextureFilename ="DEFAULT";
+    bumpTextureFilename = "DEFAULT";
 }
 
 Material::Material(const Material& mat)
 {
-    ambient =  mat.ambient;
-    diffuse =  mat.diffuse;
-    specular =  mat.specular;
-    emissive =  mat.emissive;
+    ambient = mat.ambient;
+    diffuse = mat.diffuse;
+    specular = mat.specular;
+    emissive = mat.emissive;
 
-    shininess =  mat.shininess;
+    shininess = mat.shininess;
     name = mat.name;
-    useAmbient =  mat.useAmbient;
-    useDiffuse =  mat.useDiffuse ;
-    useSpecular =  mat.useSpecular ;
-    useEmissive =  mat.useEmissive;
-    useShininess =  mat.useShininess ;
+    useAmbient = mat.useAmbient;
+    useDiffuse = mat.useDiffuse;
+    useSpecular = mat.useSpecular;
+    useEmissive = mat.useEmissive;
+    useShininess = mat.useShininess;
     activated = mat.activated;
 
     useTexture = mat.useTexture;
@@ -105,19 +127,20 @@ Material::Material(const Material& mat)
     bumpTextureFilename = mat.bumpTextureFilename;
 }
 
-Material & Material::operator= (const Material& other) {
-    ambient =  other.ambient;
-    diffuse =  other.diffuse;
-    specular =  other.specular;
-    emissive =  other.emissive;
+Material& Material::operator=(const Material& other)
+{
+    ambient = other.ambient;
+    diffuse = other.diffuse;
+    specular = other.specular;
+    emissive = other.emissive;
 
-    shininess =  other.shininess;
+    shininess = other.shininess;
     name = other.name;
-    useAmbient =  other.useAmbient;
-    useDiffuse =  other.useDiffuse ;
-    useSpecular =  other.useSpecular ;
-    useEmissive =  other.useEmissive;
-    useShininess =  other.useShininess ;
+    useAmbient = other.useAmbient;
+    useDiffuse = other.useDiffuse;
+    useSpecular = other.useSpecular;
+    useEmissive = other.useEmissive;
+    useShininess = other.useShininess;
     activated = other.activated;
 
     useTexture = other.useTexture;
