@@ -191,7 +191,7 @@ void updateVisualContext(Node* root)
     {
         return;
     }
-    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
 
     if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
