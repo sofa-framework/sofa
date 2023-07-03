@@ -76,7 +76,7 @@ public:
                 }
                 else
                 {
-                    std::filesystem::remove(pathToRemove);
+                    FileSystem::removeFile(pathToRemove);
                 }
             }
         }

@@ -96,6 +96,8 @@ static bool removeDirectory(const std::string& path);
 /// @return true on error
 static bool removeAll(const std::string& path) ;
 
+static bool removeFile(const std::string& path);
+
 /// @brief check that all element in the path exists or create them. (This function accepts relative paths)
 ///
 /// @return the valid path.
