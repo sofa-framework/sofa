@@ -391,7 +391,7 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
-    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if(!this->isComponentStateValid())
         return;
 
     SOFA_UNUSED(params);
