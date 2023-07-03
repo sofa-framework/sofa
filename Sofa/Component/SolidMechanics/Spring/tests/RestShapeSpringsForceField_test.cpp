@@ -56,7 +56,7 @@ RestStiffSpringsForceField_test::~RestStiffSpringsForceField_test()
 
 sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
 {
-    auto theSimulation = createSimulation();
+    const auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
     sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
@@ -69,7 +69,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 
     /// Create an object with a mass and use a rest shape spring ff so it stays
     /// at the initial position
-    auto fixedObject = createChild(theRoot, "fixedObject");
+    const auto fixedObject = createChild(theRoot, "fixedObject");
     auto fixedObject_dofs = createObject(fixedObject, "MechanicalObject", {{"name","dofs"},
                                                                            {"size","10"},
                                                                            {"template",type}});
@@ -77,7 +77,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 
     createObject(fixedObject, "RestShapeSpringsForceField", {{"stiffness","1000"}});
 
-    auto movingObject = createChild(theRoot, "movingObject");
+    const auto movingObject = createChild(theRoot, "movingObject");
     auto movingObject_dofs =createObject(movingObject, "MechanicalObject", {{"name","dofs"},
                                                                             {"size","10"},
                                                                             {"template",type}});

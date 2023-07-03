@@ -49,7 +49,7 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 template < class DataTypes >
 core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing )
 {
-    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
+    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
     existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {

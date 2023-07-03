@@ -238,7 +238,7 @@ public:
 
     void exportGNUPlot(const std::string &baseFileName) const
     {
-        int n = trait::size(currentData);
+        const int n = trait::size(currentData);
         for (int i=0; i<n; ++i)
         {
             const curve_type& v = *(trait::get(currentData,i));
@@ -372,7 +372,7 @@ public:
     GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget <T>(parent,name,d) { }
     virtual bool createWidgets()
     {
-        bool b = GraphDataWidget<T>::createWidgets();
+        const bool b = GraphDataWidget<T>::createWidgets();
         //typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
         //if (w)
         //{

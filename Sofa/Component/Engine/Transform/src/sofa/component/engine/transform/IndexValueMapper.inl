@@ -57,7 +57,7 @@ template <class DataTypes>
 void IndexValueMapper<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data< type::vector<Real> > > inputValues = f_inputValues;
-    helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices;
+    const helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices;
     const Real& value = f_value.getValue();
 
     helper::WriteOnlyAccessor< Data< type::vector<Real> > > outputValues = f_outputValues;

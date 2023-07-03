@@ -224,7 +224,7 @@ GridTopology::GridTopology()
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
 {
     setNbGridPoints();
-    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    const GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
 
@@ -336,7 +336,7 @@ void GridTopology::computeEdgeList()
 
 void GridTopology::computePointList()
 {
-    auto nbPoints= this->getNbPoints();
+    const auto nbPoints= this->getNbPoints();
     // put the result in seqPoints
     SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
@@ -359,9 +359,9 @@ GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 sofa::type::Vec3 GridTopology::getPoint(Index i) const
 {
     const auto& n = d_n.getValue();
-    int x = i%n[0]; i/=n[0];
-    int y = i%n[1]; i/=n[1];
-    int z = int(i);
+    const int x = i%n[0]; i/=n[0];
+    const int y = i%n[1]; i/=n[1];
+    const int z = int(i);
 
     return getPointInGrid(x,y,z);
 }
@@ -370,7 +370,7 @@ sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
     const auto& spoints = seqPoints.getValue();
 
-    Index id = this->getIndex(i, j, k);
+    const Index id = this->getIndex(i, j, k);
     if (id < spoints.size())
         return spoints[id];
     else
@@ -382,9 +382,9 @@ GridTopology::Hexa GridTopology::getHexaCopy(Index i)
 {
     const auto& n = d_n.getValue();
 
-    int x = i%(n[0]-1); i/=(n[0]-1);
-    int y = i%(n[1]-1); i/=(n[1]-1);
-    int z = int(i);
+    const int x = i%(n[0]-1); i/=(n[0]-1);
+    const int y = i%(n[1]-1); i/=(n[1]-1);
+    const int z = int(i);
     return getHexahedron(x,y,z);
 }
 
@@ -403,25 +403,25 @@ GridTopology::Quad GridTopology::getQuadCopy(Index i)
 
     if (n[0] == 1)
     {
-        int y = i%(n[1]-1);
+        const int y = i%(n[1]-1);
         i/=(n[1]-1);
-        int z = i%(n[2]-1);
+        const int z = i%(n[2]-1);
 
         return getQuad(1,y,z);
     }
     else if (n[1] == 1)
     {
-        int x = i%(n[0]-1);
+        const int x = i%(n[0]-1);
         i/=(n[0]-1);
-        int z = i%(n[2]-1);
+        const int z = i%(n[2]-1);
 
         return getQuad(x,1,z);
     }
     else
     {
-        int x = i%(n[0]-1);
+        const int x = i%(n[0]-1);
         i/=(n[0]-1);
-        int y = i%(n[1]-1);
+        const int y = i%(n[1]-1);
 
         return getQuad(x,y,1);
     }

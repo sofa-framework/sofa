@@ -104,9 +104,9 @@ typename BTDMatrix<N,T>::Index BTDMatrix<N, T>::colSize(void) const
 template<std::size_t N, typename T>
 SReal BTDMatrix<N, T>::element(Index i, Index j) const
 {
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
+    const Index bi = i / BSIZE; i = i % BSIZE;
+    const Index bj = j / BSIZE; j = j % BSIZE;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return (SReal)0;
     return data[bi*3+bindex][i][j];
 }
@@ -115,7 +115,7 @@ template<std::size_t N, typename T>
 const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
 {
     static Block b;
-    Index bindex = bj - bi + 1;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return b;
     return data[bi*3+bindex];
 }
@@ -130,7 +130,7 @@ template<std::size_t N, typename T>
 typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
 {
     static Block b;
-    Index bindex = bj - bi + 1;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return b;
     return data[bi*3+bindex];
 }
@@ -172,9 +172,9 @@ void BTDMatrix<N, T>::setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index 
 template<std::size_t N, typename T>
 void BTDMatrix<N, T>:: set(Index i, Index j, double v)
 {
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
+    const Index bi = i / BSIZE; i = i % BSIZE;
+    const Index bj = j / BSIZE; j = j % BSIZE;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
     data[bi*3+bindex][i][j] = (Real)v;
 }
@@ -182,9 +182,9 @@ void BTDMatrix<N, T>:: set(Index i, Index j, double v)
 template<std::size_t N, typename T>
 void BTDMatrix<N, T>::add(Index i, Index j, double v)
 {
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
+    const Index bi = i / BSIZE; i = i % BSIZE;
+    const Index bj = j / BSIZE; j = j % BSIZE;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
     data[bi*3+bindex][i][j] += (Real)v;
 }
@@ -192,9 +192,9 @@ void BTDMatrix<N, T>::add(Index i, Index j, double v)
 template<std::size_t N, typename T>
 void BTDMatrix<N, T>::clear(Index i, Index j)
 {
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
+    const Index bi = i / BSIZE; i = i % BSIZE;
+    const Index bj = j / BSIZE; j = j % BSIZE;
+    const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
     data[bi*3+bindex][i][j] = (Real)0;
 }
@@ -202,7 +202,7 @@ void BTDMatrix<N, T>::clear(Index i, Index j)
 template<std::size_t N, typename T>
 void BTDMatrix<N, T>::clearRow(Index i)
 {
-    Index bi = i / BSIZE; i = i % BSIZE;
+    const Index bi = i / BSIZE; i = i % BSIZE;
     for (Index bj = 0; bj < 3; ++bj)
         for (Index j=0; j<BSIZE; ++j)
             data[bi*3+bj][i][j] = (Real)0;
@@ -211,7 +211,7 @@ void BTDMatrix<N, T>::clearRow(Index i)
 template<std::size_t N, typename T>
 void BTDMatrix<N, T>::clearCol(Index j)
 {
-    Index bj = j / BSIZE; j = j % BSIZE;
+    const Index bj = j / BSIZE; j = j % BSIZE;
     if (bj > 0)
         for (Index i=0; i<BSIZE; ++i)
             data[(bj-1)*3+2][i][j] = (Real)0;

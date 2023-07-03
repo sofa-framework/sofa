@@ -47,7 +47,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
 {
     this->d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
-        sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
+        const sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
     } else {
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
@@ -87,7 +87,7 @@ template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
     const sofa::type::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    float bbDiff = float((bbox.maxBBox() - bbox.minBBox()).norm());
+    const float bbDiff = float((bbox.maxBBox() - bbox.minBBox()).norm());
     if (std::isinf(bbDiff))
         return d_showIndicesScale.getValue();
     else
@@ -196,7 +196,7 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
     Coord p0 = p[ind_p0];
     Coord p1 = p[ind_p1];
     Coord p2 = p[ind_p2];
-    double t = (p1 - p0)*(p2 - p0);
+    const double t = (p1 - p0)*(p2 - p0);
 
     if(fabs(t) < ZERO)
         return RIGHT;
@@ -281,7 +281,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         constexpr auto color4 = sofa::type::RGBAColor::white();
 
-        float scale = getIndicesScale();
+        const float scale = getIndicesScale();
 
         std::vector<type::Vec3> positions;
         for (unsigned int i =0; i<coords.size(); i++)

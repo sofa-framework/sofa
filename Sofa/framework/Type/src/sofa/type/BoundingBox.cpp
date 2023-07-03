@@ -207,7 +207,7 @@ void BoundingBox::include(const BoundingBox& other)
 
 void BoundingBox::inflate(const SReal amount)
 {
-    sofa::type::Vec3 size(amount,amount,amount);
+    const sofa::type::Vec3 size(amount,amount,amount);
     minBBox() -= size;
     maxBBox() += size;
 }
@@ -262,7 +262,7 @@ BoundingBox BoundingBox::getInflate( SReal amount ) const
 {
     BoundingBox result;
 
-    sofa::type::Vec3 size(amount,amount,amount);
+    const sofa::type::Vec3 size(amount,amount,amount);
     result.minBBox() = minBBox() - size;
     result.maxBBox() = maxBBox() + size;
 
@@ -445,7 +445,7 @@ void BoundingBox2D::include(const BoundingBox2D& other)
 
 void BoundingBox2D::inflate(const SReal amount)
 {
-    sofa::type::Vec<2, SReal> size(amount,amount);
+    const sofa::type::Vec<2, SReal> size(amount,amount);
     minBBox() -= size;
     maxBBox() += size;
 }
@@ -493,7 +493,7 @@ BoundingBox2D BoundingBox2D::getInflate( SReal amount ) const
 {
     BoundingBox2D result;
 
-    sofa::type::Vec<2, SReal> size(amount,amount);
+    const sofa::type::Vec<2, SReal> size(amount,amount);
     result.minBBox() = minBBox() - size;
     result.maxBBox() = maxBBox() + size;
 

@@ -83,7 +83,7 @@ struct Scene_test: public NumericTest<SReal>
         root = simulation::getSimulation()->createNewGraph("root");
 
         // create DOFs and its expected bounding box
-        MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
+        const MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
         root->addObject(DOF);
         DOF->resize(4);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
@@ -174,7 +174,7 @@ struct Scene_test: public NumericTest<SReal>
         sofa::simulation::node::initRoot(root.get());
 
         {
-            simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
+            const simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
             nodeToRemove->detachFromGraph();
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
@@ -225,7 +225,7 @@ protected:
         root = simulation::getSimulation()->createNewGraph("root");
         root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
         root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
-        simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+        const simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
         root->addChild(child);
         child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
 

@@ -180,8 +180,8 @@ VisualModelImpl::~VisualModelImpl()
 bool VisualModelImpl::hasTransparent()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
+    const helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    const helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return (material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -199,8 +199,8 @@ bool VisualModelImpl::hasTransparent()
 bool VisualModelImpl::hasOpaque()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
+    const helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    const helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return !(material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -486,7 +486,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
             msg_info() << "loading file " << textureName;
-            bool textureLoaded = loadTexture(textureName);
+            const bool textureLoaded = loadTexture(textureName);
             if(!textureLoaded)
             {
                 msg_error()<<"Texture "<<textureName<<" cannot be loaded";
@@ -606,7 +606,7 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    Coord d((Real)dx,(Real)dy,(Real)dz);
+    const Coord d((Real)dx,(Real)dy,(Real)dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -636,7 +636,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
+    const auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -700,8 +700,8 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 {
-    float dUf = float(dU);
-    float dVf = float(dV);
+    const float dUf = float(dU);
+    const float dVf = float(dV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (std::size_t i = 0; i < vtexcoords.size(); i++)
     {
@@ -713,8 +713,8 @@ void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 {
-    float scaleUf = float(scaleU);
-    float scaleVf = float(scaleV);
+    const float scaleUf = float(scaleU);
+    const float scaleVf = float(scaleV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (std::size_t i = 0; i < vtexcoords.size(); i++)
     {
@@ -754,7 +754,7 @@ void VisualModelImpl::init()
             if (sofa::helper::system::DataRepository.findFile(textureFilename))
             {
                 msg_info() << "loading file " << textureFilename;
-                bool textureLoaded = loadTexture(textureFilename);
+                const bool textureLoaded = loadTexture(textureFilename);
                 if (!textureLoaded)
                 {
                     msg_error() << "Texture " << textureFilename << " cannot be loaded";
@@ -796,8 +796,8 @@ void VisualModelImpl::initPositionFromVertices()
         m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
     }
     helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
-    helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
-    helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
+    const helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
+    const helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
     std::size_t nbVIn = 0;
     for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
     {
@@ -903,7 +903,7 @@ void VisualModelImpl::initFromTopology()
             SOFA_UNUSED(pointIndex);
             SOFA_UNUSED(coord);
 
-            auto last = m_positions.getLastElementIndex();
+            const auto last = m_positions.getLastElementIndex();
 
             if (m_topology->getNbTriangles() > 0)
             {
@@ -1182,7 +1182,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
 
 void VisualModelImpl::computeUVSphereProjection()
 {
-    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
     auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
@@ -1191,7 +1191,7 @@ void VisualModelImpl::computeUVSphereProjection()
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
     const VecCoord& coords = getVertices();
 
-    std::size_t nbrV = coords.size();
+    const std::size_t nbrV = coords.size();
     VecCoord m_sphereV;
     m_sphereV.resize(nbrV);
 
@@ -1202,8 +1202,8 @@ void VisualModelImpl::computeUVSphereProjection()
     {
         Coord Vcentered = coords[i] - center;
         SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
-        SReal theta = acos(Vcentered[2] / r);
-        SReal phi = atan2(Vcentered[1], Vcentered[0]);
+        const SReal theta = acos(Vcentered[2] / r);
+        const SReal phi = atan2(Vcentered[1], Vcentered[0]);
 
         r = 1.0;
         m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
@@ -1228,21 +1228,21 @@ void VisualModelImpl::flipFaces()
 
     for (std::size_t i = 0; i < edges.size() ; i++)
     {
-        sofa::Index temp = edges[i][1];
+        const sofa::Index temp = edges[i][1];
         edges[i][1] = visual_index_type(edges[i][0]);
         edges[i][0] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < triangles.size() ; i++)
     {
-        sofa::Index temp = triangles[i][1];
+        const sofa::Index temp = triangles[i][1];
         triangles[i][1] = visual_index_type(triangles[i][2]);
         triangles[i][2] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < quads.size() ; i++)
     {
-        sofa::Index temp = quads[i][1];
+        const sofa::Index temp = quads[i][1];
         quads[i][1] = visual_index_type(quads[i][3]);
         quads[i][3] = visual_index_type(temp);
     }
@@ -1296,7 +1296,7 @@ void VisualModelImpl::updateVisual()
                 helper::WriteOnlyAccessor< Data<VecVisualTriangle > > triangles = m_triangles;
                 const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
-                for (auto idTri : m_dirtyTriangles)
+                for (const auto idTri : m_dirtyTriangles)
                 {
                     triangles[idTri] = inputTriangles[idTri];
                 }
@@ -1308,7 +1308,7 @@ void VisualModelImpl::updateVisual()
                 helper::WriteOnlyAccessor< Data<VecVisualQuad > > quads = m_quads;
                 const vector< Quad >& inputQuads = m_topology->getQuads();
 
-                for (auto idQuad : m_dirtyQuads)
+                for (const auto idQuad : m_dirtyQuads)
                 {
                     quads[idQuad] = inputQuads[idQuad];
                 }
@@ -1411,7 +1411,7 @@ void VisualModelImpl::computeMesh()
         }
         else
         {
-            BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
+            const BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
             {

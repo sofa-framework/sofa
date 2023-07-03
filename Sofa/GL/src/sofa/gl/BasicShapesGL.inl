@@ -51,7 +51,7 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     glGenBuffers(1, &buffer.VBO);
     glGenBuffers(1, &buffer.IBO);
 
-    float radius = 1.0f;
+    const float radius = 1.0f;
 
     float const R = 1.f / float(desc.rings - 1);
     float const S = 1.f / float(desc.sectors - 1);
@@ -257,8 +257,8 @@ void BasicShapesGL_FakeSphere<VertexType>::init()
             msg_info("BasicShapesGL") << "InitGLSL failed" ;
             return;
         }
-        std::string vertexShaderContent = sofa::gl::generateSphereVS;
-        std::string fragmentShaderContent = sofa::gl::generateSphereFS;
+        const std::string vertexShaderContent = sofa::gl::generateSphereVS;
+        const std::string fragmentShaderContent = sofa::gl::generateSphereFS;
 
         m_shader = new GLSLShader();
         m_shader->SetVertexShaderFromString(vertexShaderContent);

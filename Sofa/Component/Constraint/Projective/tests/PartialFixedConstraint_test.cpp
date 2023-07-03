@@ -67,7 +67,8 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         /// Scene initialization
         sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
         assert(simulation);
-        simulation::Node::SPtr root = simulation->createNewGraph("root");
+        const simulation::Node::SPtr root = simulation->createNewGraph("root");
+
         root->setGravity( type::Vec3(0,0,0) );
         simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
 
@@ -77,7 +78,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         createUniformMass<DataTypes>(node, *mstate.get());
 
         Deriv force;
-        size_t sizeD = force.size();
+        const size_t sizeD = force.size();
         for(unsigned i=0; i<sizeD; i++)
         {
             force[i]=10;

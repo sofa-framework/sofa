@@ -298,7 +298,7 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     // for each contact, the constraint corrections that are involved with the contact are memorized
     current_cp->cclist_elems.clear();
     current_cp->cclist_elems.resize(numConstraints);
-    int nbCC = constraintCorrections.size();
+    const int nbCC = constraintCorrections.size();
     for (unsigned int i = 0; i < numConstraints; i++)
         current_cp->cclist_elems[i].resize(nbCC, nullptr);
 
@@ -307,7 +307,7 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     {
         bool foundCC = false;
         nbObjects++;
-        unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
+        const unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
 
         for (unsigned int j = 0; j < constraintCorrections.size(); j++)
         {
@@ -529,8 +529,8 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
     if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
-        core::MultiVecCoordId xId(res1);
-        core::MultiVecDerivId vId(res2);
+        const core::MultiVecCoordId xId(res1);
+        const core::MultiVecDerivId vId(res2);
         for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
@@ -548,7 +548,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     }
     else if (cParams->constOrder() == core::ConstraintParams::POS)
     {
-        core::MultiVecCoordId xId(res1);
+        const core::MultiVecCoordId xId(res1);
         for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
@@ -568,7 +568,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     }
     else if (cParams->constOrder() == core::ConstraintParams::VEL)
     {
-        core::MultiVecDerivId vId(res1);
+        const core::MultiVecDerivId vId(res1);
         for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;

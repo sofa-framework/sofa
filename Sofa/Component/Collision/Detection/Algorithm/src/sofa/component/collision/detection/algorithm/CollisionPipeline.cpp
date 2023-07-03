@@ -230,7 +230,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
         ScopedAdvancedTimer narrowphase("NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
-        type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+        const type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
 
         msg_info_when(d_doPrintInfoMessage.getValue())
                 << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;

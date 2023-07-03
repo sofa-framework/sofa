@@ -53,7 +53,7 @@ void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMesh
 
 Index TopologySubsetIndices::getLastElementIndex() const
 {
-    auto nbr = Index(m_topology->getNbPoints());
+    const auto nbr = Index(m_topology->getNbPoints());
     return (nbr == 0) ? sofa::InvalidID : nbr - 1;
 }
 

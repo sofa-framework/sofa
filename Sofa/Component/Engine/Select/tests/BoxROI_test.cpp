@@ -119,7 +119,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     }
 
     void checkGracefullHandlingOfInvalidUsage(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node name='Root' gravity='0 0 0' time='0' animate='0'>       "
                 "   <Node name='Level 1'>                                      "
@@ -128,7 +128,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "</Node>                                                       ";
 
         EXPECT_MSG_EMIT(Error); // Unable to find a MechanicalObject for this component.
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -146,7 +146,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
 
     void checkAutomaticSearchingOfMechanicalObject(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node name='Root' gravity='0 0 0' time='0' animate='0'>       "
                 "   <Node name='Level 1'>                                      "
@@ -156,7 +156,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -167,7 +167,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
 
     void checkAutomaticSearchingOfMechanicalObjectParent(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <MechanicalObject name='meca' position='0 0 0 1 1 1'/>     "
@@ -177,7 +177,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -187,7 +187,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     }
 
     void checkAutomaticSearchingOfMeshLoader(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <Node name='Level 1'>                                      "
@@ -198,7 +198,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");

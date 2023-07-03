@@ -70,7 +70,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     void loadScene(std::string sceneName)
     {
         // Load the scene from the xml file
-        std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
+        const std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::simulation::node::load(fileName.c_str());
     }
 
@@ -80,12 +80,12 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
         // Init simulation
         sofa::simulation::node::initRoot(root.get());
         double time = root->getTime();
-        double stiffnessSpring = 100;
-        double mass = 10;
-        double w = sqrt(stiffnessSpring/mass);
+        const double stiffnessSpring = 100;
+        const double mass = 10;
+        const double w = sqrt(stiffnessSpring/mass);
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(root->SearchDown);
 
         // Animate

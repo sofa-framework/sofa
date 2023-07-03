@@ -119,18 +119,18 @@ void RecordedCamera::moveCamera_navigation()
     {
         Quat firstQuater, nextQuater, interpolateQuater;
 
-        unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
+        const unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
         // Time for each segment
-        double timeBySegment = totalTime/(nbrPoints - 1);
+        const double timeBySegment = totalTime/(nbrPoints - 1);
         // the animation is the same modulo totalTime
-        double simuTimeModTotalTime = fmod((SReal) simuTime,(SReal) totalTime);
-        unsigned int currentIndexPoint = (unsigned int)floor(((SReal)simuTimeModTotalTime/(SReal)timeBySegment));
-        double ratio =  fmod((SReal)simuTimeModTotalTime,(SReal)timeBySegment)/(SReal)timeBySegment;
+        const double simuTimeModTotalTime = fmod((SReal) simuTime,(SReal) totalTime);
+        const unsigned int currentIndexPoint = (unsigned int)floor(((SReal)simuTimeModTotalTime/(SReal)timeBySegment));
+        const double ratio =  fmod((SReal)simuTimeModTotalTime,(SReal)timeBySegment)/(SReal)timeBySegment;
 
         if(currentIndexPoint < nbrPoints - 1)
         {
-            type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
-            type::Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
+            const type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            const type::Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
 
             // Set camera's position: linear interpolation
             p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
@@ -166,12 +166,12 @@ void RecordedCamera::moveCamera_rotation()
     if (totalTime == 0.0)
         totalTime = 200.0;
 
-    double ratio = (simuTime / totalTime);
+    const double ratio = (simuTime / totalTime);
     m_angleStep = 2*M_PI * ratio;
 
     // Compute cartesian coordinates from cylindrical ones
     type::Vec3 _pos = m_rotationCenter.getValue();
-    type::Quat<double> q(m_rotationAxis.getValue(), m_angleStep);
+    const type::Quat<double> q(m_rotationAxis.getValue(), m_angleStep);
     _pos += q.rotate(m_rotationStartPoint.getValue() - m_rotationCenter.getValue());
     p_position.setValue(_pos);
 
@@ -211,11 +211,11 @@ void RecordedCamera::moveCamera_translation()
 
     if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 0)
     {
-        unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
-        double timeBySegment = totalTime/(nbrPoints - 1);
-        double simuTimeModTotalTime = fmod((SReal)simuTime,(SReal)totalTime);
-        unsigned int currentIndexPoint = (unsigned int)floor((simuTimeModTotalTime/timeBySegment));
-        double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+        const unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
+        const double timeBySegment = totalTime/(nbrPoints - 1);
+        const double simuTimeModTotalTime = fmod((SReal)simuTime,(SReal)totalTime);
+        const unsigned int currentIndexPoint = (unsigned int)floor((simuTimeModTotalTime/timeBySegment));
+        const double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
 
         // if the view up vector was not initialized
         if (m_cameraUp.getValue().norm() < 1e-6)
@@ -223,9 +223,9 @@ void RecordedCamera::moveCamera_translation()
 
         if(currentIndexPoint < nbrPoints - 1)
         {
-            type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            const type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
             p_lookAt.setValue(m_translationPositions.getValue()[currentIndexPoint + 1]);
-            type::Vec3 cameraFocal = p_lookAt.getValue() - _pos;
+            const type::Vec3 cameraFocal = p_lookAt.getValue() - _pos;
 
             // Set camera's position: linear interpolation
             p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
@@ -259,8 +259,8 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
-        double simuTime = this->getContext()->getTime();
-        double simuDT = this->getContext()->getDt();
+        const double simuTime = this->getContext()->getTime();
+        const double simuDT = this->getContext()->getDt();
 
         if (simuTime < m_nextStep)
             return;
@@ -288,7 +288,7 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
     }
     else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
+        const sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
         msg_info() <<" handleEvent gets character '" << ke->getKey() <<"'. ";
     }
 
@@ -298,7 +298,7 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 void RecordedCamera::configureRotation()
 {
     // HACK: need to init again, as component init seems to be overwritten by viewer settings
-    type::Vec3 _pos = m_rotationStartPoint.getValue();
+    const type::Vec3 _pos = m_rotationStartPoint.getValue();
     p_position.setValue(_pos);
     p_lookAt.setValue(m_rotationLookAt.getValue());
     p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
@@ -373,7 +373,7 @@ void RecordedCamera::initializeViewUp()
     {
         type::Vec3 zAxis = m_translationPositions.getValue()[1] -  m_translationPositions.getValue()[0];
         zAxis.normalize();
-        type::Vec3 xRef(1,0,0);
+        const type::Vec3 xRef(1,0,0);
         // Initialize the view-up vector with the reference vector the "most perpendicular" to zAxis.
          m_cameraUp.setValue(xRef);
         double normCrossProduct = cross(zAxis,xRef).norm();
@@ -413,7 +413,7 @@ void RecordedCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
 {
     int posX = me->getPosX();
     int posY = me->getPosY();
-    int wheelDelta = me->getWheelDelta();
+    const int wheelDelta = me->getWheelDelta();
 
     //Mouse Press
     if(me->getState() == core::objectmodel::MouseEvent::LeftPressed)
@@ -486,10 +486,10 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
     {
         if (currentMode == TRACKBALL_MODE)
         {
-            float x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
-            float y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
-            float x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
-            float y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
+            const float x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
+            const float y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
+            const float x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
+            const float y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
 
             //fetch rotation
@@ -545,7 +545,7 @@ void RecordedCamera::drawRotation()
     type::Vec3 _pos = m_rotationStartPoint.getValue();
 
     m_rotationPoints.resize(100);
-    double _angleStep = 2*M_PI/100;
+    const double _angleStep = 2*M_PI/100;
     for (unsigned int i = 0; i<100; ++i)
     {
         // Compute cartesian coordinates from cylindrical ones

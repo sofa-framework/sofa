@@ -602,8 +602,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         {
             for (int i=0; i<data.nbVertex; i++)
             {
-                int i9 = i*9;
-                int e = offset+i*3;
+                const int i9 = i*9;
+                const int e = offset+i*3;
                 rotations->set(e+0,e+0,data.vecTmpRotation[i9+0]);
                 rotations->set(e+0,e+1,data.vecTmpRotation[i9+1]);
                 rotations->set(e+0,e+2,data.vecTmpRotation[i9+2]);

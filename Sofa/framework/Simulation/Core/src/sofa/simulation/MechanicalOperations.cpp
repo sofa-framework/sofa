@@ -157,7 +157,7 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
+    const MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
     executeVisitor( visitor );
 }
 
@@ -165,7 +165,7 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
+    const MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
     executeVisitor( visitor );
 }
 
@@ -174,7 +174,7 @@ void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVe
 {
     setX(x);
     setV(v);
-    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
+    const MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
     executeVisitor( visitor );
 }
 
@@ -183,7 +183,7 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
+    const MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
     executeVisitor( visitor );
 }
 
@@ -275,7 +275,7 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
 /// Compute the current force delta (given the latest propagated velocity)
 void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
-    core::ConstMultiVecDerivId dx = mparams.dx();
+    const core::ConstMultiVecDerivId dx = mparams.dx();
     mparams.setDx(mparams.v());
     setDf(df);
     if (clear)
@@ -305,7 +305,7 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, 
 /// accumulate $ df += (m M + b B + k K) velocity $
 void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear, bool accumulate)
 {
-    core::ConstMultiVecDerivId dx = mparams.dx();
+    const core::ConstMultiVecDerivId dx = mparams.dx();
     mparams.setDx(mparams.v());
     setDf(df);
     if (clear)
@@ -497,11 +497,11 @@ void MechanicalOperations::m_print( std::ostream& out )
         showMissingLinearSolverError();
         return;
     }
-    linearalgebra::BaseMatrix* m = s->getSystemBaseMatrix();
+    const linearalgebra::BaseMatrix* m = s->getSystemBaseMatrix();
     if (!m) return;
     //out << *m;
-    auto ny = m->rowSize();
-    auto nx = m->colSize();
+    const auto ny = m->rowSize();
+    const auto nx = m->colSize();
     out << "[";
     for (linearalgebra::BaseMatrix::Index y=0; y<ny; ++y)
     {

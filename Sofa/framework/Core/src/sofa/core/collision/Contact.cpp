@@ -51,7 +51,7 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
     }
     else
     {
-        std::string otype(type, 0, args);
+        const std::string otype(type, 0, args);
 
 		if (verbose)
             msg_info("Contact") << model1->getName() << "-" << model2->getName() << " " << otype << " :";
@@ -62,8 +62,8 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
 
         while (args != std::string::npos)
         {
-            std::string::size_type next = type.find_first_of("&?",args+1);
-            std::string::size_type eq = type.find("=",args+1);
+            const std::string::size_type next = type.find_first_of("&?",args+1);
+            const std::string::size_type eq = type.find("=",args+1);
             if (eq != std::string::npos && (next == std::string::npos || eq < next))
             {
                 std::string var(type, args+1, eq-args-1);

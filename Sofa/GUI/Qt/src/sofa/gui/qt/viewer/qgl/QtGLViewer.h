@@ -92,7 +92,7 @@ public:
     static QtGLViewer* create(QtGLViewer*, sofa::gui::common::BaseViewerArgument& arg)
     {
         common::BaseViewerArgument* pArg = &arg;
-        common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
+        const common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
                 new QtGLViewer(nullptr, pArg->getName().c_str() )

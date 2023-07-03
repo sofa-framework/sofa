@@ -44,7 +44,7 @@ sofa::SignedIndex RotationMatrix<Real>::colSize(void) const
 template<class Real>
 SReal RotationMatrix<Real>::element(sofa::SignedIndex i, sofa::SignedIndex j) const
 {
-    sofa::SignedIndex bd = j-(i/3)*3;
+    const sofa::SignedIndex bd = j-(i/3)*3;
     if ((bd<0) || (bd>2)) return 0.0 ;
 
     return (SReal)data[i*3+bd];
@@ -80,7 +80,7 @@ void RotationMatrix<Real>::setIdentity()
 template<class Real>
 void RotationMatrix<Real>::set(sofa::SignedIndex i, sofa::SignedIndex j, double v)
 {
-    sofa::SignedIndex bd = (i/3)*3;
+    const sofa::SignedIndex bd = (i/3)*3;
     if ((j<bd) || (j>bd+2)) return;
     data[i*3+j-bd] = (Real)v;
 }
@@ -89,7 +89,7 @@ void RotationMatrix<Real>::set(sofa::SignedIndex i, sofa::SignedIndex j, double 
 template<class Real>
 void RotationMatrix<Real>::add(sofa::SignedIndex i, sofa::SignedIndex j, double v)
 {
-    sofa::SignedIndex bd = (i/3)*3;
+    const sofa::SignedIndex bd = (i/3)*3;
     if ((j<bd) || (j>bd+2)) return;
 
     data[i*3+j-bd] += (Real)v;

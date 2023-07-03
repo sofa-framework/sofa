@@ -164,9 +164,9 @@ TEST(QuaterTest, QuaterdFromFrame)
 {
     Quat<double> quat;
     //90 deg around Z from Identity
-    sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
-    sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
-    sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
+    const sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
+    const sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
+    const sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
     quat.fromFrame(xAxis, yAxis, zAxis);
 
     EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
@@ -215,7 +215,7 @@ TEST(QuaterTest, QuaterdRotateVec)
     Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quat.rotate(p); //equiv if inverseQuat.rotate() in matlab
 
     EXPECT_NEAR(4.580932858428164, rp[0], errorThreshold);
@@ -244,7 +244,7 @@ TEST(QuaterTest, QuaterdInvRotateVec)
     Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quat.inverseRotate(p);//equiv if quat.rotate() in matlab
 
     EXPECT_NEAR(3.077954984157941, rp[0], errorThreshold);
@@ -276,7 +276,7 @@ TEST(QuaterTest, QuaterdOperatorAdd)
     //60deg X, 30deg Y and 60deg Z
     quat2.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     quatAdd = quat1 + quat2;
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quatAdd.rotate(p);
     sofa::type::Vec3d rrp = quat2.rotate(quat1.rotate(p));
 
@@ -305,7 +305,7 @@ TEST(QuaterTest, QuaterdOperatorMultQuat)
 TEST(QuaterTest, QuaterdOperatorMultReal)
 {
     Quat<double> quat, quatMult;
-    double r = 2.0;
+    const double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
 
@@ -320,7 +320,7 @@ TEST(QuaterTest, QuaterdOperatorMultReal)
 TEST(QuaterTest, QuaterdOperatorDivReal)
 {
     Quat<double> quat, quatDiv;
-    double r = 3.0;
+    const double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 
@@ -335,7 +335,7 @@ TEST(QuaterTest, QuaterdOperatorDivReal)
 TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 {
     Quat<double> quat;
-    double r = 2.0;
+    const double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
 
@@ -350,7 +350,7 @@ TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 {
     Quat<double> quat;
-    double r = 3.0;
+    const double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 
@@ -505,8 +505,8 @@ TEST(QuaterTest, QuaterdAxisToQuat)
 {
     Quat<double> quat;
     //axang2quat([0 2 4 pi/3])
-    sofa::type::Vec3d axis(0, 2, 4);
-    double phi = 1.047197551196598; //60deg
+    const sofa::type::Vec3d axis(0, 2, 4);
+    const double phi = 1.047197551196598; //60deg
 
     quat = quat.axisToQuat(axis, phi);
 
@@ -537,9 +537,9 @@ TEST(QuaterTest, QuaterdQuatToAxis)
 TEST(QuaterTest, QuaterdCreateQuaterFromFrame)
 {
     //90 deg around Z from Identity
-    sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
-    sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
-    sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
+    const sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
+    const sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
+    const sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
     Quat<double> quat = Quat<double>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
     EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
@@ -565,7 +565,7 @@ TEST(QuaterTest, QuaterdCreateFromRotationVector)
 TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 {
     //90deg X, 30deg Y and 60deg Z
-    sofa::type::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
+    const sofa::type::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
     Quat<double> quat = Quat<double>::createQuaterFromEuler(euler);
 
     EXPECT_NEAR(0.500000000000000, quat[0], errorThreshold);

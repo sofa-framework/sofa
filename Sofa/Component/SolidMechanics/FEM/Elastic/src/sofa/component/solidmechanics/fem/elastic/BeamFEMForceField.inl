@@ -79,7 +79,7 @@ BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
-    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    const core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
         msg_warning() << "Missing mechanical state";
     m_lastUpdatedStep=-1.0;
@@ -121,7 +121,7 @@ void BeamFEMForceField<DataTypes>::init()
 
         for (unsigned int j = 0; j < d_listSegment.getValue().size(); j++)
         {
-            unsigned int i = d_listSegment.getValue()[j];
+            const unsigned int i = d_listSegment.getValue()[j];
             if (i >= m_indexedElements->size())
             {
                 msg_warning() << "Defined listSegment is not compatible with topology";
@@ -370,7 +370,7 @@ inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
         a[2] = -a[2];
         a[3] = -a[3];
     }
-    type::Quat<SReal> q = b.inverse() * a;
+    const type::Quat<SReal> q = b.inverse() * a;
     return q;
 }
 
@@ -401,7 +401,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     // dW = dQ.toEulerVector();
     dW = dQ.quatToRotationVector();
 
-    SReal Theta = dW.norm();
+    const SReal Theta = dW.norm();
 
     if(Theta>(SReal)0.0000001)
     {
@@ -466,11 +466,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
-    Vec3 fa1 = x[a].getOrientation().rotate(type::Vec3d(force[0],force[1],force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(type::Vec3d(force[3],force[4],force[5]));
+    const Vec3 fa1 = x[a].getOrientation().rotate(type::Vec3d(force[0],force[1],force[2]));
+    const Vec3 fa2 = x[a].getOrientation().rotate(type::Vec3d(force[3],force[4],force[5]));
 
-    Vec3 fb1 = x[a].getOrientation().rotate(type::Vec3d(force[6],force[7],force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(type::Vec3d(force[9],force[10],force[11]));
+    const Vec3 fb1 = x[a].getOrientation().rotate(type::Vec3d(force[6],force[7],force[8]));
+    const Vec3 fb2 = x[a].getOrientation().rotate(type::Vec3d(force[9],force[10],force[11]));
 
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
@@ -507,10 +507,10 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 
     Displacement local_force = m_beamsData.getValue()[i]._k_loc * local_depl;
 
-    Vec3 fa1 = q.rotate(type::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
-    Vec3 fa2 = q.rotate(type::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
-    Vec3 fb1 = q.rotate(type::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
-    Vec3 fb2 = q.rotate(type::Vec3d(local_force[9],local_force[10],local_force[11]));
+    const Vec3 fa1 = q.rotate(type::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
+    const Vec3 fa2 = q.rotate(type::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
+    const Vec3 fb1 = q.rotate(type::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
+    const Vec3 fb2 = q.rotate(type::Vec3d(local_force[9],local_force[10],local_force[11]));
 
 
     df[a] += Deriv(-fa1,-fa2) * fact;
@@ -531,7 +531,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
     {
         unsigned int i=0;
 
-        unsigned int &offset = r.offset;
+        const unsigned int &offset = r.offset;
 
         if (m_partialListSegment)
         {
@@ -541,8 +541,8 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
                 i = d_listSegment.getValue()[j];
                 Element edge= (*m_indexedElements)[i];
-                Index a = edge[0];
-                Index b = edge[1];
+                const Index a = edge[0];
+                const Index b = edge[1];
 
                 type::Quat<SReal>& q = beamQuat(i);
                 q.normalize();
@@ -576,8 +576,8 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
             typename VecElement::const_iterator it;
             for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
             {
-                Index a = (*it)[0];
-                Index b = (*it)[1];
+                const Index a = (*it)[0];
+                const Index b = (*it)[1];
 
                 type::Quat<SReal>& q = beamQuat(i);
                 q.normalize();
@@ -586,7 +586,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Rt.transpose(R);
                 const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
-                bool exploitSymmetry = d_useSymmetricAssembly.getValue();
+                const bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
                 if (exploitSymmetry) {
                     for (int x1=0; x1<12; x1+=3) {
@@ -650,8 +650,8 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
         {
             i = d_listSegment.getValue()[j];
             Element edge= (*m_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
+            const Index a = edge[0];
+            const Index b = edge[1];
 
             type::Quat<SReal>& q = beamQuat(i);
             q.normalize();
@@ -685,8 +685,8 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
         typename VecElement::const_iterator it;
         for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
+            const Index a = (*it)[0];
+            const Index b = (*it)[1];
 
             type::Quat<SReal>& q = beamQuat(i);
             q.normalize();
@@ -695,7 +695,7 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
             Rt.transpose(R);
             const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
             StiffnessMatrix K;
-            bool exploitSymmetry = d_useSymmetricAssembly.getValue();
+            const bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
             if (exploitSymmetry) {
                 for (int x1=0; x1<12; x1+=3) {

@@ -173,7 +173,7 @@ public:
 
     void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
     {
-        Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
+        const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
         sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
@@ -647,28 +647,28 @@ public:
     void testFEMPerformance(int FEMType)
     {
         // init
-        int nbrStep = 1000;
-        int nbrGrid = 40;
+        const int nbrStep = 1000;
+        const int nbrGrid = 40;
 
         // load Triangular FEM
         createGridFEMScene(FEMType, nbrGrid);
         if (m_root.get() == nullptr)
             return;
 
-        int nbrTest = 10;
+        const int nbrTest = 10;
         double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
         {
-            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            const ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
                 sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
             }
 
-            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
-            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+            const ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            const double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
             
             if (timeMin > diffTimed)
                 timeMin = diffTimed;

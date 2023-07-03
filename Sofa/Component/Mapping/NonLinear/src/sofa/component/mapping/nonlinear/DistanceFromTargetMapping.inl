@@ -133,7 +133,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
     helper::WriteAccessor<Data<type::vector<Real> > > restDistances(f_restDistances);
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     jacobian.resizeBlocks(out.size(),in.size());
@@ -221,7 +221,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
@@ -327,7 +327,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
     K.resizeBlocks(in.size(),in.size());
@@ -365,12 +365,12 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    float arrowsize = d_showObjectScale.getValue();
+    const float arrowsize = d_showObjectScale.getValue();
     if( arrowsize<0 ) return;
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
     type::vector< sofa::type::Vec3 > points;
 

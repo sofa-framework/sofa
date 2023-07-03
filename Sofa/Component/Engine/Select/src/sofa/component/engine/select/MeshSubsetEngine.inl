@@ -58,10 +58,10 @@ template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
-    helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
-    helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
-    helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
-    helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
+    const helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
+    const helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
+    const helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
+    const helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
     helper::WriteOnlyAccessor<Data< SeqEdges > >  oedg(this->edges);

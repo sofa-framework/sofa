@@ -91,7 +91,7 @@ struct SetTypeInfo
             sofa::Size s = 0;
             for (typename DataType::const_iterator it = data.begin(), end=data.end(); it!=end; ++it)
             {
-                sofa::Size n = BaseTypeInfo::size(*it);
+                const sofa::Size n = BaseTypeInfo::size(*it);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValue(*it, index-s, value);
@@ -130,7 +130,7 @@ struct SetTypeInfo
             sofa::Size s = 0;
             for (typename DataType::const_iterator it = data.begin(), end=data.end(); it!=end; ++it)
             {
-                sofa::Size n = BaseTypeInfo::size(*it);
+                const sofa::Size n = BaseTypeInfo::size(*it);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValueString(*it, index-s, value);

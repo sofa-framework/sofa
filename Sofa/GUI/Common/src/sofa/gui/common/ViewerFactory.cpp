@@ -39,7 +39,7 @@ const char* SofaViewerFactory::getViewerName(Key key)
 
     Creator* creator;
     std::multimap<Key, Creator*>::iterator it = this->registry.lower_bound(key);
-    std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
+    const std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
     while (it != end)
     {
         creator = (*it).second;
@@ -59,7 +59,7 @@ const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
 
     Creator* creator;
     std::multimap<Key, Creator*>::iterator it = this->registry.lower_bound(key);
-    std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
+    const std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
     while (it != end)
     {
         creator = (*it).second;

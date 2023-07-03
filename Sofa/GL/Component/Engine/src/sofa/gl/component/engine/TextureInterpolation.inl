@@ -280,7 +280,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
             msg_error() << "Vector sizes differ." ;
             return;
         }
-        
+      
         const std::size_t nbr = potentiels.size();
 
         const auto& bbox = this->getContext()->getRootContext()->f_bbox.getValue();
@@ -295,7 +295,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
 
         // Recompute, in case Box has moved.
-        float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        const float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
         constexpr sofa::type::RGBAColor color4 = sofa::type::RGBAColor::white();
         for (unsigned int i = 0; i<nbr; i++)
         {

@@ -513,8 +513,8 @@ void TriangularFEMForceField<DataTypes>::getRotations()
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
     type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-    int numPoint = m_topology->getNbPoints();
-    int numTri = m_topology->getNbTriangles();
+    const int numPoint = m_topology->getNbPoints();
+    const int numTri = m_topology->getNbTriangles();
 
     //reset the rotation matrix
     for (int i = 0; i < numPoint; i++)
@@ -681,7 +681,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     //Hosford yield criterion
     //for plane stress : 1/2 * ( |S_1|^n + |S_2|^n) + 1/2 * |S_1 - S_2|^n = S_y^n
     //with S_i the principal stresses, n is a material-dependent exponent and S_y is the yield stress in uniaxial tension/compression
-    double n = this->hosfordExponant.getValue();
+    const double n = this->hosfordExponant.getValue();
     triangleInfo.differenceToCriteria = (Real)
             pow(0.5 * (pow((double)fabs(S(0)), n) +  pow((double)fabs(S(1)), n) + pow((double)fabs(S(0) - S(1)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
@@ -925,7 +925,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h
 {
     Displacement dX;
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -987,7 +987,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h
     Coord x_2;
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
     const auto& triangles = m_topology->getTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
@@ -1039,7 +1039,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const VecCoord& p)
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -1102,7 +1102,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const VecCoord& p)
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-    sofa::Size nbTriangles = m_topology->getNbTriangles();
+    const sofa::Size nbTriangles = m_topology->getNbTriangles();
     const auto& triangles = m_topology->getTriangles();
     for (sofa::Index i = 0; i < nbTriangles; i++)
     {
@@ -1193,7 +1193,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
     if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
-        unsigned int nbTriangles = m_topology->getNbTriangles();
+        const unsigned int nbTriangles = m_topology->getNbTriangles();
         auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
         for (unsigned int i = 0; i < nbTriangles; ++i)
             computePrincipalStress(i, triangleInf[i]);

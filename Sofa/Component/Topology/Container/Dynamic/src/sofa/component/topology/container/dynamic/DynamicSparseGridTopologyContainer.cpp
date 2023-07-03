@@ -76,7 +76,7 @@ void DynamicSparseGridTopologyContainer::init()
     }
 
     // Init values
-    int dataSize = VoxelLoader->getDataSize();
+    const int dataSize = VoxelLoader->getDataSize();
 
     if ( !dataSize )
     {

@@ -126,9 +126,9 @@ struct ClusteringEngine_test : public BaseSimulationTest,
 
     bool isClusterValid(const vector<unsigned int>& cluster)
     {
-        std::vector<unsigned int> result1 = {0,3,4,8};
-        std::vector<unsigned int> result2 = {1,5,7};
-        std::vector<unsigned int> result3 = {2,6};
+        const std::vector<unsigned int> result1 = {0,3,4,8};
+        const std::vector<unsigned int> result2 = {1,5,7};
+        const std::vector<unsigned int> result3 = {2,6};
 
         vector<unsigned int> sortedCluster(cluster);
         sort(sortedCluster.begin(),sortedCluster.end());

@@ -87,7 +87,7 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
 /// Remove an attribute given its name, returns false if the attribute was not there.
 bool BaseObjectDescription::removeAttribute(const std::string& attr)
 {
-    AttributeMap::iterator it = attributes.find(attr);
+    const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return false;
 
@@ -98,7 +98,7 @@ bool BaseObjectDescription::removeAttribute(const std::string& attr)
 /// Get an attribute given its name (return defaultVal if not present)
 const char* BaseObjectDescription::getAttribute(const std::string& attr, const char* defaultVal)
 {
-    AttributeMap::iterator it = attributes.find(attr);
+    const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return defaultVal;
     else
@@ -108,7 +108,7 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
 /// Docs is in .h
 float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
 {
-    AttributeMap::iterator it = attributes.find(attr);
+    const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return defaultVal;
 
@@ -117,7 +117,7 @@ float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const 
 
     const char* attrstr=it->second.c_str();
     char* end=nullptr;
-    float retval = strtof(attrstr, &end);
+    const float retval = strtof(attrstr, &end);
 
     /// It is important to check that the attribute was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
@@ -135,13 +135,13 @@ float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const 
 /// Docs is in .h
 int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
 {
-    AttributeMap::iterator it = attributes.find(attr);
+    const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return defaultVal;
 
     const char* attrstr=it->second.c_str();
     char* end=nullptr;
-    int retval = strtol(attrstr, &end, 10);
+    const int retval = strtol(attrstr, &end, 10);
 
     /// It is important to check that the attribute was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
@@ -179,7 +179,7 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     if (node!=nullptr)
     {
         Base* obj = node->getObject();
-        BaseContext* ctx = obj->toBaseContext();
+        const BaseContext* ctx = obj->toBaseContext();
         if (ctx != nullptr)
         {
             obj = ctx->getMechanicalState();

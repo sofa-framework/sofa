@@ -122,7 +122,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         }
 
         // Beam setup
-        typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
+        const typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
         if(grid)
         {
             grid->setSize(beamResolution);
@@ -153,7 +153,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
     void animate_scene()
     {
         //Animate simulation
-        unsigned int nbSteps = timeEvaluation/timeStep;
+        const unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
         {
@@ -165,7 +165,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
     void compute_theory()
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
-        SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
+        const SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
         theorX[0] = std::erfc(temp);
     }
 

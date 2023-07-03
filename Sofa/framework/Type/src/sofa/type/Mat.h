@@ -697,7 +697,7 @@ public:
         if (&m == this)
         {
             Mat<L,C,real> mat = m;
-            bool res = invertMatrix(*this, mat);
+            const bool res = invertMatrix(*this, mat);
             return res;
         }
         return invertMatrix(*this, m);
@@ -1040,7 +1040,7 @@ template<sofa::Size S, class real>
 {
     Mat<S-1,S-1,real> R, R_inv;
     from.getsub(0,0,R);
-    bool b = invertMatrix(R_inv, R);
+    const bool b = invertMatrix(R_inv, R);
 
     Mat<S-1,1,real> t, t_inv;
     from.getsub(0,S-1,t);

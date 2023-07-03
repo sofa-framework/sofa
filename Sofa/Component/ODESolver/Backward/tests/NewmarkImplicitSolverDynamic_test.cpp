@@ -102,10 +102,10 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
         velocitiesArray.push_back(v0);
 
         // Constants
-        double denominator = (h*h*beta+h*gamma*rk)*K+m*(1+h*gamma*rm);
-        double constantAcc = h*(-rm*m*(1-gamma)-K*h*(0.5-beta)-rk*K*(1-gamma));
-        double constantVel = (-rm*m-K*(h+rk));
-        double constant2 = h*h*0.5*(1-2*beta);
+        const double denominator = (h*h*beta+h*gamma*rk)*K+m*(1+h*gamma*rm);
+        const double constantAcc = h*(-rm*m*(1-gamma)-K*h*(0.5-beta)-rk*K*(1-gamma));
+        const double constantVel = (-rm*m-K*(h+rk));
+        const double constant2 = h*h*0.5*(1-2*beta);
 
         // Compute next velocities and accelerations
         for(int i=1;i< size+1; i++)
@@ -126,7 +126,7 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate

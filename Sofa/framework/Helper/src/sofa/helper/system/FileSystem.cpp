@@ -61,8 +61,8 @@ namespace system
 
 std::string FileSystem::getExtension(const std::string& filename)
 {
-    std::string s = filename;
-    std::string::size_type pos = s.find_last_of('.');
+    const std::string s = filename;
+    const std::string::size_type pos = s.find_last_of('.');
     if (pos == std::string::npos)
         return ""; // no extension
     else
@@ -96,7 +96,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 #if defined(WIN32)
     // Find the first file in the directory.
     WIN32_FIND_DATA ffd;
-    HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
+    const HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
     if (hFind == INVALID_HANDLE_VALUE) {
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
         return false;
@@ -110,7 +110,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     } while (FindNextFile(hFind, &ffd) != 0);
 
     // Check for errors
-    bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
+    const bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
     if (errorOccured)
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
 
@@ -186,7 +186,7 @@ bool FileSystem::exists(const std::string& path)
         return true;
     else
     {
-        DWORD errorCode = ::GetLastError();
+        const DWORD errorCode = ::GetLastError();
         if (errorCode != ERROR_FILE_NOT_FOUND && errorCode != ERROR_PATH_NOT_FOUND) // not No such file error
             msg_error("FileSystem::exists()") << path << ": " << Utils::GetLastError();
         return false;
@@ -210,7 +210,7 @@ bool FileSystem::exists(const std::string& path)
 bool FileSystem::isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
+    const DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;
@@ -377,8 +377,8 @@ std::string FileSystem::findOrCreateAValidPath(const std::string path)
     if( FileSystem::exists(path) )
         return path ;
 
-    std::string parentPath = FileSystem::getParentDirectory(path) ;
-    std::string currentFile = FileSystem::stripDirectory(path) ;
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string currentFile = FileSystem::stripDirectory(path) ;
     FileSystem::createDirectory(findOrCreateAValidPath( parentPath )+"/"+currentFile) ;
     return path ;
 }
@@ -402,7 +402,7 @@ static std::string computeParentDirectory(const std::string& path)
     else if (path[path.length()-1] == '/')
         return computeParentDirectory(path.substr(0, path.length() - 1));
     else {
-        size_t last_slash = path.find_last_of('/');
+        const size_t last_slash = path.find_last_of('/');
         if (last_slash == std::string::npos)
             return ".";
         else if (last_slash == 0)
@@ -428,7 +428,7 @@ std::string FileSystem::stripDirectory(const std::string& path)
         return stripDirectory(pathWithoutDrive(path));
     else
     {
-        size_t last_slash = path.find_last_of("/");
+        const size_t last_slash = path.find_last_of("/");
         if (last_slash == std::string::npos)    // No slash
             return path;
         else if (last_slash == path.size() - 1) // Trailing slash

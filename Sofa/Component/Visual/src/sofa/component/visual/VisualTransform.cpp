@@ -43,7 +43,7 @@ VisualTransform::~VisualTransform()
 
 void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
 {
-    Coord xform = transform.getValue();
+    const Coord xform = transform.getValue();
     vparams->drawTool()->pushMatrix();
     ++nbpush;
     float glTransform[16];

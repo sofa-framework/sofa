@@ -85,7 +85,7 @@ void SphereLoader::applyTransform()
                 msg_warning() << "Data scale should not be set to zero";
             }
         }
-        Matrix4 transformation = Matrix4::transformTranslation(translation) *
+        const Matrix4 transformation = Matrix4::transformTranslation(translation) *
             Matrix4::transformRotation(type::Quat< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
             Matrix4::transformScale(scale);
 

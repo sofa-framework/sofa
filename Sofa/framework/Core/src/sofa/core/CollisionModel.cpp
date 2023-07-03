@@ -124,7 +124,7 @@ CollisionModel::CollisionModel()
 /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
 void CollisionModel::setPrevious(CollisionModel::SPtr val)
 {
-    CollisionModel::SPtr p = previous.get();
+    const CollisionModel::SPtr p = previous.get();
     if (p == val) return;
     if (p)
     {

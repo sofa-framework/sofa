@@ -97,11 +97,11 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
         thisObject->setName("barycentricMapping");
         EXPECT_TRUE(thisObject->getName() == "barycentricMapping");
 
-        Node::SPtr node = simu->createNewGraph("root");
-        Node::SPtr nodeMapping = node->createChild("nodeToMap");
-        TriangleSetTopologyContainer::SPtr triangleContainer = New<TriangleSetTopologyContainer>();
-        TetrahedronSetTopologyContainer::SPtr tetraContainer = New<TetrahedronSetTopologyContainer>();
-        MechanicalObject<Vec3Types>::SPtr mecanical = New<MechanicalObject<Vec3Types>>();
+        const Node::SPtr node = simu->createNewGraph("root");
+        const Node::SPtr nodeMapping = node->createChild("nodeToMap");
+        const TriangleSetTopologyContainer::SPtr triangleContainer = New<TriangleSetTopologyContainer>();
+        const TetrahedronSetTopologyContainer::SPtr tetraContainer = New<TetrahedronSetTopologyContainer>();
+        const MechanicalObject<Vec3Types>::SPtr mecanical = New<MechanicalObject<Vec3Types>>();
 
         node->addObject(tetraContainer);
         node->addObject(mecanical);

@@ -46,7 +46,7 @@ template < int size, unsigned int type, class DataTypes>
 int OglAttribute< size, type, DataTypes >::getSETotalSize()
 {
     const type::vector<DataTypes>& data = value.getValue();
-    unsigned int totalSize = data.size() *sizeof ( data[0] );
+    const unsigned int totalSize = data.size() *sizeof ( data[0] );
     return totalSize;
 }
 
@@ -112,7 +112,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
          return; // initVisual not yet called
     const type::vector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
-    int dataCounter = value.getCounter();
+     const int dataCounter = value.getCounter();
     if (!_needUpdate && totalSize == _aboSize && dataCounter == _lastUpdateDataCounter)
         return;
 

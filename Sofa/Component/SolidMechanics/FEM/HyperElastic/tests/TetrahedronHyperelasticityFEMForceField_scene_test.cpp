@@ -122,7 +122,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
     void animate_scene()
     {
         //Animate simulation
-        unsigned int nbSteps = timeEvaluation/timeStep;
+        const unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
             sofa::simulation::node::animate(root.get(), timeStep);

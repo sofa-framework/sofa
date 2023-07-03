@@ -69,8 +69,8 @@ int BatchGUI::mainLoop()
         AdvancedTimer::begin("Animate");
         sofa::simulation::node::animate(groot.get());
         msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
-        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
@@ -195,7 +195,7 @@ void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::s
     SOFA_UNUSED(argumentParser);
 
     nbIterInp = strValue;
-    size_t inpLen = nbIterInp.length();
+    const size_t inpLen = nbIterInp.length();
 
     if (nbIterInp == "infinite")
     {

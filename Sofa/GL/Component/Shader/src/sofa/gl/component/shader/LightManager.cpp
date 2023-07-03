@@ -68,7 +68,7 @@ LightManager::~LightManager()
 
 void LightManager::init()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
     context->get<OglShadowShader, type::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);
 
     if (m_shadowShaders.empty() && d_shadowsEnabled.getValue())
@@ -116,7 +116,7 @@ void LightManager::initVisual()
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
         (*itl)->initVisual();
-        unsigned short shadowTextureUnit = (*itl)->getShadowTextureUnit();
+        const unsigned short shadowTextureUnit = (*itl)->getShadowTextureUnit();
 
         /// if given unit is available and correct
         if(shadowTextureUnit < maxTextureUnits &&
@@ -230,7 +230,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
             glEnable(GL_LIGHTING);
             for (unsigned int i=0 ; i < m_lights.size() ; ++i)
             {
-                unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
+                const unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
                 glActiveTexture(GL_TEXTURE0+shadowTextureUnit);
                 glEnable(GL_TEXTURE_2D);
 
@@ -320,7 +320,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
 {
     for(unsigned int i=0 ; i<m_lights.size() ; ++i)
     {
-        unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
+        const unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
         glActiveTexture(GL_TEXTURE0+shadowTextureUnit);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
@@ -354,7 +354,7 @@ void LightManager::draw(const core::visual::VisualParams* )
 
     for(unsigned int i=0 ; i < m_lights.size() ; i++)
     {
-        float val = float(i * 20);
+        const float val = float(i * 20);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_lights[i]->getDepthTexture());
 
@@ -484,7 +484,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        const sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         switch(ev->getKey())
         {
 
@@ -492,7 +492,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'L':
             if (!m_shadowShaders.empty())
             {
-                bool b = d_shadowsEnabled.getValue();
+                const bool b = d_shadowsEnabled.getValue();
                 d_shadowsEnabled.setValue(!b);
                 if (!m_shadowShaders.empty())
                 {

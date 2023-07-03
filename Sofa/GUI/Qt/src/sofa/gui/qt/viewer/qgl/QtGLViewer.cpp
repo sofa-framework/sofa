@@ -605,10 +605,10 @@ void QtGLViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
-                    , this->camera()->orientation()[1]
-                    , this->camera()->orientation()[2]
-                    , this->camera()->orientation()[3]);
+            const sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
+                                                  , this->camera()->orientation()[1]
+                                                  , this->camera()->orientation()[2]
+                                                  , this->camera()->orientation()[3]);
             gl::Axis::draw(sofa::type::Vec3(30.0_sreal,30.0_sreal,0.0_sreal),sofaQuat.inverse(), 25.0);
 
             glMatrixMode(GL_PROJECTION);
@@ -947,7 +947,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     px -= p0;
     py -= p0;
     pz -= p0;
-    double r0 = sqrt(px.norm2() + py.norm2());
+    const double r0 = sqrt(px.norm2() + py.norm2());
     double r1 = sqrt(px1.norm2() + py1.norm2());
     r1 = r0 + (r1-r0) / pz.norm();
     px.normalize();
@@ -1052,7 +1052,7 @@ void QtGLViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
+        const std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {

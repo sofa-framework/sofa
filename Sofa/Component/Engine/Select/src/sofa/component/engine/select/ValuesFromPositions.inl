@@ -156,7 +156,7 @@ void ValuesFromPositions<DataTypes>::reinit()
 template <class DataTypes>
 typename ValuesFromPositions<DataTypes>::Real ValuesFromPositions<DataTypes>::valueFromPosition(const CPos& p, const TempData& data)
 {
-    int nbv = data.inputValues.size();
+    const int nbv = data.inputValues.size();
 
     if (nbv == 0) return 0;
     else if (nbv == 1) return data.inputValues[0];
@@ -294,9 +294,9 @@ void ValuesFromPositions<DataTypes>::updateValues(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
     helper::WriteOnlyAccessor< Data<VecReal> > values = f_values;
@@ -348,9 +348,9 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
     helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > pointVectors = f_pointVectors;
@@ -407,7 +407,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         vparams->drawTool()->disableLighting();
 
         const VecCoord* x0 = &f_X0.getValue();
-        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+        const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
         helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;

@@ -73,7 +73,7 @@ template< class In, class Out >
 type::vector<BaseState*> MultiMapping<In,Out>::getFrom()
 {
     const VecFromModels& models = getFromModels();
-    size_t size = models.size();
+    const size_t size = models.size();
     type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
@@ -83,7 +83,7 @@ template< class In, class Out >
 type::vector<BaseState* > MultiMapping<In,Out>::getTo()
 {
     const VecToModels& models = getToModels();
-    size_t size = models.size();
+    const size_t size = models.size();
     type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;

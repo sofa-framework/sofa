@@ -133,7 +133,7 @@ void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::mouseMoveEvent(QMouseEvent *event) {
     if(m_isDragging){
-        double dt=(event->x() - m_prevMousePosition.x())/100.0 ;
+        const double dt=(event->x() - m_prevMousePosition.x())/100.0 ;
         m_prevMousePosition = event->pos() ;
         slotCalcValue(dt + m_fValue, false) ;
         emit valueEdited(m_fValue) ;

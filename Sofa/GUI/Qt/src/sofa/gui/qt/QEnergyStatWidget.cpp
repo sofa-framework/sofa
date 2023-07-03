@@ -58,9 +58,9 @@ void QEnergyStatWidget::stepImpl()
     m_energyVisitor->execute(m_node->getContext() );
 
     // Update series
-    SReal time = m_node->getTime();
-    SReal kinectic = m_energyVisitor->getKineticEnergy();
-    SReal potential = m_energyVisitor->getPotentialEnergy();
+    const SReal time = m_node->getTime();
+    const SReal kinectic = m_energyVisitor->getKineticEnergy();
+    const SReal potential = m_energyVisitor->getPotentialEnergy();
 
     m_curves[0]->append(time, kinectic);
     m_curves[1]->append(time, potential);

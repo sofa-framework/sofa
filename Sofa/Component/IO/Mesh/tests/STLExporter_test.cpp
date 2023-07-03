@@ -90,7 +90,7 @@ public:
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) << scene1.str() ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -121,7 +121,7 @@ public:
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

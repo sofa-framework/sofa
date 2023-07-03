@@ -76,7 +76,6 @@ namespace sofa::simulation
 using namespace sofa::defaulttype;
 using namespace sofa;
 
-
 namespace node
 {
 
@@ -87,6 +86,7 @@ void initRoot(Node* root)
     {
         return;
     }
+
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     if (!root->getAnimationLoop())
@@ -249,6 +249,7 @@ void reset(Node* root)
     {
         return;
     }
+
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // start by resetting the time
@@ -463,6 +464,7 @@ void unload(NodeSPtr root)
     {
         return;
     }
+  
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);

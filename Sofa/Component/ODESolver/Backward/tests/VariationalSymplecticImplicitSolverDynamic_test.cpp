@@ -116,8 +116,8 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
         totalEnergy = m*g*z0; // energy at initial time
 
         // Set constants
-        double denominator = 4*m+h*h*K+4*h*(rm*m + rk*K);//4*h*(-rk*K+rm*m);
-        double constant = -h*K;
+        const double denominator = 4*m+h*h*K+4*h*(rm*m + rk*K);//4*h*(-rk*K+rm*m);
+        const double constant = -h*K;
 
         // Compute velocities, energies and positions
         for(int i=1;i< size+1; i++)
@@ -138,9 +138,9 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<statecontainer::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
-        typename VariationalSymplecticSolver::SPtr variationalSolver = m_si.root->get<VariationalSymplecticSolver>(m_si.root->SearchDown);
+        const typename VariationalSymplecticSolver::SPtr variationalSolver = m_si.root->get<VariationalSymplecticSolver>(m_si.root->SearchDown);
         
 
         // Animate

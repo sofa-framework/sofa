@@ -38,7 +38,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
-    auto rowItEnd = c.end();
+    const auto rowItEnd = c.end();
 
     for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {

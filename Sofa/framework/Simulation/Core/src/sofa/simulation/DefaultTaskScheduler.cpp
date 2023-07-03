@@ -76,7 +76,7 @@ DefaultTaskScheduler::~DefaultTaskScheduler()
         
 WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 {
-    auto thread =_threads.find(id);
+    const auto thread =_threads.find(id);
     if (thread == _threads.end() )
     {
         return nullptr;
@@ -169,8 +169,8 @@ void DefaultTaskScheduler::stop()
                 
         m_threadCount = 1;
         m_workerThreadCount = 1;
-                
-        auto mainThreadIt = _threads.find(std::this_thread::get_id());
+
+        const auto mainThreadIt = _threads.find(std::this_thread::get_id());
         WorkerThread* mainThread = mainThreadIt->second;
         _threads.clear();
         _threads[std::this_thread::get_id()] = mainThread;

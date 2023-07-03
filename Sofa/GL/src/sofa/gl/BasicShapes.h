@@ -140,9 +140,9 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
     glMultMatrixf(coordinateMatrix);
     //gluDisk(quadric, 2.0*bodyRad, 2.0*rad, 10, 10);
 
-    float rr=1.5f*bodyRad;
-    double dv=2*M_PI/precision;
-    double dw=2*M_PI/precision;
+    const float rr=1.5f*bodyRad;
+    const double dv=2*M_PI/precision;
+    const double dw=2*M_PI/precision;
     double v=0.0f;
     double w=0.0f;
 

@@ -210,7 +210,7 @@ public:
     template<class Dest>
     void addTo(Dest* dest) const
     {
-        Index ny = rowSize();
+        const Index ny = rowSize();
         for (Index y=0; y<ny; ++y)
             dest->add(y,y,element(y));
     }
@@ -308,7 +308,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const DiagonalMatrix<T>& v )
     {
-        Index ny = v.rowSize();
+        const Index ny = v.rowSize();
         out << "[";
         for (Index y=0; y<ny; ++y) out << " " << v.element(y);
         out << " ]";

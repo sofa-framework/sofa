@@ -78,7 +78,7 @@ void QTableModelUpdater::setReadOnly(const bool isReadOnly)
 
 void QTableModelUpdater::resizeTableV( int number )
 {
-    QSpinBox *spinBox = (QSpinBox *) sender();
+    const QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
     if( spinBox == nullptr)
     {
@@ -86,7 +86,7 @@ void QTableModelUpdater::resizeTableV( int number )
     }
     if (number != rowCount())
     {
-        int previousRows=rowCount();
+        const int previousRows=rowCount();
         setRowCount(number);
         if (number > previousRows)
         {
@@ -102,7 +102,7 @@ void QTableModelUpdater::resizeTableV( int number )
 
 void QTableModelUpdater::resizeTableH( int number )
 {
-    QSpinBox *spinBox = (QSpinBox *) sender();
+    const QSpinBox *spinBox = (QSpinBox *) sender();
     QString header;
     if( spinBox == nullptr)
     {
@@ -110,7 +110,7 @@ void QTableModelUpdater::resizeTableH( int number )
     }
     if (number != columnCount())
     {
-        int previousColumns=columnCount();
+        const int previousColumns=columnCount();
         setColumnCount(number);
         if (number > previousColumns)
         {

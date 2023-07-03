@@ -127,7 +127,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-        int width = getNbColors();
+        const int width = getNbColors();
         unsigned char *data = new unsigned char[ width * 3 ];
 
         for (int i=0; i<width; i++) {
@@ -154,7 +154,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
 
     const std::string& legendTitle = d_legendTitle.getValue();
-    int yoffset = legendTitle.empty() ? 0 : (int)(2*d_legendSize.getValue());
+    const int yoffset = legendTitle.empty() ? 0 : (int)(2*d_legendSize.getValue());
 
 
     GLint viewport[4];
@@ -194,7 +194,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     //glBlendFunc(GL_ONE, GL_ONE);
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    GLhandleARB currentShader = sofa::gl::GLSLShader::GetActiveShaderProgram();
+    const GLhandleARB currentShader = sofa::gl::GLSLShader::GetActiveShaderProgram();
     sofa::gl::GLSLShader::SetActiveShaderProgram(0);
 
     glBegin(GL_QUADS);
@@ -230,7 +230,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
     static const sofa::type::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
-    float backgroundLuminance = sofa::type::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
+    const float backgroundLuminance = sofa::type::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
     if(backgroundLuminance > 0.5f)
         textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 

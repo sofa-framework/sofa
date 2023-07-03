@@ -78,15 +78,15 @@ void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::co
         return ;
     }
 
-    SReal kFact = (SReal)mparams->kFactor();
+    const SReal kFact = (SReal)mparams->kFactor();
     if (kFact == 0)
     {
         return;
     }
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
 
     const sofa::linearalgebra::BaseMatrix* mappingK = l_mapping->getK();
 

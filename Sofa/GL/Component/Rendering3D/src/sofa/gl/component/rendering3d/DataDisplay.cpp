@@ -465,7 +465,7 @@ void DataDisplay::computeNormals()
         const Coord& v1 = x[t[0]];
         const Coord& v2 = x[t[1]];
         const Coord& v3 = x[t[2]];
-        Coord n = cross(v2-v1, v3-v1);
+        const Coord n = cross(v2-v1, v3-v1);
 
         m_normals[t[0]] += n;
         m_normals[t[1]] += n;
@@ -480,10 +480,10 @@ void DataDisplay::computeNormals()
         const Coord & v2 = x[q[1]];
         const Coord & v3 = x[q[2]];
         const Coord & v4 = x[q[3]];
-        Coord n1 = cross(v2-v1, v4-v1);
-        Coord n2 = cross(v3-v2, v1-v2);
-        Coord n3 = cross(v4-v3, v2-v3);
-        Coord n4 = cross(v1-v4, v3-v4);
+        const Coord n1 = cross(v2-v1, v4-v1);
+        const Coord n2 = cross(v3-v2, v1-v2);
+        const Coord n3 = cross(v4-v3, v2-v3);
+        const Coord n4 = cross(v1-v4, v3-v4);
 
         m_normals[q[0]] += n1;
         m_normals[q[1]] += n2;

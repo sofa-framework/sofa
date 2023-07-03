@@ -182,7 +182,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' />                                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -222,7 +222,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='2.0' />                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -264,7 +264,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' />                                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -307,7 +307,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -356,7 +356,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -388,7 +388,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -421,7 +421,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -456,7 +456,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='-2.0' />                                              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -487,7 +487,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='-1.0' />                                            "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -518,7 +518,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0 4.0' />                                         "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -550,7 +550,7 @@ public:
                 "               vertexMass='1 -1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -581,7 +581,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 2' />                                  "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -616,7 +616,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -649,7 +649,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -692,7 +692,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -736,7 +736,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -774,7 +774,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -811,7 +811,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -854,7 +854,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -891,7 +891,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -929,7 +929,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -970,7 +970,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1007,7 +1007,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1044,7 +1044,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1081,7 +1081,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1117,7 +1117,7 @@ public:
                 "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1158,7 +1158,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1197,7 +1197,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1931,10 +1931,10 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
     positions.push_back(Coord(0.0f, 1.0f, 0.0f));
 
-    TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
+    const TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
     topologyContainer->addTriangle(0, 1, 2);
 
-    TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType surface = 0.5;
@@ -1955,10 +1955,10 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     positions.push_back(Coord(1.0f, 1.0f, 0.0f));
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
 
-    QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
+    const QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
     topologyContainer->addQuad(0, 1, 2, 3);
 
-    QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType surface = 1.0;
@@ -1978,10 +1978,10 @@ TEST_F(MeshMatrixMass3_test, singleTetrahedron)
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
     positions.push_back(Coord(0.0f, 0.0f, 1.0f));
 
-    TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
+    const TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
     topologyContainer->addTetra(0, 1, 2, 3);
 
-    TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType volume = MassType(1.0/3.0) * 0.5; // V = 1/3 * B * h
@@ -2005,10 +2005,10 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     positions.push_back(Coord(1.0f, 1.0f, 1.0f));
     positions.push_back(Coord(0.0f, 1.0f, 1.0f));
 
-    HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
+    const HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
     topologyContainer->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
 
-    HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType volume = 1.0;

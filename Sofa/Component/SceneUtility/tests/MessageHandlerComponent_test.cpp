@@ -58,7 +58,7 @@ bool inited = perTestInit() ;
 
 TEST(MessageHandlerComponent, simpleInit)
 {
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "   <Node>  "
@@ -66,7 +66,7 @@ TEST(MessageHandlerComponent, simpleInit)
         "   </Node> "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MessageHandlerComponent* component = nullptr;
@@ -78,13 +78,13 @@ TEST(MessageHandlerComponent, simpleInit)
 
 TEST(MessageHandlerComponent, missingHandler)
 {
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
@@ -94,13 +94,13 @@ TEST(MessageHandlerComponent, missingHandler)
 
 TEST(MessageHandlerComponent, invalidHandler)
 {
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='thisisinvalid'/>           "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
@@ -110,13 +110,13 @@ TEST(MessageHandlerComponent, invalidHandler)
 
 TEST(MessageHandlerComponent, clangHandler)
 {
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='clang'/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;

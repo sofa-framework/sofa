@@ -93,15 +93,15 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
     LCPForceFeedback_test* driverTest = static_cast<LCPForceFeedback_test*>(p_this);
 
     // Loop Timer
-    long targetSpeedLoop = 1; // Target loop speed: 1ms
+    const long targetSpeedLoop = 1; // Target loop speed: 1ms
 
-    ctime_t refTicksPerMs = CTime::getRefTicksPerSec() / 1000;
-    ctime_t targetTicksPerLoop = targetSpeedLoop * refTicksPerMs;
+    const ctime_t refTicksPerMs = CTime::getRefTicksPerSec() / 1000;
+    const ctime_t targetTicksPerLoop = targetSpeedLoop * refTicksPerMs;
     
     // Haptics Loop
     while (!terminate)
     {
-        ctime_t startTime = CTime::getRefTime();
+        const ctime_t startTime = CTime::getRefTime();
 
         driverTest->mtxPosition.lock();
         sofa::type::Vec3 posInSofa = driverTest->m_currentPosition; // will apply -1 on y to simulate penetration
@@ -138,7 +138,7 @@ void LCPForceFeedback_test::loadTestScene(const std::string& filename)
     ASSERT_NE(simu, nullptr);
 
     /// Load the scene
-    std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTICS_TEST_SCENES_DIR) + "/" + filename;
+    const std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTICS_TEST_SCENES_DIR) + "/" + filename;
     m_root = simu->createNewGraph("root");    
     m_root = sofa::simulation::node::load(sceneFilename.c_str());
 
@@ -152,9 +152,9 @@ bool LCPForceFeedback_test::test_InitScene()
 {
     loadTestScene("ToolvsFloorCollision_test.scn");
 
-    simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
+    const simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
     EXPECT_NE(instruNode, nullptr);
-    MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
+    const MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
     m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
 
     // Check components access
@@ -165,7 +165,7 @@ bool LCPForceFeedback_test::test_InitScene()
     EXPECT_EQ(meca->getSize(), 1);
     if (meca->getSize() > 0)
     {
-        Coord rigZero;
+        const Coord rigZero;
         const VecCoord& coords = meca->x.getValue();
         EXPECT_EQ(coords[0], rigZero);
     }
@@ -181,10 +181,10 @@ bool LCPForceFeedback_test::test_InitScene()
 bool LCPForceFeedback_test::test_SimpleCollision()
 {
     loadTestScene("ToolvsFloorCollision_test.scn");
-    simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
+    const simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
     EXPECT_NE(instruNode, nullptr);
-    MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
-    LCPRig::SPtr lcp = instruNode->get<LCPRig>(instruNode->SearchDown);
+    const MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
+    const LCPRig::SPtr lcp = instruNode->get<LCPRig>(instruNode->SearchDown);
 
 
     // Check components access
@@ -348,9 +348,9 @@ bool LCPForceFeedback_test::test_multiThread()
 {
     loadTestScene("ToolvsFloorCollision_test.scn");
 
-    simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
+    const simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
     EXPECT_NE(instruNode, nullptr);
-    MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
+    const MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
     m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
     
     // Force only 2 iteration max for ci tests

@@ -42,7 +42,8 @@ TEST(OglModel, templateName)
     helper::logging::MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
 
     simulation::Simulation* simulation = sofa::simulation::getSimulation();
-    simulation::Node::SPtr root = simulation->createNewGraph("root");
+    const simulation::Node::SPtr root = simulation->createNewGraph("root");
+
     {
         EXPECT_MSG_NOEMIT(Error);
 

@@ -86,7 +86,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
             i=e;
 
 
-        std::size_t f2 = s.find_first_of("\"'",f+1);
+        const std::size_t f2 = s.find_first_of("\"'",f+1);
         if( f2==std::string::npos )
         {
             std::cerr << "Error (SVector) " << "read : Bad begin string character, expected \" or '" << std::endl;
