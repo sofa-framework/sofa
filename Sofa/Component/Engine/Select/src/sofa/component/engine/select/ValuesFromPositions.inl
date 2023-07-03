@@ -277,12 +277,10 @@ void ValuesFromPositions<DataTypes>::doUpdate()
     const VecCoord* x0 = &f_X0.getValue();
     data.x0 = x0;
 
-    // Compute min and max of BB
-    sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
-    data.bmax = (Real)*sceneMaxBBox.ptr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
+    // Compute min and max of BB    
+    const auto& bbox = this->getContext()->getRootContext()->f_bbox.getValue();
+    data.bmin = (Real)*bbox.minBBoxPtr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
+    data.bmax = (Real)*bbox.maxBBoxPtr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
 
     if (p_fieldType.getValue().getSelectedId() == 0)
         this->updateValues(data);

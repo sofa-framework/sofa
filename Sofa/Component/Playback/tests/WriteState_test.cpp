@@ -74,7 +74,6 @@ namespace sofa {
         void SetUp() override
         {
             // Init simulation
-            sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");
         }
 
@@ -140,7 +139,7 @@ namespace sofa {
         // Initialization of the scene
         void initScene()
         {
-            sofa::simulation::getSimulation()->init(this->root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         // Run five steps of simulation
@@ -148,7 +147,7 @@ namespace sofa {
         {
             for(int i=0; i<7; i++)
             {
-                sofa::simulation::getSimulation()->animate(root.get(),timeStep);
+                sofa::simulation::node::animate(root.get(), timeStep);
             }
         }
 
@@ -224,7 +223,7 @@ namespace sofa {
         void TearDown() override
         {
             if (root!=nullptr)
-                sofa::simulation::getSimulation()->unload(root);
+                sofa::simulation::node::unload(root);
         }
 
     };

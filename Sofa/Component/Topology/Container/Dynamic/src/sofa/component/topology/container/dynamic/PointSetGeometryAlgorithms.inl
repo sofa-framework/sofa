@@ -276,13 +276,10 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
     if (d_showPointIndices.getValue())
     {
-        sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         constexpr auto color4 = sofa::type::RGBAColor::white();
-
-        sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         const float scale = getIndicesScale();
 

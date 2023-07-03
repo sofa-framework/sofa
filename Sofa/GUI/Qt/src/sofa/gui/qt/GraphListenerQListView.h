@@ -36,7 +36,6 @@
 namespace sofa::gui::qt
 {
 using sofa::simulation::Node;
-using sofa::simulation::Simulation;
 using sofa::simulation::MutationListener;
 
 QPixmap* getPixmap(core::objectmodel::Base* obj, bool, bool,bool);

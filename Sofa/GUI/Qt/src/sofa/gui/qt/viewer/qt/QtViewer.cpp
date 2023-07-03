@@ -566,14 +566,14 @@ void QtViewer::DisplayOBJs()
     {
         // 		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot.get());
+        sofa::simulation::node::initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
 
     {
 
-        getSimulation()->draw(vparams,groot.get());
+        sofa::simulation::node::draw(vparams, groot.get());
 
         if (m_bShowAxis)
         {

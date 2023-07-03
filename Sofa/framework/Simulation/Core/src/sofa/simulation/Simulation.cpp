@@ -70,143 +70,70 @@ using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityV
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa;
 
-Simulation::Simulation()
+namespace node
 {
-    // Safety check; it could be elsewhere, but here is a good place, I guess.
-    if (!sofa::simulation::core::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("SofaSimulationCommon", "sofa::simulation::common::init()");
 
-    name.setValue("Simulation");
-}
-
-
-Simulation::~Simulation()
+void initRoot(Node* root)
 {
-}
-
-/// The (unique) simulation which controls the scene
-Simulation::SPtr Simulation::theSimulation;
-
-void setSimulation ( Simulation* s )
-{
-    Simulation::theSimulation.reset(s);
-
-}
-
-Simulation* getSimulation()
-{
-    return Simulation::theSimulation.get();
-}
-
-/// Print all object in the graph
-void Simulation::print ( Node* root )
-{
-    if ( !root ) return;
-    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    root->execute<PrintVisitor>(params);
-}
-
-/// Print all object in the graph
-void Simulation::exportXML ( Node* root, const char* fileName )
-{
-    if ( !root ) return;
-    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    if ( fileName!=nullptr )
+    sofa::helper::ScopedAdvancedTimer timer("Simulation::init");
+    if (!root)
     {
-        std::ofstream out ( fileName );
-        out << "<?xml version=\"1.0\"?>\n";
-
-        XMLPrintVisitor print ( params, out );
-        root->execute ( print );
+        return;
     }
-    else
-    {
-        XMLPrintVisitor print ( params, std::cout );
-        root->execute ( print );
-    }
-}
 
-/// Print all object in the graph
-void Simulation::exportGraph ( Node* root, const char* filename )
-{
-    if ( !root ) return;
-
-    SceneLoader *exporter = SceneLoaderFactory::getInstance()->getExporterEntryFileName(filename);
-
-    if (exporter)
-    {
-        exporter->write(root,filename);
-    }
-    else
-    {
-        // unable to write the file
-        msg_error() << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
-    }
-}
-
-/// Initialize the scene.
-void Simulation::init ( Node* root )
-{
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
-    if ( !root ) return;
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     if (!root->getAnimationLoop())
     {
         msg_warning(root) << "An animation loop is required, but has not been found. Add an animation loop in the root "
-                            "of your scene to fix this warning. The list of available animation loop components is: ["
-        << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
-        << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
+                "of your scene to fix this warning. The list of available animation loop components is: ["
+                << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
+                << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
-        root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
+        root->addObject(aloop, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
-    if(!root->getVisualLoop())
+    if (!root->getVisualLoop())
     {
         msg_info(root) << "A visual loop is required, but has not been found. Add a visual loop in the root "
-                            "of your scene to fix this warning. The list of available visual loop components is: ["
-        << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
-        << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
+            "of your scene to fix this warning. The list of available visual loop components is: ["
+            << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
+            << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
-        root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
+        root->addObject(vloop, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
     // all the objects have now been created, update the links
     root->execute<UpdateLinksVisitor>(params);
 
-    initNode(root);
+    init(root);
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::init");
 }
 
-
-void Simulation::initNode( Node* node)
+void init(Node* node)
 {
-    if(!node)
+    if (!node)
     {
         return;
     }
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     SimulationInitStartEvent beginInit;
-    PropagateEventVisitor pb {params, &beginInit};
+    PropagateEventVisitor pb{params, &beginInit};
     node->execute(pb);
 
     // apply the init() and bwdInit() methods to all the components.
@@ -214,7 +141,7 @@ void Simulation::initNode( Node* node)
     node->execute<InitVisitor>(params);
 
     SimulationInitDoneEvent endInit;
-    PropagateEventVisitor pe {params, &endInit};
+    PropagateEventVisitor pe{params, &endInit};
     node->execute(pe);
 
     {
@@ -226,63 +153,114 @@ void Simulation::initNode( Node* node)
     node->execute<StoreResetStateVisitor>(params);
 }
 
-/// Execute one timestep. If do is 0, the dt parameter in the graph will be used
-void Simulation::animate ( Node* root, SReal dt )
+void exportInXML(Node* root, const char* fileName)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::animate");
+    if (!root)
+    {
+        return;
+    }
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    if (fileName != nullptr)
+    {
+        std::ofstream out(fileName);
+        out << "<?xml version=\"1.0\"?>\n";
 
-    if ( !root ) {
-        msg_error() << "Simulation::animate, no root found";
+        XMLPrintVisitor print(params, out);
+        root->execute(print);
+    }
+    else
+    {
+        XMLPrintVisitor print(params, std::cout);
+        root->execute(print);
+    }
+}
+
+void print(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    root->execute<PrintVisitor>(params);
+}
+
+void updateVisualContext(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
+
+    if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
+    {
+        vloop->updateContextStep(vparams);
+    }
+    else
+    {
+        msg_error("Simulation") << "Simulation::updateVisualContext() : VisualLoop expected at the root node";
+        return;
+    }
+}
+
+void animate(Node* root, SReal dt)
+{
+    sofa::helper::ScopedAdvancedTimer timer("Simulation::animate");
+
+    if (!root)
+    {
+        msg_error("Simulation") << "Simulation::animate, no root found";
         return;
     }
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
-    sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
-    if(aloop)
+    if (sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop())
     {
-        aloop->step(params,dt);
+        aloop->step(params, dt);
     }
     else
     {
-        msg_error() << "Simulation::animate: AnimationLoop expected at the root node";
+        msg_error("Simulation") << "Simulation::animate: AnimationLoop expected at the root node";
         return;
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::animate");
 }
 
-void Simulation::updateVisual ( Node* root)
+void updateVisual(Node* root)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::updateVisual");
+    sofa::helper::ScopedAdvancedTimer timer("Simulation::updateVisual");
 
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
 
-    if(vloop)
+    if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
         vloop->updateStep(params);
     }
     else
     {
-        msg_error() << "Simulation::updateVisual: VisualLoop expected at the root node";
+        msg_error("Simulation") << "Simulation::updateVisual: VisualLoop expected at the root node";
+        return;
+    }
+}
+
+void reset(Node* root)
+{
+    if (!root)
+    {
         return;
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::updateVisual");
-}
-
-/// Reset to initial state
-void Simulation::reset ( Node* root )
-{
-    if ( !root ) return;
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // start by resetting the time
-    const sofa::core::behavior::BaseAnimationLoop *animLoop = root->getAnimationLoop();
-    if (animLoop)
+    if (const sofa::core::behavior::BaseAnimationLoop* animLoop = root->getAnimationLoop())
+    {
         root->setTime(animLoop->getResetTime());
+    }
     else
+    {
         root->setTime(0.);
+    }
     UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
 
     // by definition cleanup() MUST only be called right before destroying the object
@@ -295,197 +273,327 @@ void Simulation::reset ( Node* root )
     root->execute<VisualUpdateVisitor>(params);
 }
 
-/// Initialize the textures
-void Simulation::initTextures ( Node* root )
+void initTextures(Node* root)
 {
-
-    if ( !root ) return;
+    if (!root)
+        return;
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
 
-    if(vloop)
+    if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
         vloop->initStep(params);
     }
     else
     {
-        msg_error() << "Simulation::initTextures() : VisualLoop expected at the root node";
+        msg_error("Simulation") << "Simulation::initTextures() : VisualLoop expected at the root node";
         return;
     }
 
     SimulationInitTexturesDoneEvent endInit;
-    PropagateEventVisitor pe {params, &endInit};
+    PropagateEventVisitor pe{params, &endInit};
     root->execute(pe);
 }
 
-
-/// Compute the bounding box of the scene.
-void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
+void updateContext(Node* root)
 {
-    if ( !root ) return;
+    if (!root)
+    {
+        return;
+    }
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    root->execute<UpdateContextVisitor>(params);
+}
+
+void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init)
+{
+    if (!root)
+    {
+        return;
+    }
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
-    if(vloop)
+    if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
         vloop->computeBBoxStep(vparams, minBBox, maxBBox, init);
     }
     else
     {
-        msg_error() << "Simulation::computeBBox() : VisualLoop expected at the root node";
+        msg_error("Simulation") << "Simulation::computeBBox() : VisualLoop expected at the root node";
         return;
     }
 }
 
-/// Compute the bounding box of the scene.
-void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
 {
-    assert ( root!=nullptr );
+    assert(root!=nullptr);
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    root->execute<UpdateBoundingBoxVisitor>( params );
+    root->execute<UpdateBoundingBoxVisitor>(params);
     type::BoundingBox bb = root->f_bbox.getValue();
-    for(int i=0; i<3; i++){
-        minBBox[i]= bb.minBBox()[i];
-        maxBBox[i]= bb.maxBBox()[i];
+    for (int i = 0; i < 3; i++)
+    {
+        minBBox[i] = bb.minBBox()[i];
+        maxBBox[i] = bb.maxBBox()[i];
     }
 }
 
-/// Update contexts. Required before drawing the scene if root flags are modified.
-void Simulation::updateContext ( Node* root )
+void draw(sofa::core::visual::VisualParams* vparams, Node* root)
 {
-    if ( !root ) return;
-    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    root->execute<UpdateContextVisitor>(params);
-}
+    sofa::helper::ScopedAdvancedTimer timer("Simulation::draw");
 
-/// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
-void Simulation::updateVisualContext (Node* root)
-{
-    if ( !root ) return;
-    sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
-
-    if(vloop)
+    for (const auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
-        vloop->updateContextStep(vparams);
-    }
-    else
-    {
-        msg_error() << "Simulation::updateVisualContext() : VisualLoop expected at the root node";
-        return;
-    }
-}
-/// Render the scene
-void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
-{
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
-
-    for(const auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
-    {
-        if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
+        if (!vparams)
+        {
+            vparams = sofa::core::visual::visualparams::defaultInstance();
+        }
         vparams->update();
         visualLoop->drawStep(vparams);
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
 }
 
-/// Export a scene to an OBJ 3D Scene
-void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
+void exportOBJ(Node* root, const char* filename, bool exportMTL)
 {
-    if ( !root ) return;
+    if (!root)
+    {
+        return;
+    }
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    std::ofstream fout ( filename );
+    std::ofstream fout(filename);
 
     fout << "# Generated from SOFA Simulation" << std::endl;
 
-    if ( !exportMTL )
+    if (!exportMTL)
     {
-        ExportVisualModelOBJVisitor act ( params, &fout );
-        root->execute ( &act );
+        ExportVisualModelOBJVisitor act(params, &fout);
+        root->execute(&act);
     }
     else
     {
-        const char *path1 = strrchr ( filename, '/' );
-        const char *path2 = strrchr ( filename, '\\' );
-        const char* path = ( path1==nullptr ) ? ( ( path2==nullptr ) ?filename : path2+1 ) : ( path2==nullptr ) ? path1+1 : ( ( path1-filename ) > ( path2-filename ) ) ? path1+1 : path2+1;
+        const char* path1 = strrchr(filename, '/');
+        const char* path2 = strrchr(filename, '\\');
+        const char* path = (path1 == nullptr) ? ((path2 == nullptr) ? filename : path2 + 1) : (path2 == nullptr) ? path1 + 1 : ((path1 - filename) > (path2 - filename)) ? path1 + 1 : path2 + 1;
 
-        const char *ext = strrchr ( path, '.' );
+        const char* ext = strrchr(path, '.');
 
-        if ( !ext ) ext = path + strlen ( path );
-        std::string mtlfilename ( path, ext );
+        if (!ext)
+        {
+            ext = path + strlen(path);
+        }
+        std::string mtlfilename(path, ext);
         mtlfilename += ".mtl";
-        std::string mtlpathname ( filename, ext );
+        std::string mtlpathname(filename, ext);
         mtlpathname += ".mtl";
-        std::ofstream mtl ( mtlpathname.c_str() );
+        std::ofstream mtl(mtlpathname.c_str());
         mtl << "# Generated from SOFA Simulation" << std::endl;
-        fout << "mtllib "<<mtlfilename<<'\n';
+        fout << "mtllib " << mtlfilename << '\n';
 
-        ExportVisualModelOBJVisitor act ( params, &fout,&mtl );
-        root->execute ( &act );
+        ExportVisualModelOBJVisitor act(params, &fout, &mtl);
+        root->execute(&act);
     }
 }
 
-void Simulation::dumpState ( Node* root, std::ofstream& out )
+void exportGraph(Node* root, const char* filename)
+{
+    if (!root)
+    {
+        return;
+    }
+
+    if (SceneLoader* exporter = SceneLoaderFactory::getInstance()->getExporterEntryFileName(filename))
+    {
+        exporter->write(root, filename);
+    }
+    else
+    {
+        // unable to write the file
+        msg_error("Simulation") << "exportGraph: extension (" << sofa::helper::system::SetDirectory::GetExtension(filename) << ") not handled for export";
+    }
+}
+
+void dumpState(Node* root, std::ofstream& out)
 {
     sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
 
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    out<<root->getTime() <<" ";
-    WriteStateVisitor ( params, out ).execute ( root );
-    out<<std::endl;
+    out << root->getTime() << " ";
+    WriteStateVisitor(params, out).execute(root);
+    out << std::endl;
 }
 
-
-
-/// Load a scene from a file
-Node::SPtr Simulation::load ( const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs )
+NodeSPtr load(const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs)
 {
-    if( sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty())
+    if (sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty())
     {
-        msg_error() << "Cannot load file '" << filename << "': filename cannot be extracted from the given path";
+        msg_error("Simulation") << "Cannot load file '" << filename << "': filename cannot be extracted from the given path";
         return nullptr;
     }
 
-    if (sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty() )
+    if (sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty())
     {
-        msg_error() << "Cannot load file '" << filename << "': extension cannot be extracted from the given path";
+        msg_error("Simulation") << "Cannot load file '" << filename << "': extension cannot be extracted from the given path";
         return nullptr;
     }
 
     if (!sofa::helper::system::FileSystem::exists(filename))
     {
-        msg_error() << "Cannot load file '" << filename << "': file cannot be found";
+        msg_error("Simulation") << "Cannot load file '" << filename << "': file cannot be found";
         return nullptr;
     }
 
-    SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
-
-    if (loader) return loader->load(filename, reload, sceneArgs);
+    if (SceneLoader* loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename))
+    {
+        return loader->load(filename, reload, sceneArgs);
+    }
 
     const std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
     if (extension == "py" || extension == "py3"
         || extension == "pyscn" || extension == "py3scn") //special case for Python extensions
     {
-        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") is only supported if the"
-            " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
+        msg_error("Simulation") << "Cannot load file '" << filename << "': extension (" << extension << ") is only supported if the"
+                " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
     }
     else
     {
-        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") not supported";
+        msg_error("Simulation") << "Cannot load file '" << filename << "': extension (" << extension << ") not supported";
     }
     return nullptr;
 }
 
-/// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload(Node::SPtr root)
+void unload(NodeSPtr root)
 {
-    if ( !root ) return;
+    if (!root)
+    {
+        return;
+    }
+  
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);
 }
+}
 
-} // namespace simulation
+Simulation::Simulation()
+{
+    // Safety check; it could be elsewhere, but here is a good place, I guess.
+    if (!sofa::simulation::core::isInitialized())
+        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Core", "sofa::simulation::common::init()");
+}
 
-} // namespace sofa
+
+Simulation::~Simulation()
+{
+}
+
+void setSimulation ( Simulation* s )
+{}
+
+Simulation* getSimulation()
+{
+    return Simulation::theSimulation.get();
+}
+
+/// Print all object in the graph
+void Simulation::print ( Node* root )
+{
+    sofa::simulation::node::print(root);
+}
+
+/// Print all object in the graph
+void Simulation::exportXML ( Node* root, const char* fileName )
+{
+    sofa::simulation::node::exportInXML(root, fileName);
+}
+
+/// Print all object in the graph
+void Simulation::exportGraph ( Node* root, const char* filename )
+{
+    sofa::simulation::node::exportGraph(root, filename);
+}
+
+/// Initialize the scene.
+void Simulation::init ( Node* root )
+{
+    sofa::simulation::node::initRoot(root);
+}
+
+void Simulation::initNode( Node* node)
+{
+    sofa::simulation::node::init(node);
+}
+
+/// Execute one timestep. If do is 0, the dt parameter in the graph will be used
+void Simulation::animate ( Node* root, SReal dt )
+{
+    sofa::simulation::node::animate(root, dt);
+}
+
+void Simulation::updateVisual ( Node* root)
+{
+    sofa::simulation::node::updateVisual(root);
+}
+
+/// Reset to initial state
+void Simulation::reset ( Node* root )
+{
+    sofa::simulation::node::reset(root);
+}
+
+/// Initialize the textures
+void Simulation::initTextures ( Node* root )
+{
+    sofa::simulation::node::initTextures(root);
+}
+
+/// Compute the bounding box of the scene.
+void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
+{
+    sofa::simulation::node::computeBBox(root, minBBox, maxBBox, init);
+}
+
+/// Compute the bounding box of the scene.
+void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+{
+    sofa::simulation::node::computeTotalBBox(root, minBBox, maxBBox);
+}
+
+/// Update contexts. Required before drawing the scene if root flags are modified.
+void Simulation::updateContext ( Node* root )
+{
+    sofa::simulation::node::updateContext(root);
+}
+
+/// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
+void Simulation::updateVisualContext (Node* root)
+{
+    sofa::simulation::node::updateVisualContext(root);
+}
+
+/// Render the scene
+void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
+{
+    sofa::simulation::node::draw(vparams, root);
+}
+
+/// Export a scene to an OBJ 3D Scene
+void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
+{
+    sofa::simulation::node::exportOBJ(root, filename, exportMTL);
+}
+
+void Simulation::dumpState ( Node* root, std::ofstream& out )
+{
+    sofa::simulation::node::dumpState(root, out);
+}
+
+/// Load a scene from a file
+Node::SPtr Simulation::load ( const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs )
+{
+    return sofa::simulation::node::load(filename, reload, sceneArgs);
+}
+
+/// Delete a scene from memory. After this call the pointer is invalid
+void Simulation::unload(Node::SPtr root)
+{
+    sofa::simulation::node::unload(root);
+}
+} // namespace sofa::simulation

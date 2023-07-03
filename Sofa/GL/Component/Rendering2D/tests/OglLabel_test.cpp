@@ -55,7 +55,6 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp() override
     {
-        sofa::simulation::setSimulation(new DAGSimulation());
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering2D");
     }
 
@@ -85,7 +84,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -115,7 +114,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -145,7 +144,7 @@ public:
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 };

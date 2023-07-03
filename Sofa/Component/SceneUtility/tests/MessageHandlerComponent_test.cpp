@@ -30,9 +30,6 @@ using std::string ;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
-#include <sofa/simulation/Simulation.h>
-using sofa::simulation::Simulation ;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
@@ -68,8 +65,6 @@ TEST(MessageHandlerComponent, simpleInit)
             "       <MessageHandlerComponent handler='silent'/>              "
         "   </Node> "
         "</Node>                                                             " ;
-
-    sofa::simulation::setSimulation(new DAGSimulation());
 
     const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;

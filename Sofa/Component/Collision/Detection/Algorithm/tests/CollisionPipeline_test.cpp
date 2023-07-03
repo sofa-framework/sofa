@@ -36,7 +36,6 @@ using sofa::component::collision::detection::algorithm::CollisionPipeline ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
-using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -84,7 +83,7 @@ public:
     void TearDown() override
     {
         if (root)
-            Simulation::theSimulation->unload(root);
+            sofa::simulation::node::unload(root);
     }
 };
 

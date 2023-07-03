@@ -67,8 +67,9 @@ struct FixedConstraint_test : public BaseTest
     {
         //Init
 
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
+
         Coord initCoord1, initCoord2;
         Deriv force;
         for(unsigned i=0; i<force.size(); i++)
@@ -111,10 +112,10 @@ struct FixedConstraint_test : public BaseTest
         node->addObject(cst);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         /// Perform one time step
-        sofa::simulation::getSimulation()->animate(root.get(),0.5);
+        sofa::simulation::node::animate(root.get(), 0.5);
 
         /// Check if the first particle moved...this one should because it is not fixed
         /// so it is a failure if the particle is not moving at all.
@@ -148,8 +149,8 @@ struct FixedConstraint_test : public BaseTest
 
     bool testTopologicalChanges()
     {
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
         
         /// Scene creation
         const simulation::Node::SPtr root = simulation->createNewGraph("root");
@@ -203,11 +204,11 @@ struct FixedConstraint_test : public BaseTest
 
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         /// Perform two time steps
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1);
+        sofa::simulation::node::animate(root.get(), 0.1);
+        sofa::simulation::node::animate(root.get(), 0.1);
 
         typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
 

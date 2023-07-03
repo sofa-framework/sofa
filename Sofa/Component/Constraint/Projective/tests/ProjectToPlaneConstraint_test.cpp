@@ -71,8 +71,8 @@ struct ProjectToPlaneConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the matrix tests.
     void SetUp() override
     {
-//        if( sofa::simulation::getSimulation()==nullptr )
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
+        ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");
@@ -113,7 +113,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
     }
 
     /** Constrain all the particles.
@@ -126,7 +126,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::getSimulation()->init(root.get());
+         sofa::simulation::node::initRoot(root.get());
     }
     ///@}
 
@@ -206,7 +206,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

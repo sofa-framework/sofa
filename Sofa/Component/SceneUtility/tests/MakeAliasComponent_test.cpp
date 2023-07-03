@@ -74,10 +74,7 @@ void perTestInit()
 {
     sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
 
-    if(theSimulation==nullptr){
-        theSimulation = new DAGSimulation();
-        sofa::simulation::setSimulation(theSimulation);
-    }
+    theSimulation = sofa::simulation::getSimulation();
 
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ;
@@ -109,7 +106,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
     EXPECT_TRUE(component!=nullptr) ;
 
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
@@ -132,7 +129,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
@@ -154,7 +151,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
@@ -178,7 +175,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkValidBehavior)
@@ -200,7 +197,7 @@ TEST(MakeAliasComponent, checkValidBehavior)
 
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 }

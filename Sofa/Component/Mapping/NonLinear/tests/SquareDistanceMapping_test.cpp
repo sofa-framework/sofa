@@ -152,10 +152,6 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
     void onSetUp() override
     {
-        if (!simulation::getSimulation()) {
-            simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
-        }
-
         root = simulation::getSimulation()->createNewNode("root");
 
         simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
@@ -258,11 +254,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-9"}, {"threshold", "1.0e-9"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
         compareMechanicalObjects(i, 1e-7_sreal);
     }
@@ -275,11 +271,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "EigenSparseLU", {{"template", "CompressedRowSparseMatrixMat3x3d"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
         for (const auto& node : {oneMapping, twoMappings})
         {

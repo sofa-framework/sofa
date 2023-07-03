@@ -249,8 +249,6 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
     if (drawPotentiels.getValue())
     {
-        sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
-
         const VecCoord& realPotentiels = _inputField.getValue();
         const VecCoord3D& coords = _inputCoords.getValue();
 
@@ -282,12 +280,14 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
             msg_error() << "Vector sizes differ." ;
             return;
         }
-        const unsigned int nbr = potentiels.size();
+      
+        const std::size_t nbr = potentiels.size();
 
+        const auto& bbox = this->getContext()->getRootContext()->f_bbox.getValue();
 
-        sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
-        sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-
+        sofa::type::Vec3 sceneMinBBox = bbox.minBBox();
+        sofa::type::Vec3 sceneMaxBBox = bbox.maxBBox();
+        
         if (sceneMinBBox[0] > 10000000) // hack when BB is not found
         {
             sceneMaxBBox.assign(1);

@@ -53,10 +53,6 @@ class StaticSolverTest : public sofa::testing::BaseTest
 public:
     void onSetUp() override {
 
-        if (! getSimulation()) {
-            setSimulation(new DAGSimulation()) ;
-        }
-
         root = getSimulation()->createNewNode("root");
 
         createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
@@ -84,13 +80,13 @@ public:
     }
 
     void onTearDown() override {
-        getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
     }
 
     auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {
         using namespace std;
-        getSimulation()->init(root.get());
-        getSimulation()->animate(root.get(), 1);
+        sofa::simulation::node::initRoot(root.get());
+        sofa::simulation::node::animate(root.get(), 1_sreal);
         auto residuals = solver->squared_residual_norms();
         auto corrections = solver->squared_increment_norms();
         transform(begin(residuals), end(residuals), begin(residuals), [](SReal r) {return sqrt(r);});

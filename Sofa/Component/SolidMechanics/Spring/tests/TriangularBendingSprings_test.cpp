@@ -69,7 +69,7 @@ public:
 
     void SetUp() override
     {
-        simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        m_simulation = sofa::simulation::getSimulation();
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
     }
@@ -77,7 +77,7 @@ public:
     void TearDown() override
     {
         if (m_root != nullptr)
-            simulation::getSimulation()->unload(m_root);
+            sofa::simulation::node::unload(m_root);
     }
 
     void createSimpleTrianglePairScene(Real ks, Real kd)
@@ -94,7 +94,7 @@ public:
         createObject(m_root, "TriangularBendingSprings", { {"Name","TBS"}, {"stiffness", str(ks)}, {"damping", str(kd)} });
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -127,7 +127,7 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -155,7 +155,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -169,7 +169,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -264,7 +264,7 @@ public:
 
         for (int i = 0; i < nbrStep; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
 
         EXPECT_NEAR(positions[nbrGrid][0], -0.000132, 1e-4);
@@ -297,12 +297,12 @@ public:
         const sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
         triModif->removeTriangles(triIndices, true, true); // remove 10 first triangles
 
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         ASSERT_EQ(EdgeInfos.size(), 40);
 
         triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
         triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         
         ASSERT_EQ(EdgeInfos.size(), 5); // only one pair of triangle reminding == 1 edge in middle == 1 bending spring
         ASSERT_EQ(EdgeInfos[0].is_activated, false);

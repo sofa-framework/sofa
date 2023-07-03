@@ -176,7 +176,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         // and run the test
 
         // init scene and compute force
-        sofa::simulation::getSimulation()->init(this->node.get());
+        sofa::simulation::node::initRoot(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );

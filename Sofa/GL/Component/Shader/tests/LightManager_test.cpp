@@ -32,7 +32,6 @@ using sofa::testing::BaseTest;
 using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
@@ -58,8 +57,6 @@ struct TestLightManager : public BaseTest
     {
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 };
 
@@ -90,7 +87,7 @@ void checkAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
