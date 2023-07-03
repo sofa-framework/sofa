@@ -110,7 +110,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         EXPECT_GT(ei, -0.1) << "Initialization problem...before simulation second value should be 0>";
         for(int i=0; i<100; i++)
         {
-            simulation->animate(root.get(),(double)0.01);
+            sofa::simulation::node::animate(root.get(), 0.01_sreal);
         }
         Real xe=mechanicalobject->x.getValue()[0][0];
         Real ee = mechanicalobject->x.getValue()[1][0];
@@ -191,8 +191,9 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
 
         Simulation* simulation = sofa::simulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
-        for(int i=0; i<100; i++){
-            simulation->animate(root.get(),(double)0.01);
+        for(int i=0; i<100; i++)
+        {
+            sofa::simulation::node::animate(root.get(), 0.01_sreal);
         }
     }
 

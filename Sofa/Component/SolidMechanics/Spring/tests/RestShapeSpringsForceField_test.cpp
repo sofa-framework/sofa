@@ -83,10 +83,10 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
                                                                             {"template",type}});
     createObject(movingObject, "UniformMass", {{"totalMass", "1"}});
 
-    theSimulation->init(theRoot.get());
+    sofa::simulation::node::initRoot(theRoot.get());
     for(unsigned int i=0;i<20;i++)
     {
-        theSimulation->animate(theRoot.get(), 0.01);
+        sofa::simulation::node::animate(theRoot.get(), 0.01_sreal);
     }
     return theRoot;
 }

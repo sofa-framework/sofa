@@ -52,10 +52,10 @@ public:
         sofa::simpleapi::createObject(childNode, "ReadState",
                                       {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityX.data"}});
 
-        simulation->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         for(int i=0; i<7; i++)
         {
-            simulation->animate(root.get(), dt);
+            sofa::simulation::node::animate(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("position")->getValueString(),
@@ -78,7 +78,7 @@ public:
             EXPECT_MSG_EMIT(Error);
             sofa::simpleapi::createObject(root, "ReadState",
                                       {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"invalidFile.txt"}});
-            simulation->init(root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         return true;

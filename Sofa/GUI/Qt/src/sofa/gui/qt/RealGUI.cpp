@@ -734,7 +734,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         return;
     }
     this->unloadScene();
-    mSimulation = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
+    mSimulation = dynamic_cast< Node *> (sofa::simulation::node::load ( scene.c_str() ));
     getSimulation()->init(mSimulation);
     if ( mSimulation )
     {
@@ -859,9 +859,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
-    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::node::load ( filename, reload, sceneArgs );
 
-    simulation::getSimulation()->init ( mSimulation.get() );
+    sofa::simulation::node::initRoot(mSimulation.get());
     if ( mSimulation == nullptr )
     {
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
@@ -1096,7 +1096,7 @@ void RealGUI::unloadScene(bool _withViewer)
     if(_withViewer && getViewer())
         getViewer()->unload();
 
-    simulation::getSimulation()->unload ( currentSimulation() );
+    sofa::simulation::node::unload ( currentSimulation() );
 
     if(_withViewer && getViewer())
         getViewer()->setScene(nullptr);
@@ -1146,7 +1146,7 @@ void RealGUI::fileSave()
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    simulation::getSimulation()->exportGraph ( node, filename );
+    sofa::simulation::node::exportGraph ( node, filename );
 }
 
 //------------------------------------
@@ -2147,10 +2147,14 @@ void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
 
     if ( sofalistview == simulationGraph && activate )
     {
-        if ( node == currentSimulation() )
-            simulation::getSimulation()->init(node);
+        if (node == currentSimulation())
+        {
+            sofa::simulation::node::initRoot(node);
+        }
         else
-            simulation::getSimulation()->initNode(node);
+        {
+            sofa::simulation::node::init(node);
+        }
     }
 }
 
@@ -2300,11 +2304,11 @@ void RealGUI::step()
         m_clockBeforeLastStep = currentClock;
     }
 
-    simulation::getSimulation()->animate ( root, dt );
-    simulation::getSimulation()->updateVisual( root );
+    sofa::simulation::node::animate(root, dt);
+    sofa::simulation::node::updateVisual(root);
 
     if ( m_dumpState )
-        simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
+        sofa::simulation::node::dumpState ( root, *m_dumpStateStream );
     if ( m_exportGnuplot )
         exportGnuplot(root,gnuplotDirectory);
 
@@ -2367,7 +2371,7 @@ void RealGUI::resetScene()
     {
         m_frameCounter=0;
 
-        simulation::getSimulation()->reset ( root );
+        sofa::simulation::node::reset(root);
         eventNewTime();
         emit newStep();
     }
@@ -2515,7 +2519,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    simulation::getSimulation()->exportOBJ ( root, filename.c_str(),exportMTL );
+    sofa::simulation::node::exportOBJ ( root, filename.c_str(),exportMTL );
 }
 
 //------------------------------------

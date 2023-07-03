@@ -143,10 +143,6 @@ int main(int argc, char** argv)
     sofa::gui::common::init();
     sofa::gui::common::GUIManager::Init(argv[0]);
 
-    // Create simulation tree
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
-
     // Create the graph root node with collision
     sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     root->setGravity( sofa::defaulttype::Vec3Types::Deriv(0,-10.0,0) );
@@ -175,7 +171,7 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     //=======================================
     // Run the main loop

@@ -24,6 +24,7 @@
 #include <sofa/simulation/config.h>
 #include <sofa/core/sptr.h>
 #include <sofa/core/fwd.h>
+#include <memory>
 
 namespace sofa::core::objectmodel { class BaseContext; }
 
@@ -36,7 +37,9 @@ namespace sofa::simulation
     typedef sofa::core::sptr<Simulation> SimulationSPtr;
 
     /// Set the (unique) simulation which controls the scene
-    SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
+    SOFA_SIMULATION_CORE_API
+    SOFA_ATTRIBUTE_DEPRECATED_SETSIMULATIONRAWPOINTER()
+    void setSimulation(Simulation* s);
 
     /** Get the (unique) simulation which controls the scene.
         Automatically creates one if no Simulation has been set.

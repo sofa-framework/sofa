@@ -42,7 +42,6 @@ using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
-using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
@@ -77,7 +76,9 @@ struct BoxROITest :  public sofa::testing::BaseTest
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
         sofa::simpleapi::importPlugin("Sofa.Component.Engine.Select");
 
-        setSimulation( m_simu = new DAGSimulation() );
+        m_simu = sofa::simulation::getSimulation();
+        ASSERT_NE(m_simu, nullptr);
+
         m_root = m_simu->createNewGraph("root");
 
         m_node = m_root->createChild("node");
@@ -88,7 +89,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     void TearDown() override
     {
         if (m_root != nullptr){
-            m_simu->unload(m_root);
+            sofa::simulation::node::unload(m_root);
         }
     }
 

@@ -139,7 +139,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
 
         // end create scene
         //*********
-        simu->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         //*********
         // run simulation
 
@@ -152,7 +152,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         const unsigned nMax=100;
         const double  precision = 1.e-4;
         do {
-            simu->animate(root.get(),1.0);
+            sofa::simulation::node::animate(root.get(), 1_sreal);
 
             x1 = component::odesolver::testing::getVector( root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
             v1 = component::odesolver::testing::getVector( root, core::VecId::velocity() );
@@ -255,7 +255,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         // end create scene
         //*********
-        simu->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         //*********
         // run simulation
 
@@ -268,7 +268,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         const unsigned nMax=100;
         const double  precision = 1.e-4;
         do {
-            sofa::simulation::getSimulation()->animate(root.get(),1.0);
+            sofa::simulation::node::animate(root.get(), 1_sreal);
 
             x1 = component::odesolver::testing::getVector(root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
             v1 = component::odesolver::testing::getVector(root, core::VecId::velocity() );

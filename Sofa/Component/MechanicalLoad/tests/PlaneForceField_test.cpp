@@ -27,7 +27,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
@@ -122,7 +121,7 @@ struct PlaneForceField_test : public BaseSimulationTest
     {
         if(m_simulation==nullptr){
             BackTrace::autodump() ;
-            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
+            m_simulation = sofa::simulation::getSimulation();
         }
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");
@@ -162,12 +161,12 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
-        simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void tearDownDefaultScene()
     {
-        m_simulation->unload( m_root );
+        sofa::simulation::node::unload(m_root);
     }
 
     bool testBasicAttributes()
@@ -314,9 +313,9 @@ struct PlaneForceField_test : public BaseSimulationTest
 
     bool testPlaneForceField()
     {
-        for(int i=0; i<100; i++){
-            m_simulation->animate(m_root.get(),(double)0.01);
-
+        for(int i=0; i<100; i++)
+        {
+            sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
         Real x = m_mechanicalObj->x.getValue()[0][0];
 

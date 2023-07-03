@@ -52,7 +52,6 @@ using type::vector;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
-using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
 using sofa::core::objectmodel::BaseData ;
@@ -680,7 +679,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
 Node::SPtr initSofa()
 {
-    setSimulation(new simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
 }
@@ -695,14 +694,14 @@ Node::SPtr getRoot()
 void initScene(Node::SPtr _root)
 {
     root = _root;
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(_root.get());
 }
 
 Node::SPtr clearScene()
 {
     if( root )
-        Simulation::theSimulation->unload( root );
-    root = Simulation::theSimulation->createNewGraph("");
+        sofa::simulation::node::unload( root );
+    root = simulation::getSimulation()->createNewGraph("");
     return root;
 }
 

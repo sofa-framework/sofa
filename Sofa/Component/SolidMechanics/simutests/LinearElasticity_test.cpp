@@ -199,7 +199,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void SetUp()
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
         size_t resolutionCircumferential=7;
         size_t  resolutionRadial=3;
         size_t  resolutionHeight=7;
@@ -229,7 +229,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     }
     bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
 
-        sofa::simulation::getSimulation()->init(tractionStruct.root.get());
+        sofa::simulation::node::initRoot(tractionStruct.root.get());
 
         size_t i,j,k;
         for (k=0;k<sizeYoungModulusArray;++k) {
@@ -245,13 +245,13 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                     Real pressure= pressureArray[i];
 
                     tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
-                    sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
+                    sofa::simulation::node::reset(tractionStruct.root.get());
                     
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do one step of the static solver
-                    sofa::simulation::getSimulation()->animate(tractionStruct.root.get(),0.5);
+                    sofa::simulation::node::animate(tractionStruct.root.get(), 0.5_sreal);
 
                     // Get the simulated final position of that vertex
                     Coord p1=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
@@ -284,7 +284,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void TearDown()
     {
         if (tractionStruct.root!=nullptr)
-            sofa::simulation::getSimulation()->unload(tractionStruct.root);
+            sofa::simulation::node::unload(tractionStruct.root);
     }
 
 };

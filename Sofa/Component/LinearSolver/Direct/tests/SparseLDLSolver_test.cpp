@@ -208,7 +208,6 @@ TEST(SparseLDLSolver, EmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
@@ -220,14 +219,14 @@ TEST(SparseLDLSolver, EmptyMState)
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"position", ""}});
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     {
         EXPECT_MSG_EMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5_sreal);
+        sofa::simulation::node::animate(root.get(), 0.5_sreal);
     }
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
@@ -237,7 +236,6 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
@@ -258,19 +256,19 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
                                   {{"useDataInputs", "true"}, {"timeToRemove", "0.05"},
                                    {"pointsToRemove", "0"}});
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     {
         EXPECT_MSG_NOEMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1_sreal);
+        sofa::simulation::node::animate(root.get(), 0.1_sreal);
     }
 
     {
         EXPECT_MSG_EMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1_sreal);
+        sofa::simulation::node::animate(root.get(), 0.1_sreal);
     }
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 

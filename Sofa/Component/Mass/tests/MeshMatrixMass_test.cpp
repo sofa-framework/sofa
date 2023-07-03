@@ -105,14 +105,14 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
-        simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
+        simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
     void TearDown() override
     {
         if (root!=nullptr)
-            simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
     void createSceneGraph(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms)
@@ -162,7 +162,7 @@ public:
                  MassType expectedTotalMass, MassType expectedMassDensity, const VecMass& expectedVMass, const VecMass& expectedEMass)
     {
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);
-        simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         check(expectedTotalMass, expectedMassDensity, expectedVMass, expectedEMass);
     }
 
@@ -1255,7 +1255,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1412,7 +1412,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1565,7 +1565,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1696,7 +1696,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1850,7 +1850,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
