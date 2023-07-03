@@ -157,6 +157,12 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
     datadF.endEdit();
 }
 
+template <class DataTypes>
+void EllipsoidForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 SReal EllipsoidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {

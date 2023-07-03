@@ -386,6 +386,12 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     d_df.endEdit();
 }
 
+template <class DataTypes>
+void TriangularTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()

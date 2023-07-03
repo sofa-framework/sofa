@@ -401,6 +401,12 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     d_df.endEdit();
 }
 
+template <class DataTypes>
+void TriangularQuadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()

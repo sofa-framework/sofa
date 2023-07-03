@@ -580,11 +580,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
 }
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(
-    core::behavior::DampingMatrix* matrix)
+void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
-    //no damping in this force field
-    SOFA_UNUSED(matrix);
+    // No damping in this ForceField
 }
 
 

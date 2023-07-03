@@ -154,6 +154,12 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
     datadF.endEdit();
 }
 
+template <class DataTypes>
+void ConicalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 {

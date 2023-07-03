@@ -682,6 +682,12 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
 
 }
 
+template <class DataTypes>
+void QuadularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

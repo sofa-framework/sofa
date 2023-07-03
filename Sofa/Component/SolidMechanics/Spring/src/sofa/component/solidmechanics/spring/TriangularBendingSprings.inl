@@ -527,6 +527,12 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     d_df.endEdit();
 }
 
+template <class DataTypes>
+void TriangularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)

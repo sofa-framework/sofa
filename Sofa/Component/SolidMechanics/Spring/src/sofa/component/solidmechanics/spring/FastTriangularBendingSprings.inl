@@ -432,7 +432,11 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::linearalgebra::
     }
 }
 
-
+template <class _DataTypes>
+void FastTriangularBendingSprings<_DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>

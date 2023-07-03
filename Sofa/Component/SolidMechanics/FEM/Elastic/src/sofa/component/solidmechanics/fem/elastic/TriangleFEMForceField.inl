@@ -653,6 +653,12 @@ void TriangleFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stif
     ++i;
 }
 
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
 {

@@ -711,4 +711,10 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
   df.endEdit();
 }
 
+template <class DataTypes>
+void QuadBendingFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 } // namespace sofa::component::solidmechanics::fem::elastic

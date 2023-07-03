@@ -624,7 +624,11 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     }
 }
 
-
+template <class DataTypes>
+void HexahedralFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>
