@@ -28,6 +28,8 @@
 #include <sofa/type/RGBAColor.h>
 #include <cassert>
 #include <iostream>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
 
 namespace sofa::component::mechanicalload
 {
@@ -153,7 +155,16 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 
 template <class DataTypes>
 void EllipsoidForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
-{}
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const Contact& contact : this->d_contacts.getValue())
+    {
+        const auto locationInGlobalMatrix = contact.index * Deriv::total_size;
+        dfdx(locationInGlobalMatrix, locationInGlobalMatrix) += contact.m;
+    }
+}
 
 template <class DataTypes>
 void EllipsoidForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)

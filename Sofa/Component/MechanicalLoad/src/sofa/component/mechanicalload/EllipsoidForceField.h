@@ -53,8 +53,8 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    enum { N=DataTypes::spatial_dimensions };
-    typedef type::Mat<N,N,Real> Mat;
+    static constexpr auto N = DataTypes::spatial_dimensions;
+    using Mat = type::Mat<N, N, Real>;
 
 protected:
     class Contact
