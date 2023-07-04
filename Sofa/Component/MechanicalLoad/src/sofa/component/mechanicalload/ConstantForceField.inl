@@ -51,7 +51,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
 
-    sofa::core::objectmodel::Base::addUpdateCallback("dataInternalUpdate", {&d_indices, &d_forces, &d_force, &d_totalForce}, [this](const core::DataTracker& tracker)
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromIndices", {&d_indices}, [this](const core::DataTracker& tracker)
     {
         if (tracker.hasChanged(d_indices))
         {
@@ -81,7 +81,10 @@ ConstantForceField<DataTypes>::ConstantForceField()
                 }
             }
         }
+    }, {});
 
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& tracker)
+    {
         if (tracker.hasChanged(d_forces))
         {
             msg_info() << "dataInternalUpdate: data forces has changed";
@@ -98,7 +101,10 @@ ConstantForceField<DataTypes>::ConstantForceField()
                 return sofa::core::objectmodel::ComponentState::Invalid;
             }
         }
+    }, {});
 
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForce", {&d_force}, [this](const core::DataTracker& tracker)
+    {
         if (tracker.hasChanged(d_force))
         {
             msg_info() << "dataInternalUpdate: data force has changed";
@@ -115,7 +121,10 @@ ConstantForceField<DataTypes>::ConstantForceField()
                 return sofa::core::objectmodel::ComponentState::Invalid;
             }
         }
+    }, {});
 
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& tracker)
+    {
         if (tracker.hasChanged(d_totalForce))
         {
             msg_info() << "dataInternalUpdate: data totalForce has changed";
