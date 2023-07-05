@@ -477,6 +477,26 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 }
 
 template <class DataTypes>
+void PolynomialRestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    static constexpr sofa::SignedIndex Dimension = Coord::total_size;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (std::size_t index = 0; index < m_indices.size(); ++index)
+    {
+        const sofa::Index curIndex = m_indices[index];
+        const JacobianVector& jacobVector = m_differential[index];
+        for(sofa::SignedIndex i = 0; i < Dimension; ++i)
+        {
+            dfdx(Dimension * curIndex + i, Dimension * curIndex + i) += -jacobVector[i];
+        }
+    }
+
+}
+
+template <class DataTypes>
 void PolynomialRestShapeSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
