@@ -55,17 +55,46 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 {
     if (mparams && this->mstate)
     {
+        const auto dx = sofa::helper::getReadAccessor(*mparams->readDx(this->mstate.get()));
+        auto df = sofa::helper::getWriteOnlyAccessor(*dfId[this->mstate.get()].write());
+        const Real kFactor = static_cast<Real>(
+            sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
 
-#ifndef NDEBUG
-            mparams->setKFactorUsed(false);
-#endif
+        /// Instead of accumulating the matrix contributions in a matrix data structure, this class
+        /// directly multiply the contribution by the dx vector
+        class MatrixFreeAccumulator : public StiffnessMatrixAccumulator
+        {
+            const VecDeriv& m_dx;
+            VecDeriv& m_df;
+            const Real m_kFactor;
 
-        addDForce(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate.get()));
+        public:
+            MatrixFreeAccumulator(const VecDeriv& dx, VecDeriv& df, const Real kFactor) : m_dx(dx), m_df(df), m_kFactor(kFactor) {}
 
-#ifndef NDEBUG
-        if (!mparams->getKFactorUsed())
-            msg_warning()  << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce";
-#endif
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override
+            {
+                const auto DerivSize = Deriv::total_size;
+                const auto dfId = row / DerivSize;
+                const auto dfDim = row - dfId * DerivSize;
+                const auto dxId = col / DerivSize;
+                const auto dxDim = col - dxId * DerivSize;
+                m_df[dfId][dfDim] += m_kFactor * value * m_dx[dxId][dxDim];
+            }
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override
+            {
+                const auto DerivSize = Deriv::total_size;
+                const auto dfId = row / DerivSize;
+                const auto dfDim = row - dfId * DerivSize;
+                const auto dxId = col / DerivSize;
+                const auto dxDim = col - dxId * DerivSize;
+                m_df[dfId][dfDim] += m_kFactor * value * m_dx[dxId][dxDim];
+            }
+        } acc(dx.ref(), df.wref(), kFactor);
+
+        StiffnessMatrix matrix;
+        matrix.setMechanicalParams(mparams);
+        matrix.setMatrixAccumulator(&acc, this->mstate, this->mstate);
+        buildStiffnessMatrix(&matrix);
     }
 }
 
