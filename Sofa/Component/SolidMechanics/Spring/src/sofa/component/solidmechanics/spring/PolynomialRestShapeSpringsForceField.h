@@ -83,8 +83,8 @@ public:
     Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
 
     Data<VecReal> d_zeroLength;       ///< Springs initial lengths
-    Data<double> d_smoothShift; ///< denominator correction adding shift value
-    Data<double> d_smoothScale; ///< denominator correction adding scale
+    Data<Real> d_smoothShift; ///< denominator correction adding shift value
+    Data<Real> d_smoothScale; ///< denominator correction adding scale
 
     SingleLink<PolynomialRestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState<DataTypes>,
         BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> d_restMState;
@@ -114,8 +114,8 @@ protected:
 
 
     void ComputeJacobian(sofa::Index stiffnessIndex, sofa::Index springIndex);
-    double PolynomialValue(sofa::Index springIndex, double strainValue);
-    double PolynomialDerivativeValue(sofa::Index springIndex, double strainValue);
+    Real PolynomialValue(sofa::Index springIndex, Real strainValue);
+    Real PolynomialDerivativeValue(sofa::Index springIndex, Real strainValue);
 
 public:
     void bwdInit() override;

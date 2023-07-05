@@ -43,8 +43,8 @@ PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForce
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
     , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , d_zeroLength(initData(&d_zeroLength,"initialLength","initial virtual length of the spring"))
-    , d_smoothShift(initData(&d_smoothShift,double(0.0),"smoothShift","denominator correction adding shift value"))
-    , d_smoothScale(initData(&d_smoothScale,double(1.0),"smoothScale","denominator correction adding scale"))
+    , d_smoothShift(initData(&d_smoothShift,static_cast<Real>(0.0),"smoothShift","denominator correction adding shift value"))
+    , d_smoothScale(initData(&d_smoothScale,static_cast<Real>(1.0),"smoothScale","denominator correction adding scale"))
     , d_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
 {        
 }
@@ -269,15 +269,15 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
             msg_info() << "dx value: " << dx;
 
             // to compute stress value use original spring length
-            double springLength = dx.norm();
+            Real springLength = dx.norm();
             msg_info() << "Spring length value: " << springLength;
             m_strainValue[i] = springLength / (i < zeroLength.size() ? zeroLength[i] : zeroLength[0]);
-            double forceValue = PolynomialValue(0, m_strainValue[i]);
+            Real forceValue = PolynomialValue(0, m_strainValue[i]);
             msg_info() << "Strain value: " << m_strainValue[i];
             msg_info() << "Force value: " << forceValue;
 
             // to compute direction use the modified length denominator: dx^2 + exp^(shift - scale * dx^2)
-            double squaredDenominator = dot(dx, dx);
+            Real squaredDenominator = dot(dx, dx);
             squaredDenominator += exp(d_smoothShift.getValue() - d_smoothScale.getValue() * dot(dx, dx));
             msg_info() << "Denominator value: " << std::sqrt(squaredDenominator);
 
@@ -306,15 +306,15 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
             msg_info() << "dx value: " << dx;
 
             // to compute stress value use original spring length
-            double springLength = dx.norm();
+            Real springLength = dx.norm();
             msg_info() << "Spring length value: " << springLength;
             m_strainValue[i] = springLength / (i < zeroLength.size() ? zeroLength[i] : zeroLength[0]);
-            double forceValue = PolynomialValue(i, m_strainValue[i]);
+            Real forceValue = PolynomialValue(i, m_strainValue[i]);
             msg_info() << "Strain value: " << m_strainValue[i];
             msg_info() << "Force value: " << forceValue;
 
             // to compute direction use the modified length denominator: dx^2 + exp^(shift - scale * dx^2)
-            double squaredDenominator = dot(dx, dx);
+            Real squaredDenominator = dot(dx, dx);
             squaredDenominator += exp(d_smoothShift.getValue() - d_smoothScale.getValue() * dot(dx, dx));
             msg_info() << "Denominator value: " << std::sqrt(squaredDenominator);
 
@@ -348,14 +348,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::ComputeJacobian(sofa::Inde
     // NOTE: Since we compute derivatives only for one of mechanical models we take only diagonal of jacobian matrix
 
     // compute polynomial result
-    double polynomialForceRes = PolynomialValue(stiffnessIndex, m_strainValue[springIndex]) / m_directionSpringLength[springIndex];
+    Real polynomialForceRes = PolynomialValue(stiffnessIndex, m_strainValue[springIndex]) / m_directionSpringLength[springIndex];
     msg_info() << "PolynomialForceRes: " << polynomialForceRes;
 
-    double polynomialDerivativeRes = PolynomialDerivativeValue(stiffnessIndex, m_strainValue[springIndex]) /
+    Real polynomialDerivativeRes = PolynomialDerivativeValue(stiffnessIndex, m_strainValue[springIndex]) /
             (springIndex < zeroLength.size() ? zeroLength[springIndex] : zeroLength[0]);
     msg_info() << "PolynomialDerivativeRes: " << polynomialDerivativeRes;
 
-    const double exponentialDerivative = 1.0 - d_smoothScale.getValue() *
+    const Real exponentialDerivative = 1.0 - d_smoothScale.getValue() *
             exp(d_smoothShift.getValue() - d_smoothScale.getValue() * m_coordinateSquaredNorm[springIndex]);
 
     // compute data for Jacobian matrix
@@ -503,15 +503,17 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::buildDampingMatrix(core::b
 }
 
 template<class DataTypes>
-double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
+typename PolynomialRestShapeSpringsForceField<DataTypes>::Real
+PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, Real strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial data: ";
-    double highOrderStrain = 1.0;
-    double result = 0.0;
-    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+    Real highOrderStrain = 1.0;
+    Real result = 0.0;
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++)
+    {
         highOrderStrain *= strainValue;
         result += vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
         msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
@@ -522,15 +524,17 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned
 
 
 template<class DataTypes>
-double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigned int springIndex, double strainValue)
+typename PolynomialRestShapeSpringsForceField<DataTypes>::Real
+PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigned int springIndex, Real strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
     const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial derivative data: ";
-    double highOrderStrain = 1.0;
-    double result = 0.0;
-    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+    Real highOrderStrain = 1.0;
+    Real result = 0.0;
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++)
+    {
         result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
         highOrderStrain *= strainValue;
         msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
