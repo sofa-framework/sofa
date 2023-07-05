@@ -120,6 +120,7 @@ void FreeMotionAnimationLoop::init()
                     " a ConstraintSolver in the scene. The list of available constraint solvers is: "
                     << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
             }
         }
         else
@@ -142,6 +143,8 @@ void FreeMotionAnimationLoop::init()
             msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
         }
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
