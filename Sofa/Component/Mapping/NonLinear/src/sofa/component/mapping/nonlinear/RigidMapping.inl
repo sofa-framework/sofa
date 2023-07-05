@@ -487,7 +487,7 @@ static void fill_block(Eigen::Matrix<U, 6, 6>& block, const Coord& v) {
     U z = v[2];
 
     // note: this is -hat(v)
-    block.template rightCols<3>() <<
+    block.template topRightCorner<3, 3>() <<
 
         0,   z,  -y,
         -z,  0,   x,
