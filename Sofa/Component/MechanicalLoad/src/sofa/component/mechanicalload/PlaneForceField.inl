@@ -251,7 +251,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
 template <class DataTypes>
 void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
-    if (this->d_componentState.getValue() != ComponentState::Valid)
+    if (!this->isComponentStateValid())
     {
         return;
     }
