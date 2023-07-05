@@ -73,11 +73,6 @@ using type::vector;
 using core::visual::VisualParams;
 
 template<class DataTypes>
-const type::fixed_array<bool, RestShapeSpringsForceField<DataTypes>::coord_total_size>
-RestShapeSpringsForceField<DataTypes>::s_defaultActiveDirections =
-    []{type::fixed_array<bool, coord_total_size> v; std::fill(v.begin(), v.end(), true); return v; }();
-
-template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
     , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
