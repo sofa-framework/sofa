@@ -109,6 +109,8 @@ public:
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+    
+    void computePrincipalStress();
     void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -123,6 +125,11 @@ public:
         //Index ia, ib, ic;
         Real bx, cx, cy, ss_factor;
         Transformation init_frame; // Mat<2,3,Real>
+
+        Real stress;
+        Deriv stressVector;
+        Real stress2;
+        Deriv stressVector2;
 
         TriangleInfo() :bx(0), cx(0), cy(0), ss_factor(0) { }
 
@@ -234,17 +241,17 @@ public:
     Data<Real> d_damping; ///< Ratio damping/stiffness
     Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
+    Data<bool> d_computePrincipalStress; ///< Compute principal stress for each triangle
+    Data<Real> d_stressMaxValue; ///< Max stress value computed over the triangulation
+
     /// Display parameters
-    Data<bool> d_showStressValue;
     Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
-    Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
+    Data<Real> d_showStressThreshold; ///< Minimum Stress value for rendering of stress vectors
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    Real drawPrevMaxStress;
-
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
