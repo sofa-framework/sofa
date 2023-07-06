@@ -490,7 +490,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 {
     const SReal aSC = d_showArrowSize.getValue();
 
-    if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0)) return;
+    if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0))
+        return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
