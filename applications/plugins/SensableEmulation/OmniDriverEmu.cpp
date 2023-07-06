@@ -394,8 +394,8 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         }
 
         // draw the 2 visual models
-        visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
-        visu_end->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
+        visu_base->doDrawVisual(sofa::core::visual::VisualParams::defaultInstance());
+        visu_end->doDrawVisual(sofa::core::visual::VisualParams::defaultInstance());
     }
 }
 

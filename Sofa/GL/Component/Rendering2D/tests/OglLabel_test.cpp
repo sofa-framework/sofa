@@ -138,8 +138,7 @@ public:
         /// This list needs to be updated if you add an attribute.
         const vector<string> attrnames = {
             "prefix", "label", "suffix", "x", "y", "fontsize", "color",
-            "selectContrastingColor", "updateLabelEveryNbSteps",
-            "visible"};
+            "selectContrastingColor", "updateLabelEveryNbSteps"};
 
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;

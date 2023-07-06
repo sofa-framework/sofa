@@ -584,12 +584,8 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 }
 
 template<class DataTypes>
-void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vparams)
+void OglFluidModel<DataTypes>::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualModels()) return;
-
-    vparams->drawTool()->saveLastState();
-
     float vxmax, vymax;
     float vxmin, vymin;
     float txmax, tymax;
@@ -600,8 +596,6 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
     vxmax = vymax = txmax = tymax = 1.0;
 
     drawSprites(vparams);
-
-    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid) return;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
@@ -667,9 +661,6 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-
-    vparams->drawTool()->restoreLastState();
-
 }
 template<class DataTypes>
 void OglFluidModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
