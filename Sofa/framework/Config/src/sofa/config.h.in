@@ -244,11 +244,6 @@ class DeprecatedAndRemoved {};
         "v22.12 (PR#3304)", "v23.06", \
         "Calling ReadX with SingleLink's argument will be removed." msg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__VISIBLE(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06 (PR#3931)", "v23.12", \
-        "Attribute 'visible' is deprecated, use 'draw' to control rendering.")
-
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
