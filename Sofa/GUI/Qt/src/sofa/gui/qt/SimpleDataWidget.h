@@ -72,7 +72,7 @@ public:
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        std::string s = w->text().toStdString();
+        const std::string s = w->text().toStdString();
         std::istringstream i(s);
         i >> d;
     }

@@ -85,14 +85,14 @@ void SceneLoader::notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node,
 
 bool SceneLoader::canLoadFileName(const char *filename)
 {
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    const std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
     return canLoadFileExtension(ext.c_str());
 }
 
 /// Pre-saving check
 bool SceneLoader::canWriteFileName(const char *filename)
 {
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    const std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
     return canWriteFileExtension(ext.c_str());
 }
 

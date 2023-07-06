@@ -153,7 +153,7 @@ void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostre
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();
 
-    int nbv = int(x.size());
+    const int nbv = int(x.size());
 
     *out << "g "<<name<<"\n";
 

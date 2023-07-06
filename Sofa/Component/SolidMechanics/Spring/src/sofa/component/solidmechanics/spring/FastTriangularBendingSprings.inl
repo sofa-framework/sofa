@@ -89,8 +89,8 @@ void FastTriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::
                     t1 = this->m_topology->getTriangle(shell[0]);
                 }
 
-                int i1 = this->m_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
-                int i2 = this->m_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
+                const int i1 = this->m_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
+                const int i2 = this->m_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
                 core::topology::BaseMeshTopology::Edge edge = this->m_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
 
                 const core::topology::BaseMeshTopology::PointID& v1 = t1[i1];
@@ -183,8 +183,8 @@ void FastTriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sof
                 te2 = this->m_topology->getEdgesInTriangle(keepingTri[1]);
                 t2 = this->m_topology->getTriangle(keepingTri[1]);
 
-                int i1 = this->m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                int i2 = this->m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                const int i1 = this->m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                const int i2 = this->m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                 core::topology::BaseMeshTopology::Edge edge = this->m_topology->getEdge(edgeIndex);
 
@@ -215,7 +215,7 @@ void FastTriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sof
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
-    bool debug_mode = false;
+    const bool debug_mode = false;
 
     unsigned int last = this->m_topology->getNbPoints() -1;
     unsigned int i,j;
@@ -432,7 +432,11 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::linearalgebra::
     }
 }
 
-
+template <class _DataTypes>
+void FastTriangularBendingSprings<_DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>

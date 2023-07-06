@@ -566,6 +566,12 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildStiffnessMatrix(
     m_edgeInfo.endEdit();
 }
 
+template <class DataTypes>
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 Mat<3,3,SReal> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int tetrahedronIndex)

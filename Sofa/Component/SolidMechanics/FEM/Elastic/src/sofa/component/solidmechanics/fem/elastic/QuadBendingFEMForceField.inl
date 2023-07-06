@@ -587,8 +587,8 @@ template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 { 
   Displacement D, F;
-  
-  unsigned int nbQuads = m_topology->getNbQuads();
+
+  const unsigned int nbQuads = m_topology->getNbQuads();
   
   for (unsigned int i=0;i<nbQuads;i++)
   {
@@ -682,8 +682,8 @@ template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
   VecDeriv& f1 = *f.beginEdit();
-  const VecCoord& x1 = x.getValue(); 
-  int nbQuads=m_topology->getNbQuads();
+  const VecCoord& x1 = x.getValue();
+  const int nbQuads=m_topology->getNbQuads();
 
   f1.resize(x1.size());
   
@@ -709,6 +709,12 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
   applyStiffnessSmall( df1, h, dx1, kFactor );
 
   df.endEdit();
+}
+
+template <class DataTypes>
+void QuadBendingFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic

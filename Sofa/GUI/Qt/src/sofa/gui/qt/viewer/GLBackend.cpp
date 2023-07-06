@@ -89,7 +89,7 @@ bool GLBackend::initRecorder( int width, int height, unsigned int framerate, uns
         ffmpeg_exec_path = SetDirectory::GetRelativeFromProcess( iniFileValues["FFMPEG_EXEC_PATH"].c_str() );
     }
 
-    std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
+    const std::string videoFilename = m_videoRecorderFFMPEG.findFilename(framerate, bitrate / 1024, codecExtension);
 
     res = m_videoRecorderFFMPEG.init(ffmpeg_exec_path, videoFilename, width, height, framerate, bitrate, codecName);
 
@@ -114,8 +114,8 @@ void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeigh
     if(!m_texLogo->getImage())
         return;
 
-    int w = m_texLogo->getImage()->getWidth();
-    int h = m_texLogo->getImage()->getHeight();
+    const int w = m_texLogo->getImage()->getWidth();
+    const int h = m_texLogo->getImage()->getHeight();
 
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
@@ -129,8 +129,8 @@ void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeigh
 
     m_texLogo->bind();
 
-    double coordWidth = int(screenWidth / w) + 1;
-    double coordHeight = int(screenHeight / h) + 1;
+    const double coordWidth = int(screenWidth / w) + 1;
+    const double coordHeight = int(screenHeight / h) + 1;
 
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);

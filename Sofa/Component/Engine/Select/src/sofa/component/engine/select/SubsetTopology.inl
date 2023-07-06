@@ -820,7 +820,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw edges in boxes
-        helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+        const helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             Edge e = edgesInROI[i];
@@ -835,7 +835,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw triangles in boxes
-        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        const helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             Triangle t = trianglesInROI[i];
@@ -851,7 +851,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw tetrahedra in boxes
-        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];

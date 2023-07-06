@@ -109,14 +109,14 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
 void GraphOptionWidget::openFindFileDialog()
 {
     QLineEdit *fileLineEdit=0;
-    QPushButton *button=(QPushButton*)sender();
+    const QPushButton *button=(QPushButton*)sender();
     if (button == findGNUPLOTFile)    fileLineEdit = fileGNUPLOTLineEdit;
 
     else if (button == findImageFile) fileLineEdit = fileImageLineEdit;
 
-    std::string filename(sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()));
+    const std::string filename(sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()));
     std::string directory;
-    QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    const QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         directory = s.toStdString();
@@ -135,9 +135,9 @@ void GraphOptionWidget::exportImage()
 
     std::stringstream ss;
     ss << idfile;
-    std::string idstring = ss.str();
+    const std::string idstring = ss.str();
 
-    std::string pad(nbpad-idstring.length(),'0');
+    const std::string pad(nbpad-idstring.length(),'0');
     idfile++;
     if (idfile>99999) idfile = 0;
 

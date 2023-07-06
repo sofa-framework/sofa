@@ -101,13 +101,13 @@ void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
 
 bool PointSetTopologyContainer::hasPos() const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     return !initPoints.empty();
 }
 
 SReal PointSetTopologyContainer::getPX(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][0];
     else
@@ -116,7 +116,7 @@ SReal PointSetTopologyContainer::getPX(Index i) const
 
 SReal PointSetTopologyContainer::getPY(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][1];
     else
@@ -125,7 +125,7 @@ SReal PointSetTopologyContainer::getPY(Index i) const
 
 SReal PointSetTopologyContainer::getPZ(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][2];
     else
@@ -135,8 +135,8 @@ SReal PointSetTopologyContainer::getPZ(Index i) const
 void PointSetTopologyContainer::init()
 {
     core::topology::TopologyContainer::init();
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
-    int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
     if( pointsDiff > 0 )
     {
         addPoints( pointsDiff );
@@ -172,7 +172,7 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoHandler : pointTopologyHandlerList)
+    for (const auto topoHandler : pointTopologyHandlerList)
     {
         topoHandler->setDirtyValue();
         msg_info() << "Point Topology Set dirty engine: " << topoHandler->getName();
@@ -185,7 +185,7 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoHandler : pointTopologyHandlerList)
+    for (const auto topoHandler : pointTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

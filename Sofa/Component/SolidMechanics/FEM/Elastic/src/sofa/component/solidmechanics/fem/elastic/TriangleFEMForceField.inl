@@ -96,7 +96,7 @@ void TriangleFEMForceField<DataTypes>::init()
     {
         msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
-        int nbcubes = m_topology->getNbQuads();
+        const int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes * 2);
         for (int i = 0; i < nbcubes; i++)
         {
@@ -651,6 +651,12 @@ void TriangleFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stif
         }
     }
     ++i;
+}
+
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

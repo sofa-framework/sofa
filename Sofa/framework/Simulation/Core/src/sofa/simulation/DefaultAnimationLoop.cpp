@@ -82,8 +82,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
         node->execute ( act );
     }
 
-    SReal startTime = node->getTime();
-
+    const SReal startTime = gnode->getTime();
 
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdatePositionVisitor");
     BehaviorUpdatePositionVisitor beh(params , dt);

@@ -114,7 +114,7 @@ public:
             in.setstate(std::ios::failbit);
             return in;
         }
-        std::streampos pos = in.tellg();
+        const std::streampos pos = in.tellg();
         in >> c;
         if( c == ']' ) // empty vector
         {

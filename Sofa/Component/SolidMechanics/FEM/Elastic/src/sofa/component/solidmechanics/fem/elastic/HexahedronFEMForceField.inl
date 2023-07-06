@@ -775,7 +775,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = _rotatedInitialElements[i][k][j] - nodes[k][j];
     }
@@ -878,7 +878,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }
@@ -1043,7 +1043,7 @@ void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix 
         {
             Transformation t;
             getNodeRotation(t,i);
-            int e = offset+i*3;
+            const int e = offset+i*3;
             rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
             rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
@@ -1073,7 +1073,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }

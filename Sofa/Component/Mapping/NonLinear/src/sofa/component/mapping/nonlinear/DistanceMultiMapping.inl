@@ -226,7 +226,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::applyJ(const type::vector<OutVecDeriv*>& outDeriv, const type::vector<const  InVecDeriv*>& inDeriv)
 {
-    unsigned n = baseMatrices.size();
+    const unsigned n = baseMatrices.size();
     unsigned i = 0;
 
     // let the first valid jacobian set its contribution    out = J_0 * in_0
@@ -388,7 +388,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             size_t globalIndex1 = 0;
             for( int p=0 ; p<pair1[0] ; ++p )
             {
-                size_t insize = this->getFromModels()[p]->getSize();
+                const size_t insize = this->getFromModels()[p]->getSize();
                 globalIndex1 += insize;
             }
             globalIndex1 += pair1[1];

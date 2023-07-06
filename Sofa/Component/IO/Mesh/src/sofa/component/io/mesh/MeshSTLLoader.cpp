@@ -128,7 +128,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0;
-    bool useMap = d_mergePositionUsingMap.getValue();
+    const bool useMap = d_mergePositionUsingMap.getValue();
 
     std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
 
@@ -256,7 +256,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 
     std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
-    bool useMap = d_mergePositionUsingMap.getValue();
+    const bool useMap = d_mergePositionUsingMap.getValue();
 
     Triangle the_tri;
 

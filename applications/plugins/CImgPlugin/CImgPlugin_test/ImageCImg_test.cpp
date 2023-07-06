@@ -53,8 +53,8 @@ protected:
 
     bool checkExtension(const std::string& ext)
     {
-        auto extItBegin = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cbegin();
-        auto extItEnd = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cend();
+        const auto extItBegin = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cbegin();
+        const auto extItEnd = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cend();
 
         return std::find(extItBegin, extItEnd, ext) != extItEnd;
     }
@@ -79,7 +79,7 @@ protected:
             bool res = true;
             if(lossy)
             {
-                unsigned int total = width*height*bpp;
+                const unsigned int total = width*height*bpp;
                 //we will compare the average of pixels
                 //and it has to be within a certain ratio with the reference
                 //there are much better algorithms
@@ -103,7 +103,7 @@ protected:
         {
             sofa::helper::io::ImageCImg img;
 
-            bool isLoaded = img.load(filename);
+            const bool isLoaded = img.load(filename);
             ASSERT_TRUE(isLoaded);
             //necessary to test if the image was effectively loaded
             //otherwise segfault from Image (and useless to test the rest anyway)
@@ -154,11 +154,11 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_png)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-    unsigned int width = 800;
-    unsigned int height = 600;
-    unsigned int bpp = 3;//images are RGB
-    unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize / 2;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    const unsigned int bpp = 3;//images are RGB
+    const unsigned int totalsize = width*height*bpp;
+    const unsigned int halfTotalsize = totalsize / 2;
 
     std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
@@ -175,11 +175,11 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_jpg)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-    unsigned int width = 800;
-    unsigned int height = 600;
-    unsigned int bpp = 3;//images are RGB
-    unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize / 2;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    const unsigned int bpp = 3;//images are RGB
+    const unsigned int totalsize = width*height*bpp;
+    const unsigned int halfTotalsize = totalsize / 2;
 
     std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
@@ -196,11 +196,11 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_tiff)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-    unsigned int width = 800;
-    unsigned int height = 600;
-    unsigned int bpp = 3;//images are RGB
-    unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize / 2;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    const unsigned int bpp = 3;//images are RGB
+    const unsigned int totalsize = width*height*bpp;
+    const unsigned int halfTotalsize = totalsize / 2;
 
     std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
@@ -217,11 +217,11 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_bmp)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-    unsigned int width = 800;
-    unsigned int height = 600;
-    unsigned int bpp = 3;//images are RGB
-    unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize / 2;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    const unsigned int bpp = 3;//images are RGB
+    const unsigned int totalsize = width*height*bpp;
+    const unsigned int halfTotalsize = totalsize / 2;
 
     std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
@@ -239,22 +239,22 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-    unsigned int width = 800;
-    unsigned int height = 600;
-    unsigned int bpp = 3;//image is RGB
-    unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize / 2;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    const unsigned int bpp = 3;//image is RGB
+    const unsigned int totalsize = width*height*bpp;
+    const unsigned int halfTotalsize = totalsize / 2;
 
     std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
     std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
 
     sofa::helper::io::ImageCImg img;
-    bool isLoaded = img.load("imagetest_blackwhite.png");
+    const bool isLoaded = img.load("imagetest_blackwhite.png");
     ASSERT_TRUE(isLoaded);
 
-    std::string output_bw_path = sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png";
-    bool isWritten = img.save(output_bw_path);
+    const std::string output_bw_path = sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png";
+    const bool isWritten = img.save(output_bw_path);
     ASSERT_TRUE(isWritten);
 
     ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata.data());

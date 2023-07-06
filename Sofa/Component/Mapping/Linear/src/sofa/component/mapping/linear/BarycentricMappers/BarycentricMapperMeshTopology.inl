@@ -381,9 +381,9 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     {
         // nearest point is on an edge or corner
         // barycentric coordinate on AB
-        SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        const SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
         // barycentric coordinate on AC
-        SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
+        const SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
         if (pAB < 0 && pAC < 0)
         {
             // closest point is A
@@ -406,7 +406,7 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
         {
             // barycentric coordinate on BC
             // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-            SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            const SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
             if (pBC < 0)
             {
                 // closest point is B
@@ -496,7 +496,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 if ( indexIn < i1d )
                 {
                     const OutReal fx = ( OutReal ) m_map1d[indexIn].baryCoords[0];
-                    Index index = m_map1d[indexIn].in_index;
+                    const Index index = m_map1d[indexIn].in_index;
                     {
                         const Edge& line = lines[index];
                         o.addCol( line[0], data * ( 1-fx ) );
@@ -508,7 +508,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 {
                     const OutReal fx = ( OutReal ) m_map2d[indexIn].baryCoords[0];
                     const OutReal fy = ( OutReal ) m_map2d[indexIn].baryCoords[1];
-                    Index index = m_map2d[indexIn].in_index;
+                    const Index index = m_map2d[indexIn].in_index;
                     if ( index < iTri ) // triangle
                     {
                         const Triangle& triangle = triangles[index];
@@ -531,7 +531,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     const OutReal fx = ( OutReal ) m_map3d[indexIn].baryCoords[0];
                     const OutReal fy = ( OutReal ) m_map3d[indexIn].baryCoords[1];
                     const OutReal fz = ( OutReal ) m_map3d[indexIn].baryCoords[2];
-                    size_t index = m_map3d[indexIn].in_index;
+                    const size_t index = m_map3d[indexIn].in_index;
                     if ( index < iTetra ) // tetra
                     {
                         const Tetra& tetra = tetrahedra[index];
@@ -581,7 +581,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
         for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            Index index = m_map1d[i].in_index;
+            const Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Real f[2];
@@ -606,7 +606,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            Index index = m_map2d[i].in_index;
+            const Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -648,7 +648,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            Index index = m_map3d[i].in_index;
+            const Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -824,7 +824,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
         {
             const typename Out::DPos v = Out::getDPos(in[i]);
             const OutReal fx = ( OutReal ) m_map1d[i].baryCoords[0];
-            size_t index = m_map1d[i].in_index;
+            const size_t index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 out[line[0]] += v * ( 1-fx );
@@ -839,7 +839,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             const typename Out::DPos v = Out::getDPos(in[i]);
             const OutReal fx = ( OutReal ) m_map2d[i-i0].baryCoords[0];
             const OutReal fy = ( OutReal ) m_map2d[i-i0].baryCoords[1];
-            size_t index = m_map2d[i-i0].in_index;
+            const size_t index = m_map2d[i-i0].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -865,7 +865,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             const OutReal fx = ( OutReal ) m_map3d[i-i0].baryCoords[0];
             const OutReal fy = ( OutReal ) m_map3d[i-i0].baryCoords[1];
             const OutReal fz = ( OutReal ) m_map3d[i-i0].baryCoords[2];
-            size_t index = m_map3d[i-i0].in_index;
+            const size_t index = m_map3d[i-i0].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -923,7 +923,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         if (i < idxStart1)
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            Index index = m_map1d[i].in_index;
+            const Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setDPos(out[i] , in[line[0]] * ( 1-fx )
@@ -938,7 +938,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 
             const Real fx = m_map2d[i-i0].baryCoords[0];
             const Real fy = m_map2d[i-i0].baryCoords[1];
-            size_t index = m_map2d[i-i0].in_index;
+            const size_t index = m_map2d[i-i0].in_index;
 
             if ( index<c0 )
             {
@@ -964,7 +964,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             const Real fx = m_map3d[i-i0].baryCoords[0];
             const Real fy = m_map3d[i-i0].baryCoords[1];
             const Real fz = m_map3d[i-i0].baryCoords[2];
-            size_t index = m_map3d[i-i0].in_index;
+            const size_t index = m_map3d[i-i0].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -1015,7 +1015,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
         for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            Index index = m_map1d[i].in_index;
+            const Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setCPos(out[i] , in[line[0]] * ( 1-fx )
@@ -1031,7 +1031,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            Index index = m_map2d[i].in_index;
+            const Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -1061,7 +1061,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            Index index = m_map3d[i].in_index;
+            const Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];

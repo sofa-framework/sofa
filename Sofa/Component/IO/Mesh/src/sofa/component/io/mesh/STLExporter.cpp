@@ -61,7 +61,7 @@ void STLExporter::doInit()
 
 void STLExporter::doReInit()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
 
     context->get(m_inputtopology, BaseContext::Local);
     context->get(m_inputmstate, BaseContext::Local);
@@ -124,9 +124,9 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
     type::vector< BaseMeshTopology::Triangle > vecTri;
 
@@ -213,9 +213,9 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
-    helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    const helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
     type::vector< BaseMeshTopology::Triangle > vecTri;
 
@@ -308,7 +308,7 @@ void STLExporter::handleEvent(Event *event)
 
     if (GUIEvent::checkEventType(event))
     {
-        GUIEvent *guiEvent = static_cast<GUIEvent *>(event);
+        const GUIEvent *guiEvent = static_cast<GUIEvent *>(event);
 
         if (guiEvent->getValueName().compare("STLExport") == 0)
         {

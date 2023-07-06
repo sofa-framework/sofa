@@ -63,7 +63,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const type::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
+    const float scale = d_scale.getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableDepthTest();

@@ -102,6 +102,8 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     void draw(const core::visual::VisualParams* vparams) override;
 
     void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue(static_cast<Real>(_dmin));

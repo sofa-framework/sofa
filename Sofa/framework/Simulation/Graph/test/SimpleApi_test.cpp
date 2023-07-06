@@ -35,19 +35,19 @@ public:
 
 bool SimpleApi_test::testParamAPI()
 {
-    Simulation::SPtr simu = createSimulation("DAG") ;
-    Node::SPtr root = createRootNode(simu, "root") ;
+    const Simulation::SPtr simu = createSimulation("DAG") ;
+    const Node::SPtr root = createRootNode(simu, "root") ;
 
-    auto meca1 = createObject(root, "MechanicalObject", {
-                     {"name", "aMechanicalObject1"},
-                     {"position", "1 2 3"}
-                 });
+    const auto meca1 = createObject(root, "MechanicalObject", {
+                                        {"name", "aMechanicalObject1"},
+                                        {"position", "1 2 3"}
+                                    });
 
 
-    auto meca2 = createObject(root, "MechanicalObject", {
-                     {"name", "aMechanicalObject2"},
-                     {"position", "1 2 3"}
-                 });
+    const auto meca2 = createObject(root, "MechanicalObject", {
+                                        {"name", "aMechanicalObject2"},
+                                        {"position", "1 2 3"}
+                                    });
 
     EXPECT_EQ( (meca1->getName()), std::string("aMechanicalObject1") ) ;
     EXPECT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;
@@ -57,18 +57,18 @@ bool SimpleApi_test::testParamAPI()
 
 bool SimpleApi_test::testParamString()
 {
-    Simulation::SPtr simu = createSimulation("DAG") ;
-    Node::SPtr root = createRootNode(simu, "root") ;
+    const Simulation::SPtr simu = createSimulation("DAG") ;
+    const Node::SPtr root = createRootNode(simu, "root") ;
 
-    auto meca1 = createObject(root, "MechanicalObject", {
-                     {"name", "aMechanicalObject1"},
-                     {"position", "1 2 3"}
-                 });
+    const auto meca1 = createObject(root, "MechanicalObject", {
+                                        {"name", "aMechanicalObject1"},
+                                        {"position", "1 2 3"}
+                                    });
 
-    auto meca2 = createObject(root, "MechanicalObject", {
-                     {"name", "aMechanicalObject2"},
-                     {"position", "1 2 3"}
-                 });
+    const auto meca2 = createObject(root, "MechanicalObject", {
+                                        {"name", "aMechanicalObject2"},
+                                        {"position", "1 2 3"}
+                                    });
 
     EXPECT_EQ( (meca1->getName()), std::string("aMechanicalObject1") ) ;
     EXPECT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;

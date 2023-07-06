@@ -182,7 +182,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             gbar   = sn*dbar - cs*alpha;
             epsln  =           sn*beta;
             dbar   =         - cs*beta;
-            SReal root(sqrt(gbar*gbar + dbar*dbar));
+            const SReal root(sqrt(gbar*gbar + dbar*dbar));
             //Arnorm = phibar * root; // ||Ar_{k-1}||
 
             // Compute next plane rotation Q_k
@@ -235,7 +235,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
              */
 //            Acond = gmax/gmin;
 
-            SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
+            const SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
 
             //See if any of the stopping criteria is satisfied
             if( test1 <= 0. ||  //This test work if tol < eps

@@ -216,7 +216,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
         // create temporary accumulation buffer for parallel reductions (dot products)
         if (node != root)
         {
-            SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
+            const SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
             ctx.nodeData = new SReal(0.0);
             setNodeData(node, ctx.nodeData, parentData);
             stack->push(ctx.nodeData);

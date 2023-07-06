@@ -56,12 +56,13 @@ BaseSimulationExporter::BaseSimulationExporter() :
 const std::string BaseSimulationExporter::getOrCreateTargetPath(const std::string& filename, bool autonumbering)
 {
     std::string path = FileSystem::cleanPath(filename) ;
-    if( FileSystem::exists(path) && FileSystem::isDirectory(path) ){
-        path += "/" + getName() ;
+    if( FileSystem::exists(path) && FileSystem::isDirectory(path) )
+    {
+        path = FileSystem::append(path, getName());
     }
 
     /// If the path does not exists on the FS...we create It
-    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
     if( !FileSystem::exists(parentPath) ){
         FileSystem::findOrCreateAValidPath(parentPath) ;
     }

@@ -166,7 +166,7 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
-    std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
+    const std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
 
     vparams->drawTool()->writeOverlayText(
         d_x.getValue(), d_y.getValue(), d_fontsize.getValue(),  // x, y, size

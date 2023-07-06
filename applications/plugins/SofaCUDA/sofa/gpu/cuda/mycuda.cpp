@@ -163,7 +163,7 @@ int mycudaPrintf(const char* fmt, ...)
 {
     va_list args;
     va_start( args, fmt );
-    int r = vfprintf( stderr, fmt, args );
+    const int r = vfprintf( stderr, fmt, args );
     va_end( args );
     return r;
 }

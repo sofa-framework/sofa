@@ -286,7 +286,7 @@ bool Data<T>::read(const std::string& s)
     std::istringstream istr( s.c_str() );
 
     // capture std::cerr output (if any)
-    std::stringstream cerrbuffer;
+    const std::stringstream cerrbuffer;
     std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
 
     readValue(istr);

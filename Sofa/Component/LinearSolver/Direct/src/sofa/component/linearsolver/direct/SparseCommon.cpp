@@ -36,7 +36,7 @@ void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, typ
     {
         for (int i=M_colptr[j];i<M_colptr[j+1];i++) 
         {
-            int col = M_rowind[i];
+            const int col = M_rowind[i];
             if (col>j) tran_countvec[col]++;
         }
     }
@@ -55,7 +55,7 @@ void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, typ
     {
         for (int i=M_colptr[j];i<M_colptr[j+1];i++) 
         {
-            int line = M_rowind[i];
+            const int line = M_rowind[i];
             if (line>j)
             {
                 t_adj[t_xadj[line] + tran_countvec[line]] = j;

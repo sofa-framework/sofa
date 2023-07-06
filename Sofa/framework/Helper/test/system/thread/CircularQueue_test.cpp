@@ -134,10 +134,10 @@ protected:
     {
         for(int i = 0; i < TokenCount; ++i)
         {
-            int token = i + n * TokenCount;
+            const int token = i + n * TokenCount;
             while(!queue.push(token));
 
-            int queueSize = queue.size();
+            const int queueSize = queue.size();
             if(queueSize < 0)        emptyFault++;
             if(queueSize > Capacity) fullFault++;
 
@@ -151,7 +151,7 @@ protected:
         {
             while(!queue.pop(value));
 
-            int queueSize = queue.size();
+            const int queueSize = queue.size();
             if(queueSize < 0)        emptyFault++;
             if(queueSize > Capacity) fullFault++;
         }

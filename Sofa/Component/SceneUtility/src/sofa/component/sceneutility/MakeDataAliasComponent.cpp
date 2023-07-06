@@ -67,7 +67,7 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
     }
-    string scomponent(component) ;
+    const string scomponent(component) ;
 
 
     const char* dataname=arg->getAttribute("dataname") ;
@@ -87,7 +87,7 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
                            "To remove this error message you need to add an alias attribute with a valid string component's ClassName.";
         return ;
     }
-    string salias(alias);
+    const string salias(alias);
 
     if(!ObjectFactory::getInstance()->hasCreator(scomponent)){
         msg_error(this) << "The value '"<< scomponent << "' for 'componentname' does not correspond to a valid name.  "

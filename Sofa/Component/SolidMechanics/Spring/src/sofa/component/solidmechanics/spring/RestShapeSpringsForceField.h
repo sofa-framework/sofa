@@ -86,7 +86,7 @@ public:
 protected:
     RestShapeSpringsForceField();
 
-    static const type::fixed_array<bool, coord_total_size> s_defaultActiveDirections;
+    static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
 
 public:
     /// BaseObject initialization method.
@@ -132,11 +132,11 @@ protected :
     VecIndex m_ext_indices;
     type::vector<CPos> m_pivots;
 
-    SReal lastUpdatedStep;
+    SReal lastUpdatedStep{};
 
 private :
 
-    bool useRestMState; /// An external MechanicalState is used as rest reference.
+    bool useRestMState{}; /// An external MechanicalState is used as rest reference.
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)

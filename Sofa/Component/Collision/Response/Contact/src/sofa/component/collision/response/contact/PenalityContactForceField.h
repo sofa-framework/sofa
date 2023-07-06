@@ -111,6 +111,8 @@ public:
 
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
     const type::vector< Contact >& getContact() const { return contacts.getValue();}

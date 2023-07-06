@@ -54,8 +54,8 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const
     VecDeriv& f = *d_f.beginEdit();
 	const VecCoord& x = d_x.getValue();
 
-	unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
-    unsigned int nbPoints=m_topology->getNbPoints();
+    const unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
+    const unsigned int nbPoints=m_topology->getNbPoints();
 
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
@@ -69,8 +69,8 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const
     VecCoord anisoVec;
     anisoVec.push_back(anisoDirection);
 
-    Real paramArray0 = globalParameters.parameterArray[0];
-    Real paramArray1 = globalParameters.parameterArray[1];
+    const Real paramArray0 = globalParameters.parameterArray[0];
+    const Real paramArray1 = globalParameters.parameterArray[1];
 
     StandardTetrahedralFEMForceField_contribTetra().resize(12*nbTetrahedra);
     StandardTetrahedralFEMForceFieldCuda3f_addForce(nbTetrahedra, nbPoints, StandardTetrahedralFEMForceField_nbMaxTetraPerNode(), StandardTetrahedralFEMForceField_neighbourhoodPoints().deviceRead(), StandardTetrahedralFEMForceField_contribTetra().deviceWrite(), tetrahedronInf.deviceWrite(), f.deviceWrite(), x.deviceRead(), anisotropy, anisoVec.deviceRead(), paramArray0, paramArray1);
@@ -91,19 +91,19 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 
     VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-	Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-	unsigned int nbEdges=m_topology->getNbEdges();
+    const unsigned int nbEdges=m_topology->getNbEdges();
     const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
-    unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
+    const unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
 	EdgeInformation *einfo;
-    Real paramArray0 = globalParameters.parameterArray[0];
-    Real paramArray1 = globalParameters.parameterArray[1];
+    const Real paramArray0 = globalParameters.parameterArray[0];
+    const Real paramArray1 = globalParameters.parameterArray[1];
 
 	/// if the  matrix needs to be updated
 	if (updateMatrix) {

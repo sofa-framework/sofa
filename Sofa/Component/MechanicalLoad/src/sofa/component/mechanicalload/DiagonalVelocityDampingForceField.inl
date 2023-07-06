@@ -71,6 +71,12 @@ void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalge
 }
 
 template <class DataTypes>
+void DiagonalVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 SReal DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
     return 0;

@@ -99,14 +99,14 @@ void Hexa2TetraTopologicalMapping::init()
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
-    size_t nbcubes = fromModel->getNbHexahedra();
+    const size_t nbcubes = fromModel->getNbHexahedra();
 
     // These values are only correct if the mesh is a grid topology
     int nx = 2;
     int ny = 1;
     //int nz = 1;
     {
-        auto* grid = dynamic_cast<container::grid::GridTopology*>(fromModel.get());
+        const auto* grid = dynamic_cast<container::grid::GridTopology*>(fromModel.get());
         if (grid != nullptr)
         {
             nx = grid->getNx()-1;

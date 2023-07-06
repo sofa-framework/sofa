@@ -72,7 +72,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
 
         frame = (int)(floor(externalTime.getValue() / ahc->dtbvh));
 
-        double residu = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
+        const double residu = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
 
         msg_info() << "externalTime.getValue() = "<<externalTime.getValue() <<"  frame= "<<frame<<" residu = "<<residu ;
 
@@ -125,7 +125,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     //  while (articulatedObjIt != articulatedObjItEnd)
                     if ((*it)->translation.getValue())
                     {
-                        double diffMotions = (*it)->motion[frame+1] - (*it)->motion[frame];
+                        const double diffMotions = (*it)->motion[frame+1] - (*it)->motion[frame];
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
                         this->getContext()->getMechanicalState()->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
@@ -135,7 +135,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     }
                     else
                     {
-                        double diffMotions = (((*it)->motion[frame+1]/180.0)*3.14) - (((*it)->motion[frame]/180.0)*3.14);
+                        const double diffMotions = (((*it)->motion[frame+1]/180.0)*3.14) - (((*it)->motion[frame]/180.0)*3.14);
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
                         x[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;

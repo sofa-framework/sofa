@@ -70,7 +70,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
     // - STEP 1: Checking type of operation
     if (topologicalOperation == 0) // normal case, remove directly one element
     {
-        core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
+        const core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
         core::CollisionModel* model = collisionElement.getCollisionModel();
 
         sofa::core::topology::TopologyModifier* topologyModifier;
@@ -95,7 +95,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if (selectedElem.empty())
                 return;
 
-            core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
+            const core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
 
             sofa::core::topology::TopologyModifier* topologyModifier;
             picked.body->getContext()->get(topologyModifier);
@@ -178,13 +178,13 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
     if (!volumicMesh) // Surfacique case
     {
         volumeOnSurface = false;
-        sofa::core::topology::TopologyElementType topoTypeTmp = topoType;
+        const sofa::core::topology::TopologyElementType topoTypeTmp = topoType;
 
         // - STEP 3: Looking for tricky case
         if (topoType == sofa::core::topology::TopologyElementType::TETRAHEDRON || topoType == sofa::core::topology::TopologyElementType::HEXAHEDRON) // special case: removing a surface volume on the mesh (tetra only for the moment)
         {
             // looking for mapping VolumeToSurface
-            simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
+            const simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
             std::vector< core::objectmodel::BaseObject * > listObject;
             node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::SearchRoot);
 
@@ -363,7 +363,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
         if (topoType == sofa::core::topology::TopologyElementType::TRIANGLE || topoType == sofa::core::topology::TopologyElementType::QUAD) // Special case: removing a volumique zone on the mesh while starting at the surface
         {
             // looking for mapping VolumeToSurface
-            simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
+            const simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
             std::vector< core::objectmodel::BaseObject * > listObject;
             node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
 
@@ -374,7 +374,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case
-                    Index volTmp = topoMapIndices[selectedElem[0]];
+                    const Index volTmp = topoMapIndices[selectedElem[0]];
                     topo_curr = topoMap->getFrom();
                     selectedElem[0] = topo_curr->getTetrahedraAroundTriangle(volTmp)[0];
                     surfaceOnVolume = true;
@@ -554,7 +554,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
     type::Vec3 sceneMinBBox, sceneMaxBBox;
-    core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
+    const core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
     else      { sceneMinBBox = mstateCollision->getContext()->f_bbox.getValue().minBBox(); sceneMaxBBox = mstateCollision->getContext()->f_bbox.getValue().maxBBox(); }

@@ -52,7 +52,7 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
     }
-    string starget(target) ;
+    const string starget(target) ;
 
     const char* alias=arg->getAttribute("alias") ;
     if(alias==nullptr)
@@ -62,7 +62,7 @@ void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
                            "To remove this error message you need to add an alias attribute with a valid string component's ClassName.";
         return ;
     }
-    string salias(alias);
+    const string salias(alias);
 
     if(!ObjectFactory::getInstance()->hasCreator(starget))
     {

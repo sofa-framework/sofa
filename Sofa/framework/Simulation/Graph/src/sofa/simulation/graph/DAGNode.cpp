@@ -131,7 +131,7 @@ DAGNode::~DAGNode()
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-        DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+        const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
         dagnode->l_parents.remove(this);
     }
 }
@@ -178,8 +178,8 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 
 void DAGNode::moveChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    for (auto& parent : dagnode->getParents()) {
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    for (const auto& parent : dagnode->getParents()) {
         Node::moveChild(node, parent);
     }
 }
@@ -188,7 +188,7 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 /// Add a child node
 void DAGNode::doAddChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     setDirtyDescendancy();
     child.add(dagnode);
     dagnode->l_parents.add(this);
@@ -198,7 +198,7 @@ void DAGNode::doAddChild(BaseNode::SPtr node)
 /// Remove a child
 void DAGNode::doRemoveChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     setDirtyDescendancy();
     child.remove(dagnode);
     dagnode->l_parents.remove(this);
@@ -207,7 +207,7 @@ void DAGNode::doRemoveChild(BaseNode::SPtr node)
 /// Move a node from another node
 void DAGNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
     setDirtyDescendancy();
@@ -331,8 +331,8 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         std::string::size_type pend = path.find('/');
         if (pend == std::string::npos) pend = path.length();
-        std::string name ( path, 0, pend );
-        Node* child = getChild(name);
+        const std::string name ( path, 0, pend );
+        const Node* child = getChild(name);
         if (child)
         {
             while (pend < path.length() && path[pend] == '/')
@@ -682,7 +682,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
     else
     {
         // execute the visitor on this node
-        Visitor::Result result = action->processNodeTopDown(this);
+        const Visitor::Result result = action->processNodeTopDown(this);
 
         // update status
         statusMap[this] = ( result == simulation::Visitor::RESULT_PRUNE ? PRUNED : VISITED );

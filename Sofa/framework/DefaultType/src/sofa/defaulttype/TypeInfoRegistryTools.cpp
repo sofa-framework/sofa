@@ -28,10 +28,10 @@ void TypeInfoRegistryTools::dumpRegistryContentToStream(std::ostream& out,
                                                         TypeInfoType type,
                                                         const std::string& target)
 {
-    auto types = sofa::defaulttype::TypeInfoRegistry::GetRegisteredTypes(target);
+    const auto types = sofa::defaulttype::TypeInfoRegistry::GetRegisteredTypes(target);
 
     int selected=0;
-    for(auto& info :types)
+    for(const auto& info :types)
     {
         if(type==TypeInfoType::MISSING && info)
             selected++;
@@ -42,7 +42,7 @@ void TypeInfoRegistryTools::dumpRegistryContentToStream(std::ostream& out,
     }
 
     out << "Target '" << target << "' has " << selected << "/" << types.size()  <<  " types." << std::endl;
-    for(auto& info :types)
+    for(const auto& info :types)
     {
         if(type==TypeInfoType::MISSING && info)
         {            

@@ -143,8 +143,7 @@ public:
 
 protected:
 
-    template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
+    void projectResponseImpl(VecDeriv& dx);
 
 private:
 
