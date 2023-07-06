@@ -62,7 +62,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 
         /// Instead of accumulating the matrix contributions in a matrix data structure, this class
         /// directly multiply the contribution by the dx vector
-        class MatrixFreeAccumulator : public StiffnessMatrixAccumulator
+        class MatrixFreeAccumulator final : public StiffnessMatrixAccumulator
         {
             const VecDeriv& m_dx;
             VecDeriv& m_df;
@@ -88,6 +88,23 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
                 const auto dxId = col / DerivSize;
                 const auto dxDim = col - dxId * DerivSize;
                 m_df[dfId][dfDim] += m_kFactor * value * m_dx[dxId][dxDim];
+            }
+
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override
+            {
+                const auto DerivSize = Deriv::total_size;
+                const auto dfId = row / DerivSize;
+                const auto dxId = col / DerivSize;
+                auto& df = m_df[dfId];
+                const auto& dx = m_dx[dxId];
+
+                for (sofa::SignedIndex i = 0; i < 3; ++i)
+                {
+                    for (sofa::SignedIndex j = 0; j < 3; ++j)
+                    {
+                        df[i] += m_kFactor * value(i, j) * dx[j];
+                    }
+                }
             }
         } acc(dx.ref(), df.wref(), kFactor);
 
