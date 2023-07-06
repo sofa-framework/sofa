@@ -576,7 +576,7 @@ void QuadBendingFEMForceField<DataTypes>::computeForce(Displacement &F, Index el
     F[19]=0; //F[19]=K[19][2]*D[2]+K[19][7]*D[7]+K[19][12]*D[12]+K[19][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     quadInf[elementIndex].stiffness = K; 
 
-quadInfo.endEdit();
+    quadInfo.endEdit();
 }
 
   
@@ -585,51 +585,50 @@ quadInfo.endEdit();
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
-{ 
-  Displacement D, F;
+{
+    Displacement D, F;
 
-  const unsigned int nbQuads = m_topology->getNbQuads();
-  
-  for (unsigned int i=0;i<nbQuads;i++)
-  {
-    Index idx0 = m_topology->getQuad(i)[0];
-    Index idx1 = m_topology->getQuad(i)[1];
-    Index idx2 = m_topology->getQuad(i)[2];
-    Index idx3 = m_topology->getQuad(i)[3];
-    // Displacement in global frame
-    D[0] = x[idx0][0];
-    D[1] = x[idx0][1];
-    D[2] = x[idx0][2];
-    D[3] = 0;
-    D[4] = 0;
-    
-    D[5] = x[idx1][0];
-    D[6] = x[idx1][1];
-    D[7] = x[idx1][2];
-    D[8] = 0;
-    D[9] = 0;
-    
-    D[10] = x[idx2][0];
-    D[11] = x[idx2][1];
-    D[12] = x[idx2][2];
-    D[13] = 0;
-    D[14] = 0;
-    
-    D[15] = x[idx3][0];
-    D[16] = x[idx3][1];
-    D[17] = x[idx3][2];
-    D[18] = 0;
-    D[19] = 0;
+    const auto quads = m_topology->getQuads();
+    const sofa::Size nbQuads = m_topology->getNbQuads();
 
-    computeForce(F, i, D);   
+    for (unsigned int i = 0; i < nbQuads; i++)
+    {
+        Index idx0 = quads[i][0];
+        Index idx1 = quads[i][1];
+        Index idx2 = quads[i][2];
+        Index idx3 = quads[i][3];
+        // Displacement in global frame
+        D[0] = x[idx0][0];
+        D[1] = x[idx0][1];
+        D[2] = x[idx0][2];
+        D[3] = 0;
+        D[4] = 0;
 
-    v[idx0] += (Coord(-h*F[0], -h*F[1],-h*F[2])) * kFactor;
-    v[idx1] += (Coord(-h*F[5], -h*F[6], -h*F[7])) * kFactor;
-    v[idx2] += (Coord(-h*F[10], -h*F[11], -h*F[12])) * kFactor;
-    v[idx3] += (Coord(-h*F[15], -h*F[16], -h*F[17])) * kFactor;
+        D[5] = x[idx1][0];
+        D[6] = x[idx1][1];
+        D[7] = x[idx1][2];
+        D[8] = 0;
+        D[9] = 0;
 
-quadInfo.endEdit();
-  }
+        D[10] = x[idx2][0];
+        D[11] = x[idx2][1];
+        D[12] = x[idx2][2];
+        D[13] = 0;
+        D[14] = 0;
+
+        D[15] = x[idx3][0];
+        D[16] = x[idx3][1];
+        D[17] = x[idx3][2];
+        D[18] = 0;
+        D[19] = 0;
+
+        computeForce(F, i, D);
+
+        v[idx0] += (Coord(-h * F[0], -h * F[1], -h * F[2])) * kFactor;
+        v[idx1] += (Coord(-h * F[5], -h * F[6], -h * F[7])) * kFactor;
+        v[idx2] += (Coord(-h * F[10], -h * F[11], -h * F[12])) * kFactor;
+        v[idx3] += (Coord(-h * F[15], -h * F[16], -h * F[17])) * kFactor;
+    }
 }
   
 /*template <class DataTypes>
@@ -713,7 +712,30 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
+    static constexpr auto N = Deriv::total_size;
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
 
+    const auto quads = m_topology->getQuads();
+    const sofa::Size nbQuads = m_topology->getNbQuads();
+
+    sofa::type::Mat<N, N, Real> localMatrix(type::NOINIT);
+
+    for (sofa::Size i = 0; i < nbQuads; i++)
+    {
+        Stiffness K;
+        computeElementStiffness(K, i);
+        const Element& quad = quads[i];
+
+        for (sofa::Size n1 = 0; n1 < Element::size(); ++n1)
+        {
+            for (sofa::Size n2 = 0; n2 < Element::size(); ++n2)
+            {
+                K.getsub(n1 * N, n2 * N, localMatrix);
+                dfdx(quad[n1] * N, quad[n2] * N) += -localMatrix;
+            }
+        }
+    }
 }
 
 template <class DataTypes>
