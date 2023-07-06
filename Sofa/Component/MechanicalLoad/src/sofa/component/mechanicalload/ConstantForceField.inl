@@ -30,8 +30,8 @@
 #include <iostream>
 #include <numeric>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
+//#include <sofa/core/objectmodel/BaseObjectDescription.h>
+//using sofa::core::objectmodel::BaseObjectDescription ;
 
 namespace sofa::component::mechanicalload
 {
@@ -51,97 +51,39 @@ ConstantForceField<DataTypes>::ConstantForceField()
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
 
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromIndices", {&d_indices}, [this](const core::DataTracker& tracker)
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromIndices", {&d_indices}, [this](const core::DataTracker& )
     {
-        if (tracker.hasChanged(d_indices))
+        msg_info() << "call back update: from indices";
+        return updateFromIndices();
+    }, {});
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& )
+    {
+        msg_info() << "dataInternalUpdate: data forces has changed";
+        return updateFromForcesVector();
+    }, {});
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForce", {&d_force}, [this](const core::DataTracker& )
+    {
+        msg_info() << "dataInternalUpdate: data force has changed";
+
+        const Deriv &force = d_force.getValue();
+        if( checkForce(force) )
         {
-            msg_info() << "dataInternalUpdate: data indices has changed";
-
-            const VecIndex & indices = d_indices.getValue();
-            const size_t indicesSize = indices.size();
-
-            // check size of vector indices
-            if( indicesSize > m_systemSize )
-            {
-                msg_error() << "Size mismatch: indices > system size";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
-            else if( indicesSize==0 )
-            {
-                msg_warning() << "Size of vector indices is zero";
-            }
-
-            // check each indice of the vector
-            for(Size i=0; i<indicesSize; i++)
-            {
-                if( indices[i] > m_systemSize )
-                {
-                    msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                    return sofa::core::objectmodel::ComponentState::Invalid;
-                }
-            }
+            computeForceFromSingleForce();
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        else
+        {
+            msg_error() << " Invalid given force";
+            return sofa::core::objectmodel::ComponentState::Invalid;
         }
     }, {});
 
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& tracker)
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& )
     {
-        if (tracker.hasChanged(d_forces))
-        {
-            msg_info() << "dataInternalUpdate: data forces has changed";
-
-            const VecDeriv &forces = d_forces.getValue();
-            if( checkForces(forces) )
-            {
-                computeForceFromForceVector();
-                return sofa::core::objectmodel::ComponentState::Valid;
-            }
-            else
-            {
-                msg_error() << " Invalid given vector forces";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
-        }
-    }, {});
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForce", {&d_force}, [this](const core::DataTracker& tracker)
-    {
-        if (tracker.hasChanged(d_force))
-        {
-            msg_info() << "dataInternalUpdate: data force has changed";
-
-            const Deriv &force = d_force.getValue();
-            if( checkForce(force) )
-            {
-                computeForceFromSingleForce();
-                return sofa::core::objectmodel::ComponentState::Valid;
-            }
-            else
-            {
-                msg_error() << " Invalid given force";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
-        }
-    }, {});
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& tracker)
-    {
-        if (tracker.hasChanged(d_totalForce))
-        {
-            msg_info() << "dataInternalUpdate: data totalForce has changed";
-
-            const Deriv &totalForce = d_totalForce.getValue();
-            if( checkForce(totalForce) )
-            {
-                computeForceFromTotalForce();
-                return sofa::core::objectmodel::ComponentState::Valid;
-            }
-            else
-            {
-                msg_error() << " Invalid given totalForce";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
-        }
-        return sofa::core::objectmodel::ComponentState::Valid;
+        msg_info() << "dataInternalUpdate: data totalForce has changed";
+        return updateFromTotalForce();
     }, {});
 }
 
@@ -176,27 +118,15 @@ void ConstantForceField<DataTypes>::init()
     }
 
 
-    const VecIndex & indices = d_indices.getValue();
-    const auto indicesSize = indices.size();
 
-    if (d_indices.isSet() && indicesSize!=0)
+    /// Check on data isSet()
+    /// Could be removed since the callback mechanism implements it
+    if (d_indices.isSet() && d_indices.getValue().size()!=0)
     {
-        // check size of vector indices
-        if( indicesSize > m_systemSize )
+        if(updateFromIndices() == sofa::core::objectmodel::ComponentState::Invalid)
         {
-            msg_error() << "Size mismatch: indices > system size";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
-        }
-        // check each indice of the vector
-        for(Size i=0; i<indicesSize; i++)
-        {
-            if( indices[i] > m_systemSize )
-            {
-                msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-                return;
-            }
         }
     }
     else
@@ -224,14 +154,8 @@ void ConstantForceField<DataTypes>::init()
             msg_warning() <<"Both data \'forces\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
 
-        const VecDeriv &forces = d_forces.getValue();
-        if( checkForces(forces) )
+        if(updateFromForcesVector() == sofa::core::objectmodel::ComponentState::Invalid)
         {
-            computeForceFromForceVector();
-        }
-        else
-        {
-            msg_error() << " Invalid given vector forces";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -259,14 +183,8 @@ void ConstantForceField<DataTypes>::init()
     }
     else if (d_totalForce.isSet())
     {
-        const Deriv &totalForce = d_totalForce.getValue();
-        if( checkForce(totalForce) )
+        if(updateFromTotalForce() == sofa::core::objectmodel::ComponentState::Invalid)
         {
-            computeForceFromTotalForce();
-        }
-        else
-        {
-            msg_error() << " Invalid given totalForce";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -304,6 +222,72 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::doUpdateInternal()
 {
     // function empty in #3924
+}
+
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromIndices()
+{
+    const VecIndex & indices = d_indices.getValue();
+    const size_t indicesSize = indices.size();
+
+    // check size of vector indices
+    if( indicesSize > m_systemSize )
+    {
+        msg_error() << "Size mismatch: indices > system size";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+    else if( indicesSize==0 )
+    {
+        msg_error() << "Size of input vector indices is zero";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+
+    // check each indice of the vector
+    for(Size i=0; i<indicesSize; i++)
+    {
+        if( indices[i] > m_systemSize )
+        {
+            msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
+            return sofa::core::objectmodel::ComponentState::Invalid;
+        }
+    }
+
+    return sofa::core::objectmodel::ComponentState::Valid;
+}
+
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromForcesVector()
+{
+    const VecDeriv &forces = d_forces.getValue();
+    if( checkForces(forces) )
+    {
+        computeForceFromForceVector();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }
+    else
+    {
+        msg_error() << " Invalid given vector forces";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+}
+
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromTotalForce()
+{
+    const Deriv &totalForce = d_totalForce.getValue();
+    if( checkForce(totalForce) )
+    {
+        computeForceFromTotalForce();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }
+    else
+    {
+        msg_error() << " Invalid given totalForce";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
 }
 
 

@@ -49,7 +49,6 @@ public:
 
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-
     /// indices of the points the force applies to
     SetIndex d_indices;
 
@@ -113,6 +112,11 @@ public:
 
 protected:
     ConstantForceField();
+
+    /// Functions updating data
+    sofa::core::objectmodel::ComponentState updateFromIndices();
+    sofa::core::objectmodel::ComponentState updateFromForcesVector();
+    sofa::core::objectmodel::ComponentState updateFromTotalForce();
 
     /// Functions checking inputs before update
     bool checkForce(const Deriv&  force);
