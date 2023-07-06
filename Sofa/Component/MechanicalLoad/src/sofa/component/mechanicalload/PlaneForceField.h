@@ -114,6 +114,7 @@ public:
     virtual void updateStiffness( const VecCoord& x );
     void addKToMatrix(const core::MechanicalParams*
                               mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     void draw(const core::visual::VisualParams* vparams) override;
