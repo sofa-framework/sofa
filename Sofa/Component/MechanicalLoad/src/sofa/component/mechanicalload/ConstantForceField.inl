@@ -316,7 +316,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
 {
     const VecDeriv& forces = d_forces.getValue();
     const size_t indicesSize = d_indices.getValue().size();
-    Deriv& totalForce = *d_totalForce.beginEdit();
+    sofa::helper::WriteAccessor<Deriv> totalForce = d_totalForce;
     totalForce.clear();
     if( indicesSize!=forces.size() )
     {
@@ -331,8 +331,6 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
             totalForce += forces[i];
         }
     }
-
-    d_totalForce.endEdit();
 }
 
 template<class DataTypes>
@@ -340,8 +338,9 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce()
 {
     const Deriv& singleForce = d_force.getValue();
     const VecIndex & indices = d_indices.getValue();
-    VecDeriv& forces = *d_forces.beginEdit();
-    size_t indicesSize = indices.size();
+    const size_t indicesSize = indices.size();
+    sofa::helper::WriteAccessor<VecDeriv> forces = d_forces;
+
     forces.clear();
     forces.resize(indicesSize);
 
@@ -351,7 +350,6 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce()
     }
 
     d_totalForce.setValue(singleForce*(static_cast<Real>(indicesSize)));
-    d_forces.endEdit();
 }
 
 template<class DataTypes>
@@ -441,14 +439,14 @@ template <class DataTypes>
 void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     VecIndex& indices = *d_indices.beginEdit();
-    VecDeriv& f = *d_forces.beginEdit();
-    Deriv& totalf = *d_totalForce.beginEdit();
+    sofa::helper::WriteAccessor<VecDeriv> f = d_forces;
+    sofa::helper::WriteAccessor<Deriv> totalf = d_totalForce;
+
     indices.push_back(i);
     f.push_back( force );
     totalf += force;
-    d_totalForce.endEdit();
+
     d_indices.endEdit();
-    d_forces.endEdit();
 }
 
 
