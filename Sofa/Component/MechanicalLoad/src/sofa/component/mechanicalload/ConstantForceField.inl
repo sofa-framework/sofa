@@ -199,12 +199,6 @@ void ConstantForceField<DataTypes>::init()
     // init from ForceField
     Inherit::init();
 
-    // add to tracker
-    this->trackInternalData(d_indices);
-    this->trackInternalData(d_forces);
-    this->trackInternalData(d_force);
-    this->trackInternalData(d_totalForce);
-
     // if all init passes, component is valid
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
