@@ -270,7 +270,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
 {
     const VecDeriv& forces = d_forces.getValue();
     const size_t indicesSize = d_indices.getValue().size();
-    sofa::helper::WriteAccessor<core::objectmodel::Data<Deriv>> totalForce = d_totalForce;
+    Deriv totalForce;
 
     totalForce.clear();
 
@@ -287,6 +287,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
             totalForce += forces[i];
         }
     }
+    d_totalForce.setValue(totalForce);
 }
 
 template<class DataTypes>
@@ -314,10 +315,10 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
     const Deriv& totalForce = d_totalForce.getValue();
     const size_t indicesSize = d_indices.getValue().size();
     sofa::helper::WriteAccessor<DataVecDeriv> forces = d_forces;
-    Deriv singleForce;
 
     if( indicesSize!=0 )
     {
+        Deriv singleForce;
         singleForce = totalForce / (static_cast<Real>(indicesSize));
 
         forces.clear();
@@ -347,7 +348,7 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* param
     SOFA_UNUSED(x1);
     SOFA_UNUSED(v1);
 
-    sofa::helper::WriteAccessor<core::objectmodel::Data<VecDeriv>> _f1 = f;
+    sofa::helper::WriteAccessor<DataVecDeriv> _f1 = f;
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& forces = d_forces.getValue();
 
@@ -404,12 +405,13 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     VecIndex& indices = *d_indices.beginEdit();
     sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
-    sofa::helper::WriteAccessor<core::objectmodel::Data<Deriv>> totalf = d_totalForce;
+    Deriv totalf = d_totalForce.getValue();
 
     indices.push_back(i);
     f.push_back( force );
     totalf += force;
 
+    d_totalForce.setValue(totalf);
     d_indices.endEdit();
 }
 
