@@ -47,6 +47,9 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_systemSize(0)
 {
+    d_forces.setGroup("Force info");
+    d_totalForce.setGroup("Force info");
+
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
 
@@ -58,14 +61,30 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& )
     {
-        msg_info() << "dataInternalUpdate: data forces has changed";
-        return updateFromForcesVector();
+        if(!isTotalForceUsed)
+        {
+            msg_info() << "dataInternalUpdate: data forces has changed";
+            return updateFromForcesVector();
+        }
+        else
+        {
+            // if the totalForce data is initially used, the callback associated with the forces vector is skipped
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
     }, {});
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& )
     {
-        msg_info() << "dataInternalUpdate: data totalForce has changed";
-        return updateFromTotalForce();
+        if(isTotalForceUsed)
+        {
+            msg_info() << "dataInternalUpdate: data totalForce has changed";
+            return updateFromTotalForce();
+        }
+        else
+        {
+            // if the totalForce data is NOT used, associated call back is skipped
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
     }, {});
 }
 
@@ -133,6 +152,10 @@ void ConstantForceField<DataTypes>::init()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
+
+        isTotalForceUsed = false;
+        d_totalForce.setReadOnly(true);
+
         msg_info() << "Input vector forces is used for initialization";
     }
     else if (d_totalForce.isSet())
@@ -142,6 +165,10 @@ void ConstantForceField<DataTypes>::init()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
+
+        isTotalForceUsed = true;
+        d_forces.setReadOnly(true);
+
         msg_info() << "Input totalForce is used for initialization";
     }
     else
@@ -403,6 +430,12 @@ SReal ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPa
 template <class DataTypes>
 void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
+    if(isTotalForceUsed)
+    {
+        msg_error() << "\'Forces\' vector is modified using setForce() while totalMass is initially used";
+        return;
+    }
+
     VecIndex& indices = *d_indices.beginEdit();
     sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
     Deriv totalf = d_totalForce.getValue();
