@@ -41,7 +41,6 @@ ConstantForceField<DataTypes>::ConstantForceField()
     : d_indices(initData(&d_indices, "indices", "indices where the forces are applied"))
     , d_indexFromEnd(initData(&d_indexFromEnd,false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
     , d_forces(initData(&d_forces, "forces", "applied forces at each point"))
-    , d_force(initData(&d_force, Deriv{}, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , d_showArrowSize(initData(&d_showArrowSize, 0_sreal, "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
@@ -61,23 +60,6 @@ ConstantForceField<DataTypes>::ConstantForceField()
     {
         msg_info() << "dataInternalUpdate: data forces has changed";
         return updateFromForcesVector();
-    }, {});
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForce", {&d_force}, [this](const core::DataTracker& )
-    {
-        msg_info() << "dataInternalUpdate: data force has changed";
-
-        const Deriv &force = d_force.getValue();
-        if( checkForce(force) )
-        {
-            computeForceFromSingleForce();
-            return sofa::core::objectmodel::ComponentState::Valid;
-        }
-        else
-        {
-            msg_error() << " Invalid given force";
-            return sofa::core::objectmodel::ComponentState::Invalid;
-        }
     }, {});
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& )
@@ -141,15 +123,7 @@ void ConstantForceField<DataTypes>::init()
 
     if (d_forces.isSet())
     {
-        if(d_force.isSet() && d_totalForce.isSet())
-        {
-            msg_warning() <<"Data \'forces\', \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
-        }
-        else if(d_force.isSet())
-        {
-            msg_warning() <<"Both data \'forces\' and \'force\' cannot be used simultaneously, please set only one of them to remove this warning";
-        }
-        else if(d_totalForce.isSet())
+        if(d_totalForce.isSet())
         {
             msg_warning() <<"Both data \'forces\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
@@ -160,26 +134,6 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
         msg_info() << "Input vector forces is used for initialization";
-    }
-    else if (d_force.isSet())
-    {
-        if(d_totalForce.isSet())
-        {
-            msg_warning() <<"Both data \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
-        }
-
-        const Deriv &force = d_force.getValue();
-        if( checkForce(force) )
-        {
-            computeForceFromSingleForce();
-        }
-        else
-        {
-            msg_error() << " Invalid given force";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
-        msg_info() << "Input force is used for initialization";
     }
     else if (d_totalForce.isSet())
     {
@@ -192,7 +146,7 @@ void ConstantForceField<DataTypes>::init()
     }
     else
     {
-        msg_warning() << "Force has not been set. Define one of the following Data: " << d_forces.getName() << ", " << d_force.getName() << " or " << d_totalForce.getName();
+        msg_warning() << "Force has not been set. Define one of the following Data: " << d_forces.getName() << " or " << d_totalForce.getName();
         computeForceFromSingleForce();
     }
 
@@ -316,8 +270,10 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
 {
     const VecDeriv& forces = d_forces.getValue();
     const size_t indicesSize = d_indices.getValue().size();
-    sofa::helper::WriteAccessor<Deriv> totalForce = d_totalForce;
+    sofa::helper::WriteAccessor<core::objectmodel::Data<Deriv>> totalForce = d_totalForce;
+
     totalForce.clear();
+
     if( indicesSize!=forces.size() )
     {
         msg_error() << "Impossible to use the vector forces since its size mismatches with indices size";
@@ -336,10 +292,10 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::computeForceFromSingleForce()
 {
-    const Deriv& singleForce = d_force.getValue();
     const VecIndex & indices = d_indices.getValue();
     const size_t indicesSize = indices.size();
-    sofa::helper::WriteAccessor<VecDeriv> forces = d_forces;
+    sofa::helper::WriteAccessor<DataVecDeriv> forces = d_forces;
+    Deriv singleForce = forces[0];
 
     forces.clear();
     forces.resize(indicesSize);
@@ -357,12 +313,20 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
 {
     const Deriv& totalForce = d_totalForce.getValue();
     const size_t indicesSize = d_indices.getValue().size();
+    sofa::helper::WriteAccessor<DataVecDeriv> forces = d_forces;
     Deriv singleForce;
+
     if( indicesSize!=0 )
     {
         singleForce = totalForce / (static_cast<Real>(indicesSize));
-        d_force.setValue(singleForce);
-        computeForceFromSingleForce();
+
+        forces.clear();
+        forces.resize(indicesSize);
+
+        for(Size i=0; i<indicesSize; i++)
+        {
+            forces[i] = singleForce;
+        }
     }
     else
     {
@@ -383,7 +347,7 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* param
     SOFA_UNUSED(x1);
     SOFA_UNUSED(v1);
 
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f;
+    sofa::helper::WriteAccessor<core::objectmodel::Data<VecDeriv>> _f1 = f;
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& forces = d_forces.getValue();
 
@@ -439,8 +403,8 @@ template <class DataTypes>
 void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     VecIndex& indices = *d_indices.beginEdit();
-    sofa::helper::WriteAccessor<VecDeriv> f = d_forces;
-    sofa::helper::WriteAccessor<Deriv> totalf = d_totalForce;
+    sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
+    sofa::helper::WriteAccessor<core::objectmodel::Data<Deriv>> totalf = d_totalForce;
 
     indices.push_back(i);
     f.push_back( force );

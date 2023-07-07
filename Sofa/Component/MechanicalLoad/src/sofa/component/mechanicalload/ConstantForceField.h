@@ -59,7 +59,8 @@ public:
     Data< VecDeriv > d_forces;
 
     /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv > d_force;
+    SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA()
+    DeprecatedAndRemoved d_force;
 
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv > d_totalForce;
