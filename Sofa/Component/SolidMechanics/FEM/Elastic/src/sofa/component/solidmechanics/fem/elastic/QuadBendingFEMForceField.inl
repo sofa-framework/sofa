@@ -145,9 +145,9 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
   qinfo->IntlengthElement = (initialPoints)[b] - (initialPoints)[a];
   qinfo->IntheightElement = (initialPoints)[d] - (initialPoints)[a];
-  qinfo->Intcentroid = ((initialPoints)[a] + (initialPoints)[c])/2;
-  qinfo->Inthalflength = (sqrt(IntlengthElement[0]*IntlengthElement[0]+IntlengthElement[1]*IntlengthElement[1]+IntlengthElement[2]*IntlengthElement[2]))/2.0;
-  qinfo->Inthalfheight = (sqrt(IntheightElement[0]*IntheightElement[0]+IntheightElement[1]*IntheightElement[1]+IntheightElement[2]*IntheightElement[2]))/2.0;
+  qinfo->Intcentroid = ((initialPoints)[a] + (initialPoints)[c]) / 2;
+  qinfo->Inthalflength = (sqrt(IntlengthElement[0] * IntlengthElement[0] + IntlengthElement[1] * IntlengthElement[1] + IntlengthElement[2] * IntlengthElement[2])) / 2;
+  qinfo->Inthalfheight = (sqrt(IntheightElement[0] * IntheightElement[0] + IntheightElement[1] * IntheightElement[1] + IntheightElement[2] * IntheightElement[2])) / 2;
   qinfo->InitialPosElements[0] = (initialPoints)[a] - quadInf[i].Intcentroid; // always (0,0,0)
   qinfo->InitialPosElements[1] = (initialPoints)[b] - quadInf[i].Intcentroid;
   qinfo->InitialPosElements[2] = (initialPoints)[c] - quadInf[i].Intcentroid;
@@ -233,9 +233,9 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     Index idx0 = m_topology->getQuad(elementIndex)[0];
     Index idx1 = m_topology->getQuad(elementIndex)[1];
     Index idx2 = m_topology->getQuad(elementIndex)[2];
-    Index idx3 = m_topology->getQuad(elementIndex)[3];   
+    Index idx3 = m_topology->getQuad(elementIndex)[3];
 
-    Coord centroid = (p[idx0]+p[idx2])/2.0f;
+    Coord centroid = (p[idx0] + p[idx2]) / 2;
 
     type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
 
@@ -277,34 +277,37 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(StrainDisplacement &Jb, /*Index elementIndex*/ Real gauss1, Real gauss2, Real l, Real h/*Coord a, Coord b, Coord c, Coord d*/ )
 {
-
-for(int idx=0;idx<4;idx++)
-{
-  if(idx == 0)
-    {const Real m = -1.0f;
-     const Real n = -1.0f;
-    // Bmi : membrance stiffness matrices (Gauss integration 2x2)
-    Jb[0][0] = Jb[2][1] = m*(1.0+n*gauss2)/(4.0*l);  // J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-    Jb[1][1] = Jb[2][0] = n*(1.0+m*gauss1)/(4.0*h);  // J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
-    }
-  else if(idx == 1)
-    {const Real m = 1.0f;
-     const Real n = -1.0f;
-    Jb[8][5] = Jb[10][6] = m*(1.0+n*gauss2)/(4.0*l);  // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-    Jb[9][6] = Jb[10][5] = n*(1.0+m*gauss1)/(4.0*h);  // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
-    }
-  else if(idx == 2)
-    {const Real m = 1.0;
-     const Real n = 1.0;
-    Jb[16][10] = Jb[18][11] = m*(1.0+n*gauss2)/(4.0*l);  // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-    Jb[17][11] = Jb[18][10] = n*(1.0+m*gauss1)/(4.0*h);  // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
-    }
-  else if(idx == 3)
-    {const Real m = -1.0f;
-     const Real n = 1.0f;
-    Jb[24][15] = Jb[26][16] = m*(1.0+n*gauss2)/(4.0*l);  // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-    Jb[25][16] = Jb[26][15] = n*(1.0+m*gauss1)/(4.0*h);  // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
-    }
+    for (int idx = 0; idx < 4; idx++)
+    {
+        if (idx == 0)
+        {
+            const Real m = -1;
+            const Real n = -1;
+            // Bmi : membrance stiffness matrices (Gauss integration 2x2)
+            Jb[0][0] = Jb[2][1] = m * (1 + n * gauss2) / (4 * l); // J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb[1][1] = Jb[2][0] = n * (1 + m * gauss1) / (4 * h); // J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+        }
+        else if (idx == 1)
+        {
+            const Real m = 1;
+            const Real n = -1;
+            Jb[8][5] = Jb[10][6] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb[9][6] = Jb[10][5] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+        }
+        else if (idx == 2)
+        {
+            const Real m = 1;
+            const Real n = 1;
+            Jb[16][10] = Jb[18][11] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb[17][11] = Jb[18][10] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+        }
+        else if (idx == 3)
+        {
+            const Real m = -1;
+            const Real n = 1;
+            Jb[24][15] = Jb[26][16] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb[25][16] = Jb[26][15] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+        }
 
 
   }
@@ -316,51 +319,53 @@ for(int idx=0;idx<4;idx++)
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex*/ Real l, Real h/*Coord a, Coord b, Coord c, Coord d*/  )
 {
-  
-for(int idx=0;idx<4;idx++)
-  {
-    if(idx == 0)
-      {const Real m = -1.0, n = -1.0;
-      // Bbi : bending stiffness matrices (Gauss integration 1x1)
-      Js[3][3] = Js[5][4] = m/(4.0*l);  //gauss2 = 0
-      Js[4][4] = Js[5][3] = n/(4.0*h);   //gauss1 = 0
-      // Bsi : shear stiffness matrices (Gauss integration 1x1)
-      Js[6][2] = m/(4.0f*l);   //gauss2 = 0
-      Js[7][2] = n/(4.0f*h);   //gauss1 = 0
-      Js[6][3] = Js[7][4] = -1.0f/4.0f; // -Ni : gauss1 = 0 va gauss2 = 0
-      }
-    else if(idx == 1)
-      {const Real m = 1.0, n = -1.0;
-      // Bbi : bending stiffness matrices (Gauss integration 1x1)
-      Js[11][8] = Js[13][9] = m/(4.0*l);  //gauss2 = 0
-      Js[12][9] = Js[13][8] = n/(4.0*h);   //gauss1 = 0
-      // Bsi : shear stiffness matrices (Gauss integration 1x1)
-      Js[14][7] = m/(4.0f*l);   //gauss2 = 0
-      Js[15][7] = n/(4.0f*h);   //gauss1 = 0
-      Js[14][8] = Js[15][9] = -1.0f/4.0f; // -Ni : gauss1 = 0 va gauss2 = 0
-      }
-    else if(idx == 2)
-      {const Real m = 1.0, n = 1.0;
-      // Bbi : bending stiffness matrices (Gauss integration 1x1)
-      Js[19][13] = Js[21][14] = m/(4.0*l);  //gauss2 = 0
-      Js[20][14] = Js[21][13] = n/(4.0*h);   //gauss1 = 0
-      // Bsi : shear stiffness matrices (Gauss integration 1x1)
-      Js[22][12] = m/(4.0*l);   //gauss2 = 0
-      Js[23][12] = n/(4.0*h);   //gauss1 = 0
-      Js[22][13] = Js[23][14] = -1.0/4.0; // -Ni : gauss1 = 0 va gauss2 = 0
-      }
-    else if (idx == 3)
-      {const Real m = -1.0, n = 1.0;
-      // Bbi : bending stiffness matrices (Gauss integration 1x1)
-      Js[27][18] = Js[29][19] = m/(4.0f*l);  //gauss2 = 0
-      Js[28][19] = Js[29][18] = n/(4.0f*h);   //gauss1 = 0 
-      // Bsi : shear stiffness matrices (Gauss integration 1x1)
-      Js[30][17] = m/(4.0f*l);   //gauss2 = 0
-      Js[31][17] = n/(4.0f*h);   //gauss1 = 0
-      Js[30][18] = Js[31][19] = -1.0f/4.0f; // -Ni : gauss1 = 0 va gauss2 = 0
-      }
-
-  }
+    for (int idx = 0; idx < 4; idx++)
+    {
+        if (idx == 0)
+        {
+            const Real m = -1, n = -1;
+            // Bbi : bending stiffness matrices (Gauss integration 1x1)
+            Js[3][3] = Js[5][4] = m / (4 * l); //gauss2 = 0
+            Js[4][4] = Js[5][3] = n / (4 * h); //gauss1 = 0
+            // Bsi : shear stiffness matrices (Gauss integration 1x1)
+            Js[6][2] = m / (4 * l); //gauss2 = 0
+            Js[7][2] = n / (4 * h); //gauss1 = 0
+            Js[6][3] = Js[7][4] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+        }
+        else if (idx == 1)
+        {
+            const Real m = 1, n = -1;
+            // Bbi : bending stiffness matrices (Gauss integration 1x1)
+            Js[11][8] = Js[13][9] = m / (4 * l); //gauss2 = 0
+            Js[12][9] = Js[13][8] = n / (4 * h); //gauss1 = 0
+            // Bsi : shear stiffness matrices (Gauss integration 1x1)
+            Js[14][7] = m / (4 * l); //gauss2 = 0
+            Js[15][7] = n / (4 * h); //gauss1 = 0
+            Js[14][8] = Js[15][9] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+        }
+        else if (idx == 2)
+        {
+            const Real m = 1, n = 1;
+            // Bbi : bending stiffness matrices (Gauss integration 1x1)
+            Js[19][13] = Js[21][14] = m / (4 * l); //gauss2 = 0
+            Js[20][14] = Js[21][13] = n / (4 * h); //gauss1 = 0
+            // Bsi : shear stiffness matrices (Gauss integration 1x1)
+            Js[22][12] = m / (4 * l); //gauss2 = 0
+            Js[23][12] = n / (4 * h); //gauss1 = 0
+            Js[22][13] = Js[23][14] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+        }
+        else if (idx == 3)
+        {
+            const Real m = -1, n = 1;
+            // Bbi : bending stiffness matrices (Gauss integration 1x1)
+            Js[27][18] = Js[29][19] = m / (4 * l); //gauss2 = 0
+            Js[28][19] = Js[29][18] = n / (4 * h); //gauss1 = 0
+            // Bsi : shear stiffness matrices (Gauss integration 1x1)
+            Js[30][17] = m / (4 * l); //gauss2 = 0
+            Js[31][17] = n / (4 * h); //gauss1 = 0
+            Js[30][18] = Js[31][19] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+        }
+    }
 }
 
   
@@ -382,11 +387,11 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i,
   Real  thickness = f_thickness.getValue();
   
   // Membrance material stiffness Cm
-  qinfo->BendingmaterialMatrix[0][0] = y*thickness/(1.0f-p*p);
-  qinfo->BendingmaterialMatrix[0][1] = p*y*thickness/(1.0f-p*p);
-  qinfo->BendingmaterialMatrix[1][0] = p*y*thickness/(1.0f-p*p);
-  qinfo->BendingmaterialMatrix[1][1] = y*thickness/(1.0f-p*p);
-  qinfo->BendingmaterialMatrix[2][2] = y*thickness*(1.0f-p)/(2.0f-2.0f*p*p);
+  qinfo->BendingmaterialMatrix[0][0] = y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix[0][1] = p * y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix[1][0] = p * y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix[1][1] = y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix[2][2] = y * thickness * (1 - p) / (2 - 2 * p * p);
 
   quadInfo.endEdit();
 }
@@ -410,14 +415,14 @@ void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, I
   constexpr Real k = static_cast<Real>(5) / static_cast<Real>(6);
 
   // Bending material stiffness Cb
-  qinfo->ShearmaterialMatrix[3][3] = y*thickness*thickness*thickness/(12.0-12.0*p*p);
-  qinfo->ShearmaterialMatrix[3][4] = p*y*thickness*thickness*thickness/(12.0-12.0*p*p);
-  qinfo->ShearmaterialMatrix[4][3] = p*y*thickness*thickness*thickness/(12.0-12.0*p*p);
-  qinfo->ShearmaterialMatrix[4][4] = y*thickness*thickness*thickness/(12.0-12.0*p*p);
-  qinfo->ShearmaterialMatrix[5][5] = (p*y*thickness*thickness*thickness)*(1.0-p)/(24.0-24.0*p*p);
+  qinfo->ShearmaterialMatrix[3][3] = y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix[3][4] = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix[4][3] = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix[4][4] = y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix[5][5] = (p * y * thickness * thickness * thickness) * (1 - p) / (24 - 24 * p * p);
   // Shear material stiffness Cs
-  qinfo->ShearmaterialMatrix[6][6] = k*y*thickness/(2.0+2.0*p);
-  qinfo->ShearmaterialMatrix[7][7] = k*y*thickness/(2.0+2.0*p);
+  qinfo->ShearmaterialMatrix[6][6] = k * y * thickness / (2 + 2 * p);
+  qinfo->ShearmaterialMatrix[7][7] = k * y * thickness / (2 + 2 * p);
   quadInfo.endEdit();
 
 }
@@ -439,8 +444,8 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   
   const Coord length_vec = p[idx1] - p[idx0];
   const Coord height_vec = p[idx3] - p[idx0];
-  const auto length = std::sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2])/2.0_sreal; // length of quad element
-  const auto height = std::sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2])/2.0_sreal; // height of quad element
+  const auto length = std::sqrt(length_vec[0] * length_vec[0] + length_vec[1] * length_vec[1] + length_vec[2] * length_vec[2]) / 2; // length of quad element
+  const auto height = std::sqrt(height_vec[0] * height_vec[0] + height_vec[1] * height_vec[1] + height_vec[2] * height_vec[2]) / 2; // height of quad element
  
   // Bending component of strain displacement
   type::Mat<20, 32, Real> Jb0_t;
@@ -467,7 +472,7 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   Cb = quadInf[elementIndex].BendingmaterialMatrix ;
   
   // Stiffness matrix for bending component
-  const Real wb = 1.0f; // weight coff of gauss integration 2x2
+  const Real wb = 1; // weight coff of gauss integration 2x2
   Stiffness Kb0;
   Stiffness Kb1;
   Stiffness Kb2;
@@ -514,7 +519,7 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   Cs = quadInf[elementIndex].ShearmaterialMatrix ;
 
   // Stiffness matrix for bending component
-  const Real ws = 2.0f; // weight coff of gauss integration 1x1
+  const Real ws = 2; // weight coff of gauss integration 1x1
   Stiffness Ks;
   //Ks = length*height*(Js_t*Cs_e*Js)*ws*ws;
   for (int i = 0; i < 4; i++)
@@ -680,17 +685,16 @@ void QuadBendingFEMForceField<DataTypes>::accumulateForceLarge()
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
-  VecDeriv& f1 = *f.beginEdit();
-  const VecCoord& x1 = x.getValue();
-  const int nbQuads=m_topology->getNbQuads();
+    auto f1 = sofa::helper::getWriteAccessor(f);
+    const VecCoord& x1 = x.getValue();
+    const sofa::Size nbQuads = m_topology->getNbQuads();
 
-  f1.resize(x1.size());
-  
-  for(int i=0;i<nbQuads;i+=1)
-  {
-    accumulateForceSmall( f1, x1, i );
-  }
-  f.endEdit();
+    f1.resize(x1.size());
+
+    for (sofa::Size i = 0; i < nbQuads; i += 1)
+    {
+        accumulateForceSmall(f1.wref(), x1, i);
+    }
 }
   
 // --------------------------------------------------------------------------------------
