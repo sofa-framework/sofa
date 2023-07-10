@@ -368,37 +368,20 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector< SReal >
 {
-    constexpr Real ZERO = static_cast<Real>(1e-6);
-
-    sofa::type::vector< SReal > baryCoefs;
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
     sofa::type::Vec<3, Real> a; DataTypes::get(a[0], a[1], a[2], c0);
     sofa::type::Vec<3, Real> b; DataTypes::get(b[0], b[1], b[2], c1);
 
-    Real dis = (b - a).norm();
-    Real coef_a, coef_b;
+    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::pointBaryCoefs(p, a, b);
+    sofa::type::vector< SReal > baryCoefs;
 
-
-    if(dis < ZERO)
-    {
-        coef_a = 0.5;
-        coef_b = 0.5;
-    }
-    else
-    {
-        coef_a = (p - b).norm() / dis;
-        coef_b = (p - a).norm() / dis;
-    }
-
-    baryCoefs.push_back(coef_a);
-    baryCoefs.push_back(coef_b);
+    baryCoefs.push_back(coefs[0]);
+    baryCoefs.push_back(coefs[1]);
 
     return baryCoefs;
-
 }
 
 
@@ -459,8 +442,6 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector<SReal>
 {
-    constexpr Real ZERO = static_cast<Real>(1e-6);
-
     sofa::type::vector< SReal > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
@@ -470,50 +451,21 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
     sofa::type::Vec<3,Real> a; DataTypes::get(a[0], a[1], a[2], c0);
     sofa::type::Vec<3,Real> b; DataTypes::get(b[0], b[1], b[2], c1);
 
-    Real dis = (b - a).norm();
-    Real coef_a, coef_b;
+    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::pointBaryCoefs(p, a, b);
 
-
-    if(dis < ZERO)
-    {
-        coef_a = 0.5;
-        coef_b = 0.5;
-    }
-    else
-    {
-        coef_a = (p - b).norm() / dis;
-        coef_b = (p - a).norm() / dis;
-    }
-
-    baryCoefs.push_back(coef_a);
-    baryCoefs.push_back(coef_b);
+    baryCoefs.push_back(coefs[0]);
+    baryCoefs.push_back(coefs[1]);
 
     return baryCoefs;
-
 }
 
 template<class Vec>
 sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
 {
     using Real = typename Vec::value_type;
-    const Real ZERO = 1e-6;
+    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::pointBaryCoefs(p, a, b);
 
     sofa::type::vector< Real > baryCoefs;
-
-    Real dis = (b - a).norm();
-    Real coef_a, coef_b;
-
-    if(dis < ZERO)
-    {
-        coef_a = 0.5;
-        coef_b = 0.5;
-    }
-    else
-    {
-        coef_a = (p - b).norm() / dis;
-        coef_b = (p - a).norm() / dis;
-    }
-
     baryCoefs.push_back(coef_a);
     baryCoefs.push_back(coef_b);
 
