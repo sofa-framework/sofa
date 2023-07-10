@@ -351,24 +351,14 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeD
 template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3,Real> &pt, const EdgeID ind_e) const
 {
-    constexpr Real ZERO = static_cast<Real>(1e-12);
-
-    sofa::type::Vec<3,Real> p0 = pt;
-
     Coord vertices[2];
     getEdgeVertexCoordinates(ind_e, vertices);
+    sofa::type::Vec<3, Real> p1, p2;
 
-    sofa::type::Vec<3,Real> p1; //(vertices[0][0], vertices[0][1], vertices[0][2]);
-    sofa::type::Vec<3,Real> p2; //(vertices[1][0], vertices[1][1], vertices[1][2]);
     DataTypes::get(p1[0], p1[1], p1[2], vertices[0]);
     DataTypes::get(p2[0], p2[1], p2[2], vertices[1]);
-
-    sofa::type::Vec<3,Real> v = (p0 - p1).cross(p0 - p2);
-
-    if(v.norm2() < ZERO)
-        return true;
-    else
-        return false;
+    
+    return sofa::geometry::Edge::isPointOnEdge(pt, p1, p2);
 }
 
 //
