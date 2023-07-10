@@ -61,7 +61,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& )
     {
-        if(!isTotalForceUsed)
+        if(!m_isTotalForceUsed)
         {
             msg_info() << "dataInternalUpdate: data forces has changed";
             return updateFromForcesVector();
@@ -75,7 +75,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& )
     {
-        if(isTotalForceUsed)
+        if(m_isTotalForceUsed)
         {
             msg_info() << "dataInternalUpdate: data totalForce has changed";
             return updateFromTotalForce();
@@ -153,7 +153,7 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
 
-        isTotalForceUsed = false;
+        m_isTotalForceUsed = false;
         d_totalForce.setReadOnly(true);
 
         msg_info() << "Input vector forces is used for initialization";
@@ -166,7 +166,7 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
 
-        isTotalForceUsed = true;
+        m_isTotalForceUsed = true;
         d_forces.setReadOnly(true);
 
         msg_info() << "Input totalForce is used for initialization";
@@ -430,7 +430,7 @@ SReal ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPa
 template <class DataTypes>
 void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
-    if(isTotalForceUsed)
+    if(m_isTotalForceUsed)
     {
         msg_error() << "\'Forces\' vector is modified using setForce() while totalMass is initially used";
         return;

@@ -71,9 +71,6 @@ public:
     /// display color
     Data< sofa::type::RGBAColor > d_color;
 
-    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
-    Data< bool > indexFromEnd;
-
     /// Link to be set to the topology container in the component graph.
     SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
@@ -133,7 +130,7 @@ protected:
 
     /// Boolean specifying whether the data totalMass has been initially given
     /// (else forces vector is being used)
-    bool isTotalForceUsed;
+    bool m_isTotalForceUsed;
 };
 
 template <>
