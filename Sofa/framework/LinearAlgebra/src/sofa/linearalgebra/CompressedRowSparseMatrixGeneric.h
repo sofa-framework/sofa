@@ -238,6 +238,8 @@ public :
     {
     }
 
+    virtual ~CompressedRowSparseMatrixGeneric() = default;
+
     /// \returns the number of row blocks
     Index rowBSize() const
     {
@@ -1610,7 +1612,7 @@ protected:
     }
 };
 
-#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP) 
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP)
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<double>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<float>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat1x1d>;
