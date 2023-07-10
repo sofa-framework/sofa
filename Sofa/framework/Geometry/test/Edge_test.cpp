@@ -230,6 +230,91 @@ TEST(GeometryEdge_test, pointBaryCoefs3f)
 }
 
 
+TEST(GeometryEdge_test, isPointOnEdge2f)
+{
+    const sofa::type::Vec2f a1{ 0.f, 0.f };
+    const sofa::type::Vec2f b1{ 2.f, 2.f };
+
+    // True case
+    const sofa::type::Vec2f p1{ 1.f, 1.f };
+    const auto res1 = sofa::geometry::Edge::isPointOnEdge(p1, a1, b1);
+    EXPECT_TRUE(res1);
+
+    // True case
+    const sofa::type::Vec2f p2{ 0.25f, 0.25f };
+    const auto res2 = sofa::geometry::Edge::isPointOnEdge(p2, a1, b1);
+    EXPECT_TRUE(res2);
+
+    // False case
+    const sofa::type::Vec2f p3{ 1.0f, 0.25f };
+    const auto res3 = sofa::geometry::Edge::isPointOnEdge(p3, a1, b1);
+    EXPECT_FALSE(res3);
+
+
+    //special cases
+    // Edge null
+    const sofa::type::Vec2f c1{ 2.f, 2.f };
+    const auto res4 = sofa::geometry::Edge::isPointOnEdge(p1, b1, c1);
+    EXPECT_FALSE(res4);
+
+    // Point on one Node
+    const auto res5 = sofa::geometry::Edge::isPointOnEdge(b1, a1, b1);
+    EXPECT_TRUE(res5);
+
+    // Point out of Edge borders
+    const sofa::type::Vec2f p4{ -1.0f, -1.0f };
+    const sofa::type::Vec2f p5{ 2.5f, 2.5f };
+    const auto res6 = sofa::geometry::Edge::isPointOnEdge(p4, a1, b1);
+    const auto res7 = sofa::geometry::Edge::isPointOnEdge(p5, a1, b1);
+
+    EXPECT_FALSE(res6);
+    EXPECT_FALSE(res7);
+}
+
+
+TEST(GeometryEdge_test, isPointOnEdge3f)
+{
+    const sofa::type::Vec3f a1{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b1{ 2.f, 2.f, 2.f };
+
+    // True case
+    const sofa::type::Vec3f p1{ 1.f, 1.f, 1.f };
+    const auto res1 = sofa::geometry::Edge::isPointOnEdge(p1, a1, b1);
+    EXPECT_TRUE(res1);
+
+    // True case
+    const sofa::type::Vec3f p2{ 0.25f, 0.25f, 0.25f };
+    const auto res2 = sofa::geometry::Edge::isPointOnEdge(p2, a1, b1);
+    EXPECT_TRUE(res2);
+
+    // False case
+    const sofa::type::Vec3f p3{ 1.0f, 0.25f, 0.25f };
+    const auto res3 = sofa::geometry::Edge::isPointOnEdge(p3, a1, b1);
+    EXPECT_FALSE(res3);
+
+
+    //special cases
+    // Edge null
+    const sofa::type::Vec3f c1{ 2.f, 2.f, 2.f };
+    const auto res4 = sofa::geometry::Edge::isPointOnEdge(p1, b1, c1);
+    EXPECT_FALSE(res4);
+
+    // Point on one Node
+    const auto res5 = sofa::geometry::Edge::isPointOnEdge(b1, a1, b1);
+    EXPECT_TRUE(res5);
+
+    // Point out of Edge borders
+    const sofa::type::Vec3f p4{ -1.0f, -1.0f, -1.0f };
+    const sofa::type::Vec3f p5{ 2.5f, 2.5f, 2.5f };
+    const auto res6 = sofa::geometry::Edge::isPointOnEdge(p4, a1, b1);
+    const auto res7 = sofa::geometry::Edge::isPointOnEdge(p5, a1, b1);
+
+    EXPECT_FALSE(res6);
+    EXPECT_FALSE(res7);
+}
+
+
+
 TEST(GeometryEdge_test, intersectionWithPlane3f)
 {
     const sofa::type::Vec3f a1{ 0.f, 0.f, 0.f };
