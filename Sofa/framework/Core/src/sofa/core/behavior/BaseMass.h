@@ -23,7 +23,6 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/StateAccessor.h>
-#include <sofa/defaulttype/TopologyTypes.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior {
