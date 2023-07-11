@@ -207,13 +207,13 @@ struct Edge
 
 
     /**
-    * @brief	Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
+    * @brief	Compute the intersection coordinate of the 2 input edges.
     * @tparam   Node iterable container
     * @tparam   T scalar
-    * @param	
-    * @param	
-    * @param    
-    * @return	
+    * @param	pA, pB nodes of the first edge
+    * @param	pC, pD nodes of the second edge
+    * @param    intersection node will be filled if there is an intersection otherwise will return sofa::InvalidID
+    * @return	bool true if there is an intersection, otherwise false
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
