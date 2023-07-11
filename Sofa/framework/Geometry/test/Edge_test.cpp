@@ -320,39 +320,59 @@ TEST(GeometryEdge_test, intersectionWithEdge3f)
     const sofa::type::Vec3f e02{ 2.f, 2.f, 2.f };
 
     const sofa::type::Vec3f e11{ 0.f, 0.f, 2.f };
-    const sofa::type::Vec3f e12{ 2.f, 2.f, 0.f };
+    sofa::type::Vec3f e12{ 2.f, 2.f, 0.f };
 
     sofa::type::Vec3f inter{ 0.f, 0.f, 0.f };
 
     // basic cases
+    // intersection in the middle
     auto res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(res);
     EXPECT_FLOAT_EQ(inter[0], 1.0f);
     EXPECT_FLOAT_EQ(inter[1], 1.0f);
     EXPECT_FLOAT_EQ(inter[2], 1.0f);
 
-    const sofa::type::Vec3f e13{ 2.f, 2.f, 2.f };
-    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e13, inter);
-    EXPECT_EQ(res, true);
+    // intersection on a node
+    e12 = { 2.f, 2.f, 2.f };
+    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
+    EXPECT_TRUE(res);
     EXPECT_FLOAT_EQ(inter[0], 2.0f);
     EXPECT_FLOAT_EQ(inter[1], 2.0f);
     EXPECT_FLOAT_EQ(inter[2], 2.0f);
 
-    const sofa::type::Vec3f e14{ 2.f, 2.f, 4.f };
-    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e14, inter);
+    // no intersection
+    e12 = { -1.f, -1.f, -1.f };
+    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
     EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
     EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
     EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
 
-    const sofa::type::Vec3f e15{ 2.001f, 2.001f, 2.001f };
-    const sofa::type::Vec3f e16{ 3.f, 3.f, 3.f };
-    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e15, e16, inter);
+    // colinear
+    e12 = { 2.f, 2.f, 4.f };
+    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
     EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
     EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
     EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
 
+    // on the same line but no overlapping    
+    sofa::type::Vec3f e13{ 2.001f, 2.001f, 2.001f };
+    sofa::type::Vec3f e14{ 3.f, 3.f, 3.f };
+    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
+    EXPECT_FALSE(res);
+    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
+
+    // on the same line and overlapping    
+    e13 = { 1.5f, 1.5f, 1.5f };
+    e14 = { 3.f, 3.f, 3.f };
+    res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
+    EXPECT_FALSE(res);
+    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
 }
 
 

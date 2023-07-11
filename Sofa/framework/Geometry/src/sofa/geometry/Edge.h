@@ -220,75 +220,67 @@ struct Edge
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
         [[nodiscard]]
-    static constexpr bool intersectionWithEdge(const Node& p0, const Node& p1, const Node& q0, const Node& q1, Node& intersection)
+    static constexpr bool intersectionWithEdge(const Node& pA, const Node& pB, const Node& pC, const Node& pD, Node& intersection)
     {
-        // 1. check if the point, n0 and n1 are aligned
-        const auto vec1 = p1 - p0;
-        const auto vec2 = q1 - q0;
-
-        bool intersected = true;
+        const auto edge1 = pB - pA;
+        const auto edge2 = pD - pC;        
+        
         if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
         {
-            for (unsigned int i = 0; i < 3; i++)
-                intersection[i] = 0;
+            // Find the shortest line between the two 3D lines. If this lines length is null then there is an intersection        
+            // Define shortest line by [pX; pY]. pX on edge1 and pY on edge2 can be defined by:
+            // pX = pA + alpha (pB - pA)
+            // pY = pC + beta (pD - pC)
 
-            int ind1 = -1;
-            int ind2 = -1;
-            constexpr T epsilon = static_cast<T>(0.0001);
-            T lambda = 0.0;
-            T alpha = 0.0;
+            // Shortest segment [pX; pY] between the two lines will be perpendicular to them. Then:
+            // (pX - pY).dot(pB - pA) = 0
+            // (pX - pY).dot(pD - pC) = 0
+            const auto AB = pB - pA;
+            const auto CD = pD - pC;
+            
+            // We need to find alpha and beta that suits: 
+            // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pB - pA) = 0
+            // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pD - pC) = 0
+            const auto CA = pA - pC;
 
-            // Searching vector composante not null:
-            for (unsigned int i = 0; i < 3; i++)
+            // Writting d[CA/AB] == (pA - pC).dot(pB - pA) and subtituting beta we obtain:
+            // beta = (d[CA/CD] + alpha * d[AB/CD]) / d[CD/CD]
+            // alpha = ( d[CA/CD]*d[CD/AB] - d[CA/AB]*d[CD/CD] ) / ( d[AB/AB]*d[CD/CD] - d[AB/CD]*d[AB/CD])
+            const T dCACD = sofa::type::dot(CA, CD);
+            const T dABCD = sofa::type::dot(AB, CD);
+            const T dCDCD = sofa::type::dot(CD, CD);
+            const T dCAAB = sofa::type::dot(CA, AB);
+            const T dABAB = sofa::type::dot(AB, AB);
+            
+            const T alphaNom = (dCACD * dABCD - dCAAB * dCDCD);
+            const T alphaDenom = (dABAB * dCDCD - dABCD * dABCD); 
+
+            if (alphaDenom < std::numeric_limits<T>::epsilon()) // alpha == inf, not sure what it means geometrically, colinear?
             {
-                if ((vec1[i] > epsilon) || (vec1[i] < -epsilon))
-                {
-                    ind1 = i;
-
-                    for (unsigned int j = 0; j < 3; j++)
-                        if ((vec2[j] > epsilon || vec2[j] < -epsilon) && (j != i))
-                        {
-                            ind2 = j;
-
-                            // Solving system:
-                            T coef_lambda = vec1[ind1] - (vec1[ind2] * vec2[ind1] / vec2[ind2]);
-
-                            if (coef_lambda < epsilon && coef_lambda > -epsilon)
-                                break;
-
-                            lambda = (q0[ind1] - p0[ind1] + (p0[ind2] - q0[ind2]) * vec2[ind1] / vec2[ind2]) * 1 / coef_lambda;
-                            alpha = (p0[ind2] + lambda * vec1[ind2] - q0[ind2]) * 1 / vec2[ind2];
-                            break;
-                        }
-                }
-
-                if (lambda != 0.0)
-                    break;
+                intersection = sofa::type::Vec<3, T>(sofa::InvalidID, sofa::InvalidID, sofa::InvalidID);
+                return false;
             }
 
-            if ((ind1 == -1) || (ind2 == -1))
+            const T alpha = alphaNom / alphaDenom;
+            const T beta = (dCACD + alpha * dABCD) / dCDCD;
+
+            const Node pX = pA + alpha * edge1;
+            const Node pY = pC + beta * edge2;
+
+            if (alpha < 0 || beta < 0 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) 
             {
-                std::cout << "Vector director is null." << std::endl;
-                intersected = false;
-                return intersected;
+                // if alpha or beta < 0 means on the exact same line but no overlap. if pY and pX are not se same means no intersection.
+                intersection = sofa::type::Vec<3, T>(sofa::InvalidID, sofa::InvalidID, sofa::InvalidID);
+                return false;
             }
-
-            // Compute X coords:
-            for (unsigned int i = 0; i < 3; i++)
-                intersection[i] = p0[i] + (float)lambda * vec1[i];
-
-            // Check if lambda found is really a solution
-            for (unsigned int i = 0; i < 3; i++)
-                if ((intersection[i] - q0[i] - alpha * vec2[i]) > 0.1)
-                {
-                    std::cout << "Edges don't intersect themself." << std::endl;
-                    intersected = false;
-                    return intersected;
-                }
-           
+            else
+            {
+                intersection = pX;
+                return true;
+            }
         }
-        std::cout << "OUT NORMAL." << std::endl;
-        return intersected;
+
+        return false;
     }
 };
 
