@@ -277,10 +277,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
     if (d_showPointIndices.getValue())
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-        sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         constexpr auto color4 = sofa::type::RGBAColor::white();
-
         const float scale = getIndicesScale();
 
         std::vector<type::Vec3> positions;
