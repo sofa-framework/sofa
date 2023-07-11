@@ -207,6 +207,92 @@ struct Edge
         }
         return false;
     }
+
+
+    /**
+    * @brief	Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	
+    * @param	
+    * @param    
+    * @return	
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        [[nodiscard]]
+    static constexpr bool intersectionWithEdge(const Node& p0, const Node& p1, const Node& q0, const Node& q1, Node& intersection)
+    {
+        // 1. check if the point, n0 and n1 are aligned
+        const auto vec1 = p1 - p0;
+        const auto vec2 = q1 - q0;
+
+        bool intersected = true;
+        if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
+        {
+            for (unsigned int i = 0; i < 3; i++)
+                intersection[i] = 0;
+
+            int ind1 = -1;
+            int ind2 = -1;
+            constexpr T epsilon = static_cast<T>(0.0001);
+            T lambda = 0.0;
+            T alpha = 0.0;
+
+            // Searching vector composante not null:
+            for (unsigned int i = 0; i < 3; i++)
+            {
+                if ((vec1[i] > epsilon) || (vec1[i] < -epsilon))
+                {
+                    ind1 = i;
+
+                    for (unsigned int j = 0; j < 3; j++)
+                        if ((vec2[j] > epsilon || vec2[j] < -epsilon) && (j != i))
+                        {
+                            ind2 = j;
+
+                            // Solving system:
+                            T coef_lambda = vec1[ind1] - (vec1[ind2] * vec2[ind1] / vec2[ind2]);
+
+                            if (coef_lambda < epsilon && coef_lambda > -epsilon)
+                                break;
+
+                            lambda = (q0[ind1] - p0[ind1] + (p0[ind2] - q0[ind2]) * vec2[ind1] / vec2[ind2]) * 1 / coef_lambda;
+                            alpha = (p0[ind2] + lambda * vec1[ind2] - q0[ind2]) * 1 / vec2[ind2];
+                            break;
+                        }
+                }
+
+                if (lambda != 0.0)
+                    break;
+            }
+
+            if ((ind1 == -1) || (ind2 == -1))
+            {
+                std::cout << "Vector director is null." << std::endl;
+                intersected = false;
+                return intersected;
+            }
+
+            // Compute X coords:
+            for (unsigned int i = 0; i < 3; i++)
+                intersection[i] = p0[i] + (float)lambda * vec1[i];
+
+            // Check if lambda found is really a solution
+            for (unsigned int i = 0; i < 3; i++)
+                if ((intersection[i] - q0[i] - alpha * vec2[i]) > 0.1)
+                {
+                    std::cout << "Edges don't intersect themself." << std::endl;
+                    intersected = false;
+                    return intersected;
+                }
+           
+        }
+        std::cout << "OUT NORMAL." << std::endl;
+        return intersected;
+    }
 };
 
 } // namespace sofa::geometry
