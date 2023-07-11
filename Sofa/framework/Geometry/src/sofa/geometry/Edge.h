@@ -222,21 +222,46 @@ struct Edge
         [[nodiscard]]
     static constexpr bool intersectionWithEdge(const Node& pA, const Node& pB, const Node& pC, const Node& pD, Node& intersection)
     {
-        const auto edge1 = pB - pA;
-        const auto edge2 = pD - pC;        
-        
-        if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
-        {
-            // Find the shortest line between the two 3D lines. If this lines length is null then there is an intersection        
-            // Define shortest line by [pX; pY]. pX on edge1 and pY on edge2 can be defined by:
-            // pX = pA + alpha (pB - pA)
-            // pY = pC + beta (pD - pC)
+        // The 2 segment equations using pX on edge1 and pY on edge2 can be defined by:
+        // pX = pA + alpha (pB - pA)
+        // pY = pC + beta (pD - pC)
+        const auto AB = pB - pA;
+        const auto CD = pD - pC;
 
+        if constexpr (std::is_same_v < Node, sofa::type::Vec<2, T> >)
+        {
+            // in 2D we have 2 segment equations and 2 unknowns so direct solving of pX = pY is possible
+            // pA + alpha (pB - pA) = pC + beta (pD - pC)
+            // alpha = ((Cy - Ay)(Dx - Cx) - (Cx - Ax)(Dy - Cy)) / ((By - Ay)(Dx - Cx) - (Bx - Ax)(Dy - Cy))
+            const auto AC = pC - pA;
+            const T alphaNom = AC[1] * CD[0] - AC[0] * CD[1];
+            const T alphaDenom = AB[1] * CD[0] - AB[0] * CD[1];
+            
+            if (alphaDenom < std::numeric_limits<T>::epsilon()) // collinear
+            {
+                intersection = sofa::type::Vec<2, T>(sofa::InvalidID, sofa::InvalidID);
+                return false;
+            }
+            
+            const T alpha = alphaNom / alphaDenom;
+
+            if (alpha < 0 || alpha > 1)
+            {
+                intersection = sofa::type::Vec<2, T>(sofa::InvalidID, sofa::InvalidID);
+                return false;
+            }
+            else
+            {
+                intersection = pA + alpha * AB;
+                return true;
+            }
+        }
+        else
+        {
+            // We search for the shortest line between the two 3D lines. If this lines length is null then there is an intersection
             // Shortest segment [pX; pY] between the two lines will be perpendicular to them. Then:
             // (pX - pY).dot(pB - pA) = 0
             // (pX - pY).dot(pD - pC) = 0
-            const auto AB = pB - pA;
-            const auto CD = pD - pC;
             
             // We need to find alpha and beta that suits: 
             // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pB - pA) = 0
@@ -264,8 +289,8 @@ struct Edge
             const T alpha = alphaNom / alphaDenom;
             const T beta = (dCACD + alpha * dABCD) / dCDCD;
 
-            const Node pX = pA + alpha * edge1;
-            const Node pY = pC + beta * edge2;
+            const Node pX = pA + alpha * AB;
+            const Node pY = pC + beta * CD;
 
             if (alpha < 0 || beta < 0 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) 
             {
