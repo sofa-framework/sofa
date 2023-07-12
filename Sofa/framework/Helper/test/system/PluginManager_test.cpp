@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -56,6 +55,9 @@ struct PluginManager_test: public BaseTest
 {
     std::string pluginDir;
 
+    // This list of paths will be deleted when cleaning-up the test
+    sofa::type::vector<std::string> createdFilesToDelete;
+
     void SetUp() override
     {
         // Set pluginDir by searching pluginFileName in the PluginRepository
@@ -77,16 +79,23 @@ struct PluginManager_test: public BaseTest
 
     void TearDown() override
     {
+        for (const auto& file : createdFilesToDelete)
+        {
+            EXPECT_TRUE(FileSystem::removeFile(file));
+        }
+
         PluginManager&pm = PluginManager::getInstance();
         //empty loaded plugin(s)
         std::vector<std::string> toDelete;
-        for (PluginManager::PluginMap::const_iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
+        for (const auto& it : pm.getPluginMap())
         {
-            toDelete.push_back((*it).first);
+            toDelete.push_back(it.first);
         }
 
-        for(std::string p : toDelete)
+        for(const std::string& p : toDelete)
+        {
             ASSERT_TRUE(pm.unloadPlugin(p));
+        }
 
         ASSERT_EQ(pm.getPluginMap().size(), 0u);
     }
@@ -220,6 +229,8 @@ TEST_F(PluginManager_test, testIniFile)
     //writeToIniFile does not return anything to say if the file was created without error...
     ASSERT_TRUE(FileSystem::exists(pathIniFile));
 
+    createdFilesToDelete.push_back(pathIniFile);
+
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
@@ -246,4 +257,5 @@ TEST_F(PluginManager_test, testDeprecatedIniFileWoVersion)
     ASSERT_TRUE(FileSystem::exists(pathIniFile));
     pm.readFromIniFile(pathIniFile);
 
+    createdFilesToDelete.push_back(pathIniFile);
 }
