@@ -26,7 +26,6 @@ namespace sofa::helper::lifecycle
 {
 
 const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
-    {"MatrixMass", Deprecated("v19.06", "v19.12")},
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
@@ -34,23 +33,6 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
-    // SofaDistanceGrid was pluginized in #389
-    {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
-    {"RayDistanceGridContact", Pluginized("v17.12", "SofaDistanceGrid")},
-    {"DistanceGridForceField", Pluginized("v17.12", "SofaDistanceGrid")},
-    {"RigidDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
-    {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
-
-    // SofaImplicitField was pluginized in #389
-    {"ImplicitSurfaceContainer", Pluginized("v17.12", "SofaImplicitField")},
-    {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
-    {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
-    {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
-
-    // SofaHaptics was pluginized in #945
-    {"NullForceFeedback", Pluginized("v19.06", "SofaHaptics")},
-    {"LCPForceFeedback", Pluginized("v19.06", "SofaHaptics")},
-
     // SofaValidation was pluginized in #1302
     {"CompareState", Pluginized("v20.06", "SofaValidation")},
     {"CompareTopology", Pluginized("v20.06", "SofaValidation")},
@@ -107,7 +89,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     /***********************/
     // REMOVED SINCE v21.06
 
-    {"LennardJonesForceField", Removed("v17.12", "v21.06")},
     {"LengthContainer", Removed("v21.06", "v21.06")},
     {"PoissonContainer", Removed("v21.06", "v21.06")},
     {"RadiusContainer", Removed("v21.06", "v21.06")},
@@ -185,39 +166,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"TriangleMeshModel", Removed("v19.12", "v20.06")},
     {"TriangleModel", Removed("v19.12", "v20.06")},
     {"TTriangleModel", Removed("v19.12", "v20.06")},
-
-    /***********************/
-    // REMOVED SINCE v18.12
-
-    // SofaBoundaryCondition
-    {"BuoyantForceField", Removed("v17.12", "v18.12")},
-    {"VaccumSphereForceField", Removed("v17.12", "v18.12")},
-
-    // SofaMiscForceField
-    {"ForceMaskOff", Removed("v17.12", "v18.12")},
-    {"LineBendingSprings", Removed("v17.12", "v18.12")},
-    {"WashingMachineForceField", Removed("v17.12", "v18.12")},
-
-    // SofaMiscMapping
-    {"CatmullRomSplineMapping", Removed("v17.12", "v18.12")},
-    {"CenterPointMechanicalMapping", Removed("v17.12", "v18.12")},
-    {"CurveMapping", Removed("v17.12", "v18.12")},
-    {"ExternalInterpolationMapping", Removed("v17.12", "v18.12")},
-    {"ProjectionToLineMapping", Removed("v17.12", "v18.12")},
-    {"ProjectionToPlaneMapping", Removed("v17.12", "v18.12")},
-
-    // SofaMisc
-    {"ParallelCGLinearSolver", Removed("v17.12", "v18.12")},
-
-    // SofaUserInteraction
-    {"ArticulatedHierarchyBVHController", Removed("v17.12", "v18.12")},
-    {"ArticulatedHierarchyController", Removed("v17.12", "v18.12")},
-    {"DisabledContact", Removed("v17.12", "v18.12")},
-    {"EdgeSetController", Removed("v17.12", "v18.12")},
-    {"GraspingManager", Removed("v17.12", "v18.12")},
-    {"InterpolationController", Removed("v17.12", "v18.12")},
-    {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
-    {"NodeToggleController", Removed("v17.12", "v18.12")},
 
     /***********************/
     // MOVED SINCE v21.06
