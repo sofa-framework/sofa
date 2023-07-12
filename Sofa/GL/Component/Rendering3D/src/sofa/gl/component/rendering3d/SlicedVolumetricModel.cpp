@@ -408,8 +408,8 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 /// return 0->no intersection, 1->1 intersection, 2->line on plane
 int SlicedVolumetricModel::intersectionSegmentPlane( const Coord&s0,const Coord&s1,  const Coord &segmentDirection, const Coord& planeNormal, const Real&planeConstant,Real & m_fLineT /*where is the intersection on the segment*/)
 {
-    Real fDdN = segmentDirection * planeNormal;
-    Real fSDistance = (planeNormal * s0) - planeConstant;
+    const Real fDdN = segmentDirection * planeNormal;
+    const Real fSDistance = (planeNormal * s0) - planeConstant;
 
     if (fabs(fDdN) > 1.0e-5)
     {
@@ -418,7 +418,7 @@ int SlicedVolumetricModel::intersectionSegmentPlane( const Coord&s0,const Coord&
 
         // The line intersects the plane, but possibly at a point that is
         // not on the segment.
-        Real norm = (s1-s0).norm();
+        const Real norm = (s1-s0).norm();
         if( m_fLineT>0 && fabs(m_fLineT) <= norm  )
         {
             m_fLineT /= norm;

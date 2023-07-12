@@ -81,7 +81,7 @@ template <class T>
 void MapIndices<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > in = f_in;
-    helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
+    const helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
     const bool transpose = f_transpose.getValue();
 
     helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;

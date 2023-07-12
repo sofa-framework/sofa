@@ -297,10 +297,10 @@ void SphereROI<DataTypes>::doUpdate()
         norm.normalize();
 
     // Read accessor for input topology
-    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
-    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    const helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
+    const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
 
@@ -504,7 +504,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawEdges.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+        const helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             const Edge& e = edgesInROI[i];
@@ -520,7 +520,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTriangles.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        const helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             const Triangle& t = trianglesInROI[i];
@@ -536,7 +536,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTriangles.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
+        const helper::ReadAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
         for (unsigned int i=0; i<quadsInROI.size() ; ++i)
         {
             const Quad& t = quadsInROI[i];
@@ -553,7 +553,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTetrahedra.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
@@ -595,7 +595,7 @@ template <>
 bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
 {
 	const VecCoord x0 = f_X0.getValue();
-	CPos c =  x0[pid].getCenter();
+	const CPos c =  x0[pid].getCenter();
 	return ( isPointInSphere(c, r, p) );
 }
 
@@ -672,8 +672,8 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 		return;
 	}
 
-	Real eAngle = edgeAngle.getValue();
-	Real tAngle = triAngle.getValue();
+	const Real eAngle = edgeAngle.getValue();
+	const Real tAngle = triAngle.getValue();
 	Vec3 dir = direction.getValue();
 	Vec3 norm = normal.getValue();
 
@@ -684,10 +684,10 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 		norm.normalize();
 
 	// Read accessor for input topology
-	helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-	helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-	helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
-	helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+	const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+	const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+	const helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
+	const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
 	// Write accessor for topological element indices in SPHERE
 	SetIndex& indices = *(f_indices.beginEdit());

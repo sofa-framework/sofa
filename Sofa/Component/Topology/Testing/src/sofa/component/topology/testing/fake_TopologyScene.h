@@ -117,7 +117,7 @@ public:
                 
         }
 
-        m_simu->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
 
         return true;
     }

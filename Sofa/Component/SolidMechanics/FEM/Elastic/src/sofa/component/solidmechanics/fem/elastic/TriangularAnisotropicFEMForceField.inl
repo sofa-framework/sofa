@@ -208,7 +208,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     }
     else // for unidirectional fibers
     {
-        double theta = (double)f_theta.getValue()*M_PI/180.0;
+        const double theta = (double)f_theta.getValue()*M_PI/180.0;
         fiberDirGlobal = Coord((Real)cos(theta), (Real)sin(theta), 0); // was fiberDir
     }
 
@@ -317,7 +317,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
         std::vector<sofa::type::Vec3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        int nbTriangles=m_topology->getNbTriangles();
+        const int nbTriangles=m_topology->getNbTriangles();
 
         for(int i=0; i<nbTriangles; ++i)
         {

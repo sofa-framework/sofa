@@ -139,13 +139,7 @@
 #define VEC_H 4
 #include <cmath>	/* for definition of floor() */
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace polygon_cube_intersection
+namespace sofa::helper::polygon_cube_intersection
 {
 
 #define SET2(to,from)	\
@@ -939,8 +933,6 @@ namespace polygon_cube_intersection
 #define ADJOINT4l(to,m) ADJOINT4safe(long,to,m)
 #define ADJOINT4r(to,m) ADJOINT4safe(real,to,m)
 
-}
-}
 }
 
 #endif /* VEC_H */

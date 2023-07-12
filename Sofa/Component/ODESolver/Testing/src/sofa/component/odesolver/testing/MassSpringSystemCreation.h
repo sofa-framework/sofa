@@ -41,7 +41,7 @@ inline simulation::Node::SPtr createMassSpringSystem(
     const std::string& vMass)
 {
     // Fixed point
-    auto fixedPointNode = simpleapi::createChild(root, "FixedPointNode" );
+    const auto fixedPointNode = simpleapi::createChild(root, "FixedPointNode" );
 
     simpleapi::createObject(fixedPointNode, "MechanicalObject", {
         { "name","fixedPoint"},
@@ -56,7 +56,7 @@ inline simulation::Node::SPtr createMassSpringSystem(
     });
 
     // Mass
-    auto massNode = simpleapi::createChild(root, "MassNode");
+    const auto massNode = simpleapi::createChild(root, "MassNode");
 
     simpleapi::createObject(massNode, "MechanicalObject", {
         { "name","massDof"},

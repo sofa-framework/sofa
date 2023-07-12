@@ -147,7 +147,7 @@ template <class TIn, class TOut>
 sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c)
 {
     helper::WriteAccessor<Data<OutVecCoord> > points = d_points;
-    sofa::Size i = sofa::Size(points.size());
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     return i;
 }
@@ -156,7 +156,7 @@ template <class TIn, class TOut>
 sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c, sofa::Index indexFrom)
 {
     OutVecCoord& points = *d_points.beginEdit();
-    sofa::Size i = sofa::Size(points.size());
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     d_points.endEdit();
 
@@ -245,7 +245,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 
     type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -269,7 +269,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> valu
 
     type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -432,7 +432,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                unsigned int rigidIndex = getRigidIndex( colIt.index() );
+                const unsigned int rigidIndex = getRigidIndex( colIt.index() );
                 if(rigidIndex != ito)
                     continue;
 
@@ -487,7 +487,7 @@ static void fill_block(Eigen::Matrix<U, 6, 6>& block, const Coord& v) {
     U z = v[2];
 
     // note: this is -hat(v)
-    block.template rightCols<3>() <<
+    block.template topRightCorner<3, 3>() <<
 
         0,   z,  -y,
         -z,  0,   x,
@@ -661,7 +661,7 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
         const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-        const auto childForces = this->toModel->readForces();
+        const auto childForces = this->toModel->readTotalForces();
 
         std::map<unsigned, sofa::type::vector<unsigned> > in_out;
         for(sofa::Index i = 0; i < m_rotatedPoints.size(); ++i)
@@ -722,7 +722,7 @@ const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 
         for (unsigned int outIdx = 0; outIdx < pts.size() ; outIdx++)
         {
-            unsigned int inIdx = getRigidIndex(outIdx);
+            const unsigned int inIdx = getRigidIndex(outIdx);
 
             setJMatrixBlock(outIdx, inIdx);
         }

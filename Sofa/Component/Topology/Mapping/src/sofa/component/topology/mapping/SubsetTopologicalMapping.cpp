@@ -358,32 +358,32 @@ Index SubsetTopologicalMapping::getGlobIndex(Index ind)
 {
     if (handleHexahedra.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
+        const helper::ReadAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
         if (!heD2S.empty()) return heD2S[ind];
     }
     if (handleTetrahedra.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
+        const helper::ReadAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
         if (!teD2S.empty()) return teD2S[ind];
     }
     if (handleQuads.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > qD2S(quadD2S);
+        const helper::ReadAccessor<Data<SetIndex> > qD2S(quadD2S);
         if (!qD2S.empty()) return qD2S[ind];
     }
     if (handleTriangles.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > tD2S(triangleD2S);
+        const helper::ReadAccessor<Data<SetIndex> > tD2S(triangleD2S);
         if (!tD2S.empty()) return tD2S[ind];
     }
     if (handleEdges.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > eD2S(edgeD2S);
+        const helper::ReadAccessor<Data<SetIndex> > eD2S(edgeD2S);
         if (!eD2S.empty()) return eD2S[ind];
     }
     if (!samePoints.getValue())
     {
-        helper::ReadAccessor<Data<SetIndex> > pD2S(pointD2S);
+        const helper::ReadAccessor<Data<SetIndex> > pD2S(pointD2S);
         if (!pD2S.empty()) return pD2S[ind];
     }
     return ind;

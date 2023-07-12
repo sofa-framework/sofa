@@ -31,6 +31,15 @@
 #  define SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONRESPONSE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONRESPONSE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.12", "v24.06", \
+        "DefaultContactManager renamed as CollisionResponse in #3891: Sofa/Component/Collision/Response/Contact/src/sofa/component/collision/response/contact/CollisionResponse.h")
+#endif
+
 namespace sofa::component::collision::response::contact
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

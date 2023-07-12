@@ -43,19 +43,19 @@ struct RegularGridTopology_test : public BaseTest,
 bool RegularGridTopology_test::regularGridCreation()
 {
     // Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid3 = New<RegularGridTopology>(5, 5, 5);
+    const RegularGridTopology::SPtr regGrid3 = New<RegularGridTopology>(5, 5, 5);
     EXPECT_NE(regGrid3, nullptr);
     EXPECT_EQ(regGrid3->d_p0.getValue(), Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid3->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 2D
-    RegularGridTopology::SPtr regGrid2 = New<RegularGridTopology>(5, 5, 1);
+    const RegularGridTopology::SPtr regGrid2 = New<RegularGridTopology>(5, 5, 1);
     EXPECT_NE(regGrid2, nullptr);
     EXPECT_EQ(regGrid2->d_p0.getValue(), Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid2->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid1 = New<RegularGridTopology>(5, 1, 1);
+    const RegularGridTopology::SPtr regGrid1 = New<RegularGridTopology>(5, 1, 1);
     EXPECT_NE(regGrid1, nullptr);
     EXPECT_EQ(regGrid1->d_p0.getValue(), Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid1->d_cellWidth.getValue(), 0.0);
@@ -70,7 +70,7 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool f
     int nz = p[2];
 
     /// Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
+    const RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
     regGrid->d_computeTriangleList.setValue(fromTriangleList);
     regGrid->init();
 
@@ -90,18 +90,18 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool f
     EXPECT_EQ(regGrid->getNbPoints(), nx * ny * nz);
     if (fromTriangleList)
     {
-        int nbEgdes = (nx - 1) * ny * nz + nx * (ny - 1) * nz + nx * ny * (nz - 1) + nbQuads;
+        const int nbEgdes = (nx - 1) * ny * nz + nx * (ny - 1) * nz + nx * ny * (nz - 1) + nbQuads;
         EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
     }
     else
     {
-        int nbEgdes = (nx - 1) * ny * nz + nx * (ny - 1) * nz + nx * ny * (nz - 1);
+        const int nbEgdes = (nx - 1) * ny * nz + nx * (ny - 1) * nz + nx * ny * (nz - 1);
         EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
     }
 
     /// Compute the dimmension.
-    int d = (p[0] == 1) + (p[1] == 1) + (p[2] == 1); /// Check if there is reduced dimmension
-    int e = (p[0] <= 0) + (p[1] <= 0) + (p[2] <= 0); /// Check if there is an error
+    const int d = (p[0] == 1) + (p[1] == 1) + (p[2] == 1); /// Check if there is reduced dimmension
+    const int e = (p[0] <= 0) + (p[1] <= 0) + (p[2] <= 0); /// Check if there is an error
     if (e == 0)
     {
         if (d == 0)
@@ -134,7 +134,7 @@ bool RegularGridTopology_test::regularGridPosition()
     int nx = 8;
     int ny = 8;
     int nz = 5;
-    RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
+    const RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
     regGrid->init();
 
     // Check first circle with
@@ -174,7 +174,7 @@ bool RegularGridTopology_test::regularGridFindPoint()
 
     // 3D grid with 3x3x3=27 cells, each of dimension 1x1x1,  starting at {1,1,1}
     // and ending at {4,4,4}
-    auto grid = New<RegularGridTopology>(
+    const auto grid = New<RegularGridTopology>(
                     Dimension{ 4, 4, 4 },
                     BoundingBox( Coordinates{ 1., 1., 1. } /*min*/, Coordinates{ 4, 4, 4 } /*max*/ )
                 );

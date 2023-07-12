@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -30,23 +30,23 @@
 namespace sofa::component::collision::response::contact
 {
 
-int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
-        .add< DefaultContactManager >()
-        .addAlias("CollisionResponse")
+int CollisionResponseClass = core::RegisterObject("Default class to create reactions to the collisions")
+        .add< CollisionResponse >()
+        .addAlias("DefaultContactManager")
         ;
 
-DefaultContactManager::DefaultContactManager()
+CollisionResponse::CollisionResponse()
     : response(initData(&response, "response", "contact response class"))
     , responseParams(initData(&responseParams, "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
 {
 }
 
-sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa::core::objectmodel::BaseContext *context)
+sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::core::objectmodel::BaseContext *context)
 {
     std::set<std::string> listResponse;
 
-    sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
-    sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
+    const sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
+    const sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
     if (pipeline)
     {
         listResponse=pipeline->getResponseList();
@@ -67,7 +67,7 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
     return responseOptions;
 }
 
-void DefaultContactManager::init()
+void CollisionResponse::init()
 {
     Inherit1::init();
     if (response.getValue().size() == 0)
@@ -76,7 +76,7 @@ void DefaultContactManager::init()
     }
 }
 
-void DefaultContactManager::cleanup()
+void CollisionResponse::cleanup()
 {
     for (auto& contact : contacts)
     {
@@ -89,17 +89,17 @@ void DefaultContactManager::cleanup()
     contactMap.clear();
 }
 
-void DefaultContactManager::reset()
+void CollisionResponse::reset()
 {
     cleanup();
 }
 
-void DefaultContactManager::setDefaultResponseType(const std::string &responseT)
+void CollisionResponse::setDefaultResponseType(const std::string &responseT)
 {
     if (response.getValue().size() == 0)
     {
-        type::vector<std::string> listResponse(1,responseT);
-        sofa::helper::OptionsGroup responseOptions(listResponse);
+        const type::vector<std::string> listResponse(1,responseT);
+        const sofa::helper::OptionsGroup responseOptions(listResponse);
         response.setValue(responseOptions);
     }
     else
@@ -111,14 +111,14 @@ void DefaultContactManager::setDefaultResponseType(const std::string &responseT)
 }
 
 
-void DefaultContactManager::changeInstance(Instance inst)
+void CollisionResponse::changeInstance(Instance inst)
 {
     core::collision::ContactManager::changeInstance(inst);
     storedContactMap[instance].swap(contactMap);
     contactMap.swap(storedContactMap[inst]);
 }
 
-void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
+void CollisionResponse::createContacts(const DetectionOutputMap& outputsMap)
 {
     Size nbContacts = 0;
 
@@ -139,7 +139,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     setNumberOfContacts();
 }
 
-void DefaultContactManager::createNewContacts(const core::collision::ContactManager::DetectionOutputMap &outputsMap,
+void CollisionResponse::createNewContacts(const core::collision::ContactManager::DetectionOutputMap &outputsMap,
                                               Size &nbContact)
 {
     std::stringstream errorStream;
@@ -148,7 +148,7 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
         outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
     {
         const auto contactInsert = contactMap.insert(ContactMap::value_type(outputsIt->first, core::collision::Contact::SPtr()));
-        ContactMap::iterator contactIt = contactInsert.first;
+        const ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second) //insertion success
         {
             // new contact
@@ -199,7 +199,7 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
 }
 
 void
-DefaultContactManager::removeInactiveContacts(const core::collision::ContactManager::DetectionOutputMap &outputsMap,
+CollisionResponse::removeInactiveContacts(const core::collision::ContactManager::DetectionOutputMap &outputsMap,
                                               Size& nbContact)
 {
     for (auto contactIt = contactMap.begin(), contactItEnd = contactMap.end();
@@ -235,13 +235,13 @@ DefaultContactManager::removeInactiveContacts(const core::collision::ContactMana
 }
 
 void
-DefaultContactManager::contactCreationError(std::stringstream &errorStream, const core::CollisionModel *model1,
+CollisionResponse::contactCreationError(std::stringstream &errorStream, const core::CollisionModel *model1,
                                             const core::CollisionModel *model2, std::string &responseUsed)
 {
     const std::string model1class = model1->getClassName();
     const std::string model2class = model2->getClassName();
-    int count = ++errorMsgCount[std::make_pair(responseUsed,
-                                               std::make_pair(model1class, model2class))];
+    const int count = ++errorMsgCount[std::make_pair(responseUsed,
+                                                     std::make_pair(model1class, model2class))];
     constexpr int nbMaxMessages { 10 };
     if (count <= nbMaxMessages)
     {
@@ -266,7 +266,7 @@ DefaultContactManager::contactCreationError(std::stringstream &errorStream, cons
     }
 }
 
-void DefaultContactManager::setNumberOfContacts() const
+void CollisionResponse::setNumberOfContacts() const
 {
     std::map< core::CollisionModel*, int > nbContactsMap;
     for (const auto& contact: contacts)
@@ -286,10 +286,10 @@ void DefaultContactManager::setNumberOfContacts() const
     }
 }
 
-std::string DefaultContactManager::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
+std::string CollisionResponse::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
 {
     std::string responseUsed = response.getValue().getSelectedItem();
-    std::string params = responseParams.getValue();
+    const std::string params = responseParams.getValue();
     if (!params.empty())
     {
         responseUsed += '?';
@@ -306,7 +306,7 @@ std::string DefaultContactManager::getContactResponse(core::CollisionModel* mode
     else return response1;
 }
 
-void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
+void CollisionResponse::draw(const core::visual::VisualParams* vparams)
 {
     for (const auto& contact : contacts)
     {
@@ -317,10 +317,10 @@ void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-void DefaultContactManager::removeContacts(const ContactVector &c)
+void CollisionResponse::removeContacts(const ContactVector &c)
 {
     auto remove_it = c.begin();
-    auto remove_itEnd = c.end();
+    const auto remove_itEnd = c.end();
 
     ContactVector::iterator it;
     ContactVector::iterator itEnd;
@@ -356,7 +356,7 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
         {
             if (map_it->second == *remove_it)
             {
-                auto erase_it = map_it;
+                const auto erase_it = map_it;
                 ++map_it;
 
                 erase_it->second->removeResponse();
@@ -374,11 +374,11 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
     }
 }
 
-void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact)
+void CollisionResponse::setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact)
 {
     if (contact != nullptr)
     {
-        for (auto* model : {model1, model2})
+        for (const auto* model : {model1, model2})
         {
             if (model)
             {

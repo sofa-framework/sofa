@@ -1448,13 +1448,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-        auto nbcubes = m_topology->getNbHexahedra();
+        const auto nbcubes = m_topology->getNbHexahedra();
 
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
         {
-            auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(m_topology);
+            const auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(m_topology);
             if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
@@ -1879,14 +1879,19 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
             }
         }
 
-        // create corresponding colors
+        // create the bluish default colors
+        color[0] = sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f);
+        color[1] = sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f);
+        color[2] = sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f);
+        color[3] = sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f);
+
         if (drawVonMisesStress){
             if (showVonMisesStressPerElement)
             {
                 if(heterogeneous)
                 {
-                    float col = (float)((youngModulus[elementId] - this->minYoung) / (this->maxYoung - this->minYoung));
-                    float fac = col * 0.5f;
+                    const float col = (float)((youngModulus[elementId] - this->minYoung) / (this->maxYoung - this->minYoung));
+                    const float fac = col * 0.5f;
                     color[0] = sofa::type::RGBAColor(col       , 0.0f - fac, 1.0f - col, 1.0f);
                     color[1] = sofa::type::RGBAColor(col       , 0.5f - fac, 1.0f - col, 1.0f);
                     color[2] = sofa::type::RGBAColor(col       , 1.0f - fac, 1.0f - col, 1.0f);
@@ -1911,13 +1916,6 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
                 color[1] = evalColor(vMN[(*it)[1]]);
                 color[2] = evalColor(vMN[(*it)[2]]);
                 color[3] = evalColor(vMN[(*it)[3]]);
-            }
-            else
-            {
-                color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
-                color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
-                color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
-                color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
             }
         }
 
@@ -2172,6 +2170,12 @@ void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::S
     }
 }
 
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
@@ -2200,7 +2204,7 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 {
-    std::size_t nbdof = this->mstate->getSize();
+    const std::size_t nbdof = this->mstate->getSize();
     for (Index i=0; i<nbdof; ++i)
     {
 
@@ -2211,7 +2215,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
-    std::size_t nbdof = this->mstate->getSize();
+    const std::size_t nbdof = this->mstate->getSize();
 
     if (linearalgebra::RotationMatrix<float> * diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
@@ -2251,7 +2255,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix
         {
             Transformation t;
             getRotation(t,i);
-            int e = offset+i*3;
+            const int e = offset+i*3;
             rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
             rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
@@ -2572,7 +2576,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-        type::Vec4f col = evalColor(vME[i]);
+        const type::Vec4f col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 
         for(unsigned int j=0 ; j<4 ; j++)

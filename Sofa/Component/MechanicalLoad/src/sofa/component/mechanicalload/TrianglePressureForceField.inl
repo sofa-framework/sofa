@@ -36,20 +36,19 @@ template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePress
 {
 }
 
-template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePressureForceField()    
-        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-		, cauchyStress(initData(&cauchyStress, MatSym3(),"cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
-        , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-        , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
-        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
-		, p_useConstantForce(initData(&p_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
-        , l_topology(initLink("topology", "link to the topology container"))
-        , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
-        , m_topology(nullptr)
-    {
-    }
+template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePressureForceField()
+    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , cauchyStress(initData(&cauchyStress, MatSym3(),"cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
+    , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
+    , p_useConstantForce(initData(&p_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+    , m_topology(nullptr)
+{}
 
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
@@ -274,6 +273,12 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
         vparams->drawTool()->setPolygonMode(0, false);
 
 
+}
+
+template <class DataTypes>
+void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

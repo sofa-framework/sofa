@@ -43,7 +43,7 @@ CubeCollisionModel::CubeCollisionModel()
 
 void CubeCollisionModel::resize(sofa::Size size)
 {
-    auto size0 = this->size;
+    const auto size0 = this->size;
     if (size == size0) return;
     // reset parent
     CollisionModel* parent = getPrevious();
@@ -66,7 +66,7 @@ void CubeCollisionModel::resize(sofa::Size size)
 
 void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max)
 {
-    sofa::Index i = parentOf[childIndex];
+    const sofa::Index i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
     elems[i].coneAngle = 2*M_PI;
@@ -74,7 +74,7 @@ void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, co
 
 void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max, const Vec3& normal, const SReal angle)
 {
-    sofa::Index i = parentOf[childIndex];
+    const sofa::Index i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
 
@@ -100,7 +100,7 @@ void CubeCollisionModel::setLeafCube(sofa::Index cubeIndex, std::pair<core::Coll
 
 Index CubeCollisionModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
-    sofa::Index index = size;
+    const sofa::Index index = size;
 
     this->core::CollisionModel::resize(index + 1);
     elems.resize(index + 1);
@@ -131,10 +131,10 @@ void CubeCollisionModel::updateCube(sofa::Index index)
             const Vec3& cmin = c.minVect();
             const Vec3& cmax = c.maxVect();
 
-            SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
+            const SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
             if(alpha <= M_PI/2)
             {
-                SReal beta = acos(c.getConeAxis() *  elems[index].coneAxis);
+                const SReal beta = acos(c.getConeAxis() *  elems[index].coneAxis);
                 elems[index].coneAxis = (c.getConeAxis() + elems[index].coneAxis).normalized();
                 elems[index].coneAngle = beta/2 + alpha;
             }
@@ -256,7 +256,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
 
         // Then clear all existing levels
         {
-            for (auto & level : levels)
+            for (const auto & level : levels)
                 level->resize(0);
         }
 
@@ -276,7 +276,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
             for(Cube cell = Cube(level->begin()); level->end() != cell; ++cell)
             {
                 const std::pair<Cube,Cube>& subcells = cell.subcells();
-                sofa::Index ncells = subcells.second.getIndex() - subcells.first.getIndex();
+                const sofa::Index ncells = subcells.second.getIndex() - subcells.first.getIndex();
                 dmsg_info() << "CubeCollisionModel: level " << lvl << " cell " << cell.getIndex() << ": current subcells " << subcells.first.getIndex() << " - " << subcells.second.getIndex();
                 if (ncells > 4)
                 {
@@ -284,7 +284,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
                     // Find the biggest dimension
                     int splitAxis;
                     Vec3 l = cell.maxVect()-cell.minVect();
-                    sofa::Index middle = subcells.first.getIndex()+(ncells+1)/2;
+                    const sofa::Index middle = subcells.first.getIndex()+(ncells+1)/2;
                     if(l[0]>l[1])
                         if (l[0]>l[2])
                             splitAxis = 0;
@@ -296,11 +296,11 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
                         splitAxis = 2;
 
                     // Separate cells on each side of the median cell
-                    CubeSortPredicate sortpred(splitAxis);
+                    const CubeSortPredicate sortpred(splitAxis);
                     std::stable_sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
 
                     // Create the two new subcells
-                    Cube cmiddle(this, middle);
+                    const Cube cmiddle(this, middle);
                     sofa::Index c1 = clevel->addCube(subcells.first, cmiddle);
                     sofa::Index c2 = clevel->addCube(cmiddle, subcells.second);
                     dmsg_info() << "L" << lvl << " cell " << cell.getIndex() << " split along " << (splitAxis == 0 ? 'X' : splitAxis == 1 ? 'Y' : 'Z') << " in cell " << c1 << " size " << middle - subcells.first.getIndex() << " and cell " << c2 << " size " << subcells.second.getIndex() - middle << ".";

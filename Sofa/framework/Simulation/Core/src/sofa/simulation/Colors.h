@@ -25,14 +25,8 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace sofa
-{
 
-namespace simulation
-{
-
-
-namespace Colors
+namespace sofa::simulation::Colors
 {
 
 enum
@@ -112,10 +106,5 @@ inline const char* getColor(const char* classname)
 }
 
 }
-
-
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

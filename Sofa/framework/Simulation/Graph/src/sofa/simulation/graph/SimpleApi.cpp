@@ -62,12 +62,18 @@ Simulation::SPtr createSimulation(const std::string& type)
         return nullptr ;
     }
 
-    return new simulation::graph::DAGSimulation() ;
+    return std::make_shared<simulation::graph::DAGSimulation>();
 }
 
 
 Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
                                               const std::map<std::string, std::string>& params)
+{
+    return createRootNode(s.get(), name, params);
+}
+
+NodeSPtr createRootNode(Simulation* s, const std::string& name,
+    const std::map<std::string, std::string>& params)
 {
     Node::SPtr root = s->createNewNode(name) ;
 

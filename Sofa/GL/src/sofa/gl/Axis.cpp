@@ -265,49 +265,49 @@ Axis::AxisSPtr Axis::get(const type::Vec3& len)
 
 void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
 {
-    auto a = get(len);
+    const auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    auto a = get(len);
+    const auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const double *mat, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    auto a = get(len);
+    const auto a = get(len);
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    auto a = get(type::Vec3(len,len,len));
+    const auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    auto a = get(type::Vec3(len,len,len));
+    const auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const double *mat, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    auto a = get(type::Vec3(len,len,len));
+    const auto a = get(type::Vec3(len,len,len));
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r )
 {
-    type::Vec3 v = p2-p1;
+    const type::Vec3 v = p2-p1;
     Axis::draw(p1, p1+v*0.9, r,r );
     Axis::draw(p1+v*0.9,p2, 2.0*r,0.0 );
 }
@@ -318,8 +318,8 @@ void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r1, co
     double theta;
     type::Vec3d n,p,q,perp;
 
-    double theta2 = M_2_PI;
-    double m = 16; //precision
+    const double theta2 = M_2_PI;
+    const double m = 16; //precision
 
     /* Normal pointing from p1 to p2 */
     n = p1-p2;

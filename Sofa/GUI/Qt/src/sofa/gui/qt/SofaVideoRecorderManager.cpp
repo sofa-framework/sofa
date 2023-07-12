@@ -111,13 +111,13 @@ SofaVideoRecorderManager::SofaVideoRecorderManager(QWidget *parent)
 
 std::string SofaVideoRecorderManager::getCodecExtension()
 {
-    unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
+    const unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
     return movieOptionsWidget->listCodecs[index].extension;
 }
 
 std::string SofaVideoRecorderManager::getCodecName()
 {
-    unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
+    const unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
     return movieOptionsWidget->listCodecs[index].codec;
 }
 

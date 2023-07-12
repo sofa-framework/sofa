@@ -129,7 +129,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
     else this->setMethod(LARGE);
 
     // Need to initialize the _stiffnesses vector before using it
-    std::size_t sizeMO=this->mstate->getSize();
+    const std::size_t sizeMO=this->mstate->getSize();
     if(_assembling.getValue())
     {
         _stiffnesses.resize( sizeMO * 3 );
@@ -802,7 +802,7 @@ template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, Index nodeIdx)
 {
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
-    int numNeiTetra=m_topology->getTetrahedraAroundVertex(nodeIdx).size();
+    const int numNeiTetra=m_topology->getTetrahedraAroundVertex(nodeIdx).size();
     Transformation r;
     r.clear();
 
@@ -1340,8 +1340,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::lineara
     }
 }
 
-
-
+template <class DataTypes>
+void TetrahedralCorotationalFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>

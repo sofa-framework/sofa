@@ -178,7 +178,7 @@ QDataSimpleEdit::QDataSimpleEdit(QWidget* parent, const char* name, BaseData* da
 }
 bool QDataSimpleEdit::createWidgets()
 {
-    QString str  = QString( getBaseData()->getValueString().c_str() );
+    const QString str  = QString( getBaseData()->getValueString().c_str() );
     QLayout* layout = new QHBoxLayout(this);
     if( str.length() > TEXTSIZE_THRESHOLD )
     {
@@ -216,7 +216,7 @@ void QDataSimpleEdit::setDataReadOnly(bool readOnly)
 
 void QDataSimpleEdit::readFromData()
 {
-    QString str = QString( getBaseData()->getValueString().c_str() );
+    const QString str = QString( getBaseData()->getValueString().c_str() );
     if(innerWidget_.type == TEXTEDIT)
     {
         innerWidget_.widget.textEdit->setText(str);
@@ -304,7 +304,7 @@ void QPoissonRatioWidget::setDataReadOnly(bool readOnly)
 
 void QPoissonRatioWidget::readFromData()
 {
-    double value = this->getData()->getValue();
+    const double value = this->getData()->getValue();
     QString str;
     str.setNum(value);
     lineEdit->setText(str);
@@ -314,7 +314,7 @@ void QPoissonRatioWidget::readFromData()
 void QPoissonRatioWidget::writeToData()
 {
     bool ok;
-    double d = lineEdit->text().toDouble(&ok);
+    const double d = lineEdit->text().toDouble(&ok);
     if(ok)
     {
         this->getData()->setValue(d);
@@ -323,8 +323,8 @@ void QPoissonRatioWidget::writeToData()
 
 void QPoissonRatioWidget::changeLineEditValue()
 {
-    int v = slider->value();
-    double db = (double)v / 100.;
+    const int v = slider->value();
+    const double db = (double)v / 100.;
     QString str;
     str.setNum(db);
     lineEdit->setText(str);
@@ -333,7 +333,7 @@ void QPoissonRatioWidget::changeLineEditValue()
 void QPoissonRatioWidget::changeSliderValue()
 {
     bool ok;
-    double v = lineEdit->text().toDouble(&ok);
+    const double v = lineEdit->text().toDouble(&ok);
     if(ok)
     {
         slider->setValue( (int)(v*100.) );

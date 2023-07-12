@@ -26,10 +26,7 @@
 #include <sofa/type/config.h>
 #include <cstring>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 #ifndef MAXIMUM_NUMBER_OF_DEVICES
@@ -95,8 +92,6 @@ public:
     };
 
 };
-
-}
 
 }
 

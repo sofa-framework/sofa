@@ -52,7 +52,7 @@ public:
 
 bool TetrahedronSetTopology_test::testEmptyContainer()
 {
-    TetrahedronSetTopologyContainer::SPtr topoCon = sofa::core::objectmodel::New< TetrahedronSetTopologyContainer >();
+    const TetrahedronSetTopologyContainer::SPtr topoCon = sofa::core::objectmodel::New< TetrahedronSetTopologyContainer >();
     EXPECT_EQ(topoCon->getNbTetrahedra(), 0);
     EXPECT_EQ(topoCon->getNumberOfElements(), 0);
     EXPECT_EQ(topoCon->getNumberOfTetrahedra(), 0);
@@ -390,7 +390,7 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
 bool TetrahedronSetTopology_test::checkTopology()
 {
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyElementType::TETRAHEDRON);
-    TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
+    const TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
     {
@@ -399,7 +399,7 @@ bool TetrahedronSetTopology_test::checkTopology()
         return false;
     }
 
-    bool res = topoCon->checkTopology();
+    const bool res = topoCon->checkTopology();
     
     if (scene != nullptr)
         delete scene;

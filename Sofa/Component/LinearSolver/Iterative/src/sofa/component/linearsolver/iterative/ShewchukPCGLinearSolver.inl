@@ -171,10 +171,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
-    bool apply_precond = l_preconditioner.get()!=nullptr && f_use_precond.getValue();
+    const bool apply_precond = l_preconditioner.get()!=nullptr && f_use_precond.getValue();
 
-    double b_norm = b.dot(b);
-    double tol = f_tolerance.getValue() * b_norm;
+    const double b_norm = b.dot(b);
+    const double tol = f_tolerance.getValue() * b_norm;
 
     r = M * x;
     cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
@@ -198,7 +198,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     while ((iter <= f_maxIter.getValue()) && (r_norm > tol))
     {
         s = M * w;
-        double dtq = w.dot(s);
+        const double dtq = w.dot(s);
         double alpha = r_norm / dtq;
 
         cgstep_alpha(x,w,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
@@ -216,7 +216,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             s = r;
         }
 
-        double deltaOld = r_norm;
+        const double deltaOld = r_norm;
         r_norm = r.dot(s);
         graph_error.push_back(r_norm/b_norm);
 

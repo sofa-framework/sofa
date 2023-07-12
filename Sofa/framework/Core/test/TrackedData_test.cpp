@@ -334,7 +334,7 @@ struct DataTrackerFunctor_test: public BaseTest
 
         void operator() ( core::DataTrackerFunctor<MyDataFunctor>* tracker )
         {
-            core::objectmodel::BaseData* data = down_cast<core::objectmodel::BaseData>( tracker->getInputs()[0] );
+            const core::objectmodel::BaseData* data = down_cast<core::objectmodel::BaseData>( tracker->getInputs()[0] );
             msg_info("MyDataFunctor")<<"Data "<<data->getName()<<" just changed for the "<<++m_counter<<"-th time";
         }
 

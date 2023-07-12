@@ -34,9 +34,9 @@ public:
     /// Run one stepsof simulation then check results
     bool testSpringForce()
     {
-        double dt = 0.01;
-        auto simulation = sofa::simpleapi::createSimulation();
-        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        const double dt = 0.01;
+        const auto simulation = sofa::simpleapi::createSimulation();
+        const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));
@@ -46,18 +46,18 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
-        Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
+        const Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
         sofa::simpleapi::createObject(childNode, "EulerExplicitSolver");
-        auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject", {{"rest_position", "0 0 0"},{"position", "1.1 0 0"}});
+        const auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject", {{"rest_position", "0 0 0"},{"position", "1.1 0 0"}});
         sofa::simpleapi::createObject(childNode, "EulerExplicitSolver", {{"totalMass", "1.0"}});
 
         // Add the spring to test
         sofa::simpleapi::createObject(childNode, "PolynomialRestShapeSpringsForceField", {{"polynomialStiffness", "10 10"},{"polynomialDegree", "2"},{"points", "0"},{"smoothShift", "1e-4"},{"smoothScale", "1e7"}});
 
-        simulation->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         for(int i=0; i<2; i++)
         {
-            simulation->animate(root.get(), dt);
+            sofa::simulation::node::animate(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("force")->getValueString(), std::string("-23.1 0 0")); //F = S sigma(L) where L = 1.1 , S=1 and sigma(L) = 10*L + 10*L^2

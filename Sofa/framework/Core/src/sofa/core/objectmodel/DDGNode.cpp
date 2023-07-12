@@ -34,11 +34,11 @@ DDGNode::DDGNode()
 
 DDGNode::~DDGNode()
 {
-    for(auto it : inputs)
+    for(const auto it : inputs)
     {
         it->doDelOutput(this);
     }
-    for(auto it : outputs)
+    for(const auto it : outputs)
     {
         it->doDelInput(this);
     }
@@ -79,13 +79,13 @@ void DDGNode::cleanDirty()
 
 void DDGNode::notifyEndEdit()
 {
-    for(auto it : outputs)
+    for(const auto it : outputs)
         it->notifyEndEdit();
 }
 
 void DDGNode::cleanDirtyOutputsOfInputs()
 {
-    for(auto it : inputs)
+    for(const auto it : inputs)
         it->dirtyFlags.dirtyOutputs = false;
 }
 

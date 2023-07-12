@@ -85,7 +85,7 @@ void OglShaderVisualModel::init()
     if (!shader)
         OglModel::init();
 
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     shader = context->core::objectmodel::BaseContext::get<OglShader>();
 
     if( shader)
@@ -151,8 +151,8 @@ void OglShaderVisualModel::computeRestPositions()
     //    if (counter == restPosition_lastUpdate) return;
     //    restPosition_lastUpdate = counter;
 
-    helper::ReadAccessor< Data<VecCoord > > positions = m_positions;
-    helper::ReadAccessor< Data<VecCoord > > restpositions = m_restPositions;
+    const helper::ReadAccessor< Data<VecCoord > > positions = m_positions;
+    const helper::ReadAccessor< Data<VecCoord > > restpositions = m_restPositions;
 
     //Get the position of the new point (should be the rest position to avoid artefact !
     if (restpositions.size()!=positions.size()) {
@@ -181,8 +181,8 @@ void OglShaderVisualModel::handleTopologyChange()
     if (m_topology && shader)
     {
         //        bool update=false;
-        std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
+        const std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+        const std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
         //        while( itBegin != itEnd )
         //        {

@@ -173,19 +173,19 @@ Image& Image::operator=(const Image& rhs)
 
 unsigned Image::getWidth(unsigned mipmap) const
 {
-    unsigned result = width >> mipmap;
+    const unsigned result = width >> mipmap;
     return result ? result : 1;
 }
 
 unsigned Image::getHeight(unsigned mipmap) const
 {
-    unsigned result = height >> mipmap;
+    const unsigned result = height >> mipmap;
     return result ? result : 1;
 }
 
 unsigned Image::getDepth(unsigned mipmap) const
 {
-    unsigned result = depth >> mipmap;
+    const unsigned result = depth >> mipmap;
     return result ? result : 1;
 }
 
@@ -228,7 +228,7 @@ unsigned Image::getMipmapCount() const
 
 unsigned Image::getPixelCount() const
 {
-    unsigned bytesPerPixel = getBytesPerPixel();
+    const unsigned bytesPerPixel = getBytesPerPixel();
     return bytesPerPixel ? getImageSize() / getBytesPerPixel() : 0;
 }
 
@@ -240,9 +240,9 @@ unsigned Image::getLineSize(unsigned mipmap) const
 unsigned Image::getMipmapSize(unsigned mipmap) const
 {
     // Return the size of one mipmap in bytes. For cubemaps, the size of all six faces is returned.
-    unsigned width = getWidth(mipmap);
-    unsigned height = getHeight(mipmap);
-    unsigned depth = (getTextureType() == TEXTURE_CUBE)? 6 : getDepth(mipmap);
+    const unsigned width = getWidth(mipmap);
+    const unsigned height = getHeight(mipmap);
+    const unsigned depth = (getTextureType() == TEXTURE_CUBE)? 6 : getDepth(mipmap);
 
     if (dataType == UCOMPRESSED)
         return ((width + 3) >> 2) * ((height + 3) >> 2) * depth * getBytesPerBlock();
@@ -411,7 +411,7 @@ bool Image::save(std::string filename, int compression_level)
 Image* Image::Create(std::string filename)
 {
     std::string extension="default";
-    std::string::size_type p = filename.rfind('.');
+    const std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
         extension = std::string(filename, p+1);
     Image* createdImage = FactoryImage::CreateObject(extension, filename);

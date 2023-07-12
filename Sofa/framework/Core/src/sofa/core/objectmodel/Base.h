@@ -23,6 +23,7 @@
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/RemovedData.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -64,6 +65,10 @@ public:
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
+
+
+    void addDeprecatedAttribute(lifecycle::DeprecatedData* attribute);
+    std::vector<lifecycle::DeprecatedData*> m_oldAttributes;
 
 protected:
     /// Constructor cannot be called directly

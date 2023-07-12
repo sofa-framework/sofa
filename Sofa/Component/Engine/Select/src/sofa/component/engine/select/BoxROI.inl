@@ -129,13 +129,6 @@ BoxROI<DataTypes>::BoxROI()
     addOutput(&d_nbIndices);
 }
 
-template<class DataTypes>
-void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
-{
-    Inherit1::parse(arg);
-}
-
-
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
@@ -278,7 +271,7 @@ void BoxROI<DataTypes>::init()
     d_componentState.setValue(ComponentState::Valid) ;
 
     /// The following is a trick to force the initial selection of the element by the engine.
-    bool tmp=d_doUpdate.getValue() ;
+    const bool tmp=d_doUpdate.getValue() ;
     d_doUpdate.setValue(true);
     setDirtyValue();
     if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
@@ -586,7 +579,7 @@ void BoxROI<DataTypes>::doUpdate()
     if(d_doUpdate.getValue()){
 
         // Check whether an element can partially be inside the box or if all of its nodes must be inside
-        bool strict = d_strict.getValue();
+        const bool strict = d_strict.getValue();
 
         // Write accessor for topological element indices in BOX
         SetIndex& indices = *d_indices.beginWriteOnly();
@@ -636,11 +629,11 @@ void BoxROI<DataTypes>::doUpdate()
 
 
         // Read accessor for input topology
-        ReadAccessor< Data<vector<Edge> > > edges = d_edges;
-        ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
-        ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
-        ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-        ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+        const ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+        const ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+        const ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+        const ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
+        const ReadAccessor< Data<vector<Quad> > > quad = d_quad;
 
         const VecCoord& x0 = d_X0.getValue();
 
@@ -661,7 +654,7 @@ void BoxROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<edges.size() ; i++)
             {
                 Edge e = edges[i];
-                bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
+                const bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
                 if (is_in_box)
                 {
                     edgeIndices.push_back(i);
@@ -676,7 +669,7 @@ void BoxROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
                 Triangle t = triangles[i];
-                bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
+                const bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
                 if (is_in_box)
                 {
                     triangleIndices.push_back(i);
@@ -691,7 +684,7 @@ void BoxROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
                 Tetra t = tetrahedra[i];
-                bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
+                const bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
                 if (is_in_box)
                 {
                     tetrahedronIndices.push_back(i);
@@ -706,7 +699,7 @@ void BoxROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
                 Hexa t = hexahedra[i];
-                bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
+                const bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
                 if (is_in_box)
                 {
                     hexahedronIndices.push_back(i);
@@ -721,7 +714,7 @@ void BoxROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<quad.size() ; i++)
             {
                 Quad q = quad[i];
-                bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
+                const bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
                 if (is_in_box)
                 {
                     quadIndices.push_back(i);
@@ -1098,7 +1091,7 @@ void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<type::
     points[0] = type::Vec3(box[0], box[1], box[2]);
     points[1] = type::Vec3(box[3], box[4], box[5]);
     points[2] = type::Vec3(box[6], box[7], box[8]);
-    double depth = box[9];
+    const double depth = box[9];
 
     type::Vec3 normal = (points[1]-points[0]).cross(points[2]-points[0]);
     normal.normalize();

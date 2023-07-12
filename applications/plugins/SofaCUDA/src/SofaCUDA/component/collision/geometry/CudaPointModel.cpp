@@ -56,8 +56,8 @@ void CudaPointCollisionModel::init()
     }
 
     const std::size_t npoints = mstate->getSize();
-    std::size_t gsize = groupSize.getValue();
-    std::size_t nelems = (npoints + gsize-1)/gsize;
+    const std::size_t gsize = groupSize.getValue();
+    const std::size_t nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
 }
 
@@ -68,8 +68,8 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index ind
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    auto i0 = index*gsize;
-    Size n = (index==size-1) ? x.size()-i0 : Size(gsize);
+    const auto i0 = index*gsize;
+    const Size n = (index==size-1) ? x.size()-i0 : Size(gsize);
     for (Size p=0; p<n; p++)
     {
         glVertex3fv(x[i0+p].ptr());
@@ -129,8 +129,8 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
         const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
         for (Size i=0; i<size; i++)
         {
-            int i0 = i*gsize;
-            int n = (i==size-1) ? npoints-i0 : gsize;
+            const int i0 = i*gsize;
+            const int n = (i==size-1) ? npoints-i0 : gsize;
             Vec3f bmin = x[i0];
             Vec3f bmax = bmin;
             for (int p=1; p<n; p++)

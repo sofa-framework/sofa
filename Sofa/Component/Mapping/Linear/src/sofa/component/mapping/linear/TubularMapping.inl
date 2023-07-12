@@ -62,7 +62,7 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
-    int peak = m_peak.getValue();
+    const int peak = m_peak.getValue();
 
     out.resize(in.size() * N);
     rotatedPoints.resize(in.size() * N);
@@ -79,20 +79,20 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
         Real radius_rho = (Real) rho;
         if(peak>0)
         {
-            int test= (int)i;
+            const int test= (int)i;
             if (test<peak)
             {
-                double attenuation = (double)test/ (double)peak;
+                const double attenuation = (double)test/ (double)peak;
                 radius_rho = (Real) (attenuation*rho);
             }
         }
         else
         {
-            int test= (int) in.size()-(i+1) ;
+            const int test= (int) in.size()-(i+1) ;
 
             if (test < -peak)
             {
-                double attenuation = -(double)test/(double)peak;
+                const double attenuation = -(double)test/(double)peak;
                 radius_rho = (Real) (attenuation *rho);
             }
 
@@ -172,7 +172,7 @@ void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparam
         rotatedPoints.resize(in.size());
     }
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
+    const unsigned int N = m_nbPointsOnEachCircle.getValue();
 
     OutDeriv v,omega;
 
@@ -203,7 +203,7 @@ void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparam
     const OutMatrixDeriv& in = dIn.getValue();
     InMatrixDeriv& out = *dOut.beginEdit();
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
+    const unsigned int N = m_nbPointsOnEachCircle.getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 

@@ -50,23 +50,6 @@ AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(sofa::simulation:
 
 AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler() = default;
 
-void AnimationLoopParallelScheduler::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("scheduler"))
-    {
-        msg_warning() << "The Data 'scheduler' has been renamed to '" << d_taskSchedulerType.getName() << "'";
-        arg->setAttribute(d_taskSchedulerType.getName(), arg->getAttribute("scheduler"));
-    }
-
-    if (arg->getAttribute("threadNumber"))
-    {
-        msg_warning() << "The Data 'threadNumber' has been renamed to '" << d_nbThreads.getName() << "'";
-        arg->setAttribute(d_nbThreads.getName(), arg->getAttribute("threadNumber"));
-    }
-
-    BaseAnimationLoop::parse(arg);
-}
-
 void AnimationLoopParallelScheduler::init()
 {
     if (!gnode)

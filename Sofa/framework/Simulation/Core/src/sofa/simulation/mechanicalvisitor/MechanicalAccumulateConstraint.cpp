@@ -30,7 +30,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-    ctime_t t0 = begin(node, c);
+    const ctime_t t0 = begin(node, c);
     c->buildConstraintMatrix(cparams, res, contactId);
     end(node, c, t0);
     return RESULT_CONTINUE;
@@ -38,7 +38,7 @@ Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Nod
 
 void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
-    ctime_t t0 = begin(node, map);
+    const ctime_t t0 = begin(node, map);
     map->applyJT(cparams, res, res);
     end(node, map, t0);
 }

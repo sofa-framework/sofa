@@ -126,8 +126,8 @@ TEST(GLSLShader_test, GLSLShader_AddHeader)
 {
     gl::GLSLShader glshader;
 
-    std::string header = "#HEADER#";
-    std::string expectedHeader = "#HEADER#\n";
+    const std::string header = "#HEADER#";
+    const std::string expectedHeader = "#HEADER#\n";
 
     glshader.AddHeader(header);
     EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader) == 0);
@@ -148,12 +148,12 @@ TEST(GLSLShader_test, GLSLShader_AddDefineMacro)
 {
     gl::GLSLShader glshader;
 
-    std::string define1 = "NUMBER_OF_THINGS";
-    std::string value1 = "5";
-    std::string define2 = "NUMBER_OF_STUFF";
-    std::string value2 = "42";
-    std::string expectedHeader1 = "#define NUMBER_OF_THINGS 5\n";
-    std::string expectedHeader2 = "#define NUMBER_OF_THINGS 5\n#define NUMBER_OF_STUFF 42\n";
+    const std::string define1 = "NUMBER_OF_THINGS";
+    const std::string value1 = "5";
+    const std::string define2 = "NUMBER_OF_STUFF";
+    const std::string value2 = "42";
+    const std::string expectedHeader1 = "#define NUMBER_OF_THINGS 5\n";
+    const std::string expectedHeader2 = "#define NUMBER_OF_THINGS 5\n#define NUMBER_OF_STUFF 42\n";
 
     glshader.AddDefineMacro(define1, value1);
     EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader1) == 0);

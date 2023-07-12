@@ -26,7 +26,7 @@ namespace sofa::core::collision
 
 NarrowPhaseDetection::~NarrowPhaseDetection()
 {
-    for (auto& it : m_outputsMap)
+    for (const auto& it : m_outputsMap)
     {
         DetectionOutputVector* do_vec = it.second;
 

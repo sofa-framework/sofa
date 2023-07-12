@@ -29,7 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.inl>
-#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -72,7 +72,7 @@ void SquareDistanceMapping<TIn, TOut>::init()
     this->getToModel()->resize( links.size() );
 
     // only used for warning message
-    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
+    const bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
     msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
 
     baseMatrices.resize( 1 );
@@ -279,19 +279,21 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         return;
     }
 
-    const auto childForce = this->toModel->readForces();
+    const auto childForce = this->toModel->readTotalForces();
     const SeqEdges& links = l_topology->getEdges();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    for(size_t i=0; i<links.size(); i++)
+    for(sofa::Size i=0; i<links.size(); i++)
     {
+        const OutDeriv force_i = childForce[i];
+
         const sofa::topology::Edge link = links[i];
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in a undefinite implicit matrix that causes instabilies
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( force_i[0] < 0 || geometricStiffness==1 )
         {
-            SReal tmp = 2*childForce[i][0];
+            const Real tmp = 2 * force_i[0];
 
             for(unsigned k=0; k<In::spatial_dimensions; k++)
             {

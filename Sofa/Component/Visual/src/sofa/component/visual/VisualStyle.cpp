@@ -70,7 +70,7 @@ void VisualStyle::bwdDraw(VisualParams* vparams)
 
 helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
 {
-    VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
+    const VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
     node->addObject(visualStyle);
     return helper::getWriteAccessor(visualStyle->displayFlags);
 }

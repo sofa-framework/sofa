@@ -73,7 +73,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 
 Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* obj)
 {
-    core::MultiVecDerivId   ffId      = core::VecDerivId::externalForce();
+    const core::MultiVecDerivId   ffId      = core::VecDerivId::externalForce();
     core::MechanicalParams m_mparams(*this->params);
     m_mparams.setDt(this->dt);
 

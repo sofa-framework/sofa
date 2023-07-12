@@ -47,7 +47,7 @@ public:
     void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
 
     void draw(const sofa::core::visual::VisualParams* vparams) override;
-    void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const sofa::core::visual::VisualParams* vparams) override;
     void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
     Data<Coord> transform; ///< Transformation to apply

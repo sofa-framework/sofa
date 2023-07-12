@@ -165,7 +165,7 @@ void BaseData::update()
 
     /// Check if there is a parent (so a predecessor in the DDG), if so
     /// update the internal value.
-    auto parent = parentData.resolvePathAndGetTarget();
+    const auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
     {
 #ifdef SOFA_DDG_TRACE

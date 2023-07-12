@@ -141,13 +141,13 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     toModel->getContext()->get(to_tstm);
 
     auto itBegin=fromModel->beginChange();
-    auto itEnd=fromModel->endChange();
+    const auto itEnd=fromModel->endChange();
 
     auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
-        TopologyChangeType changeType = (*itBegin)->getChangeType();
+        const TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Hexa2QuadTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
@@ -292,7 +292,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             core::topology::BaseMeshTopology::Quad q;
 
                             const core::topology::BaseMeshTopology::Hexahedron &he=hexahedronArray[ind_test];
-                            int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
+                            const int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
                             //unsigned int hh = (fromModel->getQuadsInHexahedron(ind_test))[h];
 
                             //t=from_qstc->getQuad(hh);
@@ -304,8 +304,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                             if(flipN)
                             {
-                                unsigned int tmp3 = q[3];
-                                unsigned int tmp2 = q[2];
+                                const unsigned int tmp3 = q[3];
+                                const unsigned int tmp2 = q[2];
                                 q[3] = q[0];
                                 q[2] = q[1];
                                 q[1] = tmp2;

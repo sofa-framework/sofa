@@ -97,8 +97,8 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
-    std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
+    const std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
+    const std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
     std::cout << "PluginManager_test.loadTestPluginByPath: "
               << "pluginPath = " << pluginPath
@@ -143,7 +143,7 @@ TEST_F(PluginManager_test, loadTestPluginByName )
         EXPECT_MSG_NOEMIT(Warning, Error);
 
         ASSERT_EQ(pm.loadPluginByName(pluginName), PluginManager::PluginLoadStatus::SUCCESS );
-        std::string pluginPath = pm.findPlugin(pluginName);
+        const std::string pluginPath = pm.findPlugin(pluginName);
         ASSERT_GT(pluginPath.size(), 0u);
     }
 
@@ -164,7 +164,7 @@ TEST_F(PluginManager_test, pluginEntries)
 
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
-    sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+    const sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
 
     EXPECT_TRUE(p.initExternalModule.func != nullptr);
     EXPECT_TRUE(p.getModuleName.func != nullptr);

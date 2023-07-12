@@ -73,7 +73,7 @@ void AbstractTransformMatrixEngine::reinit()
 
 void InvertTransformMatrixEngine::doUpdate()
 {
-    helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
+    const helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     const bool canInvert = type::transformInvertMatrix((*outT), (*inT));
@@ -101,8 +101,8 @@ void TranslateTransformMatrixEngine::init()
 
 void TranslateTransformMatrixEngine::doUpdate()
 {
-    auto inT = sofa::helper::getReadAccessor(d_inT);
-    auto translation = sofa::helper::getReadAccessor(d_translation);
+    const auto inT = sofa::helper::getReadAccessor(d_inT);
+    const auto translation = sofa::helper::getReadAccessor(d_translation);
     auto outT = sofa::helper::getWriteOnlyAccessor(d_outT);
 
     Matrix4 myT;
@@ -130,14 +130,14 @@ void RotateTransformMatrixEngine::init()
 
 void RotateTransformMatrixEngine::doUpdate()
 {
-    helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vec3> > rotation = d_rotation;
+    const helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
+    const helper::ReadAccessor< Data<Vec3> > rotation = d_rotation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;
     myT.identity();
     Matrix3 R;
-    auto q = Quat<SReal>::createQuaterFromEuler((*rotation) * M_PI / 180.0);
+    const auto q = Quat<SReal>::createQuaterFromEuler((*rotation) * M_PI / 180.0);
     q.toMatrix(R);
     myT.setsub(0,0,R);
 
@@ -162,8 +162,8 @@ void ScaleTransformMatrixEngine::init()
 
 void ScaleTransformMatrixEngine::doUpdate()
 {
-    helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vec3> > scale = d_scale;
+    const helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
+    const helper::ReadAccessor< Data<Vec3> > scale = d_scale;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;

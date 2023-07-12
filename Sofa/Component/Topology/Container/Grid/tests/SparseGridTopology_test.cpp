@@ -52,7 +52,7 @@ struct SparseGridTopology_test : public BaseTest
 
 bool SparseGridTopology_test::buildFromMeshFile()
 {
-    SparseGridTopology::SPtr sparseGrid1 = New<SparseGridTopology>();
+    const SparseGridTopology::SPtr sparseGrid1 = New<SparseGridTopology>();
     EXPECT_NE(sparseGrid1, nullptr);
 
     EXPECT_MSG_EMIT(Error); // STL is not supported
@@ -69,7 +69,7 @@ bool SparseGridTopology_test::buildFromMeshFile()
 
     // Real case
     EXPECT_MSG_NOEMIT(Error);
-    SparseGridTopology::SPtr sparseGrid2 = New<SparseGridTopology>();
+    const SparseGridTopology::SPtr sparseGrid2 = New<SparseGridTopology>();
     EXPECT_NE(sparseGrid2, nullptr);
     dataFilename = static_cast<sofa::core::objectmodel::DataFileName*>(sparseGrid2->findData("filename"));
     EXPECT_NE(dataFilename, nullptr);
@@ -88,7 +88,7 @@ bool SparseGridTopology_test::buildFromMeshFile()
 
 bool SparseGridTopology_test::buildFromMeshParams()
 {
-    SparseGridTopology::SPtr sparseGrid1 = New<SparseGridTopology>();
+    const SparseGridTopology::SPtr sparseGrid1 = New<SparseGridTopology>();
     EXPECT_NE(sparseGrid1, nullptr);
 
     //Pyramid centered on 0 0 0
@@ -103,9 +103,9 @@ bool SparseGridTopology_test::buildFromMeshParams()
     EXPECT_NEAR(sparseGrid1->getPosY(0), -0.34, 1e-04);
     EXPECT_NEAR(sparseGrid1->getPosZ(0), -1.02 , 1e-04);
 
-    SparseGridTopology::SPtr sparseGrid2 = New<SparseGridTopology>();
+    const SparseGridTopology::SPtr sparseGrid2 = New<SparseGridTopology>();
     EXPECT_NE(sparseGrid2, nullptr);
-    MeshSTLLoader::SPtr stlLoader = New<MeshSTLLoader>();
+    const MeshSTLLoader::SPtr stlLoader = New<MeshSTLLoader>();
     EXPECT_NE(stlLoader, nullptr);
     stlLoader->setFilename("mesh/suzanne.stl");
     EXPECT_TRUE(stlLoader->load());

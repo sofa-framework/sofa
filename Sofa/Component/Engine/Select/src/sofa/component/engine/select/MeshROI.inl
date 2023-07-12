@@ -327,7 +327,7 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
             Vec[2]= (b[5]+100.0f)-p[2];
         }
 
-        ReadAccessor< Data<vector<Triangle> > > triangles_i = d_triangles_i;
+        const ReadAccessor< Data<vector<Triangle> > > triangles_i = d_triangles_i;
         const VecCoord* x0 = &d_X0_i.getValue();
         int Through=0;
         double d=0.0;
@@ -343,7 +343,7 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
             N[1] = (p1[2]-p0[2])*(p2[0]-p1[0]) - (p1[0]-p0[0])*(p2[2]-p1[2]);
             N[2] = (p1[0]-p0[0])*(p2[1]-p1[1]) - (p1[1]-p0[1])*(p2[0]-p1[0]);
             // DotProd computation
-            double DotProd = double (N[0]*Vec[0] + N[1]*Vec[1] + N[2]*Vec[2]);
+            const double DotProd = double (N[0]*Vec[0] + N[1]*Vec[1] + N[2]*Vec[2]);
             if(DotProd !=0)
             {
                 // Intersect point with triangle and distance
@@ -369,7 +369,7 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
 {
-    ReadAccessor<Data<SetIndex>> indices = d_indices;
+    const ReadAccessor<Data<SetIndex>> indices = d_indices;
 
     for (unsigned int i=0; i<indices.size(); i++)
         if(indices[i]==pointId)
@@ -445,9 +445,9 @@ template <class DataTypes>
 void MeshROI<DataTypes>::compute()
 {
     // Read accessor for input topology
-    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
-    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
-    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+    const ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+    const ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+    const ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
 
     updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
 
@@ -601,7 +601,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
 
     std::vector<sofa::type::Vec3> vertices;
 
-    float drawSize = float((d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0);
+    const float drawSize = float((d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0);
 
     // draw the ROI mesh
     if( d_drawMesh.getValue())
@@ -623,7 +623,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
         if(d_drawEdges.getValue())
         {
             vertices.clear();
-            helper::ReadAccessor< Data<type::vector<Edge> > > edges_i = d_edges_i;
+            const helper::ReadAccessor< Data<type::vector<Edge> > > edges_i = d_edges_i;
             for (unsigned int i=0; i<edges_i.size() ; ++i)
             {
                 Edge e = edges_i[i];
@@ -639,7 +639,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
         if(d_drawTriangles.getValue())
         {
             vertices.clear();
-            helper::ReadAccessor< Data<type::vector<Triangle> > > triangles_i = d_triangles_i;
+            const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles_i = d_triangles_i;
             for (unsigned int i=0; i<triangles_i.size() ; ++i)
             {
                 Triangle t = triangles_i[i];
@@ -680,7 +680,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if( d_drawEdges.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Edge> > > edgesROI = d_drawOut.getValue() ? d_edgesOutROI : d_edgesInROI;
+        const helper::ReadAccessor< Data<type::vector<Edge> > > edgesROI = d_drawOut.getValue() ? d_edgesOutROI : d_edgesInROI;
 
         for (unsigned int i=0; i<edgesROI.size() ; ++i)
         {
@@ -698,7 +698,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if( d_drawTriangles.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesROI = d_drawOut.getValue() ? d_trianglesOutROI : d_trianglesInROI;
+        const helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesROI = d_drawOut.getValue() ? d_trianglesOutROI : d_trianglesInROI;
        
         for (unsigned int i=0; i<trianglesROI.size() ; ++i)
         {
@@ -715,7 +715,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if( d_drawTetrahedra.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraROI = d_drawOut.getValue() ? d_tetrahedraOutROI : d_tetrahedraInROI;
+        const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraROI = d_drawOut.getValue() ? d_tetrahedraOutROI : d_tetrahedraInROI;
 
         for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
         {

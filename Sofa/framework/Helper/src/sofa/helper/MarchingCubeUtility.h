@@ -99,8 +99,8 @@ public:
     /// Set the bounding box (in the data space) to apply mCube localy.
     void setBoundingBox ( const type::Vec6i& roi )
     {
-        type::Vec3i _min( roi[0], roi[1], roi[2]);
-        type::Vec3i _max( roi[3], roi[4], roi[5]);
+        const type::Vec3i _min( roi[0], roi[1], roi[2]);
+        const type::Vec3i _max( roi[3], roi[4], roi[5]);
         setBoundingBox( _min, _max);
     }
 

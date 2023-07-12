@@ -40,7 +40,7 @@ bool BaseMultiMappingElement::initNode()
 {
     using namespace core::objectmodel;
     using namespace core;
-    bool result = ObjectElement::initNode();
+    const bool result = ObjectElement::initNode();
 
 
     if( result )

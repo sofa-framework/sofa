@@ -86,7 +86,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     if (n == 0)
     {
-        msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
+        msg_warning() << "Invalid Linear System to solve (null size). Please insure that there is enough constraints (not rank deficient)." ;
         return true;
     }
 
@@ -94,9 +94,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     int * M_rowind = (int *)Mfiltered.getColsIndex().data();
     Real * M_values = (Real *)Mfiltered.getColsValue().data();
 
-    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < (size_t)n )
+    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr || Mfiltered.getRowBegin().size() < (size_t)n)
     {
-        msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
+        msg_warning() << "Invalid Linear System to solve (invalid matrix data structure). Please insure that there is enough constraints (not rank deficient).";
         return true;
     }
 

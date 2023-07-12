@@ -199,6 +199,12 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
 }
 
 template <class DataTypes>
+void PenalityContactForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 SReal PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
     msg_error() << "PenalityContactForceField::getPotentialEnergy-not-implemented !!!";

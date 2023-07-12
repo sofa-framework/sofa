@@ -1185,7 +1185,7 @@ void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv)
 void InitGPU_Aniso()
 {
     // A material constant
-    int Eta = 13136;    // 13136 liver
+    const int Eta = 13136;    // 13136 liver
     cudaMemcpyToSymbol("Eta_gpu", &Eta, sizeof(int));
 
     mycudaPrintf("GPU initialised for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
