@@ -17,7 +17,6 @@ set(SOFAGENERAL_MODULES
     SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
     SofaGeneralRigid
-    SofaGeneralObjectInteraction
     SofaGeneralSimpleFem
     SofaGeneralTopology
     SofaTopologyMapping

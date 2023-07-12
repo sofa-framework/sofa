@@ -14,11 +14,10 @@ set(SOURCE_FILES
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
 sofa_find_package(SofaImplicitOdeSolver REQUIRED)  
-sofa_find_package(SofaMeshCollision REQUIRED)
 sofa_find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 
 #message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver, Sofa.Component.AnimationLoop, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Contact and Sofa.GUI.Component instead.")
 
