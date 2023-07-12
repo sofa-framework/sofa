@@ -226,7 +226,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     if (!invName.empty())
     {
         complianceLoaded = loadCompliance(invName);
-        if (!complianceLoaded) {
+        if (!complianceLoaded) 
+        {
             msg_error() << "A fileCompliance was given at path: " << invName << ", but could not be loaded.";
             invName = buildFileName();
         }
