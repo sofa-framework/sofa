@@ -7,11 +7,6 @@ set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/GlobalSystemMatrixExporter.h
-    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.h
-    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.inl
-    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedSystemMapping.h
-    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedSystemMapping.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/BlocMatrixWriter.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CRSMultiMatrixAccessor.h
