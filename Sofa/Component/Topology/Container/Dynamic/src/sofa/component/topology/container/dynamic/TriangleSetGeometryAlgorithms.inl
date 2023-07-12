@@ -481,26 +481,11 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const Tri
     const Triangle &t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    const typename DataTypes::Coord& c0 = vect_c[t[0]];
-    const typename DataTypes::Coord& c1 = vect_c[t[1]];
-    const typename DataTypes::Coord& c2 = vect_c[t[2]];
-
-    sofa::type::Vec<3,Real> p0;
-    p0[0] = (Real) (c0[0]);
-    p0[1] = (Real) (c0[1]);
-    p0[2] = (Real) (c0[2]);
-    sofa::type::Vec<3,Real> p1;
-    p1[0] = (Real) (c1[0]);
-    p1[1] = (Real) (c1[1]);
-    p1[2] = (Real) (c1[2]);
-    sofa::type::Vec<3,Real> p2;
-    p2[0] = (Real) (c2[0]);
-    p2[1] = (Real) (c2[1]);
-    p2[2] = (Real) (c2[2]);
-
-    sofa::type::Vec<3,Real> normal_t=(p1-p0).cross( p2-p0);
-
-    return normal_t;
+    sofa::type::Vec<3, Real> p0; DataTypes::get(p0[0], p0[1], p0[2], vect_c[t[0]]);
+    sofa::type::Vec<3, Real> p1; DataTypes::get(p1[0], p1[1], p1[2], vect_c[t[1]]);
+    sofa::type::Vec<3, Real> p2; DataTypes::get(p2[0], p2[1], p2[2], vect_c[t[2]]);
+    
+    return sofa::geometry::Triangle::normal(p0, p1, p2);
 }
 
 // barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
@@ -565,6 +550,7 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
         coef_a = (Real) (1.0/3.0);
         coef_b = (Real) (1.0/3.0);
         coef_c = (Real) (1.0 - (coef_a + coef_b));
+
     }
     else
     {
