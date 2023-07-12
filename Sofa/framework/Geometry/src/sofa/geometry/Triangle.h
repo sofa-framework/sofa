@@ -71,6 +71,41 @@ struct Triangle
         }
     }
 
+
+    /**
+    * @brief	Compute the barycentric coefficients of input point on Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	point: position of the point to compute the coefficients
+    * @param	n0,n1: nodes of the edge
+    * @return	sofa::type::Vec<2, T> barycentric coefficients
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr auto pointBaryCoefs(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+    {
+        // Point can be written: p0 = a*n0 + b*n1 + c*n2
+        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
+        sofa::type::Vec<3, T> baryCoefs;
+        const auto area = Triangle::area(n0, n1, n2);
+        if (area < std::numeric_limits<T>::epsilon()) // triangle is flat
+        {
+            return sofa::type::Vec<3, T>(1/3, 1/3, 1/3);
+        }
+        
+        const auto A0 = Triangle::area(n1, n2, p0);
+        const auto A1 = Triangle::area(n0, p0, n2);
+
+        baryCoefs[0] = A0 / area;
+        baryCoefs[1] = A1 / area;
+        baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+        return baryCoefs;
+    }
+
+
     /**
     * @brief	Compute the normal of a triangle
     * @remark   triangle normal computation is only possible in 3D
@@ -108,6 +143,33 @@ struct Triangle
         }
 
     }
+
+
+    /**
+    * @brief	Test if a point is on Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	p0: position of the point to test
+    * @param	n0,n1: nodes of the edge
+    * @return	bool result if point is on Edge.
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+    {
+        const sofa::type::Vec<3, T> baryCoefs = Triangle::pointBaryCoefs(p0, n0, n1, n2);
+
+        for (int i = 0; i < 3; ++i)
+        {
+            if (baryCoefs[i] < 0 || baryCoefs[i] > 1)
+                return false;
+        }
+
+        return true;
+    }
+
 
     /**
     * @brief	Test if a ray intersects a triangle, and gives barycentric coordinates of the intersection if applicable
