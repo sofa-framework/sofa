@@ -133,11 +133,10 @@ void ConstantForceField<DataTypes>::init()
     else
     {
         // initialize with all indices
-        VecIndex& indicesEdit = *d_indices.beginEdit();
+        auto indicesEdit = sofa::helper::getWriteAccessor(d_indices);
         indicesEdit.clear();
         indicesEdit.resize(m_systemSize);
         std::iota (std::begin(indicesEdit), std::end(indicesEdit), 0);
-        d_indices.endEdit();
     }
 
     if (d_forces.isSet())
@@ -436,7 +435,7 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
         return;
     }
 
-    VecIndex& indices = *d_indices.beginEdit();
+    auto indices = sofa::helper::getWriteAccessor(d_indices);
     sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
     Deriv totalf = d_totalForce.getValue();
 
@@ -445,7 +444,6 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
     totalf += force;
 
     d_totalForce.setValue(totalf);
-    d_indices.endEdit();
 }
 
 
