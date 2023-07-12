@@ -493,7 +493,6 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core:
             dfdx(Dimension * curIndex + i, Dimension * curIndex + i) += -jacobVector[i];
         }
     }
-
 }
 
 template <class DataTypes>
