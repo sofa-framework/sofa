@@ -30,8 +30,6 @@
 #include <iostream>
 #include <numeric>
 
-//#include <sofa/core/objectmodel/BaseObjectDescription.h>
-//using sofa::core::objectmodel::BaseObjectDescription ;
 
 namespace sofa::component::mechanicalload
 {
