@@ -23,39 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-#ifndef SOFA_BUILD_MULTITHREADING
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
-#endif
-
-#include <sofa/simulation/CpuTask.h>
-
-// forawrd declaraion
-namespace sofa::core::behavior
-{
-class BaseAnimationLoop;
-}
-
-
-namespace multithreading::component::animationloop
-{
-
-class SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "This class is no longer used.")
-StepTask : public sofa::simulation::CpuTask
-{
-public:
-    StepTask(sofa::core::behavior::BaseAnimationLoop* aloop, const double t, sofa::simulation::CpuTask::Status* pStatus);
-
-    ~StepTask() override;
-
-    MemoryAlloc run() final;
-
-private:
-
-    sofa::core::behavior::BaseAnimationLoop* animationloop;
-    const double dt;
-
-};
-
-}
-
-
+SOFA_DISABLED_HEADER_NOT_REPLACED("v23.06", "v23.12")

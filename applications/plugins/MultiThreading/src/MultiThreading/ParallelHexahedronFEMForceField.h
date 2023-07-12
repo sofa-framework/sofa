@@ -23,9 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.h")
-#include <MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.h>
-namespace sofa::component::forcefield
-{
-    using ParallelHexahedronFEMForceField = multithreading::component::forcefield::solidmechanics::fem::elastic::ParallelHexahedronFEMForceField;
-}
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.h")

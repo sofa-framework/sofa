@@ -23,9 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h")
-#include <MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h>
-namespace sofa::component::collision
-{
-    using ParallelBVHNarrowPhase = multithreading::component::collision::detection::algorithm::ParallelBVHNarrowPhase;
-}
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h")

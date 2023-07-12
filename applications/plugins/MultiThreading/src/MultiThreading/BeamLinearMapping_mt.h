@@ -23,12 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h")
-#include <MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h>
-namespace sofa::component::mapping
-{
-
-template <class TIn, class TOut>
-using BeamLinearMapping_mt = multithreading::component::mapping::linear::BeamLinearMapping_mt<TIn, TOut>;
-
-}
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h")
