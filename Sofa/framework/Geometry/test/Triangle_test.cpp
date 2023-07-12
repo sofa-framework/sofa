@@ -115,6 +115,67 @@ TYPED_TEST(Geometry3DTriangle_test, normal)
     EXPECT_FLOAT_EQ(normal[2], 0.f);
 }
 
+
+TEST(GeometryTriangle_test, isPointInTriangle2)
+{
+    const sofa::type::Vec2 a{ 0., 0. };
+    const sofa::type::Vec2 b{ 2., 0. };
+    const sofa::type::Vec2 c{ 2., 2. };
+    sofa::type::Vec3 bary;
+
+    sofa::type::Vec2 p0{ 1., 0.5 };
+    auto res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, c);
+    EXPECT_TRUE(res);
+    EXPECT_FLOAT_EQ(bary[0], 0.5f);
+    EXPECT_FLOAT_EQ(bary[1], 0.25f);
+    EXPECT_FLOAT_EQ(bary[2], 0.25f);
+
+    p0 = { 1., 1. };
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, c);
+    EXPECT_TRUE(res);
+    EXPECT_FLOAT_EQ(bary[0], 1.0f);
+    EXPECT_FLOAT_EQ(bary[1], 0.5f);
+    EXPECT_FLOAT_EQ(bary[2], 0.5f);
+
+    p0 = { 2., 0. };
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, c);
+    EXPECT_TRUE(res);
+    EXPECT_FLOAT_EQ(bary[0], 1.0f);
+    EXPECT_FLOAT_EQ(bary[1], 0.5f);
+    EXPECT_FLOAT_EQ(bary[2], 0.5f);
+
+
+    p0 = { 0., 4. };
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, c);
+    EXPECT_FALSE(res);
+    EXPECT_FLOAT_EQ(bary[0], 1.0f);
+    EXPECT_FLOAT_EQ(bary[1], 0.5f);
+    EXPECT_FLOAT_EQ(bary[2], 0.5f);
+
+    p0 = { 2.1, 2.1 };
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, c);
+    EXPECT_FALSE(res);
+    EXPECT_FLOAT_EQ(bary[0], 1.0f);
+    EXPECT_FLOAT_EQ(bary[1], 0.5f);
+    EXPECT_FLOAT_EQ(bary[2], 0.5f);
+
+
+    const sofa::type::Vec2 d{ 3., 0. };
+    p0 = { 2.5, 0. };
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, d);
+    bary = sofa::geometry::Triangle::pointBaryCoefs(p0, a, b, d);
+    EXPECT_FALSE(res);
+    EXPECT_FLOAT_EQ(bary[0], 1.0f);
+    EXPECT_FLOAT_EQ(bary[1], 0.5f);
+    EXPECT_FLOAT_EQ(bary[2], 0.5f);
+}
+
+
 TEST(GeometryTriangle_test, rayIntersectionVec3)
 {
     const sofa::type::Vec3 a{ 0., 3., 0. };
