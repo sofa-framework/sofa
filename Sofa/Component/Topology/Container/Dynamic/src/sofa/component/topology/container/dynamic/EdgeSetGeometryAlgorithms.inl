@@ -353,7 +353,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3
 {
     Coord vertices[2];
     getEdgeVertexCoordinates(ind_e, vertices);
-    sofa::type::Vec<3, Real> p1, p2;
+    sofa::type::Vec<3, Real> p1(type::NOINIT), p2(type::NOINIT);
 
     DataTypes::get(p1[0], p1[1], p1[2], vertices[0]);
     DataTypes::get(p2[0], p2[1], p2[2], vertices[1]);
