@@ -135,10 +135,23 @@ struct Edge
     >
         static constexpr bool isPointOnEdge(const Node& p0, const Node& n0, const Node& n1)
     {
-        // 1. check if the point, n0 and n1 are aligned
+        static_assert(std::is_same_v < Node, sofa::type::Vec<2, T> > || std::is_same_v < Node, sofa::type::Vec<3, T> >,
+            "Method to check if point is on Edge can only be computed in 2 or 3 dimensions.");
+        
+        // 1. check if point is between {n0; n1}
         const auto AB = n0 - n1;
         const auto AC = n0 - p0;
+        
+        const auto Ln0n1 = sofa::type::dot(AB, AB);
+        if (Ln0n1 < EQUALITY_THRESHOLD) // null edge
+            return false;
 
+        const auto Ln0p0 = sofa::type::dot(AB, AC);
+        if (Ln0p0 < 0 || Ln0p0 > Ln0n1) // out of bounds [n0; n1]
+            return false;
+
+
+        // 2. check if the point, n0 and n1 are aligned
         T N2 = T(0);
         if constexpr (std::is_same_v < Node, sofa::type::Vec<2, T> >)
         {            
@@ -149,20 +162,10 @@ struct Edge
             N2 = sofa::type::cross(AB, AC).norm2();
         }
 
-        if (N2 > EQUALITY_THRESHOLD || N2 < 0.0f)
+        if (N2 > EQUALITY_THRESHOLD || N2 < 0)
             return false;
-
-
-        // 2. check if point is between {n0; n1}
-        const auto Ln0p0 = sofa::type::dot(AB, AC);
-        const auto Ln0n1 = sofa::type::dot(AB, AB);
-
-        if (Ln0p0 < 0.0f || Ln0p0 > Ln0n1) // out of bounds [n0; n1]
-            return false;
-        else if (Ln0n1 < EQUALITY_THRESHOLD) // null edge
-            return false;
-        else
-            return true;
+        
+        return true;
     }
 
 
