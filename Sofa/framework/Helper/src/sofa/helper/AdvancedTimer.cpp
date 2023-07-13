@@ -53,6 +53,9 @@ template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 
+static AdvancedTimer::BaseTimerMethodWrapper* s_timerWrapper = NULL;
+
+
 class TimerData
 {
 public:

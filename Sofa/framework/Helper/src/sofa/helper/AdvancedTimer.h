@@ -539,7 +539,6 @@ public:
 
 };
 
-static AdvancedTimer::BaseTimerMethodWrapper* s_timerWrapper = NULL;
 
 
 #if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
