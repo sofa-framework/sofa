@@ -577,16 +577,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::computePrincipalStress()
     Real minStress = 0;
     Real maxStress = 0;
 
-    for (unsigned int i = 0; i < triangles.size(); i++)
+    for (std::size_t i = 0; i < triangles.size(); i++)
     {
         TriangleInfo& triInfo = triInfos[i];
 
         getTrianglePrincipalStress(i, triInfo.stress, triInfo.stressVector, triInfo.stress2, triInfo.stressVector2);
 
-        if (triInfo.stress < minStress) minStress = triInfo.stress;
-        if (triInfo.stress > maxStress) maxStress = triInfo.stress;
-        if (triInfo.stress2 < minStress) minStress = triInfo.stress2;
-        if (triInfo.stress2 > maxStress) maxStress = triInfo.stress2;
+        minStress = std::min({minStress, triInfo.stress, triInfo.stress2});
+        maxStress = std::max({maxStress , triInfo.stress, triInfo.stress2});
     }
 
     maxStress = std::max(-minStress, maxStress);
