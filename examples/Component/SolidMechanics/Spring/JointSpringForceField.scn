@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping RigidRigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [JointSpringForceField] -->
@@ -27,7 +27,7 @@
         <FixedConstraint template="Rigid3" name="fixOrigin" indices="0" />
         <Node name="default45" gravity="0 -9.81 0">
             <MechanicalObject template="Rigid3" name="attaches" position="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" restScale="1" />
-            <RigidRigidMapping template="Rigid3,Rigid3" name="default46" input="@.." output="@." repartition="1 2 2 2 2" />
+            <RigidMapping template="Rigid3,Rigid3" name="default46" input="@.." output="@." repartition="1 2 2 2 2" />
             <JointSpringForceField template="Rigid3" name="joint springs" spring="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  2 3  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  4 5  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  6 7  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A;" />
         </Node>
         <Node name="Visu" gravity="0 -9.81 0">

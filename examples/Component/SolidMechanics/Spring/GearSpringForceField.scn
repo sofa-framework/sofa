@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
-    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping RigidRigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [GearSpringForceField] -->
@@ -29,7 +29,7 @@
     <!--  	EXTERNAL SUPPORT -->
     <Node name="Gear">
         <MechanicalObject template="Rigid3" name="attaches" rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 -1.161 0 1.706 0 0.194787 0 0.980846 -6.7 4 1.706 0 0 0.707107 0.707107 1.790 0 -5.503 0 0.229019 0 0.973422 -6.7 5.2 -3.5 0 0 0.707107 0.707107" restScale="1" />
-        <RigidRigidMapping template="Rigid3,Rigid3" input="@.." output="@." repartition="1 1 1 1 4" />
+        <RigidMapping template="Rigid3,Rigid3" input="@.." output="@." repartition="1 1 1 1 4" />
         <GearSpringForceField template="Rigid3" name="springs" showFactorSize="5" spring="BEGIN_SPRING  4 0 6 2 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO 2 END_SPRING&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;  BEGIN_SPRING  4 0 5 1 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO -1.5385 END_SPRING&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;  BEGIN_SPRING  5 1 7 3 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO 2.166667 END_SPRING" />
     </Node>
     <Node name="0">
