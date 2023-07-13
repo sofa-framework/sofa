@@ -22,7 +22,6 @@
 #include "OpenCLTypes.h"
 #include "OpenCLSpringForceField.inl"
 
-#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <SofaDeformable/MeshSpringForceField.inl>
@@ -65,22 +64,18 @@ namespace interactionforcefield
 template class SpringForceField<sofa::gpu::opencl::OpenCLVec3fTypes>;
 template class StiffSpringForceField<sofa::gpu::opencl::OpenCLVec3fTypes>;
 template class MeshSpringForceField<sofa::gpu::opencl::OpenCLVec3fTypes>;
-template class BoxStiffSpringForceField<gpu::opencl::OpenCLVec3fTypes>;
 
 template class SpringForceField<sofa::gpu::opencl::OpenCLVec3f1Types>;
 template class StiffSpringForceField<sofa::gpu::opencl::OpenCLVec3f1Types>;
 template class MeshSpringForceField<sofa::gpu::opencl::OpenCLVec3f1Types>;
-template class BoxStiffSpringForceField<gpu::opencl::OpenCLVec3f1Types>;
 
 template class SpringForceField<sofa::gpu::opencl::OpenCLVec3dTypes>;
 template class StiffSpringForceField<sofa::gpu::opencl::OpenCLVec3dTypes>;
 template class MeshSpringForceField<sofa::gpu::opencl::OpenCLVec3dTypes>;
-template class BoxStiffSpringForceField<gpu::opencl::OpenCLVec3dTypes>;
 
 template class SpringForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
 template class StiffSpringForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
 template class MeshSpringForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
-template class BoxStiffSpringForceField<gpu::opencl::OpenCLVec3d1Types>;
 
 } // namespace interactionforcefield
 
@@ -125,13 +120,6 @@ int QuadBendingSpringsOpenCLClass = core::RegisterObject("Supports GPU-side comp
         .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3f1Types> >()
         .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3dTypes> >()
         .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3d1Types> >()
-        ;
-
-int BoxStiffSpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3fTypes> >()
-        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3f1Types> >()
-        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3dTypes> >()
-        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3d1Types> >()
         ;
 
 
