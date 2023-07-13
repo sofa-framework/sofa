@@ -32,12 +32,3 @@
 #else
 #  define SOFA_SIMULATION_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-
-#ifdef SOFA_BUILD_SOFASIMULATIONCOMMON
-#define SOFA_ATTRIBUTE_DISABLED__ELEMENTNAMEHELPER()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__ELEMENTNAMEHELPER() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.06", "v22.12", \
-        "As an alternative, use sofa::core::NameHelper.")
-#endif
