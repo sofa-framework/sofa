@@ -172,8 +172,9 @@ void ConstantForceField<DataTypes>::init()
     }
     else
     {
-        msg_warning() << "Force has not been set. Define one of the following Data: " << d_forces.getName() << " or " << d_totalForce.getName();
-        computeForceFromSingleForce();
+        msg_error() << "No input for has been set. Please define one of both Data: " << d_forces.getName() << " or " << d_totalForce.getName();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     // init from ForceField
@@ -491,6 +492,9 @@ void ConstantForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffne
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const SReal aSC = d_showArrowSize.getValue();
 
     if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0))
