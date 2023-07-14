@@ -190,10 +190,10 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
             sofa::helper::system::DataRepository.getFirstPath(), fileName);
     }
 
-    bool printLog = f_printLog.getValue();
-    f_printLog.setValue(true);
+    const bool printLog = this->f_printLog.getValue();
+    this->f_printLog.setValue(true);
     msg_info() << "Compliance file has been saved in " << filePathInSofaShare << ". Load this file using fileCompliance if you don't want to recompute the compliance matrice at next start.";
-    f_printLog.setValue(printLog);
+    this->f_printLog.setValue(printLog);
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(Real));
