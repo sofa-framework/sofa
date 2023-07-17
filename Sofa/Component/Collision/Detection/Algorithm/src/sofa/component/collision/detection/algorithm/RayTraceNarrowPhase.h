@@ -44,11 +44,8 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API RayTraceNarrowPhase : pub
 public:
     SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
-private:
-    Data < bool > bDraw; ///< enable/disable display of results
-
 protected:
-    RayTraceNarrowPhase();
+    RayTraceNarrowPhase() = default;
 
 public:
     void addCollisionPair (const std::pair < core::CollisionModel *,
@@ -56,11 +53,6 @@ public:
 
     void findPairsVolume (collision::geometry::CubeCollisionModel * cm1, collision::geometry::CubeCollisionModel* cm2);
 
-    void draw (const core::visual::VisualParams* vparams) override;
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
 };
 
 }
