@@ -63,7 +63,6 @@ private:
       */
     void updateBoxes();
 
-    Data<bool> d_draw; ///< enable/disable display of results
     Data<bool> d_showOnlyInvestigatedBoxes; ///< Show only boxes which will be sent to narrow phase
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
 
@@ -120,8 +119,6 @@ protected:
     void narrowCollisionDetectionFromSortedEndPoints();
 
 public:
-    void setDraw(bool val)
-    { d_draw.setValue(val); }
 
     void reset() override;
 
