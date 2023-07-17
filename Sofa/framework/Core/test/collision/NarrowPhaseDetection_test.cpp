@@ -55,9 +55,24 @@ public:
         }
     }
 
+    /// Const iterator to iterate the detection pairs
+    virtual sofa::type::vector<DetectionOutput>::const_iterator abegin()
+    {
+        return m_empty.cbegin();
+    }
+
+    /// Const iterator end to iterate the detection pairs
+    virtual sofa::type::vector<DetectionOutput>::const_iterator aend()
+    {
+        return m_empty.cend();
+    }
+
+
 private:
     unsigned int m_size { 0 };
     bool* m_isDestroyed {nullptr};
+    sofa::type::vector<DetectionOutput> m_empty;
+
 };
 } //namespace sofa::core::collision
 
