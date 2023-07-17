@@ -123,9 +123,9 @@ protected:
     bool checkForces(const VecDeriv& forces);
 
     /// Functions computing and updating the constant force vector
-    void computeForceFromSingleForce();
-    void computeForceFromForceVector();
-    void computeForceFromTotalForce();
+    sofa::core::objectmodel::ComponentState computeForceFromSingleForce(const Deriv singleForce);
+    sofa::core::objectmodel::ComponentState computeForceFromForcesVector(const VecDeriv &forces);
+    sofa::core::objectmodel::ComponentState computeForceFromTotalForce(const Deriv &totalForce);
 
     /// Save system size for update of indices (doUpdateInternal)
     size_t m_systemSize;
