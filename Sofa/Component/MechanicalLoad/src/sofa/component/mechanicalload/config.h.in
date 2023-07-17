@@ -32,11 +32,11 @@
 #endif
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
-#define SOFA_ELLIPSOIDFORCEFIELD_CONTACTS_DEPRECATED()
+#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED()
 #else
-#define SOFA_ELLIPSOIDFORCEFIELD_CONTACTS_DEPRECATED() \
+#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.12", "v24.06", "Use d_contacts instead")
+        "v23.12", "v24.06", "This Data has been renamed to match convention with d_ prefix.")
 #endif // SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
 
 namespace sofa::component::mechanicalload

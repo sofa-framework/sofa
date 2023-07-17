@@ -82,24 +82,41 @@ protected:
 
     };
 
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::vector<Contact> > contacts; ///< Contacts
-    Data<sofa::type::vector<Contact> > d_contacts; ///< Contacts
+    union
+    {
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::vector<Contact> > contacts; ///< Contacts
+        Data<sofa::type::vector<Contact> > d_contacts; ///< Contacts
+    };
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
 public:
 
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> center; ///< ellipsoid center
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> vradius; ///< ellipsoid radius
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> damping; ///< force damping
-    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
-
-    Data<Coord> d_center; ///< ellipsoid center
-    Data<Coord> d_vradius; ///< ellipsoid radius
-    Data<Real> d_stiffness; ///< force stiffness (positive to repulse outward, negative inward)
-    Data<Real> d_damping; ///< force damping
-    Data<sofa::type::RGBAColor> d_color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    union
+    {
+        Data<Coord> d_center; ///< ellipsoid center
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> center; ///< ellipsoid center
+    };
+    union
+    {
+        Data<Coord> d_vradius; ///< ellipsoid radius
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> vradius; ///< ellipsoid radius
+    };
+    union
+    {
+        Data<Real> d_stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+    };
+    union
+    {
+        Data<Real> d_damping; ///< force damping
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> damping; ///< force damping
+    };
+    union
+    {
+        Data<sofa::type::RGBAColor> d_color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    };
 
 protected:
     EllipsoidForceField();
