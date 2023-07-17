@@ -89,6 +89,12 @@ void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::Mechani
     }
 }
 
+template <class DataTypes>
+void DiagonalVelocityDampingForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+{
+    // DiagonalVelocityDampingForceField is a pure damping component: stiffness is not computed
+}
+
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
