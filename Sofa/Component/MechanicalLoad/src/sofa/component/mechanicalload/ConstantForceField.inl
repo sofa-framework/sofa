@@ -164,21 +164,6 @@ void ConstantForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::reinit()
-{
-    // Now update is handled through the callback mechanism
-    // called each time the componentState is checked
-}
-
-
-template<class DataTypes>
-void ConstantForceField<DataTypes>::doUpdateInternal()
-{
-    // function empty in #3924
-}
-
-
-template<class DataTypes>
 sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromIndices()
 {
     const VecIndex & indices = d_indices.getValue();
@@ -263,6 +248,7 @@ bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
     return true;
 }
 
+
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForces(const VecDeriv& forces)
 {
@@ -275,6 +261,7 @@ bool ConstantForceField<DataTypes>::checkForces(const VecDeriv& forces)
     }
     return true;
 }
+
 
 template<class DataTypes>
 sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::computeForceFromForcesVector(const VecDeriv &forces)
@@ -300,6 +287,7 @@ sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::computeFo
     return sofa::core::objectmodel::ComponentState::Valid;
 }
 
+
 template<class DataTypes>
 sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::computeForceFromSingleForce(const Deriv singleForce)
 {
@@ -319,6 +307,7 @@ sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::computeFo
 
     return sofa::core::objectmodel::ComponentState::Valid;
 }
+
 
 template<class DataTypes>
 sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::computeForceFromTotalForce(const Deriv &totalForce)
@@ -428,12 +417,6 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
     totalf += force;
 
     d_totalForce.setValue(totalf);
-}
-
-template <class DataTypes>
-void ConstantForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
-{
-    // No damping in this ForceField
 }
 
 

@@ -77,9 +77,6 @@ public:
     /// Init function
     void init() override;
 
-    /// Re-init function
-    void reinit() override;
-
     /// Add the forces
     void addForce (const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
@@ -98,16 +95,16 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    /// Update data and internal vectors
-    void doUpdateInternal() override;
-
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& force );
 
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final
+    {
+        // No damping in this ForceField
+    }
 
 
 protected:
