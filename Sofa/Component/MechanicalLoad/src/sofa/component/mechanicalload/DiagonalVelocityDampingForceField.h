@@ -45,6 +45,9 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     /// air drag coefficient.
+    Data< VecDeriv > d_dampingCoefficients;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
     Data< VecDeriv > dampingCoefficients;
 
 protected:

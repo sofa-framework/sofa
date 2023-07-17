@@ -30,7 +30,7 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
-    : dampingCoefficients(initData(&dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
+    : d_dampingCoefficients(initData(&d_dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
 {
 }
 
@@ -39,7 +39,7 @@ DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField(
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord&, const DataVecDeriv&_v)
 {
-    const auto coefs = sofa::helper::getReadAccessor(dampingCoefficients);
+    const auto coefs = sofa::helper::getReadAccessor(d_dampingCoefficients);
 
     if( !coefs.empty() )
     {
