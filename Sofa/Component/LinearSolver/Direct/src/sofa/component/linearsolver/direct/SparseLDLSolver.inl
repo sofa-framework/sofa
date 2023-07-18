@@ -244,26 +244,44 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
             }
         });
 
-    for (unsigned j = 0; j < JlocalRowSize; j++)
-    {
-        Real* lineJ = JLinvDinv[j];
-        int globalRowJ = Jlocal2global[j];
-        for (unsigned i = j; i < JlocalRowSize; i++)
+    std::mutex mutex;
+    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+        [&data, this, fact, &mutex, result, JlocalRowSize](const auto& range)
         {
-            Real* lineI = JLinv[i];
-            int globalRowI = Jlocal2global[i];
+            sofa::type::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
+            triplets.reserve(JlocalRowSize * (range.end - range.start));
 
-            double acc = 0.0;
-            for (unsigned k = 0; k < (unsigned)data->n; k++)
+            for (auto j = range.start; j != range.end; ++j)
             {
-                acc += lineJ[k] * lineI[k];
+                Real* lineJ = JLinvDinv[j];
+                sofa::SignedIndex globalRowJ = Jlocal2global[j];
+                for (unsigned i = j; i < JlocalRowSize; ++i)
+                {
+                    Real* lineI = JLinv[i];
+                    int globalRowI = Jlocal2global[i];
+
+                    Real acc = 0;
+                    for (unsigned k = 0; k < (unsigned)data->n; k++)
+                    {
+                        acc += lineJ[k] * lineI[k];
+                    }
+                    acc *= fact;
+
+                    triplets.emplace_back(globalRowJ, globalRowI, acc);
+                }
             }
-            acc *= fact;
-            result->add(globalRowJ, globalRowI, acc);
-            if (globalRowI != globalRowJ)
-                result->add(globalRowI, globalRowJ, acc);
-        }
-    }
+
+            std::lock_guard guard(mutex);
+
+            for (const auto& [row, col, value] : triplets)
+            {
+                result->add(row, col, value);
+                if (row != col)
+                {
+                    result->add(col, row, value);
+                }
+            }
+        });
 
     return true;
 }
