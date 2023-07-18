@@ -342,31 +342,31 @@ TEST(GeometryEdge_test, intersectionWithEdge2f)
     e12 = { -1.f, -1.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
 
     // colinear
     e12 = { 2.f, 4.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
 
     // on the same line but no overlapping    
     sofa::type::Vec2f e13{ 2.001f, 2.001f };
     sofa::type::Vec2f e14{ 3.f, 3.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
 
     // on the same line and overlapping    
     e13 = { 1.5f, 1.5f };
     e14 = { 3.f, 3.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
 }
 
 
@@ -401,35 +401,35 @@ TEST(GeometryEdge_test, intersectionWithEdge3f)
     e12 = { -1.f, -1.f, -1.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[2], std::numeric_limits<float>::min());
 
     // colinear
     e12 = { 2.f, 2.f, 4.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[2], std::numeric_limits<float>::min());
 
     // on the same line but no overlapping    
     sofa::type::Vec3f e13{ 2.001f, 2.001f, 2.001f };
     sofa::type::Vec3f e14{ 3.f, 3.f, 3.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[2], std::numeric_limits<float>::min());
 
     // on the same line and overlapping    
     e13 = { 1.5f, 1.5f, 1.5f };
     e14 = { 3.f, 3.f, 3.f };
     res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e13, e14, inter);
     EXPECT_FALSE(res);
-    EXPECT_FLOAT_EQ(inter[0], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[1], sofa::InvalidID);
-    EXPECT_FLOAT_EQ(inter[2], sofa::InvalidID);
+    EXPECT_FLOAT_EQ(inter[0], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
+    EXPECT_FLOAT_EQ(inter[2], std::numeric_limits<float>::min());
 }
 
 
