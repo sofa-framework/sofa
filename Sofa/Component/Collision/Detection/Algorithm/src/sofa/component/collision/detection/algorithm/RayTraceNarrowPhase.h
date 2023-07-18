@@ -44,6 +44,10 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API RayTraceNarrowPhase : pub
 public:
     SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
+private:
+    SOFA_ATTRIBUTE_DEPRECATED__DRAWNARROWPHASE()
+    sofa::core::objectmodel::lifecycle::DeprecatedData bDraw{this, "draw", "Use display flag 'showDetectionOutputs' instead"}; ///< enable/disable display of results
+
 protected:
     RayTraceNarrowPhase() = default;
 

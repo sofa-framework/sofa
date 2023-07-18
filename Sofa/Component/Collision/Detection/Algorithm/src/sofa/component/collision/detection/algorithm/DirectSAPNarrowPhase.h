@@ -63,6 +63,8 @@ private:
       */
     void updateBoxes();
 
+    SOFA_ATTRIBUTE_DEPRECATED__DRAWNARROWPHASE()
+    sofa::core::objectmodel::lifecycle::DeprecatedData d_draw{this, "draw", "Use display flag 'showDetectionOutputs' instead"}; ///< enable/disable display of results
     Data<bool> d_showOnlyInvestigatedBoxes; ///< Show only boxes which will be sent to narrow phase
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
 

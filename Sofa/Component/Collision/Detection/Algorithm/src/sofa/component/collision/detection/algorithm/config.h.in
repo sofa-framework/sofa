@@ -40,6 +40,13 @@
         "DefaultPipeline renamed as CollisionPipeline in #3590: sofa/component/collision/detection/algorithm/CollisionPipeline.h")
 #endif
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION
+#  define SOFA_ATTRIBUTE_DEPRECATED__DRAWNARROWPHASE()
+#else
+# define SOFA_ATTRIBUTE_DEPRECATED__DRAWNARROWPHASE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.12", "v24.06", "This data is not used anymore: the drawing is now controlled by a draw flag")
+#endif
 namespace sofa::component::collision::detection::algorithm
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
