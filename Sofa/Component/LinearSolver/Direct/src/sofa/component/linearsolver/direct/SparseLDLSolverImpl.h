@@ -55,7 +55,7 @@ inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,i
         Parent [k] = -1 ;	    // parent of k is not yet known 
         Flag [k] = k ;		    // mark node k as visited 
         Lnz [k] = 0 ;		    // count of nonzeros in column k of L 
-        int kk = perm[k];  // kth original, or permuted, column 
+        const int kk = perm[k];  // kth original, or permuted, column 
         for (int p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
         {
             // A (i,k) is nonzero (original or permuted A) 
@@ -319,7 +319,7 @@ protected :
 
         for (int j=0;j<data->n;j++) {
           for (int i=colptr[j];i<colptr[j+1];i++) {
-            int line = rowind[i];
+              const int line = rowind[i];
             tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
             tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
             tran_countvec[line]++;

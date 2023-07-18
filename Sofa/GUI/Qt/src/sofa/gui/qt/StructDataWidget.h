@@ -137,7 +137,7 @@ public:
             return false;
 
         const char* name = vhelper::name();
-        bool checkable = vhelper::isCheckable();
+        const bool checkable = vhelper::isCheckable();
         if (checkable)
         {
             check = new QCheckBox(parent);
@@ -158,7 +158,7 @@ public:
 
         if (checkable)
         {
-            bool isChecked = vhelper::isChecked(d);
+            const bool isChecked = vhelper::isChecked(d);
             check->setChecked(isChecked);
             if (readOnly || vhelper::readOnly())
                 check->setEnabled(false);
@@ -184,8 +184,8 @@ public:
         p.readFromData(d);
         if (check)
         {
-            bool wasChecked = (check->checkState() == Qt::Checked);
-            bool isChecked = vhelper::isChecked(d);
+            const bool wasChecked = (check->checkState() == Qt::Checked);
+            const bool isChecked = vhelper::isChecked(d);
             if (isChecked != wasChecked)
             {
                 check->setChecked(isChecked);

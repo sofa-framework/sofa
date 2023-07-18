@@ -67,7 +67,7 @@ const std::string& DynamicLibrary::Handle::filename() const
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
 # if defined(WIN32)
-    std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
+    const std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
     void *handle = ::LoadLibraryA(filename.c_str());
     if (handle == nullptr)
     {

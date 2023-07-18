@@ -73,7 +73,7 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
 
 void BVHJoint::display(int frameNum)
 {
-    auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
+    const auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
 
     drawtool->pushMatrix();
     drawtool->disableLighting();
@@ -130,7 +130,7 @@ void BVHJoint::display(int frameNum)
 
 void BVHJoint::displayInGlobalFrame(void)
 {
-    auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
+    const auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
 
     drawtool->pushMatrix();
     drawtool->translate(0.0f, 0.0f, -4.0f);

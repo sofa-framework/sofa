@@ -27,8 +27,8 @@ namespace sofa
 
 TEST(fixed_array, operatorLess)
 {
-    sofa::type::fixed_array<sofa::Index, 2> edge1 { 0, 0};
-    sofa::type::fixed_array<sofa::Index, 2> edge2 { 1, 0};
+    const sofa::type::fixed_array<sofa::Index, 2> edge1 { 0, 0};
+    const sofa::type::fixed_array<sofa::Index, 2> edge2 { 1, 0};
     EXPECT_LT(edge1, edge2);
     EXPECT_GT(edge2, edge1);
 }

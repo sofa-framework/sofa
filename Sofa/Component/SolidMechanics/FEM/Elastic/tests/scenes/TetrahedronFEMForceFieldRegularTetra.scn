@@ -2,6 +2,9 @@
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
 
+<RequiredPlugin name="Sofa.Component.StateContainer"/>
+<RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+
 <!--Mechanical Object-->
 <MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0.5 0.86602540378443864676 0 0.5 0.288675134594812882254 1" />
 

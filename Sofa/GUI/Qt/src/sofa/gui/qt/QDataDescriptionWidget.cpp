@@ -69,7 +69,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         addRow(boxLayout, "Name", object->getName(), 0);
         addRow(boxLayout, "Class", object->getClassName(), 1);
 
-        std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*object));
+        const std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*object));
 
         int nextRow = 2;
         if (!namespacename.empty())
@@ -83,7 +83,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
             nextRow++;
         }
 
-        core::objectmodel::BaseNode* node = object->toBaseNode(); // Node
+        const core::objectmodel::BaseNode* node = object->toBaseNode(); // Node
         if (node && node->getNbParents()>1) // MultiNode
         {
             addRow(boxLayout, "Path", node->getPathName(), nextRow, 20);
@@ -110,7 +110,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
             addRow(boxLayout, "Description", entry.description, nextRow, 20);
             nextRow++;
         }
-        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
+        const core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
         if (it != entry.creatorMap.end() && *it->second->getTarget())
         {
             addRow(boxLayout, "Provided by",it->second->getTarget(), nextRow, 20);
@@ -151,7 +151,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         box->setTitle(QString("Extra informations"));
 
         unsigned int row = 0;
-        for(auto& data : selecteddatum)
+        for(const auto& data : selecteddatum)
         {
             addRow(boxLayout, data->getName(), data->getValueString(), row++);
         }

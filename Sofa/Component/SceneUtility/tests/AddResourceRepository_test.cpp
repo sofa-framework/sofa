@@ -53,9 +53,9 @@ struct AddResourceRepository_test : public BaseSimulationTest
 
     void buildScene(const std::string& repoType, const std::string& repoPath)
     {
-        std::string addRepoStr = "<" + repoType + " path=\""+ repoPath + "\" />";
+        const std::string addRepoStr = "<" + repoType + " path=\""+ repoPath + "\" />";
 
-        std::string scene = START_STR + addRepoStr + END_STR;
+        const std::string scene = START_STR + addRepoStr + END_STR;
         std::cout << scene << std::endl;
 
         m_root = sofa::simulation::SceneLoaderXML::loadFromMemory("scene", scene.c_str());

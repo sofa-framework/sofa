@@ -149,7 +149,7 @@ void DisplayFlagWidget::mouseReleaseEvent ( QMouseEvent * e )
 
     if ( e->button() == Qt::LeftButton && item )
     {
-        bool value = !(item->checkState(0) == Qt::Checked);
+        const bool value = !(item->checkState(0) == Qt::Checked);
         item->setCheckState(0, ( (value) ? Qt::Checked : Qt::Unchecked) );
 
         emit clicked();

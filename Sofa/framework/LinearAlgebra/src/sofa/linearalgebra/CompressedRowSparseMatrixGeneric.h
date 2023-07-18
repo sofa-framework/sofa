@@ -238,6 +238,8 @@ public :
     {
     }
 
+    virtual ~CompressedRowSparseMatrixGeneric() = default;
+
     /// \returns the number of row blocks
     Index rowBSize() const
     {
@@ -1247,8 +1249,8 @@ public:
     template< typename = typename std::enable_if< Policy::IsAlwaysSymmetric> >
     void addSymDBlock(unsigned int bi, unsigned int bj, const DBlock& b)
     {
-        unsigned int i = std::min(bi, bj);
-        unsigned int j = std::max(bi, bj);
+        const unsigned int i = std::min(bi, bj);
+        const unsigned int j = std::max(bi, bj);
         addDBlock(i, j, b);
         if constexpr (Policy::StoreLowerTriangularBlock) addDBlock(j, i, b);
     }
@@ -1256,8 +1258,8 @@ public:
     template< typename = typename std::enable_if< Policy::IsAlwaysSymmetric> >
     void addSymDValue(unsigned int bi, unsigned int bj, const Real b)
     {
-        unsigned int i = std::min(bi, bj);
-        unsigned int j = std::max(bi, bj);
+        const unsigned int i = std::min(bi, bj);
+        const unsigned int j = std::max(bi, bj);
         addDValue(i, j, b);
         if constexpr (Policy::StoreLowerTriangularBlock) addDValue(j, i, b);
     }
@@ -1265,8 +1267,8 @@ public:
     template< typename = typename std::enable_if< Policy::IsAlwaysSymmetric> >
     void addSymDValue(unsigned int bi, unsigned int bj, int& rowId, int& colId, int& rowIdT, int& colIdT, Real b)
     {
-        unsigned int i = std::min(bi, bj);
-        unsigned int j = std::max(bi, bj);
+        const unsigned int i = std::min(bi, bj);
+        const unsigned int j = std::max(bi, bj);
         addDValue(i, j, rowId, colId, b);
         if constexpr (Policy::StoreLowerTriangularBlock) addDValue(j, i, rowIdT, colIdT, b);
     }
@@ -1610,7 +1612,7 @@ protected:
     }
 };
 
-#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP) 
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP)
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<double>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<float>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat1x1d>;

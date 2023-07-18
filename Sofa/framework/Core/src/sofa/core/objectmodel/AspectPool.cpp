@@ -134,7 +134,7 @@ void AspectPool::release(int id)
     {
         releaseCallback(id);
     }
-    AtomicInt aspectID(id);
+    const AtomicInt aspectID(id);
     freeAspects.push(aspectID);
 }
 
@@ -175,7 +175,7 @@ void AspectBuffer::clear()
 
 AspectRef AspectBuffer::allocate()
 {
-    int id = availableID.exchange(-1);
+    const int id = availableID.exchange(-1);
     if (id == -1)
         return pool.allocate();
     else
@@ -195,11 +195,11 @@ void AspectBuffer::push(AspectRef id)
         newID = id->aspectID();
         id->add_ref(); // add a ref token that will be implicitly held by latestID
     }
-    int prevID = latestID.exchange(newID);
+    const int prevID = latestID.exchange(newID);
     if (prevID != -1)
     {
         // store prevID as the next available ID
-        int freeID = availableID.exchange(prevID);
+        const int freeID = availableID.exchange(prevID);
         if (freeID != -1)
             pool.getAspect(freeID)->release(); // remove the ref token that was implicitly held by availableID
     }
@@ -208,14 +208,14 @@ void AspectBuffer::push(AspectRef id)
 /// Receive the latest version, return true if one is available, or false otherwise (in which case id is unchanged)
 bool AspectBuffer::pop(AspectRef& id)
 {
-    int newID = latestID.exchange(-1);
+    const int newID = latestID.exchange(-1);
     if (newID == -1) return false;
     if (id)
     {
-        int prevID = id->aspectID();
+        const int prevID = id->aspectID();
         // store prevID as the next available ID
         id->add_ref(); // add a ref token that will be implicitly held by availableID
-        int freeID = availableID.exchange(prevID);
+        const int freeID = availableID.exchange(prevID);
         if (freeID != -1)
             pool.getAspect(freeID)->release(); // remove the ref token that was implicitly held by availableID
     }

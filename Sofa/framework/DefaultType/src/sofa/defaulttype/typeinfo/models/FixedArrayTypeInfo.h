@@ -100,7 +100,7 @@ struct FixedArrayTypeInfo
             sofa::Size s = 0;
             for (sofa::Size i=0; i<DataType::size(); ++i)
             {
-                sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
+                const sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValue(data[(sofa::Size)i], index-s, value);
@@ -127,7 +127,7 @@ struct FixedArrayTypeInfo
             sofa::Size s = 0;
             for (sofa::Size i=0; i<DataType::size(); ++i)
             {
-                sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
+                const sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::setValue(data[(sofa::Size)i], index-s, value);
@@ -153,7 +153,7 @@ struct FixedArrayTypeInfo
             sofa::Size s = 0;
             for (sofa::Size i=0; i<DataType::size(); ++i)
             {
-                sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
+                const sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValueString(data[(sofa::Size)i], index-s, value);
@@ -179,7 +179,7 @@ struct FixedArrayTypeInfo
             sofa::Size s = 0;
             for (sofa::Size i=0; i<DataType::size(); ++i)
             {
-                sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
+                const sofa::Size n = BaseTypeInfo::size(data[(sofa::Size)i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::setValueString(data[(sofa::Size)i], index-s, value);

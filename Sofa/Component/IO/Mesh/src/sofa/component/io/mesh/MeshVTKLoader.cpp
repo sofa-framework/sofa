@@ -136,7 +136,7 @@ bool MeshVTKLoader::doLoad()
     const char* filename = d_filename.getFullPath().c_str();
 
     // Detect file type (legacy or vtk)
-    MeshVTKLoader::VTKFileType type = detectFileType(filename);
+    const MeshVTKLoader::VTKFileType type = detectFileType(filename);
     switch (type)
     {
     case XML:
@@ -954,7 +954,7 @@ bool XMLVTKReader::readFile(const char* filename)
     //quick check
     checkErrorMsg(vtkDoc.LoadFile(), "Unknown error while loading VTK Xml doc");
 
-    TiXmlHandle hVTKDoc(&vtkDoc);
+    const TiXmlHandle hVTKDoc(&vtkDoc);
     TiXmlElement* pElem;
     TiXmlHandle hVTKDocRoot(nullptr);
 
@@ -971,7 +971,7 @@ bool XMLVTKReader::readFile(const char* filename)
     //read VTK data format type
     const char* datasetFormatStrTemp = pElem->Attribute("type");
     checkErrorMsg(datasetFormatStrTemp, "Dataset format not defined");
-    string datasetFormatStr = string(datasetFormatStrTemp);
+    const string datasetFormatStr = string(datasetFormatStrTemp);
     VTKDatasetFormat datasetFormat;
 
     if (datasetFormatStr.compare("UnstructuredGrid") == 0)
@@ -1003,7 +1003,7 @@ bool XMLVTKReader::readFile(const char* filename)
         checkErrorMsg(false, "Dataset format " << datasetFormatStr << " not recognized");
     }
 
-    TiXmlHandle datasetFormatHandle = TiXmlHandle(hVTKDocRoot.FirstChild( datasetFormatStr.c_str() ).ToElement());
+    const TiXmlHandle datasetFormatHandle = TiXmlHandle(hVTKDocRoot.FirstChild( datasetFormatStr.c_str() ).ToElement());
 
     bool stateLoading = false;
     switch (datasetFormat)
@@ -1193,7 +1193,7 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
 
-                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
+                    const string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
 
                     BaseVTKDataIO* pointdata = loadDataArray(dataArrayElement, numberOfPoints);
                     checkError(pointdata);
@@ -1208,7 +1208,7 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
-                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
+                    const string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
                     BaseVTKDataIO* celldata = loadDataArray(dataArrayElement, numberOfCells);
                     checkError(celldata);
                     celldata->name = currentDataArrayName;

@@ -103,7 +103,7 @@ struct Engine_test : public BaseTest
     void testUpdateEngine3()
     {
         //Get output engine3
-       SReal result3 = engine3->f_result.getValue();
+        const SReal result3 = engine3->f_result.getValue();
 
        // Test if update method of engine1 is called 1 time
        if(engine1->getCounterUpdate()!=1)
@@ -154,7 +154,7 @@ struct Engine_test : public BaseTest
        }
 
        // Check that input value is not changed
-       SReal input1 = engine1->f_numberToMultiply.getValue();
+        const SReal input1 = engine1->f_numberToMultiply.getValue();
 
        ASSERT_EQ(input1,1);
 

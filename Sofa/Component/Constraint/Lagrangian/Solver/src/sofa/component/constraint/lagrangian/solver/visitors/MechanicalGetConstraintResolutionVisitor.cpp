@@ -41,7 +41,7 @@ MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResoluti
 {
     if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
     {
-        ctime_t t0 = begin(node, c);
+        const ctime_t t0 = begin(node, c);
         c->getConstraintResolution(cparams, _res, _offset);
         end(node, c, t0);
     }

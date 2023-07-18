@@ -177,8 +177,7 @@ void generateRigid(Rigid3MassType& mass, type::Vec3& center, io::Mesh *mesh
     }
 
     if( rotation != type::Vec3(0,0,0) ) {
-
-        type::Quat q = type::Quat<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+        const type::Quat q = type::Quat<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
 
         for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
@@ -250,7 +249,7 @@ void generateRigid( GenerateRigidInfo& res
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
     // a threshol to test if inertia is diagonal in function of diagonal values
-    SReal threshold = type::trace( res.inertia ) * 1e-6;
+    const SReal threshold = type::trace( res.inertia ) * 1e-6;
 
     // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia
     if( res.inertia[0][1]>threshold || res.inertia[0][2]>threshold || res.inertia[1][2]>threshold )

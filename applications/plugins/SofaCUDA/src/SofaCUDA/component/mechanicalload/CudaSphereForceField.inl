@@ -69,7 +69,7 @@ void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechanic
     const VecDeriv& dx = d_dx.getValue();
 
     df.resize(dx.size());
-    double stiff = data.sphere.stiffness;
+    const double stiff = data.sphere.stiffness;
     data.sphere.stiffness *= sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     SphereForceFieldCuda3f_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.sphere.stiffness = stiff;
@@ -103,7 +103,7 @@ void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mechani
     const VecDeriv& dx = d_dx.getValue();
 
     df.resize(dx.size());
-    double stiff = data.sphere.stiffness;
+    const double stiff = data.sphere.stiffness;
     data.sphere.stiffness *= sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     SphereForceFieldCuda3f1_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.sphere.stiffness = stiff;

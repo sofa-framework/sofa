@@ -75,11 +75,6 @@ void perTestInit()
     sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
     sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
-    if(theSimulation==nullptr){
-        theSimulation = new DAGSimulation();
-        sofa::simulation::setSimulation(theSimulation);
-    }
-
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ;
 
@@ -93,13 +88,13 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
     perTestInit();
     EXPECT_MSG_EMIT(Error) ;
 
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MakeDataAlias/>                                             "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
@@ -109,7 +104,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
 
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
@@ -117,13 +112,13 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     perTestInit();
     EXPECT_MSG_EMIT(Error) ;
 
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MakeDataAlias                             alias='NewName'/>      "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
@@ -132,7 +127,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
@@ -141,13 +136,13 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
     EXPECT_MSG_EMIT(Error) ;
 
 
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MakeDataAlias targetcomponent='MakeAlias'/>                     "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
@@ -156,7 +151,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
@@ -164,13 +159,13 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     perTestInit();
     EXPECT_MSG_EMIT(Error) ;
 
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='InvalidComponentName' dataname='position' alias='rest_position'/> \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
@@ -179,7 +174,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
@@ -187,14 +182,14 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
     perTestInit();
     EXPECT_MSG_EMIT(Warning) ;
 
-    string scene =
+    const string scene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='MechanicalObject' dataname='invalidname' alias='myrest_position'/> \n"
         "       <MechanicalObject position='1 2 3 4'/>                                                           \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
     MakeDataAliasComponent* component = nullptr;
 
@@ -202,21 +197,21 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkValidBehavior)
 {
     EXPECT_MSG_NOEMIT(Error) ;
 
-    string ascene =
+    const string ascene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='MechanicalObject' dataname='position' alias='myrest_position'/> \n"
         "       <MechanicalObject myrest_position='1 2 3 '/>                                                 \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("test", ascene.c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("test", ascene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
@@ -225,7 +220,7 @@ TEST(MakeDataAliasComponent, checkValidBehavior)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::node::unload(root);
 }
 
 }

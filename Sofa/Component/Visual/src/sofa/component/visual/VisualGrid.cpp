@@ -40,7 +40,6 @@ VisualGrid::VisualGrid()
     , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
     , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
     , internalPlane(PLANE_Z)
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
@@ -174,16 +173,10 @@ void VisualGrid::buildGrid()
     }
 }
 
-void VisualGrid::drawVisual(const core::visual::VisualParams* vparams)
+void VisualGrid::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
-
     vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
-
-
 
 }
 

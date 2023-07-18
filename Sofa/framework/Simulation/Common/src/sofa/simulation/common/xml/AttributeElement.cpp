@@ -48,7 +48,7 @@ bool AttributeElement::init()
 
 bool AttributeElement::initNode()
 {
-    std::string name = getAttribute( "type", "");
+    const std::string name = getAttribute( "type", "");
 
     if (this->replaceAttribute.find(name) != this->replaceAttribute.end())
     {

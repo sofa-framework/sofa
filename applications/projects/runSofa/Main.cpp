@@ -98,7 +98,6 @@ using sofa::helper::logging::ExceptionMessageHandler;
 #include <sofa/gui/common/ArgumentParser.h>
 
 
-
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
@@ -327,7 +326,7 @@ int main(int argc, char** argv)
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
-    sofa::simulation::setSimulation(new DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -468,7 +467,7 @@ int main(int argc, char** argv)
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
+    Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 
@@ -485,7 +484,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
@@ -525,11 +524,11 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+        sofa::simulation::node::exportInXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)
-        sofa::simulation::getSimulation()->unload(groot);
+        sofa::simulation::node::unload(groot);
 
 
     GUIManager::closeGUI();

@@ -55,9 +55,9 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectPosition(Coord&
             else
             {
                 // gradually set the velocity along the direction axis
-                Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
-                sofa::type::Vec3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
-                Real angle = acos(restRotations[index][3])*2;
+                const Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
+                const sofa::type::Vec3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                const Real angle = acos(restRotations[index][3])*2;
                 x2.getOrientation() = x1.getOrientation()*sofa::type::Quat<SReal>(axis,angle*fact);
             }
         }
@@ -458,12 +458,12 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (f_twoWay.getValue())
         return;
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate2);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate2);
     if (!r)
         return;
 
     sofa::linearalgebra::BaseMatrix *mat = r.matrix;
-    unsigned int offset = r.offset;
+    const unsigned int offset = r.offset;
 
     const SetIndexArray & indices = f_indices2.getValue();
     const unsigned int N = Deriv::size();
@@ -510,7 +510,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (f_twoWay.getValue())
         return;
 
-    int o = matrix->getGlobalOffset(this->mstate2);
+    const int o = matrix->getGlobalOffset(this->mstate2);
     if (o < 0)
         return;
 

@@ -192,7 +192,7 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
     ReadAccessor< Data< VecCoord > > restPositions = this->d_position;
     const Real distMax = numeric_limits<Real>::max();
 
-    unsigned int nbp=restPositions.size();
+    const unsigned int nbp=restPositions.size();
     unsigned int nbc=(unsigned int)this->d_nbClusters.getValue();
     if(nbc>nbp) nbc=nbp;
 
@@ -352,7 +352,7 @@ bool ClusteringEngine<DataTypes>::save()
     ofstream fileStream (fname.c_str(), ofstream::out);
     if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
-    ReadAccessor< Data< VVI > > clust = this->d_cluster;
+    const ReadAccessor< Data< VVI > > clust = this->d_cluster;
 
     fileStream << this->d_useTopo.getValue() << " ";
     fileStream << this->d_radius.getValue() << " ";
@@ -384,7 +384,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
         const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        ReadAccessor< Data< VVI > > clust = this->d_cluster;
+        const ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 
         std::vector<sofa::type::Vec3> vertices;

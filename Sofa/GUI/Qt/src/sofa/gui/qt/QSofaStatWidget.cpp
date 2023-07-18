@@ -93,7 +93,7 @@ void QSofaStatWidget::addCollisionModelsStat(const sofa::type::vector< sofa::cor
         {
             QTreeWidgetItem *node = new QTreeWidgetItem(statsCounter);
             node->setText(0,QString(v[i]->getContext()->getName().c_str()));
-            QPixmap* pix = getPixmap(v[i]->getContext(), false,false,false);
+            const QPixmap* pix = getPixmap(v[i]->getContext(), false,false,false);
             if (pix) node->setIcon(0, QIcon(*pix));
             listStats.insert(std::make_pair(v[i]->getContext(), node));
             item = new QTreeWidgetItem(node);

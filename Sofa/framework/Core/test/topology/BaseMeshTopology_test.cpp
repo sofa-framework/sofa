@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,69 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#ifndef SOFAPYTHON_TEMPLATE_H
-#define SOFAPYTHON_TEMPLATE_H
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseObject ;
-
-#include <sofa/type/vector.h>
-
-#include <sofa/core/DataTracker.h>
-
-#include <SofaPython/PythonMacros.h>
-SP_DECLARE_CLASS_TYPE(Template)
-
-namespace sofa {
-    namespace core {
-        namespace objectmodel {
-            class BaseData ;
-        }
-    }
-}
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <gtest/gtest.h>
 
 namespace sofa
 {
 
-namespace component
+using core::topology::BaseMeshTopology;
+
+template<class Container>
+bool testInvalidContent(const Container& container)
 {
+    return std::all_of(container.begin(), container.end(), [](const auto id) { return id == sofa::InvalidID;});
+}
 
-namespace _template_
+TEST(BaseMeshTopology, invalidContainers)
 {
-using sofa::core::objectmodel::BaseData;
-using sofa::core::objectmodel::Event;
-using sofa::core::DataTracker;
-using sofa::helper::vector ;
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidEdgesInTriangles));
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidEdgesInQuad));
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidTrianglesInTetrahedron));
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidEdgesInTetrahedron));
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidQuadsInHexahedron));
+    EXPECT_TRUE(testInvalidContent(BaseMeshTopology::InvalidEdgesInHexahedron));
+}
 
-class Template : public BaseObject
-{
-public:
-    SOFA_CLASS(Template, BaseObject);
-
-    Template() ;
-    ~Template() override ;
-
-    PyObject* m_rawTemplate { nullptr };
-    Data<std::string> m_template  ; ///< Current template source
-
-    void addDataToTrack(BaseData*) ;
-    void handleEvent(Event *event) override ;
-private:
-    DataTracker m_dataTracker ;
-    vector<BaseData*> m_trackedDatas ;
-};
-
-
-} // namespace _template_
-
-using _template_::Template ;
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /// SOFAPYTHON_TEMPLATE_H
-
+}

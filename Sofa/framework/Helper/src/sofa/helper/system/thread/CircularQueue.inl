@@ -111,7 +111,7 @@ inline SOFA_HELPER_API bool OneThreadPerEnd::isFull(unsigned maxSize) const
 
 inline SOFA_HELPER_API unsigned OneThreadPerEnd::size(unsigned maxSize) const
 {
-    unsigned h = head;
+    const unsigned h = head;
     unsigned t = tail;
     if (t < h) t += maxSize;
     return t - h;
@@ -125,7 +125,7 @@ void OneThreadPerEnd::init(T /*array*/[], unsigned /*maxCapacity*/)
 template<class T>
 bool OneThreadPerEnd::push(T array[], unsigned maxSize, unsigned /*maxCapacity*/, const T& item)
 {
-    unsigned nextTail = (tail + 1) % maxSize;
+    const unsigned nextTail = (tail + 1) % maxSize;
     if(nextTail == head)
     {
         // queue is full
@@ -158,8 +158,8 @@ bool OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/,
 template<class T>
 unsigned OneThreadPerEnd::skip(T array[], unsigned maxSize, unsigned /*maxCapacity*/, unsigned outmaxsize, bool clear)
 {
-    unsigned currentSize = size(maxSize);
-    unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
+    const unsigned currentSize = size(maxSize);
+    const unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
     if (outsize == 0)
     {
         // queue is empty
@@ -194,8 +194,8 @@ unsigned OneThreadPerEnd::skip(T array[], unsigned maxSize, unsigned /*maxCapaci
 template<class T, class OutputIterator>
 unsigned OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/, OutputIterator out, unsigned outmaxsize, bool clear)
 {
-    unsigned currentSize = size(maxSize);
-    unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
+    const unsigned currentSize = size(maxSize);
+    const unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
     if (outsize == 0)
     {
         // queue is empty
@@ -271,7 +271,7 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSiz
         return false;
     }
     // atomically reserve the element to read
-    int readIdx = head.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
+    const int readIdx = head.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
@@ -298,7 +298,7 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSi
     }
 
     // atomically reserve the element to write
-    int writeIdx = tail.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
+    const int writeIdx = tail.fetch_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).
     // It happens when the queue is temporarily full.

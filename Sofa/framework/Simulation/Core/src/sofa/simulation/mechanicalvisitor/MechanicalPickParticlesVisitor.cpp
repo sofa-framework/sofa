@@ -80,7 +80,7 @@ void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMec
 
     // particles are sorted from their distance to the ray
     // threshold for valid particles is the shortest distance + small tolerance relative to ray length
-    SReal dmax = particles.begin()->first + radius0*1e-10;
+    const SReal dmax = particles.begin()->first + radius0*1e-10;
 
     for( Particles::const_iterator it=particles.begin(), itend=particles.end() ; it!=itend ; ++it )
     {

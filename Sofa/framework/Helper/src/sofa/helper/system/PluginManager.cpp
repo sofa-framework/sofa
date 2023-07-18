@@ -181,7 +181,7 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
         return PluginLoadStatus::PLUGIN_FILE_NOT_FOUND;
     }
 
-    DynamicLibrary::Handle d  = DynamicLibrary::load(pluginPath);
+    const DynamicLibrary::Handle d  = DynamicLibrary::load(pluginPath);
     Plugin p;
     if( ! d.isValid() )
     {
@@ -321,7 +321,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
 
 Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
 {
-    std::string pluginPath = plugin;
+    const std::string pluginPath = plugin;
 
     if (!FileSystem::isFile(plugin)) {
         return getPluginByName(plugin);
@@ -398,7 +398,7 @@ void PluginManager::init()
 
 void PluginManager::init(const std::string& pluginPath)
 {
-    PluginMap::iterator iter = m_pluginMap.find(pluginPath);
+    const PluginMap::iterator iter = m_pluginMap.find(pluginPath);
     if(m_pluginMap.end() != iter)
     {
         Plugin& plugin = iter->second;

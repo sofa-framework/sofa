@@ -797,9 +797,9 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
 
     for(size_t i=0; i<numVertices; ++i)
     {
-        double x = (double) vect_c[i][0];
-        double y = (double) vect_c[i][1];
-        double z = (double) vect_c[i][2];
+        const double x = (double) vect_c[i][0];
+        const double y = (double) vect_c[i][1];
+        const double z = (double) vect_c[i][2];
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }

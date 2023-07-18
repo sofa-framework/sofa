@@ -58,7 +58,7 @@ void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, sofa::
     simulation::Visitor::printComment("processTopologyChange");
 #endif
 
-    ctime_t t0=begin(node,obj);
+    const ctime_t t0=begin(node,obj);
     obj->handleTopologyChange(m_source); //why was it necessary to check for each object if it exists a topology inside the current node?
     end(node,obj,t0);
 }
@@ -78,7 +78,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
         {
             if(obj->propagateFromInputToOutputModel() && obj->getFrom() == m_source)  //node != root){ // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
-                ctime_t t0=begin(node,obj);
+                const ctime_t t0=begin(node,obj);
                 obj->updateTopologicalMappingTopDown(); // update the specific TopologicalMapping
                 end(node,obj,t0);
             }

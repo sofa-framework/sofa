@@ -118,6 +118,12 @@ void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matri
 	}
 }
 
+template <typename DataTypes>
+void TorsionForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<typename DataTypes>
 SReal TorsionForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {

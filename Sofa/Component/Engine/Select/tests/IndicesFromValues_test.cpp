@@ -35,7 +35,7 @@ struct TestIndicesFromValues : public BaseTest
 {
     // Test computation on a simple example
     void search_one_index(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("-1");
         m_thisObject->update();
@@ -44,7 +44,7 @@ struct TestIndicesFromValues : public BaseTest
     }
 
     void search_two_indices(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("-1. 1.");
         m_thisObject->update();
@@ -54,7 +54,7 @@ struct TestIndicesFromValues : public BaseTest
 
 
     void search_nothing(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("");
         m_thisObject->update();
@@ -63,7 +63,7 @@ struct TestIndicesFromValues : public BaseTest
     }
 
     void search_in_nothing(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read(" ");
         m_thisObject->findData("values")->read("1");
         EXPECT_MSG_EMIT(Error); // an error is emitted if the engine does not find the value (purpose of this test)
@@ -73,7 +73,7 @@ struct TestIndicesFromValues : public BaseTest
     }
 
     void search_nothing_in_nothing(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read(" ");
         m_thisObject->findData("values")->read(" ");
         m_thisObject->update();
@@ -82,7 +82,7 @@ struct TestIndicesFromValues : public BaseTest
     }
 
     void search_existing_and_nonexisting(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("1.  4. ");
         EXPECT_MSG_EMIT(Error); // an error is emitted when it will not found the value
@@ -93,7 +93,7 @@ struct TestIndicesFromValues : public BaseTest
 
 
     void search_nonexisting(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("4. ");
         EXPECT_MSG_EMIT(Error); // an error is emitted if the engine does not find the value (purpose of this test)
@@ -103,7 +103,7 @@ struct TestIndicesFromValues : public BaseTest
     }
 
     void search_a_sequence(){
-        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
+        const IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("1. 0. -1. ");
         m_thisObject->update();

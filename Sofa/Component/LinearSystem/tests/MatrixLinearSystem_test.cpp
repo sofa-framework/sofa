@@ -41,7 +41,7 @@ TEST(LinearSystem, MatrixSystem_noContext)
 {
     using MatrixType = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
-    MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
+    const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
     EXPECT_NE(linearSystem, nullptr);
 
     EXPECT_TRUE(linearSystem->d_assembleStiffness.getValue());
@@ -62,11 +62,11 @@ TEST(LinearSystem, MatrixSystem_noContext)
 
 TEST(LinearSystem, MatrixSystem)
 {
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
     using MatrixType = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
-    MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
+    const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
     EXPECT_NE(linearSystem, nullptr);
 
     root->addObject(linearSystem);
@@ -79,7 +79,7 @@ TEST(LinearSystem, MatrixSystem)
     EXPECT_EQ(linearSystem->getMatrixSize(), sofa::type::Vec2u{});
 
 
-    auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate);
     mstate->resize(10);
 
@@ -301,22 +301,22 @@ TEST(LinearSystem, MatrixSystem_buggyForceField)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<EmptyMatrix, sofa::linearalgebra::FullVector<SReal> >;
-    MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
+    const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
 
     root->addObject(linearSystem);
 
     //Create the Mechanical Object and define its positions
-    auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate);
     mstate->resize(2);
     auto writeAccessor = mstate->writePositions();
     writeAccessor[0] = {};
     writeAccessor[1] = sofa::type::Vec3{0, 0, 1};
 
-    auto bug = sofa::core::objectmodel::New<BuggyForceField<sofa::defaulttype::Vec3Types> >();
+    const auto bug = sofa::core::objectmodel::New<BuggyForceField<sofa::defaulttype::Vec3Types> >();
     root->addObject(bug);
 
     auto mparams = *sofa::core::MechanicalParams::defaultInstance();

@@ -71,16 +71,16 @@ void SphereGridTopology::setRadius(SReal radius)
 sofa::type::Vec3 SphereGridTopology::getPoint(Index i) const
 {
     const auto n = this->d_n.getValue();
-    int x = i%n[0]; i/=n[0];
-    int y = i%n[1]; i/=n[1];
-    int z = i%n[2]; i/=n[2];
+    const int x = i%n[0]; i/=n[0];
+    const int y = i%n[1]; i/=n[1];
+    const int z = i%n[2]; i/=n[2];
     return getPointInGrid(x,y,z);
 }
 
 sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
-    SReal r = d_radius.getValue();
+    const SReal r = d_radius.getValue();
     type::Vec3 axisZ = d_axis.getValue();
     axisZ.normalize();
     type::Vec3 axisX = ((axisZ-type::Vec3(1_sreal,0_sreal,0_sreal)).norm() < 0.000001 ? type::Vec3(0_sreal,1_sreal,0_sreal) : type::Vec3(1_sreal,0_sreal,0_sreal));
@@ -89,9 +89,9 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     axisX.normalize();
     axisY.normalize();
     axisZ.normalize();
-    int nx = getNx();
-    int ny = getNy();
-    int nz = getNz();
+    const int nx = getNx();
+    const int ny = getNy();
+    const int nz = getNz();
     // coordonate on a square
     type::Vec3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, k*2*r/(nz-1) - r);
     // scale it to be on a circle

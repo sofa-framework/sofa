@@ -61,8 +61,8 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
 
     std::ostringstream oss;
     oss << text;
-    std::string str = oss.str();
-	std::size_t length = str.size();
+    const std::string str = oss.str();
+    const std::size_t length = str.size();
 
     std::vector<type::Vec3f> vertices;
     std::vector<type::Vec2f> UVs;
@@ -110,7 +110,7 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
         vertices.push_back(vertex_up_right);
         vertices.push_back(vertex_down_left);
 
-        char character = str[j] - 32;
+        const char character = str[j] - 32;
 
         float uv_x = (character % nb_char_width) / (float)nb_char_width;
         float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);

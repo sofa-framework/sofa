@@ -32,7 +32,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
@@ -59,16 +58,24 @@ public:
 
     void SetUp() override
     {
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void TearDown() override
     {
-        for(auto& pathToRemove : dataPath)
+        for (const auto& pathToRemove : dataPath)
         {
-            if(FileSystem::exists(pathToRemove))
-               FileSystem::removeAll(pathToRemove) ;
-       }
+            if (FileSystem::exists(pathToRemove))
+            {
+                if (FileSystem::isDirectory(pathToRemove))
+                {
+                    FileSystem::removeAll(pathToRemove);
+                }
+                else
+                {
+                    FileSystem::removeFile(pathToRemove);
+                }
+            }
+        }
     }
 
     void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes){
@@ -83,12 +90,12 @@ public:
                 "   <VisualModelOBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+        sofa::simulation::node::animate(root.get(), 0.5);
 
         for(auto& pathToCheck : pathes)
         {
@@ -109,14 +116,14 @@ public:
                 "   <VisualModelOBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         for(unsigned int i=0;i<numstep;i++)
         {
-            sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
         }
 
         for(auto& pathToCheck : pathes)

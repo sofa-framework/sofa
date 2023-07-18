@@ -46,7 +46,7 @@ static std::vector<const AbstractTypeInfo*>& getStorage()
 
 std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const std::string& target)
 {
-    bool selectAll = target == "";
+    const bool selectAll = target == "";
     std::vector<const AbstractTypeInfo*> tmp;
     for(auto info : getStorage())
     {
@@ -61,8 +61,8 @@ std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const 
 
 const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
 {
-    sofa::Size id = tid.id;
-    auto& typeinfos = getStorage();
+    const sofa::Size id = tid.id;
+    const auto& typeinfos = getStorage();
 
     if( id < typeinfos.size() && typeinfos[id] != nullptr)
         return typeinfos[id];
@@ -76,8 +76,8 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
 int TypeInfoRegistry::AllocateNewTypeId(const std::type_info& nfo)
 {
     auto& typeinfos = getStorage();
-    std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
-    std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
+    const std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
+    const std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
     typeinfos.push_back(new NameOnlyTypeInfo(name, typeName));
     return typeinfos.size()-1;
 }
@@ -89,7 +89,7 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
         return -1;
 
     auto& typeinfos = getStorage();
-    sofa::Size id = tid.id;
+    const sofa::Size id = tid.id;
 
     msg_info("TypeInfoRegistry") << " Trying to register '"<< info->name() << "/" << tid.nfo.name() << "' at index " << id << "";
 

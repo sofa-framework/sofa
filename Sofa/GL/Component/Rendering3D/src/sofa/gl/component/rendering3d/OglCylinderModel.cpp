@@ -63,12 +63,8 @@ void OglCylinderModel::reinit()
 {
 }
 
-void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
+void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
     vparams->drawTool()->setLightingEnabled(true);
@@ -153,7 +149,7 @@ void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostre
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();
 
-    int nbv = int(x.size());
+    const int nbv = int(x.size());
 
     *out << "g "<<name<<"\n";
 

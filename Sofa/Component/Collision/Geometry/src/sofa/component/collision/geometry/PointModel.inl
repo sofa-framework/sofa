@@ -94,8 +94,7 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Co
 
         for (sofa::Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
-
-            sofa::Index v1 = verticesAroundVertex1[i1];
+            const sofa::Index v1 = verticesAroundVertex1[i1];
 
             for (sofa::Index i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
@@ -281,7 +280,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
     }
     for (sofa::Index i=0; i<n; ++i)
     {
-        SReal l = normals[i].norm();
+        const SReal l = normals[i].norm();
         if (l > 1.0e-3)
             normals[i] *= 1/l;
         else
@@ -359,7 +358,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             }
         }
 
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawPoints(pointsP, 3, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->drawLines(pointsL, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 

@@ -183,6 +183,12 @@ void LinearForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix
 }
 
 template <class DataTypes>
+void LinearForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 void LinearForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     SOFA_UNUSED(matrix);

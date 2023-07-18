@@ -444,9 +444,9 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* re
 {
     if (J->rowSize()==0) return true;
 
-    JMatrixType * j_local = internalData.getLocalJ(J);
+    const JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
-    bool res = addJMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
+    const bool res = addJMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
     internalData.addLocalRes(result);
     return res;
 }
@@ -456,9 +456,9 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(linearalgebra::BaseMatrix* res
 {
     if (J->rowSize()==0) return true;
 
-    JMatrixType * j_local = internalData.getLocalJ(J);
+    const JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
-    bool res = addMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
+    const bool res = addMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
     internalData.addLocalRes(result);
     return res;
 }

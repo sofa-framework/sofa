@@ -84,7 +84,7 @@ namespace sofa
     TEST(TaskSchedulerTests, IntSumSingle)
     {
         const int64_t N = 1 << 20;
-        int64_t res = IntSum1ToN(N, 1);
+        const int64_t res = IntSum1ToN(N, 1);
         EXPECT_EQ(res, (N)*(N+1)/2);
         return;
     }
@@ -93,7 +93,7 @@ namespace sofa
     TEST(TaskSchedulerTests, IntSumMulti)
     {
         const int64_t N = 1 << 20;
-        int64_t res = IntSum1ToN(N);
+        const int64_t res = IntSum1ToN(N);
         EXPECT_EQ(res, (N)*(N + 1) / 2);
         return;
     }

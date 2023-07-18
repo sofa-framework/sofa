@@ -136,7 +136,7 @@ void MeshGmshLoader::addInGroup(type::vector< sofa::core::loader::PrimitiveGroup
     }
 
     stringstream ss;
-    string s;
+    const string s;
     ss << tag;
 
     group.push_back(sofa::core::loader::PrimitiveGroup(tag,1,s,s,-1));

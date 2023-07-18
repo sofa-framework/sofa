@@ -237,7 +237,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     // look for the number of group;
     unsigned int numGroup = 0;
-    for (int cm : constraint_merge)
+    for (const int cm : constraint_merge)
     {
         if (cm > (int) numGroup)
             numGroup = (unsigned int) cm;
@@ -355,7 +355,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
         ++rowIt2;
         for (; rowIt2 != rowItEnd; ++rowIt2)
         {
-            int indexCurColConst = rowIt2.index();
+            const int indexCurColConst = rowIt2.index();
             if (rowIt2.row().empty()) continue; // ignore constraints with empty Jacobians
 
             // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
@@ -627,7 +627,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal *
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != constraints.end(); ++rowIt)
     {
-        int indexC = rowIt.index();
+        const int indexC = rowIt.index();
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
