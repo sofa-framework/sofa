@@ -215,7 +215,7 @@ struct Edge
     * @tparam   T scalar
     * @param	pA, pB nodes of the first edge
     * @param	pC, pD nodes of the second edge
-    * @param    intersection node will be filled if there is an intersection otherwise will return sofa::InvalidID
+    * @param    intersection node will be filled if there is an intersection otherwise will return std::numeric_limits<T>::min()
     * @return	bool true if there is an intersection, otherwise false
     */
     template<typename Node,
@@ -242,7 +242,7 @@ struct Edge
             
             if (alphaDenom < std::numeric_limits<T>::epsilon()) // collinear
             {
-                intersection = sofa::type::Vec<2, T>(sofa::InvalidID, sofa::InvalidID);
+                intersection = sofa::type::Vec<2, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
                 return false;
             }
             
@@ -250,7 +250,7 @@ struct Edge
 
             if (alpha < 0 || alpha > 1)
             {
-                intersection = sofa::type::Vec<2, T>(sofa::InvalidID, sofa::InvalidID);
+                intersection = sofa::type::Vec<2, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
                 return false;
             }
             else
@@ -285,7 +285,7 @@ struct Edge
 
             if (alphaDenom < std::numeric_limits<T>::epsilon()) // alpha == inf, not sure what it means geometrically, colinear?
             {
-                intersection = sofa::type::Vec<3, T>(sofa::InvalidID, sofa::InvalidID, sofa::InvalidID);
+                intersection = sofa::type::Vec<3, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
                 return false;
             }
 
@@ -298,7 +298,7 @@ struct Edge
             if (alpha < 0 || beta < 0 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) 
             {
                 // if alpha or beta < 0 means on the exact same line but no overlap. if pY and pX are not se same means no intersection.
-                intersection = sofa::type::Vec<3, T>(sofa::InvalidID, sofa::InvalidID, sofa::InvalidID);
+                intersection = sofa::type::Vec<3, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
                 return false;
             }
             else
