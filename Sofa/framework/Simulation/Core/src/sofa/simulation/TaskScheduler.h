@@ -84,19 +84,19 @@ public:
      */
     ///@{
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
+        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
         static TaskScheduler* create(const char* name = "");
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
+        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
         typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
+        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
         static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
+        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
         static TaskScheduler* getInstance();
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
+        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
         static std::string getCurrentName();
 
     ///@}
