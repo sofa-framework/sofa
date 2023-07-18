@@ -58,10 +58,10 @@ void NarrowPhaseDetection::draw(const core::visual::VisualParams* vparams)
 
     for (auto mapIt = m_outputsMap.begin(); mapIt!=m_outputsMap.end() ; ++mapIt)
     {
-        for (auto it = (*mapIt).second->abegin(); it != (*mapIt).second->aend(); ++it)
+        for (unsigned idx = 0; idx != (*mapIt).second->size(); ++idx)
         {
-            points.push_back(it->point[0]);
-            points.push_back(it->point[1]);
+            points.push_back((*mapIt).second->getFirstPosition(idx));
+            points.push_back((*mapIt).second->getSecondPosition(idx));
         }
     }
     vparams->drawTool()->drawLines(points,5, type::g_red);

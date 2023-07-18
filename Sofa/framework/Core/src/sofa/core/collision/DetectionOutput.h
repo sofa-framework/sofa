@@ -101,9 +101,9 @@ class DetectionOutputVector
     virtual void release() { delete this; }
 
     /// Const iterator to iterate the detection pairs
-    virtual sofa::type::vector<DetectionOutput>::const_iterator abegin() = 0;
+    virtual type::Vec3 getFirstPosition(unsigned idx) = 0;
     /// Const iterator end to iterate the detection pairs
-    virtual sofa::type::vector<DetectionOutput>::const_iterator aend() = 0;
+    virtual type::Vec3 getSecondPosition(unsigned idx) = 0;
 
 };
 
@@ -129,14 +129,16 @@ public:
         return (unsigned int)this->Vector::size();
     }
 
-    virtual sofa::type::vector<DetectionOutput>::const_iterator abegin() final
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned idx) override
     {
-        return this->Vector::cbegin();
+        return (*this)[idx].point[0];
     }
 
-    virtual sofa::type::vector<DetectionOutput>::const_iterator aend() final
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned idx) override
     {
-        return this->Vector::cend();
+        return (*this)[idx].point[1];
     }
 
 };

@@ -56,16 +56,17 @@ public:
     }
 
     /// Const iterator to iterate the detection pairs
-    virtual sofa::type::vector<DetectionOutput>::const_iterator abegin()
+    virtual type::Vec3 getFirstPosition(unsigned /*idx*/) override
     {
-        return m_empty.cbegin();
+        return type::Vec3();
     }
 
     /// Const iterator end to iterate the detection pairs
-    virtual sofa::type::vector<DetectionOutput>::const_iterator aend()
+    virtual type::Vec3 getSecondPosition(unsigned /*idx*/) override
     {
-        return m_empty.cend();
+        return type::Vec3();
     }
+
 
 
 private:
