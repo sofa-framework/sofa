@@ -66,6 +66,17 @@ EllipsoidForceField<DataTypes>::EllipsoidForceField()
 {
 }
 
+template <class DataTypes>
+EllipsoidForceField<DataTypes>::~EllipsoidForceField()
+{
+    d_contacts.~Data();
+    d_center.~Data();
+    d_vradius.~Data();
+    d_stiffness.~Data();
+    d_damping.~Data();
+    d_color.~Data();
+}
+
 template<class DataTypes>
 void EllipsoidForceField<DataTypes>::setStiffness(Real stiff)
 {

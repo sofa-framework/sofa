@@ -120,6 +120,7 @@ public:
 
 protected:
     EllipsoidForceField();
+    ~EllipsoidForceField() override;
 
 public:
     void setStiffness(Real stiff);
