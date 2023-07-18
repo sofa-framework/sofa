@@ -587,7 +587,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::computePrincipalStress()
         maxStress = std::max({maxStress , triInfo.stress, triInfo.stress2});
     }
 
-    maxStress = std::max(-minStress, maxStress);
     d_stressMaxValue.setValue(maxStress);
 
     if (!d_showStressThreshold.isSet() && d_showStressVector.getValue())
