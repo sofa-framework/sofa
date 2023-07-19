@@ -160,9 +160,9 @@ struct Triangle
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs)
     {
-        const sofa::type::Vec<3, T> baryCoefs = Triangle::pointBaryCoefs(p0, n0, n1, n2);
+        baryCoefs = Triangle::pointBaryCoefs(p0, n0, n1, n2);
 
         for (int i = 0; i < 3; ++i)
         {
