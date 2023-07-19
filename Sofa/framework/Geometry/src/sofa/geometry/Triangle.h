@@ -88,20 +88,23 @@ struct Triangle
     {
         // Point can be written: p0 = a*n0 + b*n1 + c*n2
         // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
-        sofa::type::Vec<3, T> baryCoefs;
         const auto area = Triangle::area(n0, n1, n2);
-        if (area < std::numeric_limits<T>::epsilon()) // triangle is flat
+        if (abs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
         {
-            return sofa::type::Vec<3, T>(1/3, 1/3, 1/3);
+            return sofa::type::Vec<3, T>(-1, -1, -1);
         }
         
         const auto A0 = Triangle::area(n1, n2, p0);
         const auto A1 = Triangle::area(n0, p0, n2);
 
+        sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
         baryCoefs[0] = A0 / area;
         baryCoefs[1] = A1 / area;
         baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
 
+        if (abs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon())
+            baryCoefs[2] = 0;
+        
         return baryCoefs;
     }
 
