@@ -42,7 +42,7 @@ namespace sofa::component::linearsolver::iterative
 #define SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+    SOFA_ATTRIBUTE_DISABLED( \
     "v22.12 (#3155)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
 #endif // SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_ITERATIVE
 
