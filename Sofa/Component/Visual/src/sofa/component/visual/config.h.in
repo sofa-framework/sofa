@@ -38,10 +38,10 @@ namespace sofa::component::visual
 } // namespace sofa::component::visual
 
 #ifdef SOFA_BUILD__COMPONENT__VISUAL
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE()
+#define SOFA_ATTRIBUTE_DISABLED__VEC3STATE_AS_VISUALSTATE()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+#define SOFA_ATTRIBUTE_DISABLED__VEC3STATE_AS_VISUALSTATE() \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v23.06", "v23.12", \
         "Vec3State is now an alias of sofa::core::visual::VisualState<defaulttype::Vec3Types>.")
 #endif

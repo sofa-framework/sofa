@@ -67,7 +67,7 @@ public:
     SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("test_perf has been removed and not replaced.")
     DeprecatedAndRemoved test_perf;
 
-    SOFA_ATTRIBUTE_DEPRECATED__BTDLINEARSOLVER_DATABLOCKSIZE("d_blockSize has been deleted, as it was never actually used.")
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATABLOCKSIZE("d_blockSize has been deleted, as it was never actually used.")
     DeprecatedAndRemoved d_blockSize;
 
     typedef typename Vector::SubVectorType SubVector;
