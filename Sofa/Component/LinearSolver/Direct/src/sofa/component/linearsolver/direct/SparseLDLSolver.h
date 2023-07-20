@@ -63,15 +63,6 @@ public :
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved f_saveMatrixToFile;
-
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved d_filename;
-
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved d_precision;
-
     MatrixInvertData * createInvertData() override {
         return new InvertData();
     }

@@ -32,14 +32,6 @@
 #  define SOFA_TYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DISABLED__REBIND()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__REBIND() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.06", "v22.12", \
-        "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
-#endif
 
 #ifdef SOFA_BUILD_SOFA_TYPE
 #define SOFA_ATTRIBUTE_DISABLED__STATIC_MATRIX_IDENTITY()
