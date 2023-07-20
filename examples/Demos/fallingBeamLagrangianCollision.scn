@@ -43,7 +43,7 @@
     <Node name="FEM">
         <EulerImplicitSolver firstOrder="false" rayleighMass="0.1" rayleighStiffness="0.1"/>
         <ShewchukPCGLinearSolver preconditioner="@precond"/>
-        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="false" />
+        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
 
         <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position"
                                          tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
