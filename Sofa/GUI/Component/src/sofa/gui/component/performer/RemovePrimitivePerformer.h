@@ -131,7 +131,7 @@ private:
     /// Point to collision class
     core::behavior::MechanicalState<DataTypes>* mstateCollision;
     /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
-    sofa::core::topology::TopologyElementType topoType;
+    sofa::geometry::ElementType topoType;
     /// Pointer to current topology detect by picking
     sofa::core::topology::BaseMeshTopology* topo_curr;
 };

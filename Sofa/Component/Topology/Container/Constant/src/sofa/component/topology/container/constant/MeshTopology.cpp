@@ -511,7 +511,7 @@ MeshTopology::MeshTopology()
     , _drawTetra(initData(&_drawTetra, false, "drawTetrahedra","if true, draw the topology Tetrahedra"))
     , _drawHexa(initData(&_drawHexa, false, "drawHexahedra","if true, draw the topology hexahedra"))
 {
-    m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
+    m_upperElementType = sofa::geometry::ElementType::EDGE;
     addAlias(&seqPoints,"points");
     addAlias(&seqEdges,"lines");
     addAlias(&seqTetrahedra,"tetras");
@@ -543,17 +543,17 @@ void MeshTopology::init()
 
     // looking for upper topology
     if (!hexahedra.empty())
-        m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+        m_upperElementType = geometry::ElementType::HEXAHEDRON;
     else if (!tetrahedra.empty())
-        m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
+        m_upperElementType = sofa::geometry::ElementType::TETRAHEDRON;
     else if (!quads.empty())
-        m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
+        m_upperElementType = sofa::geometry::ElementType::QUAD;
     else if (!triangles.empty())
-        m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
+        m_upperElementType = sofa::geometry::ElementType::TRIANGLE;
     else if (!edges.empty())
-        m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
+        m_upperElementType = sofa::geometry::ElementType::EDGE;
     else
-        m_upperElementType = sofa::core::topology::TopologyElementType::POINT;
+        m_upperElementType = sofa::geometry::ElementType::POINT;
 
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
@@ -2348,13 +2348,13 @@ bool MeshTopology::checkConnexity()
 {
     Size nbr = 0;
 
-    if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+    if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
         nbr = this->getNbHexahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+    else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
         nbr = this->getNbTetrahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+    else if (m_upperElementType == geometry::ElementType::QUAD)
         nbr = this->getNbQuads();
-    else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+    else if (m_upperElementType == geometry::ElementType::TRIANGLE)
         nbr = this->getNbTriangles();
     else
         nbr = this->getNbEdges();
@@ -2381,13 +2381,13 @@ Size MeshTopology::getNumberOfConnectedComponent()
 {
     Size nbr = 0;
 
-    if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+    if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
         nbr = this->getNbHexahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+    else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
         nbr = this->getNbTetrahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+    else if (m_upperElementType == geometry::ElementType::QUAD)
         nbr = this->getNbQuads();
-    else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+    else if (m_upperElementType == geometry::ElementType::TRIANGLE)
         nbr = this->getNbTriangles();
     else
         nbr = this->getNbEdges();
@@ -2427,13 +2427,13 @@ const sofa::type::vector<Index> MeshTopology::getConnectedElement(Index elem)
 {
     Size nbr = 0;
 
-    if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+    if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
         nbr = this->getNbHexahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+    else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
         nbr = this->getNbTetrahedra();
-    else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+    else if (m_upperElementType == geometry::ElementType::QUAD)
         nbr = this->getNbQuads();
-    else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+    else if (m_upperElementType == geometry::ElementType::TRIANGLE)
         nbr = this->getNbTriangles();
     else
         nbr = this->getNbEdges();
@@ -2497,25 +2497,25 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElement(Index elem
     sofa::type::vector<Index> elems;
     unsigned int nbr = 0;
 
-    if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+    if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
     {
         nbr = 8;
         if(!this->m_hexahedraAroundVertex.empty())
             createHexahedraAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+    else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
     {
         nbr = 4;
         if(!this->m_tetrahedraAroundVertex.empty())
             createTetrahedraAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+    else if (m_upperElementType == geometry::ElementType::QUAD)
     {
         nbr = 4;
         if(!this->m_quadsAroundVertex.empty())
             createQuadsAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+    else if (m_upperElementType == geometry::ElementType::TRIANGLE)
     {
         nbr = 3;
         if(!this->m_trianglesAroundVertex.empty())
@@ -2535,13 +2535,13 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElement(Index elem
     {
         sofa::type::vector<Index> elemAV;
 
-        if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+        if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
             elemAV = this->getHexahedraAroundVertex(getHexahedron(elem)[i]);
-        else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+        else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
             elemAV = this->getTetrahedraAroundVertex(getTetrahedron(elem)[i]);
-        else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+        else if (m_upperElementType == geometry::ElementType::QUAD)
             elemAV = this->getQuadsAroundVertex(getQuad(elem)[i]);
-        else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+        else if (m_upperElementType == geometry::ElementType::TRIANGLE)
             elemAV = this->getTrianglesAroundVertex(getTriangle(elem)[i]);
         else
             elemAV = this->getEdgesAroundVertex(getEdge(elem)[i]);
@@ -2576,22 +2576,22 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElements(sofa::typ
     sofa::type::vector<Index> elemAll;
     sofa::type::vector<Index> elemTmp;
 
-    if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
+    if (m_upperElementType == geometry::ElementType::HEXAHEDRON)
     {
         if(!this->m_hexahedraAroundVertex.empty())
             createHexahedraAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::TETRAHEDRON)
+    else if (m_upperElementType == geometry::ElementType::TETRAHEDRON)
     {
         if(!this->m_tetrahedraAroundVertex.empty())
             createTetrahedraAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::QUAD)
+    else if (m_upperElementType == geometry::ElementType::QUAD)
     {
         if(!this->m_quadsAroundVertex.empty())
             createQuadsAroundVertexArray();
     }
-    else if (m_upperElementType == core::topology::TopologyElementType::TRIANGLE)
+    else if (m_upperElementType == geometry::ElementType::TRIANGLE)
     {
         if(!this->m_trianglesAroundVertex.empty())
             createTrianglesAroundVertexArray();

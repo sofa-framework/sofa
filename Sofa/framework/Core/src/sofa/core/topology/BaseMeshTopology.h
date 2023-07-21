@@ -122,7 +122,7 @@ public:
     virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
 	   
     /// Type of higher topology element contains in this container @see TopologyElementType
-    virtual sofa::core::topology::TopologyElementType getTopologyType() const = 0;
+    virtual sofa::geometry::ElementType getTopologyType() const = 0;
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones

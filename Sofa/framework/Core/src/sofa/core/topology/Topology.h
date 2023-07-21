@@ -31,11 +31,6 @@
 namespace sofa::core::topology
 {
 
-
-SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementType has moved to sofa::geometry::ElementType.")
-typedef sofa::geometry::ElementType TopologyElementType;
-
-
 template<class TopologyElement>
 using TopologyElementInfo 
 SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementInfo has moved to sofa::geometry::ElementInfo.")

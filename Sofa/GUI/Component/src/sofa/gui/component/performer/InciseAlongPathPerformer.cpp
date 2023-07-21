@@ -229,7 +229,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
         return;
 
     // Output declarations
-    sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
+    sofa::type::vector< sofa::geometry::ElementType> topoPath_list;
     sofa::type::vector<Index> indices_list;
     sofa::type::vector< sofa::type::Vec3 > coords2_list;
     const sofa::type::Vec3 pointA = firstBody.point;
@@ -248,17 +248,17 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     for (unsigned int i=0; i<topoPath_list.size(); ++i)
     {
-        if (topoPath_list[i] == sofa::core::topology::TopologyElementType::POINT)
+        if (topoPath_list[i] == sofa::geometry::ElementType::POINT)
         {
             positions[i] = topoGeo->getPointPosition(indices_list[i]);
         }
-        else if (topoPath_list[i] == sofa::core::topology::TopologyElementType::EDGE)
+        else if (topoPath_list[i] == sofa::geometry::ElementType::EDGE)
         {
             sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
             const auto AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
-        else if(topoPath_list[i] == sofa::core::topology::TopologyElementType::TRIANGLE)
+        else if(topoPath_list[i] == sofa::geometry::ElementType::TRIANGLE)
         {
             sofa::core::topology::BaseMeshTopology::Triangle theTriangle = topoCon->getTriangle(indices_list[i]);
 

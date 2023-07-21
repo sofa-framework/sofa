@@ -269,7 +269,7 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
 
-        if (topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
+        if (topology->getTopologyType() == sofa::geometry::ElementType::EDGE)
         {
             indices.linkToEdgeDataArray();  
             indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,

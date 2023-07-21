@@ -93,7 +93,7 @@ public:
 
 protected:
     core::topology::BaseMeshTopology::SPtr m_topology;
-    sofa::core::topology::TopologyElementType m_topologyType;
+    sofa::geometry::ElementType m_topologyType;
 
     sofa::core::sptr<container::dynamic::EdgeSetTopologyModifier> edgeModifier;
     sofa::core::sptr<container::dynamic::TriangleSetTopologyModifier> triangleModifier;

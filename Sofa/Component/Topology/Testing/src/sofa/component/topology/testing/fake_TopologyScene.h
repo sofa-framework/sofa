@@ -32,7 +32,7 @@ public:
     /**
     * Default constructor, take the filepath of the mesh file to load, the type of topology and if the topology is static (MeshTopology)
     */
-    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyElementType topoType, bool staticTopo = false)
+    fake_TopologyScene(const std::string& filename, sofa::geometry::ElementType topoType, bool staticTopo = false)
         : m_topoType(topoType)
         , m_filename(filename)
         , m_staticTopology(staticTopo)
@@ -132,7 +132,7 @@ private:
     sofa::simulation::Node::SPtr m_root;
 
     /// Type of topology asked
-    sofa::core::topology::TopologyElementType m_topoType;
+    sofa::geometry::ElementType m_topoType;
     /// filepath of the mesh to load
     std::string m_filename;
     /// Bool storing if static or dynamyc topology.

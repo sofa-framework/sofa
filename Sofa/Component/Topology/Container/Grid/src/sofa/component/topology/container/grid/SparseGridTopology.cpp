@@ -183,7 +183,7 @@ void SparseGridTopology::init()
         }
     }
 
-    m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+    m_upperElementType = geometry::ElementType::HEXAHEDRON;
 
 }
 

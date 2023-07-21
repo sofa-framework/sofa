@@ -987,7 +987,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronDestruc
 
 // }
 
-using sofa::core::topology::TopologyElementType;
+using sofa::geometry::ElementType;
 
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
@@ -1028,7 +1028,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 
 
 template <class DataTypes, class GeometricalTypes>
-sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTopology()
+sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTopology()
 {
     if (l_topology.empty())
     {
@@ -1040,7 +1040,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return sofa::core::topology::TopologyElementType::POINT;
+        return sofa::geometry::ElementType::POINT;
     }
     else
     {
@@ -1056,7 +1056,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
         if (baseState == nullptr)
         {
             msg_error() << "No compatible state associated with the topology has been found.";
-            return sofa::core::topology::TopologyElementType::POINT;
+            return sofa::geometry::ElementType::POINT;
         }
         else
         {
@@ -1064,7 +1064,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
             if (geometryState == nullptr)
             {
                 msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
-                return sofa::core::topology::TopologyElementType::POINT;
+                return sofa::geometry::ElementType::POINT;
             }
             else
             {
@@ -1108,7 +1108,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::initTopologyHandlers(sofa::core::topology::TopologyElementType topologyType)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::initTopologyHandlers(sofa::geometry::ElementType topologyType)
 {
     // add the functions to handle topology changes for Vertex informations
     d_vertexMass.createTopologyHandler(l_topology);

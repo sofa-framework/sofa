@@ -310,7 +310,7 @@ public:
     /// @}
 
     /** \brief Returns the type of the topology */
-	sofa::core::topology::TopologyElementType getTopologyType() const override {return core::topology::TopologyElementType::HEXAHEDRON;}
+	sofa::geometry::ElementType getTopologyType() const override {return geometry::ElementType::HEXAHEDRON;}
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

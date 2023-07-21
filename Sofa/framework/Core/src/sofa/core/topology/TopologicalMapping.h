@@ -48,7 +48,7 @@ public:
     /// Output Topology
     using Out = BaseMeshTopology;
 
-    using TopologyElementType = sofa::core::topology::TopologyElementType;
+    using TopologyElementType = sofa::geometry::ElementType;
 
     using Index = sofa::Index;
 
