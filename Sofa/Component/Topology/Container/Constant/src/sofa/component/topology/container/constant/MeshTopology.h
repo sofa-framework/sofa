@@ -618,7 +618,7 @@ public:
     virtual void updateHexahedra();
 
 protected:
-    /// Type of higher topology element contains in this container @see TopologyElementType
+    /// Type of higher topology element contains in this container @see ElementType
     sofa::geometry::ElementType m_upperElementType;
 };
 
