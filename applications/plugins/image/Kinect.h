@@ -142,19 +142,19 @@ public:
         depthTransform.setGroup("Transform");
         f_listening.setValue(true);  // to update camera during animate
 
-        helper::OptionsGroup opt1(3 ,"320x240" ,"640x480" ,"1280x1024" );
+        helper::OptionsGroup opt1{"320x240" ,"640x480" ,"1280x1024"};
         opt1.setSelectedItem(1);
         resolution.setValue(opt1);
 
-        helper::OptionsGroup opt2(4 ,"RGB" ,"IR_8bits" ,"YUV_RGB" ,"YUV_RAW");
+        helper::OptionsGroup opt2{"RGB" ,"IR_8bits" ,"YUV_RGB" ,"YUV_RAW"};
         opt2.setSelectedItem(0);
         videoMode.setValue(opt2);
 
-        helper::OptionsGroup opt3(2 ,"Raw" ,"Registered" );
+        helper::OptionsGroup opt3{"Raw" ,"Registered"};
         opt3.setSelectedItem(1);
         depthMode.setValue(opt3);
 
-        helper::OptionsGroup opt4(6 ,"Off" ,"Green" ,"Red" ,"Yellow" ,"Blink Green" ,"Blink Yellow");
+        helper::OptionsGroup opt4{"Off" ,"Green" ,"Red" ,"Yellow" ,"Blink Green" ,"Blink Yellow"};
         opt4.setSelectedItem(1);
         ledMode.setValue(opt4);
 
