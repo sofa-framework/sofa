@@ -61,7 +61,7 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
 
         std::string loaderType = "MeshOBJLoader";
-        if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
+        if (m_topoType == geometry::ElementType::TETRAHEDRON || m_topoType == geometry::ElementType::HEXAHEDRON)
             loaderType = "MeshGmshLoader";
 
 
@@ -84,17 +84,17 @@ public:
         else
         {
             std::string topoType = "";
-            if (m_topoType == TopologyElementType::POINT)
+            if (m_topoType == geometry::ElementType::POINT)
                 topoType = "Point";
-            else if (m_topoType == TopologyElementType::EDGE)
+            else if (m_topoType == geometry::ElementType::EDGE)
                 topoType = "Edge";
-            else if (m_topoType == TopologyElementType::TRIANGLE)
+            else if (m_topoType == geometry::ElementType::TRIANGLE)
                 topoType = "Triangle";
-            else if (m_topoType == TopologyElementType::QUAD)
+            else if (m_topoType == geometry::ElementType::QUAD)
                 topoType = "Quad";
-            else if (m_topoType == TopologyElementType::TETRAHEDRON)
+            else if (m_topoType == geometry::ElementType::TETRAHEDRON)
                 topoType = "Tetrahedron";
-            else if (m_topoType == TopologyElementType::HEXAHEDRON)
+            else if (m_topoType == geometry::ElementType::HEXAHEDRON)
                 topoType = "Hexahedron";
 
             // create topology components
@@ -109,7 +109,7 @@ public:
             // Add some mechanical components
             createObject(m_root, "MeshMatrixMass");
 
-            if (m_topoType == TopologyElementType::EDGE) {
+            if (m_topoType == geometry::ElementType::EDGE) {
                 sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
                 createObject(m_root, "VectorSpringForceField", { {"useTopology", "true"} });
             }

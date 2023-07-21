@@ -60,8 +60,8 @@ Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
     , noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
     , m_outTopoModifier(nullptr)
 {
-    m_inputType = TopologyElementType::TETRAHEDRON;
-    m_outputType = TopologyElementType::TRIANGLE;
+    m_inputType = geometry::ElementType::TETRAHEDRON;
+    m_outputType = geometry::ElementType::TRIANGLE;
 }
 
 void Tetra2TriangleTopologicalMapping::init()

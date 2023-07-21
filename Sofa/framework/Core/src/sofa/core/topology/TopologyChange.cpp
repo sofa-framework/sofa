@@ -36,34 +36,34 @@ namespace sofa::core::objectmodel
 namespace sofa::core::topology
 {
 
-SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s)
+SOFA_CORE_API geometry::ElementType parseTopologyElementTypeFromString(const std::string& s)
 {
     std::string sUP = s;
     std::transform( sUP.begin(), sUP.end(), sUP.begin(), ::tolower);
 #define SOFA_ENUM_CASE(e) if (sUP == sofa_tostring(e)) return e
-    SOFA_ENUM_CASE(TopologyElementType::POINT);
-    SOFA_ENUM_CASE(TopologyElementType::EDGE);
-    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
-    SOFA_ENUM_CASE(TopologyElementType::QUAD);
-    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
-    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
+    SOFA_ENUM_CASE(geometry::ElementType::POINT);
+    SOFA_ENUM_CASE(geometry::ElementType::EDGE);
+    SOFA_ENUM_CASE(geometry::ElementType::TRIANGLE);
+    SOFA_ENUM_CASE(geometry::ElementType::QUAD);
+    SOFA_ENUM_CASE(geometry::ElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE(geometry::ElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
     msg_error("TopologyElementType")
             << "unable to parse '" << s << "' as TopologyElementType, defaulting to POINT" ;
-    return TopologyElementType::POINT;
+    return geometry::ElementType::POINT;
 }
 
-SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t)
+SOFA_CORE_API std::string parseTopologyElementTypeToString(geometry::ElementType t)
 {
-    switch (t)
+    switch ((int)t)
     {
 #define SOFA_ENUM_CASE(e) case e: return sofa_tostring(e);
-    SOFA_ENUM_CASE(TopologyElementType::POINT);
-    SOFA_ENUM_CASE(TopologyElementType::EDGE);
-    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
-    SOFA_ENUM_CASE(TopologyElementType::QUAD);
-    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
-    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
+    SOFA_ENUM_CASE((int)geometry::ElementType::POINT);
+    SOFA_ENUM_CASE((int)geometry::ElementType::EDGE);
+    SOFA_ENUM_CASE((int)geometry::ElementType::TRIANGLE);
+    SOFA_ENUM_CASE((int)geometry::ElementType::QUAD);
+    SOFA_ENUM_CASE((int)geometry::ElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE((int)geometry::ElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
     default: return std::string("UNKNOWN");
     }
