@@ -481,11 +481,12 @@ Simulation::Simulation()
 
 
 Simulation::~Simulation()
-{
-}
+{}
 
 void setSimulation ( Simulation* s )
-{}
+{
+    SOFA_UNUSED(s);
+}
 
 Simulation* getSimulation()
 {

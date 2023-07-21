@@ -78,8 +78,6 @@ struct Scene_test: public NumericTest<SReal>
     void computeBBox()
     {
         // Init Sofa
-        simulation::Simulation* simulation = sofa::simulation::getSimulation();
-
         root = simulation::getSimulation()->createNewGraph("root");
 
         // create DOFs and its expected bounding box
