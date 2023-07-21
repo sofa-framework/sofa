@@ -310,7 +310,7 @@ void TopologyData <ElementType, VecT>::add(const sofa::type::vector<Index>& inde
     {
         msg_error(this->getOwner()) << "TopologyDataHandler SIZE MISMATCH in Data "
             << this->getName() << ": " << nbElements << " "
-            << core::topology::TopologyElementInfo<ElementType>::name()
+            << geometry::ElementInfo<ElementType>::name()
             << " ADDED starting from index " << index[0]
             << " while vector size is " << i0;
         i0 = index[0];

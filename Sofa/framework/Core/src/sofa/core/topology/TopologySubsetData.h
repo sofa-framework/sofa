@@ -43,7 +43,7 @@ public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
 
-    typedef core::topology::TopologyElementInfo<ElementType> ElementInfo;
+    typedef geometry::ElementInfo<ElementType> ElementInfo;
     typedef core::topology::TopologyChangeElementInfo<ElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 

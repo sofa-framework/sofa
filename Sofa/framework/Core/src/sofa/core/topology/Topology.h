@@ -31,11 +31,6 @@
 namespace sofa::core::topology
 {
 
-template<class TopologyElement>
-using TopologyElementInfo 
-SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementInfo has moved to sofa::geometry::ElementInfo.")
-= sofa::geometry::ElementInfo<TopologyElement>;
-
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
 // As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...) against BaseMeshTopology
 class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseObject

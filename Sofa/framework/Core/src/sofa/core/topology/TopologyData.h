@@ -56,7 +56,7 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
-    typedef core::topology::TopologyElementInfo<ElementType> ElementInfo;
+    typedef geometry::ElementInfo<ElementType> ElementInfo;
     typedef core::topology::TopologyChangeElementInfo<ElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
     typedef typename sofa::core::topology::TopologyDataHandler< ElementType, VecT>  TopologyDataElementHandler;
