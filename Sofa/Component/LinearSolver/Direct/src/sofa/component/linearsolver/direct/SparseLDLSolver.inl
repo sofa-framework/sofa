@@ -86,7 +86,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     if (n == 0)
     {
-        msg_warning() << "Invalid Linear System to solve (null size). Please insure that there is enough constraints (not rank deficient)." ;
+        showInvalidSystemMessage("null size");
         return true;
     }
 
@@ -94,9 +94,15 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     int * M_rowind = (int *)Mfiltered.getColsIndex().data();
     Real * M_values = (Real *)Mfiltered.getColsValue().data();
 
-    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr || Mfiltered.getRowBegin().size() < (size_t)n)
+    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr)
     {
-        msg_warning() << "Invalid Linear System to solve (invalid matrix data structure). Please insure that there is enough constraints (not rank deficient).";
+        showInvalidSystemMessage("invalid matrix data structure");
+        return true;
+    }
+
+    if (Mfiltered.getRowBegin().size() < (size_t)n)
+    {
+        showInvalidSystemMessage("size mismatch");
         return true;
     }
 
@@ -105,6 +111,12 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     numStep++;
 
     return false;
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::showInvalidSystemMessage(const std::string& reason) const
+{
+    msg_warning() << "Invalid Linear System to solve (" << reason << "). Please insure that there is enough constraints (not rank deficient).";
 }
 
 template<class TMatrix, class TVector, class TThreadManager>
