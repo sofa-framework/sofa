@@ -32,33 +32,31 @@ namespace core
 namespace objectmodel
 {
 
+/// Specialization for reading strings
+template<>
+bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
+{
+    setValue(str);
+    return true;
+}
+
 /// Specialization for reading booleans
 template<>
-void  SOFA_CORE_API Data<bool>::doRead( std::istringstream& str )
+bool SOFA_CORE_API Data<bool>::read( const std::string& str )
 {
+    if (str.empty())
+        return false;
     bool val;
-    int c = str.peek();
-    if(c==EOF)
-    {
-        str.setstate(std::ios::failbit);
-        return;
-    }
-
-    if (c == 'T' || c == 't')
+    if (str[0] == 'T' || str[0] == 't')
         val = true;
-    else if (c == 'F' || c == 'f')
+    else if (str[0] == 'F' || str[0] == 'f')
         val = false;
-    else if ((c >= '0' && c <= '9') || c == '-')
-    {
-        int numericValue;
-        str >> numericValue;
-        val = (numericValue != 0);
-    }
-    else{
-        str.setstate(std::ios::failbit);
-        return;
-    }
+    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
+        val = (atoi(str.c_str()) != 0);
+    else
+        return false;
     setValue(val);
+    return true;
 }
 
 template class SOFA_CORE_API Data< std::string >;
