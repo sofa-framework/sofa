@@ -1980,6 +1980,146 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 }
 
 
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(const PointID last_point,
+    const sofa::type::Vec<3, Real>& a,
+    const sofa::type::Vec<3, Real>& b,
+    TriangleID& ind_ta, TriangleID& ind_tb,
+    sofa::type::vector< TriangleID >& triangles_list,
+    sofa::type::vector< EdgeID >& edges_list,
+    sofa::type::vector< Real >& coords_list,
+    bool& is_on_boundary) const
+{   
+    bool is_validated = false;
+
+    sofa::type::Vec<3, Real> p_current = a;
+    TriangleID ind_t_current = ind_ta;
+    EdgeID ind_e_current = 0;
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+
+    while (!is_validated)
+    {
+        sofa::type::vector<EdgeID> intersectedEdges;
+        sofa::type::vector<Real> baryCoefs;
+        
+        std::cout << "computeSegmentTriangleIntersectionInPlane: " << ind_t_current << std::endl;
+        bool is_intersected = computeSegmentTriangleIntersectionInPlane(p_current, b, ind_t_current, intersectedEdges, baryCoefs);
+
+        if (!is_intersected)
+        {
+            std::cout << "cut reach end" << std::endl;
+            is_validated = true;
+            return true;
+        }
+
+        triangles_list.push_back(ind_t_current);
+
+        if (intersectedEdges.size() == 1) // only one edge intersected, beginning or end?
+        {
+            std::cout << "1 edge inteersected" << std::endl;
+            if (ind_e_current == intersectedEdges[0]) // reach end
+            {
+                is_validated = true;
+                break;
+            }
+
+            // new edge interesected
+            ind_e_current = intersectedEdges[0];
+            edges_list.push_back(ind_e_current);
+            coords_list.push_back(baryCoefs[0]);
+            const Edge& edge = this->m_topology->getEdge(ind_e_current);
+            
+            const typename DataTypes::Coord& c0 = coords[edge[0]];
+            const typename DataTypes::Coord& c1 = coords[edge[1]];
+
+            sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
+            sofa::type::Vec<3, Real> p1 = { c1[0], c1[1], c1[2] };
+
+            p_current = p0 + (p1 - p0) * baryCoefs[0];
+
+            sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(ind_e_current);
+            if (triAE.size() == 1)
+            {
+                std::cout << "on border" << std::endl;
+                is_validated = true;
+                break;
+            }
+            else if (triAE.size() == 2)
+            {
+                if (triAE[0] == ind_t_current)
+                    ind_t_current = triAE[1];
+                else
+                    ind_t_current = triAE[0];
+            }
+            else
+            {
+                std::cout << "non manifold triangulation not supported yet." << std::endl;
+                is_validated = false;
+                break;
+            }
+        }
+        else if (intersectedEdges.size() == 2) // triangle fully traversed
+        {
+            if (intersectedEdges[0] == ind_e_current) {
+                ind_e_current = intersectedEdges[1];
+                edges_list.push_back(ind_e_current);
+                coords_list.push_back(baryCoefs[1]);
+            }
+            else {
+                ind_e_current = intersectedEdges[0];
+                edges_list.push_back(ind_e_current);
+                coords_list.push_back(baryCoefs[0]);
+            }
+
+            const Edge& edge = this->m_topology->getEdge(ind_e_current);
+
+            const typename DataTypes::Coord& c0 = coords[edge[0]];
+            const typename DataTypes::Coord& c1 = coords[edge[1]];
+
+            sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
+            sofa::type::Vec<3, Real> p1 = { c1[0], c1[1], c1[2] };
+
+            p_current = p0 + (p1 - p0) * baryCoefs[0];
+
+            sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(ind_e_current);
+            if (triAE.size() == 1)
+            {
+                std::cout << "on border" << std::endl;
+                is_validated = true;
+                break;
+            }
+            else if (triAE.size() == 2)
+            {
+                if (triAE[0] == ind_t_current)
+                    ind_t_current = triAE[1];
+                else
+                    ind_t_current = triAE[0];
+            }
+            else
+            {
+                std::cout << "non manifold triangulation not supported yet." << std::endl;
+                is_validated = false;
+                break;
+            }
+
+
+        }
+        else
+        {
+            std::cout << "This should not happened" << std::endl;
+            is_validated = false;
+            break;
+        }
+
+
+        
+    }
+
+    //bool res2 = 
+
+    return true;
+}
+
 
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
 // and the triangular mesh
