@@ -233,7 +233,7 @@ bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsert
     }
 
     notifyBeginAddObject(this, obj);
-    bool ret = doAddObject(obj, insertionLocation);
+    const bool ret = doAddObject(obj, insertionLocation);
     notifyEndAddObject(this, obj);
     return ret;
 }
@@ -242,7 +242,7 @@ bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsert
 bool Node::removeObject(BaseObject::SPtr obj)
 {
     notifyBeginRemoveObject(this, obj);
-    bool ret = doRemoveObject(obj);
+    const bool ret = doRemoveObject(obj);
     notifyEndRemoveObject(this, obj);
     return ret;
 }
@@ -265,85 +265,85 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginAddChild(parent.get(), child.get());
 }
 
 void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndAddChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginAddSlave(master, slave);
 }
 
 void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndAddSlave(master, slave);
 }
 
 void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onBeginRemoveSlave(master, slave);
 }
 
 void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
+    for (const auto& listener : root->listener)
         listener->onEndRemoveSlave(master, slave);
 }
 
@@ -408,7 +408,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         dmsg_info() << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() ;
 
     std::size_t ppos = 0;
-    std::size_t psize = pathStr.size();
+    const std::size_t psize = pathStr.size();
     if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
     {
         if(DEBUG_LINK)
@@ -433,7 +433,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
            dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
-        ObjectReverseIterator itend = object.rend();
+        const ObjectReverseIterator itend = object.rend();
         if (link && link->getOwnerBase())
         {
             // index from last
@@ -760,7 +760,7 @@ Node* Node::getNodeInGraph(const std::string& absolutePath) const
         return dynamic_cast<Node*>(this->getRootContext());
 
     Node* ret = nullptr;
-    Node* parent = dynamic_cast<Node*>(this->getRootContext());
+    const Node* parent = dynamic_cast<Node*>(this->getRootContext());
     while (p != "")
     {
         std::string nodeName = p.substr(0, p.find('/'));
@@ -803,7 +803,7 @@ void Node::removeControllers()
 {
     removeObject(*animationManager.begin());
     typedef NodeSequence<core::behavior::OdeSolver> Solvers;
-    Solvers solverRemove = solver;
+    const Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
 }

@@ -34,9 +34,9 @@ public:
     /// Run seven steps of simulation then check results
     bool testDefaultBehavior()
     {
-        double dt = 0.01;
-        auto simulation = sofa::simpleapi::createSimulation();
-        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        const double dt = 0.01;
+        const auto simulation = sofa::simpleapi::createSimulation();
+        const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
 
@@ -44,18 +44,18 @@ public:
         root->setGravity(Vec3(0.0,0.0,0.0));
         root->setDt(dt);
 
-        Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
+        const Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
 
-        auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject",
-                                                  {{"size", "1"}});
+        const auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject",
+                                                        {{"size", "1"}});
 
         sofa::simpleapi::createObject(childNode, "ReadState",
                                       {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityX.data"}});
 
-        simulation->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         for(int i=0; i<7; i++)
         {
-            simulation->animate(root.get(), dt);
+            sofa::simulation::node::animate(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("position")->getValueString(),
@@ -66,8 +66,8 @@ public:
     /// Run seven steps of simulation then check results
     bool testLoadFailure()
     {
-        auto simulation = sofa::simpleapi::createSimulation();
-        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        const auto simulation = sofa::simpleapi::createSimulation();
+        const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
 
@@ -78,7 +78,7 @@ public:
             EXPECT_MSG_EMIT(Error);
             sofa::simpleapi::createObject(root, "ReadState",
                                       {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"invalidFile.txt"}});
-            simulation->init(root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         return true;

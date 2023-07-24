@@ -63,7 +63,7 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
-    bool local = localCoord.getValue();
+    const bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=nullptr)
     {
         const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();

@@ -116,7 +116,7 @@ void ShapeMatching<DataTypes>::doUpdate()
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
     helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = targetPosition;
-    helper::ReadAccessor<Data< VVI > > clust = cluster;
+    const helper::ReadAccessor<Data< VVI > > clust = cluster;
 
     VI::const_iterator it, itEnd;
     size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();

@@ -162,8 +162,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
     if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
@@ -328,7 +328,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const Index&
     const Real fx = d_map.getValue()[hexaPointId].baryCoords[0];
     const Real fy = d_map.getValue()[hexaPointId].baryCoords[1];
     const Real fz = d_map.getValue()[hexaPointId].baryCoords[2];
-    Index index = d_map.getValue()[hexaPointId].in_index;
+    const Index index = d_map.getValue()[hexaPointId].in_index;
     const Hexahedron& cube = cubes[index];
     Out::setCPos(out[hexaPointId] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
             + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )

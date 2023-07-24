@@ -90,7 +90,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     if (!fromModel || !toModel) return;
 
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+    const std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
     if (itBegin == itEnd) return;
 
@@ -123,7 +123,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     while( itBegin != itEnd )
     {
         const TopologyChange* topoChange = *itBegin;
-        TopologyChangeType changeType = topoChange->getChangeType();
+        const TopologyChangeType changeType = topoChange->getChangeType();
 
         switch( changeType )
         {

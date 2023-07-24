@@ -49,7 +49,7 @@ public:
 
 
     void handleEvent(core::objectmodel::Event *) override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void reset() override;
 
 protected:

@@ -60,7 +60,7 @@ template <class TIn, class TOut>
 int SubsetMapping<TIn, TOut>::addPoint(Index index)
 {
     IndexArray& indices = *f_indices.beginEdit();
-    Size i = Size(indices.size());
+    const Size i = Size(indices.size());
     indices.push_back(index);
     f_indices.endEdit();
     return i;

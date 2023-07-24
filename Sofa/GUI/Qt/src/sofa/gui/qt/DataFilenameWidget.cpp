@@ -69,7 +69,7 @@ void DataFileNameWidget::readFromData()
 
 void DataFileNameWidget::writeToData()
 {
-    std::string fileName( openFilePath->text().toStdString() );
+    const std::string fileName( openFilePath->text().toStdString() );
     if (this->getData()->getValueString() != fileName)
         this->getData()->setValue(fileName);
 
@@ -85,8 +85,8 @@ void DataFileNameWidget::raiseDialog()
     else
         fileName=sofa::helper::system::DataRepository.getFirstPath();
 
-    QString s  = getOpenFileName(this, QString(fileName.c_str()), "All (*)", "open file dialog",  "Choose a file to open" );
-    std::string SofaPath = sofa::helper::system::DataRepository.getFirstPath();
+    const QString s  = getOpenFileName(this, QString(fileName.c_str()), "All (*)", "open file dialog",  "Choose a file to open" );
+    const std::string SofaPath = sofa::helper::system::DataRepository.getFirstPath();
 
     if (s.isNull() ) return;
     fileName=std::string (s.toStdString());

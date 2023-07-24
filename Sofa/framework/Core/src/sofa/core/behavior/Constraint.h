@@ -110,6 +110,18 @@ public:
         return sofa::core::getTemplateFromMechanicalState(context, description);
     }
 
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() override final
+    {
+        type::vector<std::string> ids = getConstraintIdentifiers();
+        ids.push_back("Constraint");
+        return ids;
+    }
+
+protected:
+
+    virtual type::vector<std::string> getConstraintIdentifiers(){ return {}; }
+
+
 private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };

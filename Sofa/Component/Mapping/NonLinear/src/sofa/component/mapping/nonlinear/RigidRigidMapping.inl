@@ -133,7 +133,7 @@ void RigidRigidMapping<TIn, TOut>::init()
     if (d_points.getValue().empty() && this->toModel!=nullptr)
     {
         helper::ReadAccessor<Data<sofa::Index>> index = d_index;
-        helper::ReadAccessor<Data<type::vector<sofa::Size>>> repartition = d_repartition;
+        const helper::ReadAccessor<Data<type::vector<sofa::Size>>> repartition = d_repartition;
 
         const OutVecCoord& xto =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         sofa::Size toModelSize = xto.size();

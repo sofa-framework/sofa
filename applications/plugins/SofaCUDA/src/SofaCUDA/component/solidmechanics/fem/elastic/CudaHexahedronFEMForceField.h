@@ -200,7 +200,7 @@ public:
     nbVertex = nbv;
     vertex0 = v0;
     nbElementPerVertex = nbelemperv;
-    int nbloc = (nbVertex+BSIZE-1)/BSIZE;
+    const int nbloc = (nbVertex+BSIZE-1)/BSIZE;
 
     elems.resize((nbe+BSIZE-1)/BSIZE);
     erotation.resize(nbe);
@@ -217,8 +217,8 @@ public:
     void setV(int vertex, int num, int index)
     {
         vertex -= vertex0;
-        int bloc = vertex/BSIZE;
-        int b_x = vertex%BSIZE;
+        const int bloc = vertex/BSIZE;
+        const int b_x = vertex%BSIZE;
         velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
               + num*BSIZE                     // offset to the element
               + b_x                           // offset to the vertex

@@ -84,6 +84,8 @@ protected :
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
 
     bool factorize(Matrix& M, InvertData * invertData);
+
+    void showInvalidSystemMessage(const std::string& reason) const;
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)

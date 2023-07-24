@@ -52,13 +52,9 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/xml/Element.h>
 
-// allow catheter navigation using the tracking system (very simple version, surely will be modified)
-//#define TRACKING
-
 namespace sofa::gui::qt::viewer::qt
 {
 
-//using namespace sofa::defaulttype;
 using sofa::type::Vec3;
 using sofa::type::Quat;
 using namespace sofa::gl;
@@ -79,13 +75,6 @@ class SOFA_GUI_QT_API QtViewer
     Q_OBJECT
 
 private:
-#ifdef TRACKING
-    double savedX;
-    double savedY;
-    bool firstTime;
-    bool tracking;
-#endif // TRACKING
-
     // Interaction
     enum
     {
@@ -132,7 +121,7 @@ public:
     static QtViewer* create(QtViewer*, common::BaseViewerArgument& arg)
     {
         common::BaseViewerArgument* pArg = &arg;
-        common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
+        const common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
                 new QtViewer(nullptr, pArg->getName().c_str() )

@@ -59,7 +59,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     void SetUp() override
     {
         // Load the scene from the xml file
-        std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
+        const std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);
@@ -84,7 +84,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     void TearDown() override
     {
         if (m_instance.root !=nullptr)
-            sofa::simulation::getSimulation()->unload(m_instance.root);
+            sofa::simulation::node::unload(m_instance.root);
     }
 
 };
@@ -100,14 +100,14 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
 
     EdgeSetTopologyContainer* loadTopo()
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
         if (!root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
             return nullptr;
         }
 
-        Node::SPtr nodeTopoTri = root.get()->getChild("SquareGravity");
+        const Node::SPtr nodeTopoTri = root.get()->getChild("SquareGravity");
         if (!nodeTopoTri)
         {
             ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
@@ -134,13 +134,13 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
 
     bool testUnsetTopologyLink()
     {
-        EdgeSetTopologyContainer* topoCon = loadTopo();
+        const EdgeSetTopologyContainer* topoCon = loadTopo();
         if (topoCon == nullptr)
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"}});
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"}});
 
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
@@ -156,10 +156,10 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -191,10 +191,10 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -217,10 +217,10 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -250,7 +250,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
 
     TriangleSetTopologyContainer* loadTopo()
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
         if (!root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
@@ -282,10 +282,10 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -316,10 +316,10 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -342,10 +342,10 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -367,7 +367,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
 
 
         // Mix some triangle vertices
-        int tmp = triangles[0][0];
+        const int tmp = triangles[0][0];
         triangles[0][0] = triangles[10][0];
         triangles[10][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -379,7 +379,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTriangleToEdgeCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Triangle tmpT = triangles[0];
+        const Topology::Triangle tmpT = triangles[0];
         triangles[0] = triangles[10];
         triangles[10] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -391,7 +391,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTriangleToEdgeCrossContainer(), true);
 
         auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
-        Topology::Edge tmpE = edges[0];
+        const Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
         EXPECT_MSG_EMIT(Error);
@@ -408,10 +408,10 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -433,7 +433,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
 
 
         // Mix some triangle vertices
-        int tmp = triangles[0][0];
+        const int tmp = triangles[0][0];
         triangles[0][0] = triangles[10][0];
         triangles[10][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -445,7 +445,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTriangleToVertexCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Triangle tmpT = triangles[0];
+        const Topology::Triangle tmpT = triangles[0];
         triangles[0] = triangles[10];
         triangles[10] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -471,7 +471,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
 
     QuadSetTopologyContainer* loadTopo()
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
         if (!root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
@@ -503,10 +503,10 @@ struct QuadTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -538,10 +538,10 @@ struct QuadTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -564,10 +564,10 @@ struct QuadTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -589,7 +589,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
 
 
         // Mix some quad vertices
-        int tmp = quads[0][0];
+        const int tmp = quads[0][0];
         quads[0][0] = quads[4][0];
         quads[4][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -601,7 +601,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
 
         // Mix some quads
-        Topology::Quad tmpT = quads[0];
+        const Topology::Quad tmpT = quads[0];
         quads[0] = quads[4];
         quads[4] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -613,7 +613,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
 
         auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
-        Topology::Edge tmpE = edges[0];
+        const Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
         EXPECT_MSG_EMIT(Error);
@@ -630,10 +630,10 @@ struct QuadTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -652,7 +652,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
 
 
         // Mix some quad vertices
-        int tmp = quads[0][0];
+        const int tmp = quads[0][0];
         quads[0][0] = quads[4][0];
         quads[4][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -664,7 +664,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), true);
 
         // Mix some quads
-        Topology::Quad tmpT = quads[0];
+        const Topology::Quad tmpT = quads[0];
         quads[0] = quads[4];
         quads[4] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -691,7 +691,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
 
     TetrahedronSetTopologyContainer* loadTopo()
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
         if (!root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
@@ -723,10 +723,10 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -759,10 +759,10 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -861,10 +861,10 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -873,7 +873,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), false);
         // restore good container
@@ -882,7 +882,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), true);
 
         // Mix some tetrahedron vertices
-        int tmp = tetra[0][0];
+        const int tmp = tetra[0][0];
         tetra[0][0] = tetra[10][0];
         tetra[10][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -894,7 +894,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Tetrahedron tmpT = tetra[0];
+        const Topology::Tetrahedron tmpT = tetra[0];
         tetra[0] = tetra[10];
         tetra[10] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -915,10 +915,10 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -936,7 +936,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), true);
 
         // Mix some tetrahedron vertices
-        int tmp = tetra[0][0];
+        const int tmp = tetra[0][0];
         tetra[0][0] = tetra[10][0];
         tetra[10][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -948,7 +948,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Tetrahedron tmpT = tetra[0];
+        const Topology::Tetrahedron tmpT = tetra[0];
         tetra[0] = tetra[10];
         tetra[10] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -975,7 +975,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
 
     HexahedronSetTopologyContainer* loadTopo()
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
         if (!root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
@@ -1007,10 +1007,10 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -1043,10 +1043,10 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -1068,10 +1068,10 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -1092,7 +1092,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
 
         // Mix some hexahedron vertices
-        int tmp = hexa[0][0];
+        const int tmp = hexa[0][0];
         hexa[0][0] = hexa[6][0];
         hexa[6][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -1104,7 +1104,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Hexahedron tmpT = hexa[0];
+        const Topology::Hexahedron tmpT = hexa[0];
         hexa[0] = hexa[6];
         hexa[6] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -1117,7 +1117,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
 
         auto quads = sofa::helper::getWriteAccessor(topoCon->d_quad);
         // Mix some quads
-        Topology::Quad tmpTri = quads[0];
+        const Topology::Quad tmpTri = quads[0];
         quads[0] = quads[10];
         quads[10] = tmpTri;
         EXPECT_MSG_EMIT(Error);
@@ -1138,10 +1138,10 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -1159,7 +1159,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
 
         // Mix some hexahedron vertices
-        int tmp = hexa[0][0];
+        const int tmp = hexa[0][0];
         hexa[0][0] = hexa[6][0];
         hexa[6][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -1171,7 +1171,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Hexahedron tmpT = hexa[0];
+        const Topology::Hexahedron tmpT = hexa[0];
         hexa[0] = hexa[6];
         hexa[6] = tmpT;
         EXPECT_MSG_EMIT(Error);
@@ -1183,7 +1183,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
 
         auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
-        Topology::Edge tmpE = edges[0];
+        const Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
         EXPECT_MSG_EMIT(Error);
@@ -1199,10 +1199,10 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
             return false;
 
         std::string topoLink = "@" + topoCon->getName();
-        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
-                                {"name", "checker"},
-                                {"topology", topoLink}
-            });
+        const auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                                           {"name", "checker"},
+                                                           {"topology", topoLink}
+                                                       });
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
@@ -1220,7 +1220,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), true);
 
         // Mix some hexahedron vertices
-        int tmp = hexa[0][0];
+        const int tmp = hexa[0][0];
         hexa[0][0] = hexa[6][0];
         hexa[6][0] = tmp;
         EXPECT_MSG_EMIT(Error);
@@ -1232,7 +1232,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), true);
 
         // Mix some triangles
-        Topology::Hexahedron tmpT = hexa[0];
+        const Topology::Hexahedron tmpT = hexa[0];
         hexa[0] = hexa[6];
         hexa[6] = tmpT;
         EXPECT_MSG_EMIT(Error);

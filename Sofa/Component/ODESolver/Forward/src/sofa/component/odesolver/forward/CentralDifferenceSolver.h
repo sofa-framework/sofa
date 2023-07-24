@@ -50,7 +50,7 @@ public:
     SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        SReal matrix[3][3] =
+        const SReal matrix[3][3] =
         {
             { 1, dt, dt*dt},
             { 0, 1, dt},
@@ -68,7 +68,7 @@ public:
     SReal getSolutionIntegrationFactor(int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        SReal vect[3] = { dt*dt, dt, 1};
+        const SReal vect[3] = { dt*dt, dt, 1};
         if (outputDerivative >= 3)
             return 0;
         else

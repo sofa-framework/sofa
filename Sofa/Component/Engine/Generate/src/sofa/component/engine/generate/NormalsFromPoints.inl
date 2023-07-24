@@ -61,8 +61,8 @@ template <class DataTypes>
 void NormalsFromPoints<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< VecCoord > > raPositions = position;
-    helper::ReadAccessor<Data< type::vector< type::fixed_array <unsigned int,3> > > > raTriangles = triangles;
-    helper::ReadAccessor<Data< type::vector< type::fixed_array <unsigned int,4> > > > raQuads = quads;
+    const helper::ReadAccessor<Data< type::vector< type::fixed_array <unsigned int,3> > > > raTriangles = triangles;
+    const helper::ReadAccessor<Data< type::vector< type::fixed_array <unsigned int,4> > > > raQuads = quads;
     helper::WriteOnlyAccessor<Data< VecCoord > > waNormals = normals;
     const bool useAngles = this->useAngles.getValue();
     const bool invertNormals = this->invertNormals.getValue();

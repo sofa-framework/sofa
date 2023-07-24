@@ -265,6 +265,12 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 }
 
 template <class DataTypes>
+void SurfacePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 SReal SurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const
 {
     msg_warning() << "Method getPotentialEnergy not implemented yet.";

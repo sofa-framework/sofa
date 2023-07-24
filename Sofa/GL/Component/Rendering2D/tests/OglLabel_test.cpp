@@ -55,7 +55,6 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp() override
     {
-        sofa::simulation::setSimulation(new DAGSimulation());
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering2D");
     }
 
@@ -69,7 +68,7 @@ public:
                  "  <OglLabel name='label1' color='0 0 0 0' selectContrastingColor='true' />     \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -85,7 +84,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -100,7 +99,7 @@ public:
                  "  <OglLabel name='label1' color='contrast' printLog='true'/>                   \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -115,7 +114,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -127,7 +126,7 @@ public:
                  "  <OglLabel name='label1'/>                                                    \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -137,15 +136,14 @@ public:
 
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
-        vector<string> attrnames = {
+        const vector<string> attrnames = {
             "prefix", "label", "suffix", "x", "y", "fontsize", "color",
-            "selectContrastingColor", "updateLabelEveryNbSteps",
-            "visible"};
+            "selectContrastingColor", "updateLabelEveryNbSteps"};
 
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 };

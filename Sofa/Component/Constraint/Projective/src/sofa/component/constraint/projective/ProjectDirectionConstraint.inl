@@ -140,7 +140,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
     std::sort(tmp.begin(),tmp.end());
 
     // resize the jacobian
-    unsigned numBlocks = this->mstate->getSize();
+    const unsigned numBlocks = this->mstate->getSize();
     const unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 

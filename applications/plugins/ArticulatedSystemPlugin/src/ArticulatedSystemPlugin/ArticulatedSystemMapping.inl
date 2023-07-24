@@ -137,7 +137,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
     articulationCenters = ahc->getArticulationCenters();
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
     
     const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
     if (articulationCenters.size() > xfrom.size())
@@ -182,7 +182,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     }
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -203,7 +203,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         type::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
         type::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
 
-        int process = (*ac)->articulationProcess.getValue();
+        const int process = (*ac)->articulationProcess.getValue();
 
         switch(process)
         {
@@ -371,7 +371,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         out[0] = OutDeriv();
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -423,7 +423,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     InVecDeriv OutBuf = out;
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
 
     while (ac != acBegin)
     {
@@ -489,17 +489,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
         {
             typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
 
-            //Hack to get a RowIterator, withtout default constructor
-            InRootMatrixDeriv temp;
-            typename InRootMatrixDeriv::RowIterator rootRowIt = temp.end();
-            typename InRootMatrixDeriv::RowIterator rootRowItEnd = temp.end();
-
-            if(m_fromRootModel && outRoot)
-            {
-                rootRowIt = outRoot->end();
-                rootRowItEnd = outRoot->end();
-            }
-
             while (colIt != colItEnd)
             {
                 int childIndex = colIt.index();
@@ -553,10 +542,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                     getVCenter(T) = getVCenter(valueConst);
                     getVOrientation(T) = getVOrientation(valueConst) + cross(C - posRoot, getVCenter(valueConst));
 
-                    if (rootRowIt == rootRowItEnd)
-                        rootRowIt = (*outRoot).writeLine(rowIt.index());
-
-                    rootRowIt.addCol(d_indexFromRoot.getValue(), T);
+                    (*outRoot).writeLine(rowIt.index()).addCol(d_indexFromRoot.getValue(), T);
                 }
 
                 ++colIt;

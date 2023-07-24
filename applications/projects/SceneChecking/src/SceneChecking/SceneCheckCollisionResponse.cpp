@@ -109,7 +109,7 @@ void SceneCheckCollisionResponse::checkIfContactStiffnessIsSet(const sofa::core:
 {
     type::vector<core::CollisionModel*> colModels;
     root->get<core::CollisionModel>(&colModels, core::objectmodel::BaseContext::SearchDown);
-    for (auto model : colModels)
+    for (const auto model : colModels)
     {
         if(model->isContactStiffnessSet())
         {

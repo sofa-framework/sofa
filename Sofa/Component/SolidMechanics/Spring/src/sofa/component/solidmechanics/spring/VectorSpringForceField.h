@@ -141,6 +141,8 @@ public:
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     Real getStiffness() const

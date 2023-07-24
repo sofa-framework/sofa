@@ -39,11 +39,11 @@ TEST(simulationLoad, existingFilename)
     constexpr std::string_view filename { "Demos/caduceus.scn" };
     const std::string path = helper::system::DataRepository.getFile(std::string{filename});
 
-    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    simulation::Simulation* simulation = sofa::simulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
-    const simulation::Node::SPtr groot = simulation->load(path, false, {});
+    const simulation::Node::SPtr groot = sofa::simulation::node::load(path, false, {});
     EXPECT_NE(groot, nullptr);
-    simulation->unload(groot);
+    sofa::simulation::node::unload(groot);
 }
 
 
@@ -55,11 +55,11 @@ TEST(simulationLoad, nonExistingFilename)
 
     constexpr std::string_view filename { "aFileThatDoesNotExist.scn" };
 
-    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    simulation::Simulation* simulation = simulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
-    const simulation::Node::SPtr groot = simulation->load(std::string{filename}, false, {});
+    const simulation::Node::SPtr groot = sofa::simulation::node::load(std::string{filename}, false, {});
     EXPECT_EQ(groot, nullptr);
-    simulation->unload(groot);
+    sofa::simulation::node::unload(groot);
 }
 
 }

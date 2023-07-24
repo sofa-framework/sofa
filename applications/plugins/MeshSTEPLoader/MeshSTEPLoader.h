@@ -113,7 +113,7 @@ protected:
 
 public:
     // UV point coordinates
-    Data<type::vector<sofa::type::Vector2> > _uv; ///< UV coordinates
+    Data<type::vector<sofa::type::Vec2> > _uv; ///< UV coordinates
 
     // Deflection parameter for tesselation
     Data<double> _aDeflection; ///< Deflection parameter for tesselation

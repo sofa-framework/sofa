@@ -105,7 +105,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         bool found = false;
         for (int i=0; i<cpt && !found; i++)
         {
-            sofa::core::collision::DetectionOutput* p = &outputs[i];
+            const sofa::core::collision::DetectionOutput* p = &outputs[i];
             if ((detectionOutput->point[0]-p->point[0]).norm2()+(detectionOutput->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -158,7 +158,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
         index2 = mapper2.addPointB(o->point[1], index2, r2);
-        double distance = d0 + r1 + r2;
+        const double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
         mappedContacts[i].first.second = index2;
@@ -187,10 +187,10 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
         int i = 0;
         for (auto it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            sofa::core::collision::DetectionOutput* o = *it;
-            int index1 = mappedContacts[i].first.first;
-            int index2 = mappedContacts[i].first.second;
-            double distance = mappedContacts[i].second;
+            const sofa::core::collision::DetectionOutput* o = *it;
+            const int index1 = mappedContacts[i].first.first;
+            const int index2 = mappedContacts[i].first.second;
+            const double distance = mappedContacts[i].second;
 
             // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
             //long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);

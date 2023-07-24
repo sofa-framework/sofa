@@ -76,7 +76,7 @@ namespace sofa
 using sofa::core::objectmodel::New;
 TEST(NarrowPhaseDetection_test, DetectionOutputMap)
 {
-    auto narrowPhaseDetection = New<sofa::core::collision::DummyNarrowPhaseDetection>();
+    const auto narrowPhaseDetection = New<sofa::core::collision::DummyNarrowPhaseDetection>();
 
     //Generate a collection of dummy collision models
     sofa::type::vector<core::DummyCollisionModel::SPtr> collisionModels;

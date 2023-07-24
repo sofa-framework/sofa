@@ -72,8 +72,8 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
      // Create the context for the scene
      void SetUp() override
      {
-        // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+         // Init simulation
+         simulation = sofa::simulation::getSimulation();
 
          root = simulation::getSimulation()->createNewGraph("root");
 
@@ -128,7 +128,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
      bool projectPosition(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
      {
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         // Compute the theoretical final positions
         VecCoord finalPos;
@@ -150,7 +150,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
         do
         {
             hasConverged = true;
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
             typename MechanicalObject::ReadVecCoord x = patchStruct.dofs->readPositions();
 
             // Compute dx

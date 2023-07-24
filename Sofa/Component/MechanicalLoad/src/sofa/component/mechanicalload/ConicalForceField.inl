@@ -29,6 +29,8 @@
 #include <sofa/core/MechanicalParams.h>
 #include <cassert>
 #include <iostream>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
 
 namespace sofa::component::mechanicalload
 {
@@ -154,6 +156,29 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
     datadF.endEdit();
 }
 
+template <class DataTypes>
+void ConicalForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const auto k = stiffness.getValue();
+
+    for (const auto& contact : contacts.getValue())
+    {
+        const auto localMatrix = -k * sofa::type::dyad(contact.normal, contact.normal);
+        dfdx(contact.index * Deriv::total_size, contact.index * Deriv::total_size)
+            += localMatrix;
+    }
+
+}
+
+template <class DataTypes>
+void ConicalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 {
@@ -179,11 +204,6 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     sofa::type::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
 
     vparams->drawTool()->drawCone(c, c+height, 0, b, rgbcolor);
-
-    vparams->drawTool()->disableBlending();
-    vparams->drawTool()->disableBlending();
-
-
 }
 
 template<class DataTypes>
@@ -205,7 +225,6 @@ bool ConicalForceField<DataTypes>::isIn(Coord p)
 
     if ( (acos(vecP*height/(h*distP))*180/M_PI) > coneAngle.getValue() )
     {
-
         return false;
     }
     return true;

@@ -113,7 +113,7 @@ void BaseCamera::init()
         {
             p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
 
-            Quat q  = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+            const Quat q  = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
             p_orientation.setValue(q);
         }
         else if(!p_lookAt.isSet())
@@ -122,7 +122,7 @@ void BaseCamera::init()
             if(!p_distance.isSet())
                 msg_warning() << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" ;
 
-            type::Vec3 lookat = getLookAtFromOrientation(p_position.getValue(), p_distance.getValue(), p_orientation.getValue());
+            const type::Vec3 lookat = getLookAtFromOrientation(p_position.getValue(), p_distance.getValue(), p_orientation.getValue());
             p_lookAt.setValue(lookat);
         }
         else
@@ -139,7 +139,7 @@ void BaseCamera::init()
             if(!p_distance.isSet())
                 msg_warning() << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" ;
 
-            type::Vec3 pos = getPositionFromOrientation(p_lookAt.getValue(), p_distance.getValue(), p_orientation.getValue());
+            const type::Vec3 pos = getPositionFromOrientation(p_lookAt.getValue(), p_distance.getValue(), p_orientation.getValue());
             p_position.setValue(pos);
         }
         else
@@ -159,7 +159,7 @@ void BaseCamera::reinit()
     //-> Orientation needs to be updated
     if(currentLookAt !=  p_lookAt.getValue())
     {
-        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        const Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
         p_orientation.setValue(newOrientation);
 
         currentLookAt = p_lookAt.getValue();
@@ -230,7 +230,7 @@ type::Vec3 BaseCamera::worldToCameraCoordinates(const type::Vec3& p)
 
 type::Vec3 BaseCamera::cameraToWorldTransform(const type::Vec3& v)
 {
-    Quat q = p_orientation.getValue();
+    const Quat q = p_orientation.getValue();
     return q.rotate(v) ;
 }
 
@@ -277,7 +277,7 @@ BaseCamera::Quat BaseCamera::getOrientation()
 {
     if(currentLookAt !=  p_lookAt.getValue())
     {
-        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        const Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
         p_orientation.setValue(newOrientation);
 
         currentLookAt = p_lookAt.getValue();
@@ -311,11 +311,11 @@ double BaseCamera::getHorizontalFieldOfView()
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
 
-    float screenwidth = (float)viewport[2];
-    float screenheight = (float)viewport[3];
-    float aspectRatio = screenwidth / screenheight;
-    float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
-    float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
+    const float screenwidth = (float)viewport[2];
+    const float screenheight = (float)viewport[3];
+    const float aspectRatio = screenwidth / screenheight;
+    const float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
+    const float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
     return hor_fov_radian*(180/M_PI);
 }
 
@@ -327,8 +327,8 @@ type::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     if (viewport.empty() || !vp->drawTool())
         return type::Vec3(0,0,0);
 
-    double winX = (double)x;
-    double winY = (double)viewport[3] - (double)y;
+    const double winX = (double)x;
+    const double winY = (double)viewport[3] - (double)y;
 
     double pos[3]{};
     double modelview[16];
@@ -341,7 +341,7 @@ type::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     float fwinZ = 0.0;
     vp->drawTool()->readPixels(x, int(winY), 1, 1, nullptr, &fwinZ);
 
-    double winZ = (double)fwinZ;
+    const double winZ = (double)fwinZ;
     glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
     return type::Vec3(pos[0], pos[1], pos[2]);
 }
@@ -363,13 +363,13 @@ type::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
         return type::Vec2(std::nan(""), std::nan(""));
 
     sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
-    type::Vec2 screenCoord = type::Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
+    const type::Vec2 screenCoord = type::Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
     return screenCoord + type::Vec2(viewport[0], viewport[1]);
 }
 
 void BaseCamera::getModelViewMatrix(double mat[16])
 {
-    defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     Mat3 rot = world_H_cam.inversed().getRotationMatrix();
 
     //rotation
@@ -392,14 +392,14 @@ void BaseCamera::getModelViewMatrix(double mat[16])
 
 void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
 {
-    defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
 void BaseCamera::getProjectionMatrix(double mat[16])
 {
-    double width = double(p_widthViewport.getValue());
-    double height = double(p_heightViewport.getValue());
+    const double width = double(p_widthViewport.getValue());
+    const double height = double(p_heightViewport.getValue());
     //TODO: check if orthographic or projective
 
     computeZ();
@@ -409,8 +409,8 @@ void BaseCamera::getProjectionMatrix(double mat[16])
     if (p_type.getValue().getSelectedId() == core::visual::VisualParams::PERSPECTIVE_TYPE)
     {
         double pm00, pm11;
-        double scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5);
-        double aspect = width / height;
+        const double scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5);
+        const double aspect = width / height;
 
         pm00 = scale / aspect;
         pm11 = scale;
@@ -436,17 +436,17 @@ void BaseCamera::getProjectionMatrix(double mat[16])
             }
         }
 
-        double orthoCoef = tan((M_PI / 180.0) * getFieldOfView() / 2.0);
-        double zDist = orthoCoef * fabs(worldToCameraCoordinates(getLookAt())[2]);
-        double halfWidth = zDist * xFactor;
-        double halfHeight = zDist * yFactor;
+        const double orthoCoef = tan((M_PI / 180.0) * getFieldOfView() / 2.0);
+        const double zDist = orthoCoef * fabs(worldToCameraCoordinates(getLookAt())[2]);
+        const double halfWidth = zDist * xFactor;
+        const double halfHeight = zDist * yFactor;
 
-        double left = -halfWidth;
-        double right = halfWidth;
-        double top = halfHeight;
-        double bottom = -halfHeight;
-        double zfar = currentZFar;
-        double znear = currentZNear;
+        const double left = -halfWidth;
+        const double right = halfWidth;
+        const double top = halfHeight;
+        const double bottom = -halfHeight;
+        const double zfar = currentZFar;
+        const double znear = currentZNear;
 
         mat[0] = 2 / (right-left);
         mat[1] = 0.0;
@@ -507,13 +507,13 @@ BaseCamera::Quat BaseCamera::getOrientationFromLookAt(const type::Vec3 &pos, con
 
 type::Vec3 BaseCamera::getLookAtFromOrientation(const type::Vec3 &pos, const double &distance, const BaseCamera::Quat & orientation)
 {
-    type::Vec3 zWorld = orientation.rotate(type::Vec3(0,0,-1*distance));
+    const type::Vec3 zWorld = orientation.rotate(type::Vec3(0,0,-1*distance));
     return zWorld+pos;
 }
 
 type::Vec3 BaseCamera::getPositionFromOrientation(const type::Vec3 &lookAt, const double &distance, const BaseCamera::Quat& orientation)
 {
-    type::Vec3 zWorld = orientation.rotate(type::Vec3(0,0,-1*distance));
+    const type::Vec3 zWorld = orientation.rotate(type::Vec3(0,0,-1*distance));
     return zWorld-lookAt;
 }
 
@@ -523,13 +523,13 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const type::Vec3& point
     SReal tempAngle;
     Quat orientation = this->getOrientation();
     type::Vec3& position = *p_position.beginEdit();
-    double distance = (point - p_position.getValue()).norm();
+    const double distance = (point - p_position.getValue()).norm();
 
     rotation.quatToAxis(tempAxis, tempAngle);
-    Quat tempQuat (orientation.inverse().rotate(-tempAxis ), tempAngle);
+    const Quat tempQuat (orientation.inverse().rotate(-tempAxis ), tempAngle);
     orientation = orientation*tempQuat;
 
-    type::Vec3 trans = point + orientation.rotate(type::Vec3(0,0,-distance)) - position;
+    const type::Vec3 trans = point + orientation.rotate(type::Vec3(0,0,-distance)) - position;
     position = position + trans;
 
     p_orientation.setValue(orientation);
@@ -546,12 +546,12 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
     type::Vec3& positionCam = *p_position.beginEdit();
 
     rotation.quatToAxis(tempAxis, tempAngle);
-    Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
+    const Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
 
-    defaulttype::SolidTypes<SReal>::Transform world_H_cam(positionCam, orientationCam);
-    defaulttype::SolidTypes<SReal>::Transform world_H_pivot(point, Quat());
-    defaulttype::SolidTypes<SReal>::Transform pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
-    defaulttype::SolidTypes<SReal>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
+    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(positionCam, orientationCam);
+    const defaulttype::SolidTypes<SReal>::Transform world_H_pivot(point, Quat());
+    const defaulttype::SolidTypes<SReal>::Transform pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
+    const defaulttype::SolidTypes<SReal>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
     //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
@@ -583,7 +583,7 @@ type::Vec3 BaseCamera::screenToViewportPoint(const type::Vec3& p) const
 }
 type::Vec3 BaseCamera::screenToWorldPoint(const type::Vec3& p)
 {
-    type::Vec3 vP = screenToViewportPoint(p);
+    const type::Vec3 vP = screenToViewportPoint(p);
     return viewportToWorldPoint(vP);
 }
 
@@ -593,7 +593,7 @@ type::Vec3 BaseCamera::viewportToScreenPoint(const type::Vec3& p) const
 }
 type::Vec3 BaseCamera::viewportToWorldPoint(const type::Vec3& p)
 {
-    type::Vec3 nsPosition{ p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0 };
+    const type::Vec3 nsPosition{ p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0 };
 
     sofa::type::Mat4x4d glP, glM, invertglP, invertglM;
     getOpenGLProjectionMatrix(glP.ptr());
@@ -665,16 +665,16 @@ void BaseCamera::computeZ()
         defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
 
         //double distanceCamToCenter = fabs((world_H_cam.inversed().projectPoint(sceneCenter))[2]);
-        double distanceCamToCenter = (p_position.getValue() - sceneCenter).norm();
+        const double distanceCamToCenter = (p_position.getValue() - sceneCenter).norm();
 
-        double zClippingCoeff = 5;
-        double zNearCoeff = 0.01;
+        const double zClippingCoeff = 5;
+        const double zNearCoeff = 0.01;
 
         double zNear = distanceCamToCenter - sceneRadius;
-        double zFar = (zNear + 2 * sceneRadius) * 1.1;
+        const double zFar = (zNear + 2 * sceneRadius) * 1.1;
         zNear = zNear * zNearCoeff;
 
-        double zMin = zNearCoeff * zClippingCoeff * sceneRadius;
+        const double zMin = zNearCoeff * zClippingCoeff * sceneRadius;
 
         if (zNear < zMin)
             zNear = zMin;
@@ -706,15 +706,15 @@ void BaseCamera::computeZ()
 
 void BaseCamera::fitSphere(const type::Vec3 &center, SReal radius)
 {
-    SReal fov_radian = getFieldOfView() * (M_PI/180);
-    SReal hor_fov_radian = getHorizontalFieldOfView() * (M_PI/180);
+    const SReal fov_radian = getFieldOfView() * (M_PI/180);
+    const SReal hor_fov_radian = getHorizontalFieldOfView() * (M_PI/180);
     const SReal yview = radius / sin(fov_radian/2.0);
     const SReal xview = radius / sin(hor_fov_radian/2.0);
-    SReal distance = std::max(xview,yview);
+    const SReal distance = std::max(xview,yview);
     const Quat& orientation = p_orientation.getValue();
-    type::Vec3 viewDirection = orientation.rotate(type::Vec3(0.0, 0.0, -1.0));
+    const type::Vec3 viewDirection = orientation.rotate(type::Vec3(0.0, 0.0, -1.0));
 
-    type::Vec3 newPos = center - viewDirection*distance;
+    const type::Vec3 newPos = center - viewDirection*distance;
     p_position.setValue(newPos);
 }
 
@@ -722,7 +722,7 @@ void BaseCamera::fitBoundingBox(const type::Vec3 &min, const type::Vec3 &max)
 {
     SReal diameter = std::max(fabs(max[1]-min[1]), fabs(max[0]-min[0]));
     diameter = std::max((SReal)fabs(max[2]-min[2]), diameter);
-    type::Vec3 center = (min + max)*0.5;
+    const type::Vec3 center = (min + max)*0.5;
 
     fitSphere(center,0.5*diameter);
 
@@ -769,13 +769,13 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
         p_orientation.setValue(q);
 
         //Distance
-        double coeff = 3.0;
-        double dist = (minBBox - sceneCenter).norm() * coeff;
+        const double coeff = 3.0;
+        const double dist = (minBBox - sceneCenter).norm() * coeff;
         p_distance.setValue(dist);
         currentDistance = dist;
 
         //Position
-        type::Vec3 pos = currentLookAt + zAxis*dist;
+        const type::Vec3 pos = currentLookAt + zAxis*dist;
         p_position.setValue(pos);
     }
 
@@ -823,7 +823,7 @@ bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::B
         TiXmlNode* node = root->FirstChild( data.getName().c_str() );
         if(node)
         {
-            TiXmlElement* element = node->ToElement();
+            const TiXmlElement* element = node->ToElement();
             if(element)
             {
                 const char* attrValue;
@@ -831,7 +831,7 @@ bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::B
                 if(attrValue)
                 {
                     std::string m_string; m_string.assign(attrValue);
-                    bool retvalue = data.read(m_string);
+                    const bool retvalue = data.read(m_string);
                     if(!retvalue)
                         msg_error(c) << "Unreadable value for " << data.getName() << " field.";
                     return retvalue;
@@ -868,7 +868,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
         result = false;
     }
 
-    TiXmlHandle hDoc(&doc);
+    const TiXmlHandle hDoc(&doc);
     TiXmlElement* root;
 
     root = hDoc.FirstChildElement().ToElement();
@@ -936,7 +936,7 @@ void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
 
 void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
 {
-    auto dt = (vparams->drawTool());
+    const auto dt = (vparams->drawTool());
     dt->setPolygonMode(0, true);
     dt->setLightingEnabled(false);
 

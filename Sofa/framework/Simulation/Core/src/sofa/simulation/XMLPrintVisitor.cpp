@@ -54,8 +54,8 @@ void XMLPrintVisitor::processObject(T obj)
     for (int i=0; i<level; i++)
         m_out << "\t";
 
-    std::string classname = obj->getClassName();
-    std::string templatename = obj->getTemplateName();
+    const std::string classname = obj->getClassName();
+    const std::string templatename = obj->getTemplateName();
 
     m_out << "<" << xmlencode(classname);
     if (!templatename.empty())

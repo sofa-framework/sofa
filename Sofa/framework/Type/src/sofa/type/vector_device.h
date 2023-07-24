@@ -187,7 +187,7 @@ public:
         DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << std::endl);
         DEBUG_OUT_V(std::cout << v.id << " : " << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << ". operator= param " << id << std::endl);
 
-        Size newSize = v.size();
+        const Size newSize = v.size();
         clear();
 
         fastResize(newSize);
@@ -658,7 +658,7 @@ public:
     {
         iterator p0 = begin();
         Size i = position - p0;
-        Size n = size();
+        const Size n = size();
         if (i >= n) return end();
         for (Size j = i + 1; j < n; ++j)
             *(p0 + (j - 1)) = *(p0 + j);
@@ -669,7 +669,7 @@ public:
     iterator insert(iterator position, const T& x)
     {
         Size i = position - begin();
-        Size n = size();
+        const Size n = size();
         if (i > n) i = n;
         resize(n + 1);
         iterator p0 = begin();

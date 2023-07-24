@@ -113,8 +113,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);
@@ -133,6 +133,16 @@ public:
     using Inherit2::getMechModel2;
 
 protected:
+
+     virtual type::vector<std::string> getInteractionIdentifiers() override final
+     {
+            type::vector<std::string> ids = getPairInteractionIdentifiers();
+            ids.push_back("Pair");
+            return ids;
+     }
+
+     virtual type::vector<std::string> getPairInteractionIdentifiers(){ return {}; }
+
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::linearalgebra::BaseVector* lambda);
 };

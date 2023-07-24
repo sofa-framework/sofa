@@ -291,8 +291,8 @@ struct MutationListener_test : public BaseTest
 
     void test_addChildWithDescendency()
     {
-        DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
+        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -313,8 +313,8 @@ struct MutationListener_test : public BaseTest
 
     void test_removeChildWithDescendency()
     {
-        DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
+        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -336,8 +336,8 @@ struct MutationListener_test : public BaseTest
 
     void test_moveChildWithDescendency()
     {
-        DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
+        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -348,7 +348,7 @@ struct MutationListener_test : public BaseTest
         obj2->parse(&bod2);
         node2->addObject(obj2);
         root->addChild(node1);
-        Node::SPtr node3 = root->createChild("node3");
+        const Node::SPtr node3 = root->createChild("node3");
         listener.clearLog();
 
         node3->moveChild(node1, root);
@@ -362,14 +362,14 @@ struct MutationListener_test : public BaseTest
 
     void test_moveChildWithDescendencyAndMultipleParents()
     {
-        DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
-        DAGNode::SPtr node3 = sofa::core::objectmodel::New<DAGNode>("node3");
-        DAGNode::SPtr node4 = sofa::core::objectmodel::New<DAGNode>("node4");
-        DAGNode::SPtr node5 = sofa::core::objectmodel::New<DAGNode>("node5");
-        DAGNode::SPtr node6 = sofa::core::objectmodel::New<DAGNode>("node6");
-        DAGNode::SPtr node7 = sofa::core::objectmodel::New<DAGNode>("node7");
-        DAGNode::SPtr node8 = sofa::core::objectmodel::New<DAGNode>("node8");
+        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
+        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const DAGNode::SPtr node3 = sofa::core::objectmodel::New<DAGNode>("node3");
+        const DAGNode::SPtr node4 = sofa::core::objectmodel::New<DAGNode>("node4");
+        const DAGNode::SPtr node5 = sofa::core::objectmodel::New<DAGNode>("node5");
+        const DAGNode::SPtr node6 = sofa::core::objectmodel::New<DAGNode>("node6");
+        const DAGNode::SPtr node7 = sofa::core::objectmodel::New<DAGNode>("node7");
+        const DAGNode::SPtr node8 = sofa::core::objectmodel::New<DAGNode>("node8");
 
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -413,9 +413,7 @@ struct MutationListener_test : public BaseTest
 
     void SetUp() override
     {
-        sofa::simulation::Simulation* simu;
-        sofa::simulation::setSimulation(
-                    simu = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         root = simu->createNewGraph("root");
         root->addListener(&listener);

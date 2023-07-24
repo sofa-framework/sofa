@@ -31,25 +31,6 @@ using namespace sofa::defaulttype;
 using type::vector;
 using type::fixed_array;
 
-
-BaseMeshTopology::EdgesInTriangle BaseMeshTopology::InvalidEdgesInTriangles;
-BaseMeshTopology::EdgesInQuad     BaseMeshTopology::InvalidEdgesInQuad;
-BaseMeshTopology::TrianglesInTetrahedron BaseMeshTopology::InvalidTrianglesInTetrahedron;
-BaseMeshTopology::EdgesInTetrahedron BaseMeshTopology::InvalidEdgesInTetrahedron;
-BaseMeshTopology::QuadsInHexahedron BaseMeshTopology::InvalidQuadsInHexahedron;
-BaseMeshTopology::EdgesInHexahedron BaseMeshTopology::InvalidEdgesInHexahedron;
-
-int initStaticStructures()
-{
-    BaseMeshTopology::InvalidEdgesInTriangles.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInQuad.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidQuadsInHexahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInHexahedron.assign(sofa::InvalidID);
-    return 0;
-}
-
 BaseMeshTopology::BaseMeshTopology()
     : fileTopology(initData(&fileTopology,"filename","Filename of the mesh"))
 {
@@ -341,28 +322,28 @@ void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
     msg_error() << "beginChange() not supported.";
-    std::list<const TopologyChange *>::const_iterator l;
+    const std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
 {
     msg_error() << "endChange() not supported.";
-    std::list<const TopologyChange *>::const_iterator l;
+    const std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
     msg_error() << "beginStateChange() not supported.";
-    std::list<const TopologyChange *>::const_iterator l;
+    const std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
     msg_error() << "endStateChange() not supported.";
-    std::list<const TopologyChange *>::const_iterator l;
+    const std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 

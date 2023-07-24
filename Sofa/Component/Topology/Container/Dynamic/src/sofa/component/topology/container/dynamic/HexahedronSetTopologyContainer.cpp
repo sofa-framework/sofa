@@ -63,7 +63,7 @@ void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d,
 
 void HexahedronSetTopologyContainer::init()
 {
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     if (d_initPoints.isSet())
     {
@@ -76,7 +76,7 @@ void HexahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<8; ++j)
             {
-                HexahedronID a = m_hexahedron[i][j];
+                const HexahedronID a = m_hexahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -123,7 +123,7 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
     // create a temporary map to find redundant edges
     std::map<Edge,EdgeID> edgeMap;
     helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
     for(size_t i=0; i<m_hexahedron.size(); ++i)
@@ -158,7 +158,7 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
         return;
 
     m_edgesInHexahedron.resize( getNumberOfHexahedra());
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -167,8 +167,8 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
         // adding edge i in the edge shell of both points
         for(PointID j=0; j<12; ++j)
         {
-            EdgeID edgeIndex = getEdgeIndex(t[edgesInHexahedronArray[j][0]],
-                    t[edgesInHexahedronArray[j][1]]);
+            const EdgeID edgeIndex = getEdgeIndex(t[edgesInHexahedronArray[j][0]],
+                                                  t[edgesInHexahedronArray[j][1]]);
             m_edgesInHexahedron[i][j] = edgeIndex;
         }
     }
@@ -190,7 +190,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
     // create a temporary map to find redundant quads
     std::map<Quad, QuadID> quadMap;
     helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = d_quad;
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -371,7 +371,7 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
         return;
 
     m_quadsInHexahedron.resize( getNumberOfHexahedra());
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i = 0; i < getNumberOfHexahedra(); ++i)
     {
@@ -415,7 +415,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
         this->setNbPoints(Size(d_initPoints.getValue().size()));
 
     m_hexahedraAroundVertex.resize( getNbPoints() );
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -618,12 +618,12 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
     assert(_quadID<6);
     assert(_edgeID<12);
 
-    EdgeID the_edgeID = this->getEdgesInHexahedron(_hexaID)[_edgeID];
+    const EdgeID the_edgeID = this->getEdgesInHexahedron(_hexaID)[_edgeID];
     const QuadsAroundEdge QaroundE = this->getQuadsAroundEdge(the_edgeID);
 
     const QuadsInHexahedron QinH = this->getQuadsInHexahedron(_hexaID);
-    QuadID the_quadID = QinH[_quadID];
-    QuadID nextQuad = 0;
+    const QuadID the_quadID = QinH[_quadID];
+    const QuadID nextQuad = 0;
 
     if (QaroundE.size() < 2)
     {
@@ -641,7 +641,7 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
     {
         for (size_t i=0; i<QaroundE.size(); ++i)
         {
-            int res = this->getQuadIndexInHexahedron(QinH, QaroundE[i]);
+            const int res = this->getQuadIndexInHexahedron(QinH, QaroundE[i]);
             if (res != -1 && QaroundE[i] != the_quadID)
                 return (unsigned int)res;
         }
@@ -818,7 +818,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
     }
 
 	bool ret = true;
-	helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 	if (hasHexahedraAroundVertex())
 	{
 		for (size_t i = 0; i < m_hexahedraAroundVertex.size(); ++i)
@@ -826,7 +826,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 			const sofa::type::vector<HexahedronID> &tvs = m_hexahedraAroundVertex[i];
 			for (size_t j = 0; j < tvs.size(); ++j)
 			{
-				bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0] == i)
+                const bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0] == i)
 					|| (m_hexahedron[tvs[j]][1] == i)
 					|| (m_hexahedron[tvs[j]][2] == i)
 					|| (m_hexahedron[tvs[j]][3] == i)
@@ -851,7 +851,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 			const sofa::type::vector<HexahedronID> &tes = m_hexahedraAroundEdge[i];
 			for (size_t j = 0; j < tes.size(); ++j)
 			{
-				bool check_hexa_edge_shell = (m_edgesInHexahedron[tes[j]][0] == i)
+                const bool check_hexa_edge_shell = (m_edgesInHexahedron[tes[j]][0] == i)
 					|| (m_edgesInHexahedron[tes[j]][1] == i)
 					|| (m_edgesInHexahedron[tes[j]][2] == i)
 					|| (m_edgesInHexahedron[tes[j]][3] == i)
@@ -879,7 +879,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 			const sofa::type::vector<HexahedronID> &tes = m_hexahedraAroundQuad[i];
 			for (size_t j = 0; j < tes.size(); ++j)
 			{
-				bool check_hexa_quad_shell = (m_quadsInHexahedron[tes[j]][0] == i)
+                const bool check_hexa_quad_shell = (m_quadsInHexahedron[tes[j]][0] == i)
 					|| (m_quadsInHexahedron[tes[j]][1] == i)
 					|| (m_quadsInHexahedron[tes[j]][2] == i)
 					|| (m_quadsInHexahedron[tes[j]][3] == i)
@@ -905,8 +905,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 
 bool HexahedronSetTopologyContainer::checkConnexity()
 {
-
-    size_t nbr = this->getNbHexahedra();
+    const size_t nbr = this->getNbHexahedra();
 
     if (nbr == 0)
     {
@@ -914,7 +913,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
         return false;
     }
 
-    VecHexaID elemAll = this->getConnectedElement(0);
+    const VecHexaID elemAll = this->getConnectedElement(0);
 
     if (elemAll.size() != nbr)
     {
@@ -928,7 +927,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
 Size HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    auto nbr = this->getNbHexahedra();
+    const auto nbr = this->getNbHexahedra();
 
     if (nbr == 0)
     {
@@ -973,7 +972,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
     VecHexaID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
-    size_t nbr = this->getNbHexahedra();
+    const size_t nbr = this->getNbHexahedra();
 
     // init algo
     elemAll.push_back(elem);
@@ -1196,7 +1195,7 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
-    for (auto topoHandler : hexaTopologyHandlerList)
+    for (const auto topoHandler : hexaTopologyHandlerList)
     {
         topoHandler->setDirtyValue();
         msg_info() << "Hexahedron Topology Set dirty engine: " << topoHandler->getName();
@@ -1209,7 +1208,7 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
-    for (auto topoHandler : hexaTopologyHandlerList)
+    for (const auto topoHandler : hexaTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

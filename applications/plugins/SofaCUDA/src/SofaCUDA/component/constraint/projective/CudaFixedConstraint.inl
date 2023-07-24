@@ -322,7 +322,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = *m->data;
+    const Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCuda1f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -334,8 +334,8 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Mai
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
-{    
-    Data& data = *m->data;
+{
+    const Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));        
     else if (data.minIndex != sofa::InvalidID)
@@ -348,7 +348,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Mai
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = *m->data;
+    const Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCuda3f1_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex != sofa::InvalidID)
@@ -360,7 +360,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = *m->data;
+    const Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCudaRigid3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex != sofa::InvalidID)

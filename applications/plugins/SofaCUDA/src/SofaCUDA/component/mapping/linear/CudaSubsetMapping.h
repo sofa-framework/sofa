@@ -39,7 +39,7 @@ public:
     template<class VecIndex>
     void init(int insize, const VecIndex& map)
     {
-        unsigned int n = map.size();
+        const unsigned int n = map.size();
         std::vector<int> nout;
         if (n==0) return;
         if (n==1)
@@ -61,7 +61,7 @@ public:
         }
         else
         {
-            int nbloc = (insize+BSIZE-1)/BSIZE;
+            const int nbloc = (insize+BSIZE-1)/BSIZE;
             std::cout << "CudaSubsetMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
             mapT.resize(nbloc*(BSIZE*maxNOut));
             for (unsigned int i=0; i<mapT.size(); i++)
@@ -71,8 +71,8 @@ public:
             for (unsigned int i=0; i<map.size(); i++)
             {
                 int index = map[i];
-                int num = nout[index]++;
-                int b = (index / BSIZE); index -= b*BSIZE;
+                const int num = nout[index]++;
+                const int b = (index / BSIZE); index -= b*BSIZE;
                 mapT[(maxNOut*b+num)*BSIZE+index] = i;
             }
         }

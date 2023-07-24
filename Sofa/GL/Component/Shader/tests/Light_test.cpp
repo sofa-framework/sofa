@@ -11,7 +11,6 @@ using sofa::testing::BaseTest;
 using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
@@ -53,8 +52,6 @@ public:
  {
          sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
          sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void checkSpotLightValidAttributes();
@@ -77,14 +74,14 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -102,7 +99,7 @@ void TestLight::checkPositionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -114,7 +111,7 @@ void TestLight::checkPositionalLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -125,7 +122,7 @@ void TestLight::checkPositionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -143,7 +140,7 @@ void TestLight::checkDirectionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -155,7 +152,7 @@ void TestLight::checkDirectionalLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -166,16 +163,13 @@ void TestLight::checkDirectionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkSpotLightValidAttributes()
 {
     EXPECT_MSG_NOEMIT(Warning, Error) ;
-
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -187,7 +181,7 @@ void TestLight::checkSpotLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -199,7 +193,7 @@ void TestLight::checkSpotLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -214,7 +208,7 @@ void TestLight::checkSpotLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -236,7 +230,7 @@ TEST_F(TestLight, checkSpotLightValidAttributes)
 
 TEST_F(TestLight, checkLightMissingLightManager)
 {
-    std::vector<std::string> typeoflight={"PositionalLight", "DirectionalLight", "SpotLight"} ;
+    const std::vector<std::string> typeoflight={"PositionalLight", "DirectionalLight", "SpotLight"} ;
     for(auto& lighttype : typeoflight)
         checkLightMissingLightManager(lighttype);
 }

@@ -58,7 +58,7 @@ void MergeROIs::parseFields ( const std::map<std::string,std::string*>& str )
 
 void MergeROIs::doUpdate()
 {
-    size_t nb = d_nbROIs.getValue();
+    const size_t nb = d_nbROIs.getValue();
     f_indices.resize(nb);
     if(!nb) return;
 

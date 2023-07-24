@@ -36,8 +36,8 @@ Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, con
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
 
-    helper::ReadAccessor< DataVecCoord > x = vx;
-    helper::ReadAccessor< DataVecDeriv > v = vv;
+    const helper::ReadAccessor< DataVecCoord > x = vx;
+    const helper::ReadAccessor< DataVecDeriv > v = vv;
 
     Vec6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )

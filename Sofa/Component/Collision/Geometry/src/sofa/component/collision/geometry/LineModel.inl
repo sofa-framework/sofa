@@ -111,11 +111,11 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
     if (bmt)
     {
         std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
+        const std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
 
         while( itBegin != itEnd )
         {
-            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            const core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
@@ -275,7 +275,7 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
     core::topology::BaseMeshTopology *bmt = l_topology.get();
     if (bmt)
     {
-        int revision = bmt->getRevision();
+        const int revision = bmt->getRevision();
         if (revision == meshRevision)
             return;
 
@@ -327,7 +327,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
 
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
         if (m_displayFreePosition.getValue())
@@ -377,8 +377,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
     if (model2 == this)
     {
         // if point in common, return false:
-        sofa::Index p21 = elems[index2].p[0];
-        sofa::Index p22 = elems[index2].p[1];
+        const sofa::Index p21 = elems[index2].p[0];
+        const sofa::Index p22 = elems[index2].p[1];
 
         if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
             return false;
@@ -390,7 +390,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 
         for (sofa::Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            sofa::Index e11 = EdgesAroundVertex11[i1];
+            const sofa::Index e11 = EdgesAroundVertex11[i1];
             sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
@@ -406,7 +406,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 
         for (sofa::Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            sofa::Index e11 = EdgesAroundVertex12[i1];
+            const sofa::Index e11 = EdgesAroundVertex12[i1];
             sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {

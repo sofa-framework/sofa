@@ -84,7 +84,7 @@ void RayCollisionModel::init()
 
 int RayCollisionModel::addRay(const Vec3& origin, const Vec3& direction, SReal length)
 {
-    int i = size;
+    const int i = size;
     resize(i);
     Ray r = getRay(i);
     r.setOrigin(origin);
@@ -97,7 +97,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::In
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
-    Ray r(this, index);
+    const Ray r(this, index);
     const Vec3& p1 = r.origin();
     const Vec3 p2 = p1 + r.direction()*r.l();
 
@@ -162,7 +162,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
 
 void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
 {
-    Vec3 d(dx,dy,dz);
+    const Vec3 d(dx,dy,dz);
     for (int i = 0; i < getNbRay(); i++)
     {
         Ray ray = getRay(i);

@@ -173,13 +173,13 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 {
     using namespace sofa::type;
     using namespace sofa::defaulttype;
-    sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
-    SReal h2 = height(i)/2.0;
+    const sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    const SReal h2 = height(i)/2.0;
 
     Vec3 p1(center(i));
     Vec3 p2(center(i));
 
-    Vec3 ax = axis(i);
+    const Vec3 ax = axis(i);
 
     p1 += h2 * ax;
     p2 -= h2 * ax;
@@ -190,7 +190,7 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
+    const auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
     if (df.getShowCollisionModels())
     {
 

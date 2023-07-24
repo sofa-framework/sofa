@@ -203,7 +203,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
     if (showObject.getValue())
     {
         const float scale = showObjectScale.getValue();
-        helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
         const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {

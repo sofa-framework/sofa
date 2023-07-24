@@ -44,7 +44,6 @@ struct DAG_test : public BaseTest
 {
     DAG_test()
     {
-        sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
     }
 
 
@@ -152,7 +151,7 @@ Expected output: RAABBR
      */
     void traverse_simple_tree()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
 
         root->setName("R");
         root->createChild("A");
@@ -177,11 +176,12 @@ Expected output: RABCCBAR
      */
     void traverse_simple_diamond()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+
         root->setName("R");
-        Node::SPtr A = root->createChild("A");
-        Node::SPtr B = root->createChild("B");
-        Node::SPtr C = A->createChild("C");
+        const Node::SPtr A = root->createChild("A");
+        const Node::SPtr B = root->createChild("B");
+        const Node::SPtr C = A->createChild("C");
         B->addChild(C);
 
         traverse_test( root, "RACCABBR", "RACCABCCBR", "RACCABCCBR", "RABC" );
@@ -205,13 +205,13 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_complex()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
-        Node::SPtr A = root->createChild("A");
-        Node::SPtr B = root->createChild("B");
-        Node::SPtr C = A->createChild("C");
+        const Node::SPtr A = root->createChild("A");
+        const Node::SPtr B = root->createChild("B");
+        const Node::SPtr C = A->createChild("C");
         B->addChild(C);
-        Node::SPtr D = C->createChild("D");
+        const Node::SPtr D = C->createChild("D");
         root->addChild(D);
         Node::SPtr E = D->createChild("E");
 
@@ -233,14 +233,14 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
-        Node::SPtr A = root->createChild("A");
-        Node::SPtr B = root->createChild("B");
-        Node::SPtr C = root->createChild("C");
-        Node::SPtr D = A->createChild("D");
+        const Node::SPtr A = root->createChild("A");
+        const Node::SPtr B = root->createChild("B");
+        const Node::SPtr C = root->createChild("C");
+        const Node::SPtr D = A->createChild("D");
         B->addChild(D);
-        Node::SPtr E = B->createChild("E");
+        const Node::SPtr E = B->createChild("E");
         C->addChild(E);
         Node::SPtr F = D->createChild("F");
         Node::SPtr G = E->createChild("G");
@@ -265,20 +265,20 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex2()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
-        Node::SPtr A = root->createChild("A");
-        Node::SPtr B = root->createChild("B");
-        Node::SPtr C = root->createChild("C");
-        Node::SPtr D = root->createChild("D");
-        Node::SPtr E = root->createChild("E");
-        Node::SPtr F = A->createChild("F");
+        const Node::SPtr A = root->createChild("A");
+        const Node::SPtr B = root->createChild("B");
+        const Node::SPtr C = root->createChild("C");
+        const Node::SPtr D = root->createChild("D");
+        const Node::SPtr E = root->createChild("E");
+        const Node::SPtr F = A->createChild("F");
         B->addChild(F);
         C->addChild(F);
         D->addChild(F);
         E->addChild(F);
-        Node::SPtr G = F->createChild("G");
-        Node::SPtr H = G->createChild("H");
+        const Node::SPtr G = F->createChild("G");
+        const Node::SPtr H = G->createChild("H");
         F->addChild(H);
 
         traverse_test( root, "RAFGHHGFABBCCDDEER",
@@ -293,7 +293,7 @@ Expected output: RABCDEEDCBAR
     {
         void *foundObj = node->getObject(classid(Dummy), searchpath);
         ASSERT_TRUE( foundObj!=nullptr );
-        Dummy* dummyObj = reinterpret_cast<Dummy*>(foundObj);
+        const Dummy* dummyObj = reinterpret_cast<Dummy*>(foundObj);
         ASSERT_TRUE( dummyObj!=nullptr );
         EXPECT_STREQ( objpath.c_str(), dummyObj->getPathName().c_str() );
     }
@@ -302,14 +302,14 @@ Expected output: RABCDEEDCBAR
 
     void getObject()
     {
-        Node::SPtr A = Simulation::theSimulation->createNewGraph("");
+        const Node::SPtr A = sofa::simulation::getSimulation()->createNewGraph("");
         A->setName("A");
 
-        Node::SPtr B = A->createChild("B");
-        Node::SPtr C = A->createChild("C");
-        Node::SPtr D = B->createChild("D");
+        const Node::SPtr B = A->createChild("B");
+        const Node::SPtr C = A->createChild("C");
+        const Node::SPtr D = B->createChild("D");
         C->addChild(D);
-        Node::SPtr E = D->createChild("E");
+        const Node::SPtr E = D->createChild("E");
 
 /**
         A
@@ -321,24 +321,24 @@ Expected output: RABCDEEDCBAR
         E
 */
 
-        Dummy::SPtr dummyA = sofa::core::objectmodel::New<Dummy>("obj");
+        const Dummy::SPtr dummyA = sofa::core::objectmodel::New<Dummy>("obj");
         A->addObject(dummyA);
-        Dummy::SPtr dummyA2 = sofa::core::objectmodel::New<Dummy>("obj2");
+        const Dummy::SPtr dummyA2 = sofa::core::objectmodel::New<Dummy>("obj2");
         A->addObject(dummyA2);
-        Dummy::SPtr dummyB = sofa::core::objectmodel::New<Dummy>("obj");
+        const Dummy::SPtr dummyB = sofa::core::objectmodel::New<Dummy>("obj");
         B->addObject(dummyB);
-        Dummy::SPtr dummyC = sofa::core::objectmodel::New<Dummy>("obj");
+        const Dummy::SPtr dummyC = sofa::core::objectmodel::New<Dummy>("obj");
         C->addObject(dummyC);
-        Dummy::SPtr dummyD = sofa::core::objectmodel::New<Dummy>("obj");
+        const Dummy::SPtr dummyD = sofa::core::objectmodel::New<Dummy>("obj");
         D->addObject(dummyD);
-        Dummy::SPtr dummyE = sofa::core::objectmodel::New<Dummy>("obj");
+        const Dummy::SPtr dummyE = sofa::core::objectmodel::New<Dummy>("obj");
         E->addObject(dummyE);
 
 
 
         // by path
         {
-        void* foundObj = A->getObject(classid(Dummy), "/inexisting");
+            const void* foundObj = A->getObject(classid(Dummy), "/inexisting");
         ASSERT_TRUE( foundObj==nullptr );
         }
 

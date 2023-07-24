@@ -169,6 +169,15 @@ public:
     /// Method to remove a contact using point @param indices and id of buffer: @sa m1 (resp. @sa 2m) if @param objectId is equal to 0 (resp. to 1)
     void removeContact(int objectId, SubsetIndices indices);
 
+    virtual type::vector<std::string> getBilateralInteractionIdentifiers() {return {};}
+
+    virtual type::vector<std::string> getPairInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getBilateralInteractionIdentifiers();
+        ids.push_back("Bilateral");
+        return ids;
+    }
+
 private:
     void unspecializedInit() ;
 

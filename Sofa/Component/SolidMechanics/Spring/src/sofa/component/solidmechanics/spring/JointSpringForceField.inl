@@ -358,6 +358,12 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -368,7 +374,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     vparams->drawTool()->setLightingEnabled(true);
 
-    bool external = (this->mstate1!=this->mstate2);
+    const bool external = (this->mstate1!=this->mstate2);
     const type::vector<Spring>& springs = d_springs.getValue();
 
     type::vector<Vec3> vertices;

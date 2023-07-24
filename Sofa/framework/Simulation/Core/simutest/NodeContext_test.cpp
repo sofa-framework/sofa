@@ -84,7 +84,7 @@ public:
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         /// So there is 4 base object in the scene.
-        for(auto& m : node->getNodeObjects() ) { SOFA_UNUSED(m); }
+        for(const auto& m : node->getNodeObjects() ) { SOFA_UNUSED(m); }
         ASSERT_EQ( node->getNodeObjects().size(), (unsigned int)3 ) ;
     }
 
@@ -129,7 +129,7 @@ public:
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         /// So there is 4 base object in the scene.
-        for(auto& m : node->getTreeObjects() ) { SOFA_UNUSED(m); }
+        for(const auto& m : node->getTreeObjects() ) { SOFA_UNUSED(m); }
         ASSERT_EQ( node->getTreeObjects().size(), (unsigned int)5 ) ;
     }
 };

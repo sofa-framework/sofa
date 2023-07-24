@@ -83,7 +83,7 @@ void PipelineImpl::init()
                             "More details on the collision pipeline can be found at "
                             "[sofadoc::Collision](https://www.sofa-framework.org/community/doc/simulation-principles/multi-model-representation/collision/).";
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
-        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
+        const sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
         intersectionMethod = dynamic_cast<Intersection*>(obj.get());
     }
 }
@@ -95,7 +95,7 @@ void PipelineImpl::reset()
 
 void PipelineImpl::computeCollisionReset()
 {
-    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
+    const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
     if (broadPhaseDetection!=nullptr && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
@@ -119,7 +119,7 @@ void PipelineImpl::computeCollisionDetection()
 
 void PipelineImpl::computeCollisionResponse()
 {
-    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
+    const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
     sofa::helper::AdvancedTimer::stepBegin("CollisionResponse");
     doCollisionResponse();
