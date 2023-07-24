@@ -104,7 +104,7 @@ public:
 
     /// Assign a value to this %Data from a string representation.
     /// \return true on success.
-    virtual bool read(const std::string& value);
+    virtual bool read(const std::string& value) = 0;
 
     /// Print the value of this %Data to a stream.
     virtual void printValue(std::ostream&) const = 0;
@@ -327,9 +327,6 @@ private:
     virtual void* doBeginEditVoidPtr() = 0;
     virtual void doEndEditVoidPtr() = 0;
     virtual void doOnUpdate() {}
-
-    virtual void doClear() = 0;
-    virtual void doRead(std::istringstream& stream) = 0;
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

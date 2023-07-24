@@ -40,15 +40,13 @@ public:
     const void* getValueVoidPtr() const {return nullptr;}
     void* beginEditVoidPtr(){return nullptr;}
     void* beginWriteOnlyVoidPtr(){return nullptr;}
-    void endEditVoidPtr() {}
+    void endEditVoidPtr(){}
     bool doIsExactSameDataType(const BaseData* ) override{ return false; }
     bool doCopyValueFrom(const BaseData* ) override{ return false; }
     bool doSetValueFromLink(const BaseData* ) override{ return false; }
     const void* doGetValueVoidPtr() const override { return nullptr; }
     void* doBeginEditVoidPtr() override { return nullptr; }
-    void doEndEditVoidPtr() override {}
-    void doClear() override {}
-    void doRead(std::istringstream&) override {}
+    void doEndEditVoidPtr() override { }
 };
 
 class MyObject : public BaseObject
