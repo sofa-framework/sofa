@@ -339,3 +339,23 @@ TEST(FileSystemTest, stripDirectory)
     EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi"));
     EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi/"));
 }
+
+TEST(FileSystemTest, append)
+{
+    EXPECT_EQ(FileSystem::append("C:/", "folder"), "C:/folder");
+    EXPECT_EQ(FileSystem::append("C:", "folder"), "C:/folder");
+    EXPECT_EQ(FileSystem::append("C:\\", "folder"), "C:/folder");
+
+    EXPECT_EQ(FileSystem::append("", "folder"), "/folder");
+
+    EXPECT_EQ(FileSystem::append("a/b/c/d", ""), "a/b/c/d");
+    EXPECT_EQ(FileSystem::append("a/b/c/d", "/folder"), "a/b/c/d/folder");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "/folder"), "a/b/c/d/folder");
+    EXPECT_EQ(FileSystem::append("a/b/c/d//", "/folder"), "a/b/c/d/folder");
+
+    EXPECT_EQ(FileSystem::append("a/b/c/d", "e", "f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "/g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "/e", "/f", "/g"), "a/b/c/d/e/f/g");
+}

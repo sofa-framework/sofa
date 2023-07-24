@@ -117,8 +117,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
             if (quadMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getQuadBaryCoords()[j][0];
-            double fy = topoMap->getQuadBaryCoords()[j][1];
+            const double fx = topoMap->getQuadBaryCoords()[j][0];
+            const double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
                     + in[ quads[i][1] ] * ((  fx) * (1-fy))
                     + in[ quads[i][2] ] * ((1-fx) * (  fy))
@@ -146,9 +146,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
             if (hexaMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getHexaBaryCoords()[j][0];
-            double fy = topoMap->getHexaBaryCoords()[j][1];
-            double fz = topoMap->getHexaBaryCoords()[j][2];
+            const double fx = topoMap->getHexaBaryCoords()[j][0];
+            const double fy = topoMap->getHexaBaryCoords()[j][1];
+            const double fz = topoMap->getHexaBaryCoords()[j][2];
             out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
                     + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
 					+ in[ hexahedra[i][3] ] * ((1-fx) * (  fy) * (1-fz))
@@ -225,8 +225,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
             if (quadMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getQuadBaryCoords()[j][0];
-            double fy = topoMap->getQuadBaryCoords()[j][1];
+            const double fx = topoMap->getQuadBaryCoords()[j][0];
+            const double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
                     + in[ quads[i][1] ] * ((  fx) * (1-fy))
                     + in[ quads[i][2] ] * ((1-fx) * (  fy))
@@ -254,9 +254,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
             if (hexaMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getHexaBaryCoords()[j][0];
-            double fy = topoMap->getHexaBaryCoords()[j][1];
-            double fz = topoMap->getHexaBaryCoords()[j][2];
+            const double fx = topoMap->getHexaBaryCoords()[j][0];
+            const double fy = topoMap->getHexaBaryCoords()[j][1];
+            const double fz = topoMap->getHexaBaryCoords()[j][2];
             out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
                     + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
 					+ in[ hexahedra[i][3] ] * ((1-fx) * (  fy) * (1-fz))
@@ -333,8 +333,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
             if (quadMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getQuadBaryCoords()[j][0];
-            double fy = topoMap->getQuadBaryCoords()[j][1];
+            const double fx = topoMap->getQuadBaryCoords()[j][0];
+            const double fy = topoMap->getQuadBaryCoords()[j][1];
             out[ quads[i][0] ] += in[quadMap[i][j]] * ((1-fx) * (1-fy));
             out[ quads[i][1] ] += in[quadMap[i][j]] * ((  fx) * (1-fy));
             out[ quads[i][2] ] += in[quadMap[i][j]] * ((1-fx) * (  fy));
@@ -362,9 +362,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
             if (hexaMap[i][j] == InvalidID) continue;
-            double fx = topoMap->getHexaBaryCoords()[j][0];
-            double fy = topoMap->getHexaBaryCoords()[j][1];
-            double fz = topoMap->getHexaBaryCoords()[j][2];
+            const double fx = topoMap->getHexaBaryCoords()[j][0];
+            const double fy = topoMap->getHexaBaryCoords()[j][1];
+            const double fz = topoMap->getHexaBaryCoords()[j][2];
             out[ hexahedra[i][0] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (1-fz));
             out[ hexahedra[i][1] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (1-fz));
 			out[ hexahedra[i][3] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (1-fz));
@@ -415,7 +415,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 const Index indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
                 std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
-                Index indexIn = indexUIn;
+                const Index indexIn = indexUIn;
 
                 switch (source.first)
                 {

@@ -39,7 +39,7 @@ void AttachBodyPerformer<DataTypes>::start()
         clear();
         return;
     }
-    BodyPicked picked=this->interactor->getBodyPicked();
+    const BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
 
     if (!start_partial(picked)) return; //template specialized code is here
@@ -74,7 +74,7 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
     if (m_forcefield)
     {
         core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
-        core::visual::DisplayFlags backup = vp->displayFlags();
+        const core::visual::DisplayFlags backup = vp->displayFlags();
         vp->displayFlags() = flags;
         m_forcefield->draw(vp);
         vp->displayFlags() = backup;
@@ -131,7 +131,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
             msg_warning(this->interactor) << "Problem with Mouse Mapper creation " ;
             return false;
         }
-        std::string name = "contactMouse";
+        const std::string name = "contactMouse";
         mstateCollision = mapper->createMapping(name.c_str());
         mapper->resize(1);
 
@@ -145,10 +145,9 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
-
-            simulation::Node *mappedNode=(simulation::Node *) mstateCollision->getContext();
-            simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
-            core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
+            const simulation::Node *mappedNode=(simulation::Node *) mstateCollision->getContext();
+            const simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
+            const core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
             const core::objectmodel::TagSet &tags=mainDof->getTags();
             for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
             {

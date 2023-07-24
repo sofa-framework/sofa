@@ -99,7 +99,7 @@ void Light::setID(const GLint& id)
 
 void Light::init()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     LightManager* lm = context->core::objectmodel::BaseContext::get<LightManager>();
 
     if(lm)
@@ -228,7 +228,7 @@ void Light::drawLight()
     if (b_needUpdate)
         updateVisual();
     glLightf(GL_LIGHT0+m_lightID, GL_SPOT_CUTOFF, 180.0);
-    GLfloat c[4] = { (GLfloat)d_color.getValue()[0], (GLfloat)d_color.getValue()[1], (GLfloat)d_color.getValue()[2], 1.0 };
+    const GLfloat c[4] = { (GLfloat)d_color.getValue()[0], (GLfloat)d_color.getValue()[1], (GLfloat)d_color.getValue()[2], 1.0 };
     glLightfv(GL_LIGHT0+m_lightID, GL_AMBIENT, c);
     glLightfv(GL_LIGHT0+m_lightID, GL_DIFFUSE, c);
     glLightfv(GL_LIGHT0+m_lightID, GL_SPECULAR, c);
@@ -353,8 +353,8 @@ void Light::computeShadowMapSize()
     // Current viewport
     GLint		viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    GLint windowWidth = viewport[2];
-    GLint windowHeight = viewport[3];
+    const GLint windowWidth = viewport[2];
+    const GLint windowHeight = viewport[3];
 
     if (d_shadowTextureSize.getValue() <= 0)
     {
@@ -434,7 +434,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
     //1-compute bounding box
     sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
     const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-    Vec3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
+    const Vec3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
     Vec3 posLight = center;
 
     posLight[0] = sceneBBox.maxBBox()[0] - sceneBBox.minBBox()[0] * 0.5;
@@ -444,7 +444,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
 
     //2-compute orientation to fit the bbox from light's pov
     // bounding box in light space = frustrum
-    double epsilon = 0.0000001;
+    const double epsilon = 0.0000001;
     Vec3 zAxis = -direction;
     zAxis.normalize();
     Vec3 yAxis(0, 1, 0);
@@ -532,10 +532,10 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
 void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar )
 {
     const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-    Vec3 minBBox = sceneBBox.minBBox();
-    Vec3 maxBBox = sceneBBox.maxBBox();
+    const Vec3 minBBox = sceneBBox.minBBox();
+    const Vec3 maxBBox = sceneBBox.maxBBox();
 
-    float maxLength = float((maxBBox - minBBox).norm());
+    const float maxLength = float((maxBBox - minBBox).norm());
 
     left = maxLength * -0.5f;
     right = maxLength * 0.5f;
@@ -638,10 +638,9 @@ void PositionalLight::drawLight()
 }
 
 void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
-{
-    sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::getSimulation()->computeBBox(sofa::simulation::node::getNodeFrom(this->getContext()), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+{  
+    const auto& bbox = this->getContext()->getRootContext()->f_bbox.getValue();
+    float scale = (float)((bbox.maxBBox() - bbox.minBBox()).norm());
     scale *= 0.01f;
 
     GLUquadric* quad = gluNewQuadric();
@@ -689,7 +688,7 @@ void SpotLight::drawLight()
     type::Vec3 d = d_direction.getValue();
     if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();
-    GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
+    const GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
     if (d_fixed.getValue())
     {
         glMatrixMode(GL_PROJECTION);
@@ -719,8 +718,8 @@ void SpotLight::drawSource(const core::visual::VisualParams* vparams)
     computeOpenGLProjectionMatrix(m_lightMatProj, float(m_shadowTexWidth), float(m_shadowTexHeight), 2 * d_cutoff.getValue(), zNear, zFar);
     computeOpenGLModelViewMatrix(m_lightMatModelview, d_position.getValue(), dir);
 
-    float baseLength = zFar * tanf(float(this->d_cutoff.getValue() * M_PI / 180));
-    float tipLength = (baseLength*0.5f) * (zNear/ zFar);
+    const float baseLength = zFar * tanf(float(this->d_cutoff.getValue() * M_PI / 180));
+    const float tipLength = (baseLength*0.5f) * (zNear/ zFar);
 
     Vec3 direction;
     if(d_lookat.getValue())
@@ -729,8 +728,8 @@ void SpotLight::drawSource(const core::visual::VisualParams* vparams)
         direction = this->d_direction.getValue();
 
     direction.normalize();
-    Vec3 base = this->getPosition() + direction*zFar;
-    Vec3 tip = this->getPosition() + direction*zNear;
+    const Vec3 base = this->getPosition() + direction*zFar;
+    const Vec3 tip = this->getPosition() + direction*zNear;
     std::vector<Vec3> centers;
     centers.push_back(this->getPosition());
     vparams->drawTool()->setPolygonMode(0, true);
@@ -772,7 +771,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     if (d_lookat.getValue())
         dir -= d_position.getValue();
 
-    double epsilon = 0.0000001;
+    const double epsilon = 0.0000001;
     Vec3 zAxis = -dir;
     zAxis.normalize();
     Vec3 yAxis(0, 1, 0);
@@ -804,7 +803,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
                         (corner & 2) ? sceneBBox.minBBox().y() : sceneBBox.maxBBox().y(),
                         (corner & 4) ? sceneBBox.minBBox().z() : sceneBBox.maxBBox().z());
             p = q.rotate(p - pos);
-            float z = float (-p[2]);
+            const float z = float (-p[2]);
             if (z < zNear) zNear = z;
             if (z > zFar)  zFar = z;
         }
@@ -872,7 +871,7 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
 
 void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vec3 &position, const sofa::type::Vec3 &direction)
 {
-    double epsilon = 0.0000001;
+    const double epsilon = 0.0000001;
     Vec3 zAxis = -direction;
     zAxis.normalize();
     Vec3 yAxis(0, 1, 0);
@@ -927,11 +926,11 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::
 
 void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar)
 {
-    float scale = 1.f / tanf(float(fov * M_PI / 180 * 0.5));
-    float aspect = width / height;
+    const float scale = 1.f / tanf(float(fov * M_PI / 180 * 0.5));
+    const float aspect = width / height;
 
-    float pm00 = scale / aspect;
-    float pm11 = scale;
+    const float pm00 = scale / aspect;
+    const float pm11 = scale;
 
     mat[0] = pm00; // FocalX
     mat[4] = 0.0;

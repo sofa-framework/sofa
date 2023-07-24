@@ -219,8 +219,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 }
 
 template <class DataTypes>
-template <class DataDeriv>
-void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
+void PatchTestMovementConstraint<DataTypes>::projectResponseImpl(VecDeriv& dx)
 {
     const SetIndexArray & indices = d_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -232,17 +231,17 @@ void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::Mechan
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseImpl(res.wref());
 }
-
-
 
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseImpl(res.wref());
 }
 
 template <class DataTypes>

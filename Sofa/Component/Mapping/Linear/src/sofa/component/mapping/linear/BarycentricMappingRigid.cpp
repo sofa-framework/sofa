@@ -59,8 +59,8 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
     if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
     typedef sofa::core::behavior::MechanicalState<defaulttype::Vec3Types> InMechanicalStateT;
     InMechanicalStateT* inState;
@@ -95,7 +95,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
+                        const Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
 
                         if ( index != sofa::InvalidID )
                         {
@@ -138,7 +138,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
-                unsigned int cubeId = hexahedra[i];
+                const unsigned int cubeId = hexahedra[i];
                 for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
@@ -168,7 +168,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             Index lastCubeId = nbHexahedra-1;
             for ( std::size_t i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
-                Index cubeId = hexahedra[i];
+                const Index cubeId = hexahedra[i];
                 for ( std::size_t j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )

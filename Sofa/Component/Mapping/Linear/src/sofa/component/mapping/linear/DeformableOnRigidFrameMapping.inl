@@ -470,13 +470,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
-    core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
+    const core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
     if(from == nullptr ) {
         msg_error() << __FUNCTION__ << ": could not cast topology to BaseMeshTopology";
         return;
     }
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )

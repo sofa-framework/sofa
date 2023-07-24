@@ -44,7 +44,7 @@ bool SphereGridTopology_test::SphereGridCreation()
         EXPECT_MSG_NOEMIT(Warning) ;
         EXPECT_MSG_NOEMIT(Error) ;
 
-        SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(5, 5, 5);
+        const SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(5, 5, 5);
         EXPECT_NE(sphereGrid, nullptr);
         EXPECT_EQ(sphereGrid->d_radius.getValue(), 1.0);
     }
@@ -69,12 +69,12 @@ bool SphereGridTopology_test::SphereGridSize()
     int nx = 5;
     int ny = 5;
     int nz = 5;
-    SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(nx, ny, nz);
+    const SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(nx, ny, nz);
     sphereGrid->init();
 
     EXPECT_EQ(sphereGrid->getNbPoints(), nx*ny*nz);
 
-    int nbHexa = (nx-1)*(ny-1)*(nz-1);
+    const int nbHexa = (nx-1)*(ny-1)*(nz-1);
     EXPECT_EQ(sphereGrid->getNbHexahedra(), nbHexa);
 
     return true;
@@ -88,11 +88,11 @@ bool SphereGridTopology_test::SphereGridPosition()
     int nx = 6;
     int ny = 6;
     int nz = 5;
-    SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(nx, ny, nz);
+    const SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(nx, ny, nz);
     sphereGrid->init();
 
-    int sphereSize = nx*ny*nz;
-    int halfsphereSize = std::floor(sphereSize*0.5);
+    const int sphereSize = nx*ny*nz;
+    const int halfsphereSize = std::floor(sphereSize*0.5);
 
     for (int i=0; i<halfsphereSize; ++i){
         sofa::type::Vec3 p0 = sphereGrid->getPoint(i);

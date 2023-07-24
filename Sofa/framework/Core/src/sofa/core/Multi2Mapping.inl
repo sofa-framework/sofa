@@ -88,8 +88,8 @@ type::vector<BaseState*> Multi2Mapping<In1,In2,Out>::getFrom()
 {
     const VecFromModels1& models1 = getFromModels1();
     const VecFromModels2& models2 = getFromModels2();
-    size_t size1 = models1.size();
-    size_t size2 = models2.size();
+    const size_t size1 = models1.size();
+    const size_t size2 = models2.size();
     type::vector<BaseState*> baseModels(size1+size2);
     for (size_t i=0; i<size1; ++i) baseModels[      i] = models1[i].ptr.get();
     for (size_t i=0; i<size2; ++i) baseModels[size1+i] = models2[i].ptr.get();
@@ -100,7 +100,7 @@ template< class In1, class In2, class Out >
 type::vector<BaseState* > Multi2Mapping<In1,In2,Out>::getTo()
 {
     const VecToModels& models = getToModels();
-    size_t size = models.size();
+    const size_t size = models.size();
     type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;

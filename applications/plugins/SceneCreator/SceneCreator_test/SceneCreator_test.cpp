@@ -100,10 +100,10 @@ bool SceneCreator_test::createCubeFailed()
     EXPECT_EQ(cube, nullptr);
 
     // Cube with bad grid size
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     cube = sofa::modeling::addRigidCube(root, "cubeFIX_3", Vec3Types::Deriv(0, 5, 5),
                                         Vec3Types::Deriv(0, 5, 0));
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cube, nullptr);
 
@@ -113,12 +113,12 @@ bool SceneCreator_test::createCubeFailed()
 bool SceneCreator_test::createCubeSuccess()
 {
     // Create cube
-    SReal poissonRatio = 0.45;
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    Node::SPtr node = sofa::modeling::addCube(root, "cubeFEM",
-                                              Vec3Types::Deriv(5, 5, 5),
-                                              10, 1000, poissonRatio,
-                                              Vec3Types::Deriv(0, 5, 0));
+    const SReal poissonRatio = 0.45;
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr node = sofa::modeling::addCube(root, "cubeFEM",
+                                                    Vec3Types::Deriv(5, 5, 5),
+                                                    10, 1000, poissonRatio,
+                                                    Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -143,7 +143,7 @@ bool SceneCreator_test::createCubeSuccess()
     node->get<TetrahedronFEMForceField3>(&FEMs, BaseContext::SearchDown);
     EXPECT_EQ(grids.size(), 1u);
 
-    TetrahedronFEMForceField3* fem = FEMs[0];
+    const TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
 
     return true;
@@ -151,10 +151,10 @@ bool SceneCreator_test::createCubeSuccess()
 
 bool SceneCreator_test::createRigidCubeSuccess()
 {
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    Node::SPtr node = sofa::modeling::addRigidCube(root, "cubeFIX",
-                                                   Vec3Types::Deriv(5, 5, 5),
-                                                   Vec3Types::Deriv(0, 5, 0));
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr node = sofa::modeling::addRigidCube(root, "cubeFIX",
+                                                         Vec3Types::Deriv(5, 5, 5),
+                                                         Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -197,13 +197,13 @@ bool SceneCreator_test::createCylinderFailed()
     EXPECT_EQ(cyl, nullptr);
 
     // Cylinder with bad grid size
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     cyl = sofa::modeling::addRigidCylinder(root, "cylinderFIX_3",
                                            Vec3Types::Deriv(0, 5, 5),
                                            Vec3Types::Deriv(1, 0, 0), 0.5, 3.0,
                                            Vec3Types::Deriv(0, 5, 0));
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cyl, nullptr);
     return true;
@@ -212,13 +212,13 @@ bool SceneCreator_test::createCylinderFailed()
 bool SceneCreator_test::createCylinderSuccess()
 {
     // Create cylinder
-    SReal poissonRatio = 0.45;
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    Node::SPtr node = sofa::modeling::addCylinder(root, "cylinderFEM_1",
-                                                  Vec3Types::Deriv(5, 5, 5),
-                                                  Vec3Types::Deriv(0, 1, 0), 1.0, 3.0,
-                                                  10, 1000, 0.45,
-                                                  Vec3Types::Deriv(0, 5, 0));
+    const SReal poissonRatio = 0.45;
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr node = sofa::modeling::addCylinder(root, "cylinderFEM_1",
+                                                        Vec3Types::Deriv(5, 5, 5),
+                                                        Vec3Types::Deriv(0, 1, 0), 1.0, 3.0,
+                                                        10, 1000, 0.45,
+                                                        Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -243,7 +243,7 @@ bool SceneCreator_test::createCylinderSuccess()
     node->get<TetrahedronFEMForceField3>(&FEMs, BaseContext::SearchDown);
     EXPECT_EQ(grids.size(), 1u);
 
-    TetrahedronFEMForceField3* fem = FEMs[0];
+    const TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
 
     return true;
@@ -251,12 +251,12 @@ bool SceneCreator_test::createCylinderSuccess()
 
 bool SceneCreator_test::createRigidCylinderSuccess()
 {
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    Node::SPtr node = sofa::modeling::addRigidCylinder(root, "cylinderFIX_3",
-                                                       Vec3Types::Deriv(5, 5, 5),
-                                                       Vec3Types::Deriv(1, 0, 0),
-                                                       0.5, 3.0,
-                                                       Vec3Types::Deriv(0, 5, 0));
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr node = sofa::modeling::addRigidCylinder(root, "cylinderFIX_3",
+                                                             Vec3Types::Deriv(5, 5, 5),
+                                                             Vec3Types::Deriv(1, 0, 0),
+                                                             0.5, 3.0,
+                                                             Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -297,11 +297,11 @@ bool SceneCreator_test::createSphereFailed()
     EXPECT_EQ(cyl, nullptr);
 
     // Sphere with bad grid size
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     cyl = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(0, 5, 5),
                                             sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
                                             sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cyl, nullptr);
 
@@ -311,12 +311,12 @@ bool SceneCreator_test::createSphereFailed()
 bool SceneCreator_test::createSphereSuccess()
 {
     // Create Sphere
-    SReal poissonRatio = 0.45;
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    sofa::simulation::Node::SPtr node = sofa::modeling::addSphere(root, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
-                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
-                                                                    10, 1000, 0.45,
-                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+    const SReal poissonRatio = 0.45;
+    const sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const sofa::simulation::Node::SPtr node = sofa::modeling::addSphere(root, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                                                        sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
+                                                                        10, 1000, 0.45,
+                                                                        sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -341,7 +341,7 @@ bool SceneCreator_test::createSphereSuccess()
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
     EXPECT_EQ(grids.size(), (size_t)1);
 
-    TetrahedronFEMForceField3* fem = FEMs[0];
+    const TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
 
     return true;
@@ -349,10 +349,10 @@ bool SceneCreator_test::createSphereSuccess()
 
 bool SceneCreator_test::createRigidSphereSuccess()
 {
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    sofa::simulation::Node::SPtr node = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
-                                                                         sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
-                                                                         sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+    const sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const sofa::simulation::Node::SPtr node = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                                                             sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
+                                                                             sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
 
     EXPECT_NE(node, nullptr);
 
@@ -395,14 +395,14 @@ bool SceneCreator_test::createPlaneFailed()
     EXPECT_EQ(plane, nullptr);
 
     // Plane with bad grid size
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     plane = sofa::modeling::addRigidPlane(root, "Floor",
                                           Vec3Types::Deriv(50, 0, 50),
                                           Vec3Types::Deriv(0, 0, 0),
                                           Vec3Types::Deriv(0, 0, 0),
                                           Vec3Types::Deriv(40, 0, 40));
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(plane, nullptr);
 
@@ -417,12 +417,12 @@ bool SceneCreator_test::createPlaneSuccess()
 
 bool SceneCreator_test::createRigidPlaneSuccess()
 {
-    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    Node::SPtr node = sofa::modeling::addRigidPlane(root, "Floor",
-                                                    Vec3Types::Deriv(50, 1, 50),
-                                                    Vec3Types::Deriv(0, 0, 0),
-                                                    Vec3Types::Deriv(0, 0, 0),
-                                                    Vec3Types::Deriv(40, 0, 40));
+    const Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const Node::SPtr node = sofa::modeling::addRigidPlane(root, "Floor",
+                                                          Vec3Types::Deriv(50, 1, 50),
+                                                          Vec3Types::Deriv(0, 0, 0),
+                                                          Vec3Types::Deriv(0, 0, 0),
+                                                          Vec3Types::Deriv(40, 0, 40));
 
     EXPECT_NE(node, nullptr);
 

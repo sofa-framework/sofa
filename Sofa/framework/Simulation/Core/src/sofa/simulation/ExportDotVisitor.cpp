@@ -213,18 +213,18 @@ std::string ExportDotVisitor::getName(core::objectmodel::Base* o, std::string pr
     if (!o) return "";
     if (names.count(o)>0)
         return names[o];
-    std::string oname = o->getName();
+    const std::string oname = o->getName();
     std::string name = prefix;
     for (unsigned i = 0; i<oname.length(); i++)
     {
-        char c = oname[i];
+        const char c = oname[i];
         static const char *chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         if (strchr(chars, c))
             name += c;
     }
     if (name.length() > prefix.length())
         name += '_';
-    int index = nextIndex[name]++;
+    const int index = nextIndex[name]++;
     if (index)
     {
         char str[16]={"azertyazertyaze"};
@@ -305,7 +305,7 @@ void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObje
             if (display(model1))
             {
                 *out << getName(model1) << " -> " << name << " [style=\"dashed\",arrowhead=\"none\"";
-                core::BaseMapping* bmm = obj->toBaseMapping();
+                const core::BaseMapping* bmm = obj->toBaseMapping();
                 if (bmm)
                 {
                     if(bmm->isMechanical())
@@ -330,7 +330,7 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(Node* node)
         if (labelNodeClass)
         {
             std::string name = helper::gettypename(typeid(*node));
-            std::string::size_type pos = name.find('<');
+            const std::string::size_type pos = name.find('<');
             if (pos != std::string::npos)
                 name.erase(pos);
             *out << name;

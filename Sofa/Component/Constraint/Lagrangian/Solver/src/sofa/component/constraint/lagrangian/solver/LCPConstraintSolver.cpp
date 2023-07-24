@@ -67,7 +67,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
     helper::ScopedAdvancedTimer resetContactForceTimer("resetContactForce");
 
-    for (auto cc : constraintCorrections)
+    for (const auto cc : constraintCorrections)
     {
         cc->resetContactForce();
     }
@@ -107,11 +107,10 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
     if (build_lcp.getValue())
     {
-
-        SReal _tol = tol.getValue();
-        int _maxIt = maxIt.getValue();
-        SReal _minW = minW.getValue();
-        SReal _maxF = maxF.getValue();
+        const SReal _tol = tol.getValue();
+        const int _maxIt = maxIt.getValue();
+        const SReal _minW = minW.getValue();
+        const SReal _maxF = maxF.getValue();
 
         if (_mu > 0.0)
         {
@@ -173,8 +172,8 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
             _result->resize(_numConstraints);
 
-            SReal _tol = tol.getValue();
-            int _maxIt = maxIt.getValue();
+            const SReal _tol = tol.getValue();
+            const int _maxIt = maxIt.getValue();
 
             build_LCP();
 
@@ -449,8 +448,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    SReal criterion=0.0;
-    int numContacts = _numConstraints/3;
+    const SReal criterion=0.0;
+    const int numContacts = _numConstraints/3;
 
     hierarchy_contact_group.resize(1);
     hierarchy_constraint_group.resize(1);
@@ -770,7 +769,7 @@ void LCPConstraintSolver::computeInitialGuess()
     const auto _mu = mu.getValue();
     const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
     const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
+    const int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
 
     for (int c=0; c<numContact; c++)
     {
@@ -797,7 +796,7 @@ void LCPConstraintSolver::computeInitialGuess()
         {
             std::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(constraintIds[info.offsetId + c]);
             if (it == buf.persistentToConstraintIdMap.end()) continue;
-            int prevIndex = it->second;
+            const int prevIndex = it->second;
             if (prevIndex >= 0 && prevIndex+nbl <= (int) _previousForces.size())
             {
                 for (int l=0; l<nbl; ++l)
@@ -829,8 +828,8 @@ void LCPConstraintSolver::keepContactForcesValue()
         if (!info.parent) continue;
         if (!info.hasId) continue;
         ConstraintBlockBuf& buf = _previousConstraints[info.parent];
-        int c0 = info.const0;
-        int nbl = info.nbLines;
+        const int c0 = info.const0;
+        const int nbl = info.nbLines;
         buf.nbLines = nbl;
         for (int c = 0; c < info.nbGroups; ++c)
         {
@@ -1126,12 +1125,12 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
         return 0;
     }
 
-    int numContacts =  _numConstraints;
+    const int numContacts =  _numConstraints;
     int it,c1;
 
     // data for iterative procedure
-    SReal _tol = tol.getValue();
-    int _maxIt = maxIt.getValue();
+    const SReal _tol = tol.getValue();
+    const int _maxIt = maxIt.getValue();
 
     // indirection of the sequence of contact
     std::list<unsigned int> contact_sequence;
@@ -1160,7 +1159,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (auto cc : constraintCorrections)
+        for (const auto cc : constraintCorrections)
         {
             if(cc->hasConstraintNumber(c1))
             {
@@ -1275,7 +1274,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
             if (fn < 0) fn = 0;
             error += fabs(W11[c1] * (fn - fn0));
 
-            bool update = (fn0 != 0.0 || fn != 0.0);
+            const bool update = (fn0 != 0.0 || fn != 0.0);
 
             if(update)
             {
@@ -1339,9 +1338,9 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     unsigned int showLevels = (unsigned int) this->showLevels.getValue();
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
     if (!showLevels) return;
-    SReal showCellWidth = this->showCellWidth.getValue();
-    type::Vec3 showTranslation = this->showTranslation.getValue();
-    type::Vec3 showLevelTranslation = this->showLevelTranslation.getValue();
+    const SReal showCellWidth = this->showCellWidth.getValue();
+    const type::Vec3 showTranslation = this->showTranslation.getValue();
+    const type::Vec3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
@@ -1401,13 +1400,13 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 ConstDeriv dirFineN  = constraintDirections[info.offsetDirection + 3*c + 0];
                 ConstDeriv dirFineT1 = constraintDirections[info.offsetDirection + 3*c + 1];
                 ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
-                ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
+                const ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
 
                 type::Vec3 centerFine = showTranslation + showLevelTranslation*level;
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
-                SReal radius = sqrt(area*0.5);
+                const SReal radius = sqrt(area*0.5);
 
-                unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
+                const unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
                 color.i = (int) colors[colid + 0];
                 vparams->drawTool()->drawArrow(
                     centerFine,centerFine+dirFineN*radius*2.0f,

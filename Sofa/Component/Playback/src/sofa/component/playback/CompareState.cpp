@@ -154,7 +154,7 @@ void CompareState::processCompareState()
 
             totalError_X +=currentError;
 
-            double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->mmodel->getSize();
             if (dsize != 0.0)
                 dofError_X +=currentError/dsize;
         }
@@ -164,7 +164,7 @@ void CompareState::processCompareState()
             currentError = mmodel->compareVec(core::VecId::velocity(), str);
             totalError_V +=currentError;
 
-            double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->mmodel->getSize();
             if (dsize != 0.0)
                 dofError_V += currentError/dsize;
         }
@@ -304,7 +304,7 @@ simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation:
 
 void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {

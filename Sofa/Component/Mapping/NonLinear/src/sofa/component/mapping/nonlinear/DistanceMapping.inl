@@ -29,7 +29,7 @@
 #include <sofa/core/ConstraintParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>

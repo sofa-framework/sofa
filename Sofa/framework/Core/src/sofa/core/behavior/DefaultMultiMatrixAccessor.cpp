@@ -75,7 +75,7 @@ void DefaultMultiMatrixAccessor::setGlobalMatrix(linearalgebra::BaseMatrix* matr
 
 void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
-    auto dim = mstate->getMatrixSize();
+    const auto dim = mstate->getMatrixSize();
     realStateOffsets[mstate] = globalDim;
     globalDim += dim;
 
@@ -147,7 +147,7 @@ DefaultMultiMatrixAccessor::Index DefaultMultiMatrixAccessor::getGlobalDimension
 
 int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
-    auto it = realStateOffsets.find(mstate);
+    const auto it = realStateOffsets.find(mstate);
     if (it != realStateOffsets.end())
         return it->second;
     return -1;
@@ -156,7 +156,7 @@ int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::Base
 DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
     MatrixRef r;
-    auto itRealState = realStateOffsets.find(mstate);
+    const auto itRealState = realStateOffsets.find(mstate);
 
     if (itRealState != realStateOffsets.end()) //case where mechanical state is a non mapped state
     {
@@ -168,7 +168,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     }
     else //case where mechanical state is a mapped state
     {
-        std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
+        const std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
         if (itmapped != mappedMatrices.end()) // this mapped state and its matrix has been already added and created
         {
             r.matrix = itmapped->second;
@@ -206,7 +206,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     InteractionMatrixRef r2;
     if (mstate1 == mstate2)// case where state1 == state2, interaction matrix is on the diagonal stiffness bloc
     {
-        MatrixRef r = diagonalStiffnessBloc.find(mstate1)->second;
+        const MatrixRef r = diagonalStiffnessBloc.find(mstate1)->second;
         r2.matrix = r.matrix;
         r2.offRow = r.offset;
         r2.offCol = r.offset;
@@ -228,9 +228,9 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     }
     else// case where state1 # state2
     {
-        std::pair<const BaseMechanicalState*,const BaseMechanicalState*> pairMS = std::make_pair(mstate1,mstate2);
+        const std::pair<const BaseMechanicalState*,const BaseMechanicalState*> pairMS = std::make_pair(mstate1,mstate2);
 
-        std::map< std::pair<const BaseMechanicalState*,const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.find(pairMS);
+        const std::map< std::pair<const BaseMechanicalState*,const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.find(pairMS);
         if (it != interactionStiffnessBloc.end())// the interaction is already added
         {
             if(it->second.matrix != nullptr)
@@ -256,8 +256,8 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         }
         else// the interaction is not added, we need to creat it and its matrix
         {
-            auto it1 = realStateOffsets.find(mstate1);
-            auto it2 = realStateOffsets.find(mstate2);
+            const auto it1 = realStateOffsets.find(mstate1);
+            const auto it2 = realStateOffsets.find(mstate2);
 
             if(it1 != realStateOffsets.end() && it2 != realStateOffsets.end())// case where all of two ms are real DOF (non-mapped)
             {
@@ -359,8 +359,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             //=================================
             //           K11 += Jt * K22 * J
             //=================================
-            MatrixRef K1 = this->getMatrix(instate);
-            MatrixRef K2 = this->getMatrix(outstate);
+            const MatrixRef K1 = this->getMatrix(instate);
+            const MatrixRef K2 = this->getMatrix(outstate);
 
             const auto offset1  = K1.offset;
             const auto offset2  = K2.offset;
@@ -438,8 +438,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
             if(interactionList[i].first == outstate)
             {
-                InteractionMatrixRef I_32 = this->getMatrix( outstate , interactionList[i].second);
-                InteractionMatrixRef I_12 = this->getMatrix( instate  , interactionList[i].second);
+                const InteractionMatrixRef I_32 = this->getMatrix( outstate , interactionList[i].second);
+                const InteractionMatrixRef I_12 = this->getMatrix( instate  , interactionList[i].second);
                 //===========================
                 //          I_12 += Jt * I_32
                 //===========================
@@ -487,8 +487,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
             if(interactionList[i].second == outstate)
             {
-                InteractionMatrixRef I_21 = this->getMatrix(interactionList[i].first,instate);
-                InteractionMatrixRef I_23 = this->getMatrix(interactionList[i].first,outstate);
+                const InteractionMatrixRef I_21 = this->getMatrix(interactionList[i].first,instate);
+                const InteractionMatrixRef I_23 = this->getMatrix(interactionList[i].first,outstate);
                 //=========================================
                 //          I_21 +=      I_23 * J
                 //=========================================

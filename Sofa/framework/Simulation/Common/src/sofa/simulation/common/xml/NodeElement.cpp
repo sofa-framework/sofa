@@ -49,7 +49,7 @@ bool NodeElement::setParent(BaseElement* newParent)
 
 bool NodeElement::initNode()
 {
-    core::objectmodel::BaseNode::SPtr obj = Factory::CreateObject(this->getType(), this);
+    const core::objectmodel::BaseNode::SPtr obj = Factory::CreateObject(this->getType(), this);
     if (obj != nullptr)
     {
         setObject(obj);
@@ -70,7 +70,7 @@ bool NodeElement::initNode()
 
 bool NodeElement::init()
 {
-    bool res = Element<core::objectmodel::BaseNode>::init();
+    const bool res = Element<core::objectmodel::BaseNode>::init();
 
     /// send the errors created by the object in this node in the node's log
     for (unsigned int i=0; i<errors.size(); ++i)

@@ -86,8 +86,8 @@ template <class DataTypes>
 void DilateEngine<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > in = d_inputX;
-    ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
-    ReadAccessor<Data<SeqQuads> > quads = d_quads;
+    const ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
+    const ReadAccessor<Data<SeqQuads> > quads = d_quads;
     const Real distance = d_distance.getValue();
     const Real minThickness = d_minThickness.getValue();
 
@@ -139,7 +139,7 @@ void DilateEngine<DataTypes>::doUpdate()
             octree.octreeRoot->traceAll(origin, direction, results);
             for (unsigned int i=0; i<results.size(); ++i)
             {
-                int t = results[i].tid;
+                const int t = results[i].tid;
                 if ((int)alltri[t][0] == ip || (int)alltri[t][1] == ip || (int)alltri[t][2] == ip) continue;
                 Real dist = results[i].t;
                 if (dist > 0 && (dist < mindist || mindist < 0))

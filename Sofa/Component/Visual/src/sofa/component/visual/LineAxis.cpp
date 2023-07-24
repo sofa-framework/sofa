@@ -39,7 +39,6 @@ LineAxis::LineAxis()
     : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
     , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
     , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
@@ -63,13 +62,10 @@ void LineAxis::updateVisual()
     m_drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
+void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
     const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if(m_drawX)

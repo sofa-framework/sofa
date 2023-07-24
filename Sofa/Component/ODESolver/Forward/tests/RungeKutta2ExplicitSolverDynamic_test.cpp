@@ -104,9 +104,9 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
         for(int i=1;i< size+1; i++)
         {
             // At time t + h/2
-            double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
-            double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
-            double acc    = (-K*(newPos-z0)-m*g)/m;
+            const double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
+            const double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
+            const double acc    = (-K*(newPos-z0)-m*g)/m;
 
             // At time t + h
             positionsArray.push_back(positionsArray[i-1]+h*newVel);
@@ -126,7 +126,7 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate

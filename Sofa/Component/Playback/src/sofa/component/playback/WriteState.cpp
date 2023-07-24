@@ -82,7 +82,7 @@ simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::N
 
 void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)

@@ -124,7 +124,7 @@ class ContactMapper<collision::geometry::RigidSphereModel,TVec3Types > : public 
     public:
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
-            collision::geometry::RigidSphere e(this->model, index);
+            const collision::geometry::RigidSphere e(this->model, index);
             const typename collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
             const type::Quat<SReal> & ori = rCenter.getOrientation();

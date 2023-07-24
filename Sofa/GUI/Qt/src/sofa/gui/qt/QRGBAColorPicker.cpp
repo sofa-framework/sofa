@@ -118,8 +118,8 @@ void QRGBAColorPicker::setColor(const Vec4f& color)
 
 void QRGBAColorPicker::redrawColorButton()
 {
-    int w=_colorButton->width();
-    int h=_colorButton->height();
+    const int w=_colorButton->width();
+    const int h=_colorButton->height();
 
     QPixmap *pix=new QPixmap(25,20);
     pix->fill(QColor(qRed(_rgba),
@@ -146,7 +146,7 @@ void QRGBAColorPicker::raiseQColorDialog()
     if( qcolor.isValid() )
 #endif
     {
-        QRgb rgba=qcolor.rgb();
+        const QRgb rgba=qcolor.rgb();
         r=qRed(rgba);
         g=qGreen(rgba);
         b=qBlue(rgba);

@@ -70,7 +70,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         using sofa::defaulttype::Rigid3Mass;
         using sofa::simulation::Node;
 
-        Node *node = dynamic_cast< Node * >(getContext());
+        const Node *node = dynamic_cast< Node * >(getContext());
         Rigid3Mass massValue;
 
         if (defaultCompliance.isSet())
@@ -85,7 +85,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
             {
                 core::behavior::BaseMass *m = node->mass;
 
-                if (UniformMass< Rigid3Types > *um = dynamic_cast< UniformMass< Rigid3Types >* > (m))
+                if (const UniformMass< Rigid3Types > *um = dynamic_cast< UniformMass< Rigid3Types >* > (m))
                 {
                     massValue = um->getVertexMass();
                     usedComp.push_back(odeFactor / massValue.mass);

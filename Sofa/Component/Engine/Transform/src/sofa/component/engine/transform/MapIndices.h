@@ -65,7 +65,7 @@ public:
     template<class V>
     void applyIndex(V& v, const MapIndex& m)
     {
-        typename MapIndex::const_iterator it = m.find(v);
+        const typename MapIndex::const_iterator it = m.find(v);
         if (it != m.end())
             v = it->second;
     }

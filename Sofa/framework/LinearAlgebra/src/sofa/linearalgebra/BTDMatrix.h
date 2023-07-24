@@ -201,8 +201,8 @@ public:
         FullVector<Real2> res(rowSize());
         for (Index bi=0; bi<nBRow; ++bi)
         {
-            Index b0 = (bi > 0) ? 0 : 1;
-            Index b1 = ((bi < nBRow - 1) ? 3 : 2);
+            const Index b0 = (bi > 0) ? 0 : 1;
+            const Index b1 = ((bi < nBRow - 1) ? 3 : 2);
             for (Index i=0; i<BSIZE; ++i)
             {
                 Real r = 0;

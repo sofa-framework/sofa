@@ -155,32 +155,32 @@ public:
 
     type::Vec3 posOnChildGlobal(type::Quat<SReal> localToGlobal)
     {
-        type::Vec3 result = localToGlobal.rotate(posOnChild.getValue());
+        const type::Vec3 result = localToGlobal.rotate(posOnChild.getValue());
         return result;
     }
 
     type::Vec3 initTranslateChild(type::Quat<SReal> objectRotation)
     {
-        type::Vec3 PAParent = posOnParent.getValue() - type::Vec3(0,0,0);
-        type::Vec3 PAChild = posOnChild.getValue() - type::Vec3(0,0,0);
+        const type::Vec3 PAParent = posOnParent.getValue() - type::Vec3(0,0,0);
+        const type::Vec3 PAChild = posOnChild.getValue() - type::Vec3(0,0,0);
         return objectRotation.rotate(PAParent - PAChild);
     }
 
     type::Vec3 translateChild(type::Quat<SReal> object1Rotation, type::Quat<SReal> object2Rotation)
     {
-        type::Vec3 APChild = type::Vec3(0,0,0) - posOnChild.getValue();
-        type::Vec3 AP1 = object2Rotation.rotate(APChild);
-        type::Vec3 AP2 = object1Rotation.rotate(AP1);
+        const type::Vec3 APChild = type::Vec3(0,0,0) - posOnChild.getValue();
+        const type::Vec3 AP1 = object2Rotation.rotate(APChild);
+        const type::Vec3 AP2 = object1Rotation.rotate(AP1);
         return AP2 - AP1;
     }
 
     type::Vec3 correctPosChild(type::Vec3 object1Pos, type::Quat<SReal> object1Rot, type::Vec3 object2Pos, type::Quat<SReal> object2Rot)
     {
         type::Vec3 result;
-        type::Vec3 PAParent = posOnParent.getValue() - type::Vec3(0,0,0);
-        type::Vec3 PAChild = posOnChild.getValue() - type::Vec3(0,0,0);
-        type::Vec3 A1 = object1Pos + object1Rot.rotate(PAParent);
-        type::Vec3 A2 = object2Pos + object2Rot.rotate(PAChild);
+        const type::Vec3 PAParent = posOnParent.getValue() - type::Vec3(0,0,0);
+        const type::Vec3 PAChild = posOnChild.getValue() - type::Vec3(0,0,0);
+        const type::Vec3 A1 = object1Pos + object1Rot.rotate(PAParent);
+        const type::Vec3 A2 = object2Pos + object2Rot.rotate(PAChild);
 
         result = A1 - A2;
 

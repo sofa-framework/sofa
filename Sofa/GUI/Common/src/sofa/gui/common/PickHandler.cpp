@@ -358,7 +358,7 @@ BodyPicked PickHandler::findCollision()
     case RAY_CASTING:
         if (useCollisions)
         {
-            BodyPicked picked = findCollisionUsingPipeline();
+            const BodyPicked picked = findCollisionUsingPipeline();
             if (picked.body) 
                 result = picked;
             else 
@@ -480,7 +480,7 @@ BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
     SOFA_UNUSED(origin);
     SOFA_UNUSED(direction);
 
-    BodyPicked result;
+    const BodyPicked result;
 
     msg_error("PickHandler") << "findCollisionUsingColourCoding not implemented!";
 

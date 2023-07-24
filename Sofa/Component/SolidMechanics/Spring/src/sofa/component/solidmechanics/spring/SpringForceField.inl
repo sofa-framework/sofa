@@ -402,6 +402,12 @@ void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffness
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
@@ -416,7 +422,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector< Vec3 > points[4];
-    bool external = (this->mstate1 != this->mstate2);
+    const bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {

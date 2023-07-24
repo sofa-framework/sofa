@@ -41,7 +41,7 @@ SceneCheckUsingAlias::SceneCheckUsingAlias()
 {
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        std::string typeNameInScene = arg->getAttribute("type", "");
+        const std::string typeNameInScene = arg->getAttribute("type", "");
         if ( typeNameInScene != o->getClassName() )
         {
             this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(typeNameInScene);
@@ -82,7 +82,7 @@ void SceneCheckUsingAlias::doPrintSummary()
 
         for(std::string &unique_alias : unique_aliases)
         {
-            unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
+            const unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
 
             using sofa::helper::lifecycle::ComponentChange;
             using sofa::helper::lifecycle::uncreatableComponents;

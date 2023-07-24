@@ -80,7 +80,7 @@ void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::appl
     InMatrixDeriv& out = *dOut.beginEdit();
     const MatrixDeriv & in = dIn.getValue();
 
-    gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    const gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
     for (gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {

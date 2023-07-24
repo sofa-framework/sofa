@@ -47,7 +47,7 @@ TEST(AspectPoolTest, allocate)
         EXPECT_EQ(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2);
     }
 
-    AspectRef newRef = p.allocate(); // allocate an aspect after all have been released.
+    const AspectRef newRef = p.allocate(); // allocate an aspect after all have been released.
     EXPECT_TRUE(newRef != 0);
     EXPECT_EQ(newRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2); // it should return the 0 aspect
 

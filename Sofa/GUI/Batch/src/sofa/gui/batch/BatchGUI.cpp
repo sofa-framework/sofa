@@ -67,10 +67,10 @@ int BatchGUI::mainLoop()
         }
 
         AdvancedTimer::begin("Animate");
-        sofa::simulation::getSimulation()->animate(groot.get());
+        sofa::simulation::node::animate(groot.get());
         msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
-        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
@@ -82,7 +82,7 @@ int BatchGUI::mainLoop()
             {
                 AdvancedTimer::begin("Animate");
 
-                sofa::simulation::getSimulation()->animate(groot.get());
+                sofa::simulation::node::animate(groot.get());
 
                 const std::string timerOutputStr = AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
                 if (canExportJson(timerOutputStr, "Animate"))
@@ -138,7 +138,7 @@ void BatchGUI::resetScene()
     if ( root )
     {
         root->setTime(0.);
-        simulation::getSimulation()->reset ( root );
+        sofa::simulation::node::reset(root);
 
         sofa::simulation::UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
     }
@@ -195,7 +195,7 @@ void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::s
     SOFA_UNUSED(argumentParser);
 
     nbIterInp = strValue;
-    size_t inpLen = nbIterInp.length();
+    const size_t inpLen = nbIterInp.length();
 
     if (nbIterInp == "infinite")
     {

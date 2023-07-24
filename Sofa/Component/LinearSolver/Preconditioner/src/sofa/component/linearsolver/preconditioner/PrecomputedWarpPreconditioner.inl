@@ -477,7 +477,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     _rotate = true;
     if (! use_rotations.getValue()) return;
 
-    simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
+    const simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = nullptr;
 
     if (node != nullptr)
@@ -588,7 +588,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(linearalgebra::Bas
             int l = jit1->first;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
             {
-                int c = i1->first;
+                const int c = i1->first;
                 Real v0 = (Real)i1->second; i1++; Real v1 = (Real)i1->second; i1++; Real v2 = (Real)i1->second; i1++;
                 internalData.JR.set(l,c+0,v0 * R[(c+0)*3+0] + v1 * R[(c+1)*3+0] + v2 * R[(c+2)*3+0] );
                 internalData.JR.set(l,c+1,v0 * R[(c+0)*3+1] + v1 * R[(c+1)*3+1] + v2 * R[(c+2)*3+1] );
@@ -664,6 +664,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
     {
         msg_error() << "Missing mechanical state in the current context. ";
         this->d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
+        return;
     }
     this->d_componentState = sofa::core::objectmodel::ComponentState::Valid;
 }

@@ -36,7 +36,6 @@ using sofa::component::collision::detection::algorithm::CollisionPipeline ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
-using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -84,7 +83,7 @@ public:
     void TearDown() override
     {
         if (root)
-            Simulation::theSimulation->unload(root);
+            sofa::simulation::node::unload(root);
     }
 };
 
@@ -215,10 +214,10 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
     //EXPECT_NE( (root.get()), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
+    const CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
     //ASSERT_NE( (clp), nullptr) ;
 
-    int rv = clp->d_depth.getValue() ;
+    const int rv = clp->d_depth.getValue() ;
 
     return rv;
 }

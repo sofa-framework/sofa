@@ -115,7 +115,7 @@ void MeshGmsh::addInGroup(type::vector< sofa::type::PrimitiveGroup>& group, int 
     }
 
     std::stringstream ss;
-    std::string s;
+    const std::string s;
     ss << tag;
 
     group.push_back(sofa::type::PrimitiveGroup(tag, 1, s, s, -1));

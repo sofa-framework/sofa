@@ -163,7 +163,8 @@ void PartialLinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
+void PartialLinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
+    const std::function<void(DataDeriv&, const unsigned int, const VecBool&)>& clear)
 {
     Real cT = (Real) this->getContext()->getTime();
     VecBool movedDirection = movedDirections.getValue();
@@ -179,9 +180,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for( unsigned j=0; j<NumDimensions; j++)
-                if(movedDirection[j]) dx[*it][j] = (Real) 0.0;
-
+            clear(dx, *it, movedDirection);
         }
     }
 }
@@ -189,8 +188,10 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+                               { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
 }
 
 template <class DataTypes>
@@ -350,17 +351,27 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
+    projectResponseT<MatrixDeriv>(c.wref(),
+        [](MatrixDeriv& res, const unsigned int index, const VecBool& btype)
+        {
+            auto itRow = res.begin();
+            auto itRowEnd = res.end();
 
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+            while (itRow != itRowEnd)
+            {
+                for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
+                {
+                    if (index == (unsigned int)colIt.index())
+                    {
+                        Deriv b = colIt.val();
+                        for (unsigned int j = 0; j < btype.size(); j++) if (btype[j]) b[j] = 0.0;
+                        res.writeLine(itRow.index()).setCol(colIt.index(), b);
+                    }
+                }
+            }
+        });
 }
 
 template <class DataTypes>

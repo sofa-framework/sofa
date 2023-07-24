@@ -87,10 +87,10 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo, (component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
+    const component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo, (component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
 
-    Vec3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
-    Vec3 the_point_trans = the_point + (SReal)(10.0) * norm;
+    const Vec3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
+    const Vec3 the_point_trans = the_point + (SReal)(10.0) * norm;
     mapper->createPointInTriangle( the_point_trans, 0, &triPts );
 
     VecCoord res;
@@ -106,7 +106,7 @@ bool BaryMapperTest::test_outside(int index){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
+    const component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
 
     const Vec3 the_point = 2.0_sreal * triPts[index] + 10.0_sreal * norm;
 

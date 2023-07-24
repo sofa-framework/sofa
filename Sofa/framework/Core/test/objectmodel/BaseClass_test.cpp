@@ -242,7 +242,7 @@ TEST_F(BaseClass_test, checkStaticDefaultTemplate  )
 
 TEST_F(BaseClass_test, checkStaticDefaultTemplateOverridenByCustom  )
 {
-    NotDefaultTemplate<DataOne, DataTwo, NotAType> ptr;
+    const NotDefaultTemplate<DataOne, DataTwo, NotAType> ptr;
     EXPECT_EQ(ptr.getClassName(),"NotDefaultTemplate") ;
     EXPECT_EQ(ptr.getTemplateName(),"non,oui") ;
 }

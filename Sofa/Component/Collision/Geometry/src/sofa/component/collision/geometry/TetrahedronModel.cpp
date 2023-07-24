@@ -88,7 +88,7 @@ void TetrahedronCollisionModel::init()
 
 void TetrahedronCollisionModel::updateFromTopology()
 {
-    int revision = m_topology->getRevision();
+    const int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
         return;
     
@@ -104,18 +104,18 @@ void TetrahedronCollisionModel::updateFromTopology()
 
 void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vec3>& tetraVertices, std::vector<sofa::type::Vec3>& normalVertices)
 {
-    Coord p1 = t.p1();
-    Coord p2 = t.p2();
-    Coord p3 = t.p3();
-    Coord p4 = t.p4();
-    Coord c = (p1 + p2 + p3 + p4)*0.25f;
+    const Coord p1 = t.p1();
+    const Coord p2 = t.p2();
+    const Coord p3 = t.p3();
+    const Coord p4 = t.p4();
+    const Coord c = (p1 + p2 + p3 + p4)*0.25f;
     auto computeP = [](Coord center, Coord pos) {pos += (center - pos)*0.1f; };
     computeP(c, p1);
     computeP(c, p2);
     computeP(c, p3);
     computeP(c, p4);
 
-    Coord n1, n2, n3, n4;
+    const Coord n1, n2, n3, n4;
     auto computeN = [](Coord normal, Coord pos1, Coord pos2, Coord pos3) {normal = cross(pos3 - pos1, pos2 - pos1); normal.normalize(); };
     computeN(n1,p1,p2,p3);
     computeN(n1,p1,p3,p4);
@@ -127,7 +127,7 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
     tetraVertices.push_back(p3);
     tetraVertices.push_back(p4);
 
-    Coord p;
+    const Coord p;
     auto updateP = [](Coord pPos, Coord pos1, Coord pos2, Coord pos3) {pPos = (pos1 + pos2 + pos3)*(1.0 / 3.0); };
     updateP(p,p1,p2,p3);
     normalVertices.push_back(p);
@@ -150,7 +150,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, 
     std::vector<sofa::type::Vec3> tetraVertices;
     std::vector<sofa::type::Vec3> normalVertices;
 
-    Tetrahedron t(this, index);
+    const Tetrahedron t(this, index);
     this->addTetraToDraw(t, tetraVertices, normalVertices);
 
     const auto c = getColor4f();

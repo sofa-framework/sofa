@@ -75,7 +75,7 @@ public:
 
     virtual void configure(sofa::component::setting::MouseButtonSetting * setting)
     {
-        if (auto* s = dynamic_cast<sofa::gui::component::ConstraintAttachBodyButtonSetting*>(setting))
+        if (const auto* s = dynamic_cast<sofa::gui::component::ConstraintAttachBodyButtonSetting*>(setting))
         {
             setStiffness((double)s->stiffness.getValue());
             setArrowSize((float)s->arrowSize.getValue());
