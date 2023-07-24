@@ -63,6 +63,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
+    using Vec3 = sofa::type::Vec<3, Real>;
+
 protected:
     bool initializedCubatureTables;
     void defineTetrahedronCubaturePoints();
@@ -235,6 +237,13 @@ public:
             const TriangleID ind_t,
             sofa::type::vector<PointID> &indices,
             Real &baryCoef, Real& coord_kmin) const;
+    bool computeSegmentTriangleIntersectionInPlane(
+        const sofa::type::Vec<3, Real>& a,
+        const sofa::type::Vec<3, Real>& b,
+        const TriangleID ind_t,
+        sofa::type::vector<EdgeID>& intersectedEdges,
+        sofa::type::vector<Real>& baryCoefs) const;
+
 
     /** \brief Computes the intersections of the vector from point a to point b and the triangle indexed by t
     *
