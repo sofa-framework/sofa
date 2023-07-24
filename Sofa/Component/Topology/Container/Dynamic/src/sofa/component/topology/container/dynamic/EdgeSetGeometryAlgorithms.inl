@@ -799,7 +799,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         // decompose E.Et for system solution
         if( cholDcmp(L,EEt) ) // Cholesky decomposition of the covariance matrix succeeds, we use it to solve the systems
         {
-            size_t n = weights.size();     // start index for this vertex
+            const size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             sofa::type::Vec<3, Real> a,u;
 
@@ -829,7 +829,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         }
         else
         {
-            size_t n = weights.size();     // start index for this vertex
+            const size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             sofa::type::Vec<3, Real> a,u;
 

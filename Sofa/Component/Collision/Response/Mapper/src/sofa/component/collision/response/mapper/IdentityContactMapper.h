@@ -176,7 +176,7 @@ public:
 
     Index addPoint(const Coord& /*P*/, Index index, Real& r)
     {
-        collision::geometry::Sphere e(this->model, index);
+        const collision::geometry::Sphere e(this->model, index);
         r = e.r();
         return index;
     }

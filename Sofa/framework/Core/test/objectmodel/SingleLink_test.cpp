@@ -104,10 +104,10 @@ TEST_F(SingleLink_test, checkMultiLink )
 
 TEST_F(SingleLink_test, getOwnerBase)
 {
-    auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+    const auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
     using sofa::core::objectmodel::BaseNode;
-    BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+    const BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+    const SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
     ASSERT_EQ(objectLink.getOwnerBase(), aBaseObject.get());
     // m_link is initialized without an owner.
     // getOwnerBase() should still work and return a nullptr

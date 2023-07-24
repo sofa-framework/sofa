@@ -57,10 +57,10 @@ using namespace gpu::cuda;
         VecDeriv& f = *d_f.beginEdit();
         const VecCoord& x = d_x.getValue();
 
-        int nbEdges=m_topology->getNbEdges();
-        int nbPoints=m_topology->getNbPoints();
+		const int nbEdges=m_topology->getNbEdges();
+		const int nbPoints=m_topology->getNbPoints();
 
-        edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+		const edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
         TetrahedralTensorMassForceFieldCuda3f_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
@@ -77,11 +77,11 @@ using namespace gpu::cuda;
 
         VecDeriv& df = *d_df.beginEdit();
         const VecDeriv& dx = d_dx.getValue();
-        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+		const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-        int nbEdges=m_topology->getNbEdges();
-        int nbPoints=m_topology->getNbPoints();
-        edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+		const int nbEdges=m_topology->getNbEdges();
+		const int nbPoints=m_topology->getNbPoints();
+		const edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
         TetrahedralTensorMassForceFieldCuda3f_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), (float)kFactor);

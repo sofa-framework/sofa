@@ -42,7 +42,7 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
     std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     //test if we can export in lossless image
-    bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
+    const bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
     if (!imageSupport)
     {
         msg_error("Capture") << "Could not write " << extension << "image format (no support found)";
@@ -81,10 +81,10 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
 
 std::string Capture::findFilename()
 {
-    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+    const bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
             || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
 
-    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+    const bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
             || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
 
     std::string filename = "";

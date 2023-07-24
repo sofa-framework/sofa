@@ -208,7 +208,7 @@ public:
         traits::split_row_index(nblocs, szlast);
         for (sofa::Index b=0; b<(sofa::Size) nblocs; b++)
         {
-            sofa::Index i = b*LC;
+            const sofa::Index i = b*LC;
             for (sofa::Index bj=0; bj<Index(LC); bj++)
             {
                 Real2 r = 0;
@@ -222,7 +222,7 @@ public:
         if (szlast)
         {
             sofa::Size b = nblocs;
-            sofa::Index i = b*LC;
+            const sofa::Index i = b*LC;
             for (sofa::Index bj=0; bj<(sofa::Size) szlast; bj++)
             {
                 Real2 r = 0;

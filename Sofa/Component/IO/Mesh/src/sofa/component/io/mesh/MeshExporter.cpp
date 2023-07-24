@@ -69,7 +69,7 @@ void MeshExporter::doInit()
 
 void MeshExporter::doReInit()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(m_inputtopology);
     context->get(m_inputmstate);
 
@@ -143,7 +143,7 @@ bool MeshExporter::writeMesh()
 
 std::string MeshExporter::getMeshFilename(const char* ext)
 {
-    size_t nbp = d_position.getValue().size();
+    const size_t nbp = d_position.getValue().size();
     size_t nbce;
     nbce = ( (d_writeEdges.getValue()) ? m_inputtopology->getNbEdges() : 0 )
             + ( (d_writeTriangles.getValue()) ? m_inputtopology->getNbTriangles() : 0 )
@@ -166,7 +166,7 @@ std::string MeshExporter::getMeshFilename(const char* ext)
     std::size_t pos = 0;
     while (pos != std::string::npos)
     {
-        std::size_t newpos = filename.find('%',pos);
+        const std::size_t newpos = filename.find('%',pos);
         oss << filename.substr(pos, (newpos == std::string::npos) ? std::string::npos : newpos-pos);
         pos = newpos;
         if(pos != std::string::npos)
@@ -197,7 +197,7 @@ bool MeshExporter::writeMeshVTKXML()
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
-    std::string filename = getMeshFilename(".vtu");
+    const std::string filename = getMeshFilename(".vtu");
 
     std::ofstream outfile(filename.c_str());
     if (!outfile.is_open())
@@ -208,7 +208,7 @@ bool MeshExporter::writeMeshVTKXML()
 
     outfile << std::setprecision (9);
 
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
 
     const size_t nbp = pointsPos.size();
 
@@ -358,7 +358,7 @@ bool MeshExporter::writeMeshVTK()
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
-    std::string filename = getMeshFilename(".vtk");
+    const std::string filename = getMeshFilename(".vtk");
 
     std::ofstream outfile(filename.c_str());
     if( !outfile.is_open() )
@@ -369,7 +369,7 @@ bool MeshExporter::writeMeshVTK()
 
     outfile << std::setprecision (9);
 
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
 
     const size_t nbp = pointsPos.size();
 
@@ -477,7 +477,7 @@ bool MeshExporter::writeMeshGmsh()
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
-    std::string filename = getMeshFilename(".gmsh");
+    const std::string filename = getMeshFilename(".gmsh");
 
     std::ofstream outfile(filename.c_str());
     if( !outfile.is_open() )
@@ -488,7 +488,7 @@ bool MeshExporter::writeMeshGmsh()
 
     outfile << std::setprecision (9);
 
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
 
     const size_t nbp = pointsPos.size();
 
@@ -588,7 +588,7 @@ bool MeshExporter::writeMeshNetgen()
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
-    std::string filename = getMeshFilename(".mesh");
+    const std::string filename = getMeshFilename(".mesh");
 
     std::ofstream outfile(filename.c_str());
     if (!outfile.is_open())
@@ -599,7 +599,7 @@ bool MeshExporter::writeMeshNetgen()
 
     outfile << std::setprecision (9);
 
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
 
     const size_t nbp = pointsPos.size();
 
@@ -810,7 +810,7 @@ bool MeshExporter::writeMeshObj()
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;
 
-    std::string filename = getMeshFilename(".obj");
+    const std::string filename = getMeshFilename(".obj");
 
     std::ofstream outfile(filename.c_str());
     if( !outfile.is_open() )
@@ -821,7 +821,7 @@ bool MeshExporter::writeMeshObj()
 
     outfile << std::setprecision (9);
 
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
 
     const size_t nbp = pointsPos.size();
 

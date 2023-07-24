@@ -88,7 +88,7 @@ QAttachOperation::QAttachOperation()
 
 void QAttachOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (sofa::gui::component::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(button))
+    if (const sofa::gui::component::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(button))
     {
         AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
         setting->stiffness.copyValueFrom(&(attachSetting->stiffness));
@@ -149,7 +149,7 @@ QFixOperation::QFixOperation()
 
 void QFixOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (auto* fixSetting=dynamic_cast<sofa::gui::component::FixPickedParticleButtonSetting*>(button))
+    if (const auto* fixSetting=dynamic_cast<sofa::gui::component::FixPickedParticleButtonSetting*>(button))
     {
         FixOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId() )) ;
         setting->stiffness.setValue(fixSetting->stiffness.getValue());

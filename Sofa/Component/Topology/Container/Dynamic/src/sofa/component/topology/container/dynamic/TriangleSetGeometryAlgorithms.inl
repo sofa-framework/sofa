@@ -680,7 +680,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
         Real v_12 = (Real) ((ptest-p1)*(n_12));
         Real v_20 = (Real) ((ptest-p2)*(n_20));
 
-        bool is_inside = (v_01 > ZERO) && (v_12 > ZERO) && (v_20 > ZERO);
+        const bool is_inside = (v_01 > ZERO) && (v_12 > ZERO) && (v_20 > ZERO);
 
         if(is_tested && (!is_inside))
         {
@@ -819,7 +819,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
         Real v_20 = (Real) ((ptest-p2)*(n_20));
 
         //bool is_inside = (v_01 > 0.0) && (v_12 > 0.0) && (v_20 > 0.0);
-        bool is_inside = (v_01 > -ZERO) && (v_12 > -ZERO) && (v_20 >= -ZERO);
+        const bool is_inside = (v_01 > -ZERO) && (v_12 > -ZERO) && (v_20 >= -ZERO);
 
         if(is_tested && (!is_inside))
         {
@@ -2395,7 +2395,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
             Real v_01 = (Real) ((dtest)*(n_01));
             Real v_02 = (Real) ((dtest)*(n_02));
 
-            bool is_inside = (v_01 >= 0.0) && (v_02 < 0.0);
+            const bool is_inside = (v_01 >= 0.0) && (v_02 < 0.0);
             if (is_inside) return ind_t;
         }
     }
@@ -4493,7 +4493,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     coords_list[0][1] = new_coord[0];
                     coords_list[0][2] = 0.0;
 
-                    Edge theEdgeFirst = m_container->getEdge(theEdge);
+                    const Edge theEdgeFirst = m_container->getEdge(theEdge);
                     sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
@@ -4596,7 +4596,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     coords_list.back()[1] = new_coord[0];
                     coords_list.back()[2] = 0.0;
 
-                    Edge theEdgeLast = m_container->getEdge(theEdge);
+                    const Edge theEdgeLast = m_container->getEdge(theEdge);
                     sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
@@ -4937,7 +4937,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::type::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
-        size_t nbrTtri = triangleArray.size();
+        const size_t nbrTtri = triangleArray.size();
 
         sofa::type::RGBAColor color;
         Real normalLength = _drawNormalLength.getValue();

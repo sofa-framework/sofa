@@ -44,8 +44,8 @@ void SuturePointPerformer<DataTypes>::start()
 {
     if (first) //first click
     {
-        BodyPicked picked = this->interactor->getBodyPicked();
-        auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
+        const BodyPicked picked = this->interactor->getBodyPicked();
+        const auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
@@ -58,7 +58,7 @@ void SuturePointPerformer<DataTypes>::start()
     }
     else // second click
     {
-        BodyPicked picked = this->interactor->getBodyPicked();
+        const BodyPicked picked = this->interactor->getBodyPicked();
         auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
@@ -189,7 +189,7 @@ SuturePointPerformer<DataTypes>::~SuturePointPerformer()
     if (SpringObject) //means we added a spring
     {
         sofa::type::vector<Spring> vecSprings = SpringObject->getSprings();
-        unsigned int nbr = vecSprings.size();
+        const unsigned int nbr = vecSprings.size();
 
         for (unsigned int i = 0; i<addedSprings.size(); ++i)
             SpringObject->removeSpring(nbr-1-i );

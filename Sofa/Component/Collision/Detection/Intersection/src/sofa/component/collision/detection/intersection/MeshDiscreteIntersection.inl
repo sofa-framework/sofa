@@ -31,11 +31,11 @@ namespace sofa::component::collision::detection::intersection
 template<class T>
 bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
 {
-    double EPSILON = 0.00001;
+    const double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vec3 p0 = triangle.p1();
-    type::Vec3 p1 = triangle.p2();
-    type::Vec3 p2 = triangle.p3();
+    const type::Vec3 p0 = triangle.p1();
+    const type::Vec3 p1 = triangle.p2();
+    const type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
     const type::Vec3 sphCenter(sph.center());
@@ -50,7 +50,7 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vec3 projPoint = sphCenter - normal*distance;
+    const type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -82,11 +82,11 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
 template<class T>
 int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
 {
-    double EPSILON = 0.00001;
+    const double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vec3 p0 = triangle.p1();
-    type::Vec3 p1 = triangle.p2();
-    type::Vec3 p2 = triangle.p3();
+    const type::Vec3 p0 = triangle.p1();
+    const type::Vec3 p1 = triangle.p2();
+    const type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
     const type::Vec3 sphCenter(sph.center());
@@ -101,7 +101,7 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vec3 projPoint = sphCenter - normal*distance;
+    const type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)

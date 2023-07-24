@@ -59,12 +59,12 @@ public:
     typedef sofa::type::fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef sofa::type::fixed_array<EdgeID,12>    EdgesInHexahedron;
 
-    static EdgesInTriangle        InvalidEdgesInTriangles;
-    static EdgesInQuad            InvalidEdgesInQuad;
-    static TrianglesInTetrahedron InvalidTrianglesInTetrahedron;
-    static EdgesInTetrahedron     InvalidEdgesInTetrahedron;
-    static QuadsInHexahedron      InvalidQuadsInHexahedron;
-    static EdgesInHexahedron      InvalidEdgesInHexahedron;
+    static constexpr EdgesInTriangle        InvalidEdgesInTriangles       = type::makeHomogeneousArray<EdgesInTriangle>(sofa::InvalidID);
+    static constexpr EdgesInQuad            InvalidEdgesInQuad            = type::makeHomogeneousArray<EdgesInQuad>(sofa::InvalidID);
+    static constexpr TrianglesInTetrahedron InvalidTrianglesInTetrahedron = type::makeHomogeneousArray<TrianglesInTetrahedron>(sofa::InvalidID);
+    static constexpr EdgesInTetrahedron     InvalidEdgesInTetrahedron     = type::makeHomogeneousArray<EdgesInTetrahedron>(sofa::InvalidID);
+    static constexpr QuadsInHexahedron      InvalidQuadsInHexahedron      = type::makeHomogeneousArray<QuadsInHexahedron>(sofa::InvalidID);
+    static constexpr EdgesInHexahedron      InvalidEdgesInHexahedron      = type::makeHomogeneousArray<EdgesInHexahedron>(sofa::InvalidID);
 
     /// @}
 

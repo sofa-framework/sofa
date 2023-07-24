@@ -45,7 +45,7 @@ public:
     SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        SReal matrix[3][3] =
+        const SReal matrix[3][3] =
         {
             { 1, 0, },
             { 0, std::exp(-rate.getValue()*dt), 0},

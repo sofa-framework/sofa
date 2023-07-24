@@ -61,10 +61,10 @@ void InteractiveCamera::moveCamera(int x, int y)
     {
         if (currentMode == TRACKBALL_MODE)
         {
-            float x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
-            float y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
-            float x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
-            float y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
+            const float x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
+            const float y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
+            const float x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
+            const float y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
 
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
@@ -90,13 +90,13 @@ void InteractiveCamera::moveCamera(int x, int y)
         }
         else if (currentMode == ZOOM_MODE)
         {
-            double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
+            const double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
             double zoomDistance = zoomStep * -(y - lastMousePosY);
 
             type::Vec3 trans(0.0, 0.0, zoomDistance);
             trans = cameraToWorldTransform(trans);
             translate(trans);
-            type::Vec3 newLookAt = cameraToWorldCoordinates(type::Vec3(0,0,-zoomStep));
+            const type::Vec3 newLookAt = cameraToWorldCoordinates(type::Vec3(0,0,-zoomStep));
             if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0
                 && !p_fixedLookAtPoint.getValue() )
             {
@@ -121,13 +121,13 @@ void InteractiveCamera::moveCamera(int x, int y)
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
+        const double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
         double zoomDistance = zoomStep * -(y*0.5);
 
         type::Vec3 trans(0.0, 0.0, zoomDistance);
         trans = cameraToWorldTransform(trans);
         translate(trans);
-        type::Vec3 newLookAt = cameraToWorldCoordinates(type::Vec3(0,0,-zoomStep));
+        const type::Vec3 newLookAt = cameraToWorldCoordinates(type::Vec3(0,0,-zoomStep));
         if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0
             && !p_fixedLookAtPoint.getValue() )
         {
@@ -178,7 +178,7 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
 {
     int posX = me->getPosX();
     int posY = me->getPosY();
-    int wheelDelta = me->getWheelDelta();
+    const int wheelDelta = me->getWheelDelta();
 
     //Mouse Press
     if(me->getState() == core::objectmodel::MouseEvent::LeftPressed)
@@ -242,7 +242,7 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
 
 void InteractiveCamera::processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe)
 {
-    char keyPressed = kpe->getKey();
+    const char keyPressed = kpe->getKey();
 
     switch(keyPressed)
     {

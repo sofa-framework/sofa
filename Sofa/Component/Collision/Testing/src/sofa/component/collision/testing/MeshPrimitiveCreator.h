@@ -47,10 +47,10 @@ namespace sofa::collision_test
 inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
 {
     //creating node containing TriangleModel
-    sofa::simulation::Node::SPtr tri = father->createChild("tri");
+    const sofa::simulation::Node::SPtr tri = father->createChild("tri");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3::SPtr triDOF = New<MechanicalObject3>();
+    const MechanicalObject3::SPtr triDOF = New<MechanicalObject3>();
 
     //editing DOF related to the TriangleCollisionModel<sofa::defaulttype::Vec3Types> to be created, size is 3 (3 points) because it contains just one Triangle
     triDOF->resize(3);
@@ -77,7 +77,7 @@ inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaul
     tri->addObject(triDOF);
 
     //creating a topology necessary for capsule
-    sofa::component::topology::container::constant::MeshTopology::SPtr bmt = New<sofa::component::topology::container::constant::MeshTopology>();
+    const sofa::component::topology::container::constant::MeshTopology::SPtr bmt = New<sofa::component::topology::container::constant::MeshTopology>();
     bmt->addTriangle(0, 1, 2);
     bmt->addEdge(0, 1);
     bmt->addEdge(1, 2);

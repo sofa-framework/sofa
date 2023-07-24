@@ -70,7 +70,7 @@ void BaseMouseInteractor::addInteractionPerformer( InteractionPerformer *perf)
 
 bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 {
-    VecPerformer::iterator found=std::find(performers.begin(), performers.end(), i);
+    const VecPerformer::iterator found=std::find(performers.begin(), performers.end(), i);
     if (found == performers.end()) return false;
     else
     {

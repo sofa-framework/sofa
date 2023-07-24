@@ -31,7 +31,7 @@ Visitor::Result MechanicalVNormVisitor::fwdMechanicalState(VisitorContext* /*ctx
 {
     if( l>0 ) accum += mm->vSum(this->params, a.getId(mm), l );
     else {
-        SReal mmax = mm->vMax(this->params, a.getId(mm) );
+        const SReal mmax = mm->vMax(this->params, a.getId(mm) );
         if( mmax>accum ) accum=mmax;
     }
     return RESULT_CONTINUE;

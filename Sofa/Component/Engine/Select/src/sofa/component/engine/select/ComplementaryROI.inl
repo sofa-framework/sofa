@@ -92,7 +92,7 @@ template <class DataTypes>
 void ComplementaryROI<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > position(d_position);
-    ReadAccessor<Data<unsigned int> > nbSet(d_nbSet);
+    const ReadAccessor<Data<unsigned int> > nbSet(d_nbSet);
 
     WriteAccessor<Data<SetIndex> > indices(d_indices);
     WriteAccessor<Data<VecCoord> > pointsInROI(d_pointsInROI);

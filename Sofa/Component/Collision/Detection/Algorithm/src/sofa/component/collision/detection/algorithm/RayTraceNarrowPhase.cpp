@@ -90,12 +90,12 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
             TriangleOctreeModel > *>(contacts);
 
     Cube cube1 (cm1, 0);
-    Cube cube2 (cm2, 0);
+    const Cube cube2 (cm2, 0);
 
 
     const auto& minVect2 = cube2.minVect ();
     const auto& maxVect2 = cube2.maxVect ();
-    int size = tm1->getSize ();
+    const int size = tm1->getSize ();
 
     for (int j = 0; j < size; j++)
     {
@@ -119,7 +119,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         /*test if this triangle was tested before */
 
         /*set the triangle as tested */
-        int flags = tri1.flags();
+        const int flags = tri1.flags();
 
         /*test only the points related to this triangle */
         if (flags & TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)
@@ -185,7 +185,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
             if (cosAngle2 > 0)
                 continue;
 
-            sofa::type::Vec3 Q =
+            const sofa::type::Vec3 Q =
                     (triang2.p1 () * (1.0 - res.u - res.v)) +
                     (triang2.p2 () * res.u) + (triang2.p3 () * res.v);
 

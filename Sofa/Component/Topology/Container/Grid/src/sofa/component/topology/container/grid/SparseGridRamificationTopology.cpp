@@ -90,7 +90,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     // Finest level is asked
     if (_finestConnectivity.getValue())
     {
-        std::string filename = this->fileTopology.getValue();
+        const std::string filename = this->fileTopology.getValue();
         if (!filename.empty()) // file given, try to load it.
         {
             mesh = helper::io::Mesh::Create(filename.c_str());
@@ -805,7 +805,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 void SparseGridRamificationTopology::buildVirtualFinerLevels()
 {
-    int nb = _nbVirtualFinerLevels.getValue();
+    const int nb = _nbVirtualFinerLevels.getValue();
 
     _virtualFinerLevels.resize(nb);
 
@@ -818,7 +818,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     }
 
 
-    SparseGridRamificationTopology::SPtr sgrt = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
+    const SparseGridRamificationTopology::SPtr sgrt = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
 
     _virtualFinerLevels[0] = sgrt;
     _virtualFinerLevels[0]->setName("virtualLevel0");
@@ -876,11 +876,11 @@ typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::f
 
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
-    Index finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
+    const Index finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
 
     if( finestSparseCube == InvalidID ) return InvalidID;
 
-    Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
+    const Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
 
 
     _regularGrid->findCube( pos,fx,fy,fz); // only to compute fx,fy,fz
@@ -897,11 +897,11 @@ typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::f
 
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
-    Index finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);
+    const Index finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);
 
     if( finestSparseCube == InvalidID ) return InvalidID;
 
-    Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
+    const Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
 
 
     _regularGrid->findNearestCube( pos,fx,fy,fz); // only to compute fx,fy,fz
@@ -933,7 +933,7 @@ void SparseGridRamificationTopology::findCoarsestParents()
                     {
                         for( type::vector<Connexion*>::iterator it = finestSGRT->_connexions[cubeIdx].begin(); it != finestSGRT->_connexions[cubeIdx].end() ; ++it)
                         {
-                            Connexion * finestConnexion = *it;
+                            const Connexion * finestConnexion = *it;
                             while( finestConnexion->_parent != nullptr )
                                 finestConnexion = finestConnexion->_parent;
 
@@ -1222,13 +1222,13 @@ void SparseGridRamificationTopology::printHexaIdx()
 bool SparseGridRamificationTopology::intersectionSegmentTriangle(type::Vec3 s0, type::Vec3 s1, type::Vec3 t0, type::Vec3 t1, type::Vec3 t2)
 {
     // compute the offset origin, edges, and normal
-    type::Vec3 kDiff = s0 - t0;
-    type::Vec3 kEdge1 = t1 - t0;
-    type::Vec3 kEdge2 = t2 - t0;
-    type::Vec3 kNormal = kEdge1.cross(kEdge2);
+    const type::Vec3 kDiff = s0 - t0;
+    const type::Vec3 kEdge1 = t1 - t0;
+    const type::Vec3 kEdge2 = t2 - t0;
+    const type::Vec3 kNormal = kEdge1.cross(kEdge2);
 
     type::Vec3 dir = s1-s0;
-    SReal norm = (s1-s0).norm();
+    const SReal norm = (s1-s0).norm();
     dir /= norm;
 
     // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = segment direction,
@@ -1254,17 +1254,17 @@ bool SparseGridRamificationTopology::intersectionSegmentTriangle(type::Vec3 s0, 
         return false;
     }
 
-    SReal fDdQxE2 = fSign * (dir * kDiff.cross(kEdge2));
+    const SReal fDdQxE2 = fSign * (dir * kDiff.cross(kEdge2));
     if (fDdQxE2 >= (SReal)0.0)
     {
-        SReal fDdE1xQ = fSign* (dir * kEdge1.cross(kDiff));
+        const SReal fDdE1xQ = fSign* (dir * kEdge1.cross(kDiff));
         if (fDdE1xQ >= (SReal)0.0)
         {
             if (fDdQxE2 + fDdE1xQ <= fDdN)
             {
                 // line intersects triangle, check if segment does
-                SReal fQdN = -fSign*(kDiff*kNormal);
-                SReal fExtDdN = norm*fDdN;
+                const SReal fQdN = -fSign*(kDiff*kNormal);
+                const SReal fExtDdN = norm*fDdN;
                 if (-fExtDdN <= fQdN && fQdN <= fExtDdN)
                 {
                     // segment intersects triangle

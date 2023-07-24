@@ -53,7 +53,7 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
             dp0.normalize();
             Vec3 y = cross(dp0, Vec3(1_sreal,0_sreal,0_sreal));
             y.normalize();
-            double alpha = acos(dp0[0]);
+            const double alpha = acos(dp0[0]);
             q = Quat<SReal>(y,alpha);
             msg_info() << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vec3(1_sreal,0_sreal,0_sreal));
         }

@@ -78,10 +78,10 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechanica
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = m_data.plane.stiffness;
+    const double stiff = m_data.plane.stiffness;
     m_data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldCuda3f_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     m_data.plane.stiffness = (Real)stiff;
@@ -113,10 +113,10 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mechanic
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = m_data.plane.stiffness;
+    const double stiff = m_data.plane.stiffness;
     m_data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldCuda3f1_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     m_data.plane.stiffness = (Real)stiff;

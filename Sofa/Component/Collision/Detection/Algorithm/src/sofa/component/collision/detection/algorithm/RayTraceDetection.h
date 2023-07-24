@@ -47,11 +47,11 @@ public:
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        const BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
         broadPhase->setName("bruteForceBroadPhase");
         if (context) context->addObject(broadPhase);
 
-        RayTraceNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<RayTraceNarrowPhase>();
+        const RayTraceNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<RayTraceNarrowPhase>();
         narrowPhase->setName("rayTraceNarrowPhase");
         if (context) context->addObject(narrowPhase);
 

@@ -415,7 +415,7 @@ __global__ void SparseGridMapperCuda3f1_apply_kernel(unsigned int size, const in
     {
         GPUCubeData c = map[index0+index1];
         const int * cube = cudaHexa + c.i*8;
-        CudaVec3<float> res = CudaVec3<float>::make(in [cube[0]]) * ((1-c.fx) * (1-c.fy) * (1-c.fz))
+        const CudaVec3<float> res = CudaVec3<float>::make(in [cube[0]]) * ((1-c.fx) * (1-c.fy) * (1-c.fz))
                 + CudaVec3<float>::make(in [cube[1]]) * ((  c.fx) * (1-c.fy) * (1-c.fz))
                 + CudaVec3<float>::make(in [cube[3]]) * ((1-c.fx) * (  c.fy) * (1-c.fz))
                 + CudaVec3<float>::make(in [cube[2]]) * ((  c.fx) * (  c.fy) * (1-c.fz))

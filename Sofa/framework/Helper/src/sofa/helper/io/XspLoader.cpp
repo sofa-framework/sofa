@@ -101,7 +101,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
                 msg_error("XspLoader") << "Error while reading 'mass' command.";
                 return false;
             }
-            bool isASurfacePoint = (location == 's');
+            const bool isASurfacePoint = (location == 's');
             bool isAFixedPoint = false;
             if (mass < 0)
             {

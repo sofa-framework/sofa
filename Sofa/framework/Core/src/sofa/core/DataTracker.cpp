@@ -83,7 +83,7 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams*)
 void DataTrackerDDGNode::updateAllInputsIfDirty()
 {
     const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(auto input : inputs)
+    for(const auto input : inputs)
     {
         static_cast<core::objectmodel::BaseData*>(input)->updateIfDirty();
     }
@@ -100,7 +100,7 @@ void DataTrackerCallback::update()
 {
     updateAllInputsIfDirty();
 
-    auto cs = m_callback(m_dataTracker);
+    const auto cs = m_callback(m_dataTracker);
     if (m_owner)
         m_owner->d_componentState.setValue(cs); // but what if the state of the component was invalid for a reason that doesn't depend on this update?
     cleanDirty();

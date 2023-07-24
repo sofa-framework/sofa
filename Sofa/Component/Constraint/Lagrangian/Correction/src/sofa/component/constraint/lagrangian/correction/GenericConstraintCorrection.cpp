@@ -60,7 +60,7 @@ GenericConstraintCorrection::~GenericConstraintCorrection() {}
 
 void GenericConstraintCorrection::bwdInit()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
 
     // Find linear solver
     if (l_linearSolver.empty())
@@ -249,7 +249,7 @@ void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix*
     if (!l_ODESolver.get())
         return;
 
-    ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
+    const ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 

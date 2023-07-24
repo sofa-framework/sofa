@@ -81,13 +81,13 @@ public:
 
     void SetUp() override
     {
-        simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        m_simulation = sofa::simulation::getSimulation();
     }
 
     void TearDown() override
     {
         if (m_root != nullptr)
-            simulation::getSimulation()->unload(m_root);
+            sofa::simulation::node::unload(m_root);
     }
 
     void createSingleTriangleFEMScene(int FEMType, Real young, Real poisson, std::string method)
@@ -125,7 +125,7 @@ public:
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -168,12 +168,12 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
     {
-        Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
+        const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
         sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
@@ -282,7 +282,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void checkEmptyTopology(int FEMType)
@@ -316,7 +316,7 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -351,7 +351,7 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
         if (FEMType == 0)
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
@@ -532,7 +532,7 @@ public:
 
         for (int i = 0; i < nbrStep; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
 
         if (FEMType == 0 || FEMType == 1)
@@ -647,28 +647,28 @@ public:
     void testFEMPerformance(int FEMType)
     {
         // init
-        int nbrStep = 1000;
-        int nbrGrid = 40;
+        const int nbrStep = 1000;
+        const int nbrGrid = 40;
 
         // load Triangular FEM
         createGridFEMScene(FEMType, nbrGrid);
         if (m_root.get() == nullptr)
             return;
 
-        int nbrTest = 10;
+        const int nbrTest = 10;
         double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
         {
-            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            const ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
-                m_simulation->animate(m_root.get(), 0.01);
+                sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
             }
 
-            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
-            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+            const ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            const double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
             
             if (timeMin > diffTimed)
                 timeMin = diffTimed;
@@ -676,9 +676,9 @@ public:
                 timeMax = diffTimed;
 
             diffTimeMs += diffTimed;
-            m_simulation->reset(m_root.get());
+            sofa::simulation::node::reset(m_root.get());
         }
-        
+
         //std::cout << "timeMean: " << diffTimeMs/nbrTest << std::endl;
         //std::cout << "timeMin: " << timeMin << std::endl;
         //std::cout << "timeMax: " << timeMax << std::endl;

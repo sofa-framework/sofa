@@ -89,8 +89,8 @@ void MeshSampler<DataTypes>::doUpdate()
 template <class DataTypes>
 void MeshSampler<DataTypes>::computeNeighbors(VVI& ngb)
 {
-    sofa::helper::ReadAccessor< Data< SeqEdges > > edges = this->f_edges;
-    unsigned int nbp=this->position.getValue().size();
+    const sofa::helper::ReadAccessor< Data< SeqEdges > > edges = this->f_edges;
+    const unsigned int nbp=this->position.getValue().size();
     ngb.resize(nbp);    for(unsigned int i=0;i<nbp;i++) ngb[i].clear();
     for (unsigned int j = 0; j<edges.size(); j++)
     {

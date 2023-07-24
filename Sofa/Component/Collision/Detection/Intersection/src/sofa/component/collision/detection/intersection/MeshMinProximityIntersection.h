@@ -137,9 +137,9 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
             return 0;
     }
 
-    type::Vec3 P = e1.center();
-    type::Vec3 Q = e2.p1() - x13 * alpha - x23 * beta;
-    type::Vec3 QP = P-Q;
+    const type::Vec3 P = e1.center();
+    const type::Vec3 Q = e2.p1() - x13 * alpha - x23 * beta;
+    const type::Vec3 QP = P-Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;

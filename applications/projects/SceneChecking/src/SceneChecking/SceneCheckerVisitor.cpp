@@ -55,21 +55,21 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node, simulation::Sce
 {
     std::stringstream tmp;
     bool first = true;
-    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
+    for(const sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         tmp << (first ? "" : ", ") << check->getName() ;
         first = false;
     }
     msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
 
-    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
+    for(const sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->init(node, sceneLoader) ;
     }
 
     execute(node) ;
 
-    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
+    for(const sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->printSummary(sceneLoader) ;
     }
@@ -79,7 +79,7 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node, simulation::Sce
 
 sofa::simulation::Visitor::Result SceneCheckerVisitor::processNodeTopDown(sofa::simulation::Node* node)
 {
-    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
+    for(const sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->doCheckOn(node) ;
     }

@@ -69,8 +69,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the tests.
     void SetUp() override
     {
-//        if( sofa::simulation::getSimulation()==nullptr )
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         /// Create the scene
         root = simulation->createNewGraph("root");
@@ -119,9 +118,9 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         projection->setSkeletalMotion(joints, bones);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
-        simulation->animate(root.get(),0.25);
-        simulation->animate(root.get(),0.25);
+        sofa::simulation::node::initRoot(root.get());
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
 
     }
 
@@ -171,7 +170,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

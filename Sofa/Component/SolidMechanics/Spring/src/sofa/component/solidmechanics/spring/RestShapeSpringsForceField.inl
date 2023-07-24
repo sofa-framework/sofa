@@ -73,11 +73,6 @@ using type::vector;
 using core::visual::VisualParams;
 
 template<class DataTypes>
-const type::fixed_array<bool, RestShapeSpringsForceField<DataTypes>::coord_total_size>
-RestShapeSpringsForceField<DataTypes>::s_defaultActiveDirections =
-    []{type::fixed_array<bool, coord_total_size> v; std::fill(v.begin(), v.end(), true); return v; }();
-
-template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
     , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
@@ -161,7 +156,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
 
-    BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    const BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
     {
         msg_warning() << "MechanicalState of the current context returns null pointer";
@@ -573,9 +568,9 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     const VecReal& k = d_stiffness.getValue();

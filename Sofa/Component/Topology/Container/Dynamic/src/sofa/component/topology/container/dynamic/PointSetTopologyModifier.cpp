@@ -55,11 +55,11 @@ void PointSetTopologyModifier::init()
 
 void PointSetTopologyModifier::swapPoints(const Index i1, const Index i2)
 {
-    PointsIndicesSwap *e2 = new PointsIndicesSwap( i1, i2 );
+    const PointsIndicesSwap *e2 = new PointsIndicesSwap( i1, i2 );
     addStateChange(e2);
     propagateStateChanges();
 
-    PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 );
+    const PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 );
     this->addTopologyChange(e);
 }
 
@@ -79,13 +79,13 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints, const 
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints,indices);
+        const PointsAdded *e2 = new PointsAdded(nPoints,indices);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints,indices);
+    const PointsAdded *e = new PointsAdded(nPoints,indices);
     this->addTopologyChange(e);
 }
 
@@ -103,13 +103,13 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints, indices, ancestors, coefs);
+        const PointsAdded *e2 = new PointsAdded(nPoints, indices, ancestors, coefs);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints, indices, ancestors, coefs);
+    const PointsAdded *e = new PointsAdded(nPoints, indices, ancestors, coefs);
     this->addTopologyChange(e);
 }
 
@@ -140,7 +140,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
     for(size_t i = 0; i < nPoints; ++i)
     {
         newPointIndices[i] = PointID(startIndex + i);
-        PointID ancestorIndex = ancestorElems[i].index;
+        const PointID ancestorIndex = ancestorElems[i].index;
         // check if this new point has indeed an ancestor.
         if (ancestorIndex != sofa::InvalidID )
         {
@@ -250,15 +250,15 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints, newPointIndices, ancestorElems,
-            ancestorPointIndices, baryCoefs);
+        const PointsAdded *e2 = new PointsAdded(nPoints, newPointIndices, ancestorElems,
+                                                ancestorPointIndices, baryCoefs);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints, newPointIndices, ancestorElems,
-        ancestorPointIndices, baryCoefs);
+    const PointsAdded *e = new PointsAdded(nPoints, newPointIndices, ancestorElems,
+                                           ancestorPointIndices, baryCoefs);
     this->addTopologyChange(e);
 }
 
@@ -319,7 +319,7 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::type::vector<Point
 
     if(moveDOF)
     {
-        PointsMoved *ev = new PointsMoved(id, ancestors, coefs);
+        const PointsMoved *ev = new PointsMoved(id, ancestors, coefs);
         addStateChange(ev);
         propagateStateChanges();
     }
@@ -327,7 +327,7 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::type::vector<Point
     m_container->setPointTopologyToDirty();
 
     // Warning that vertices just been moved
-    PointsMoved *ev2 = new PointsMoved(id, ancestors, coefs);
+    const PointsMoved *ev2 = new PointsMoved(id, ancestors, coefs);
     this->addTopologyChange(ev2);
 
 }
@@ -385,12 +385,12 @@ void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &
     std::sort( indices.begin(), indices.end(), std::greater<PointID>() );
 
     // Warning that these vertices will be deleted
-    PointsRemoved *e = new PointsRemoved(indices);
+    const PointsRemoved *e = new PointsRemoved(indices);
     this->addTopologyChange(e);
 
     if(removeDOF)
     {
-        PointsRemoved *e2 = new PointsRemoved(indices);
+        const PointsRemoved *e2 = new PointsRemoved(indices);
         addStateChange(e2);
     }
     sofa::helper::AdvancedTimer::stepEnd("removePointsWarning");
@@ -416,12 +416,12 @@ void PointSetTopologyModifier::renumberPointsWarning( const sofa::type::vector<P
         const bool renumberDOF)
 {
     // Warning that these vertices will be deleted
-    PointsRenumbering *e = new PointsRenumbering(index, inv_index);
+    const PointsRenumbering *e = new PointsRenumbering(index, inv_index);
     this->addTopologyChange(e);
 
     if(renumberDOF)
     {
-        PointsRenumbering *e2 = new PointsRenumbering(index, inv_index);
+        const PointsRenumbering *e2 = new PointsRenumbering(index, inv_index);
         addStateChange(e2);
     }
 }
@@ -441,11 +441,11 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    sofa::core::topology::EndingEvent* e = new sofa::core::topology::EndingEvent();
+    const sofa::core::topology::EndingEvent* e = new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
     this->propagateTopologicalEngineChanges();
-    
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     getContext()->executeVisitor(&a);
@@ -467,7 +467,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     // get directly the list of engines created at init: case of removing.... for the moment
 
     auto& pointTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoHandler : pointTopologyHandlerList)
+    for (const auto topoHandler : pointTopologyHandlerList)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         if (topoHandler->isDirty())
@@ -483,7 +483,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::StateChangeVisitor a(params, m_container);
     getContext()->executeVisitor(&a);
 
@@ -493,7 +493,7 @@ void PointSetTopologyModifier::propagateStateChanges()
 
 void PointSetTopologyModifier::notifyEndingEvent()
 {
-    sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
+    const sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
 
     propagateTopologicalChanges();

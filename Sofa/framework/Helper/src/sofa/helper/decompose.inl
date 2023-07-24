@@ -748,7 +748,7 @@ void Decompose<Real>::polarDecomposition( const type::Mat<2,2,Real>& M, type::Ma
 template<class Real>
 bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &Q, type::Mat<3,3,Real> &S )
 {
-    bool degenerated = polarDecomposition_stable( M, Q );
+    const bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
 
     return degenerated;
@@ -759,7 +759,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, t
 {
     type::Mat<3,3,Real> U, V;
     type::Vec<3,Real> Sdiag;
-    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+    const bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
 
@@ -769,7 +769,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, t
 template<class Real>
 bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &Q, type::Mat<2,2,Real> &S )
 {
-    bool degenerated = polarDecomposition_stable( M, Q );
+    const bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
     //S = V.multDiagonal( Sdiag ).multTransposed( V ); // S = V * Sdiag * Vt
 
@@ -781,7 +781,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, t
 {
     type::Mat<2,2,Real> U, V;
     type::Vec<2,Real> Sdiag;
-    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+    const bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
 
@@ -1075,20 +1075,20 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
     static const Real msRoot3 = helper::rsqrt((Real)3.0);
 
     // Convert the unique matrix entries to double precision.
-    double a00 = (double)A[0][0];
-    double a01 = (double)A[0][1];
-    double a02 = (double)A[0][2];
-    double a11 = (double)A[1][1];
-    double a12 = (double)A[1][2];
-    double a22 = (double)A[2][2];
+    const double a00 = (double)A[0][0];
+    const double a01 = (double)A[0][1];
+    const double a02 = (double)A[0][2];
+    const double a11 = (double)A[1][1];
+    const double a12 = (double)A[1][2];
+    const double a22 = (double)A[2][2];
 
     // The characteristic equation is x^3 - c2*x^2 + c1*x - c0 = 0.  The
     // eigenvalues are the roots to this equation, all guaranteed to be
     // real-valued, because the matrix is symmetric.
-    double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 -
+    const double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 -
             a11*a02*a02 - a22*a01*a01;
 
-    double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 +
+    const double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 +
             a11*a22 - a12*a12;
 
     double c2 = a00 + a11 + a22;
@@ -1102,7 +1102,7 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
         aDiv3 = 0.0;
     }
 
-    double halfMB = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
+    const double halfMB = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
 
     double q = halfMB*halfMB + aDiv3*aDiv3*aDiv3;
     if (q > 0.0)
@@ -1117,7 +1117,7 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
     // Mathematically, ATan2(0,0) is undefined, but ANSI standards
     // require the function to return 0.
     double angle;
-    double tany = helper::rsqrt(-q);
+    const double tany = helper::rsqrt(-q);
     if( halfMB != 0 || tany != 0 )
     {
         angle = atan2( tany, halfMB );
@@ -1127,9 +1127,9 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
 
     double cs = cos(angle);
     double sn = sin(angle);
-    double root0 = c2Div3 + 2.0*magnitude*cs;
-    double root1 = c2Div3 - magnitude*(cs + msRoot3*sn);
-    double root2 = c2Div3 - magnitude*(cs - msRoot3*sn);
+    const double root0 = c2Div3 + 2.0*magnitude*cs;
+    const double root1 = c2Div3 - magnitude*(cs + msRoot3*sn);
+    const double root2 = c2Div3 - magnitude*(cs - msRoot3*sn);
 
     // Sort in increasing order.
     if (root1 >= root0)
@@ -1815,7 +1815,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
         break;
     }
 
-    bool inverted = ( determinant(U) < (Real)0 );
+    const bool inverted = ( determinant(U) < (Real)0 );
 
     // un-inverting the element -> made U a rotation by negating a column
     if( inverted )
@@ -1925,7 +1925,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
     }
     }
 
-    bool inverted = ( determinant(U) < (Real)0 );
+    const bool inverted = ( determinant(U) < (Real)0 );
 
     // un-inverting the element -> made U a rotation by negating a column
     if( inverted )

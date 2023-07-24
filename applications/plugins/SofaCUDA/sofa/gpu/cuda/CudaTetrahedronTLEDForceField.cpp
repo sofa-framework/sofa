@@ -516,7 +516,6 @@ void CudaTetrahedronTLEDForceField::addDForce (const sofa::core::MechanicalParam
 
 }
 
-
 // --------------------------------------------------------------------------------------
 // Computes element volumes for tetrahedral elements
 // --------------------------------------------------------------------------------------
@@ -555,7 +554,7 @@ void CudaTetrahedronTLEDForceField::ComputeDhDxTetra(const Element& e, const Vec
     }
 
     // Jacobian determinant
-    float detJ = J[0][0]*(J[1][1]*J[2][2] - J[1][2]*J[2][1]) +
+    const float detJ = J[0][0]*(J[1][1]*J[2][2] - J[1][2]*J[2][1]) +
             J[1][0]*(J[0][2]*J[2][1] - J[0][1]*J[2][2]) +
             J[2][0]*(J[0][1]*J[1][2] - J[0][2]*J[1][1]);
 

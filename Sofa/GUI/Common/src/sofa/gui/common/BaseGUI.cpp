@@ -123,7 +123,7 @@ void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_
 {
     sofa::helper::ScopedAdvancedTimer exportGnuplotTimer("exportGnuplot");
 
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }

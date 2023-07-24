@@ -65,7 +65,7 @@ template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x, Vector& b)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
-    int n = invertData->A.n;
+    const int n = invertData->A.n;
 
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");

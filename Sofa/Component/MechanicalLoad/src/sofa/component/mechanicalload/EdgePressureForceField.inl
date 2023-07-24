@@ -34,7 +34,7 @@ namespace sofa::component::mechanicalload
 template <class DataTypes>
 EdgePressureForceField<DataTypes>::EdgePressureForceField()
     : edgePressureMap(initData(&edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
-    ,pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
     , edgeIndices(initData(&edgeIndices,"edgeIndices", "Indices of edges separated with commas where a pressure is applied"))
     , edges(initData(&edges, "edges", "List of edges where a pressure is applied"))
     , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
@@ -105,20 +105,18 @@ void EdgePressureForceField<DataTypes>::init()
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  /*dataX */, const DataVecDeriv & /*dataV*/ )
 {
-    VecDeriv& f = *(dataF.beginEdit());
-    Deriv force;
+    helper::WriteAccessor< Data< VecDeriv > > f = dataF;
 
-    //edgePressureMap.activateSubsetData();
     const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
     const sofa::type::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
-    for (unsigned int i=0; i<my_map.size(); ++i)
+    for (std::size_t i = 0; i < my_map.size(); ++i)
     {
-        force=my_subset[i].force/2;
-        f[m_topology->getEdge(my_map[i])[0]]+=force;
-        f[m_topology->getEdge(my_map[i])[1]]+=force;
+        const Deriv force = my_subset[i].force / 2;
+        const topology::Edge edge = m_topology->getEdge(my_map[i]);
+        f[edge[0]] += force;
+        f[edge[1]] += force;
     }
 
-    dataF.endEdit();
     updateEdgeInformation();
 }
 
@@ -145,11 +143,8 @@ void EdgePressureForceField<DataTypes>::setDminAndDmax(const SReal _dmin, const 
 template<class DataTypes>
 bool EdgePressureForceField<DataTypes>::isPointInPlane(Coord p)
 {
-    Real d=dot(p,normal.getValue());
-    if ((d>dmin.getValue())&& (d<dmax.getValue()))
-        return true;
-    else
-        return false;
+    const Real d = dot(p, normal.getValue());
+    return d > dmin.getValue() && d < dmax.getValue();
 }
 
 template<class DataTypes>
@@ -320,6 +315,18 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     }
     edgePressureMap.endEdit();
     initEdgeInformation();
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+{
+    // No stiffness in this ForceField
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template <class DataTypes>

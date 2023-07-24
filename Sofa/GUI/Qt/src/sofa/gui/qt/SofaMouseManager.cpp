@@ -99,7 +99,7 @@ void SofaMouseManager::setPickHandler(PickHandler *picker)
 
 void SofaMouseManager::selectOperation(int operation)
 {
-    QComboBox *combo = (QComboBox*)(sender());
+    const QComboBox *combo = (QComboBox*)(sender());
     const std::string operationName=mapIndexOperation[operation];
 
     if      (combo == gui->LeftOperationCombo)   updateOperation(LEFT,   operationName);

@@ -52,7 +52,7 @@ BaseLink::~BaseLink()
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
-    unsigned int size = unsigned(getSize());
+    const unsigned int size = unsigned(getSize());
     bool first = true;
     for (unsigned int i = 0; i<size; ++i)
     {
@@ -211,7 +211,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
     if (!dest || dest == from) return std::string("[]");
     BaseObject* o = dest->toBaseObject();
     BaseObject* f = from->toBaseObject();
-    BaseContext* ctx = from->toBaseContext();
+    const BaseContext* ctx = from->toBaseContext();
     if (!ctx && f) ctx = f->getContext();
     if (o)
     {
@@ -222,7 +222,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
             objectPath.append( master->getName() + std::string("/") + objectPath );
             master = master->getMaster();
         }
-        BaseNode* n = o->getContext()->toBaseNode();
+        const BaseNode* n = o->getContext()->toBaseNode();
         if (f && o->getContext() == ctx)
             return objectPath;
         else if (n)
@@ -234,7 +234,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
     {
         if (f && ctx == dest)
             return std::string("./");
-        BaseNode* n = dest->toBaseNode();
+        const BaseNode* n = dest->toBaseNode();
         if (n) return n->getPathName(); // TODO: compute relative path
         else return dest->getName(); // we could not determine destination path, specifying simply its name might be enough to find it back
     }
@@ -270,7 +270,7 @@ bool BaseLink::read( const std::string& str )
     if (str.empty())
         return true;
 
-    auto owner = getOwner();
+    const auto owner = getOwner();
     if (owner == nullptr)
         return false;
 
@@ -342,7 +342,7 @@ bool BaseLink::updateLinks()
         return false;
 
     bool ok = true;
-    std::size_t n = getSize();
+    const std::size_t n = getSize();
     for (std::size_t i = 0; i<n; ++i)
     {
         Base* ptr;
@@ -363,15 +363,15 @@ bool BaseLink::updateLinks()
 
 void BaseLink::setLinkedBase(Base* link)
 {
-    auto owner = getOwnerBase();
-    BaseNode* n = dynamic_cast<BaseNode*>(link);
-    BaseObject* o = dynamic_cast<BaseObject*>(link);
+    const auto owner = getOwnerBase();
+    const BaseNode* n = dynamic_cast<BaseNode*>(link);
+    const BaseObject* o = dynamic_cast<BaseObject*>(link);
     if (!n && !o)
     {
         read("@");
         return;
     }
-    auto pathname = n != nullptr ? n->getPathName() : o->getPathName();
+    const auto pathname = n != nullptr ? n->getPathName() : o->getPathName();
     if (!this->read("@" + pathname))
     {
         if (!owner)

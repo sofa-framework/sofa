@@ -223,12 +223,12 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     msg_info() << "******\n Constraint before Merge  \n *******" ;
 
-    MatrixDerivRowIterator rowIt = constraints.begin();
-    MatrixDerivRowIterator rowItEnd = constraints.end();
+    auto rowIt = constraints.begin();
+    auto rowItEnd = constraints.end();
 
     while (rowIt != rowItEnd)
     {
-        constraintCopy.writeLine(rowIt.index(), rowIt.row());
+        constraintCopy.setLine(rowIt.index(), rowIt.row());
         ++rowIt;
     }
 
@@ -237,7 +237,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     // look for the number of group;
     unsigned int numGroup = 0;
-    for (int cm : constraint_merge)
+    for (const int cm : constraint_merge)
     {
         if (cm > (int) numGroup)
             numGroup = (unsigned int) cm;
@@ -250,8 +250,8 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     {
         msg_info() << "constraint[" << group << "] : " ;
 
-        MatrixDerivRowIterator rowCopyIt = constraintCopy.begin();
-        MatrixDerivRowIterator rowCopyItEnd = constraintCopy.end();
+        auto rowCopyIt = constraintCopy.begin();
+        auto rowCopyItEnd = constraintCopy.end();
 
         while (rowCopyIt != rowCopyItEnd)
         {
@@ -277,7 +277,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     while (rowIt != rowItEnd)
     {
-        constraints.writeLine(rowIt.index(), rowIt.row());
+        constraints.setLine(rowIt.index(), rowIt.row());
         ++rowIt;
     }
 }
@@ -355,7 +355,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
         ++rowIt2;
         for (; rowIt2 != rowItEnd; ++rowIt2)
         {
-            int indexCurColConst = rowIt2.index();
+            const int indexCurColConst = rowIt2.index();
             if (rowIt2.row().empty()) continue; // ignore constraints with empty Jacobians
 
             // To efficiently compute the compliance between rowIt and rowIt2, we can rely on the
@@ -627,7 +627,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal *
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != constraints.end(); ++rowIt)
     {
-        int indexC = rowIt.index();
+        const int indexC = rowIt.index();
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs

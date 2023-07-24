@@ -84,7 +84,7 @@ DataWidget::updateDataValue()
         if (hasOwner)
         {
             std::string path;
-            BaseNode* ownerAsNode = dynamic_cast<BaseNode*>(baseData->getOwner() );
+            const BaseNode* ownerAsNode = dynamic_cast<BaseNode*>(baseData->getOwner() );
             BaseObject* ownerAsObject = dynamic_cast<BaseObject*>(baseData->getOwner() );
 
             if (ownerAsNode)
@@ -100,7 +100,7 @@ DataWidget::updateDataValue()
                     objectPath = master->getName() + "/" + objectPath;
                     master = master->getMaster();
                 }
-                BaseNode* n = dynamic_cast<BaseNode*>(ownerAsObject->getContext());
+                const BaseNode* n = dynamic_cast<BaseNode*>(ownerAsObject->getContext());
                 if (n)
                 {
                     path = n->getPathName() + std::string("/") + objectPath + std::string(".") + baseData->getName(); // TODO: compute relative path
@@ -198,7 +198,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 
     std::string final_str;
     formatHelperString(helper,final_str);
-    std::string ownerClass=data->getOwner()->getName();
+    const std::string ownerClass=data->getOwner()->getName();
     if (modifiable)
     {
         QPushButton *helper_button = new QPushButton(this);
@@ -213,7 +213,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     }
     if(data->getParent())
     {
-        std::string linkvalue = data->getParent()->getLinkPath();
+        const std::string linkvalue = data->getParent()->getLinkPath();
         linkpath_edit = new QLineEdit(this);
         linkpath_edit->setContentsMargins(2, 0, 0, 0);
         linkpath_edit->setText(QString(linkvalue.c_str()));
@@ -252,7 +252,7 @@ void QDisplayDataInfoWidget::formatHelperString(const std::string& helper, std::
     numLines_ = 0;
     while (!label_text.empty())
     {
-        std::string::size_type pos = label_text.find('\n');
+        const std::string::size_type pos = label_text.find('\n');
         std::string current_sentence;
         if (pos != std::string::npos)
             current_sentence  = label_text.substr(0,pos+1);
@@ -263,7 +263,7 @@ void QDisplayDataInfoWidget::formatHelperString(const std::string& helper, std::
             const std::size_t cut = current_sentence.size()/SIZE_TEXT;
             for (std::size_t index_cut=1; index_cut<=cut; index_cut++)
             {
-                std::string::size_type numero_char=current_sentence.rfind(' ',SIZE_TEXT*index_cut);
+                const std::string::size_type numero_char=current_sentence.rfind(' ',SIZE_TEXT*index_cut);
                 current_sentence = current_sentence.insert(numero_char+1,1,'\n');
                 numLines_++;
             }

@@ -105,7 +105,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
     extrudedQuads->clear();
 
     int nbSections = d_nbSections.getValue();
-    int nbVertices = curveVertices.size();
+    const int nbVertices = curveVertices.size();
 
     // compute coordinates of extruded vertices (including initial vertices)
     Real scale = (d_thicknessIn.getValue() + d_thicknessOut.getValue())/(Real)nbSections;
@@ -156,7 +156,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
     // curve not closed
     if(curveEdges.size() < curveVertices.size())
     {
-        int e = curveEdges.size()-1;
+        const int e = curveEdges.size()-1;
         for (int n=0; n<nbSections; n++)
         {
             BaseMeshTopology::Edge edge = BaseMeshTopology::Edge(curveEdges[e][1]+n*nbVertices, curveEdges[e][1]+(n+1)*nbVertices);

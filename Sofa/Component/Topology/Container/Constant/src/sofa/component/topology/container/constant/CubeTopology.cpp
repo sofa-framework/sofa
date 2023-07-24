@@ -45,12 +45,12 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         arg->getAttribute("ymax") != nullptr &&
         arg->getAttribute("zmax") != nullptr )
     {
-        float xmin = arg->getAttributeAsFloat("xmin",0);
-        float ymin = arg->getAttributeAsFloat("ymin",0);
-        float zmin = arg->getAttributeAsFloat("zmin",0);
-        float xmax = arg->getAttributeAsFloat("xmax",1);
-        float ymax = arg->getAttributeAsFloat("ymax",1);
-        float zmax = arg->getAttributeAsFloat("zmax",1);
+        const float xmin = arg->getAttributeAsFloat("xmin",0);
+        const float ymin = arg->getAttributeAsFloat("ymin",0);
+        const float zmin = arg->getAttributeAsFloat("zmin",0);
+        const float xmax = arg->getAttributeAsFloat("xmax",1);
+        const float ymax = arg->getAttributeAsFloat("ymax",1);
+        const float zmax = arg->getAttributeAsFloat("zmax",1);
         min.setValue(Vec3((SReal)(xmin*scale), (SReal)(ymin*scale), (SReal)(zmin*scale)));
         max.setValue(Vec3((SReal)(xmax*scale), (SReal)(ymax*scale), (SReal)(zmax*scale)));
     }
@@ -160,7 +160,7 @@ int CubeTopology::point(int x, int y, int z, Plane p) const
             return (x+nx*(y+ny));
         else
         {
-            int base = nx*ny*2 + (2*nx+2*ny-4)*(z-1);
+            const int base = nx*ny*2 + (2*nx+2*ny-4)*(z-1);
             if (y==0)
                 return base + x;
             else if (y==ny-1)

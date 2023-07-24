@@ -98,7 +98,7 @@ private:
 template<>
 inline long RandomGenerator::random( long min, long max )
 {
-    SReal randomReal = min + ((max - min)*(SReal)randomBase())/(SReal)RANDOM_BASE_MAX;
+    const SReal randomReal = min + ((max - min)*(SReal)randomBase())/(SReal)RANDOM_BASE_MAX;
 	return (long)(randomReal);
 }
 

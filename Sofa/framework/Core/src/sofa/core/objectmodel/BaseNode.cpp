@@ -43,7 +43,7 @@ BaseNode::~BaseNode()
 
 BaseNode* BaseNode::getRoot() const
 {
-    BaseNode* firstParent = getFirstParent();
+    const BaseNode* firstParent = getFirstParent();
     if (!firstParent) return const_cast<BaseNode*>(this);
     else return firstParent->getRoot();
 }
@@ -106,7 +106,7 @@ std::string BaseNode::internalGetPathName() const {
 
 // path name representation of root as "/", as it is done for filesystems
 std::string BaseNode::getPathName() const {
-    Parents parents = getParents();
+    const Parents parents = getParents();
     if (parents.empty())
         return "/";
     return internalGetPathName();

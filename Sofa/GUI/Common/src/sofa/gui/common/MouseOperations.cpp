@@ -69,7 +69,7 @@ void Operation::start()
 
 InteractionPerformer *Operation::createPerformer()
 {
-    std::string type = defaultPerformerType();
+    const std::string type = defaultPerformerType();
     if (type.empty()) return nullptr;
     return InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, pickHandle->getInteraction()->mouseInteractor.get());
 }
@@ -181,7 +181,7 @@ void TopologyOperation::endOperation()
 //*******************************************************************************************
 void InciseOperation::start()
 {
-    int currentMethod = getIncisionMethod();
+    const int currentMethod = getIncisionMethod();
 
     if (!startPerformer)
     {

@@ -53,7 +53,7 @@ void ProfilerChartView::mousePressEvent(QMouseEvent *event)
 {
     auto const valueInSeries = chart()->mapToValue(event->localPos());
 
-    int width = valueInSeries.x();
+    const int width = valueInSeries.x();
 
     if (width >= 0 && width < m_bufferSize)
     {
@@ -179,8 +179,8 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
     , m_overheadMs(0.)
 {
     m_subSteps.clear();
-    
-    bool res = processData(idString);
+
+    const bool res = processData(idString);
     if (!res) // error clear data
     {
         for (unsigned int i=0; i<m_subSteps.size(); ++i)
@@ -203,7 +203,7 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
     std::stack<AnimationSubStepData*> processStack;
     int level = 0;
     ctime_t t0 = 0;
-    ctime_t tEnd = CTime::getTime();
+    const ctime_t tEnd = CTime::getTime();
     ctime_t tCurr;
     for (unsigned int ri = 0; ri < _records.size(); ++ri)
     {

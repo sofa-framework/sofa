@@ -245,8 +245,8 @@ public:
 template<class T>
 void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
 {
-    int loop1 = atoi(params[0].c_str());
-    int loop2 = atoi(params[1].c_str());
+    const int loop1 = atoi(params[0].c_str());
+    const int loop2 = atoi(params[1].c_str());
     std::stringstream tmp;
     for(int i=0;i<loop1;i++)
     {

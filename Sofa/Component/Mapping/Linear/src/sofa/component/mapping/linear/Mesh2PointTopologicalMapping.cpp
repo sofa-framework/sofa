@@ -183,8 +183,8 @@ void Mesh2PointTopologicalMapping::init()
                         Vec3d p2(fromModel->getPX(q[2]), fromModel->getPY(q[2]), fromModel->getPZ(q[2]));
                         Vec3d p3(fromModel->getPX(q[3]), fromModel->getPY(q[3]), fromModel->getPZ(q[3]));
 
-                        double fx = quadBaryCoords.getValue()[j][0];
-                        double fy = quadBaryCoords.getValue()[j][1];
+                        const double fx = quadBaryCoords.getValue()[j][0];
+                        const double fy = quadBaryCoords.getValue()[j][1];
 
                         Vec3d result =  p0 * ((1-fx) * (1-fy))
                                 + p1 * ((  fx) * (1-fy))
@@ -244,9 +244,9 @@ void Mesh2PointTopologicalMapping::init()
 						Vec3d p6(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
 						Vec3d p7(fromModel->getPX(h[6]), fromModel->getPY(h[6]), fromModel->getPZ(h[6]));
 
-                        double fx = hexaBaryCoords.getValue()[j][0];
-                        double fy = hexaBaryCoords.getValue()[j][1];
-                        double fz = hexaBaryCoords.getValue()[j][2];
+                        const double fx = hexaBaryCoords.getValue()[j][0];
+                        const double fy = hexaBaryCoords.getValue()[j][1];
+                        const double fz = hexaBaryCoords.getValue()[j][2];
 
                         Vec3d result =  p0 * ((1-fx) * (1-fy) * (1-fz))
                                 + p1 * ((  fx) * (1-fy) * (1-fz))
@@ -274,7 +274,7 @@ void Mesh2PointTopologicalMapping::init()
 bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const type::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved)
 {
     bool ok = true;
-    unsigned int nbPOut = (unsigned int)toModel->getNbPoints();
+    const unsigned int nbPOut = (unsigned int)toModel->getNbPoints();
     if (nbPOut != pointSource.size())
     {
         msg_error() << "Internal Error after " << step << ": pointSource size " << pointSource.size() << " != output topology size " << nbPOut;
@@ -422,8 +422,8 @@ void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifie
     Edge e = fromModel->getEdge(i);
     const vector< Vec3d > &eBaryCoords = edgeBaryCoords.getValue();
 
-    Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
-    Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
+    const Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
+    const Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
 
     for (unsigned int j = 0; j < eBaryCoords.size(); j++)
     {
@@ -439,7 +439,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifie
     {
         for (unsigned int j = 0; j < eBaryCoords.size(); j++)
         {
-            double fx = eBaryCoords[j][0];
+            const double fx = eBaryCoords[j][0];
 
             Vec3d result = p0 * (1 - fx) + p1 * fx;
 
@@ -458,9 +458,9 @@ void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyMod
     Triangle t = fromModel->getTriangle(i);
     const vector< Vec3d > &tBaryCoords = triangleBaryCoords.getValue();
 
-    Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
-    Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
-    Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+    const Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
+    const Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
+    const Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
@@ -476,8 +476,8 @@ void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyMod
     {
         for (unsigned int j = 0; j < tBaryCoords.size(); j++)
         {
-            double fx = tBaryCoords[j][0];
-            double fy = tBaryCoords[j][1];
+            const double fx = tBaryCoords[j][0];
+            const double fy = tBaryCoords[j][1];
 
             Vec3d result =  p0 * (1-fx-fy) + p1 * fx + p2 * fy;         
 
@@ -497,10 +497,10 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopology
     Tetrahedron t = fromModel->getTetrahedron(i);
     const vector< Vec3d > &tBaryCoords = tetraBaryCoords.getValue();
 
-    Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
-    Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
-    Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
-    Vec3d p3(fromModel->getPX(t[3]), fromModel->getPY(t[3]), fromModel->getPZ(t[3]));
+    const Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
+    const Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
+    const Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+    const Vec3d p3(fromModel->getPX(t[3]), fromModel->getPY(t[3]), fromModel->getPZ(t[3]));
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
@@ -516,9 +516,9 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopology
     {
         for (unsigned int j = 0; j < tBaryCoords.size(); j++)
         {
-            double fx = tBaryCoords[j][0];
-            double fy = tBaryCoords[j][1];
-	        double fz = tBaryCoords[j][2];
+            const double fx = tBaryCoords[j][0];
+            const double fy = tBaryCoords[j][1];
+            const double fz = tBaryCoords[j][2];
 
             Vec3d result =  p0 * (1-fx-fy-fz) + p1 * fx + p2 * fy +p3*fz;         
 
@@ -532,7 +532,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
     if(fromModel && toModel && initDone)
     {
         std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+        const std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
         PointSetTopologyModifier *toPointMod = nullptr;
         EdgeSetTopologyModifier *toEdgeMod = nullptr;
@@ -547,7 +547,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         std::string laststep = "";
         while( changeIt != itEnd )
         {
-            TopologyChangeType changeType = (*changeIt)->getChangeType();
+            const TopologyChangeType changeType = (*changeIt)->getChangeType();
             laststep += " ";
             laststep += sofa::core::topology::parseTopologyChangeTypeToString(changeType);
             switch( changeType )
@@ -853,7 +853,7 @@ void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::type:
         pointsMappedFrom[elem][i] = map;
         for (unsigned int j = 0; j < map.size(); ++j)
         {
-            Index m = map[j];
+            const Index m = map[j];
             if (m != sofa::InvalidID)
                 pointSource[m].second = i;
         }
@@ -862,8 +862,8 @@ void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::type:
 
 void Mesh2PointTopologicalMapping::swapOutputPoints(Index i1, Index i2, bool removeLast)
 {
-    std::pair<Element, Index> i1Source = pointSource[i1];
-    std::pair<Element, Index> i2Source = pointSource[i2];
+    const std::pair<Element, Index> i1Source = pointSource[i1];
+    const std::pair<Element, Index> i2Source = pointSource[i2];
     pointSource[i1] = i2Source;
     pointSource[i2] = i1Source;
     if (i1Source.second != sofa::InvalidID)

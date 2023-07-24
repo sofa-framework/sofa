@@ -193,7 +193,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     {
         // i < j correspond to the upper diagonal
         // for the computation, we use the lower diagonal matrix
-        Index t = i; i = j; j = t;
+        const Index t = i; i = j; j = t;
     }
     if (nBlockComputedMinv[i] > i-j) return; // the block was already computed
 
@@ -763,12 +763,12 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
             double acc = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
             {
-                Index col1 = i1->first;
-                double val1 = i1->second;
+                const Index col1 = i1->first;
+                const double val1 = i1->second;
                 for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
                 {
-                    Index col2 = i2->first;
-                    double val2 = i2->second;
+                    const Index col2 = i2->first;
+                    const double val2 = i2->second;
                     acc += val1 * getMinvElement(col1,col2) * val2;
                 }
             }
