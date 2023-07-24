@@ -29,12 +29,6 @@
 #include <sofa/component/topology/container/dynamic/CommonAlgorithms.h>
 #include <fstream>
 
-#ifdef NDEBUG
-#define DO_EXTRADEBUG_MESSAGES false
-#else
-#define DO_EXTRADEBUG_MESSAGES true
-#endif //
-
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -1433,27 +1427,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     const typename DataTypes::Coord& c1=vect_c[t[1]];
     const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-    sofa::type::Vec<3,Real> p0;
-    p0[0] = (Real) (c0[0]);
-    p0[1] = (Real) (c0[1]);
-    p0[2] = (Real) (c0[2]);
-    sofa::type::Vec<3,Real> p1;
-    p1[0] = (Real) (c1[0]);
-    p1[1] = (Real) (c1[1]);
-    p1[2] = (Real) (c1[2]);
-    sofa::type::Vec<3,Real> p2;
-    p2[0] = (Real) (c2[0]);
-    p2[1] = (Real) (c2[1]);
-    p2[2] = (Real) (c2[2]);
+    sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
+    sofa::type::Vec<3,Real> p1 = { c1[0], c1[1], c1[2] };
+    sofa::type::Vec<3,Real> p2 = { c2[0], c2[1], c2[2] };
 
-    sofa::type::Vec<3,Real> pa;
-    pa[0] = (Real) (a[0]);
-    pa[1] = (Real) (a[1]);
-    pa[2] = (Real) (a[2]);
-    sofa::type::Vec<3,Real> pb;
-    pb[0] = (Real) (b[0]);
-    pb[1] = (Real) (b[1]);
-    pb[2] = (Real) (b[2]);
+    sofa::type::Vec<3,Real> pa = { a[0], a[1], a[2] };
+    sofa::type::Vec<3,Real> pb = { b[0], b[1], b[2] };
 
     sofa::type::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
     Real norm_v_normal = v_normal.norm(); // WARN : square root COST
@@ -2180,27 +2159,24 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if (ind_ta == ind_tb)
     {
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
-        }
+        msg_warning() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
         return false;
     }
 
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        dmsg_info() << "*********************************" << msgendl
-                    << "ind_t_current: " << ind_t_current << msgendl
-                    << "p_current: " << p_current << msgendl
-                    << "coord_t: " << coord_t << msgendl
-                    << "coord_k: " << coord_k << msgendl
-                    << "indices: " << indices << msgendl
-                    << "last_point: " << last_point << msgendl
-                    << "a: " << a << msgendl
-                    << "b: " << b << msgendl
-                    << "is_intersected: "<< is_intersected << msgendl
-                    << "*********************************" ;
-    }
-
+    msg_info() << "*********************************" << msgendl
+            << "* computeIntersectedPointsList * " << msgendl
+            << "ind_t_current: " << ind_t_current << msgendl
+            << "p_current: " << p_current << msgendl
+            << "coord_t: " << coord_t << msgendl
+            << "coord_k: " << coord_k << msgendl
+            << "indices: " << indices << msgendl
+            << "last_point: " << last_point << msgendl
+            << "a: " << a << msgendl
+            << "b: " << b << msgendl
+            << "is_intersected: "<< is_intersected << msgendl
+            << "*********************************" ;
+    
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
 
@@ -2422,23 +2398,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        if(is_reached)
-        {
-            dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
-        }
+    if(is_reached)
+    {
+        msg_info() << "TriangleSetTopology.inl : Cut is reached" ;
+    }
 
-        if(is_on_boundary)
-        {
-            dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
-        }
+    if(is_on_boundary)
+    {
+        msg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
     }
 
     if(!is_reached && !is_on_boundary)
     {
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
-        }
+        msg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
@@ -2468,17 +2440,16 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
     // using old function:
     pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    msg_info() << "*********************************" << msgendl
+                << "* computeIntersectedObjectsList *" << msgendl
+                << "last_point: " << last_point << msgendl
+                << "a: " << a << msgendl
+                << "b: " << b << msgendl
+                << "triangles_list: "<< triangles_list << msgendl
+                << "edges_list: "<< edges_list << msgendl
+                << "coordsEdge_list: "<< coordsEdge_list << msgendl
+                << "*********************************" ;
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        dmsg_info() << "*********************************" << msgendl
-                    << "last_point: " << last_point << msgendl
-                    << "a: " << a << msgendl
-                    << "b: " << b << msgendl
-                    << "triangles_list: "<< triangles_list << msgendl
-                    << "edges_list: "<< edges_list << msgendl
-                    << "coordsEdge_list: "<< coordsEdge_list << msgendl
-                    << "*********************************" ;
-    }
 
     if (pathOK)
     {
@@ -2709,12 +2680,11 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             }
         }
 
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "_neighTri: "<< _neighTri << msgendl
-                        << "_neighTri2: "<< _neighTri2 <<msgendl
-                        << "buffk: "<< buffK <<msgendl
-                        << "buffkk: "<< buffKK <<msgendl ;
-        }
+
+        msg_info() << "_neighTri: "<< _neighTri << msgendl
+                    << "_neighTri2: "<< _neighTri2 <<msgendl
+                    << "buffk: "<< buffK <<msgendl
+                    << "buffkk: "<< buffKK <<msgendl ;
         cpt_secu++;
     }
 
