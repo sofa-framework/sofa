@@ -294,10 +294,11 @@ struct Edge
 
             const Node pX = pA + alpha * AB;
             const Node pY = pC + beta * CD;
-
-            if (alpha < 0 || beta < 0 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) 
+            std::cout << "alpha: " << alpha << " | beta: " << beta << std::endl;
+            if (alpha < 0 || beta < 0 // if alpha or beta < 0 means on the exact same line but no overlap.
+                || alpha > 1 // if alpha > 1 means intersection but after outside from [AB]
+                || (pY - pX).norm2() > EQUALITY_THRESHOLD ) // if pY and pX are not se same means no intersection.
             {
-                // if alpha or beta < 0 means on the exact same line but no overlap. if pY and pX are not se same means no intersection.
                 intersection = sofa::type::Vec<3, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
                 return false;
             }
