@@ -316,7 +316,7 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
     type::vector< Edge >& my_edges = *(d_edges.beginEdit());
     type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
-    type::vector<sofa::type::Vector2>& my_uv = *(_uv.beginEdit());
+    type::vector<sofa::type::Vec2>& my_uv = *(_uv.beginEdit());
 
     type::vector<type::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
@@ -480,7 +480,7 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
     type::vector< Edge >& my_edges = *(d_edges.beginEdit());
     type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
-    type::vector<sofa::type::Vector2>& my_uv = *(_uv.beginEdit());
+    type::vector<sofa::type::Vec2>& my_uv = *(_uv.beginEdit());
 
     type::vector<type::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
