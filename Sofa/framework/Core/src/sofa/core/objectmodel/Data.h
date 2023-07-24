@@ -27,6 +27,7 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
+
 namespace sofa
 {
 namespace core::objectmodel
@@ -197,7 +198,6 @@ public:
     /** Try to read argument value from an input stream.
     Return false if failed
      */
-    bool read( const std::string& s ) override;
     void printValue(std::ostream& out) const override;
     std::string getValueString() const override;
     std::string getValueTypeString() const override;
@@ -223,34 +223,21 @@ protected:
     std::istream& readValue(std::istream& in);
 
 private:
-
-
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
     bool doSetValueFromLink(const BaseData* parent) override;
     const void* doGetValueVoidPtr() const override { return &getValue(); }
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
+    void doClear() override { setValue(T{}); };
+    void doRead(std::istringstream& in) override { in >> *beginWriteOnly(); endEdit(); }
 };
 
 class EmptyData : public Data<void*> {};
 
-template <class T>
-std::istream& Data<T>::readValue(std::istream& in)
-{
-    in >> *beginEdit();
-    endEdit();
-    return in;
-}
-
-/// Specialization for reading strings
-template<>
-bool Data<std::string>::read( const std::string& str );
-
 /// Specialization for reading booleans
 template<>
-bool Data<bool>::read( const std::string& str );
-
+void Data<bool>::doRead( std::istringstream& str );
 
 /// General case for printing default value
 template<class T>
@@ -272,37 +259,6 @@ template<class T>
 std::string Data<T>::getValueTypeString() const
 {
     return BaseData::typeName(&getValue());
-}
-
-template <class T>
-bool Data<T>::read(const std::string& s)
-{
-    if (s.empty())
-    {
-        const bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
-        BaseData::endEditVoidPtr();
-        return resized;
-    }
-    std::istringstream istr( s.c_str() );
-
-    // capture std::cerr output (if any)
-    const std::stringstream cerrbuffer;
-    std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
-
-    readValue(istr);
-
-    // restore the previous cerr
-    std::cerr.rdbuf(old);
-
-    if( istr.fail() )
-    {
-        // transcript the std::cerr buffer into the Messaging system
-        msg_warning(this->getName()) << cerrbuffer.str();
-
-        return false;
-    }
-
-    return true;
 }
 
 template <class T>
