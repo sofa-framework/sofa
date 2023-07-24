@@ -144,7 +144,6 @@ void DefaultAnimationLoop::updateSimulationContext(const core::ExecParams* param
 
 void DefaultAnimationLoop::propagateAnimateEndEvent(const core::ExecParams* params, const SReal dt) const
 {
-    sofa::helper::ScopedAdvancedTimer timer("propagateAnimateEndEvent");
     AnimateEndEvent ev(dt);
     PropagateEventVisitor propagateEventVisitor(params, &ev);
     gnode->execute(propagateEventVisitor);
@@ -173,7 +172,6 @@ void DefaultAnimationLoop::computeBoundingBox(const core::ExecParams* params) co
 
 void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* params, const SReal dt) const
 {
-    sofa::helper::ScopedAdvancedTimer timer("propagateAnimateBeginEvent");
     AnimateBeginEvent ev(dt);
     PropagateEventVisitor act(params, &ev);
     gnode->execute(act);
