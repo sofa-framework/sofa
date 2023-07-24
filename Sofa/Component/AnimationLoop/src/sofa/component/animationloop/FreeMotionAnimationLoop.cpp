@@ -22,7 +22,7 @@
 #include <sofa/component/animationloop/FreeMotionAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
@@ -67,12 +67,13 @@ using namespace core::behavior;
 using namespace sofa::simulation;
 using sofa::helper::ScopedAdvancedTimer;
 
+using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
+
 FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , d_parallelCollisionDetectionAndFreeMotion(initData(&d_parallelCollisionDetectionAndFreeMotion, false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
-    , defaultSolver(nullptr)
     , l_constraintSolver(initLink("constraintSolver", "The ConstraintSolver used in this animation loop (required)"))
 {
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
@@ -80,20 +81,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
-{
-    if (defaultSolver != nullptr)
-        defaultSolver.reset();
-}
-
-void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
-{
-    simulation::CollisionAnimationLoop::parse(arg);
-
-    defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
-    defaultSolver->parse(arg);
-    defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));
-}
-
+= default;
 
 void FreeMotionAnimationLoop::init()
 {
@@ -112,32 +100,32 @@ void FreeMotionAnimationLoop::init()
         l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
         if (!l_constraintSolver)
         {
-            if (defaultSolver != nullptr)
+            if (const auto constraintSolver = sofa::core::objectmodel::New<DefaultConstraintSolver>())
             {
+                getContext()->addObject(constraintSolver);
+                constraintSolver->setName( this->getContext()->getNameHelper().resolveName(constraintSolver->getClassName(), {}));
+                constraintSolver->f_printLog.setValue(this->f_printLog.getValue());
+                l_constraintSolver.set(constraintSolver);
+
                 msg_warning() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
-                    " a default " << defaultSolver->getClassName() << " is automatically added in the scene for you. To remove this warning, add"
+                    " a default " << constraintSolver->getClassName() << " is automatically added in the scene for you. To remove this warning, add"
                     " a ConstraintSolver in the scene. The list of available constraint solvers is: "
                     << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
-                getContext()->addObject(defaultSolver);
-                l_constraintSolver.set(defaultSolver);
-                defaultSolver = nullptr;
             }
             else
             {
                 msg_fatal() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
-                    " a default LCPConstraintSolver could not be automatically added in the scene. To remove this error, add"
+                    " a default " << DefaultConstraintSolver::GetClass()->className << " could not be automatically added in the scene. To remove this error, add"
                     " a ConstraintSolver in the scene. The list of available constraint solvers is: "
                     << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
             }
         }
         else
         {
             msg_info() << "Constraint solver found: '" << l_constraintSolver->getPathName() << "'";
         }
-    }
-    else
-    {
-        defaultSolver.reset();
     }
 
     auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
@@ -154,6 +142,8 @@ void FreeMotionAnimationLoop::init()
             msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
         }
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 

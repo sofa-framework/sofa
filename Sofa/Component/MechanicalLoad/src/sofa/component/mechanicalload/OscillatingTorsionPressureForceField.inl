@@ -202,6 +202,12 @@ SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const 
 }
 
 template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+{
+
+}
+
+template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField

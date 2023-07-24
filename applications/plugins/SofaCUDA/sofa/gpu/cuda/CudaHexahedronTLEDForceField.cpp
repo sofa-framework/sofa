@@ -503,12 +503,6 @@ void CudaHexahedronTLEDForceField::addDForce (const sofa::core::MechanicalParams
 
 }
 
-void CudaHexahedronTLEDForceField::buildDampingMatrix(core::behavior::DampingMatrix* damping_matrix)
-{
-    // No damping in this ForceField
-}
-
-
 // --------------------------------------------------------------------------------------
 // Computes Jacobian determinant
 // --------------------------------------------------------------------------------------

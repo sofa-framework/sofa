@@ -41,7 +41,6 @@ public:
 public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
     void init() override;
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
@@ -52,9 +51,6 @@ public:
 protected:
     FreeMotionAnimationLoop();
     ~FreeMotionAnimationLoop() override ;
-
-    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
-    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
 
     ///< The ConstraintSolver used in this animation loop (required)
     SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;

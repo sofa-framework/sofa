@@ -141,13 +141,6 @@ protected:
 
 private:
 
-#ifdef SOFA_PML
-    virtual void pmlOpen(const char* filename, bool resetView=true);
-    virtual void lmlOpen(const char* filename);
-    filemanager::pml::PMLReader *pmlreader;
-    filemanager::pml::LMLReader *lmlreader;
-#endif
-
 #ifdef SOFA_DUMP_VISITOR_INFO
     WindowVisitor* windowTraceVisitor;    
     GraphVisitor* handleTraceVisitor;

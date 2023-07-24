@@ -22,11 +22,6 @@
 #include "RealGUI.h"
 #include <sofa/version.h>
 
-#ifdef SOFA_PML
-#  include <sofa/filemanager/sofapml/PMLReader.h>
-#  include <sofa/filemanager/sofapml/LMLReader.h>
-#endif
-
 #ifndef SOFA_GUI_QT_NO_RECORDER
 #include "sofa/gui/qt/QSofaRecorder.h"
 #endif
@@ -42,10 +37,6 @@
 
 #if SOFA_GUI_QT_HAVE_NODEEDITOR
 #include "SofaWindowDataGraph.h"
-#endif
-
-#ifdef SOFA_PML
-#include <sofa/simulation/Node.h>
 #endif
 
 
@@ -111,14 +102,6 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QDesktopWidget>
 #endif
 
-#   ifdef SOFA_GUI_INTERACTION
-#    include <QCursor>
-#   endif
-
-#   ifdef SOFA_GUI_INTERACTION
-#    include <qcursor.h>
-#   endif
-
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
@@ -148,10 +131,6 @@ using sofa::core::ExecParams;
 
 #include <sofa/gui/common/ArgumentParser.h>
 
-
-#ifdef SOFA_PML
-using namespace sofa::gui::filemanager::pml;
-#endif
 
 using namespace sofa::gui::common;
 
@@ -332,24 +311,11 @@ void RealGUI::InitApplication( RealGUI* _gui)
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= {
 RealGUI::RealGUI ( const char* viewername)
     :
-      #ifdef SOFA_GUI_INTERACTION
-      interactionButton( nullptr ),
-      #endif
-
       #ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(nullptr),
       #else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-      #endif
-
-      #ifdef SOFA_GUI_INTERACTION
-      m_interactionActived(false),
-      #endif
-
-      #ifdef SOFA_PML
-      pmlreader(nullptr),
-      lmlreader(nullptr),
       #endif
 
       #ifdef SOFA_DUMP_VISITOR_INFO
@@ -512,30 +478,6 @@ RealGUI::RealGUI ( const char* viewername)
         connect( recorder, SIGNAL( NewTime() ), getSofaViewer()->getQWidget(), SLOT( update() ) );
 #endif
 
-#ifdef SOFA_GUI_INTERACTION
-    interactionButton = new QPushButton(optionTabs);
-    interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
-    interactionButton->setCheckable(true);
-    interactionButton->setStyleSheet("background-color: cyan;");
-
-    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
-    gridLayout->removeWidget(screenshotButton);
-    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
-
-    interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
-    interactionButton->setShortcut(QSOFAApplication::translate("GUI", "Alt+i", 0));
-#ifndef QT_NO_TOOLTIP
-    interactionButton->setProperty("toolTip", QVariant(QSOFAApplication::translate("GUI", "Start interaction mode", 0)));
-#endif
-
-    connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
-
-    m_interactionActived = false;
-
-    if(mCreateViewersOpt)
-        getSofaViewer()->getQWidget()->installEventFilter(this);
-#endif
-
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
     m_docbrowser = new DocBrowser(this);
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
@@ -552,19 +494,6 @@ RealGUI::RealGUI ( const char* viewername)
 
 RealGUI::~RealGUI()
 {
-#ifdef SOFA_PML
-    if ( pmlreader )
-    {
-        delete pmlreader;
-        pmlreader = nullptr;
-    }
-    if ( lmlreader )
-    {
-        delete lmlreader;
-        lmlreader = nullptr;
-    }
-#endif
-
     if( displayFlag != nullptr )
         delete displayFlag;
 
@@ -590,179 +519,6 @@ void RealGUI::setTraceVisitors(bool b)
 }
 #endif
 
-
-//------------------------------------
-
-#ifdef SOFA_GUI_INTERACTION
-void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
-{
-    if (m_interactionActived)
-    {
-        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
-        QPoint c = QCursor::pos();
-        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
-        QCursor::setPos(p);
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-        return;
-    }
-}
-
-//------------------------------------
-
-void RealGUI::wheelEvent(QWheelEvent* e)
-{
-    if(m_interactionActived)
-    {
-        sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-        e->accept();
-        return;
-    }
-}
-
-//------------------------------------
-
-void RealGUI::mousePressEvent(QMouseEvent * e)
-{
-    if(m_interactionActived)
-    {
-        if (e->type() == QEvent::MouseButtonPress)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-}
-
-//------------------------------------
-
-void RealGUI::mouseReleaseEvent(QMouseEvent * e)
-{
-    if(m_interactionActived)
-    {
-        if (e->type() == QEvent::MouseButtonRelease)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-}
-
-//------------------------------------
-
-void RealGUI::keyReleaseEvent(QKeyEvent * e)
-{
-    if(m_interactionActived)
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
-        return;
-    }
-}
-
-//------------------------------------
-
-bool RealGUI::eventFilter(QObject * /*obj*/, QEvent *e)
-{
-    if (m_interactionActived)
-    {
-        if (e->type() == QEvent::Wheel)
-        {
-            this->wheelEvent((QWheelEvent*)e);
-            return true;
-        }
-    }
-    return false; // pass other events
-}
-#endif
-
-//------------------------------------
-
-#ifdef SOFA_PML
-void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
-{
-    std::string scene = "PML/default.scn";
-    if ( !DataRepository.findFile ( scene ) )
-    {
-        msg_info("RealGUI") << "File '" << scene << "' not found ";
-        return;
-    }
-    this->unloadScene();
-    mSimulation = dynamic_cast< Node *> (sofa::simulation::node::load ( scene.c_str() ));
-    getSimulation()->init(mSimulation);
-    if ( mSimulation )
-    {
-        if ( !pmlreader ) pmlreader = new PMLReader;
-        pmlreader->BuildStructure ( filename, mSimulation );
-        setScene ( mSimulation, filename );
-        this->setWindowFilePath(filename); //.c_str());
-    }
-}
-
-//------------------------------------
-
-//lmlOpen
-void RealGUI::lmlOpen ( const char* filename )
-{
-    if ( pmlreader )
-    {
-        Node* root;
-        if ( lmlreader != nullptr ) delete lmlreader;
-        lmlreader = new LMLReader; std::cout <<"New lml reader\n";
-        lmlreader->BuildStructure ( filename, pmlreader );
-        root = getScene();
-        simulation::getSimulation()->init ( root );
-    }
-    else
-        msg_info()<<"You must load the pml file before the lml file"<<endl;
-}
-#endif
 
 //------------------------------------
 
@@ -947,14 +703,7 @@ void RealGUI::popupOpenFileSelector()
     }
     allKnownFilters+=")";
 
-#ifdef SOFA_PML
-    //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
-    filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml)";
-#else
-    //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
     filter += ";;Simulation (*.simu)";
-#endif
-
 
     filter = allKnownFilters+";;"+filter+";;All (*)"; // the first filter is selected by default
 
@@ -966,17 +715,10 @@ void RealGUI::popupOpenFileSelector()
                                   );
     if ( s.length() >0 )
     {
-#ifdef SOFA_PML
-        if ( s.endsWith ( ".pml" ) )
-            pmlOpen ( s );
-        else if ( s.endsWith ( ".lml" ) )
-            lmlOpen ( s );
+        if (s.endsWith( ".simu") )
+            fileOpenSimu(s.toStdString());
         else
-#endif
-            if (s.endsWith( ".simu") )
-                fileOpenSimu(s.toStdString());
-            else
-                fileOpen (s.toStdString());
+            fileOpen (s.toStdString());
     }
 }
 
@@ -1162,24 +904,10 @@ void RealGUI::fileReload()
         return;
     }
 
-#ifdef SOFA_PML
-    if ( s.length() >0 )
-    {
-        if ( s.endsWith ( ".pml" ) )
-            pmlOpen ( s );
-        else if ( s.endsWith ( ".lml" ) )
-            lmlOpen ( s );
-        else if (s.endsWith( ".simu") )
-            fileOpenSimu(filename);
-        else
-            fileOpen ( filename, saveReloadFile);
-    }
-#else
     if (s.endsWith( ".simu") )
         fileOpenSimu(s.toStdString());
     else
         fileOpen ( s.toStdString(),m_saveReloadFile );
-#endif
 }
 
 //------------------------------------
@@ -1690,24 +1418,6 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 {
     sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(getViewer());
 
-#ifdef SOFA_GUI_INTERACTION
-    if(m_interactionActived)
-    {
-        if ((e->key()==Qt::Key_Escape) || (e->modifiers() && (e->key()=='I')))
-        {
-            this->interactionGUI (false);
-        }
-        else
-        {
-            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            Node* groot = sofaViewer->getScene();
-            if (groot)
-                groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
-        }
-        return;
-    }
-#endif
-
     if (e->modifiers()) return;
 
     // ignore if there are modifiers (i.e. CTRL of SHIFT)
@@ -2192,24 +1902,14 @@ void RealGUI::fileSaveAs(Node *node)
             }
         }
     }
-#ifdef SOFA_PML
-    filter += " *.pml";
-#endif
 
     filter += ")";
 
 
-
-
-
     QString s = getSaveFileName ( this, filename.empty() ?nullptr:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
-    if ( s.length() >0 )
-#ifdef SOFA_PML
-        if ( pmlreader && s.endsWith ( ".pml" ) )
-            pmlreader->saveAsPML ( s );
-        else
-#endif
-            fileSaveAs ( node,s.toStdString().c_str() );
+    if (s.length() > 0) {
+        fileSaveAs(node, s.toStdString().c_str());
+    }
 
 }
 

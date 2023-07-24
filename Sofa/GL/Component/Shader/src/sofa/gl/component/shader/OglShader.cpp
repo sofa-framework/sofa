@@ -240,11 +240,6 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
 #endif
 }
 
-void OglShader::drawVisual(const core::visual::VisualParams* )
-{
-
-}
-
 void OglShader::stop()
 {
     if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
