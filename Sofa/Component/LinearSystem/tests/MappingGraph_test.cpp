@@ -30,7 +30,7 @@
 
 TEST(MappingGraph, noBuild)
 {
-    sofa::component::linearsystem::MappingGraph graph;
+    const sofa::component::linearsystem::MappingGraph graph;
 
     EXPECT_FALSE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), nullptr);
@@ -65,7 +65,7 @@ TEST(MappingGraph, nullRootNode)
 
 TEST(MappingGraph, emptyRootNode)
 {
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
     sofa::component::linearsystem::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
@@ -85,9 +85,9 @@ TEST(MappingGraph, emptyRootNode)
 
 TEST(MappingGraph, oneMechanicalObject)
 {
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
-    auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate);
     mstate->resize(10);
 
@@ -107,13 +107,13 @@ TEST(MappingGraph, oneMechanicalObject)
 
 TEST(MappingGraph, twoMechanicalObject)
 {
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
-    auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate1);
     mstate1->resize(10);
 
-    auto mstate2 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate2 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate2);
     mstate2->resize(2);
 
@@ -122,7 +122,7 @@ TEST(MappingGraph, twoMechanicalObject)
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
-    sofa::type::vector<sofa::core::behavior::BaseMechanicalState*> allMStates {mstate1.get(), mstate2.get()};
+    const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*> allMStates {mstate1.get(), mstate2.get()};
     EXPECT_EQ(graph.getMainMechanicalStates(), allMStates);
 
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate1.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate1.get()});
@@ -135,16 +135,16 @@ TEST(MappingGraph, twoMechanicalObject)
 
 TEST(MappingGraph, oneMapping)
 {
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
 
-    auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate1);
     mstate1->resize(10);
 
-    auto mapping = sofa::core::objectmodel::New<sofa::component::mapping::linear::SubsetMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types> >();
+    const auto mapping = sofa::core::objectmodel::New<sofa::component::mapping::linear::SubsetMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types> >();
     root->addObject(mapping);
 
-    auto mstate2 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    const auto mstate2 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate2);
     mstate2->resize(2);
 
@@ -171,8 +171,7 @@ TEST(MappingGraph, diamondMapping)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::Simulation* simulation;
-    sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+    sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
     sofa::simulation::Node::SPtr root = simulation->createNewGraph("root");
     EXPECT_EQ(root->getName(), "root");

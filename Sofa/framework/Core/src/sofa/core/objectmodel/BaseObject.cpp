@@ -98,7 +98,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
-        std::string valueString(arg->getAttribute("src"));
+        const std::string valueString(arg->getAttribute("src"));
 
         if (valueString[0] != '@')
         {
@@ -125,7 +125,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
 {
-    BaseObject* loader = nullptr;
+    const BaseObject* loader = nullptr;
 
     std::size_t posAt = valueString.rfind('@');
     if (posAt == std::string::npos) posAt = 0;
@@ -143,7 +143,7 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
 
 void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader, std::vector< std::string > *attributeList)
 {
-    BaseObject* obj = this;
+    const BaseObject* obj = this;
 
     BaseObject::MapData dataLoaderMap = loader->m_aliasData;
     BaseObject::MapData::iterator it_map;
@@ -234,7 +234,7 @@ BaseObject* BaseObject::getSlave(const std::string& name) const
 
 void BaseObject::addSlave(BaseObject::SPtr s)
 {
-    BaseObject::SPtr previous = s->getMaster();
+    const BaseObject::SPtr previous = s->getMaster();
     if (previous == this) return;
     if (previous)
         previous->l_slaves.remove(s);
@@ -255,7 +255,7 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-    for(auto data: this->m_vecData)
+    for(const auto data: this->m_vecData)
     {
         if (data->isRequired() && !data->isSet())
         {

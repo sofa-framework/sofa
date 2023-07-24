@@ -477,6 +477,12 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
     }
 }
 
+template <class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(Index i, Real& stressValue)
 {
@@ -491,6 +497,18 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
     Real stressValue2;
     Deriv stressDirection2;
     getTrianglePrincipalStress(i, stressValue, stressDirection, stressValue2, stressDirection2);
+}
+
+template <class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (!onlyVisible) return;
+    if (!this->mstate) return;
+
+    const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+    this->f_bbox.setValue(std::move(bbox));
 }
 
 template<class DataTypes>
@@ -733,8 +751,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
                 Vec3 center = (a+b+c)/3;
                 Vec3 n = cross(b-a,c-a);
                 Real fact = (Real)helper::rsqrt(n.norm())*(Real)0.5;
-                int g1 = (s1 < 0) ? 1 : 0;
-                int g2 = (s2 < 0) ? 1 : 0;
+                const int g1 = (s1 < 0) ? 1 : 0;
+                const int g2 = (s2 < 0) ? 1 : 0;
                 d1 *= fact*helper::rsqrt(helper::rabs(s1)/maxStress);
                 d2 *= fact*helper::rsqrt(helper::rabs(s2)/maxStress);
                 points[g1].push_back(center - d1);

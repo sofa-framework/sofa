@@ -100,6 +100,15 @@ public:
 
     virtual void getConstraintResolution(std::vector<ConstraintResolution*> &resTab, unsigned int &offset);
 
+    type::vector<std::string> getIdentifiers()
+    {
+        type::vector<std::string> ids = getBaseConstraintIdentifiers();
+        ids.push_back("Base");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() = 0;
+
 
     /// Store the constraint lambda at the constraint dofs at the given VecDerivId location. 
     /// res = J^t * lambda. 

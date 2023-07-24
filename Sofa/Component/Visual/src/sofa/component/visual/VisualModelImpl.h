@@ -213,8 +213,8 @@ public:
 
     virtual bool hasTransparent();
     bool hasOpaque();
-
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void drawShadow(const core::visual::VisualParams* vparams) override;
 

@@ -74,7 +74,6 @@ namespace sofa {
         void SetUp() override
         {
             // Init simulation
-            sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");
         }
 
@@ -87,21 +86,21 @@ namespace sofa {
 
             if(symplectic)
             {
-                sofa::component::odesolver::backward::VariationalSymplecticSolver::SPtr variationalSolver = New<sofa::component::odesolver::backward::VariationalSymplecticSolver>();
+                const sofa::component::odesolver::backward::VariationalSymplecticSolver::SPtr variationalSolver = New<sofa::component::odesolver::backward::VariationalSymplecticSolver>();
                 root->addObject(variationalSolver);
             }
             else
             {
-                sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
+                const sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
                 root->addObject(eulerSolver);
             }
-            CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
+            const CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
             cgLinearSolver->d_maxIter.setValue(25u);
             cgLinearSolver->d_tolerance.setValue(1e-5);
             cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
             root->addObject(cgLinearSolver);
 
-            simulation::Node::SPtr childNode = root->createChild("Particle");
+            const simulation::Node::SPtr childNode = root->createChild("Particle");
 
             mecaObj = New<MechanicalObject>();
             mecaObj->resize(1);
@@ -110,7 +109,7 @@ namespace sofa {
             mass->setTotalMass(1.0);
             childNode->addObject(mass);
 
-            sofa::component::playback::WriteState::SPtr writeState =New<sofa::component::playback::WriteState>();
+            const sofa::component::playback::WriteState::SPtr writeState =New<sofa::component::playback::WriteState>();
             type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
@@ -140,7 +139,7 @@ namespace sofa {
         // Initialization of the scene
         void initScene()
         {
-            sofa::simulation::getSimulation()->init(this->root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         // Run five steps of simulation
@@ -148,7 +147,7 @@ namespace sofa {
         {
             for(int i=0; i<7; i++)
             {
-                sofa::simulation::getSimulation()->animate(root.get(),timeStep);
+                sofa::simulation::node::animate(root.get(), timeStep);
             }
         }
 
@@ -157,7 +156,7 @@ namespace sofa {
         /// Function where you can implement the test you want to do
         bool simulation_result_test(bool symplectic)
         {
-            double time = root->getTime();
+            const double time = root->getTime();
             double result;
 
             // Compute the ANALYTICAL solution in POSITION
@@ -224,7 +223,7 @@ namespace sofa {
         void TearDown() override
         {
             if (root!=nullptr)
-                sofa::simulation::getSimulation()->unload(root);
+                sofa::simulation::node::unload(root);
         }
 
     };

@@ -110,7 +110,7 @@ __global__ void EllipsoidForceFieldCuda3f_addForce_kernel(int size, GPUEllipsoid
         //float norm = sqrt(norm2);
         float inv_norm = rsqrtf(norm2);
         float norm = 1.0f/inv_norm;
-        float stiffabs = abs(ellipsoid.stiffness);
+        const float stiffabs = abs(ellipsoid.stiffness);
         float v = norm-1;
         //for (int j=0; j<N; j++) grad[j] = dp[j]*inv_r2[j];
         float gnorm2 = dot(grad,grad);
@@ -164,7 +164,7 @@ __global__ void EllipsoidForceFieldCuda3f1_addForce_kernel(int size, GPUEllipsoi
     CudaVec3<float> dp = CudaVec3<float>::make(temp) - ellipsoid.center;
     //float d2 = dot(dp,dp);
 
-    CudaVec4<float> vi = v[index];
+    const CudaVec4<float> vi = v[index];
     CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
 
     CudaVec3<float> grad = CudaVec3<float>::make(dp.x*ellipsoid.inv_r2.x, dp.y*ellipsoid.inv_r2.y, dp.z*ellipsoid.inv_r2.z);
@@ -179,7 +179,7 @@ __global__ void EllipsoidForceFieldCuda3f1_addForce_kernel(int size, GPUEllipsoi
         //float norm = sqrt(norm2);
         float inv_norm = rsqrtf(norm2);
         float norm = 1.0f/inv_norm;
-        float stiffabs = abs(ellipsoid.stiffness);
+        const float stiffabs = abs(ellipsoid.stiffness);
         float v = norm-1;
         //for (int j=0; j<N; j++) grad[j] = dp[j]*inv_r2[j];
         float gnorm2 = dot(grad,grad);
@@ -239,7 +239,7 @@ __global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, const float
 
     __syncthreads();
 
-    CudaVec3<float> dxi = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
+    const CudaVec3<float> dxi = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
     float d = tmp[index+0*BSIZE];
     CudaVec3<float> mx,my,mz;
     mx.x = tmp[index+1*BSIZE];
@@ -279,7 +279,7 @@ __global__ void EllipsoidForceFieldCuda3f1_addDForce_kernel(int size, const floa
     int index = blockIdx.x * BSIZE+threadIdx.x;
     tmp += blockIdx.x * BSIZE * NTMP;
 
-    CudaVec4<float> dxi = dx[index];
+    const CudaVec4<float> dxi = dx[index];
     float d = tmp[threadIdx.x+0*BSIZE];
     CudaVec3<float> mx,my,mz;
     mx.x = tmp[threadIdx.x+1*BSIZE];

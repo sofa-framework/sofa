@@ -131,7 +131,7 @@ __global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphe
     CudaVec3<float> dp = CudaVec3<float>::make(temp) - sphere.center;
     float d2 = dot(dp,dp);
 
-    CudaVec4<float> vi = v[index];
+    const CudaVec4<float> vi = v[index];
     CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
 
     if (d2 < sphere.r*sphere.r)
@@ -211,7 +211,7 @@ __global__ void SphereForceFieldCuda3f1_addDForce_kernel(int size, GPUSphere sph
 {
     int index = blockIdx.x * BSIZE+threadIdx.x;
 
-    CudaVec4<float> dxi = dx[index];
+    const CudaVec4<float> dxi = dx[index];
     CudaVec4<float> d = penetration[index];
 
     CudaVec3<float> dforce = CudaVec3<float>::make(0,0,0);

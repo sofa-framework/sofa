@@ -315,6 +315,12 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void GearSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

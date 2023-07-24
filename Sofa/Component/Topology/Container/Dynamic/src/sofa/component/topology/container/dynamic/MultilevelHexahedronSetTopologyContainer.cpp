@@ -166,7 +166,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const Inde
         const Index vertexId,
         type::vector<Index> &neighbors)
 {
-    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     const auto &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();
@@ -239,7 +239,7 @@ MultilevelHexahedronSetTopologyContainer::Index MultilevelHexahedronSetTopologyC
 MultilevelHexahedronSetTopologyContainer::Index MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec3i& voxelId) const
 {
     const Vec3i& _fineResolution = fineResolution.getValue();
-    Component* comp = _fineComponentInRegularGrid[voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1])];
+    const Component* comp = _fineComponentInRegularGrid[voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1])];
     if(comp != nullptr)
     {
         for(Size i=0; i<_fineComponents.getValue().size(); ++i)
@@ -294,7 +294,7 @@ const std::set<MultilevelHexahedronSetTopologyContainer::Vec3i>& MultilevelHexah
 typename MultilevelHexahedronSetTopologyContainer::Index
 MultilevelHexahedronSetTopologyContainer::getHexaParent(const Index hexaId) const
 {
-    Component* comp = _fineComponents.getValue()[hexaId];
+    const Component* comp = _fineComponents.getValue()[hexaId];
 
     while( comp->_parent != nullptr)
         comp = comp->_parent;
@@ -510,7 +510,7 @@ int MultilevelHexahedronSetTopologyContainer::Component::getLevel() const
 {
     int level = 0;
 
-    Component* comp = (Component*) this;
+    const Component* comp = (Component*) this;
 
     while(!comp->_children.empty())
     {
@@ -541,7 +541,7 @@ bool MultilevelHexahedronSetTopologyContainer::Component::isStronglyConnected() 
             {
                 set1.insert(*iter);
 
-                std::set<Vec3i>::iterator it = iter;
+                const std::set<Vec3i>::iterator it = iter;
                 ++iter;
                 set2.erase(it);
                 change = true;
@@ -731,7 +731,7 @@ void MultilevelHexahedronSetTopologyContainer::Component::split(std::set<Compone
             if(!(*iter)->isStronglyConnected())
             {
                 (*iter)->split(newChildren);
-                std::set<Component*>::iterator it = iter;
+                const std::set<Component*>::iterator it = iter;
                 ++iter;
                 this->_children.erase(it);
             }
@@ -774,7 +774,7 @@ void MultilevelHexahedronSetTopologyContainer::Component::split(std::set<Compone
                         if((*iter2)->isConnected(*iter))
                         {
                             set1.push_back(*iter2);
-                            std::list<Component*>::iterator it = iter2;
+                            const std::list<Component*>::iterator it = iter2;
                             ++iter2;
                             set2.erase(it);
                             change = true;

@@ -193,7 +193,7 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("scale"))
     {
-        SReal s = (SReal) arg->getAttributeAsFloat("scale", 1.0);
+        const SReal s = (SReal) arg->getAttributeAsFloat("scale", 1.0);
         d_scale.setValue(d_scale.getValue()*s);
     }
 
@@ -251,7 +251,7 @@ bool MeshLoader::load()
     // Clear previously loaded buffers
     clearBuffers();
 
-    bool loaded = doLoad();
+    const bool loaded = doLoad();
 
     // Clear (potentially) partially filled buffers
     if (!loaded)
@@ -571,7 +571,7 @@ void MeshLoader::updatePoints()
     {
         std::set<Topology::ElemID> attachedPoints;
         {
-            helper::ReadAccessor<Data< type::vector< Edge > > > elems = d_edges;
+            const helper::ReadAccessor<Data< type::vector< Edge > > > elems = d_edges;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -579,7 +579,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Triangle > > > elems = d_triangles;
+            const helper::ReadAccessor<Data< type::vector< Triangle > > > elems = d_triangles;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -587,7 +587,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Quad > > > elems = d_quads;
+            const helper::ReadAccessor<Data< type::vector< Quad > > > elems = d_quads;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -595,7 +595,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Tetrahedron > > > elems = d_tetrahedra;
+            const helper::ReadAccessor<Data< type::vector< Tetrahedron > > > elems = d_tetrahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -603,7 +603,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
+            const helper::ReadAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -611,7 +611,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Pyramid > > > elems = d_pyramids;
+            const helper::ReadAccessor<Data< type::vector< Pyramid > > > elems = d_pyramids;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -619,7 +619,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< type::vector< Hexahedron > > > elems = d_hexahedra;
+            const helper::ReadAccessor<Data< type::vector< Hexahedron > > > elems = d_hexahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -637,7 +637,7 @@ void MeshLoader::updatePoints()
         Topology::ElemID p = 0;
         for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
         {
-            Topology::ElemID newp = *it;
+            const Topology::ElemID newp = *it;
             old2new[newp] = p;
             if (p != newp)
             {
@@ -707,9 +707,9 @@ void MeshLoader::updatePoints()
 
 void MeshLoader::updateNormals()
 {
-    helper::ReadAccessor<Data<type::vector<sofa::type::Vec3 > > > raPositions = d_positions;
-    helper::ReadAccessor<Data< type::vector< Triangle > > > raTriangles = d_triangles;
-    helper::ReadAccessor<Data< type::vector< Quad > > > raQuads = d_quads;
+    const helper::ReadAccessor<Data<type::vector<sofa::type::Vec3 > > > raPositions = d_positions;
+    const helper::ReadAccessor<Data< type::vector< Triangle > > > raTriangles = d_triangles;
+    const helper::ReadAccessor<Data< type::vector< Quad > > > raQuads = d_quads;
 
     //look if we already have loaded normals
     if (d_normals.getValue().size() == raPositions.size())

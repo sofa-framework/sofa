@@ -64,7 +64,7 @@ struct BaseObjectDescription_test: public BaseTest
     {
         BaseObjectDescription objectDescription("theName", "theType");
 
-        size_t numattr=objectDescription.getAttributeMap().size() ;
+        const size_t numattr=objectDescription.getAttributeMap().size() ;
 
         objectDescription.setAttribute("anAttribute", "true") ;
         EXPECT_EQ( (objectDescription.getAttributeMap().size()), numattr+1) ;
@@ -77,7 +77,7 @@ struct BaseObjectDescription_test: public BaseTest
     {
         BaseObjectDescription objectDescription("theName", "theType");
 
-        size_t numattr=objectDescription.getAttributeMap().size() ;
+        const size_t numattr=objectDescription.getAttributeMap().size() ;
 
         objectDescription.setAttribute("anAttribute", "true") ;
         EXPECT_EQ( (objectDescription.getAttributeMap().size()), numattr+1) ;
@@ -96,7 +96,7 @@ struct BaseObjectDescription_test: public BaseTest
     void checkGetAttributeAsFloat()
     {
         BaseObjectDescription objectDescription("theName", "theType");
-        size_t numattr=objectDescription.getAttributeMap().size() ;
+        const size_t numattr=objectDescription.getAttributeMap().size() ;
 
         objectDescription.setAttribute("anAttribute", "true") ;
         EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+1) ;
@@ -124,7 +124,7 @@ struct BaseObjectDescription_test: public BaseTest
     void checkGetAttributeAsInt()
     {
         BaseObjectDescription objectDescription("theName", "theType");
-        size_t numattr=objectDescription.getAttributeMap().size() ;
+        const size_t numattr=objectDescription.getAttributeMap().size() ;
 
         objectDescription.setAttribute("anAttribute", "true") ;
         EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+1) ;

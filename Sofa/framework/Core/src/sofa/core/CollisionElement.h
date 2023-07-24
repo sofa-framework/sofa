@@ -89,7 +89,7 @@ public:
     /// Postfix increment this iterator to reference the next element.
     BaseCollisionElementIterator operator++(int)
     {
-        auto tmp = *this;
+        const auto tmp = *this;
         next();
         return tmp;
     }

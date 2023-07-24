@@ -58,8 +58,8 @@ VTKExporter::~VTKExporter()
 }
 
 void VTKExporter::init()
-{    
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+{
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);
     context->get(mstate);
 
@@ -128,11 +128,11 @@ void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type
 
 void VTKExporter::writeData(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names)
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
 
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
-        core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
+        const core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
         core::objectmodel::BaseData* field = nullptr;
         if (obj)
         {
@@ -210,11 +210,11 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
 
 void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names)
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
 
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
-        core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
+        const core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
         core::objectmodel::BaseData* field = nullptr;
         if (obj)
         {
@@ -937,7 +937,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
+        const sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
 
         switch(ev->getKey())
         {
@@ -960,7 +960,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
     if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
     {
-        unsigned int maxStep = exportEveryNbSteps.getValue();
+        const unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;
 
         stepCounter++;

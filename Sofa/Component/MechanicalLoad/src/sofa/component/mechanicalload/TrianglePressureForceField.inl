@@ -275,6 +275,12 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
 
 }
 
+template <class DataTypes>
+void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 SReal TrianglePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
 {

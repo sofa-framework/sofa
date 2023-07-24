@@ -172,7 +172,7 @@ trivial_vertex_tests(int nverts, const float verts[][3],
         for(i=0; i<nverts; i++)
         {
             /* Note the ~0L mask below to always test all planes */
-            unsigned long face_bits = face_plane(verts[i], ~0L);
+            const unsigned long face_bits = face_plane(verts[i], ~0L);
             if(0L == face_bits)  /* vertex is inside the cube */
                 return 1; /* trivial accept */
             cum_and &= face_bits;
@@ -224,8 +224,8 @@ fast_polygon_intersects_cube(int nverts, const float verts[][3],
         int already_know_verts_are_outside_cube,
         int already_know_edges_are_outside_cube)
 {
-    int quick_test = trivial_vertex_tests(nverts, verts,
-            already_know_verts_are_outside_cube);
+    const int quick_test = trivial_vertex_tests(nverts, verts,
+                                                already_know_verts_are_outside_cube);
     if(-1 == quick_test)
         return polygon_intersects_cube(nverts, verts, polynormal, 1,
                 already_know_edges_are_outside_cube);

@@ -98,7 +98,7 @@ struct FixedPlaneConstraint_test : public BaseSimulationTest
         }
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         for(unsigned i=0; i < _DataTypes::spatial_dimensions; i++)
         {
@@ -106,7 +106,7 @@ struct FixedPlaneConstraint_test : public BaseSimulationTest
             constraint->d_direction.setValue(fixed);
 
             // Perform one time step
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(),0.5);
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
@@ -116,11 +116,11 @@ struct FixedPlaneConstraint_test : public BaseSimulationTest
                 return false;
             }
 
-            sofa::simulation::getSimulation()->reset(root.get());
+            sofa::simulation::node::reset(root.get());
             fixed[i] = false;
         }
 
-        simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         return true;
     }
 };

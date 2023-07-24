@@ -58,18 +58,22 @@ void Visual3DText::reinit()
 {
 }
 
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+void Visual3DText::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
     const type::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
+    const float scale = d_scale.getValue();
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableDepthTest();
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
+}
 
+void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+{
+    if(!vparams->displayFlags().getShowVisualModels()) return;
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    doDrawVisual(vparams);
 }
 
 } // namespace sofa::component::visual

@@ -81,7 +81,7 @@ void PointSplatModel::init()
     getContext()->get(loader);
     if(loader && _mstate)
     {
-        size_t nbPoints = _mstate->getSize();
+        const size_t nbPoints = _mstate->getSize();
 
         const type::vector<unsigned int> idxInRegularGrid = loader->getHexaIndicesInGrid();
 
@@ -107,8 +107,8 @@ void PointSplatModel::reinit()
     if(texture_data != nullptr)
         delete [] texture_data;
 
-    unsigned int texture_size = textureSize.getValue();
-    unsigned int half_texture_size = texture_size >> 1;
+    const unsigned int texture_size = textureSize.getValue();
+    const unsigned int half_texture_size = texture_size >> 1;
     texture_data = new unsigned char [texture_size * texture_size];
 
     for(unsigned int i=0; i<half_texture_size; ++i)
@@ -145,7 +145,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     GLuint	texture;
-    unsigned int texture_size = (unsigned) textureSize.getValue();
+    const unsigned int texture_size = (unsigned) textureSize.getValue();
 
     glGenTextures (1, &texture);
     glBindTexture (GL_TEXTURE_2D, texture);
@@ -177,9 +177,9 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     float mat[16];
     glGetFloatv( GL_MODELVIEW_MATRIX, mat );
 
-    Coord vRight( mat[0], mat[4], mat[8] );
-    Coord vUp( mat[1], mat[5], mat[9] );
-    Coord vView(vRight.cross(vUp));
+    const Coord vRight( mat[0], mat[4], mat[8] );
+    const Coord vUp( mat[1], mat[5], mat[9] );
+    const Coord vView(vRight.cross(vUp));
 
     std::multimap< Real, unsigned int, std::less<Real> >	mapPnt;
 
@@ -195,7 +195,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     for(std::multimap<Real, unsigned int>::const_iterator it = mapPnt.begin();
         it != mapPnt.end(); ++it)
     {
-        int i = (*it).second;
+        const int i = (*it).second;
 
         const Coord& center = vertices[i];
 

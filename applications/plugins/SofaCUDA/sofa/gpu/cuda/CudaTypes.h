@@ -29,7 +29,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/vector_device.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -91,7 +91,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
     static constexpr sofa::Size coord_total_size = Coord::total_size;
@@ -493,7 +493,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
     typedef Vec3 AngularVector;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
@@ -677,7 +677,7 @@ public:
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
 
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T)
@@ -1046,5 +1046,20 @@ namespace sofa::component::mass
 
 } // namespace sofa::component::mass
 
+
+// define block traits for Vec3r1 (see matrix_bloc_traits.h)
+// mainly used with CompressedRowSparseMatrix
+namespace sofa::linearalgebra
+{
+
+template <class T, typename IndexType >
+class matrix_bloc_traits < sofa::gpu::cuda::Vec3r1<T>, IndexType > : public matrix_bloc_traits<sofa::type::Vec<3, T>, IndexType>
+{
+public:
+    typedef sofa::gpu::cuda::Vec3r1<T> Block;
+
+};
+
+} // namespace sofa::linearalgebra
 
 #endif

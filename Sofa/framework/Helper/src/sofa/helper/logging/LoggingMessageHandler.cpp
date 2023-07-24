@@ -58,7 +58,7 @@ size_t LoggingMessageHandler::deactivate()
     assert(m_activationCount>0) ;
     m_activationCount--;
 
-    size_t size = m_messages.size();
+    const size_t size = m_messages.size();
 
     if(m_activationCount<=0)
         m_messages.clear() ;

@@ -444,6 +444,12 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
     d_forces.endEdit();
 }
 
+template <class DataTypes>
+void ConstantForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void ConstantForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)

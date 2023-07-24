@@ -45,8 +45,8 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
 {
     std::set<std::string> listResponse;
 
-    sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
-    sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
+    const sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
+    const sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
     if (pipeline)
     {
         listResponse=pipeline->getResponseList();
@@ -98,8 +98,8 @@ void CollisionResponse::setDefaultResponseType(const std::string &responseT)
 {
     if (response.getValue().size() == 0)
     {
-        type::vector<std::string> listResponse(1,responseT);
-        sofa::helper::OptionsGroup responseOptions(listResponse);
+        const type::vector<std::string> listResponse(1,responseT);
+        const sofa::helper::OptionsGroup responseOptions(listResponse);
         response.setValue(responseOptions);
     }
     else
@@ -148,7 +148,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
         outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
     {
         const auto contactInsert = contactMap.insert(ContactMap::value_type(outputsIt->first, core::collision::Contact::SPtr()));
-        ContactMap::iterator contactIt = contactInsert.first;
+        const ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second) //insertion success
         {
             // new contact
@@ -240,8 +240,8 @@ CollisionResponse::contactCreationError(std::stringstream &errorStream, const co
 {
     const std::string model1class = model1->getClassName();
     const std::string model2class = model2->getClassName();
-    int count = ++errorMsgCount[std::make_pair(responseUsed,
-                                               std::make_pair(model1class, model2class))];
+    const int count = ++errorMsgCount[std::make_pair(responseUsed,
+                                                     std::make_pair(model1class, model2class))];
     constexpr int nbMaxMessages { 10 };
     if (count <= nbMaxMessages)
     {
@@ -289,7 +289,7 @@ void CollisionResponse::setNumberOfContacts() const
 std::string CollisionResponse::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
 {
     std::string responseUsed = response.getValue().getSelectedItem();
-    std::string params = responseParams.getValue();
+    const std::string params = responseParams.getValue();
     if (!params.empty())
     {
         responseUsed += '?';
@@ -320,7 +320,7 @@ void CollisionResponse::draw(const core::visual::VisualParams* vparams)
 void CollisionResponse::removeContacts(const ContactVector &c)
 {
     auto remove_it = c.begin();
-    auto remove_itEnd = c.end();
+    const auto remove_itEnd = c.end();
 
     ContactVector::iterator it;
     ContactVector::iterator itEnd;
@@ -356,7 +356,7 @@ void CollisionResponse::removeContacts(const ContactVector &c)
         {
             if (map_it->second == *remove_it)
             {
-                auto erase_it = map_it;
+                const auto erase_it = map_it;
                 ++map_it;
 
                 erase_it->second->removeResponse();
@@ -378,7 +378,7 @@ void CollisionResponse::setContactTags(core::CollisionModel* model1, core::Colli
 {
     if (contact != nullptr)
     {
-        for (auto* model : {model1, model2})
+        for (const auto* model : {model1, model2})
         {
             if (model)
             {

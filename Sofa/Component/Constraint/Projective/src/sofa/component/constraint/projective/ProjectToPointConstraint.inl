@@ -174,31 +174,20 @@ void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataMatrixDeriv> c ( cData );
-    const SetIndexArray & indices = f_indices.getValue();
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
 
     if( f_fixAll.getValue() )
     {
         // fix everything
-        while (rowIt != rowItEnd)
-        {
-            rowIt.row().clear();
-            ++rowIt;
-        }
+        c->clear();
     }
     else
     {
-        while (rowIt != rowItEnd)
-        {
-            for (SetIndexArray::const_iterator it = indices.begin();
+        const SetIndexArray& indices = f_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin();
                     it != indices.end();
                     ++it)
-            {
-                rowIt.row().erase(*it);
-            }
-            ++rowIt;
+        {
+            c->clearColBlock(*it);
         }
     }
 }

@@ -98,7 +98,7 @@ void MergePoints<DataTypes>::doUpdate()
         int j=0;
         for(unsigned int i=0; i<points.size(); ++i)
         {
-            unsigned int posX = mapping[j];
+            const unsigned int posX = mapping[j];
             if(i == posX)
             {
                 indices2.push_back(i); // fill indices2 buffer
@@ -116,7 +116,7 @@ void MergePoints<DataTypes>::doUpdate()
             indices1.push_back(i);
         }
 
-        unsigned int index = indices1.size();
+        const unsigned int index = indices1.size();
 
         for( unsigned i=0; i<x2.size(); ++i )
         {

@@ -77,8 +77,8 @@ void CylinderGridTopology::setLength(SReal length)
 sofa::type::Vec3 CylinderGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
-    SReal r = d_radius.getValue();
-    SReal l = d_length.getValue();
+    const SReal r = d_radius.getValue();
+    const SReal l = d_length.getValue();
     Vec3 axisZ = d_axis.getValue();
     axisZ.normalize();
     Vec3 axisX = ((axisZ-Vec3(1_sreal,0_sreal,0_sreal)).norm() < 0.000001 ? Vec3(0_sreal,1_sreal,0_sreal) : Vec3(1_sreal,0_sreal,0_sreal));
@@ -87,9 +87,9 @@ sofa::type::Vec3 CylinderGridTopology::getPointInGrid(int i, int j, int k) const
     axisX.normalize();
     axisY.normalize();
     axisZ.normalize();
-    int nx = getNx();
-    int ny = getNy();
-    int nz = getNz();
+    const int nx = getNx();
+    const int ny = getNy();
+    const int nz = getNz();
     // coordonate on a square
     Vec3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, 0_sreal);
     // scale it to be on a circle

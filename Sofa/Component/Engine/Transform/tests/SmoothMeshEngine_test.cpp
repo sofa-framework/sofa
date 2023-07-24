@@ -27,7 +27,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
@@ -56,7 +55,9 @@ struct SmoothMeshEngine_test : public BaseSimulationTest,
 
 	void SetUp() override
 	{
-		setSimulation(m_simu = new DAGSimulation());
+		m_simu = sofa::simulation::getSimulation();
+		ASSERT_NE(m_simu, nullptr);
+
 		m_node = m_simu->createNewGraph("root");
 		m_thisObject = New<ThisClass >() ;
 		m_node->addObject(m_thisObject) ;

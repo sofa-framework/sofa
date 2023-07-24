@@ -64,12 +64,12 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
     QString path=p;
     if (path.endsWith("/"))
     {
-        int slash=path.indexOf('/',-1);
+        const int slash=path.indexOf('/',-1);
         path.truncate(slash);
     }
     else if (path.endsWith("\\"))
     {
-        int slash=path.indexOf('\\',-1);
+        const int slash=path.indexOf('\\',-1);
         path.truncate(slash);
     }
 

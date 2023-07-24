@@ -72,12 +72,13 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
     void SetUp() override
     {
         //Init
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
+        ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+        const PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
         root->addObject(topology);
 
         dofs = New<MechanicalObject>();
@@ -110,7 +111,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
     }
 
     /** Constraint all the particles.
@@ -123,7 +124,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::getSimulation()->init(root.get());
+         sofa::simulation::node::initRoot(root.get());
     }
     ///@}
 
@@ -221,7 +222,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

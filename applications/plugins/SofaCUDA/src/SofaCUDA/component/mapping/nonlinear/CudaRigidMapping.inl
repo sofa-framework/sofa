@@ -94,7 +94,7 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     if (nbloc > 512) nbloc = 512;
     m_data.tmp.recreate(2*nbloc);
     RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
+    const helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
@@ -156,7 +156,7 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJT( 
     if (nbloc > 512) nbloc = 512;
     m_data.tmp.recreate(2*nbloc);
     RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3Types::VecDeriv> tmp = m_data.tmp;
+    const helper::ReadAccessor<gpu::cuda::CudaVec3Types::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
@@ -219,7 +219,7 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT
     if (nbloc > 512) nbloc = 512;
     m_data.tmp.recreate(2*nbloc);
     RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
+    const helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];

@@ -165,17 +165,17 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     // Get triangle index that will be incise
     // - Creating direction of incision
-    sofa::type::Vec3 dir = startBody.point - the_point;
+    const sofa::type::Vec3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
     const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
-    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
+    const auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
 
     if (triangleIDInShell == sofa::InvalidID)
     {
         msg_error("InciseAlongPathPerformer") << " initial triangle of incision has not been found." ;
         return;
     }
-    auto the_triangle = shell[triangleIDInShell];
+    const auto the_triangle = shell[triangleIDInShell];
 
     sofa::core::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
@@ -232,11 +232,11 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
     sofa::type::vector<Index> indices_list;
     sofa::type::vector< sofa::type::Vec3 > coords2_list;
-    sofa::type::Vec3 pointA = firstBody.point;
-    sofa::type::Vec3 pointB = currentBody.point;
+    const sofa::type::Vec3 pointA = firstBody.point;
+    const sofa::type::Vec3 pointB = currentBody.point;
 
     sofa::type::vector< sofa::type::Vec3 > positions;
-    bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
+    const bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
 
     if (!path_ok)
         return;

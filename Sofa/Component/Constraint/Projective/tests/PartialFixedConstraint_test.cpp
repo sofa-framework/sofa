@@ -65,9 +65,10 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         typename sofa::component::statecontainer::MechanicalObject<DataTypes>::SPtr  mstate;
 
         /// Scene initialization
-        sofa::simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        simulation::Node::SPtr root = simulation->createNewGraph("root");
+        sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
+        const simulation::Node::SPtr root = simulation->createNewGraph("root");
+
         root->setGravity( type::Vec3(0,0,0) );
         simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
 
@@ -77,7 +78,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         createUniformMass<DataTypes>(node, *mstate.get());
 
         Deriv force;
-        size_t sizeD = force.size();
+        const size_t sizeD = force.size();
         for(unsigned i=0; i<sizeD; i++)
         {
             force[i]=10;
@@ -94,7 +95,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         for(unsigned i=0; i<sizeD; i++)
         {
@@ -102,7 +103,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
             constraint->d_fixedDirections.setValue(fixed);
 
             // Perform one time step
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
@@ -112,11 +113,11 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
                 return false;
             }
 
-            sofa::simulation::getSimulation()->reset(root.get());
+            sofa::simulation::node::reset(root.get());
             fixed[i] = false;
         }
 
-        simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
         return true;
     }
 };

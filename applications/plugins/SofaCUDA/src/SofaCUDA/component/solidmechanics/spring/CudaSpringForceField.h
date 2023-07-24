@@ -98,13 +98,13 @@ namespace sofa::component::solidmechanics::spring
                 vertex0 = v0;
                 nbVertex = nbv;
                 nbSpringPerVertex = nbsperv;
-                int nbloc = (nbVertex + BSIZE - 1) / BSIZE;
+                const int nbloc = (nbVertex + BSIZE - 1) / BSIZE;
                 springs.resize(2 * nbloc * nbSpringPerVertex * BSIZE);
             }
             void set(int vertex, int spring, int index, float initpos, float ks, float kd)
             {
-                int bloc = vertex / BSIZE;
-                int b_x = vertex % BSIZE;
+                const int bloc = vertex / BSIZE;
+                const int b_x = vertex % BSIZE;
                 springs[2 * bloc * BSIZE * nbSpringPerVertex // start of the bloc
                     + 2 * spring * BSIZE                 // offset to the spring
                     + b_x                          // offset to the vertex

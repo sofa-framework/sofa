@@ -55,7 +55,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 //        map->f_computeDistance.setValue(true);
         sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
 
-        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
+        const component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
         this->root->addObject(edges);
         edges->addEdge( 0, 1 );
         edges->addEdge( 2, 1 );
@@ -152,10 +152,6 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
     void onSetUp() override
     {
-        if (!simulation::getSimulation()) {
-            simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
-        }
-
         root = simulation::getSimulation()->createNewNode("root");
 
         simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
@@ -176,8 +172,8 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
             simpleapi::createObject(node, "DiagonalMass", {{"totalMass", "1e-2"}});
         }
 
-        auto oneMappingExtension = simpleapi::createChild(oneMapping, "extensionsNode");
-        auto twoMappingsExtension = simpleapi::createChild(twoMappings, "extensionsNode");
+        const auto oneMappingExtension = simpleapi::createChild(oneMapping, "extensionsNode");
+        const auto twoMappingsExtension = simpleapi::createChild(twoMappings, "extensionsNode");
 
         simpleapi::createObject(oneMappingExtension, "MechanicalObject", {{"name", "extensionsDOF"}, {"template", "Vec1"}});
         simpleapi::createObject(twoMappingsExtension, "MechanicalObject", {{"name", "extensionsDOF"}, {"template", "Vec1"}});
@@ -195,7 +191,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
                                 {{"topology", "@../topology"}, {"input", "@../defoDOF"},
                                  {"output", "@extensionsDOF"}, {"geometricStiffness", "1"},
                                  {"applyRestPosition", "true"}, {"computeDistance", "true"}});
-        auto distanceMappingNode = simpleapi::createChild(twoMappingsExtension, "square");
+        const auto distanceMappingNode = simpleapi::createChild(twoMappingsExtension, "square");
         simpleapi::createObject(distanceMappingNode, "MechanicalObject", {{"name", "squaredDOF"}, {"template", "Vec1"}});
         simpleapi::createObject(distanceMappingNode, "SquareMapping",
                                         {{"input", "@../extensionsDOF"},
@@ -258,11 +254,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-9"}, {"threshold", "1.0e-9"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
         compareMechanicalObjects(i, 1e-7_sreal);
     }
@@ -275,11 +271,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "EigenSparseLU", {{"template", "CompressedRowSparseMatrixMat3x3d"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
         for (const auto& node : {oneMapping, twoMappings})
         {

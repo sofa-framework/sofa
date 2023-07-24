@@ -106,9 +106,9 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
         velocitiesArray.push_back(v0);
 
         // Constants
-        double stepBy2 = h/2.0;
-        double stepBy3 = h/3.0;
-        double stepBy6 = h/6.0;
+        const double stepBy2 = h/2.0;
+        const double stepBy3 = h/3.0;
+        const double stepBy6 = h/6.0;
         double pos,vel,newX,k1v,k2v,k3v,k4v,k1a,k2a,k3a,k4a,pos2,vel2,acc2;
 
         for(int i=1;i< size+1; i++)
@@ -162,7 +162,7 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate

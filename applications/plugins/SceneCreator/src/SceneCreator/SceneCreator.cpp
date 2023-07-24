@@ -52,7 +52,6 @@ using type::vector;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
-using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
 using sofa::core::objectmodel::BaseData ;
@@ -403,12 +402,12 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     else
         cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(cube, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(cube, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     // Add FEM and Mass system
     if (!isRigid) // Add FEM and Mass system
@@ -474,12 +473,12 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
     else
         cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(cylinder, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(cylinder, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(cylinder, objectName, totalMass, young, poisson);
@@ -538,12 +537,12 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
     else
         sphere = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(sphere, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(sphere, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(sphere, objectName, totalMass, young, poisson);
@@ -598,12 +597,12 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
     else
         plane = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofPlane = simpleapi::createObject(plane, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofPlane = simpleapi::createObject(plane, "MechanicalObject", {
+                                                      {"name", objectName+"_dof"},
+                                                      {"translation", str(translation)},
+                                                      {"rotation", str(rotation)},
+                                                      {"scale", str(scale)}
+                                                  });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(plane, objectName, totalMass, young, poisson);
@@ -680,7 +679,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
 Node::SPtr initSofa()
 {
-    setSimulation(new simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
 }
@@ -695,14 +694,14 @@ Node::SPtr getRoot()
 void initScene(Node::SPtr _root)
 {
     root = _root;
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(_root.get());
 }
 
 Node::SPtr clearScene()
 {
     if( root )
-        Simulation::theSimulation->unload( root );
-    root = Simulation::theSimulation->createNewGraph("");
+        sofa::simulation::node::unload( root );
+    root = simulation::getSimulation()->createNewGraph("");
     return root;
 }
 

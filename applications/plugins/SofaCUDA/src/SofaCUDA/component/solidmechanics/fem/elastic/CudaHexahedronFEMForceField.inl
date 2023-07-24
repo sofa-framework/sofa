@@ -236,7 +236,7 @@ void HexahedronFEMForceField< gpu::cuda::CudaVec3fTypes >::addDForce(const core:
 { 
 	VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    const double kFactor = mparams->kFactor();
 
     data->addDForce(this, df, dx, kFactor/*, bFactor*/);
 
@@ -251,7 +251,7 @@ const HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::Transformation& Hexahe
 template<>
 void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
-    auto nbdof = this->mstate->getSize();
+    const auto nbdof = this->mstate->getSize();
 
     if (auto* diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
@@ -289,7 +289,7 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalge
         {
             Transformation t;
             getNodeRotation(t,i);
-            int e = offset+i*3;
+            const int e = offset+i*3;
             rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
             rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);

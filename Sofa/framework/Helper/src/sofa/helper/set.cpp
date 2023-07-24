@@ -44,7 +44,7 @@ std::istream& operator>> ( std::istream& in, std::set<int>& _set )
     std::string s;
     while(in>>s)
     {
-        std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
             t = atoi(s.c_str());
@@ -55,7 +55,7 @@ std::istream& operator>> ( std::istream& in, std::set<int>& _set )
             int t1,t2,tinc;
             std::string s1(s,0,hyphen);
             t1 = atoi(s1.c_str());
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
@@ -103,7 +103,7 @@ std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
     std::string s;
     while(in>>s)
     {
-        std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
             t = atoi(s.c_str());
@@ -115,7 +115,7 @@ std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
             int tinc;
             std::string s1(s,0,hyphen);
             t1 = (unsigned int)atoi(s1.c_str());
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);

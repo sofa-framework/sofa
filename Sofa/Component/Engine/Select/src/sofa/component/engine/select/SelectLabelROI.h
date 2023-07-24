@@ -85,7 +85,7 @@ protected:
         selectLabelsSet.insert(selectLabels.begin(), selectLabels.end());
 
         helper::ReadAccessor< Data< type::vector<type::SVector<T> >  > > labels = d_labels;
-        size_t nb = labels.size();
+        const size_t nb = labels.size();
         helper::WriteOnlyAccessor< Data< type::vector<sofa::Index> > > indices = d_indices;
         indices.clear();
         for(sofa::Index i=0; i<nb;i++)

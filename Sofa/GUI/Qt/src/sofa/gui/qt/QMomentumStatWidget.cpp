@@ -55,10 +55,10 @@ void QMomentumStatWidget::stepImpl()
 
     m_momentumVisitor->execute( m_node->getContext() );
 
-    const type::Vector6& momenta = m_momentumVisitor->getMomentum();
+    const type::Vec6& momenta = m_momentumVisitor->getMomentum();
 
     // Update series
-    SReal time = m_node->getTime();
+    const SReal time = m_node->getTime();
     SReal min = 100000;
     SReal max = -100000;
     for (unsigned i = 0; i < 6; ++i)

@@ -115,10 +115,10 @@ bool Message::empty() const
     std::streambuf* buf = m_stream.rdbuf();
 
     // the current position to restore it after
-    std::stringstream::pos_type cur = buf->pubseekoff(0, std::ios_base::cur);
+    const std::stringstream::pos_type cur = buf->pubseekoff(0, std::ios_base::cur);
 
     // go to the end
-    std::stringstream::pos_type end = buf->pubseekoff(0, std::ios_base::end);
+    const std::stringstream::pos_type end = buf->pubseekoff(0, std::ios_base::end);
 
     // restore initial position
     buf->pubseekpos(cur, m_stream.out);

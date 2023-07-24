@@ -263,7 +263,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
     // Iterators to activeBoxes are stored in a map for a fast access from a box id
     std::unordered_map<int, decltype(activeBoxes)::const_iterator> activeBoxesIt;
 
-    for (auto* endPoint : m_sortedEndPoints)
+    for (const auto* endPoint : m_sortedEndPoints)
     {
         assert(endPoint != nullptr);
 
@@ -289,9 +289,9 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
         {
             const DSAPBox& box0 = m_boxes[boxId0];
             core::CollisionModel *cm0 = data0.lastCollisionModel;
-            auto collisionElement0 = data0.collisionElementIterator;
+            const auto collisionElement0 = data0.collisionElementIterator;
 
-            for (int boxId1 : activeBoxes)
+            for (const int boxId1 : activeBoxes)
             {
                 const BoxData& data1 = m_boxData[boxId1];
 

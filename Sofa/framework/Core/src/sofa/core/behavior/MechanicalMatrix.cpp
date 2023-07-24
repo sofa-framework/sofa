@@ -30,7 +30,7 @@ std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
     bool first = true;
     for (unsigned int i=0; i<m.factors.size(); ++i)
     {
-        SReal f = m.factors[i];
+        const SReal f = m.factors[i];
         if (f!=0.0)
         {
             if (!first) out << ' ';

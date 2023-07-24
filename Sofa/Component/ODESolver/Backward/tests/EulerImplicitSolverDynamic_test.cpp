@@ -92,8 +92,8 @@ struct EulerImplicitDynamic_test : public component::odesolver::testing::ODESolv
         velocitiesArray.push_back(v0);
 
         // Compute velocities
-        double denominator = h*(h+rk)*K+(1+h*rm)*m;
-        double constant = (-(rk+h)*K-rm*m);
+        const double denominator = h*(h+rk)*K+(1+h*rm)*m;
+        const double constant = (-(rk+h)*K-rm*m);
 
         for(int i=1;i< size+1; i++)
         {
@@ -112,7 +112,7 @@ struct EulerImplicitDynamic_test : public component::odesolver::testing::ODESolv
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<statecontainer::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate
