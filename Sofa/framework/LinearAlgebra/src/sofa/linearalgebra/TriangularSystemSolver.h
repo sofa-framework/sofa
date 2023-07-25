@@ -66,7 +66,7 @@ void solveUpperTriangularSystem(
     const Real* const U_values
     )
 {
-    for (sofa::Size i = systemSize - 1; i != 0; --i)
+    for (sofa::Size i = systemSize - 1; i != static_cast<sofa::Size>(-1); --i)
     {
         Real x_i = rightHandSideVector[i];
         for (Integer p = U_columns[i]; p < U_columns[i + 1]; ++p)
