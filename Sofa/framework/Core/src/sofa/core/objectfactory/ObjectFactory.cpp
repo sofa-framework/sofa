@@ -54,24 +54,6 @@ bool ObjectFactory::hasCreator(std::string classname)
     return (!entry->creatorMap.empty());
 }
 
-std::string ObjectFactory::shortName(std::string classname)
-{
-    std::string shortname;
-
-    const ClassEntryMap::iterator it = registry.find(classname);
-    if (it != registry.end())
-    {
-        const ClassEntrySPtr entry = it->second;
-        if(!entry->creatorMap.empty())
-        {
-            const BaseObjectCreatorMap::iterator myit = entry->creatorMap.begin();
-            const BaseObjectCreatorSPtr c = myit->second;
-            shortname = c->getClass()->shortName;
-        }
-    }
-    return shortname;
-}
-
 bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
                              ClassEntrySPtr* previous)
 {
@@ -305,16 +287,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if (isUserTemplateNameInTemplateList)
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
-                                      << "is not compatible with the current context. "
-                                      << "Falling back to the first compatible template: '"
-                                      << object->getTemplateName() << "'.";
+                                    << "is not compatible with the current context. "
+                                    << "Falling back to the first compatible template: '"
+                                    << object->getTemplateName() << "'.";
         }
         else
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
-                                      << "cannot be found in the list of available templates [" << ss.str() << "]. "
-                                      << "Falling back to the first compatible template: '"
-                                      << object->getTemplateName() << "'.";
+                                    << "cannot be found in the list of available templates [" << ss.str() << "]. "
+                                    << "Falling back to the first compatible template: '"
+                                    << object->getTemplateName() << "'.";
         }
     }
     else if (creators.size() > 1)
@@ -372,22 +354,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     return object;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntrySPtr>& result)
+std::vector<ClassEntrySPtr>& ObjectFactory::getEntries(std::vector<ClassEntrySPtr>& result, const std::string& target)
 {
-    result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
-    {
-        ClassEntrySPtr entry = it->second;
-        // Push the entry only if it is not an alias
-        if (entry->className == it->first)
-            result.push_back(entry);
-    }
-}
-
-void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, std::string target)
-{
-    result.clear();
     for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
     {
@@ -409,12 +377,12 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, st
                 result.push_back(entry);
         }
     }
+    return result;
 }
 
-void ObjectFactory::getEntriesDerivedFrom(const sofa::core::BaseClass* parentclass,
-                                          std::vector<ClassEntrySPtr>& result) const
+std::vector<ClassEntrySPtr>& ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& results,
+                                                                  const sofa::core::BaseClass* parentclass) const
 {
-    result.clear();
     for (const auto& r : registry)
     {
         ClassEntrySPtr entry = r.second;
@@ -427,25 +395,12 @@ void ObjectFactory::getEntriesDerivedFrom(const sofa::core::BaseClass* parentcla
                 const auto* baseClass = creatorEntry->second->getClass();
                 if (baseClass && baseClass->hasParent(parentclass))
                 {
-                    result.push_back(entry);
+                    results.push_back(entry);
                 }
             }
         }
     }
-}
-
-std::string ObjectFactory::listClassesFromTarget(std::string target, std::string separator)
-{
-    std::vector<ClassEntrySPtr> entries;
-    getEntriesFromTarget(entries, target);
-    std::ostringstream oss;
-    for (unsigned int i=0; i<entries.size(); ++i)
-    {
-        if (i) oss << separator;
-        oss << entries[i]->className;
-    }
-    std::string result = oss.str();
-    return result;
+    return results;
 }
 
 void ObjectFactory::dump(std::ostream& out)

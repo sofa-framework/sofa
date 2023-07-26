@@ -63,7 +63,7 @@ sofa::core::ObjectFactory* ObjectFactory::getInstance()
 
 void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 {
-    newfactory->getEntriesFromTarget(result,"*");
+    newfactory->getEntries(result,"*");
 }
 
 /// Get an entry given a class name (or alias)
@@ -82,7 +82,7 @@ bool ObjectFactory::hasCreator(const std::string& classname)
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result,
                                          const std::string& target)
 {
-    return newfactory->getEntriesFromTarget(result, target);
+    newfactory->getEntries(result, target);
 }
 
 /// Return the list of classes from a given target
@@ -96,7 +96,7 @@ std::string ObjectFactory::listClassesFromTarget(const std::string& target, cons
 std::string ObjectFactory::listClassesDerivedFrom(const sofa::core::BaseClass* parentclass, const std::string& separator) const
 {
     std::vector<ClassEntry::SPtr> entries;
-    newfactory->getEntriesDerivedFrom(parentclass, entries);
+    newfactory->getEntriesDerivedFrom(entries, parentclass);
     return sofa::helper::join(entries.begin(), entries.end(), [](ClassEntry::SPtr b){ return std::move(b->className); }, separator);
 }
 

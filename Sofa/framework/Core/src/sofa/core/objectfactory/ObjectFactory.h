@@ -79,29 +79,11 @@ public:
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
 
-    /// Return the shortname for this classname. Empty string if
-    /// no creator exists for this classname.
-    std::string shortName(std::string classname);
-
-    /// Fill the given vector with all the registered classes
-    void getAllEntries(std::vector<ClassEntrySPtr>& result);
-
     /// Fill the given vector with the registered classes from a given target
-    void getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, std::string target);
+    std::vector<ClassEntrySPtr>& getEntries(std::vector<ClassEntrySPtr>& result, const std::string& target="*");
 
-    /// Return the list of classes from a given target
-    std::string listClassesFromTarget(std::string target, std::string separator = ", ");
-
-    /// Fill the given vector with all the registered classes derived from BaseClass
-    template<class BaseClass>
-    void getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const;
-
-    void getEntriesDerivedFrom(const sofa::core::BaseClass* parentclass,
-                               std::vector<ClassEntry::SPtr>& result) const; //< new API (post 22.06)
-
-    /// Return the list of classes derived from BaseClass as a string
-    template<class BaseClass>
-    std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
+    std::vector<ClassEntrySPtr>& getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result,
+                                                       const sofa::core::BaseClass* parentclass) const;
 
     /// Add an alias name for an already registered class
     ///
@@ -133,43 +115,5 @@ public:
 
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
 };
-
-template<class BaseClass>
-void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const
-{
-    result.clear();
-    for (const auto& r : registry)
-    {
-        ClassEntrySPtr entry = r.second;
-        // Push the entry only if it is not an alias
-        if (entry->className == r.first)
-        {
-            const auto creatorEntry = entry->creatorMap.begin();
-            if (creatorEntry != entry->creatorMap.end())
-            {
-                const auto* baseClass = creatorEntry->second->getClass();
-                if (baseClass && baseClass->hasParent(BaseClass::GetClass()))
-                {
-                    result.push_back(entry);
-                }
-            }
-        }
-    }
-}
-
-template<class BaseClass>
-std::string ObjectFactory::listClassesDerivedFrom(const std::string& separator) const
-{
-    std::vector<ClassEntrySPtr> entries;
-    getEntriesDerivedFrom<BaseClass>(entries);
-    if (entries.empty()) return std::string();
-
-    const auto join = [&separator](std::string a, ClassEntrySPtr b)
-    {
-        return std::move(a) + separator + b->className;
-    };
-    return std::accumulate(std::next(entries.begin()), entries.end(),
-                           entries.front()->className, join);
-}
 
 } // namespace sofa::core

@@ -48,27 +48,27 @@ public:
 
     ObjectFactory(sofa::core::objectfactory::ObjectFactory* newfactory_){ newfactory=newfactory_; }
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("short name has been removed. Use sofa::helper::NameDecoder::sortName instead.")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("short name has been removed. Use sofa::helper::NameDecoder::sortName instead.")
     std::string shortName(const std::string& classname);
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace ObjectFactory::getInstance()->function() by the equivalent ObjectFactoryInstance::function()")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace ObjectFactory::getInstance()->function() by the equivalent ObjectFactoryInstance::function()")
     static sofa::core::ObjectFactory* getInstance();
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::CreateObject' by 'ObjectFactoryInstance::createObject'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::CreateObject' by 'ObjectFactoryInstance::createObject'")
     static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context,
                                                       objectmodel::BaseObjectDescription* arg);
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::AddAlias' by 'ObjectFactoryInstance::addAlias'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::AddAlias' by 'ObjectFactoryInstance::addAlias'")
     static bool AddAlias(const std::string& name, const std::string& result, bool force=false,
                          ClassEntrySPtr* previous = nullptr);
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ResetAlias' by 'ObjectFactoryInstance::resetAlias'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ResetAlias' by 'ObjectFactoryInstance::resetAlias'")
     static void ResetAlias(const std::string& name, ClassEntrySPtr previous);
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::hasCreator' by 'ObjectFactoryInstance::HasCreator'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::HasCreator' by 'ObjectFactoryInstance::hasCreator'")
     static bool HasCreator(const std::string& classname);
 
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ShortName' by 'sofa::helper::NameDecoder::shortName(classname)'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ShortName' by 'sofa::helper::NameDecoder::shortName(classname)'")
     static std::string ShortName(const std::string& classname);
 
     /// Get an entry given a class name (or alias)
@@ -78,26 +78,26 @@ public:
     bool hasCreator(const std::string& classname);
 
     /// Fill the given vector with all the registered classes
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getAllEntries(results)' by 'ObjectFactory::getEntriesFromTarget(results, target=\"*\")")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getAllEntries(results)' by 'ObjectFactory::getEntriesFromTarget(results, target=\"*\")")
     void getAllEntries(std::vector<ClassEntrySPtr>& result);
 
     /// Fill the given vector with the registered classes from a given target
-    void getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, const std::string& target);
+    void getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, const std::string& target="*");
 
     /// Return the list of classes from a given target
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesFromTarget(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesFromTarget());'")
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesFromTarget(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesFromTarget());'")
     std::string listClassesFromTarget(const std::string& target, const std::string& separator = ", ");
 
     /// Fill the given vector with all the registered classes derived from BaseClass
     template<class BaseClass>
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getEntriesDerivedFrom<Class>(result)' by 'ObjectFactory::getEntriesDerivedFrom(Class::GetClass(), result);'")
-    void getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const;                                     //< old API (before 22.06)
-    void getEntriesDerivedFrom(sofa::core::BaseClass* parentclass, std::vector<ClassEntrySPtr>& result) const; //< new API (post 22.06)
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getEntriesDerivedFrom<Class>(result)' by 'ObjectFactory::getEntriesDerivedFrom(Class::GetClass(), result);'")
+    void getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const;                                     //< old API (before 23.12)
+    void getEntriesDerivedFrom(sofa::core::BaseClass* parentclass, std::vector<ClassEntrySPtr>& result) const; //< new API (post 23.12)
 
     /// Return the list of classes derived from BaseClass as a string
     template<class BaseClass>
-    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesDerivedFrom<Class>(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesDerivedFrom());'")
-    std::string listClassesDerivedFrom(const std::string& separator = ", ") const; //< old API (pre 22.06)
+    SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesDerivedFrom<Class>(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesDerivedFrom());'")
+    std::string listClassesDerivedFrom(const std::string& separator = ", ") const; //< old API (pre 23.12)
 
     /// Add an alias name for an already registered class
     ///
