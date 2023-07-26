@@ -47,9 +47,6 @@
 
 #include <sofa/helper/system/FileMonitor.h>
 
-// Recorder GUI is not used (broken in most scenes)
-#define SOFA_GUI_QT_NO_RECORDER
-
 class WDoubleLineEdit;
 class QDragEnterEvent;
 
@@ -57,10 +54,6 @@ namespace sofa::gui::qt
 {
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
 class DocBrowser ;
-#endif
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-class QSofaRecorder;
 #endif
 
 //enum TYPE{ NORMAL, PML, LML};
@@ -130,13 +123,8 @@ public:
     void showFPS(double fps) override;
 
 protected:
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    QSofaRecorder* recorder;
-#else
     QLabel* fpsLabel;
     QLabel* timeLabel;
-#endif
 
 
 private:
@@ -251,7 +239,6 @@ public:
     void setDumpState(bool) override;
     void setLogTime(bool) override;
     void setExportState(bool) override;
-    virtual void setRecordPath(const std::string & path) override;
     virtual void setGnuplotPath(const std::string & path) override;
 
     /// create a viewer according to the argument key
