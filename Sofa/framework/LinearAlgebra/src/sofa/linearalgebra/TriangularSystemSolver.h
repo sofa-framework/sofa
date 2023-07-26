@@ -21,59 +21,78 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/config.h>
+#include <cstring>
 
 namespace sofa::linearalgebra
 {
 
-/// Use forward substitution to solve a linear system L*x = b, where:
-/// L is a lower triangular matrix
+/// Solves a lower unitriangular system where the matrix is represented in CSR format
+///
+/// Forward substitution is used to solve a linear system L*x = b, where:
+/// L is a lower unitriangular matrix
 /// x is the solution vector
 /// b is the right-hand side vector
-/// The lower triangular matrix must be provided in compressed sparse row (CSR) format
+/// The lower unitriangular matrix must be provided in compressed sparse row (CSR) format
+///
+/// \param systemSize The size of the system. All other parameters must comply with this size
+/// \param rightHandSideVector The right-hand side vector
+/// \param solutionVector The solution vector
+/// \param CSR_rows The array storing the starting index of each row in the data array.
+/// \param CSR_columns The array storing the column indices of the nonzero values in the data array.
+/// \param CSR_values The array containing the nonzero values of the matrix
 template<typename Real, typename Integer>
-void solveLowerTriangularSystem(
+void solveLowerUnitriangularSystemCSR(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
-    Real* solution,
-    const Integer* const L_columns,
-    const Integer* const L_row,
-    const Real* const L_values
+    Real* solutionVector,
+    const Integer* const CSR_rows,
+    const Integer* const CSR_columns,
+    const Real* const CSR_values
     )
 {
     for (sofa::Size i = 0; i < systemSize; ++i)
     {
         Real x_i = rightHandSideVector[i];
-        for (Integer p = L_columns[i]; p < L_columns[i + 1]; ++p)
+        for (Integer p = CSR_rows[i]; p < CSR_rows[i + 1]; ++p)
         {
-            x_i -= L_values[p] * solution[L_row[p]];
+            x_i -= CSR_values[p] * solutionVector[CSR_columns[p]];
         }
-        solution[i] = x_i;
+        solutionVector[i] = x_i;
     }
 }
 
-/// Use backward substitution to solve a linear system U*x = b, where:
-/// U is a upper triangular matrix
+/// Solves a upper unitriangular system where the matrix is represented in CSR format
+///
+/// Backward substitution is used to solve a linear system U*x = b, where:
+/// U is a upper unitriangular matrix
 /// x is the solution vector
 /// b is the right-hand side vector
-/// The upper triangular matrix must be provided in compressed sparse row (CSR) format
+/// The upper unitriangular matrix must be provided in compressed sparse row (CSR) format
+///
+/// \param systemSize The size of the system. All other parameters must comply with this size
+/// \param rightHandSideVector The right-hand side vector
+/// \param solutionVector The solution vector
+/// \param CSR_rows The array storing the starting index of each row in the data array.
+/// \param CSR_columns The array storing the column indices of the nonzero values in the data array.
+/// \param CSR_values The array containing the nonzero values of the matrix
 template<typename Real, typename Integer>
-void solveUpperTriangularSystem(
+void solveUpperUnitriangularSystemCSR(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
-    Real* solution,
-    const Integer* const U_columns,
-    const Integer* const U_row,
-    const Real* const U_values
+    Real* solutionVector,
+    const Integer* const CSR_rows,
+    const Integer* const CSR_columns,
+    const Real* const CSR_values
     )
 {
     for (sofa::Size i = systemSize - 1; i != static_cast<sofa::Size>(-1); --i)
     {
         Real x_i = rightHandSideVector[i];
-        for (Integer p = U_columns[i]; p < U_columns[i + 1]; ++p)
+        for (Integer p = CSR_rows[i]; p < CSR_rows[i + 1]; ++p)
         {
-            x_i -= U_values[p] * solution[U_row[p]];
+            x_i -= CSR_values[p] * solutionVector[CSR_columns[p]];
         }
-        solution[i] = x_i;
+        solutionVector[i] = x_i;
     }
 }
 

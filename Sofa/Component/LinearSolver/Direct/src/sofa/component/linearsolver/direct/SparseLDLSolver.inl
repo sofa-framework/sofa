@@ -229,7 +229,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
             for (auto i = range.start; i != range.end; ++i)
             {
                 Real* line = JLinv[i];
-                sofa::linearalgebra::solveLowerTriangularSystem(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
+                sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
             }
         });
 

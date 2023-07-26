@@ -45,9 +45,25 @@ public :
     ~SparseLDLImplInvertData() override = default;
 
     int n, P_nnz, L_nnz;
-    VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
+
+    //CSR matrix P, a copy of the matrix to invert
+    VecInt P_rowind, P_colptr;
+    VecReal P_values;
+
+    //CSC matrix L, the lower unitriangular matrix of the LDL decomposition
+    VecInt L_rowind, L_colptr;
+    VecReal L_values;
+
+    //CSC matrix L^T, the transpose of the lower unitriangular matrix of the LDL decomposition
+    VecInt LT_rowind, LT_colptr;
+    VecReal LT_values;
+
+    //permutation
     VecInt perm, invperm;
-    VecReal P_values,L_values,LT_values,invD;
+
+    //diagonal of D^-1
+    VecReal invD;
+
     type::vector<int> Parent;
     bool new_factorization_needed;
 };
@@ -176,29 +192,39 @@ protected :
 
         // A x = b
         //   <=> (L * D * L^T) * x = b
-        //   <=> D * L^T * x = L^-1 * b         # Step 1: compute L^-1 * b
-        //   <=> L^T * x = D^-1 * L^-1 * b      # Step 2: compute D^-1 * L^-1 * b
-        //   <=> x = L^T^-1 * D^1 * L^-1 * b    # Step 3: compute L^T^-1 * D^1 * L^-1 * b
+        //   <=> L y = b  with y = D * L^T * x  # Step 1: compute y from the system L y = b
+        //   <=> D z = y  with z = L^T * x      # Step 2: compute z from the system D z = y
+        //   <=> L^T * x = z                    # Step 3: compute x from the system L^T x = z
+
+        // b, x, y and z can be read/written in the same vector:
+        Real* const bPermuted = Tmp.data();
+        Real* const xPermuted = Tmp.data();
+        Real* const y = Tmp.data();
+        Real* const z = Tmp.data();
 
         // apply the permutation to the right-hand side
         for (int i = 0; i < n; ++i)
         {
-            Tmp[i] = b[perm[i]];
+            bPermuted[i] = b[perm[i]];
         }
 
-        // Step 1: compute L^-1 * b
-        sofa::linearalgebra::solveLowerTriangularSystem(n, Tmp.data(), Tmp.data(), data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
+        // Step 1: compute y from the system L y = b
+        // Note that L^T, stored in CSC, corresponds to L in CSR
+        sofa::linearalgebra::solveLowerUnitriangularSystemCSR(n, bPermuted, y,
+            data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
 
-        // Step 2: compute D^-1 * [L^-1 * b]
-        sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(n, Tmp.data(), Tmp.data(), data->invD.data());
+        // Step 2: compute z from the system D z = y
+        sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(n, y, z, data->invD.data());
 
-        // Step 3: compute L^T^-1 * [D^1 * L^-1 * b]
-        sofa::linearalgebra::solveUpperTriangularSystem(n, Tmp.data(), Tmp.data(), data->L_colptr.data(), data->L_rowind.data(), data->L_values.data());
+        // Step 3: compute x from the system L^T x = z
+        // Note that L, stored in CSC, corresponds to L^T in CSR
+        sofa::linearalgebra::solveUpperUnitriangularSystemCSR(n, z, xPermuted,
+            data->L_colptr.data(), data->L_rowind.data(), data->L_values.data());
 
         // apply the permutation to the solution
         for (int i = 0; i < n; ++i)
         {
-            x[perm[i]] = Tmp[i];
+            x[perm[i]] = xPermuted[i];
         }
     }
 
@@ -240,21 +266,29 @@ protected :
         CSPARSE_symbolic(n,M_colptr,M_rowind,colptr,perm,invperm,Parent,Flag.data(),Lnz.data());
     }
 
-    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent) {
+    void LDL_numeric(int n,
+                     int* M_colptr, int* M_rowind, Real* M_values,
+                     int* colptr, int* rowind, Real* values,
+                     Real* D, int* perm, int* invperm, int* Parent)
+    {
         Y.resize(n);
 
         CSPARSE_numeric<Real>(n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,perm,invperm,Parent,Flag.data(),Lnz.data(),Pattern.data(),Y.data());
     }
 
     template<class VecInt,class VecReal>
-    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
-        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || compareMatrixShape(n, M_colptr, M_rowind, data->n,
-                                                                                                                                         (int *) data->P_colptr.data(),(int *) data->P_rowind.data());
+    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data)
+    {
+        data->new_factorization_needed =
+            data->P_colptr.size() == 0 ||
+            data->P_rowind.size() == 0 ||
+            compareMatrixShape(n, M_colptr, M_rowind, data->n, (int*)data->P_colptr.data(), (int*)data->P_rowind.data());
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
-        data->P_values.clear();data->P_values.fastResize(data->P_nnz);
-        memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
+        data->P_values.clear();
+        data->P_values.fastResize(data->P_nnz);
+        memcpy(data->P_values.data(), M_values, data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
@@ -303,16 +337,20 @@ protected :
         //Numeric Factorization
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("numeric_factorization");
-            LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
-                        data->perm.data(),data->invperm.data(),data->Parent.data());
+            LDL_numeric(data->n, M_colptr, M_rowind, M_values, colptr, rowind, values, D,
+                        data->perm.data(), data->invperm.data(), data->Parent.data());
 
             //inverse the diagonal
-            for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+            for (int i = 0; i < data->n; i++)
+            {
+                D[i] = 1 / D[i];
+            }
         }
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
+        {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -329,13 +367,15 @@ protected :
         tran_countvec.clear();
         tran_countvec.resize(data->n);
 
-        for (int j=0;j<data->n;j++) {
-          for (int i=colptr[j];i<colptr[j+1];i++) {
-              const int line = rowind[i];
-            tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
-            tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
-            tran_countvec[line]++;
-          }
+        for (int j = 0; j < data->n; j++)
+        {
+            for (int i = colptr[j]; i < colptr[j + 1]; i++)
+            {
+                const int line = rowind[i];
+                tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
+                tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
+                tran_countvec[line]++;
+            }
         }
     }
 
