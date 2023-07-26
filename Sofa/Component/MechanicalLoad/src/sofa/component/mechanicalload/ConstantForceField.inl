@@ -30,8 +30,6 @@
 #include <iostream>
 #include <numeric>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
 
 namespace sofa::component::mechanicalload
 {
@@ -50,6 +48,41 @@ ConstantForceField<DataTypes>::ConstantForceField()
 {
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromIndices", {&d_indices}, [this](const core::DataTracker& )
+    {
+        msg_info() << "call back update: from indices";
+        return updateFromIndices();
+    }, {});
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces}, [this](const core::DataTracker& )
+    {
+        msg_info() << "dataInternalUpdate: data forces has changed";
+        return updateFromForcesVector();
+    }, {});
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForce", {&d_force}, [this](const core::DataTracker& )
+    {
+        msg_info() << "dataInternalUpdate: data force has changed";
+
+        const Deriv &force = d_force.getValue();
+        if( checkForce(force) )
+        {
+            computeForceFromSingleForce();
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        else
+        {
+            msg_error() << " Invalid given force";
+            return sofa::core::objectmodel::ComponentState::Invalid;
+        }
+    }, {});
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce}, [this](const core::DataTracker& )
+    {
+        msg_info() << "dataInternalUpdate: data totalForce has changed";
+        return updateFromTotalForce();
+    }, {});
 }
 
 
@@ -83,27 +116,15 @@ void ConstantForceField<DataTypes>::init()
     }
 
 
-    const VecIndex & indices = d_indices.getValue();
-    const auto indicesSize = indices.size();
 
-    if (d_indices.isSet() && indicesSize!=0)
+    /// Check on data isSet()
+    /// Could be removed since the callback mechanism implements it
+    if (d_indices.isSet() && d_indices.getValue().size()!=0)
     {
-        // check size of vector indices
-        if( indicesSize > m_systemSize )
+        if(updateFromIndices() == sofa::core::objectmodel::ComponentState::Invalid)
         {
-            msg_error() << "Size mismatch: indices > system size";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
-        }
-        // check each indice of the vector
-        for(Size i=0; i<indicesSize; i++)
-        {
-            if( indices[i] > m_systemSize )
-            {
-                msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-                return;
-            }
         }
     }
     else
@@ -118,14 +139,21 @@ void ConstantForceField<DataTypes>::init()
 
     if (d_forces.isSet())
     {
-        const VecDeriv &forces = d_forces.getValue();
-        if( checkForces(forces) )
+        if(d_force.isSet() && d_totalForce.isSet())
         {
-            computeForceFromForceVector();
+            msg_warning() <<"Data \'forces\', \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
-        else
+        else if(d_force.isSet())
         {
-            msg_error() << " Invalid given vector forces";
+            msg_warning() <<"Both data \'forces\' and \'force\' cannot be used simultaneously, please set only one of them to remove this warning";
+        }
+        else if(d_totalForce.isSet())
+        {
+            msg_warning() <<"Both data \'forces\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
+        }
+
+        if(updateFromForcesVector() == sofa::core::objectmodel::ComponentState::Invalid)
+        {
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -133,6 +161,11 @@ void ConstantForceField<DataTypes>::init()
     }
     else if (d_force.isSet())
     {
+        if(d_totalForce.isSet())
+        {
+            msg_warning() <<"Both data \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
+        }
+
         const Deriv &force = d_force.getValue();
         if( checkForce(force) )
         {
@@ -148,14 +181,8 @@ void ConstantForceField<DataTypes>::init()
     }
     else if (d_totalForce.isSet())
     {
-        const Deriv &totalForce = d_totalForce.getValue();
-        if( checkForce(totalForce) )
+        if(updateFromTotalForce() == sofa::core::objectmodel::ComponentState::Invalid)
         {
-            computeForceFromTotalForce();
-        }
-        else
-        {
-            msg_error() << " Invalid given totalForce";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -170,12 +197,6 @@ void ConstantForceField<DataTypes>::init()
     // init from ForceField
     Inherit::init();
 
-    // add to tracker
-    this->trackInternalData(d_indices);
-    this->trackInternalData(d_forces);
-    this->trackInternalData(d_force);
-    this->trackInternalData(d_totalForce);
-
     // if all init passes, component is valid
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
@@ -184,99 +205,80 @@ void ConstantForceField<DataTypes>::init()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::reinit()
 {
-    // Now update is handled through the doInternalUpdate mechanism
-    // called at each begin of step through the InternalUpdateDataVisitor
+    // Now update is handled through the callback mechanism
+    // called each time the componentState is checked
 }
 
 
 template<class DataTypes>
 void ConstantForceField<DataTypes>::doUpdateInternal()
 {
-    if (this->hasDataChanged(d_indices))
+    // function empty in #3924
+}
+
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromIndices()
+{
+    const VecIndex & indices = d_indices.getValue();
+    const size_t indicesSize = indices.size();
+
+    // check size of vector indices
+    if( indicesSize > m_systemSize )
     {
-        msg_info() << "doUpdateInternal: data indices has changed";
+        msg_error() << "Size mismatch: indices > system size";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+    else if( indicesSize==0 )
+    {
+        msg_error() << "Size of input vector indices is zero";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
 
-        const VecIndex & indices = d_indices.getValue();
-        const size_t indicesSize = indices.size();
-
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-
-        // check size of vector indices
-        if( indicesSize > m_systemSize )
+    // check each indice of the vector
+    for(Size i=0; i<indicesSize; i++)
+    {
+        if( indices[i] > m_systemSize )
         {
-            msg_error() << "Size mismatch: indices > system size";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
-        else if( indicesSize==0 )
-        {
-            msg_warning() << "Size of vector indices is zero";
-        }
-
-        // check each indice of the vector
-        for(Size i=0; i<indicesSize; i++)
-        {
-            if( indices[i] > m_systemSize )
-            {
-                msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-                return;
-            }
+            msg_error() << "Indices incorrect: indice["<< i <<"] = "<< indices[i] <<" exceeds system size";
+            return sofa::core::objectmodel::ComponentState::Invalid;
         }
     }
 
-    if (this->hasDataChanged(d_forces))
-    {
-        msg_info() << "doUpdateInternal: data forces has changed";
+    return sofa::core::objectmodel::ComponentState::Valid;
+}
 
-        const VecDeriv &forces = d_forces.getValue();
-        if( checkForces(forces) )
-        {
-            computeForceFromForceVector();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << " Invalid given vector forces";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromForcesVector()
+{
+    const VecDeriv &forces = d_forces.getValue();
+    if( checkForces(forces) )
+    {
+        computeForceFromForceVector();
+        return sofa::core::objectmodel::ComponentState::Valid;
     }
-
-    if (this->hasDataChanged(d_force))
+    else
     {
-        msg_info() << "doUpdateInternal: data force has changed";
-
-        const Deriv &force = d_force.getValue();
-        if( checkForce(force) )
-        {
-            computeForceFromSingleForce();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << " Invalid given force";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
+        msg_error() << " Invalid given vector forces";
+        return sofa::core::objectmodel::ComponentState::Invalid;
     }
+}
 
-    if (this->hasDataChanged(d_totalForce))
+
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState ConstantForceField<DataTypes>::updateFromTotalForce()
+{
+    const Deriv &totalForce = d_totalForce.getValue();
+    if( checkForce(totalForce) )
     {
-        msg_info() << "doUpdateInternal: data totalForce has changed";
-
-        const Deriv &totalForce = d_totalForce.getValue();
-        if( checkForce(totalForce) )
-        {
-            computeForceFromTotalForce();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << " Invalid given totalForce";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
+        computeForceFromTotalForce();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }
+    else
+    {
+        msg_error() << " Invalid given totalForce";
+        return sofa::core::objectmodel::ComponentState::Invalid;
     }
 }
 
@@ -312,7 +314,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
 {
     const VecDeriv& forces = d_forces.getValue();
     const size_t indicesSize = d_indices.getValue().size();
-    Deriv& totalForce = *d_totalForce.beginEdit();
+    Deriv totalForce;
     totalForce.clear();
     if( indicesSize!=forces.size() )
     {
@@ -327,8 +329,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
             totalForce += forces[i];
         }
     }
-
-    d_totalForce.endEdit();
+    d_totalForce.setValue(totalForce);
 }
 
 template<class DataTypes>
@@ -336,8 +337,9 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce()
 {
     const Deriv& singleForce = d_force.getValue();
     const VecIndex & indices = d_indices.getValue();
-    VecDeriv& forces = *d_forces.beginEdit();
-    size_t indicesSize = indices.size();
+    const size_t indicesSize = indices.size();
+    sofa::helper::WriteAccessor<DataVecDeriv> forces = d_forces;
+
     forces.clear();
     forces.resize(indicesSize);
 
@@ -347,7 +349,6 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce()
     }
 
     d_totalForce.setValue(singleForce*(static_cast<Real>(indicesSize)));
-    d_forces.endEdit();
 }
 
 template<class DataTypes>
@@ -374,11 +375,14 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     SOFA_UNUSED(params);
     SOFA_UNUSED(x1);
     SOFA_UNUSED(v1);
 
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f;
+    sofa::helper::WriteAccessor<DataVecDeriv> _f1 = f;
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& forces = d_forces.getValue();
 
@@ -434,14 +438,15 @@ template <class DataTypes>
 void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     VecIndex& indices = *d_indices.beginEdit();
-    VecDeriv& f = *d_forces.beginEdit();
-    Deriv& totalf = *d_totalForce.beginEdit();
+    sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
+    Deriv totalf = d_totalForce.getValue();
+
     indices.push_back(i);
     f.push_back( force );
     totalf += force;
-    d_totalForce.endEdit();
+
+    d_totalForce.setValue(totalf);
     d_indices.endEdit();
-    d_forces.endEdit();
 }
 
 template <class DataTypes>
@@ -491,7 +496,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 {
     const SReal aSC = d_showArrowSize.getValue();
 
-    if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0)) return;
+    if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0))
+        return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
