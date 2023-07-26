@@ -122,6 +122,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/loader/VoxelLoader.h
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.h
     ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.h
+    ${SRC_ROOT}/objectfactory/BaseObjectCreator.h
+    ${SRC_ROOT}/objectfactory/ObjectFactory.h
+    ${SRC_ROOT}/objectfactory/ObjectFactoryInstance.h
     ${SRC_ROOT}/objectmodel/AbstractDataLink.h
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
@@ -263,6 +266,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/loader/VoxelLoader.cpp
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
     ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.cpp
+    ${SRC_ROOT}/objectfactory/BaseObjectCreator.cpp
+    ${SRC_ROOT}/objectfactory/ObjectFactory.cpp
+    ${SRC_ROOT}/objectfactory/ObjectFactoryInstance.cpp
     ${SRC_ROOT}/objectmodel/AbstractDataLink.cpp
     ${SRC_ROOT}/objectmodel/AspectPool.cpp
     ${SRC_ROOT}/objectmodel/Base.cpp

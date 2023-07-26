@@ -21,112 +21,83 @@
 ******************************************************************************/
 #pragma once
 
+#pragma once
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/BaseClassNameHelper.h>
-#include <numeric>
+#include <sofa/core/objectfactory/ObjectFactory.h>
+#include <sofa/core/objectfactory/ObjectFactoryInstance.h>
 
 namespace sofa::core
 {
 
-/**
- *  \brief Main class used to register and dynamically create objects
- *
- *  It uses the Factory design pattern, where each class is registered in a map,
- *  and dynamically retrieved given the type name.
- *
- *  It also stores metainformation on each classes, such as description,
- *  authors, license, and available template types.
- *
- *  \see RegisterObject for how new classes should be registered.
- *
- */
-typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
+// inject in the current namespace the needed objects so they are accessible in the current version.
+using OnCreateCallback = sofa::core::objectfactory::OnCreateCallback;
+using ObjectFactoryInstance = sofa::core::objectfactory::ObjectFactoryInstance;
+using RegisterObject = sofa::core::objectfactory::RegisterObject;
+
+using sofa::core::objectfactory::ClassEntrySPtr;
+using sofa::core::objectfactory::BaseObjectCreatorSPtr;
+
 class SOFA_CORE_API ObjectFactory
 {
 public:
+    using ClassEntry = sofa::core::objectfactory::ClassEntry;
+    using ClassEntryMap = sofa::core::objectfactory::ClassEntryMap;
 
-    /// Abstract interface of objects used to create instances of a given type
-    class Creator
-    {
-    public:
-        typedef std::shared_ptr<Creator> SPtr;
+    using Creator = sofa::core::objectfactory::BaseObjectCreator;
+    using CreatorMap = sofa::core::objectfactory::BaseObjectCreatorMap;
 
-        virtual ~Creator() { }
-        /// Pre-construction check.
-        ///
-        /// \return true if the object can be created successfully.
-        virtual bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+    ObjectFactory(sofa::core::objectfactory::ObjectFactory* newfactory_){ newfactory=newfactory_; }
 
-        /// Construction method called by the factory.
-        ///
-        /// \pre canCreate(context, arg) == true.
-        virtual objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("short name has been removed. Use sofa::helper::NameDecoder::sortName instead.")
+    std::string shortName(const std::string& classname);
 
-        /// type_info structure associated with the type of intanciated objects.
-        virtual const std::type_info& type() = 0;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace ObjectFactory::getInstance()->function() by the equivalent ObjectFactoryInstance::function()")
+    static sofa::core::ObjectFactory* getInstance();
 
-        /// BaseClass structure associated with the type of intanciated objects.
-        virtual const objectmodel::BaseClass* getClass() = 0;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::CreateObject' by 'ObjectFactoryInstance::createObject'")
+    static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context,
+                                                      objectmodel::BaseObjectDescription* arg);
 
-        /// The name of the library or executable containing the binary code for this component
-        virtual const char* getTarget() = 0;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::AddAlias' by 'ObjectFactoryInstance::addAlias'")
+    static bool AddAlias(const std::string& name, const std::string& result, bool force=false,
+                         ClassEntrySPtr* previous = nullptr);
 
-        virtual const char* getHeaderFileLocation() = 0;
-    };
-    typedef std::map<std::string, Creator::SPtr> CreatorMap;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ResetAlias' by 'ObjectFactoryInstance::resetAlias'")
+    static void ResetAlias(const std::string& name, ClassEntrySPtr previous);
 
-    /// Record storing information about a class
-    class ClassEntry
-    {
-    public:
-        typedef std::shared_ptr<ClassEntry> SPtr;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::hasCreator' by 'ObjectFactoryInstance::HasCreator'")
+    static bool HasCreator(const std::string& classname);
 
-        std::string className;
-        std::set<std::string> aliases;
-        std::string description;
-        std::string authors;
-        std::string license;
-        std::string defaultTemplate;
-        CreatorMap creatorMap;
-        std::map<std::string, std::vector<std::string>> m_dataAlias ;
-    };
-    typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
-
-protected:
-    /// Main class registry
-    ClassEntryMap registry;
-    OnCreateCallback m_callbackOnCreate ;
-
-public:
-
-    ~ObjectFactory();
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::ShortName' by 'sofa::helper::NameDecoder::shortName(classname)'")
+    static std::string ShortName(const std::string& classname);
 
     /// Get an entry given a class name (or alias)
-    ClassEntry& getEntry(std::string classname);
+    ClassEntry& getEntry(const std::string& classname);
 
     /// Test if a creator exists for a given classname
-    bool hasCreator(std::string classname);
-
-    /// Return the shortname for this classname. Empty string if
-    /// no creator exists for this classname.
-    std::string shortName(std::string classname);
+    bool hasCreator(const std::string& classname);
 
     /// Fill the given vector with all the registered classes
-    void getAllEntries(std::vector<ClassEntry::SPtr>& result);
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getAllEntries(results)' by 'ObjectFactory::getEntriesFromTarget(results, target=\"*\")")
+    void getAllEntries(std::vector<ClassEntrySPtr>& result);
 
     /// Fill the given vector with the registered classes from a given target
-    void getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target);
+    void getEntriesFromTarget(std::vector<ClassEntrySPtr>& result, const std::string& target);
 
     /// Return the list of classes from a given target
-    std::string listClassesFromTarget(std::string target, std::string separator = ", ");
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesFromTarget(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesFromTarget());'")
+    std::string listClassesFromTarget(const std::string& target, const std::string& separator = ", ");
 
     /// Fill the given vector with all the registered classes derived from BaseClass
     template<class BaseClass>
-    void getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result) const;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("Replace 'ObjectFactory::getEntriesDerivedFrom<Class>(result)' by 'ObjectFactory::getEntriesDerivedFrom(Class::GetClass(), result);'")
+    void getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const;                                     //< old API (before 22.06)
+    void getEntriesDerivedFrom(sofa::core::BaseClass* parentclass, std::vector<ClassEntrySPtr>& result) const; //< new API (post 22.06)
 
     /// Return the list of classes derived from BaseClass as a string
     template<class BaseClass>
-    std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
+    //SOFA_ATTRIBUTE_DEPRECATED__OBJECTFACTORY("'ObjectFactory::listClassesDerivedFrom<Class>(result)' has been deleted as equivalent behavior can be implemented using sofa::helper::join(ObjectFactory::getEntriesDerivedFrom());'")
+    std::string listClassesDerivedFrom(const std::string& separator = ", ") const; //< old API (pre 22.06)
 
     /// Add an alias name for an already registered class
     ///
@@ -134,50 +105,18 @@ public:
     /// \param target   class pointed to by the new alias
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
-    bool addAlias(std::string name, std::string target, bool force=false,
-                  ClassEntry::SPtr* previous = nullptr);
+    bool addAlias(const std::string& name, const std::string& target, bool force=false,
+                  ClassEntrySPtr* previous = nullptr);
 
     /// Reset an alias to a previous state
     ///
     /// \param name     name of the new alias
     /// \param previous previous ClassEntry that need to be registered back for this name
-    void resetAlias(std::string name, ClassEntry::SPtr previous);
+    void resetAlias(const std::string& name, ClassEntrySPtr previous);
 
     /// Create an object given a context and a description.
-    objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
-
-    /// Get the ObjectFactory singleton instance
-    static ObjectFactory* getInstance();
-
-    /// \copydoc createObject
-    static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        return getInstance()->createObject(context, arg);
-    }
-
-    /// \copydoc addAlias
-    static bool AddAlias(std::string name, std::string result, bool force=false,
-                         ClassEntry::SPtr* previous = nullptr)
-    {
-        return getInstance()->addAlias(name, result, force, previous);
-    }
-
-    /// \copydoc resetAlias
-    static void ResetAlias(std::string name, ClassEntry::SPtr previous)
-    {
-        getInstance()->resetAlias(name, previous);
-    }
-
-    /// \copydoc hasCreator
-    static bool HasCreator(std::string classname)
-    {
-        return getInstance()->hasCreator(classname);
-    }
-
-    static std::string ShortName(std::string classname)
-    {
-        return getInstance()->shortName(classname);
-    }
+    objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context,
+                                               objectmodel::BaseObjectDescription* arg);
 
     /// Dump the content of the factory to a text stream.
     void dump(std::ostream& out = std::cout);
@@ -188,149 +127,25 @@ public:
     /// Dump the content of the factory to a HTML stream.
     void dumpHTML(std::ostream& out = std::cout);
 
-    void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
+    void setCallback(OnCreateCallback cb);
+
+private:
+    sofa::core::objectfactory::ObjectFactory* newfactory;
+
+    std::string listClassesDerivedFrom(const sofa::core::BaseClass* parentclass,
+                                       const std::string& separator) const;
 };
 
 template<class BaseClass>
-void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result) const
+void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntrySPtr>& result) const
 {
-    result.clear();
-    for (const auto& r : registry)
-    {
-        ClassEntry::SPtr entry = r.second;
-        // Push the entry only if it is not an alias
-        if (entry->className == r.first)
-        {
-            const auto creatorEntry = entry->creatorMap.begin();
-            if (creatorEntry != entry->creatorMap.end())
-            {
-                const auto* baseClass = creatorEntry->second->getClass();
-                if (baseClass && baseClass->hasParent(BaseClass::GetClass()))
-                {
-                    result.push_back(entry);
-                }
-            }
-        }
-    }
+    return getEntriesDerivedFrom(BaseClass::GetClass(), result);
 }
 
 template<class BaseClass>
 std::string ObjectFactory::listClassesDerivedFrom(const std::string& separator) const
 {
-    std::vector<ClassEntry::SPtr> entries;
-    getEntriesDerivedFrom<BaseClass>(entries);
-    if (entries.empty()) return std::string();
-
-    const auto join = [&separator](std::string a, ClassEntry::SPtr b)
-    {
-        return std::move(a) + separator + b->className;
-    };
-    return std::accumulate(std::next(entries.begin()), entries.end(),
-                           entries.front()->className, join);
+    return listClassesDerivedFrom(BaseClass::GetClass(), separator);
 }
 
-/**
- *  \brief Typed Creator class used to create instances of object type RealObject
- */
-template<class RealObject>
-class ObjectCreator : public ObjectFactory::Creator
-{
-public:
-    bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
-    {
-        RealObject* instance = nullptr;
-        return RealObject::canCreate(instance, context, arg);
-    }
-    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
-    {
-        RealObject* instance = nullptr;
-        return RealObject::create(instance, context, arg);
-    }
-    const std::type_info& type() override
-    {
-        return typeid(RealObject);
-    }
-    const objectmodel::BaseClass* getClass() override
-    {
-        return RealObject::GetClass();
-    }
-    /// The name of the library or executable containing the binary code for this component
-    const char* getTarget() override
-    {
-#ifdef SOFA_TARGET
-        return sofa_tostring(SOFA_TARGET);
-#else
-        return "";
-#endif
-    }
-
-    const char* getHeaderFileLocation() override
-    {
-        return RealObject::HeaderFileLocation();
-    }
-};
-
-/**
- *  \brief Helper class used to register a class in the ObjectFactory.
- *
- *  This class accumulate information about a given class, as well as creators
- *  for each supported template instanciation, to register a new entry in
- *  the ObjectFactory.
- *
- *  It should be used as a temporary object, finalized when used to initialize
- *  an int static variable. For example :
- *  \code
- *    int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
- *    .add\< Fluid3D \>()
- *    .addLicense("LGPL")
- *    ;
- *  \endcode
- *
- */
-class SOFA_CORE_API RegisterObject
-{
-protected:
-    /// Class entry being constructed
-    ObjectFactory::ClassEntry entry;
-public:
-
-    /// Start the registration by giving the description of this class.
-    RegisterObject(const std::string& description);
-
-    /// Add an alias name for this class
-    RegisterObject& addAlias(std::string val);
-
-    /// Add more descriptive text about this class
-    RegisterObject& addDescription(std::string val);
-
-    /// Specify a list of authors (separated with spaces)
-    RegisterObject& addAuthor(std::string val);
-
-    /// Specify a license (LGPL, GPL, ...)
-    RegisterObject& addLicense(std::string val);
-
-    /// Add a creator able to instance this class with the given templatename.
-    ///
-    /// See the add<RealObject>() method for an easy way to add a Creator.
-    RegisterObject& addCreator(std::string classname, std::string templatename,
-                               ObjectFactory::Creator::SPtr creator);
-
-    /// Add a template instanciation of this class.
-    ///
-    /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
-    template<class RealObject>
-    RegisterObject& add(bool defaultTemplate=false)
-    {
-        const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
-        const std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
-
-        if (defaultTemplate)
-            entry.defaultTemplate = templatename;
-
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
-    }
-
-    /// This is the final operation that will actually commit the additions to the ObjectFactory.
-    operator int();
-};
 } // namespace sofa::core
