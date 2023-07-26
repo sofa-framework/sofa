@@ -55,7 +55,7 @@ public:
     void init() override;
     void reinit() override;
     void updateVisual() override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void handleEvent(core::objectmodel::Event *) override;
 
