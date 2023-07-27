@@ -202,7 +202,6 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
 template <class DataTypes>
 void PenalityContactForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    static constexpr auto N = DataTypes::spatial_dimensions;
     const type::vector<Contact>& cc = contacts.getValue();
 
     if (this->mstate1 == this->mstate2)
