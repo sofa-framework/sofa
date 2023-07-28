@@ -22,10 +22,6 @@
 #include "RealGUI.h"
 #include <sofa/version.h>
 
-#ifndef SOFA_GUI_QT_NO_RECORDER
-#include "sofa/gui/qt/QSofaRecorder.h"
-#endif
-
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include "WindowVisitor.h"
 #include "GraphVisitor.h"
@@ -311,13 +307,8 @@ void RealGUI::InitApplication( RealGUI* _gui)
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= {
 RealGUI::RealGUI ( const char* viewername)
     :
-      #ifndef SOFA_GUI_QT_NO_RECORDER
-      recorder(nullptr),
-      #else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-      #endif
-
       #ifdef SOFA_DUMP_VISITOR_INFO
       windowTraceVisitor(nullptr),
       handleTraceVisitor(nullptr),
@@ -414,18 +405,6 @@ RealGUI::RealGUI ( const char* viewername)
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
 
-    // create a Dock Window to receive the Sofa Recorder
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    QDockWidget *dockRecorder=new QDockWidget(this);
-    dockRecorder->setResizeEnabled(true);
-    this->moveDockWindow( dockRecorder, Qt::DockBottom);
-    this->leftDock() ->setAcceptDockWindow(dockRecorder,false);
-    this->rightDock()->setAcceptDockWindow(dockRecorder,false);
-
-    recorder = new QSofaRecorder(dockRecorder);
-    dockRecorder->setWidget(recorder);
-    connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
-#else
     //Status Bar Configuration
     fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
@@ -436,7 +415,6 @@ RealGUI::RealGUI ( const char* viewername)
     timeLabel->clear();
     statusBar()->addWidget ( fpsLabel );
     statusBar()->addWidget ( timeLabel );
-#endif
 
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->addWidget(statWidget);
@@ -470,13 +448,6 @@ RealGUI::RealGUI ( const char* viewername)
     centerWindow();
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setChecked(bool) ) );
-    if (recorder && getSofaViewer())
-        connect( recorder, SIGNAL( NewTime() ), getSofaViewer()->getQWidget(), SLOT( update() ) );
-#endif
 
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
     m_docbrowser = new DocBrowser(this);
@@ -749,11 +720,6 @@ void RealGUI::fileOpenSimu ( std::string s )
             fileOpen(filename.c_str());
 
             dtEdit->setText(QString(dT.c_str()));
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            if (recorder)
-                recorder->SetSimulation(currentSimulation(), initT, endT, writeName);
-#endif
         }
     }
 }
@@ -797,11 +763,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         simulationGraph->expandToDepth(0);
         simulationGraph->resizeColumnToContents(0);
         statWidget->CreateStats(root.get());
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-        if (recorder)
-            recorder->Clear(root.get());
-#endif
 
         getViewer()->setScene( root, filename );
         getViewer()->load();
@@ -930,10 +891,6 @@ void RealGUI::editRecordDirectory()
         record_directory = s.toStdString();
         if (record_directory.at(record_directory.size()-1) != '/')
             record_directory+="/";
-#ifndef SOFA_GUI_QT_NO_RECORDER
-        if (recorder)
-            recorder->SetRecordDirectory(record_directory);
-#endif
     }
 }
 
@@ -1077,19 +1034,11 @@ void RealGUI::setFullScreen (bool enable)
         {
             menuBar()->hide();
             statusBar()->hide();
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            if (recorder) recorder->parentWidget()->hide();
-            //statusBar()->addWidget( recorder->getFPSLabel());
-            //statusBar()->addWidget( recorder->getTimeLabel());
-#endif
         }
         else
         {
             menuBar()->show();
             statusBar()->show();
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            recorder->parentWidget()->show();
-#endif
         }
     }
     else
@@ -1167,18 +1116,6 @@ void RealGUI::setExportState(bool b)
 {
     exportGnuplotFilesCheckbox->setChecked(b);
 }
-
-//------------------------------------
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-void RealGUI::setRecordPath(const std::string & path)
-{
-    if (recorder)
-        recorder->SetRecordDirectory(path);
-}
-#else
-void RealGUI::setRecordPath(const std::string&) {}
-#endif
 
 //------------------------------------
 
@@ -1380,27 +1317,18 @@ void RealGUI::eventNewStep()
 
 void RealGUI::showFPS(double fps)
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->setFPS(fps);
-#else
     if (fpsLabel)
     {
         char buf[100];
         sprintf ( buf, "%.1f FPS", fps );
         fpsLabel->setText ( buf );
     }
-#endif
 }
 
 //------------------------------------
 
 void RealGUI::eventNewTime()
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->UpdateTime(currentSimulation());
-#else
     const Node* root = currentSimulation();
     if (root && timeLabel)
     {
@@ -1409,7 +1337,6 @@ void RealGUI::eventNewTime()
         sprintf ( buf, "Time: %.3g,   Steps:  %i", time, m_frameCounter );
         timeLabel->setText ( buf );
     }
-#endif
 }
 
 //------------------------------------
@@ -2175,10 +2102,6 @@ void RealGUI::updateBackgroundImage()
 
 void RealGUI::clear()
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->setRoot(currentSimulation());
-#endif
     simulationGraph->setRoot(currentSimulation());
     statWidget->CreateStats(currentSimulation());
 }

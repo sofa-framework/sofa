@@ -48,8 +48,7 @@ public:
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
-    DefaultVisualManagerLoop(simulation::Node* gnode = nullptr);
-
+    DefaultVisualManagerLoop();
     ~DefaultVisualManagerLoop() override;
 public:
     void init() override;
@@ -69,22 +68,7 @@ public:
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
     void computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init) override;
 
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = getNodeFromContext(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
-
     SingleLink< DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH> l_node;  ///< Link to the scene's node where the rendering will take place
-
-protected:
-    static simulation::Node* getNodeFromContext(BaseContext*);
 };
 
 } // namespace sofa

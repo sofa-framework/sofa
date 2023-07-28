@@ -113,6 +113,7 @@ public:
     void computePrincipalStress();
     void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection);
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     // parse method attribute (for compatibility with non-optimized version)

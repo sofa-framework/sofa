@@ -21,10 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/config.h>
-
-#include <sofa/type/fixed_array.h>
-
 namespace sofa::type::pairwise
 {
 

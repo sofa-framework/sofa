@@ -433,6 +433,31 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::linearalgebra::
 }
 
 template <class _DataTypes>
+void FastTriangularBendingSprings<_DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    static constexpr auto blockSize = DataTypes::deriv_total_size;
+    static constexpr auto spatialDimension = DataTypes::spatial_dimensions;
+    sofa::type::Mat<spatialDimension, spatialDimension, Real> localMatrix(type::NOINIT);
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& spring : d_edgeSprings.getValue())
+    {
+        typename EdgeSpring::StiffnessMatrix K;
+        spring.getStiffness(K);
+        for (sofa::Index n1 = 0; n1 < spatialDimension; n1++)
+        {
+            for (sofa::Index n2 = 0; n2 < spatialDimension; n2++)
+            {
+                K.getsub(spatialDimension * n1, spatialDimension * n2, localMatrix);
+                dfdx(blockSize * spring.vid[n1], blockSize * spring.vid[n2]) += localMatrix;
+            }
+        }
+    }
+}
+
+template <class _DataTypes>
 void FastTriangularBendingSprings<_DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField

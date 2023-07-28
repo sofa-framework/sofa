@@ -190,7 +190,10 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
             sofa::helper::system::DataRepository.getFirstPath(), fileName);
     }
 
-    msg_warning() << "Compliance file has been saved in " << filePathInSofaShare << ". Load this file using fileCompliance if you don't want to recompute the compliance matrice at next start.";
+    const bool printLog = this->f_printLog.getValue();
+    this->f_printLog.setValue(true);
+    msg_info() << "Compliance file has been saved in " << filePathInSofaShare << ". Load this file using fileCompliance if you don't want to recompute the compliance matrice at next start.";
+    this->f_printLog.setValue(printLog);
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(Real));
@@ -226,7 +229,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     if (!invName.empty())
     {
         complianceLoaded = loadCompliance(invName);
-        if (!complianceLoaded) {
+        if (!complianceLoaded) 
+        {
             msg_error() << "A fileCompliance was given at path: " << invName << ", but could not be loaded.";
             invName = buildFileName();
         }
@@ -245,9 +249,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3& gravity = this->getContext()->getGravity();
 
-        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
+        static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::backward::EulerImplicitSolver* eulerSolver;
