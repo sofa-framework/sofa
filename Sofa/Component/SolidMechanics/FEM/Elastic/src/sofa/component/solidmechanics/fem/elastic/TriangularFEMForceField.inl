@@ -396,7 +396,7 @@ void TriangularFEMForceField<DataTypes>::computeElementStiffnessMatrix(type::Mat
 }
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat, SReal k, unsigned& offset)
+void TriangularFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat, SReal k, unsigned int& offset)
 {
     const auto& triangleInf = triangleInfo.getValue();
     const auto& triangles = m_topology->getTriangles();
