@@ -1444,6 +1444,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
         sofa::type::Vec<3,Real> v_ab = pb-pa;
         sofa::type::Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection (same values if incision in the plan)
+        // https://www.maplesoft.com/support/help/maple/view.aspx?path=MathApps/ProjectionOfVectorOntoPlane
+
         sofa::type::Vec<3,Real> pb_proj = v_ab_proj + pa;
 
         sofa::type::Vec<3,Real> v_01 = p1-p0;
@@ -2137,6 +2139,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     is_intersected=computeSegmentTriangleIntersection(false, p_current, b, ind_t_current, indices, coord_t, coord_k);
 
 
+    std::cout << "indices: " << indices << std::endl;
+    std::cout << "coord_t: " << coord_t << std::endl;
+    std::cout << "coord_k: " << coord_k << std::endl;
+
     // In case the ind_t is not the good one.
     if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != sofa::InvalidID))
     {
@@ -2438,8 +2444,32 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     bool isOnPoint = false;
     bool is_on_boundary = false;
 
+    msg_info() << "*********************************" << msgendl
+        << "* computeIntersectedObjectsList *" << msgendl
+        << "last_point: " << last_point << msgendl
+        << "a: " << a << msgendl
+        << "b: " << b << msgendl
+        << "ind_ta: " << ind_ta << msgendl
+        << "ind_tb: " << ind_tb << msgendl;
+
+    sofa::type::vector<TriangleID> triangles_list2;
+    sofa::type::vector<EdgeID> edges_list2;
+    sofa::type::vector< Real > coordsEdge_list2;
+
+    /*this->computeIntersectedPointsList2(last_point, a, b, ind_ta, ind_tb, triangles_list2, edges_list2, coordsEdge_list2, is_on_boundary);
+    msg_info() << "*********************************" << msgendl
+        << "* New method *" << msgendl
+        << "last_point: " << last_point << msgendl
+        << "a: " << a << msgendl
+        << "b: " << b << msgendl
+        << "triangles_list2: " << triangles_list2 << msgendl
+        << "edges_list2: " << edges_list2 << msgendl
+        << "coordsEdge_list2: " << coordsEdge_list2 << msgendl
+        << "*********************************";*/
+
     // using old function:
-    pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    pathOK = this->computeIntersectedPointsList2(last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+
     msg_info() << "*********************************" << msgendl
                 << "* computeIntersectedObjectsList *" << msgendl
                 << "last_point: " << last_point << msgendl
@@ -2450,6 +2480,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
                 << "coordsEdge_list: "<< coordsEdge_list << msgendl
                 << "*********************************" ;
 
+    
 
     if (pathOK)
     {
@@ -2512,6 +2543,16 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
         coords_list.push_back (baryCoords);
     }
+
+    msg_info() << "*********************************" << msgendl
+        << "* computeIntersectedObjectsList end *";
+
+    for (unsigned int i = 0; i < topoPath_list.size(); ++i)
+    {
+        msg_info() << int(topoPath_list[i]) << " | id: " << indices_list[i] << " | coef: " << coords_list[i];
+    }
+
+    msg_info() << "*********************************" << msgendl;
 
     return pathOK;
 }
