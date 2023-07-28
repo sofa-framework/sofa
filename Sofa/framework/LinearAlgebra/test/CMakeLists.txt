@@ -10,6 +10,7 @@ set(SOURCE_FILES
     RotationMatrix_test.cpp
     SparseMatrixProduct_test.cpp
     SparseMatrixStorageOrder_test.cpp
+    TriangularSystemSolver_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
