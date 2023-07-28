@@ -759,6 +759,12 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
 
         LocalMappedMatrixType<Real>* crs = mappedMatrix.get();
 
+        crs->compress();
+        if (crs->colsValue.empty())
+        {
+            continue;
+        }
+
         const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
         const MappingJacobians<JacobianMatrixType> J1 = computeJacobiansFrom(pair[1], mparams, crs);
 
@@ -777,16 +783,17 @@ std::vector<unsigned int> MatrixLinearSystem<TMatrix, TVector>::identifyAffected
 
     for (std::size_t it_rows_k = 0; it_rows_k < crs->rowIndex.size(); it_rows_k++)
     {
+        const auto row = crs->rowIndex[it_rows_k];
+        {
+            const sofa::SignedIndex dofId = row / blockSize;
+            setAffectedDoFs.insert(dofId);
+        }
         typename LocalMappedMatrixType<Real>::Range rowRange(crs->rowBegin[it_rows_k], crs->rowBegin[it_rows_k + 1]);
         for (auto xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-null block
         {
             const sofa::SignedIndex col = crs->colsIndex[xj];
-            const auto k = crs->colsValue[xj];
-            if (k != static_cast<Real>(0))
-            {
-                const sofa::SignedIndex dofId = col / blockSize;
-                setAffectedDoFs.insert(dofId);
-            }
+            const sofa::SignedIndex dofId = col / blockSize;
+            setAffectedDoFs.insert(dofId);
         }
     }
 
@@ -812,6 +819,11 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
 
     {
         const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
+
+        if (listAffectedDoFs.empty())
+        {
+            return jacobians;
+        }
         mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
     }
 
