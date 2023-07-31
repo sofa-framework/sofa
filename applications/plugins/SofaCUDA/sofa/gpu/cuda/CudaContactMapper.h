@@ -25,8 +25,8 @@
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
-#include <sofa/gpu/cuda/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 #include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
 #include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>

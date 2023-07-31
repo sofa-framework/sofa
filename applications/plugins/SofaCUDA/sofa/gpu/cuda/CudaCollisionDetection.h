@@ -24,8 +24,8 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
-#include <sofa/gpu/cuda/CudaSphereModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 #include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
