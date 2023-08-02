@@ -141,7 +141,7 @@ void ConstantForceField<DataTypes>::init()
     }
     else
     {
-        msg_error() << "No input for has been set. Please define one of both Data: " << d_forces.getName() << " or " << d_totalForce.getName();
+        msg_error() << "No input force has been set. Please define one of both Data: " << d_forces.getName() << " or " << d_totalForce.getName();
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
