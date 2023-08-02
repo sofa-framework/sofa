@@ -30,9 +30,6 @@
 #include <iostream>
 #include <numeric>
 
-//#include <sofa/core/objectmodel/BaseObjectDescription.h>
-//using sofa::core::objectmodel::BaseObjectDescription ;
-
 namespace sofa::component::mechanicalload
 {
 
@@ -556,8 +553,6 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
     }
-
-
 }
 
 } // namespace sofa::component::mechanicalload

@@ -20,37 +20,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_MECHANICALLOAD_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_MECHANICALLOAD_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
-#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED()
-#else
-#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.12", "v24.06", "This Data has been renamed to match convention with d_ prefix.")
-#endif // SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
-
-namespace sofa::component::mechanicalload
+namespace sofa::linearalgebra
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::mechanicalload
 
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of entries in the diagonal
+template<typename Real>
+void solveDiagonalSystem(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const D_values)
+{
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] / D_values[i];
+    }
+}
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
-#define SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA() \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v23.12 (PR#XXXX)", "v24.06",\
-    "The \'force\' data is no longer used, please use the \'forces\' vector instead (with size = 1).")
-#endif
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of the inverse of the entries in the diagonal
+template<typename Real>
+void solveDiagonalSystemUsingInvertedValues(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const Dinv_values)
+{
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] * Dinv_values[i];
+    }
+}
+
+}

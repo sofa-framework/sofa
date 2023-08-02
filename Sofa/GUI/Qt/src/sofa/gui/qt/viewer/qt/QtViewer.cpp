@@ -109,12 +109,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorRotationMode = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
-#ifdef TRACKING
-    savedX = 0;
-    savedY = 0;
-    firstTime = true;
-    tracking = false;
-#endif // TRACKING
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
@@ -1147,29 +1141,6 @@ void QtViewer::mouseReleaseEvent(QMouseEvent * e)
 
 void QtViewer::mouseMoveEvent(QMouseEvent * e)
 {
-
-#ifdef TRACKING
-    if (tracking)
-    {
-        if (groot)
-        {
-            if (firstTime)
-            {
-                savedX = e->x();
-                savedY = e->y();
-                firstTime = false;
-            }
-
-            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,e->x()-savedX,e->y()-savedY);
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            QCursor::setPos(mapToGlobal(QPoint(savedX, savedY)));
-        }
-    }
-    else
-    {
-        firstTime = true;
-    }
-#endif // TRACKING
     //if the mouse move is not "interactive", give the event to the camera
     if(!mouseEvent(e))
         SofaViewer::mouseMoveEvent(e);

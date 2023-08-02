@@ -16,7 +16,7 @@ class ParametricTriangleTopologyContainer : public container::dynamic::TriangleS
 {
 public:
     SOFA_CLASS(ParametricTriangleTopologyContainer, container::dynamic::TriangleSetTopologyContainer);
-    typedef type::Vector2 UV;
+    typedef type::Vec2 UV;
     typedef type::vector<UV> SeqUV;
 
     void init() override;
