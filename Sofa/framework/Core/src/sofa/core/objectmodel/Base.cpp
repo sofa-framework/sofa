@@ -553,11 +553,11 @@ void  Base::parse ( BaseObjectDescription* arg )
         {
             if(attribute->m_isRemoved)
             {
-                msg_error() << "Attribute '" << attribute->m_name << "' has been removed in SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
+                msg_error() << "Attribute '" << attribute->m_name << "' has been removed since SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
             }
             else
             {
-                msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated since SOFA " << attribute->m_deprecationVersion << " and it will be removed in SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
+                msg_deprecated() << "Attribute '" << attribute->m_name << "' has been deprecated since SOFA " << attribute->m_deprecationVersion << " and it will be removed in SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
             }
 
         }
