@@ -401,19 +401,16 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     if(m_isTotalForceUsed)
     {
-        msg_error() << "\'Forces\' vector is modified using setForce() while totalMass is initially used";
-        return;
+        msg_warning() << "\'forces\' vector is modified using setForce() while totalMass is initially used. "
+                      << "Now the 'forces\' vector is used.";
+        m_isTotalForceUsed = false;
     }
 
     auto indices = sofa::helper::getWriteAccessor(d_indices);
     sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
-    Deriv totalf = d_totalForce.getValue();
 
     indices.push_back(i);
     f.push_back( force );
-    totalf += force;
-
-    d_totalForce.setValue(totalf);
 }
 
 
