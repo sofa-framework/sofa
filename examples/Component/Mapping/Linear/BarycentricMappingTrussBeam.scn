@@ -39,7 +39,7 @@
         <BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
         <BoxROI box="0.099 -0.001 -0.001 0.11 0.011 0.011"/>
-        <ConstantForceField force="0 -0.1 0" />
+        <ConstantForceField forces="0 -0.1 0" />
 
         <Node name="Triangle">
             <include href="Objects/TriangleSetTopology.xml" />
