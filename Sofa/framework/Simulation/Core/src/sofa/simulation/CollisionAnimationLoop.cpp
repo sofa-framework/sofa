@@ -47,9 +47,7 @@ namespace simulation
 {
 
 
-CollisionAnimationLoop::CollisionAnimationLoop(simulation::Node* _gnode)
-    : Inherit()
-    , gnode(_gnode)
+CollisionAnimationLoop::CollisionAnimationLoop()
 {}
 
 CollisionAnimationLoop::~CollisionAnimationLoop()

@@ -516,12 +516,6 @@ void CudaTetrahedronTLEDForceField::addDForce (const sofa::core::MechanicalParam
 
 }
 
-void CudaTetrahedronTLEDForceField::buildDampingMatrix(core::behavior::DampingMatrix* damping_matrix)
-{
-    // No damping in this ForceField
-}
-
-
 // --------------------------------------------------------------------------------------
 // Computes element volumes for tetrahedral elements
 // --------------------------------------------------------------------------------------

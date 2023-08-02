@@ -96,7 +96,8 @@ void initRoot(Node* root)
                 << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
                 << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
 
-        const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
+        const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>();
+
         aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
         root->addObject(aloop, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
@@ -108,7 +109,7 @@ void initRoot(Node* root)
             << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
             << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
-        const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
+        const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>();
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
         root->addObject(vloop, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }

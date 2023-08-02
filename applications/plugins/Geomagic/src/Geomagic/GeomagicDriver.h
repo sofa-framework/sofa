@@ -117,7 +117,7 @@ public:
 
     //Output Data
     Data<Coord> d_posDevice; ///< position of the base of the part of the device
-    Data<type::Vector6> d_angle; ///< Angluar values of joint (rad)
+    Data<type::Vec6> d_angle; ///< Angluar values of joint (rad)
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
     

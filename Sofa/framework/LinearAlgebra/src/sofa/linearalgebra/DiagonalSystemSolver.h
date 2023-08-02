@@ -20,29 +20,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/config.h>
 
-#include <sofa/component/animationloop/config.h>
-
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/simulation/CollisionAnimationLoop.h>
-
-namespace sofa::component::animationloop
+namespace sofa::linearalgebra
 {
 
-class SOFA_COMPONENT_ANIMATIONLOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of entries in the diagonal
+template<typename Real>
+void solveDiagonalSystem(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const D_values)
 {
-public:
-    typedef sofa::simulation::CollisionAnimationLoop Inherit;
-    SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
-protected:
-    MultiStepAnimationLoop();
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] / D_values[i];
+    }
+}
 
-    ~MultiStepAnimationLoop() override;
-public:
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of the inverse of the entries in the diagonal
+template<typename Real>
+void solveDiagonalSystemUsingInvertedValues(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const Dinv_values)
+{
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] * Dinv_values[i];
+    }
+}
 
-    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
-    Data<int> integrationSteps; ///< number of integration steps between each collision detection
-};
-
-} // namespace sofa::component::animationloop
+}

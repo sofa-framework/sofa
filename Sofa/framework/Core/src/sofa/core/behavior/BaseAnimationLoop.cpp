@@ -29,12 +29,19 @@ namespace sofa::core::behavior
 {
 
 BaseAnimationLoop::BaseAnimationLoop()
-    : m_resetTime(0.)
+    : l_node(initLink("targetNode","Link to the scene's node that will be processed by the loop"))
+    , m_resetTime(0.)
     , d_computeBoundingBox(initData(&d_computeBoundingBox, !SOFA_NO_UPDATE_BBOX, "computeBoundingBox", "If true, compute the global bounding box of the scene at each time step. Used mostly for rendering."))
 {}
 
 BaseAnimationLoop::~BaseAnimationLoop()
 {}
+
+void BaseAnimationLoop::init()
+{
+    if(!l_node)
+        l_node = dynamic_cast<sofa::core::objectmodel::BaseNode*>(getContext());
+}
 
 void BaseAnimationLoop::storeResetState()
 {

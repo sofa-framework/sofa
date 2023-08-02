@@ -86,6 +86,7 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 /// Class to store FEM information on each quad, for topology modification handling
@@ -200,8 +201,8 @@ public:
 protected : 
     /// Forcefiled computations
     void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
-    void computeBendingStrainDisplacement(StrainDisplacement &Jb, /*Index elementIndex,*/ float gauss1, float gauss2, float l, float h);
-    void computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex,*/ float l, float h);
+    void computeBendingStrainDisplacement(StrainDisplacement &Jb, /*Index elementIndex,*/ Real gauss1, Real gauss2, Real l, Real h);
+    void computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex,*/ Real l, Real h);
     void computeElementStiffness( Stiffness &K, Index elementIndex);
     void computeForce(Displacement &F, Index elementIndex, Displacement &D);
     
