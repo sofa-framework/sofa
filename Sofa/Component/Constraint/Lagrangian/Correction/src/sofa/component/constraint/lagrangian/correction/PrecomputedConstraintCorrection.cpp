@@ -42,6 +42,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
 
     for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
         auto colItEnd = rowIt.end();
 
         for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)

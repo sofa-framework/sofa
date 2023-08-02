@@ -873,6 +873,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
         auto colItEnd = rowIt.end();
 
         for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
