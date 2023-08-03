@@ -1,0 +1,33 @@
+---
+name: Label Checker
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+jobs:
+
+  check_labels:
+    name: Check labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          none_of: deprecated,enhancement,pr: clean,pr: breaking, pr: new feature, pr: fix, refactoring, pr: test
+
+  name: Post Comment
+    uses: actions/github-script@v4
+    with:
+      script: |
+            // Use the GitHub API to post the comment
+            // $COMMENT_TEXT contains the comment content
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: ':warning: @'+context.repo.owner+': your PR does not include any descriptive label :warning:'
+            });
