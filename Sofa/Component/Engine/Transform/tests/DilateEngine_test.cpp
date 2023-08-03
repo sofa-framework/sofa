@@ -77,7 +77,6 @@ struct DilateEngine_test : public BaseSimulationTest,
         EXPECT_TRUE( m_thisObject->findData("minThickness") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
-        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
         EXPECT_NO_THROW( m_thisObject->reinit() ) ;
         EXPECT_NO_THROW( m_thisObject->reset() ) ;
         EXPECT_NO_THROW(this->update()) ;
