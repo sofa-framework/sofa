@@ -42,6 +42,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
     sofa::core::behavior::BaseMechanicalState* mstate;
     unsigned int stepCounter;
+    bool isFirstStep = true;
 
     std::ofstream* outfile;
 
@@ -84,8 +85,6 @@ protected:
 public:
     void init() override;
     void cleanup() override;
-    void bwdInit() override;
-
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 

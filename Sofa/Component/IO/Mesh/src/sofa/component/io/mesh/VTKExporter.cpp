@@ -23,6 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
@@ -91,6 +92,9 @@ void VTKExporter::init()
         fetchDataFields(cellsData, cellsDataObject, cellsDataField, cellsDataName);
     }
 
+    /// Activate the listening to the event in order to be able to export file at first step and/or the nth-step
+    if(exportEveryNbSteps.getValue() != 0 || exportAtBegin.getValue())
+        this->f_listening.setValue(true);
 }
 
 void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
@@ -956,9 +960,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeParallelFile();
         }
     }
-
-
-    if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
+    else if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
     {
         const unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;
@@ -973,18 +975,19 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeVTKSimple();
         }
     }
+    else if ( /*simulation::AnimateBeginEvent* ev =*/ simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        if (isFirstStep && exportAtBegin.getValue())
+        {
+            (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
+            isFirstStep = false;
+        }
+    }
 }
 
 void VTKExporter::cleanup()
 {
     if (exportAtEnd.getValue())
-        (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
-
-}
-
-void VTKExporter::bwdInit()
-{
-    if (exportAtBegin.getValue())
         (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 }
 
