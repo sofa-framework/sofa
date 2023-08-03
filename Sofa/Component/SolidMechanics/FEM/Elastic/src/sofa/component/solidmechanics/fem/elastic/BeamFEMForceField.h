@@ -159,7 +159,6 @@ public:
     bool m_updateStiffnessMatrix;
     SOFA_ATTRIBUTE_DISABLED__REMOVE_UNUSED_ASSEMBLING()
     DeprecatedAndRemoved m_assembling;
-    SReal m_lastUpdatedStep;
 
     Quat<SReal>& beamQuat(int i);
 
@@ -172,7 +171,6 @@ public:
 public:
 
     void init() override;
-    void bwdInit() override;
     void reinit() override;
     virtual void reinitBeam(Index i);
     void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
