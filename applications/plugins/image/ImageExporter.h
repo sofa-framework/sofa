@@ -261,12 +261,17 @@ public:
 
     ~ImageExporter() override {}
 
-    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
+    void cleanup() override
+    {
+        if (exportAtEnd.getValue()) write();
+    }
 
-    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 
+    bool firstStep = true;
+    unsigned int stepCounter;
+    unsigned int time;
 
     bool write()
     {
@@ -321,11 +326,15 @@ protected:
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
         }
+        else if ( /*simulation::AnimateBeginEvent* ev =*/ simulation::AnimateBeginEvent::checkEventType(event))
+        {
+            if (firstStep && exportAtBegin.getValue())
+            {
+                write();
+                firstStep = false;
+            }
+        }
     }
-
-    unsigned int stepCounter;
-    unsigned int time;
-
 
 };
 
