@@ -16,7 +16,7 @@ jobs:
           const title = context.payload.pull_request.title;
           const prefixPattern = /\[.*\]/;
           const endPattern = /\.$/;
-          const valid = true;
+          valid = true;
 
           // Check if the PR does starts with a prefix []
           if (!prefixPattern.test(title)) {
