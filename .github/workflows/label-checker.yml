@@ -9,25 +9,34 @@ on:
       - labeled
       - unlabeled
 
+
 jobs:
 
   check_labels:
     name: Check labels
     runs-on: ubuntu-latest
     steps:
-      - uses: docker://agilepathway/pull-request-label-checker:latest
+      - name: Check Labels and Add Comment
+        id: check_labels_and_comment
+        uses: actions/github-script@v4
         with:
-          none_of: deprecated,enhancement,pr: clean,pr: breaking, pr: new feature, pr: fix, refactoring, pr: test
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(label => label.name);
 
-  name: Post Comment
-    uses: actions/github-script@v4
-    with:
-      script: |
-            // Use the GitHub API to post the comment
-            // $COMMENT_TEXT contains the comment content
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: ':warning: @'+context.repo.owner+': your PR does not include any descriptive label :warning:'
-            });
+            // If no descriptive label is set, add a comment in the PR and make the action check fail
+            if (!labels.includes('enhancement') && !labels.includes('deprecated') && !labels.includes('refactoring') && !labels.includes('pr: breaking') && !labels.includes('pr: clean') && !labels.includes('pr: fix') && !labels.includes('pr: new feature') && !labels.includes('pr: test')) {
+              const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does not include any descriptive label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
+              github.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              core.setFailed('Invalid PR label')
+            }
+
+            // Add all PR labels in log
+            console.log('Labels:', labels.join(', '));
