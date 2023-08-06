@@ -14,8 +14,11 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const title = context.payload.pull_request.title;
+          const prNumber = context.payload.pull_request.number;
+
           const prefixPattern = /\[.*\]/;
           const endPattern = /\.$/;
+          
           valid = true;
 
           // Check if the PR does starts with a prefix []
