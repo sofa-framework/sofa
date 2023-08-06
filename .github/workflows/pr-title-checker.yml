@@ -1,7 +1,7 @@
 name: Pull Request Title Check
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, edited, reopened]
 
 jobs:
   check_title:
@@ -18,24 +18,27 @@ jobs:
 
           const prefixPattern = /\[.*\]/;
           const endPattern = /\.$/;
-          
+
           valid = true;
+          commentExplain = "";
 
           // Check if the PR does starts with a prefix []
           if (!prefixPattern.test(title)) {
-            core.setFailed('Pull request title does provide a prefix scope, e.g. [MechanicalLoad]');
+            core.setFailed('Pull request title should provide a prefix scope, e.g. [MechanicalLoad]');
+            commentExplain = commentExplain + "- PR title should provide a prefix scope, e.g. [MechanicalLoad]<br>"
             valid = false;
           }
 
           // Check if a "." is closing the title
           if (endPattern.test(title)) {
-            core.setFailed('Pull request title ends with a "."');
+            core.setFailed('Pull request title should not end with a "."');
+            commentExplain = commentExplain + "- PR title should not end with a '.'<br>"
             valid = false;
           }
 
           // Add comment in the PR to warn the author
           if (!valid) {
-            const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR title is not following the required format.<br>Please read the failing check for more info.';
+            const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR title is not following the required format :pencil2:<br>'+commentExplain+':warning: :warning: :warning:';
             github.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
