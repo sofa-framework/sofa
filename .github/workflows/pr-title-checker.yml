@@ -16,11 +16,27 @@ jobs:
           const title = context.payload.pull_request.title;
           const prefixPattern = /\[.*\]/;
           const endPattern = /\.$/;
+          const valid = true;
 
+          // Check if the PR does starts with a prefix []
           if (!prefixPattern.test(title)) {
             core.setFailed('Pull request title does provide a prefix scope, e.g. [MechanicalLoad]');
+            valid = false;
           }
 
+          // Check if a "." is closing the title
           if (endPattern.test(title)) {
             core.setFailed('Pull request title ends with a "."');
+            valid = false;
+          }
+
+          // Add comment in the PR to warn the author
+          if (!valid) {
+            const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR title is not following the required format.<br>Please read the failing check for more info.';
+            github.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
           }
