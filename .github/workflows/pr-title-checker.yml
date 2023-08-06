@@ -1,0 +1,26 @@
+name: Pull Request Title Check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check_title:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Pull Request Title
+      id: title_check
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const title = github.context.payload.pull_request.title;
+          const prefixPattern = /\[.*\]/;
+          const endPattern = /\.$/;
+
+          if (!prefixPattern.test(title)) {
+            core.setFailed('Pull request title does provide a prefix scope, e.g. [MechanicalLoad]');
+          }
+
+          if (endPattern.test(title)) {
+            core.setFailed('Pull request title ends with a "."');
+          }
