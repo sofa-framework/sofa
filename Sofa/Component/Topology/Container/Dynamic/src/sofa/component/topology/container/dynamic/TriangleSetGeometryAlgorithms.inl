@@ -1335,8 +1335,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
     const Triangle& tri = this->m_topology->getTriangle(ind_t);
 
-    std::cout << "ind_t: " << ind_t << " | tri: " << tri << std::endl;
-
     const typename DataTypes::Coord& c0 = coords[tri[0]];
     const typename DataTypes::Coord& c1 = coords[tri[1]];
     const typename DataTypes::Coord& c2 = coords[tri[2]];
@@ -1367,20 +1365,13 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
         Vec3 intersection(type::NOINIT);
         bool res = geometry::Edge::intersectionWithEdge(pa_proj, pb_proj, triP[localIds[0]], triP[localIds[1]], intersection);
-        std::cout << edgeId << " res: " << res << std::endl;
+
         if (res)
         {
             intersectedEdges.push_back(edgeId);
             
             const sofa::type::Vec<2, Real> coefs = geometry::Edge::pointBaryCoefs(intersection, triP[localIds[0]], triP[localIds[1]]);
             baryCoefs.push_back(coefs[0]);
-
-            Vec3 AB = triP[localIds[1]] - triP[localIds[0]];
-            Vec3 inter = triP[localIds[0]] + AB * coefs[0];
-
-            std::cout << "intersection: " << intersection << " in: " << triP[localIds[0]] << ", " << triP[localIds[1]] << std::endl;
-            std::cout << "baryCoefs: " << coefs << std::endl;
-            std::cout << "inter: " << inter << std::endl;
         }
     }
 
