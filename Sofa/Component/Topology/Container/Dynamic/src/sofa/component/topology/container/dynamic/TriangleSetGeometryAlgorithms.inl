@@ -2371,12 +2371,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
 template <typename DataTypes>
-bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
-        const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
-        TriangleID& ind_ta, TriangleID& ind_tb,// A verifier pourquoi la ref!
-        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const
+bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point, const Vec3& pointA, const Vec3& pointB,
+    TriangleID& ind_triA, TriangleID& ind_triB,
+    sofa::type::vector< sofa::core::topology::TopologyElementType >& intersected_topoElements,
+    sofa::type::vector< ElemID >& intersected_indices,
+    sofa::type::vector< Vec3 >& intersected_barycoefs) const
 {
     //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
     //// ** TODO: create the real function handle different objects intersection **
@@ -2385,122 +2384,95 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     // Output declarations
     sofa::type::vector<TriangleID> triangles_list;
     sofa::type::vector<EdgeID> edges_list;
-    sofa::type::vector< Real > coordsEdge_list;
-    bool pathOK;
-    bool isOnPoint = false;
+    sofa::type::vector< Real > edge_barycoefs_list;
+    
     bool is_on_boundary = false;
-
-    msg_info() << "*********************************" << msgendl
-        << "* computeIntersectedObjectsList *" << msgendl
-        << "last_point: " << last_point << msgendl
-        << "a: " << a << msgendl
-        << "b: " << b << msgendl
-        << "ind_ta: " << ind_ta << msgendl
-        << "ind_tb: " << ind_tb << msgendl;
-
-    sofa::type::vector<TriangleID> triangles_list2;
-    sofa::type::vector<EdgeID> edges_list2;
-    sofa::type::vector< Real > coordsEdge_list2;
-
-    /*this->computeIntersectedPointsList2(last_point, a, b, ind_ta, ind_tb, triangles_list2, edges_list2, coordsEdge_list2, is_on_boundary);
-    msg_info() << "*********************************" << msgendl
-        << "* New method *" << msgendl
-        << "last_point: " << last_point << msgendl
-        << "a: " << a << msgendl
-        << "b: " << b << msgendl
-        << "triangles_list2: " << triangles_list2 << msgendl
-        << "edges_list2: " << edges_list2 << msgendl
-        << "coordsEdge_list2: " << coordsEdge_list2 << msgendl
-        << "*********************************";*/
-
     // using old function:
-    pathOK = this->computeIntersectedPointsList2(last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    bool pathOK = this->computeIntersectedPointsList2(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
 
     msg_info() << "*********************************" << msgendl
                 << "* computeIntersectedObjectsList *" << msgendl
                 << "last_point: " << last_point << msgendl
-                << "a: " << a << msgendl
-                << "b: " << b << msgendl
+                << "pointA: " << pointA << msgendl
+                << "pointB: " << pointB << msgendl
                 << "triangles_list: "<< triangles_list << msgendl
                 << "edges_list: "<< edges_list << msgendl
-                << "coordsEdge_list: "<< coordsEdge_list << msgendl
+                << "edge_barycoefs_list: "<< edge_barycoefs_list << msgendl
                 << "*********************************" ;
 
-    
+    if (!pathOK)
+        return false;
 
-    if (pathOK)
+    // creating new declaration path:
+    sofa::type::Vec<3,Real> baryCoords;
+
+    // 1 - First point a (for the moment: always a point in a triangle)
+    if (last_point != sofa::InvalidID)
     {
-        // creating new declaration path:
-        sofa::type::Vec<3,Real> baryCoords;
-
-        // 1 - First point a (for the moment: always a point in a triangle)
-        if (last_point != sofa::InvalidID)
-        {
-            topoPath_list.push_back (core::topology::TopologyElementType::POINT);
-            indices_list.push_back (last_point);
-            const typename DataTypes::VecCoord& realC =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            for (unsigned int i = 0; i<3; i++)
-                baryCoords[i]=realC[last_point][i];
-        }
-        else
-        {
-            auto coefs_a = computeTriangleBarycoefs (ind_ta, a);
-            topoPath_list.push_back (core::topology::TopologyElementType::TRIANGLE);
-            indices_list.push_back (ind_ta);
-            for (unsigned int i = 0; i<3; i++)
-                baryCoords[i]=coefs_a[i];
-        }
-
-        coords_list.push_back (baryCoords);
-
-
-        // 2 - All edges intersected (only edges for now)
-        for (size_t i = 0; i< edges_list.size(); i++)
-        {
-            topoPath_list.push_back (core::topology::TopologyElementType::EDGE);
-            indices_list.push_back (edges_list[i]);
-
-            baryCoords[0] = coordsEdge_list[i];
-            baryCoords[1] = 0.0; // or 1 - coordsEdge_list[i] ??
-            baryCoords[2] = 0.0;
-
-            coords_list.push_back (baryCoords);
-        }
-
-        // 3 - Last point b (for the moment: always a point in a triangle)
-        auto coefs_b = computeTriangleBarycoefs (ind_tb, b);
-
+        intersected_topoElements.push_back (core::topology::TopologyElementType::POINT);
+        intersected_indices.push_back (last_point);
+        const typename DataTypes::VecCoord& realC =(this->object->read(core::ConstVecCoordId::position())->getValue());
         for (unsigned int i = 0; i<3; i++)
-            if (coefs_b[i] > 0.9999 )
-            {
-                topoPath_list.push_back (core::topology::TopologyElementType::POINT);
-                indices_list.push_back (this->m_topology->getTriangle (ind_tb)[i]);
-                isOnPoint = true;
-                break;
-            }
-
-        if (!isOnPoint)
-        {
-            topoPath_list.push_back (core::topology::TopologyElementType::TRIANGLE);
-            indices_list.push_back (ind_tb);
-        }
-        for (unsigned int i = 0; i<3; i++)
-            baryCoords[i]=coefs_b[i];
-
-        coords_list.push_back (baryCoords);
+            baryCoords[i]=realC[last_point][i];
     }
+    else
+    {
+        auto coefs_a = computeTriangleBarycoefs (ind_triA, pointA);
+        intersected_topoElements.push_back (core::topology::TopologyElementType::TRIANGLE);
+        intersected_indices.push_back (ind_triA);
+        for (unsigned int i = 0; i<3; i++)
+            baryCoords[i]=coefs_a[i];
+    }
+    intersected_barycoefs.push_back (baryCoords);
+
+
+    // 2 - All edges intersected (only edges for now)
+    for (size_t i = 0; i< edges_list.size(); i++)
+    {
+        intersected_topoElements.push_back (core::topology::TopologyElementType::EDGE);
+        intersected_indices.push_back (edges_list[i]);
+
+        baryCoords[0] = edge_barycoefs_list[i];
+        baryCoords[1] = 0.0; // or 1 - edge_barycoefs_list[i] ??
+        baryCoords[2] = 0.0;
+
+        intersected_barycoefs.push_back (baryCoords);
+    }
+
+    // 3 - Last point b (for the moment: always a point in a triangle)
+    auto coefs_b = computeTriangleBarycoefs (ind_triB, pointB);
+    bool isOnPoint = false;
+    for (unsigned int i = 0; i<3; i++)
+        if (coefs_b[i] > 0.9999 )
+        {
+            intersected_topoElements.push_back (core::topology::TopologyElementType::POINT);
+            intersected_indices.push_back (this->m_topology->getTriangle (ind_triB)[i]);
+            isOnPoint = true;
+            break;
+        }
+
+    if (!isOnPoint)
+    {
+        intersected_topoElements.push_back (core::topology::TopologyElementType::TRIANGLE);
+        intersected_indices.push_back (ind_triB);
+    }
+    for (unsigned int i = 0; i<3; i++)
+        baryCoords[i]=coefs_b[i];
+
+    intersected_barycoefs.push_back (baryCoords);
+ 
 
     msg_info() << "*********************************" << msgendl
         << "* computeIntersectedObjectsList end *";
 
-    for (unsigned int i = 0; i < topoPath_list.size(); ++i)
+    for (unsigned int i = 0; i < intersected_topoElements.size(); ++i)
     {
-        msg_info() << int(topoPath_list[i]) << " | id: " << indices_list[i] << " | coef: " << coords_list[i];
+        msg_info() << int(intersected_topoElements[i]) << " | id: " << intersected_indices[i] << " | coef: " << intersected_barycoefs[i];
     }
 
     msg_info() << "*********************************" << msgendl;
 
-    return pathOK;
+    return true;
 }
 
 
