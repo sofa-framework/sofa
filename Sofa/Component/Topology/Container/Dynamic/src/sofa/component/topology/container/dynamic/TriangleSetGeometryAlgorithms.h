@@ -273,12 +273,11 @@ public:
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */
-    bool computeIntersectedObjectsList (const PointID last_point,
-            const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
-            TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-            sofa::type::vector<ElemID>& indices_list,
-            sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const;
+    bool computeIntersectedObjectsList(const PointID last_point, const Vec3& pointA, const Vec3& pointB,
+        TriangleID& ind_triA, TriangleID& ind_triB,
+        sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+        sofa::type::vector< ElemID >& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs) const;
 
 
     /** \brief Get the triangle in a given direction from a point.
