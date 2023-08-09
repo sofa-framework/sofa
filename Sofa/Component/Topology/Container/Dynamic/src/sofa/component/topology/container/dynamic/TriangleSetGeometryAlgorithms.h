@@ -320,26 +320,26 @@ public:
      * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
      */
-    virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
-        sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
+    virtual int SplitAlongPath(PointID ind_A, Coord& pointA, PointID ind_B, Coord& pointB,
+        sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+        sofa::type::vector< ElemID >& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs,
+        sofa::type::vector< EdgeID >& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
 
 
 
     /* void SnapAlongPath (sofa::type::vector<TriangleID>& triangles_list, sofa::type::vector<EdgeID>& edges_list,
-      sofa::type::vector<Real>& coords_list, sofa::type::vector<Real>& points2Snap);*/
+      sofa::type::vector<Real>& intersected_barycoefs, sofa::type::vector<Real>& points2Snap);*/
 
-    void SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    void SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+        sofa::type::vector<ElemID>& intersected_indices, sofa::type::vector< Vec3 >& intersected_barycoefs,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
         Real epsilonSnapPath);
 
     void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+        sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+        sofa::type::vector<ElemID>& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
         Real epsilonSnapBorder);
 
