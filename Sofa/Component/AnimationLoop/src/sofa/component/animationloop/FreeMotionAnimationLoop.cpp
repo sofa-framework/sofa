@@ -22,7 +22,7 @@
 #include <sofa/component/animationloop/FreeMotionAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
@@ -67,13 +67,13 @@ using namespace core::behavior;
 using namespace sofa::simulation;
 using sofa::helper::ScopedAdvancedTimer;
 
-FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
-    : Inherit1(gnode)
-    , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
+using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
+
+FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
+    m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , d_parallelCollisionDetectionAndFreeMotion(initData(&d_parallelCollisionDetectionAndFreeMotion, false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
-    , defaultSolver(nullptr)
     , l_constraintSolver(initLink("constraintSolver", "The ConstraintSolver used in this animation loop (required)"))
 {
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
@@ -81,20 +81,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
-{
-    if (defaultSolver != nullptr)
-        defaultSolver.reset();
-}
-
-void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
-{
-    simulation::CollisionAnimationLoop::parse(arg);
-
-    defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
-    defaultSolver->parse(arg);
-    defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));
-}
-
+= default;
 
 void FreeMotionAnimationLoop::init()
 {
@@ -113,32 +100,32 @@ void FreeMotionAnimationLoop::init()
         l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
         if (!l_constraintSolver)
         {
-            if (defaultSolver != nullptr)
+            if (const auto constraintSolver = sofa::core::objectmodel::New<DefaultConstraintSolver>())
             {
+                getContext()->addObject(constraintSolver);
+                constraintSolver->setName( this->getContext()->getNameHelper().resolveName(constraintSolver->getClassName(), {}));
+                constraintSolver->f_printLog.setValue(this->f_printLog.getValue());
+                l_constraintSolver.set(constraintSolver);
+
                 msg_warning() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
-                    " a default " << defaultSolver->getClassName() << " is automatically added in the scene for you. To remove this warning, add"
+                    " a default " << constraintSolver->getClassName() << " is automatically added in the scene for you. To remove this warning, add"
                     " a ConstraintSolver in the scene. The list of available constraint solvers is: "
                     << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
-                getContext()->addObject(defaultSolver);
-                l_constraintSolver.set(defaultSolver);
-                defaultSolver = nullptr;
             }
             else
             {
                 msg_fatal() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
-                    " a default LCPConstraintSolver could not be automatically added in the scene. To remove this error, add"
+                    " a default " << DefaultConstraintSolver::GetClass()->className << " could not be automatically added in the scene. To remove this error, add"
                     " a ConstraintSolver in the scene. The list of available constraint solvers is: "
                     << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
             }
         }
         else
         {
             msg_info() << "Constraint solver found: '" << l_constraintSolver->getPathName() << "'";
         }
-    }
-    else
-    {
-        defaultSolver.reset();
     }
 
     auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
@@ -155,19 +142,23 @@ void FreeMotionAnimationLoop::init()
             msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
         }
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
 void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
+    auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
+
     dmsg_info() << "################### step begin ###################";
 
     if (dt == 0)
-        dt = gnode->getDt();
+        dt = node->getDt();
+    
+    double startTime = node->getTime();
 
-    double startTime = gnode->getTime();
-
-    simulation::common::VectorOperations vop(params, getContext());
+    simulation::common::VectorOperations vop(params, node);
     simulation::common::MechanicalOperations mop(params, getContext());
 
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
@@ -192,14 +183,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // We need to initialize them if it's not already done.
     {
         ScopedAdvancedTimer timer("MechanicalVInitVisitor");
-        MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(gnode);
-        MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
+        MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(node);
+        MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(node);
     }
 
     // This animation loop works with lagrangian constraints. Forces derive from the constraints.
     // Therefore we notice the States that they have to consider them in the total accumulation of
     // forces.
-    for (auto* state : this->getContext()->getObjects<sofa::core::BaseState>(sofa::core::objectmodel::BaseContext::SearchDirection::SearchDown))
+    for (auto* state : node->getTreeObjects<sofa::core::BaseState>())
     {
         state->addToTotalForces(cparams.lambda().getId(state));
     }
@@ -213,7 +204,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         ScopedAdvancedTimer timer("AnimateBeginEvent");
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        gnode->execute ( act );
+        node->execute ( act );
     }
 
     // Update the BehaviorModels
@@ -223,7 +214,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         ScopedAdvancedTimer timer("UpdatePosition");
         BehaviorUpdatePositionVisitor beh(params, dt);
-        gnode->execute(&beh);
+        node->execute(&beh);
     }
 
     dmsg_info() << "updatePos performed - updateInternal called" ;
@@ -234,7 +225,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     {
         ScopedAdvancedTimer timer("updateInternalData");
-        gnode->execute(&iud);
+        node->execute(&iud);
     }
 
     dmsg_info() << "updateInternal performed - beginVisitor called" ;
@@ -242,7 +233,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // MechanicalBeginIntegrationVisitor
     MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    gnode->execute(&beginVisitor);
+    node->execute(&beginVisitor);
 
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
@@ -251,16 +242,16 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         ScopedAdvancedTimer timer("lambdaMultInvDt");
         MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
         lambdaMultInvDt.setMapped(true);
-        getContext()->executeVisitor(&lambdaMultInvDt);
+        node->executeVisitor(&lambdaMultInvDt);
     }
 
     {
         ScopedAdvancedTimer timer("MechanicalComputeGeometricStiffness");
         MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
-        getContext()->executeVisitor(&geometricStiffnessVisitor);
+        node->executeVisitor(&geometricStiffnessVisitor);
     }
 
-    FreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
+    computeFreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
 
     // Solve constraints
     if (l_constraintSolver)
@@ -283,36 +274,36 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     }
 
     MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    gnode->execute(&endVisitor);
+    node->execute(&endVisitor);
 
     mop.projectPositionAndVelocity(pos, vel);
     mop.propagateXAndV(pos, vel);
-
-    gnode->setTime ( startTime + dt );
-    gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+    
+    node->setTime ( startTime + dt );
+    node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         ScopedAdvancedTimer timer("AnimateEndEvent");
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        gnode->execute ( act );
+        node->execute ( act );
     }
 
     {
         ScopedAdvancedTimer timer("UpdateMapping");
         //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-        gnode->execute<UpdateMappingVisitor>(params);
+        node->execute<UpdateMappingVisitor>(params);
         {
             UpdateMappingEndEvent ev ( dt );
             PropagateEventVisitor act ( params , &ev );
-            gnode->execute ( act );
+            node->execute ( act );
         }
     }
 
     if (d_computeBoundingBox.getValue())
     {
         ScopedAdvancedTimer timer("UpdateBBox");
-        gnode->execute<UpdateBoundingBoxVisitor>(params);
+        node->execute<UpdateBoundingBoxVisitor>(params);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -321,13 +312,15 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 }
 
-void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params,
+void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa::core::ExecParams* params,
                                                               const core::ConstraintParams& cparams, SReal dt,
                                                               sofa::core::MultiVecId pos,
                                                               sofa::core::MultiVecId freePos,
                                                               sofa::core::MultiVecDerivId freeVel,
                                                               simulation::common::MechanicalOperations* mop)
 {
+    auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
+
     if (!d_parallelCollisionDetectionAndFreeMotion.getValue())
     {
         ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
@@ -352,7 +345,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
             ScopedAdvancedTimer collisionResetTimer("CollisionReset");
             CollisionResetVisitor act(params);
             act.setTags(this->getTags());
-            act.execute(getContext());
+            act.execute(node);
         }
 
         sofa::simulation::CpuTask::Status freeMotionTaskStatus;
@@ -362,7 +355,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
             ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
             CollisionDetectionVisitor act(params);
             act.setTags(this->getTags());
-            act.execute(getContext());
+            act.execute(node);
         }
 
         {
@@ -374,7 +367,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
             ScopedAdvancedTimer collisionResponseTimer("CollisionResponse");
             CollisionResponseVisitor act(params);
             act.setTags(this->getTags());
-            act.execute(getContext());
+            act.execute(node);
         }
 
         postCollisionComputation(params);
@@ -387,10 +380,12 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
                                          sofa::core::MultiVecDerivId freeVel,
                                          simulation::common::MechanicalOperations* mop)
 {
+    auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
+
     {
         sofa::helper::ScopedAdvancedTimer timer("FreeMotion");
         simulation::SolveVisitor freeMotion(params, dt, true, d_parallelODESolving.getValue());
-        gnode->execute(&freeMotion);
+        node->execute(&freeMotion);
     }
 
     mop->projectResponse(freeVel);
@@ -402,7 +397,7 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
         sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
         MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
         freePosEqPosPlusFreeVelDt.setMapped(true);
-        getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
+        node->executeVisitor(&freePosEqPosPlusFreeVelDt);
     }
 }
 

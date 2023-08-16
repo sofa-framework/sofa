@@ -111,7 +111,7 @@ public:
     virtual void init() override;
     virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void doDrawVisual(const core::visual::VisualParams*) override;
     virtual void drawTransparent(const core::visual::VisualParams*) override;
     virtual void drawShadow(const core::visual::VisualParams*) override;
     virtual void updateVisual() override;

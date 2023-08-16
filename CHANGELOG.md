@@ -114,6 +114,7 @@
 - [Rendering3D] OglModel: Revert back to glBufferSubData [#3841](https://github.com/sofa-framework/sofa/pull/3841) 
 - [SolidMechanics.Spring] CMake: Fix package configuration [#3846](https://github.com/sofa-framework/sofa/pull/3846) 
 - [Spring] Remove unused dependencies [#3848](https://github.com/sofa-framework/sofa/pull/3848) 
+- [FEM.Linear] FIX & Minor refactor of buildStiffnessMatrix in TriangleFEMForceField [#3989](https://github.com/sofa-framework/sofa/pull/3989)
 
 **Plugins / Projects**
 - [SofaEulerianFluid] Fix: rename shadow variable in Fluid2D [#3561](https://github.com/sofa-framework/sofa/pull/3561) 
@@ -190,6 +191,7 @@
 - [PreassembledMass] Make it external [#3802](https://github.com/sofa-framework/sofa/pull/3802) 
 - [SofaCUDA] Move explicit template instantiations from CudaTypes.cpp to CudaMultiMapping.cpp [#3807](https://github.com/sofa-framework/sofa/pull/3807) 
 - [plugins] Remove references to old plugins [#3960](https://github.com/sofa-framework/sofa/pull/3960)
+- [plugins] Remove references to external deleted plugins [#3980](https://github.com/sofa-framework/sofa/pull/3980)
 
 **Examples / Scenes**
 - [Tutorials] Fix CMake with Sofa.GUI [#3624](https://github.com/sofa-framework/sofa/pull/3624) 

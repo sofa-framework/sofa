@@ -146,7 +146,7 @@ public:
 
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
-    ConstraintAnimationLoop(simulation::Node* gnode = nullptr);
+    ConstraintAnimationLoop();
     ~ConstraintAnimationLoop() override;
 public:
 
@@ -171,17 +171,6 @@ public:
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem() {return bufCP1 ? &CP1 : &CP2;}
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
 protected:
     void launchCollisionDetection(const core::ExecParams* params);

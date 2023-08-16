@@ -63,11 +63,11 @@ void STEPShapeExtractor::doUpdate()
 
     const type::vector<sofa::type::Vec3>& positionsI = input->d_positions.getValue();
     const type::vector<Triangle >& trianglesI = input->d_triangles.getValue();
-    const type::vector<sofa::type::Vector2>& uvI = input->_uv.getValue();
+    const type::vector<sofa::type::Vec2>& uvI = input->_uv.getValue();
 
     type::vector<sofa::type::Vec3>& my_positions = *(output->seqPoints.beginEdit());
     type::vector<Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
-    type::vector<sofa::type::Vector2>& my_uv = *(output->seqUVs.beginEdit());
+    type::vector<sofa::type::Vec2>& my_uv = *(output->seqUVs.beginEdit());
 
     my_positions.clear();
     my_triangles.clear();

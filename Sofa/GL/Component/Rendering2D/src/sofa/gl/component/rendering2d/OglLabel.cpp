@@ -139,7 +139,7 @@ void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
     }
 }
 
-void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
+void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);

@@ -335,6 +335,11 @@ bool FileSystem::removeAll(const std::string& path){
     return true ;
 }
 
+bool FileSystem::removeFile(const std::string& path)
+{
+    return fs::remove(path);
+}
+
 std::string FileSystem::removeExtraSlashes(const std::string& path)
 {
     std::string str = path;

@@ -114,6 +114,7 @@ public:
     void setNormal(const Coord n) { normal.setValue(n);}
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateEdgeInformation(); }
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) final;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
 protected :
@@ -129,8 +130,6 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API EdgePressureForceField<sofa::defaulttype::Vec3Types>;
-
-
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 
 } // namespace sofa::component::mechanicalload

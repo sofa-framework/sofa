@@ -55,7 +55,7 @@ void QMomentumStatWidget::stepImpl()
 
     m_momentumVisitor->execute( m_node->getContext() );
 
-    const type::Vector6& momenta = m_momentumVisitor->getMomentum();
+    const type::Vec6& momenta = m_momentumVisitor->getMomentum();
 
     // Update series
     const SReal time = m_node->getTime();

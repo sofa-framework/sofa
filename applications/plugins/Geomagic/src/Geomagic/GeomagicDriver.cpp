@@ -353,7 +353,7 @@ void GeomagicDriver::initDevice()
 
 void GeomagicDriver::updatePosition()
 {
-    type::Vector6 & angle = *d_angle.beginEdit();
+    type::Vec6 & angle = *d_angle.beginEdit();
     GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
 
     const Vec3 & positionBase = d_positionBase.getValue();

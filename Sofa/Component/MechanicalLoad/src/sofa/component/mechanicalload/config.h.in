@@ -31,6 +31,14 @@
 #  define SOFA_COMPONENT_MECHANICALLOAD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
+#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED()
+#else
+#define SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.12", "v24.06", "This Data has been renamed to match convention with d_ prefix.")
+#endif // SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
+
 namespace sofa::component::mechanicalload
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

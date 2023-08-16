@@ -313,7 +313,6 @@ TEST(GeometryEdge_test, isPointOnEdge3f)
     EXPECT_FALSE(res7);
 }
 
-
 TEST(GeometryEdge_test, intersectionWithEdge2f)
 {
     const sofa::type::Vec2f e01{ 0.f, 0.f };
@@ -431,8 +430,6 @@ TEST(GeometryEdge_test, intersectionWithEdge3f)
     EXPECT_FLOAT_EQ(inter[1], std::numeric_limits<float>::min());
     EXPECT_FLOAT_EQ(inter[2], std::numeric_limits<float>::min());
 }
-
-
 
 TEST(GeometryEdge_test, intersectionWithPlane3f)
 {
