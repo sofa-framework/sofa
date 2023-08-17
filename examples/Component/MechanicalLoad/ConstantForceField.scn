@@ -36,7 +36,7 @@
         <MechanicalObject template="Rigid3" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
-        <ConstantForceField indices="0" forces="0 0.10 0     0 1 0 0" />
+        <ConstantForceField indices="0" forces="0 0.10 0     0 1 0" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" scale="0.3" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="gray" />
