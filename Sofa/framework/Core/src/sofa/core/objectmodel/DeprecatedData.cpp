@@ -30,8 +30,10 @@
 namespace sofa::core::objectmodel::lifecycle
 {
 
-DeprecatedData::DeprecatedData(Base* b, const std::string& name, const std::string& helptext)
+DeprecatedData::DeprecatedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext)
 {
+    m_deprecationVersion = deprecationVersion;
+    m_removalVersion = removalVersion;
     m_name = name;
     m_helptext = helptext;
     m_isRemoved = false;
