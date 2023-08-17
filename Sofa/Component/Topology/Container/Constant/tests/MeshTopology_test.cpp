@@ -62,7 +62,7 @@ public:
 
 bool MeshTopology_test::testEmptyContainer()
 {
-    MeshTopology::SPtr topoCon = sofa::core::objectmodel::New< MeshTopology >();
+    const MeshTopology::SPtr topoCon = sofa::core::objectmodel::New< MeshTopology >();
 
     EXPECT_EQ(topoCon->getNbHexahedra(), 0);
     EXPECT_EQ(topoCon->getHexahedra().size(), 0);
@@ -525,8 +525,8 @@ bool MeshTopology_test::testEdgeTopology()
         return false;
     }
 
-    int nbrEdge = 45;
-    int elemSize = 2;
+    const int nbrEdge = 45;
+    const int elemSize = 2;
 
     // Check edge container buffers size
     EXPECT_EQ(topo->getNbEdges(), nbrEdge);

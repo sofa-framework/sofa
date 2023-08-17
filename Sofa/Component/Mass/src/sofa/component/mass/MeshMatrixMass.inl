@@ -998,7 +998,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 
     Inherited::init();
 
-    TopologyElementType topoType = checkTopology();
+    const TopologyElementType topoType = checkTopology();
     if(topoType == TopologyElementType::POINT)
     {
         return;
@@ -1430,7 +1430,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
             // create vector tensor by calling the quad creation function on the entire mesh
             sofa::type::vector<Index> quadsAdded;
 
-            size_t n = l_topology->getNbQuads();
+            const size_t n = l_topology->getNbQuads();
             for (Index i = 0; i < n; ++i)
                 quadsAdded.push_back(i);
 
@@ -1448,7 +1448,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
             // create vector tensor by calling the triangle creation function on the entire mesh
             sofa::type::vector<Index> trianglesAdded;
 
-            size_t n = l_topology->getNbTriangles();
+            const size_t n = l_topology->getNbTriangles();
             for (Index i = 0; i < n; ++i)
                 trianglesAdded.push_back(i);
 
@@ -1468,7 +1468,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
         {
             // create vector tensor by calling the hexahedron creation function on the entire mesh
             sofa::type::vector<Index> hexahedraAdded;
-            size_t n = l_topology->getNbHexahedra();
+            const size_t n = l_topology->getNbHexahedra();
             for (Index i = 0; i < n; ++i)
                 hexahedraAdded.push_back(i);
 
@@ -1486,7 +1486,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
             // create vector tensor by calling the tetrahedron creation function on the entire mesh
             sofa::type::vector<Index> tetrahedraAdded;
 
-            size_t n = l_topology->getNbTetrahedra();
+            const size_t n = l_topology->getNbTetrahedra();
             for (Index i = 0; i < n; ++i)
                 tetrahedraAdded.push_back(i);
 
@@ -2016,7 +2016,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalP
     //using a sparse matrix---------------
     else
     {
-        size_t nbEdges=l_topology->getNbEdges();
+        const size_t nbEdges=l_topology->getNbEdges();
         const auto& edges = l_topology->getEdges();
 
         for (unsigned int i=0; i<dx.size(); i++)
@@ -2109,7 +2109,7 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core:
 
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    unsigned int nbEdges=l_topology->getNbEdges();
+    const unsigned int nbEdges=l_topology->getNbEdges();
     unsigned int v0,v1;
 
     SReal e = 0;
@@ -2313,7 +2313,7 @@ template <class DataTypes, class GeometricalTypes>
 SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index) const
 {
     const auto &vertexMass= d_vertexMass.getValue();
-    SReal mass = vertexMass[index] * m_massLumpingCoeff;
+    const SReal mass = vertexMass[index] * m_massLumpingCoeff;
 
     return mass;
 }

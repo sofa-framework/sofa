@@ -40,11 +40,11 @@ public:
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        const BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
         broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
         if (context) context->addObject(broadPhase);
 
-        BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
+        const BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
         narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
         if (context) context->addObject(narrowPhase);
 

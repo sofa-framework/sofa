@@ -178,6 +178,12 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
     this->contacts.endEdit();
 }
 
+template <class DataTypes>
+void SphereForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

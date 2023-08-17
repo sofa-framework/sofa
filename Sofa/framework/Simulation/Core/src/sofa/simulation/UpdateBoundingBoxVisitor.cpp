@@ -25,9 +25,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params)
@@ -38,7 +36,7 @@ UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams*
 
 Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 {
-    std::string msg = "BoundingBoxVisitor - ProcessTopDown: " + node->getName();
+    const std::string msg = "BoundingBoxVisitor - ProcessTopDown: " + node->getName();
     sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
     using namespace sofa::core::objectmodel;
     type::vector<BaseObject*> objectList;
@@ -66,8 +64,8 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 }
 
 void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
-{   
-    std::string msg = "BoundingBoxVisitor - ProcessBottomUp: " + node->getName();
+{
+    const std::string msg = "BoundingBoxVisitor - ProcessBottomUp: " + node->getName();
     sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
 
     sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
@@ -79,5 +77,4 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     node->f_bbox.endEdit();
 }
 
-}
 }

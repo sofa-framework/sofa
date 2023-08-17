@@ -186,8 +186,8 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
 
     while(it != matEntries.end())
     {
-        int row = it->row();
-        int col = it->col();
+        const int row = it->row();
+        const int col = it->col();
         TVec vec;
         for (std::size_t i = 0; i < TVec::size(); ++i)
         {
@@ -198,7 +198,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
         mat.writeLine(row).setCol(col,vec);
     }
 
-    EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 5);
+    const EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 5);
 
     for (auto row = mat.begin(); row != mat.end(); ++row)
     {
@@ -235,8 +235,8 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
 
     while (it != matEntries.end())
     {
-        int row = it->row();
-        int col = it->col();
+        const int row = it->row();
+        const int col = it->col();
         TVec vec;
         for (std::size_t i = 0; i < TVec::size(); ++i)
         {
@@ -247,7 +247,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
         mat.writeLine(row).setCol(col, vec);
     }
 
-    EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 12);
+    const EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 12);
 
     for (auto row = mat.begin(); row != mat.end(); ++row)
     {

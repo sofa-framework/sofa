@@ -78,7 +78,6 @@ public:
     typedef BaseMeshTopology::Quad Quad;
 
 public:
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void init() override;
     void reinit() override;
     void doUpdate() override;

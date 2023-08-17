@@ -99,17 +99,7 @@ public:
 
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
-    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
-        }
-    }
-
+    core::objectmodel::lifecycle::RemovedData  solverName{this, "v22.12", "v23.06", "solverName", "replace \"solverName\" by using an explicit data link: \"linearSolver\" (PR #3152)}"};
 
     void verify_constraints();
 

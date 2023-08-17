@@ -116,7 +116,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
 {
     //SReal error;
     SReal f_1[3],dn, ds, dt;
-    int numContacts = dim/3;
+    const int numContacts = dim/3;
     const bool computeError = (convergenceTest || residuals);
     for (it=0; it<numItMax; it++)
     {
@@ -171,7 +171,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
             f[3*c+1] -= 2*dt/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
             f[3*c+2] -= 2*ds/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
 
-            SReal normFt=sqrt(f[3*c+1]*f[3*c+1]+ f[3*c+2]* f[3*c+2]);
+            const SReal normFt=sqrt(f[3*c+1]*f[3*c+1]+ f[3*c+2]* f[3*c+2]);
 
             if (normFt > mu*f[3*c])
             {
@@ -322,7 +322,7 @@ int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
         }
 
         // stockage de la valeur du pivot
-        SReal pivot=mat[ligPiv][colPiv];
+        const SReal pivot=mat[ligPiv][colPiv];
         // et son affichage
         // printf("pivot=mat[%d][%d]=%f\n\n",ligPiv,colPiv,pivot);
 
@@ -575,7 +575,7 @@ void LocalBlock33::slipState(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &
         // envaluation of the new fricton forces
         ft -= 2*d[1]/(w[3]+w[5]);
         fs -= 2*d[2]/(w[3]+w[5]);
-        SReal normFt=sqrt(ft*ft+fs*fs);
+        const SReal normFt=sqrt(ft*ft+fs*fs);
         ft *=mu*fn/normFt;
         fs *=mu*fn/normFt;
 
@@ -706,7 +706,7 @@ void LocalBlock33::BiPotential(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal
     d[2] = w[2]*fn + w[4]*ft + w[5]*fs + ds;
 
     // evaluate a unique compliance for both normal and tangential direction //
-    SReal rho = (w[0] + w[3] + w[5]) / 3;
+    const SReal rho = (w[0] + w[3] + w[5]) / 3;
 
     // evaluation of the bi-potential
     SReal v[3];
@@ -731,7 +731,7 @@ void LocalBlock33::BiPotential(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal
     normFt=sqrt(ft*ft+fs*fs);
     if (normFt > mu*fn)
     {
-        SReal proj = (normFt - mu * fn) / (1 + mu*mu);
+        const SReal proj = (normFt - mu * fn) / (1 + mu*mu);
 
         fn += mu * proj ;
         ft -= proj * ft/normFt;
@@ -836,7 +836,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 
     // STEP1 => which contact is being projected ?
     // Only active or interpenetrated ones !!
-    int numContactFine = (int)fineLevel.getDim()/3;
+    const int numContactFine = (int)fineLevel.getDim()/3;
 
     std::vector<int> size_of_group;
     //std::vector<bool> contact_is_projected;
@@ -912,11 +912,13 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
     {
         if (contact_is_projected[c1])
         {
-
-            int group = projectionTable[c1];
-            int g_n_id = projectionConstraints[3*c1  ]; SReal g_n_f = projectionValues[3*c1  ];
-            int g_t_id = projectionConstraints[3*c1+1]; SReal g_t_f = projectionValues[3*c1+1];
-            int g_s_id = projectionConstraints[3*c1+2]; SReal g_s_f = projectionValues[3*c1+2];
+            const int group = projectionTable[c1];
+            const int g_n_id = projectionConstraints[3*c1  ];
+            const SReal g_n_f = projectionValues[3*c1  ];
+            const int g_t_id = projectionConstraints[3*c1+1];
+            const SReal g_t_f = projectionValues[3*c1+1];
+            const int g_s_id = projectionConstraints[3*c1+2];
+            const SReal g_s_f = projectionValues[3*c1+2];
             ////////////
             // on calcule le système grossier
             ////////////
@@ -936,9 +938,12 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
                 if (contact_is_projected[c2])
                 {
                     //int group2 = projectionTable[c2];
-                    int g_n2_id = projectionConstraints[3*c2  ]; SReal g_n2_f = projectionValues[3*c2  ];
-                    int g_t2_id = projectionConstraints[3*c2+1]; SReal g_t2_f = projectionValues[3*c2+1];
-                    int g_s2_id = projectionConstraints[3*c2+2]; SReal g_s2_f = projectionValues[3*c2+2];
+                    const int g_n2_id = projectionConstraints[3*c2  ];
+                    const SReal g_n2_f = projectionValues[3*c2  ];
+                    const int g_t2_id = projectionConstraints[3*c2+1];
+                    const SReal g_t2_f = projectionValues[3*c2+1];
+                    const int g_s2_id = projectionConstraints[3*c2+2];
+                    const SReal g_s2_f = projectionValues[3*c2+2];
 
                     coarseW[g_n_id][g_n2_id] += fineW[3*c1  ][3*c2  ]*g_n_f*g_n2_f;   coarseW[g_n_id][g_t2_id] += fineW[3*c1  ][3*c2+1]*g_n_f*g_t2_f;   coarseW[g_n_id][g_s2_id] += fineW[3*c1  ][3*c2+2]*g_n_f*g_s2_f;
                     coarseW[g_t_id][g_n2_id] += fineW[3*c1+1][3*c2  ]*g_t_f*g_n2_f;   coarseW[g_t_id][g_t2_id] += fineW[3*c1+1][3*c2+1]*g_t_f*g_t2_f;   coarseW[g_t_id][g_s2_id] += fineW[3*c1+1][3*c2+2]*g_t_f*g_s2_f;
@@ -957,7 +962,7 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 {
     SOFA_UNUSED(verbose) ;
 
-    int numContactsFine = fineLevel.getDim()/3;
+    const int numContactsFine = fineLevel.getDim()/3;
 
     if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
     {
@@ -970,9 +975,12 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
         if (contact_is_projected[c1])
         {
             //int group = projectionTable[c1];
-            int g_n_id = projectionConstraints[3*c1  ]; SReal g_n_f = projectionValues[3*c1  ];
-            int g_t_id = projectionConstraints[3*c1+1]; SReal g_t_f = projectionValues[3*c1+1];
-            int g_s_id = projectionConstraints[3*c1+2]; SReal g_s_f = projectionValues[3*c1+2];
+            const int g_n_id = projectionConstraints[3*c1  ];
+            const SReal g_n_f = projectionValues[3*c1  ];
+            const int g_t_id = projectionConstraints[3*c1+1];
+            const SReal g_t_f = projectionValues[3*c1+1];
+            const int g_s_id = projectionConstraints[3*c1+2];
+            const SReal g_s_f = projectionValues[3*c1+2];
 
             fineLevel.getF()[3*c1  ]  +=  ( coarseLevel.getF()[g_n_id] - coarseLevel.getF_1()[g_n_id] ) * g_n_f;
             fineLevel.getF()[3*c1+1]  +=  ( coarseLevel.getF()[g_t_id] - coarseLevel.getF_1()[g_t_id] ) * g_t_f;
@@ -1718,12 +1726,12 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
 int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, SReal timeout, bool verbose)
 {
     SReal test = dim/3;
-    SReal zero = 0.0;
-    int numContacts =  (int) floor(test);
+    const SReal zero = 0.0;
+    const int numContacts =  (int) floor(test);
     test = dim/3 - numContacts;
 
-    ctime_t t0 = CTime::getTime();
-    ctime_t tdiff = (ctime_t)(timeout*CTime::getTicksPerSec());
+    const ctime_t t0 = CTime::getTime();
+    const ctime_t tdiff = (ctime_t)(timeout*CTime::getTicksPerSec());
 
     if (test>0.01)
     {
@@ -1773,7 +1781,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
         for (c1=0; c1<numContacts; c1++)
         {
             // index of contact
-            int index1 = c1;
+            const int index1 = c1;
 
             // put the previous value of the contact force in a buffer and put the current value to 0
             f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
@@ -1805,7 +1813,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
 
             set3Dof(f,index1,fn,ft,fs);
 
-            ctime_t t1 = CTime::getTime();
+            const ctime_t t1 = CTime::getTime();
             if((t1-t0) > tdiff)
             {
                 free(d);

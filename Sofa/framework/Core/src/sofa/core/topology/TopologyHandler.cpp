@@ -135,7 +135,7 @@ void TopologyHandler::update()
     if (!this->isTopologyHandlerRegistered())
         return;
 
-    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
+    const std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
     this->handleTopologyChange();
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());

@@ -40,7 +40,7 @@ PlasticMaterial::PlasticMaterial()
 
 	// contains the value of the stress at the upper extremity of each section
 	_sigma.push_back(Vec3(0, 0, 0));
-	Vec3 Stress;
+	const Vec3 Stress;
 //	computeStressOnSection(Stress, _epsilon[0], 0);
 	_sigma.push_back(Stress);
 }
@@ -48,7 +48,7 @@ PlasticMaterial::PlasticMaterial()
 void PlasticMaterial::computeStress(Vec3& Stress, Vec3& Strain, unsigned int& elementIndex)
 {
 	// Computes the Von Mises strain
-    SReal vonMisesStrain = computeVonMisesStrain(Strain);
+	const SReal vonMisesStrain = computeVonMisesStrain(Strain);
 
 	// Seeks the section of the piecewise function where we are on
 	int section = 0;
@@ -94,7 +94,7 @@ SReal PlasticMaterial::computeVonMisesStrain(Vec3 &strain)
 	e(1,1) = strain[1];
 
 	//compute eigenvalues and eigenvectors
-	Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	const Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
 	const auto& S = svd.singularValues();
 

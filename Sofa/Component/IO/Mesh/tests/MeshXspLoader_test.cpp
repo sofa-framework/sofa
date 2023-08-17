@@ -31,13 +31,13 @@ public:
     /// Run seven steps of simulation then check results
     bool testDefaultBehavior()
     {
-        auto simulation = sofa::simpleapi::createSimulation();
-        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        const auto simulation = sofa::simpleapi::createSimulation();
+        const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.IO.Mesh" } });
         auto loader = sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFA_COMPONENT_IO_MESH_TEST_FILES_DIR)+"test.xs3"}});
-        simulation->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         return true;
     }
@@ -45,14 +45,14 @@ public:
     /// Run seven steps of simulation then check results
     bool testInvalidFile()
     {
-        auto simulation = sofa::simpleapi::createSimulation();
-        Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        const auto simulation = sofa::simpleapi::createSimulation();
+        const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
         {
             EXPECT_MSG_EMIT(Error);
             sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFA_COMPONENT_IO_MESH_TEST_FILES_DIR)+"invalidFile.xs3"}});
-            simulation->init(root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         return true;

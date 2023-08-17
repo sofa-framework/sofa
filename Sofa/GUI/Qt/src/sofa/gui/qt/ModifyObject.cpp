@@ -306,8 +306,8 @@ void ModifyObject::clearMessages()
     messageEdit->clear();
 
     std::stringstream tmp;
-    int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
-                                                     Message::Error, Message::Warning, Message::Fatal});
+    const int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                                                           Message::Error, Message::Warning, Message::Fatal});
     tmp << "Messages(" << numMessages << ")" ;
 
     dialogTab->setTabText(dialogTab->indexOf(messageTab), QString::fromStdString(tmp.str()));

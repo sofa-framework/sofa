@@ -137,7 +137,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
     articulationCenters = ahc->getArticulationCenters();
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
     
     const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
     if (articulationCenters.size() > xfrom.size())
@@ -182,7 +182,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     }
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -203,7 +203,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         type::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
         type::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
 
-        int process = (*ac)->articulationProcess.getValue();
+        const int process = (*ac)->articulationProcess.getValue();
 
         switch(process)
         {
@@ -371,9 +371,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         out[0] = OutDeriv();
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
-
-    int i = 0;
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -406,7 +404,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
             {
                 getVCenter(out[child]) += axis*value.x();
             }
-            i++;
 
         }
     }
@@ -426,9 +423,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     InVecDeriv OutBuf = out;
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
-    type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
+    const type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
 
-    int i=ArticulationAxis.size();
     while (ac != acBegin)
     {
         ac--;
@@ -448,7 +444,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         while (a != aBegin)
         {
             a--;
-            i--;
             int ind = (*a)->articulationIndex.getValue();
             sofa::type::Vec<3,OutReal> axis = ArticulationAxis[ind];
             sofa::type::Vec<3,Real> A = ArticulationPos[ind] ;
@@ -493,17 +488,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
         if (colIt != colItEnd)
         {
             typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
-
-            //Hack to get a RowIterator, withtout default constructor
-            InRootMatrixDeriv temp;
-            typename InRootMatrixDeriv::RowIterator rootRowIt = temp.end();
-            typename InRootMatrixDeriv::RowIterator rootRowItEnd = temp.end();
-
-            if(m_fromRootModel && outRoot)
-            {
-                rootRowIt = outRoot->end();
-                rootRowItEnd = outRoot->end();
-            }
 
             while (colIt != colItEnd)
             {
@@ -558,10 +542,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                     getVCenter(T) = getVCenter(valueConst);
                     getVOrientation(T) = getVOrientation(valueConst) + cross(C - posRoot, getVCenter(valueConst));
 
-                    if (rootRowIt == rootRowItEnd)
-                        rootRowIt = (*outRoot).writeLine(rowIt.index());
-
-                    rootRowIt.addCol(d_indexFromRoot.getValue(), T);
+                    (*outRoot).writeLine(rowIt.index()).addCol(d_indexFromRoot.getValue(), T);
                 }
 
                 ++colIt;
@@ -583,7 +564,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
         std::vector< sofa::type::Vec3 > points;
         std::vector< sofa::type::Vec3 > pointsLine;
 
-        unsigned int i=0;
         for (const auto & ac: articulationCenters)
         {
             type::vector< sofa::component::container::Articulation* > articulations = ac->getArticulations();
@@ -596,8 +576,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
                 pointsLine.push_back(ArticulationPos[ind]);
                 sofa::type::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
                 pointsLine.push_back(Pos_axis);
-
-                i++;
             }
         }
 

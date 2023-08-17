@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/collision/response/contact/PenalityContactForceField.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
@@ -196,6 +197,69 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
             }
         }
     }
+}
+
+template <class DataTypes>
+void PenalityContactForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const type::vector<Contact>& cc = contacts.getValue();
+
+    if (this->mstate1 == this->mstate2)
+    {
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate1.get())
+                           .withRespectToPositionsIn(this->mstate1.get());
+
+        for (const auto& contact : cc)
+        {
+            if (contact.pen > 0)
+            {
+                const sofa::Index p1 = Deriv::total_size * contact.m1;
+                const sofa::Index p2 = Deriv::total_size * contact.m2;
+                const auto localMatrix = contact.ks * sofa::type::dyad(contact.norm, contact.norm);
+
+                dfdx(p1, p1) += -localMatrix;
+                dfdx(p1, p2) +=  localMatrix;
+                dfdx(p2, p1) +=  localMatrix;
+                dfdx(p2, p2) += -localMatrix;
+            }
+        }
+    }
+    else
+    {
+        auto* m1 = this->mstate1.get();
+        auto* m2 = this->mstate2.get();
+
+        auto df1_dx1 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m1);
+        auto df1_dx2 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m2);
+        auto df2_dx1 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m1);
+        auto df2_dx2 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m2);
+
+        df1_dx1.checkValidity(this);
+        df1_dx2.checkValidity(this);
+        df2_dx1.checkValidity(this);
+        df2_dx2.checkValidity(this);
+
+        for (const auto& contact : cc)
+        {
+            if (contact.pen > 0)
+            {
+                const sofa::Index p1 = Deriv::total_size * contact.m1;
+                const sofa::Index p2 = Deriv::total_size * contact.m2;
+                const auto localMatrix = contact.ks * sofa::type::dyad(contact.norm, contact.norm);
+
+                df1_dx1(p1, p1) += -localMatrix;
+                df1_dx2(p1, p2) +=  localMatrix;
+                df2_dx1(p2, p1) +=  localMatrix;
+                df2_dx2(p2, p2) += -localMatrix;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void PenalityContactForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template <class DataTypes>

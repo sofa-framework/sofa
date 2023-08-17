@@ -51,7 +51,9 @@ struct MergePoints_test : public BaseSimulationTest,
 
     void SetUp() override
     {
-        setSimulation(m_simu = new DAGSimulation());
+        m_simu = sofa::simulation::getSimulation();
+        ASSERT_NE(m_simu, nullptr);
+
         m_thisObject = New<ThisClass >();
     }
 

@@ -22,16 +22,8 @@
 #include <sofa/core/objectmodel/DataCallback.h>
 #include <sofa/core/objectmodel/BaseData.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
-{
-
-namespace _datacallback_
+namespace sofa::core::objectmodel::_datacallback_
 {
 
 void DataCallback::addInputs(std::initializer_list<BaseData*> data)
@@ -69,12 +61,6 @@ void DataCallback::update()
 
 }
 
-}
-
-} /// namespace objectmodel
-
-} /// namespace core
-
-} /// namespace sofa
+} /// namespace sofa::core::objectmodel::_datacallback_
 
 

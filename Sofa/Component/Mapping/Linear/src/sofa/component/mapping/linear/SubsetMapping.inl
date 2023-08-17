@@ -60,7 +60,7 @@ template <class TIn, class TOut>
 int SubsetMapping<TIn, TOut>::addPoint(Index index)
 {
     IndexArray& indices = *f_indices.beginEdit();
-    Size i = Size(indices.size());
+    const Size i = Size(indices.size());
     indices.push_back(index);
     f_indices.endEdit();
     return i;
@@ -310,7 +310,7 @@ const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         {
             if(indices[i] < fromSize)
             {
-                MBloc& block = *matrixJ->wbloc(i, indices[i], true);
+                MBloc& block = *matrixJ->wblock(i, indices[i], true);
                 block.identity();
             }
         }

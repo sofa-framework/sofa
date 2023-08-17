@@ -490,7 +490,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
 
     _weights.resize( this->d_nbVirtualFinerLevels.getValue() );
-    int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
+    const int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
 
     for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
     {

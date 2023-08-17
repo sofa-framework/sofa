@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <runSofaValidation.h>
+#include <sofa/helper/system/FileSystem.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
@@ -39,11 +40,7 @@ void Validation::execute(const std::string& directory, const std::string& filena
 {
     msg_info("runSofa::Validation") << "load verification data from " << directory << " and file " << filename;
 
-    std::string refFile;
-
-    refFile += directory;
-    refFile += '/';
-    refFile += SetDirectory::GetFileName(filename.c_str());
+    std::string refFile = sofa::helper::system::FileSystem::append(directory, SetDirectory::GetFileName(filename.c_str()));
 
     msg_info("runSofa::Validation") << "reference file: " << refFile;
 

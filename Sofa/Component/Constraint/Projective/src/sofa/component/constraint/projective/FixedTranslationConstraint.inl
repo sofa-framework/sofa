@@ -113,23 +113,22 @@ static inline void clearPos(type::Vec<6,T>& v)
 }
 
 template <class DataTypes> template <class DataDeriv>
-void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
-    const SetIndexArray & indices = f_indices.getValue();
-
-    if (f_fixAll.getValue() == true)
+    if (f_fixAll.getValue())
     {
-        for (Size i = 0; i < l_topology.get()->getNbPoints(); ++i)
+        for (std::size_t i = 0; i < dx.size(); i++)
         {
-            clearPos(res[i]);
+            clear(dx, i);
         }
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it
-                != indices.end(); ++it)
+        const SetIndexArray & indices = f_indices.getValue();
+        for (const auto index : indices)
         {
-            clearPos(res[*it]);
+            clear(dx, index);
         }
     }
 }
@@ -137,8 +136,9 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](auto& dx, const unsigned int index) {dx[index].clear(); });
 }
 
 template <class DataTypes>
@@ -156,16 +156,9 @@ void FixedTranslationConstraint<DataTypes>::projectPosition(const core::Mechanic
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 

@@ -84,7 +84,7 @@ public:
     Data<bool> use_file; ///< Dump system matrix in a file
     Data<double> init_Tolerance;
 
-    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
+    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
 
     PrecomputedLinearSolver();

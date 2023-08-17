@@ -53,8 +53,8 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    enum { N=DataTypes::spatial_dimensions };
-    typedef type::Mat<N,N,Real> Mat;
+    static constexpr auto N = DataTypes::spatial_dimensions;
+    using Mat = type::Mat<N, N, Real>;
 
 protected:
     class Contact
@@ -82,29 +82,56 @@ protected:
 
     };
 
-    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
+    union
+    {
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::vector<Contact> > contacts; ///< Contacts
+        Data<sofa::type::vector<Contact> > d_contacts; ///< Contacts
+    };
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
 public:
 
-    Data<Coord> center; ///< ellipsoid center
-    Data<Coord> vradius; ///< ellipsoid radius
-    Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
-    Data<Real> damping; ///< force damping
-    Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    union
+    {
+        Data<Coord> d_center; ///< ellipsoid center
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> center; ///< ellipsoid center
+    };
+    union
+    {
+        Data<Coord> d_vradius; ///< ellipsoid radius
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Coord> vradius; ///< ellipsoid radius
+    };
+    union
+    {
+        Data<Real> d_stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+    };
+    union
+    {
+        Data<Real> d_damping; ///< force damping
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<Real> damping; ///< force damping
+    };
+    union
+    {
+        Data<sofa::type::RGBAColor> d_color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+        SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DEPRECATED() Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    };
+
 protected:
     EllipsoidForceField();
+    ~EllipsoidForceField() override;
 
 public:
     void setStiffness(Real stiff);
     void setDamping(Real damp);
 
     void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce (VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 

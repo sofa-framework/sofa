@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/response/contact/FrictionContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/IdentityContactMapper.h>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
@@ -103,7 +103,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 
     contacts.reserve(outputs.size());
 
-    int SIZE = outputs.size();
+    const int SIZE = outputs.size();
 
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
@@ -113,7 +113,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
-            sofa::core::collision::DetectionOutput* p = contacts[i];
+            const sofa::core::collision::DetectionOutput* p = contacts[i];
             if ((detectionOutput->point[0]-p->point[0]).norm2()+(detectionOutput->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -185,7 +185,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         {
             index2 = mapper2.addPointB(o->point[1], index2, r2);
         }
-        double distance = d0 + r1 + r2;
+        const double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
         mappedContacts[i].first.second = index2;
@@ -214,13 +214,13 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
         int i=0;
         for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            sofa::core::collision::DetectionOutput* o = *it;
-            int index1 = mappedContacts[i].first.first;
-            int index2 = mappedContacts[i].first.second;
-            double distance = mappedContacts[i].second;
+            const sofa::core::collision::DetectionOutput* o = *it;
+            const int index1 = mappedContacts[i].first.first;
+            const int index2 = mappedContacts[i].first.second;
+            const double distance = mappedContacts[i].second;
 
             // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-            long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
+            const long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
 
             // Add contact in unilateral constraint
             m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);

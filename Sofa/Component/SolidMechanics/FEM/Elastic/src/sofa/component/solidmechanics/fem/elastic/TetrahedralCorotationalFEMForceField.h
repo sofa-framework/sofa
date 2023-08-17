@@ -185,6 +185,9 @@ public:
     }
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, Index nodeIdx);

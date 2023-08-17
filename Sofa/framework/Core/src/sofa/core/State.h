@@ -25,6 +25,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/AccumulationVecId.h>
 
 namespace sofa::core
 {
@@ -107,11 +108,22 @@ public:
     WriteVecDeriv writeDx()                 { return WriteVecDeriv(*this->write(core::VecDerivId::dx())); }
     WriteOnlyVecDeriv writeOnlyDx()         { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::dx())); }
     ReadVecDeriv  readNormals() const       { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
+
+    /// Stores all the VecDerivId corresponding to a force. They can then be accumulated
+    AccumulationVecId<TDataTypes, V_DERIV, V_READ> accumulatedForces;
+
+    /// Returns a proxy objects offering simplified access to elements of the cumulative sum of all force containers
+    const AccumulationVecId<TDataTypes, V_DERIV, V_READ>& readTotalForces() const { return accumulatedForces;}
     //@}
 
+    /// The provided VecDerivId will contribute to the sum of all force containers
+    void addToTotalForces(core::ConstVecDerivId forceId) override;
+
+    void removeFromTotalForces(core::ConstVecDerivId forceId) override;
 
 protected:
-    State() {}
+    State();
+
     ~State() override { }
 	
 private:

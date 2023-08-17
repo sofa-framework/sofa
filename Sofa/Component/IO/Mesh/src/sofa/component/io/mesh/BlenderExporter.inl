@@ -22,6 +22,8 @@
 #include <sofa/component/io/mesh/BlenderExporter.h>
 #include <iomanip>
 #include <iostream>
+#include <sofa/helper/system/FileSystem.h>
+
 
 namespace sofa::component::_blenderexporter_
 {
@@ -51,7 +53,8 @@ void BlenderExporter<T>::init()
     if(simulationType.getValue()==Hair)
     {
         ostringstream iss;
-        iss<<path.getValue()<<"/"<<baseName.getValue()<<"_000000_00.bphys";
+        iss << helper::system::FileSystem::append(path.getValue(), baseName.getValue())
+            << "_000000_00.bphys";
         string fileName = iss.str();
         // create the file
         ofstream file(fileName.c_str(), ios::out|ios::binary);
@@ -85,7 +88,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
         {
             int frameNumber = frameCounter/simulationStep.getValue();
             ostringstream iss;
-            iss<<path.getValue()<<"/"<<baseName.getValue()<<"_";
+            iss << helper::system::FileSystem::append(path.getValue(), baseName.getValue()) << "_";
             iss<<std::setfill('0') << std::setw(6) << frameNumber+1<<"_00.bphys";
             string fileName = iss.str();
 

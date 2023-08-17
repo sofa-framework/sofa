@@ -27,6 +27,26 @@
 #include <sofa/component/statecontainer/MappedObject.inl>
 #include <sofa/core/State.inl>
 
+namespace sofa::core
+{
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec1fTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec2fTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec3fTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec3f1Types, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec6fTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaRigid3fTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaRigid2fTypes, V_DERIV, V_READ>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec1dTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec2dTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec3dTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec3d1Types, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaVec6dTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaRigid3dTypes, V_DERIV, V_READ>;
+template struct SOFA_GPU_CUDA_API AccumulationVecId<sofa::gpu::cuda::CudaRigid2dTypes, V_DERIV, V_READ>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+}
+
 namespace sofa::component::statecontainer
 {
 // template specialization must be in the same namespace as original namespace for GCC 4.1

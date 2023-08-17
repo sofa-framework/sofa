@@ -111,7 +111,7 @@ public:
     virtual void init() override;
     virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void doDrawVisual(const core::visual::VisualParams*) override;
     virtual void drawTransparent(const core::visual::VisualParams*) override;
     virtual void drawShadow(const core::visual::VisualParams*) override;
     virtual void updateVisual() override;
@@ -130,7 +130,7 @@ protected:
         nbElement = nbe;
         nbVertex = nbv;
         nbElementPerVertex = nbelemperv;
-        int nbloc = (nbVertex+BSIZE-1)/BSIZE;
+        const int nbloc = (nbVertex+BSIZE-1)/BSIZE;
         velems.resize(nbloc*nbElementPerVertex*BSIZE);
         for (unsigned int i=0; i<velems.size(); i++)
             velems[i] = 0;
@@ -138,8 +138,8 @@ protected:
 
     void setV(int vertex, int num, int index)
     {
-        int bloc = vertex/BSIZE;
-        int b_x  = vertex%BSIZE;
+        const int bloc = vertex/BSIZE;
+        const int b_x  = vertex%BSIZE;
         velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
                 + num*BSIZE                     // offset to the element
                 + b_x                           // offset to the vertex

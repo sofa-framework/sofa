@@ -29,7 +29,7 @@
 #include <sofa/core/ConstraintParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>
@@ -351,16 +351,18 @@ void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         return;
     }
 
-    const auto childForce = this->toModel->readForces();
+    const auto childForce = this->toModel->readTotalForces();
     const SeqEdges& links = l_topology->getEdges();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    for(size_t i=0; i<links.size(); i++)
+    for(sofa::Size i=0; i<links.size(); i++)
     {
+        const OutDeriv force_i = childForce[i];
+
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in a undefinite implicit matrix that causes instabilies
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( force_i[0] < 0 || geometricStiffness==1 )
         {
             const sofa::topology::Edge link = links[i];
             const Direction& dir = directions[i];
@@ -373,7 +375,7 @@ void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
                     b[j][k] = static_cast<Real>(1) * ( j==k ) - dir[j] * dir[k];
                 }
             }
-            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+            b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l
 
             dJdx(link[0] * Nin, link[0] * Nin) += b;
             dJdx(link[0] * Nin, link[1] * Nin) += -b;

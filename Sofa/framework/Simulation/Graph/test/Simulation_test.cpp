@@ -71,20 +71,17 @@ struct Scene_test: public NumericTest<SReal>
 
     Scene_test()
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
     }
 
     /// Test Simulation::computeBBox
     void computeBBox()
     {
         // Init Sofa
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
         root = simulation::getSimulation()->createNewGraph("root");
 
         // create DOFs and its expected bounding box
-        MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
+        const MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
         root->addObject(DOF);
         DOF->resize(4);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
@@ -97,11 +94,11 @@ struct Scene_test: public NumericTest<SReal>
 
         // end create scene
         //*********
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         //*********
 
         type::Vec3 sceneMinBBox, sceneMaxBBox;
-        simulation->computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::node::computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )
         {
@@ -172,23 +169,23 @@ struct Scene_test: public NumericTest<SReal>
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
         child->addObject(core::objectmodel::New<MechanicalObject3>());
 
-        simulation->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         {
-            simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
+            const simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
             nodeToRemove->detachFromGraph();
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
-        simulation->animate(root.get());
-        simulation->unload(root);
+        sofa::simulation::node::animate(root.get());
+        sofa::simulation::node::unload(root);
     }
 
     /// create and unload a scene and check if all the objects have been destroyed.
     void sceneDestruction_unload()
     {
         createScene();
-        simulation->unload(root);
+        sofa::simulation::node::unload(root);
         checkDeletions();
     }
 
@@ -226,7 +223,7 @@ protected:
         root = simulation::getSimulation()->createNewGraph("root");
         root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
         root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
-        simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+        const simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
         root->addChild(child);
         child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
 

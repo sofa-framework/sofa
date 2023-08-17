@@ -321,8 +321,8 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
-        std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
+        const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
+        const std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;

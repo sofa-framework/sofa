@@ -134,8 +134,8 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
     pin->setIcon(pinIcon);
     setItemWidget(componentItem, 1, pin);
     componentItem->setExpanded(true);
-    QBrush *backgroundBrush = new QBrush(QColor(20, 20, 20));
-    QBrush *foregroundBrush = new QBrush(QColor(255, 255, 255));
+    const QBrush *backgroundBrush = new QBrush(QColor(20, 20, 20));
+    const QBrush *foregroundBrush = new QBrush(QColor(255, 255, 255));
     componentItem->setBackground(0, *backgroundBrush);
     componentItem->setForeground(0, *foregroundBrush);
     componentItem->setTextAlignment(0, Qt::AlignLeft);
@@ -189,17 +189,17 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
     // add info
     {
         // use the default info group
-        QString group = DefaultInfoGroup();
+        const QString group = DefaultInfoGroup();
 
         setDescription(component, group, base);
     }
 
-    bool notImplementedYet = false;
+    const bool notImplementedYet = false;
     if(!notImplementedYet)
     // add console
     {
         // use the default info group
-        QString group = DefaultLogGroup();
+        const QString group = DefaultLogGroup();
 
         setConsoleOutput(component, group, base);
     }
@@ -231,8 +231,8 @@ void QDisplayPropertyWidget::addGroup(const QString& component, const QString& g
     groupItem->setFont(0, *font);
     groupItem->setText(0, groupLabel);
     groupItem->setExpanded(true);
-    QBrush *backgroundBrush = new QBrush(QColor(160, 160, 160));
-    QBrush *foregroundBrush = new QBrush(QColor(255, 255, 255));
+    const QBrush *backgroundBrush = new QBrush(QColor(160, 160, 160));
+    const QBrush *foregroundBrush = new QBrush(QColor(255, 255, 255));
     groupItem->setBackground(0, *backgroundBrush);
     groupItem->setForeground(0, *foregroundBrush);
     groupItem->setBackground(1, *backgroundBrush);
@@ -252,7 +252,7 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
         return;
 
     QTreeWidgetItem *dataItem = new QTreeWidgetItem(groupItem);
-    QBrush *brush = nullptr;
+    const QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -295,7 +295,7 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
         return;
 
     QTreeWidgetItem *linkItem = new QTreeWidgetItem(groupItem);
-    QBrush *brush = nullptr;
+    const QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -338,7 +338,7 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
     if(!groupItem)
         return;
 
-    QBrush *brush = nullptr;
+    const QBrush *brush = nullptr;
     QFont categoryFont;
     categoryFont.setBold(true);
 
@@ -360,7 +360,7 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
 
         addDescriptionItem(groupItem, "Class", QString::fromStdString(base->getClassName()));
 
-        std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*base));
+        const std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*base));
         if (!namespacename.empty())
             addDescriptionItem(groupItem, "Namespace", QString::fromStdString(namespacename));
 
@@ -387,7 +387,7 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
         if(!entry.description.empty() && std::string("TODO") != entry.description)
             addDescriptionItem(groupItem, "Description", QString::fromStdString(entry.description));
 
-        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
+        const core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
         if(entry.creatorMap.end() != it && *it->second->getTarget())
             addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
 
@@ -403,7 +403,7 @@ void QDisplayPropertyWidget::addDescriptionItem(QTreeWidgetItem *groupItem, cons
 {
     QTreeWidgetItem *descriptionItem = new QTreeWidgetItem(groupItem);
 
-    QBrush *brush = nullptr;
+    const QBrush *brush = nullptr;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
@@ -424,13 +424,13 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(base==nullptr)
         return;
 
-    std::string warnings = base->getLoggedMessagesAsString( { Message::Warning,
-                                                              Message::Error,
-                                                              Message::Fatal } );
+    const std::string warnings = base->getLoggedMessagesAsString( { Message::Warning,
+                                                                    Message::Error,
+                                                                    Message::Fatal } );
 
-    std::string infos = base->getLoggedMessagesAsString( { Message::Info,
-                                                           Message::Advice,
-                                                           Message::Deprecated } );
+    const std::string infos = base->getLoggedMessagesAsString( { Message::Info,
+                                                                 Message::Advice,
+                                                                 Message::Deprecated } );
 
    if((infos.empty() && warnings.empty()))
         return;
@@ -446,7 +446,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(!infos.empty())
     {
         QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
-        QBrush *brush = nullptr;
+        const QBrush *brush = nullptr;
         if(groupItem->childCount() % 2 == 0)
             brush = new QBrush(QColor(255, 255, 191));
         else
@@ -497,7 +497,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(!warnings.empty())
     {
         QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
-        QBrush *brush = nullptr;
+        const QBrush *brush = nullptr;
         if(groupItem->childCount() % 2 == 0)
             brush = new QBrush(QColor(255, 255, 191));
         else
@@ -548,7 +548,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
 void QDisplayPropertyWidget::clear()
 {
     QTreeWidgetItem *item = nullptr;
-    QPushButton* pin = nullptr;
+    const QPushButton* pin = nullptr;
     for(unsigned int i = 0; (item = topLevelItem(i));)
     {
         pin = static_cast<QPushButton*>(itemWidget(item, 1));
@@ -569,24 +569,24 @@ void QDisplayPropertyWidget::clearAll()
 
 void QDisplayPropertyWidget::clearComponentOutput()
 {
-    QObject* signalEmitter = sender();
+    const QObject* signalEmitter = sender();
     if(nullptr == signalEmitter)
         return;
 
-    QVariant variant = signalEmitter->property("base");
-    sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
+    const QVariant variant = signalEmitter->property("base");
+    const sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
         base->clearLoggedMessages();
 }
 
 void QDisplayPropertyWidget::clearComponentWarning()
 {
-    QObject* signalEmitter = sender();
+    const QObject* signalEmitter = sender();
     if(nullptr == signalEmitter)
         return;
 
-    QVariant variant = signalEmitter->property("base");
-    sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
+    const QVariant variant = signalEmitter->property("base");
+    const sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
         base->clearLoggedMessages();
 }
@@ -603,7 +603,7 @@ QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component)
 
 QTreeWidgetItem* QDisplayPropertyWidget::findGroup(const QString& component, const QString& group) const
 {
-    QTreeWidgetItem *componentItem = nullptr;
+    const QTreeWidgetItem *componentItem = nullptr;
     componentItem = findComponent(component);
     if(!componentItem)
         return nullptr;

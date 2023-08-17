@@ -198,7 +198,7 @@ private:
         if (n!=baseMatrices.size())
         {
             release(n); // will only do something if n<oldsize
-            size_t oldsize = baseMatrices.size();
+            const size_t oldsize = baseMatrices.size();
             baseMatrices.resize(n);
             for (unsigned i = oldsize; i<n; ++i) // will only do something if n>oldsize
                 baseMatrices[i] = new SparseMatrixEigen;

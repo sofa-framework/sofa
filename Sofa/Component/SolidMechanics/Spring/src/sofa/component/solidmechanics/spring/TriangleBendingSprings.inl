@@ -57,8 +57,8 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 {
     using namespace std;
     {
-        IndexPair edge(a<b ? a : b,a<b ? b : a);
-        unsigned opposite = c;
+        const IndexPair edge(a<b ? a : b,a<b ? b : a);
+        const unsigned opposite = c;
         if( edgeMap.find( edge ) == edgeMap.end() )
         {
             edgeMap[edge] = opposite;
@@ -71,8 +71,8 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
     }
 
     {
-        IndexPair edge(b<c ? b : c,b<c ? c : b);
-        unsigned opposite = a;
+        const IndexPair edge(b<c ? b : c,b<c ? c : b);
+        const unsigned opposite = a;
         if( edgeMap.find( edge ) == edgeMap.end() )
         {
             edgeMap[edge] = opposite;
@@ -85,8 +85,8 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
     }
 
     {
-        IndexPair edge(c<a ? c : a,c<a ? a : c);
-        unsigned  opposite = b;
+        const IndexPair edge(c<a ? c : a,c<a ? a : c);
+        const unsigned  opposite = b;
         if( edgeMap.find( edge ) == edgeMap.end() )
         {
             edgeMap[edge] = opposite;

@@ -225,7 +225,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::bwdInit()
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node, std::string massName)
 {
-    bool empty = d_forceFieldList.getValue().empty();
+    const bool empty = d_forceFieldList.getValue().empty();
     msg_info() << "parsing node:";
     for(BaseForceField* forcefield : node->forceField)
     {
@@ -334,8 +334,8 @@ static void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixD
     typedef typename InputFormat::MatrixDeriv::RowConstIterator RowConstIterator;
     typedef typename InputFormat::MatrixDeriv::ColConstIterator ColConstIterator;
     typedef typename InputFormat::Deriv Deriv;
-    int DerivSize = InputFormat::Deriv::total_size;
-    int nbRowsJ = Jeig.rows();
+    const int DerivSize = InputFormat::Deriv::total_size;
+    const int nbRowsJ = Jeig.rows();
     int maxRowIndex = 0, maxColIndex = 0;
     std::vector< Eigen::Triplet<double> > tripletListJ;
 
@@ -346,7 +346,7 @@ static void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixD
             maxRowIndex = rowIndex;
         for (ColConstIterator colIt = rowIt.begin(); colIt !=  rowIt.end(); ++colIt)
         {
-            int colIndex = colIt.index();
+            const int colIndex = colIt.index();
             Deriv elemVal = colIt.val();
             for (int i=0;i<DerivSize;i++)
             {
@@ -429,7 +429,7 @@ public:
             self->optimizeAndCopyMappingJacobianToEigenFormat2(J2, self->m_J2eig);
         }
 
-        auto eparams = dynamic_cast<const core::ExecParams *>( m_mparams );
+        const auto eparams = dynamic_cast<const core::ExecParams *>( m_mparams );
         auto cparams = core::ConstraintParams(*eparams);
         MechanicalResetConstraintVisitor(&cparams).execute(self->getContext());
 
@@ -496,7 +496,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     ///////////////////////     GET K       ////////////////////////////////////////
     CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
-    K->resizeBloc( m_fullMatrixSize ,  m_fullMatrixSize );
+    K->resizeBlock( m_fullMatrixSize ,  m_fullMatrixSize );
     K->clear();
     DefaultMultiMatrixAccessor* KAccessor;
     KAccessor = new DefaultMultiMatrixAccessor;

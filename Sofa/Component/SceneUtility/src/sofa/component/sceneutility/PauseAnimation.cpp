@@ -38,8 +38,7 @@ PauseAnimation::~PauseAnimation()
 void PauseAnimation::init()
 {
     BaseObject::init();
-    //simu = sofa::simulation::getSimulation();
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
+    const simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
     root = dynamic_cast<simulation::Node *>(context->getRootContext());
 
     //root = dynamic_cast<sofa::core::objectmodel::BaseNode*>(this->getContext());

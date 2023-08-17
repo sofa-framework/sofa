@@ -79,8 +79,8 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 
     fileStream << "ObjectType = Image" << std::endl;
 
-    unsigned int dim[]={(unsigned)img(0).width(),(unsigned)img(0).height(),(unsigned)img(0).depth(), img.size()};
-    unsigned int nbdims=(dim[3]==1)?3:4; //  for 2-d, we still need z scale dimension
+    const unsigned int dim[]={(unsigned)img(0).width(),(unsigned)img(0).height(),(unsigned)img(0).depth(), img.size()};
+    const unsigned int nbdims=(dim[3]==1)?3:4; //  for 2-d, we still need z scale dimension
 
     fileStream << "NDims = " << nbdims << std::endl;
 
@@ -456,9 +456,9 @@ void copySubImage( CImg<T>& largeImage, const CImg<T>& subImage, unsigned posX, 
 {
     if( largeImage.spectrum()!=subImage.spectrum() || posX>=(unsigned)largeImage.width() || posY>=(unsigned)largeImage.height() || posZ>=(unsigned)largeImage.depth() ) return;
 
-    unsigned maxX = std::min( posX+subImage.width() , (unsigned)largeImage.width()  ) - 1;
-    unsigned maxY = std::min( posY+subImage.height(), (unsigned)largeImage.height() ) - 1;
-    unsigned maxZ = std::min( posZ+subImage.depth() , (unsigned)largeImage.depth()  ) - 1;
+    const unsigned maxX = std::min( posX+subImage.width() , (unsigned)largeImage.width()  ) - 1;
+    const unsigned maxY = std::min( posY+subImage.height(), (unsigned)largeImage.height() ) - 1;
+    const unsigned maxZ = std::min( posZ+subImage.depth() , (unsigned)largeImage.depth()  ) - 1;
 
     for( unsigned z=posZ, subz=0 ; z<=maxZ ; ++z, ++subz )
     {

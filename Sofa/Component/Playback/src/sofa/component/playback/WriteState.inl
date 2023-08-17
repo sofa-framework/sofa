@@ -110,7 +110,7 @@ void WriteState::init()
     }
 
     ///Check all input data
-    double dt = this->getContext()->getDt();
+    const double dt = this->getContext()->getDt();
     //check filename is set
     if(!d_filename.isSet())
     {
@@ -199,9 +199,9 @@ void WriteState::init()
             }
 
             //check that the desired export times will be met with the chosen time step
-            double nbDtInTime = d_time.getValue()[i]/dt;
-            int intnbDtInTime = (int) nbDtInTime;
-            double rest = nbDtInTime - intnbDtInTime;
+            const double nbDtInTime = d_time.getValue()[i]/dt;
+            const int intnbDtInTime = (int) nbDtInTime;
+            const double rest = nbDtInTime - intnbDtInTime;
             if(rest > std::numeric_limits<double>::epsilon())
             {
                 msg_warning() << "desired export time ("<< d_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
@@ -256,13 +256,13 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
         if (kineticEnergyThresholdReached)
             return;
 
-        double time = getContext()->getTime();
+        const double time = getContext()->getTime();
         // the time to measure the increase of energy is reached
         if (d_stopAt.getValue())
         {
             if (time > timeToTestEnergyIncrease)
             {
-                simulation::Node *gnode = dynamic_cast<simulation::Node *>(this->getContext());
+                const simulation::Node *gnode = dynamic_cast<simulation::Node *>(this->getContext());
                 if (!gnode->mass)
                 {
                     // Error: the mechanical model has no mass
@@ -290,7 +290,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
         //check if the state has to be written or not
         bool writeCurrent = false;
-        SReal epsilonStep = 0.1*this->getContext()->getDt();
+        const SReal epsilonStep = 0.1*this->getContext()->getDt();
         if (nextIteration<d_time.getValue().size())
         {
             // store the actual time instant
@@ -307,7 +307,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
         {
             if(firstExport && periodicExport)
             {
-                double nextTime = lastTime + d_period.getValue();
+                const double nextTime = lastTime + d_period.getValue();
                 // write the state using a period
                 if ( (time > nextTime) || (fabs(time - nextTime)< epsilonStep) )
                 {

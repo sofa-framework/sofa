@@ -67,7 +67,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     void SetUp() override
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
          root = simulation::getSimulation()->createNewGraph("root");
     }
@@ -139,7 +139,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 };

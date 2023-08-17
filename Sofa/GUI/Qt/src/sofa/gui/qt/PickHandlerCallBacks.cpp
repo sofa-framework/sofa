@@ -73,7 +73,7 @@ void InformationOnPickCallBack::execute(const BodyPicked &body)
     if (objectPicked)
     {
         QString messagePicking;
-        simulation::Node *n=static_cast<simulation::Node*>(objectPicked->getContext());
+        const simulation::Node *n=static_cast<simulation::Node*>(objectPicked->getContext());
         messagePicking=QString("Index ") + QString::number(body.indexCollisionElement)
                 + QString(" of  ")
                 + QString(n->getPathName().c_str())

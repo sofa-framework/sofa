@@ -339,8 +339,7 @@ simulation::Visitor::Result CompareTopologyCreator::processNodeTopDown( simulati
 
 void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
 {
-
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
@@ -383,7 +382,7 @@ simulation::Visitor::Result CompareTopologyResult::processNodeTopDown( simulatio
     //We have a topology
     TotalError +=ct->getTotalError();
 
-    std::vector <unsigned int> tmpError = ct->getErrors();
+    const std::vector <unsigned int> tmpError = ct->getErrors();
 
     for (unsigned int i = 0 ; i<5; i++)
         listError[i] += tmpError[i];

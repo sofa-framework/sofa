@@ -73,9 +73,9 @@ protected:
 
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<int> >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<bool> >;
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<double> >;
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<type::Vec2d> >;
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<type::Vec3d> >;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<SReal> >;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<type::Vec2> >;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<type::Vec3> >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid3Types::VecCoord >;

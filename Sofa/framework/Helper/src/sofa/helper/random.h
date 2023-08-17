@@ -74,7 +74,7 @@ inline double drand(double min, double max)
    assert( min >= 0 );
    assert( min <= max );
 
-   double tmp = drand(max-min); // [ -(max-min), max-min ]
+   const double tmp = drand(max-min); // [ -(max-min), max-min ]
    return tmp < 0 ? tmp-min : tmp+min;
 }
 

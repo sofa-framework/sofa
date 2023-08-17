@@ -47,7 +47,6 @@ OglLabel::OglLabel():
   ,d_color(initData(&d_color, sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
   ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
   ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
-  ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
   ,m_stepCounter(0)
 {
     f_listening.setValue(true);
@@ -140,11 +139,8 @@ void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
     }
 }
 
-void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
+void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-
-    if (!d_visible.getValue() ) return;
-
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);
     for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
@@ -166,7 +162,7 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
-    std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
+    const std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
 
     vparams->drawTool()->writeOverlayText(
         d_x.getValue(), d_y.getValue(), d_fontsize.getValue(),  // x, y, size

@@ -53,10 +53,10 @@ void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechan
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    const Coord center = this->center.getValue();
-    const Coord r = this->vradius.getValue();
-    const Real stiffness = this->stiffness.getValue();
-    const Real damping = this->damping.getValue();
+    const Coord center = this->d_center.getValue();
+    const Coord r = this->d_vradius.getValue();
+    const Real stiffness = this->d_stiffness.getValue();
+    const Real damping = this->d_damping.getValue();
     data.ellipsoid.center = center;
     for (int i=0; i<3; ++i)
         data.ellipsoid.inv_r2[i] = 1/(r[i]*r[i]);
@@ -74,7 +74,7 @@ void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mecha
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
     EllipsoidForceFieldCuda3f_addDForce(dx.size(), &data.ellipsoid, data.tmp.deviceRead(), df.deviceWrite(), dx.deviceRead(), kFactor);
@@ -90,10 +90,10 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::Mecha
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    const Coord center = this->center.getValue();
-    const Coord r = this->vradius.getValue();
-    const Real stiffness = this->stiffness.getValue();
-    const Real damping = this->damping.getValue();
+    const Coord center = this->d_center.getValue();
+    const Coord r = this->d_vradius.getValue();
+    const Real stiffness = this->d_stiffness.getValue();
+    const Real damping = this->d_damping.getValue();
     data.ellipsoid.center = center;
     for (int i=0; i<3; ++i)
         data.ellipsoid.inv_r2[i] = 1/(r[i]*r[i]);
@@ -111,7 +111,7 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mech
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
     EllipsoidForceFieldCuda3f1_addDForce(dx.size(), &data.ellipsoid, data.tmp.deviceRead(), df.deviceWrite(), dx.deviceRead(), kFactor);

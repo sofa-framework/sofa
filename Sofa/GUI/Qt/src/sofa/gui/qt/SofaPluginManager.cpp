@@ -140,16 +140,16 @@ void SofaPluginManager::addLibrary()
             mbox->setText(sstream.str().c_str());
             mbox->show();
         }
-        Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(pluginFile);
+        const Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(pluginFile);
         if(!plugin)
         {
             // This should not happen as we are protected by if(loadPluginByPath(...))
             msg_error("SofaPluginManager") << "plugin should be loaded: " << pluginFile << msgendl;
             return;
         }
-        QString slicense = plugin->getModuleLicense();
-        QString sname    = plugin->getModuleName();
-        QString sversion = plugin->getModuleVersion();
+        const QString slicense = plugin->getModuleLicense();
+        const QString sname    = plugin->getModuleName();
+        const QString sversion = plugin->getModuleVersion();
 
         //QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
         QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins);
@@ -195,11 +195,11 @@ void SofaPluginManager::removeLibrary()
     if(listPlugins->selectedItems().count() < 1)
         return;
 
-    QTreeWidgetItem * curItem = listPlugins->selectedItems()[0];
+    const QTreeWidgetItem * curItem = listPlugins->selectedItems()[0];
     std::stringstream sstream;
     if (!curItem) return;
 
-    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
+    const std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
@@ -233,16 +233,16 @@ void SofaPluginManager::updateComponentList()
     if(this->listPlugins->selectedItems().count() < 1)
         return;
 
-    QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
+    const QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
 
     if(curItem == nullptr ) return;
     //update the component list when an item is selected
     listComponents->clear();
 
-    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
+    const std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
     typedef sofa::helper::system::Plugin    Plugin;
-    Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
+    const Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
     if(!plugin)
     {
         msg_warning("SofaPluginManager") << "plugin is not loaded: " << location << msgendl;
@@ -271,16 +271,16 @@ void SofaPluginManager::updateDescription()
     if(this->listPlugins->selectedItems().count() < 1)
         return;
 
-    QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
+    const QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
 
     if(curItem == nullptr ) return;
     //update the component list when an item is selected
     description->clear();
 
-    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
+    const std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
     typedef sofa::helper::system::Plugin    Plugin;
-    Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
+    const Plugin* plugin = sofa::helper::system::PluginManager::getInstance().getPlugin(location);
     if(!plugin)
     {
         msg_warning("SofaPluginManager") << "plugin is not loaded: " << location << msgendl;

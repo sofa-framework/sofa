@@ -63,26 +63,11 @@ public:
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
     Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
+    core::objectmodel::lifecycle::RemovedData d_linearSolversName {this, "v22.12", "v23.06", "solverName", "replace solverName with an explicit data link named \"linearSolver\" (PR #3152)"};
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
-    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
-
-    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
-        }
-        if (arg->getAttribute("ODESolverName"))
-        {
-            msg_warning() << "String data \"ODESolverName\" is now replaced by explicit data link: \"ODESolver\" (PR #3152)";
-        }
-    }
-
+    core::objectmodel::lifecycle::RemovedData d_ODESolverName {this, "v22.12", "v23.06", "ODESolverName", "replace sODESolverName with an explicit data link named \"ODESolver\" (PR #3152)"};
 
 protected:
     GenericConstraintCorrection();

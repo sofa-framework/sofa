@@ -763,8 +763,8 @@ void BaseMatrix::opAddMT(linearalgebra::BaseMatrix* result,double fact) const
 
 std::ostream& operator<<(std::ostream& out, const  sofa::linearalgebra::BaseMatrix& m )
 {
-    Index nx = m.colSize();
-    Index ny = m.rowSize();
+    const Index nx = m.colSize();
+    const Index ny = m.rowSize();
     out << "[";
     for (Index y=0; y<ny; ++y)
     {

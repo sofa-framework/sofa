@@ -27,11 +27,7 @@
 #include <iostream>
 
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 
 
@@ -99,10 +95,6 @@ private:
     static void fetchLastError();
 };
 
-
-}
-
-}
 
 }
 

@@ -164,17 +164,17 @@ void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::str
     if( !item->isExpanded() && graphListener_->findObject(item)->toBaseNode() != nullptr )
         return;
 
-    BaseNode* parentNode = graphListener_->findObject(item)->toBaseNode() ;
+    const BaseNode* parentNode = graphListener_->findObject(item)->toBaseNode() ;
     if(parentNode == nullptr)
         return;
 
-    std::string path = parentNode->getPathName();
+    const std::string path = parentNode->getPathName();
     pathes.push_back(path);
 
     for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
-        BaseNode* childNode = graphListener_->findObject(child)->toBaseNode() ;
+        const BaseNode* childNode = graphListener_->findObject(child)->toBaseNode() ;
 
         if(childNode==nullptr)
             continue;
@@ -284,7 +284,7 @@ void QSofaListView::setRoot(Node* root)
 
     setSortingEnabled(false);
 
-    bool lockStatus = m_isLocked;
+    const bool lockStatus = m_isLocked;
     m_isLocked=false;
     root->addListener(graphListener_);
     graphListener_->onBeginAddChild(nullptr, root);
@@ -407,13 +407,13 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     if( object_.isNode() )
     {
         act = contextMenu->addAction("Focus", this,SLOT(focusNode()));
-        bool enable = object_.ptr.Node->f_bbox.getValue().isValid() && !object_.ptr.Node->f_bbox.getValue().isFlat();
+        const bool enable = object_.ptr.Node->f_bbox.getValue().isValid() && !object_.ptr.Node->f_bbox.getValue().isFlat();
         act->setEnabled(enable);
     }
     if( object_.isObject() )
     {
         act = contextMenu->addAction("Focus", this,SLOT(focusObject()));
-        bool enable = object_.ptr.Object->f_bbox.getValue().isValid() && !object_.ptr.Object->f_bbox.getValue().isFlat() ;
+        const bool enable = object_.ptr.Object->f_bbox.getValue().isValid() && !object_.ptr.Object->f_bbox.getValue().isFlat() ;
         act->setEnabled(enable);
     }
 
@@ -491,11 +491,11 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
 {
     QTreeWidgetItem *item=graphListener_->items[node];
 
-    QString nameToUse(node->getName().c_str());
+    const QString nameToUse(node->getName().c_str());
     item->setText(0,nameToUse);
 
     typedef std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator ItemIterator;
-    std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
+    const std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
 
     for (ItemIterator it=range.first; it!=range.second; ++it) it->second->setText(0,nameToUse);
 }
@@ -547,7 +547,7 @@ void QSofaListView::RemoveNode()
     if( object_.type == typeNode)
     {
         LockContextManager lock(this, true);
-        Node::SPtr node = object_.ptr.Node;
+        const Node::SPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
             if ( QMessageBox::warning ( this, "Removing root", "root node cannot be removed" ) )
@@ -588,7 +588,7 @@ void QSofaListView::Modify()
 
         //Opening of a dialog window automatically created
 
-        std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
+        const std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
         if ( testWindow != map_modifyObjectWindow.end())
         {
             //Object already being modified: no need to open a new window
@@ -641,9 +641,9 @@ void QSofaListView::ExpandRootNodeOnly()
 /// where ${fileno} is expanded with the line number to open at.
 void openInExternalEditor(const std::string filename, const int fileloc)
 {
-    QFileInfo f(filename.c_str());
+    const QFileInfo f(filename.c_str());
 
-    std::string settingsFile = BaseGUI::getConfigDirectoryPath() + "/QSettings.ini";
+    const std::string settingsFile = BaseGUI::getConfigDirectoryPath() + "/QSettings.ini";
     QSettings settings(settingsFile.c_str(), QSettings::IniFormat);
 
     /// In case the setting file does not contains the needed entries, let's put default ones
@@ -653,12 +653,12 @@ void openInExternalEditor(const std::string filename, const int fileloc)
     if(!settings.contains("ExternalEditorParams"))
         settings.setValue("ExternalEditorParams", "-client ${filename}:${fileno}");
 
-    QString editor = settings.value("ExternalEditor").toString();
+    const QString editor = settings.value("ExternalEditor").toString();
     QString params = settings.value("ExternalEditorParams").toString();
 
     params.replace("${filename}", f.absoluteFilePath());
     params.replace("${fileno}", QString::number(fileloc));
-    QStringList paramsAsList = params.split(QRegularExpression("(\\ )"));
+    const QStringList paramsAsList = params.split(QRegularExpression("(\\ )"));
     if ( QProcess::execute(editor, paramsAsList) != 0 )
     {
         msg_warning("QSofaListView") << "Unable to execute \"" << editor.toStdString() << " "
@@ -692,13 +692,13 @@ void QSofaListView::openImplementation()
 
 void QSofaListView::openInEditor()
 {
-    QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
+    const QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
     QDesktopServices::openUrl(QUrl::fromLocalFile(finfo.absoluteFilePath()));
 }
 
 void QSofaListView::copyFilePathToClipBoard()
 {
-    QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
+    const QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
     QApplication::clipboard()->setText(finfo.absoluteFilePath()) ;
 }
 
@@ -706,7 +706,7 @@ void QSofaListView::copyFilePathToClipBoard()
 // Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
 bool QSofaListView::isNodeErasable ( BaseNode* node)
 {
-    QTreeWidgetItem* item = graphListener_->items[node];
+    const QTreeWidgetItem* item = graphListener_->items[node];
     if(item == nullptr)
     {
         return false;
@@ -721,7 +721,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
     //check the item childs
     for(int i=0 ; i<item->childCount() ; i++)
     {
-        QTreeWidgetItem *child = item->child(i);
+        const QTreeWidgetItem *child = item->child(i);
         for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
         {
             if( it->second == child) return false;
@@ -738,8 +738,8 @@ void QSofaListView::Export()
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm(this);
     form->setScene ( root );
     std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
-    std::size_t gpath = gname.find_last_of("/\\");
-    std::size_t gext = gname.rfind('.');
+    const std::size_t gpath = gname.find_last_of("/\\");
+    const std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
         gname = gname.substr(0,gext);
     form->filename->setText(gname.c_str());

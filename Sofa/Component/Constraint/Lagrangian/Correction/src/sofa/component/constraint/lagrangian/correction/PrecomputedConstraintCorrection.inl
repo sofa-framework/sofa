@@ -43,6 +43,7 @@
 #include <sstream>
 #include <list>
 #include <iomanip>
+#include <sofa/helper/system/FileSystem.h>
 
 //#define NEW_METHOD_UNBUILT
 
@@ -105,7 +106,7 @@ struct ConstraintActivation { bool acc, vel, pos; };
 template<class DataTypes>
 std::string PrecomputedConstraintCorrection<DataTypes>::buildFileName()
 {
-    SReal dt = this->getContext()->getDt();
+    const SReal dt = this->getContext()->getDt();
     const std::string name = this->getContext()->getName();
 
     std::stringstream ss;
@@ -133,12 +134,13 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         std::string dir = fileDir.getValue();
         if (!dir.empty())
         {
-            std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
+            const std::string path = helper::system::FileSystem::append(dir, fileName);
+            std::ifstream compFileIn(path, std::ifstream::binary);
             if (compFileIn.is_open())
             {
                 invM->data = new Real[nbRows * nbCols];
 
-                msg_info() << "File " << dir + "/" + fileName << " found. Loading..." ;
+                msg_info() << "File " << path << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(Real));
                 compFileIn.close();
@@ -175,15 +177,23 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
-{
-    msg_info() << "saveCompliance in " << fileName;
-
+{    
     std::string filePathInSofaShare;
-    std::string dir = fileDir.getValue();
+    const std::string dir = fileDir.getValue();
     if (!dir.empty())
-        filePathInSofaShare = dir + "/" + fileName;
+    {
+        filePathInSofaShare = helper::system::FileSystem::append(dir, fileName);
+    }
     else
-        filePathInSofaShare  = sofa::helper::system::DataRepository.getFirstPath() + "/" + fileName;
+    {
+        filePathInSofaShare = helper::system::FileSystem::append(
+            sofa::helper::system::DataRepository.getFirstPath(), fileName);
+    }
+
+    const bool printLog = this->f_printLog.getValue();
+    this->f_printLog.setValue(true);
+    msg_info() << "Compliance file has been saved in " << filePathInSofaShare << ". Load this file using fileCompliance if you don't want to recompute the compliance matrice at next start.";
+    this->f_printLog.setValue(printLog);
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(Real));
@@ -212,11 +222,26 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     nbRows = nbNodes * dof_on_node;
     nbCols = nbNodes * dof_on_node;
 
-    SReal dt = this->getContext()->getDt();
+    const SReal dt = this->getContext()->getDt();
 
-    invName = f_fileCompliance.getFullPath().empty() ? buildFileName() : f_fileCompliance.getFullPath();
+    invName = f_fileCompliance.getFullPath();
+    bool complianceLoaded = false;
+    if (!invName.empty())
+    {
+        complianceLoaded = loadCompliance(invName);
+        if (!complianceLoaded) 
+        {
+            msg_error() << "A fileCompliance was given at path: " << invName << ", but could not be loaded.";
+            invName = buildFileName();
+        }
+    }
+    else
+    {
+        invName = buildFileName();
+        complianceLoaded = loadCompliance(invName);
+    }
 
-    if (!loadCompliance(invName))
+    if (!complianceLoaded)
     {
         msg_info() << "Compliance being built";
 
@@ -224,9 +249,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3& gravity = this->getContext()->getGravity();
 
-        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
+        static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::backward::EulerImplicitSolver* eulerSolver;
@@ -339,8 +364,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
             unitary_force.clear();
             force[f] = unitary_force;
-        }
-        msg_info() << tmpStr.str();
+            msg_info() << tmpStr.str();
+        }        
 
         // Do not recompute the matrix for the rest of the precomputation
         if (linearSolver)
@@ -375,21 +400,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     // Optimisation for the computation of W
     _indexNodeSparseCompliance.resize(v0.size());
-
-    //  Print 400 first row and column of the matrix
-    if (this->notMuted())
-    {
-        msg_info() << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
-
-        for (unsigned int i = 0; i < 20 && i < nbCols; i++)
-        {
-            for (unsigned int j = 0; j < 20 && j < nbCols; j++)
-            {
-                msg_info() << " \t " << appCompliance[j*nbCols + i];
-            }
-        }
-
-    }
 }
 
 
@@ -425,7 +435,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
     /////////// Which node are involved with the contact ? /////
 
-    unsigned int noSparseComplianceSize = _indexNodeSparseCompliance.size();
+    const unsigned int noSparseComplianceSize = _indexNodeSparseCompliance.size();
 
     for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
     {
@@ -443,7 +453,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            unsigned int dof = colIt.index();
+            const unsigned int dof = colIt.index();
             m_activeDofs.push_back(dof);
 
             if (_indexNodeSparseCompliance[dof] != 0)
@@ -512,7 +522,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         {
             const Deriv n1 = colIt.val();
 
-            unsigned int temp = (unsigned int) _indexNodeSparseCompliance[colIt.index()];
+            const unsigned int temp = (unsigned int) _indexNodeSparseCompliance[colIt.index()];
 
             unsigned int curColConst = curConstraint;
 
@@ -683,7 +693,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
     const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
-    SReal dt = this->getContext()->getDt();
+    const SReal dt = this->getContext()->getDt();
 
     dx.clear();
     dx.resize(v.size());
@@ -793,7 +803,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
     // we draw the rotations associated to each node //
 
-    simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
+    const simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
     RotationFinder< DataTypes > * rotationFinder = nullptr;
 
@@ -838,7 +848,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& c = cData.wref();
 
-    simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
+    const simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
 
     RotationFinder< DataTypes >* rotationFinder = nullptr;
 
@@ -858,21 +868,21 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     }
 
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    MatrixDerivRowIterator rowItEnd = c.end();
-
-    Transformation Ri;
+    auto rowItEnd = c.end();
     const auto& rotations = rotationFinder->getRotations();
-    for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        MatrixDerivColIterator colItEnd = rowIt.end();
 
-        for (MatrixDerivColIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+    for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
+        auto colItEnd = rowIt.end();
+
+        for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            Deriv& n = colIt.val();
+            Deriv n = colIt.val();
             const int localRowNodeIdx = colIt.index();
 
             // rotationFinder has been defined
-            Ri = rotations[localRowNodeIdx];
+            auto Ri = rotations[localRowNodeIdx];
 
             if(!back)
                 Ri.transpose();
@@ -890,7 +900,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 {
-    simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
+    const simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
 
     using sofa::core::behavior::RotationFinder;
 
@@ -1027,11 +1037,11 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
 
     _sparseCompliance.resize(constraint_dofs.size() * nbConstraints);
 
-    auto dofsItEnd = constraint_dofs.end();
+    const auto dofsItEnd = constraint_dofs.end();
 
     for (auto dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
     {
-        int NodeIdx = (*dofsIt);
+        const int NodeIdx = (*dofsIt);
         _indexNodeSparseCompliance[NodeIdx] = it;
 
         for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
@@ -1072,7 +1082,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
         {
             const Deriv n1 = colIt.val();
 
-            unsigned int temp = (unsigned int) _indexNodeSparseCompliance[colIt.index()];
+            const unsigned int temp = (unsigned int) _indexNodeSparseCompliance[colIt.index()];
 
             unsigned int curColConst = curRowConst;
 
@@ -1130,7 +1140,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal
     }
 
 #else
-    std::list<unsigned int>::iterator itBegin = active_local_force.begin(), itEnd = active_local_force.end();
+    const std::list<unsigned int>::iterator itBegin = active_local_force.begin(), itEnd = active_local_force.end();
 
     for (int i = begin; i <= end; i++)
     {
@@ -1139,7 +1149,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal
 
         for (auto it = itBegin; it != itEnd; ++it)
         {
-            int id = localIndex_to_id[*it];
+            const int id = localIndex_to_id[*it];
             dc += localW.element(c, *it) * constraint_force[id];
         }
 

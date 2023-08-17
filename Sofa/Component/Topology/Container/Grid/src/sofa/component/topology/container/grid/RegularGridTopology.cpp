@@ -76,12 +76,12 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         arg->getAttribute("ymax") != nullptr &&
         arg->getAttribute("zmax") != nullptr )
     {
-        float xmin = arg->getAttributeAsFloat("xmin",0);
-        float ymin = arg->getAttributeAsFloat("ymin",0);
-        float zmin = arg->getAttributeAsFloat("zmin",0);
-        float xmax = arg->getAttributeAsFloat("xmax",1);
-        float ymax = arg->getAttributeAsFloat("ymax",1);
-        float zmax = arg->getAttributeAsFloat("zmax",1);
+        const float xmin = arg->getAttributeAsFloat("xmin",0);
+        const float ymin = arg->getAttributeAsFloat("ymin",0);
+        const float zmin = arg->getAttributeAsFloat("zmin",0);
+        const float xmax = arg->getAttributeAsFloat("xmax",1);
+        const float ymax = arg->getAttributeAsFloat("ymax",1);
+        const float zmax = arg->getAttributeAsFloat("zmax",1);
         d_min.setValue(type::Vec3((SReal)xmin*scale, (SReal)ymin*scale, (SReal)zmin*scale));
         d_max.setValue(type::Vec3((SReal)xmax*scale, (SReal)ymax*scale, (SReal)zmax*scale));
     }
@@ -93,7 +93,7 @@ void RegularGridTopology::init()
 {
     if (d_cellWidth.getValue())
     {
-        SReal w = d_cellWidth.getValue();
+        const SReal w = d_cellWidth.getValue();
 
         type::Vec3i grid;
         grid[0]= (int)ceil((d_max.getValue()[0]-d_min.getValue()[0]) / w)+1;
@@ -235,13 +235,13 @@ RegularGridTopology::Index RegularGridTopology::findCube(const type::Vec3& pos)
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2)
         return InvalidID;
-    type::Vec3 p = pos-d_p0.getValue();
-    SReal x = p*dx*inv_dx2;
-    SReal y = p*dy*inv_dy2;
-    SReal z = p*dz*inv_dz2;
-    int ix = int(std::floor(x));
-    int iy = int(std::floor(y));
-    int iz = int(std::floor(z));
+    const type::Vec3 p = pos-d_p0.getValue();
+    const SReal x = p*dx*inv_dx2;
+    const SReal y = p*dy*inv_dy2;
+    const SReal z = p*dz*inv_dz2;
+    const int ix = int(std::floor(x));
+    const int iy = int(std::floor(y));
+    const int iz = int(std::floor(z));
     if (   (unsigned)ix <= (unsigned)n[0]-2
             && (unsigned)iy <= (unsigned)n[1]-2
             && (unsigned)iz <= (unsigned)n[2]-2 )
@@ -259,10 +259,10 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    type::Vec3 p = pos-d_p0.getValue();
-    SReal x = p*dx*inv_dx2;
-    SReal y = p*dy*inv_dy2;
-    SReal z = p*dz*inv_dz2;
+    const type::Vec3 p = pos-d_p0.getValue();
+    const SReal x = p*dx*inv_dx2;
+    const SReal y = p*dy*inv_dy2;
+    const SReal z = p*dz*inv_dz2;
     int ix = int(std::floor(x));
     int iy = int(std::floor(y));
     int iz = int(std::floor(z));
@@ -278,15 +278,15 @@ RegularGridTopology::Index RegularGridTopology::findCube(const type::Vec3& pos, 
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    type::Vec3 p = pos-d_p0.getValue();
+    const type::Vec3 p = pos-d_p0.getValue();
 
-    SReal x = p*dx*inv_dx2;
-    SReal y = p*dy*inv_dy2;
-    SReal z = p*dz*inv_dz2;
+    const SReal x = p*dx*inv_dx2;
+    const SReal y = p*dy*inv_dy2;
+    const SReal z = p*dz*inv_dz2;
 
-    int ix = int(std::floor(x));
-    int iy = int(std::floor(y));
-    int iz = int(std::floor(z));
+    const int ix = int(std::floor(x));
+    const int iy = int(std::floor(y));
+    const int iz = int(std::floor(z));
 
     if ((unsigned)ix<=(unsigned)n[0]-2 && (unsigned)iy<=(unsigned)n[1]-2 && (unsigned)iz<=(unsigned)n[2]-2)
     {
@@ -307,10 +307,10 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    type::Vec3 p = pos-d_p0.getValue();
-    SReal x = p*dx*inv_dx2;
-    SReal y = p*dy*inv_dy2;
-    SReal z = p*dz*inv_dz2;
+    const type::Vec3 p = pos-d_p0.getValue();
+    const SReal x = p*dx*inv_dx2;
+    const SReal y = p*dy*inv_dy2;
+    const SReal z = p*dz*inv_dz2;
     int ix = int(std::floor(x));
     int iy = int(std::floor(y));
     int iz = int(std::floor(z));
@@ -342,7 +342,7 @@ sofa::type::Vec3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Ind
 
 void RegularGridTopology::createTexCoords()
 {
-    std::size_t nPts = this->getNbPoints();
+    const std::size_t nPts = this->getNbPoints();
     const type::Vec3i& _n = d_n.getValue();
 
     if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
@@ -371,8 +371,8 @@ void RegularGridTopology::createTexCoords()
     {
         for (int n0 = 0; n0 < _n[ axes[0] ]; ++n0)
         {
-            unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
-            unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
+            const unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
+            const unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
             _texCoords[pt1] = Vec2(n0*Uscale, n1*Vscale);
             _texCoords[pt2] = Vec2(1- n0*Uscale, 1 - n1*Vscale);
         }
@@ -387,8 +387,8 @@ void RegularGridTopology::createTexCoords()
         {
             for (int n0 = 1; n0 < _n[ axes[0] ]-1; ++n0)
             {
-                unsigned int pt1 = n0 + _n[ axes[0] ] * n2;
-                unsigned int pt2 = n0 + _n[ axes[0] ] * (n2 + _n[ axes[2] ] * (_n[ axes[1] ]-1));
+                const unsigned int pt1 = n0 + _n[ axes[0] ] * n2;
+                const unsigned int pt2 = n0 + _n[ axes[0] ] * (n2 + _n[ axes[2] ] * (_n[ axes[1] ]-1));
                 _texCoords[pt1] = Vec2(n0*Uscale, n2*Vscale);
                 _texCoords[pt2] = Vec2(1- n0*Uscale, 1 - n2*Vscale);
             }
@@ -402,8 +402,8 @@ void RegularGridTopology::createTexCoords()
         {
             for (int n2 = 1; n2 < _n[ axes[2] ]-1; ++n2)
             {
-                unsigned int pt1 = n2 + _n[ axes[2] ] * n1;
-                unsigned int pt2 = n2 + _n[ axes[2] ] * (n1 + _n[ axes[1] ] * (_n[ axes[0] ])-1);
+                const unsigned int pt1 = n2 + _n[ axes[2] ] * n1;
+                const unsigned int pt2 = n2 + _n[ axes[2] ] * (n1 + _n[ axes[1] ] * (_n[ axes[0] ])-1);
                 _texCoords[pt1] = Vec2(n2*Uscale, n1*Vscale);
                 _texCoords[pt2] = Vec2(1- n2*Uscale, 1 - n1*Vscale);
             }

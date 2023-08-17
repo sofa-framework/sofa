@@ -126,8 +126,7 @@ public:
         MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
+
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
 
@@ -154,8 +153,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);

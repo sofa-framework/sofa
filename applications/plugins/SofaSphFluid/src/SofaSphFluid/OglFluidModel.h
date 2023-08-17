@@ -93,7 +93,7 @@ public:
     void initVisual() override;
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams* params, bool onlyVisible = false) override;
 

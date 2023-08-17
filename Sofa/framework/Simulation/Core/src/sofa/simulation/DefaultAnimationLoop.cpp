@@ -54,34 +54,23 @@ This loop do the following steps:
 - update the mappings
 - update the bounding box (volume covering all objects of the scene))");
 
-DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
-    : Inherit()
-    , gnode(_gnode)
-{
-    //assert(gnode);
-}
 
 DefaultAnimationLoop::~DefaultAnimationLoop()
 {
 
 }
 
-void DefaultAnimationLoop::init()
-{
-    if (!gnode)
-        gnode = dynamic_cast<simulation::Node*>(this->getContext());
-}
-
 void DefaultAnimationLoop::setNode( simulation::Node* n )
 {
-    gnode=n;
+    l_node.set(n);
 }
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 {
-    if (dt == 0)
-        dt = this->gnode->getDt();
+    simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
+    if (dt == 0)
+        dt = node->getDt();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -90,55 +79,54 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        gnode->execute ( act );
+        node->execute ( act );
     }
 
-    SReal startTime = gnode->getTime();
-
+    const SReal startTime = node->getTime();
 
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdatePositionVisitor");
     BehaviorUpdatePositionVisitor beh(params , dt);
-    gnode->execute ( beh );
+    node->execute ( beh );
     sofa::helper::AdvancedTimer::stepEnd("BehaviorUpdatePositionVisitor");
 
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateInternalDataVisitor");
     UpdateInternalDataVisitor uid(params);
-    gnode->execute ( uid );
+    node->execute ( uid );
     sofa::helper::AdvancedTimer::stepEnd("UpdateInternalDataVisitor");
 
 
     sofa::helper::AdvancedTimer::stepBegin("AnimateVisitor");
     AnimateVisitor act(params, dt);
-    gnode->execute ( act );
+    node->execute ( act );
     sofa::helper::AdvancedTimer::stepEnd("AnimateVisitor");
 
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateSimulationContextVisitor");
-    gnode->setTime ( startTime + dt );
-    gnode->execute< UpdateSimulationContextVisitor >(params);
+    node->setTime ( startTime + dt );
+    node->execute< UpdateSimulationContextVisitor >(params);
     sofa::helper::AdvancedTimer::stepEnd("UpdateSimulationContextVisitor");
 
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor propagateEventVisitor ( params, &ev );
-        gnode->execute ( propagateEventVisitor );
+        node->execute ( propagateEventVisitor );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    gnode->execute< UpdateMappingVisitor >(params);
+    node->execute< UpdateMappingVisitor >(params);
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor propagateEventVisitor ( params , &ev );
-        gnode->execute ( propagateEventVisitor );
+        node->execute ( propagateEventVisitor );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
     if (d_computeBoundingBox.getValue())
     {
         sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
-        gnode->execute< UpdateBoundingBoxVisitor >(params);
+        node->execute< UpdateBoundingBoxVisitor >(params);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO

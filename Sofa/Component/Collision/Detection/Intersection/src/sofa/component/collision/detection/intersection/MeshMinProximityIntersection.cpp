@@ -166,7 +166,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     const Line::Coord P = e1p1+AB*alpha;
     const Line::Coord Q = e2p1+CD*beta;
 
-    Line::Coord PQ = Q - P;
+    const Line::Coord PQ = Q - P;
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
@@ -301,7 +301,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
     const Point::Coord& P = e1p1;
     const Triangle::Coord Q = e2p1+AB*alpha+AC*beta;
-    auto QP=P-Q;
+    const auto QP=P-Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -376,8 +376,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
         return false;
 
     const Point::Coord& P = e1.p();
-    Line::Coord Q = e2.p1()+AB*alpha;
-    auto PQ = Q - P;
+    const Line::Coord Q = e2.p1()+AB*alpha;
+    const auto PQ = Q - P;
 
     return PQ.norm2() < alarmDist * alarmDist;
 }

@@ -49,6 +49,8 @@ const std::string SceneCheckMultithreading::getDesc()
 
 void SceneCheckMultithreading::doInit(sofa::simulation::Node* node)
 {
+    SOFA_UNUSED(node);
+
     m_summary.clear();
 }
 

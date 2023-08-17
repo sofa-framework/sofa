@@ -312,9 +312,9 @@ void UniformMass<DataTypes>::initFromVertexMass()
 {
     //If the vertexMass attribute is set then the totalMass is computed from it
     //using the following formula: totalMass = vertexMass * number of particules
-    auto size = d_indices.getValue().size();
-    SReal vertexMass = SReal(d_vertexMass.getValue());
-    SReal totalMass = vertexMass * SReal(size);
+    const auto size = d_indices.getValue().size();
+    const SReal vertexMass = SReal(d_vertexMass.getValue());
+    const SReal totalMass = vertexMass * SReal(size);
     d_totalMass.setValue(totalMass);
     msg_info() << "vertexMass information is used";
 }
@@ -421,7 +421,7 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
 
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     MassType m = d_vertexMass.getValue();
     for (const auto i : indices)
@@ -485,7 +485,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
 
     dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     // add weight and inertia force
     for (const auto i : indices)
@@ -501,7 +501,7 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
     SOFA_UNUSED(params);
 
     ReadAccessor<DataVecDeriv> v = d_v;
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
@@ -518,7 +518,7 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
 {
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
@@ -568,7 +568,7 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
 
     const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for (auto id : *indices)
     {
         calc ( r.matrix, m, int(r.offset + N * id), mFactor);
@@ -626,7 +626,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
         return;
 
     ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Coord gravityCenter;
     std::vector<  sofa::type::Vec3 > points;

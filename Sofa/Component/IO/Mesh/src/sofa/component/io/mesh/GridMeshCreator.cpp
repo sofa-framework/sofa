@@ -87,7 +87,7 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 bool GridMeshCreator::doLoad()
 {
     auto my_positions = getWriteOnlyAccessor(d_positions);
-    unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
+    const unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
     for(unsigned y=0; y<numY; y++)

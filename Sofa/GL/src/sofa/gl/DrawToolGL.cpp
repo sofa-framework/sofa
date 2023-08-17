@@ -236,8 +236,8 @@ void DrawToolGL::drawDisk(float radius, double from, double to, int resolution, 
                 angle = to;
                 stop = true;
             }
-            float alpha = float(std::sin(angle));
-            float beta = float(std::cos(angle));
+            const float alpha = float(std::sin(angle));
+            const float beta = float(std::cos(angle));
 
             if (first)
             {
@@ -267,9 +267,9 @@ void DrawToolGL::drawCircle(float radius, float lineThickness, int resolution, c
         glColor4f(color.r(), color.g(), color.b(), color.a());
         for (int i  = 0 ; i <= resolution ; ++i)
         {
-            float angle = float(double(i) / double(resolution) * 2.0 * M_PI);
-            float alpha = std::sin(angle);
-            float beta = std::cos(angle);
+            const float angle = float(double(i) / double(resolution) * 2.0 * M_PI);
+            const float alpha = std::sin(angle);
+            const float beta = std::cos(angle);
 
             glVertex3f(radius * alpha, radius * beta, 0.0);
         }
@@ -355,7 +355,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vec3> &points,
         const std::vector<Vec3> &normal, const std::vector< type::RGBAColor > &color)
 {
     const std::size_t nbTriangles=points.size()/3;
-    bool computeNormals= (normal.size() != nbTriangles);
+    const bool computeNormals= (normal.size() != nbTriangles);
     if (nbTriangles == 0) return;
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
@@ -513,9 +513,9 @@ void DrawToolGL::drawCapsule(const Vec3& p1, const Vec3 &p2, float radius,const 
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        float theta =  (float)( i2 * 2.0f * M_PI / subd );
-        float st = sin(theta);
-        float ct = cos(theta);
+        const float theta =  (float)( i2 * 2.0f * M_PI / subd );
+        const float st = sin(theta);
+        const float ct = cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */
@@ -588,9 +588,9 @@ void DrawToolGL::drawCone(const Vec3& p1, const Vec3 &p2, float radius1, float r
     for (int i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        float theta =  (float)( i2 * 2.0f * M_PI / subd );
-        float st = sin(theta);
-        float ct = cos(theta);
+        const float theta =  (float)( i2 * 2.0f * M_PI / subd );
+        const float st = sin(theta);
+        const float ct = cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */
@@ -654,7 +654,7 @@ void DrawToolGL::drawCylinder(const Vec3& p1, const Vec3 &p2, float radius, cons
 
 void DrawToolGL::drawArrow(const Vec3& p1, const Vec3 &p2, float radius, const type::RGBAColor& color, int subd)
 {
-    Vec3 p3 = p1*.2+p2*.8_sreal;
+    const Vec3 p3 = p1*.2+p2*.8_sreal;
     drawCylinder( p1,p3,radius,color,subd);
     drawCone( p3,p2,radius*2.5f,0,color,subd);
 }
@@ -670,13 +670,13 @@ void DrawToolGL::drawArrow   (const Vec3& p1, const Vec3 &p2, float radius, floa
     // fixed coneLength ; cone can be stretched or when its length depends on the total arrow length
 
     Vec3 a = p2 - p1;
-    SReal n = a.norm();
+    const SReal n = a.norm();
     if( coneLength >= n )
         drawCone( p1,p2,coneRadius,0,color,subd);
     else
     {
         a /= n; // normalizing
-        Vec3 p3 = p2 - coneLength*a;
+        const Vec3 p3 = p2 - coneLength*a;
         drawCylinder( p1,p3,radius,color,subd);
         drawCone( p3,p2,coneRadius,0,color,subd);
     }
@@ -989,12 +989,12 @@ void DrawToolGL::drawScaledTetrahedron(const Vec3& p0, const Vec3& p1, const Vec
     setMaterial(color);
     glBegin(GL_TRIANGLES);
     {
-        Vec3 center = (p0 + p1 + p2 + p3) / 4.0;
+        const Vec3 center = (p0 + p1 + p2 + p3) / 4.0;
 
-        Vec3 np0 = ((p0 - center) * scale) + center;
-        Vec3 np1 = ((p1 - center) * scale) + center;
-        Vec3 np2 = ((p2 - center) * scale) + center;
-        Vec3 np3 = ((p3 - center) * scale) + center;
+        const Vec3 np0 = ((p0 - center) * scale) + center;
+        const Vec3 np1 = ((p1 - center) * scale) + center;
+        const Vec3 np2 = ((p2 - center) * scale) + center;
+        const Vec3 np3 = ((p3 - center) * scale) + center;
 
         this->internalDrawTriangle(np0, np1, np2, cross((p1 - p0), (p2 - p0)), color);
         this->internalDrawTriangle(np0, np1, np3, cross((p1 - p0), (p3 - p0)), color);
@@ -1328,7 +1328,7 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const type::
 
     static const float letterSize = 0.5;
 
-    float scale = fontSize / letterSize;
+    const float scale = fontSize / letterSize;
 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);

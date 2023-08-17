@@ -64,6 +64,9 @@ public:
     typedef sofa::core::topology::TopologySubsetIndices DataSubsetIndex;
     typedef type::vector< Real >	 VecReal;
 
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
@@ -75,12 +78,15 @@ public:
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+    Data< type::fixed_array<bool, coord_total_size> > d_activeDirections; ///< directions (translation, and rotation in case of Rigids) in which the spring is active
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
     linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
     RestShapeSpringsForceField();
+
+    static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
 
 public:
     /// BaseObject initialization method.
@@ -126,11 +132,11 @@ protected :
     VecIndex m_ext_indices;
     type::vector<CPos> m_pivots;
 
-    SReal lastUpdatedStep;
+    SReal lastUpdatedStep{};
 
 private :
 
-    bool useRestMState; /// An external MechanicalState is used as rest reference.
+    bool useRestMState{}; /// An external MechanicalState is used as rest reference.
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)

@@ -80,7 +80,7 @@ simulation::Visitor::Result WriteTopologyCreator::processNodeTopDown( simulation
 
 void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)

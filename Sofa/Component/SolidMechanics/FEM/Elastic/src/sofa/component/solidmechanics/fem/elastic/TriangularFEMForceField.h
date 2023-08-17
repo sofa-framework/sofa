@@ -105,7 +105,12 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+
+    void computeElementStiffnessMatrix(type::Mat<9, 9, Real>& S, type::Mat<9, 9, Real>& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -113,7 +118,7 @@ public:
     class TriangleInformation
     {
     public:
-        /// material stiffness matrices of each tetrahedron
+        /// material stiffness matrices of each triangle
         MaterialStiffness materialMatrix;
         ///< the strain-displacement matrices vector
         StrainDisplacement strainDisplacementMatrix;

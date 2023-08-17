@@ -95,7 +95,7 @@ sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename,
 
 void SceneLoaderXML::write(Node *node, const char *filename)
 {
-    simulation::getSimulation()->exportXML( node, filename );
+    sofa::simulation::node::exportInXML(node, filename);
 }
 
 /// Load a scene from a file
@@ -107,7 +107,6 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     {
         return nullptr;
     }
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // We go the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
@@ -139,12 +138,6 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     }
 
     Node::SPtr root = down_cast<Node> ( baseroot );
-
-    // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(root.get());
-    if( !findSimu.found.empty() )
-        setSimulation( findSimu.found[0] );
 
     return root;
 }

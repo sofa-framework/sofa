@@ -40,8 +40,8 @@ namespace multithreading::component::animationloop
 {
 
 class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
-    public sofa::core::behavior::BaseAnimationLoop,
-    public TaskSchedulerUser
+        public sofa::core::behavior::BaseAnimationLoop,
+        public TaskSchedulerUser
 {
 public:
 
@@ -49,11 +49,14 @@ public:
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
     SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
-    sofa::Data<std::string> schedulerName; ///< scheduler name type
+    sofa::core::objectmodel::lifecycle::RemovedData schedulerName {this, "v23.06", "v23.12",
+                                                                   "scheduler",
+                                                                   "To fix you scene you can rename 'scheduler' with 'taskSchedulerType'."};
 
     SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
-    sofa::Data<unsigned int> threadNumber; ///< number of thread
-
+    sofa::core::objectmodel::lifecycle::RemovedData threadNumber {this, "v23.06", "v23.12",
+                                                                  "threadNumber",
+                                                                  "To fix you scene you can rename 'threadNumber' with 'nbThreads'."};
 
 protected:
     AnimationLoopParallelScheduler(sofa::simulation::Node* gnode = NULL);
@@ -61,8 +64,6 @@ protected:
     ~AnimationLoopParallelScheduler() override;
 
 public:
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-
     void init() override;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.

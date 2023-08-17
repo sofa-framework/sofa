@@ -115,7 +115,7 @@ private:
     void keepContactForcesValue();
 
     unsigned int _numConstraints;
-    SReal _mu;
+    SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER() DeprecatedAndRemoved _mu;
 
     /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
     void resetConstraints(core::ConstraintParams cparams);

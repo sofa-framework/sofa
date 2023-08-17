@@ -97,11 +97,11 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType)
 {
-    auto it = m_registeredElements.find(elementType);
+    const auto it = m_registeredElements.find(elementType);
     if (it == m_registeredElements.end()) // case if this element type has never been registered or topology has already been deleted
         return;
 
-    bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
+    const bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
     msg_error_when(!res, m_topologyData->getOwner()) << "Owner topology is not able to unlink with Data Array, Data '" << m_data_name << "' won't be unlinked.";
     
     m_topology->removeTopologyHandler(this, elementType);
@@ -119,7 +119,7 @@ void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromAllTopologyDataAr
 
     for (auto elementType : m_registeredElements)
     {
-        bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
+        const bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
         msg_error_when(!res, m_topologyData->getOwner()) << "Owner topology is not able to unlink with Data Array, Data '" << m_data_name << "' won't be unlinked.";
 
         m_topology->removeTopologyHandler(this, elementType);

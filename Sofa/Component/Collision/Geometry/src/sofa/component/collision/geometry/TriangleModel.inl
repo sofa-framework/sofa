@@ -128,7 +128,7 @@ void TriangleCollisionModel<DataTypes>::updateNormals()
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::updateFromTopology()
 {
-    int revision = m_topology->getRevision();
+    const int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
         return;
 
@@ -458,7 +458,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         }
 
         vparams->drawTool()->setLightingEnabled(true);
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawTriangles(points, indices, normals, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->setPolygonMode(0,false);

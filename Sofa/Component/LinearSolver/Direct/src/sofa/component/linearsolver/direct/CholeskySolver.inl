@@ -46,7 +46,7 @@ template<class TMatrix, class TVector>
 void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
     //Compute L
-    int n = L.colSize();
+    const int n = L.colSize();
 
     //Solve L u = b
     for (int j=0; j<n; j++)
@@ -108,15 +108,4 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     }
 }
 
-template <class TMatrix, class TVector>
-void CholeskySolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("verbose"))
-    {
-        msg_warning() << "Attribute 'verbose' has no use in this component. "
-                         "To disable this warning, remove the attribute from the scene.";
-    }
-
-    Inherit::parse(arg);
-}
 } //namespace sofa::component::linearsolver::direct

@@ -27,7 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -121,7 +121,7 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
     }
     else
     {
-        size_t size = parentDisplacement.size();
+        const size_t size = parentDisplacement.size();
         kfactor *= 2.0;
 
         for(unsigned i=0; i<size; i++ )
@@ -191,11 +191,11 @@ void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         return;
     }
 
-    const auto childForce = this->toModel->readForces();
-    unsigned int size = this->fromModel->getSize();
+    const auto childForce = this->toModel->readTotalForces();
+    const unsigned int size = this->fromModel->getSize();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    for( size_t i=0 ; i<size ; ++i )
+    for( sofa::Size i=0 ; i<size ; ++i )
     {
         dJdx(i, i) += 2*childForce[i][0];
     }

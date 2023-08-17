@@ -29,11 +29,7 @@ using sofa::helper::system::FileSystem;
 #endif
 #include <string>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 
 
@@ -71,7 +67,7 @@ const std::string& DynamicLibrary::Handle::filename() const
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
 # if defined(WIN32)
-    std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
+    const std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
     void *handle = ::LoadLibraryA(filename.c_str());
     if (handle == nullptr)
     {
@@ -166,9 +162,5 @@ const std::string DynamicLibrary::prefix = "lib";
 
 std::string DynamicLibrary::m_lastError = std::string("");
 
-
-}
-
-}
 
 }

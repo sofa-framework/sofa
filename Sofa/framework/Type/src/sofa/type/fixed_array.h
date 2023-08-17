@@ -288,6 +288,24 @@ constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, 
     return { std::forward<Ts>(ts)... };
 }
 
+/// Builds a fixed_array in which all elements have the same value
+template<typename T, sofa::Size N>
+constexpr sofa::type::fixed_array<T, N> makeHomogeneousArray(const T& value)
+{
+    sofa::type::fixed_array<T, N> container{};
+    container.assign(value);
+    return container;
+}
+
+/// Builds a fixed_array in which all elements have the same value
+template<typename FixedArray>
+constexpr FixedArray makeHomogeneousArray(const typename FixedArray::value_type& value)
+{
+    FixedArray container{};
+    container.assign(value);
+    return container;
+}
+
 /// Checks if v1 is lexicographically less than v2. Similar to std::lexicographical_compare
 template<typename T, sofa::Size N>
 constexpr bool

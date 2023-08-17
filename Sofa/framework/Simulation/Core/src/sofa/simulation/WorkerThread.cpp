@@ -205,7 +205,7 @@ bool WorkerThread::pushTask(Task *task)
 
     {
         simulation::ScopedLock lock(m_taskMutex);
-        int taskId = task->getStatus()->setBusy(true);
+        const int taskId = task->getStatus()->setBusy(true);
         task->m_id = taskId;
         m_tasks.push_back(task);
     }
@@ -235,7 +235,7 @@ bool WorkerThread::addTask(Task *task)
 
 bool WorkerThread::stealTask(Task **task)
 {
-    for (auto it : m_taskScheduler->_threads)
+    for (const auto it : m_taskScheduler->_threads)
     {
         // if this is the main thread continue
         if (std::this_thread::get_id() == it.first)

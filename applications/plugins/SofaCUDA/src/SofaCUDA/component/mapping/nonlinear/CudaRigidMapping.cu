@@ -63,7 +63,7 @@ __global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, CudaVec3<floa
     __syncthreads();
 
     int index3 = index1 * 3;
-    CudaVec3<float> p = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
+    const CudaVec3<float> p = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
 
     // rotated
     //p = rotation*p;

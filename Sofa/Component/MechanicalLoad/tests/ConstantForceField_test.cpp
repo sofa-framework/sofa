@@ -68,7 +68,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     typedef typename TTypeTuple::MassType MassType ;
     typedef ConstantForceField<DataTypes> TheConstantForceField ;
     typedef MechanicalObject<DataTypes>   TheMechanicalObject;
-    using Real = typename TTypeTuple::DataType::Coord::value_type;
+    using Real = typename DataTypes::Coord::value_type;
 
     void SetUp() override {}
     void TearDown() override {}
@@ -78,6 +78,9 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         EXPECT_MSG_NOEMIT(Error) ;
 
         std::stringstream scene ;
+        typename DataTypes::Deriv defaultValueForces;
+        defaultValueForces[0] = 100;
+
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
@@ -85,10 +88,10 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass/>                                                                    \n"
-                 "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0'/>         \n"
+                 "   <ConstantForceField name='myForceField' indices='0' totalForce='"<< defaultValueForces << "'/>        \n"
                  "</Node>                                                                                                                                                               \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -110,7 +113,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         EXPECT_GT(ei, -0.1) << "Initialization problem...before simulation second value should be 0>";
         for(int i=0; i<100; i++)
         {
-            simulation->animate(root.get(),(double)0.01);
+            sofa::simulation::node::animate(root.get(), 0.01_sreal);
         }
         Real xe=mechanicalobject->x.getValue()[0][0];
         Real ee = mechanicalobject->x.getValue()[1][0];
@@ -162,14 +165,15 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         EXPECT_MSG_NOEMIT(Error) ;
 
         std::stringstream scene ;
+        typename DataTypes::Deriv defaultValueTotalForce;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
                  "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
-                 "   <ConstantForceField name='myPlaneForceField'/>                              \n"
+                 "   <ConstantForceField name='myPlaneForceField' totalForce='"<< defaultValueTotalForce << "'/>\n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -182,7 +186,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
-            "indices","forces","force","totalForce","showArrowSize","showColor","indexFromEnd"
+            "indices","forces","totalForce","showArrowSize","showColor","indexFromEnd"
         };
 
         for(auto& attrname : attrnames)
@@ -191,8 +195,9 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
 
         Simulation* simulation = sofa::simulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
-        for(int i=0; i<100; i++){
-            simulation->animate(root.get(),(double)0.01);
+        for(int i=0; i<100; i++)
+        {
+            sofa::simulation::node::animate(root.get(), 0.01_sreal);
         }
     }
 
@@ -206,7 +211,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myPlaneForceField'/>                              \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -248,9 +253,3 @@ TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices )
 {
     ASSERT_NO_THROW (this->testMonkeyValueForIndices());
 }
-
-
-
-
-
-

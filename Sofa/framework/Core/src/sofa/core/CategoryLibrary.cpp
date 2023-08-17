@@ -62,8 +62,8 @@ CategoryLibrary::CategoryLibrary( const std::string &categoryName): name(categor
 ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles)
 {
     //Special case of Mapping and MechanicalMapping
-    bool isMechanicalMapping = (name == "MechanicalMapping");
-    bool isMapping           = (name == "Mapping");
+    const bool isMechanicalMapping = (name == "MechanicalMapping");
+    const bool isMapping           = (name == "Mapping");
 
     ComponentLibrary* component = createComponent(componentName, entry, exampleFiles);
 

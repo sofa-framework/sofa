@@ -37,7 +37,7 @@ template <typename DataTypes>
 bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/)
 {
     size_t sz0 = x0.size();
-    size_t szmin = std::min(sz0,x1.size());
+    const size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
     for(size_t i=0; i<szmin; ++i)
@@ -56,7 +56,7 @@ template <typename DataTypes>
 bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool derivRotation=false)
 {
     size_t sz0 = x0.size();
-    size_t szmin = std::min(sz0,x1.size());
+    const size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
     for(size_t i=0; i<szmin; ++i)
@@ -150,7 +150,7 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::init()
 {
-    core::objectmodel::BaseContext* c = this->getContext();
+    const core::objectmodel::BaseContext* c = this->getContext();
 
     this->ForceFeedback::init();
     if(!c)
@@ -203,7 +203,7 @@ void LCPForceFeedback<DataTypes>::updateStats()
 {
     using namespace helper::system::thread;
 
-    ctime_t actualTime = _timer->getTime();
+    const ctime_t actualTime = _timer->getTime();
     ++timer_iterations;
     if (actualTime - time_buf >= sofa::helper::system::thread::CTime::getTicksPerSec())
     {
@@ -216,7 +216,7 @@ void LCPForceFeedback<DataTypes>::updateStats()
 template <class DataTypes>
 bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
 {
-    int prevId = mCurBufferId;
+    const int prevId = mCurBufferId;
 
     //
     // Retrieve the last LCP and constraints computed by the Sofa thread.
@@ -228,9 +228,9 @@ bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
         mCurBufferId = mNextBufferId;
     }
 
-    bool changed = (prevId != mCurBufferId);
+    const bool changed = (prevId != mCurBufferId);
 
-    sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
+    const sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
 
     if(!cp)
     {
@@ -346,8 +346,8 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     // Find available buffer
 
     unsigned char buf_index=0;
-    unsigned char cbuf_index=mCurBufferId;
-    unsigned char nbuf_index=mNextBufferId;
+    const unsigned char cbuf_index=mCurBufferId;
+    const unsigned char nbuf_index=mNextBufferId;
 
     if (buf_index == cbuf_index || buf_index == nbuf_index)
     {
@@ -381,6 +381,9 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     {
         constraints.addLine(rowIt.index(), rowIt.row());
     }
+
+    // make sure the MatrixDeriv has been compressed
+    constraints.compress();
 
     // valid buffer
 

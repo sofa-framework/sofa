@@ -22,7 +22,6 @@
 #include <iostream>
 #include <algorithm>
 #include <SofaDistanceGrid/config.h>
-#include <sofa/helper/proximity.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>

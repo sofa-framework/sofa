@@ -49,12 +49,13 @@ public:
     Data<sofa::type::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
     Data<bool>                   d_selectContrastingColor ; ///< Overide the color value but one that contrast with the background color
     Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
-    Data<bool>                   d_visible; ///< Is label displayed
+    core::objectmodel::lifecycle::RemovedData d_visible {this, "v23.06", "23.12", "visible", "Use the 'enable' data field instead of 'visible'"};
+
 
     void init() override;
     void reinit() override;
     void updateVisual() override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void handleEvent(core::objectmodel::Event *) override;
 

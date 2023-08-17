@@ -91,7 +91,7 @@ public:
     {
         auto* triangle = static_cast<TTriangleCollisionModel*>(model.get());
 
-        sofa::component::collision::geometry::Triangle t(triangle, idx);
+        const sofa::component::collision::geometry::Triangle t(triangle, idx);
         fixPoint = (t.p1() + t.p2() + t.p3()) / 3.0;
         points.push_back(t.p1Index());
         points.push_back(t.p2Index());
@@ -100,7 +100,7 @@ public:
 
     static void getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, Coord& fixPoint)
     {
-        auto* collisionState = model->getContext()->getMechanicalState();
+        const auto* collisionState = model->getContext()->getMechanicalState();
         fixPoint[0] = collisionState->getPX(idx);
         fixPoint[1] = collisionState->getPY(idx);
         fixPoint[2] = collisionState->getPZ(idx);

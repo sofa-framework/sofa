@@ -91,7 +91,7 @@ sofa::simulation::Visitor::Result MechanicalGetConstraintResolutionVisitor::fwdC
 {
     if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
     {
-        ctime_t t0 = begin(node, c);
+        const ctime_t t0 = begin(node, c);
         c->getConstraintResolution(_cparams, _res, _offset);
         end(node, c, t0);
     }
@@ -105,7 +105,7 @@ bool MechanicalGetConstraintResolutionVisitor::stopAtMechanicalMapping(simulatio
 
 sofa::simulation::Visitor::Result MechanicalSetConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-    ctime_t t0 = begin(node, c);
+    const ctime_t t0 = begin(node, c);
 
     c->setConstraintId(contactId);
     c->buildConstraintMatrix(cparams, res, contactId);
@@ -131,7 +131,7 @@ bool MechanicalSetConstraint::stopAtMechanicalMapping(simulation::Node* /*node*/
 
 void MechanicalAccumulateConstraint2::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
-    ctime_t t0 = begin(node, map);
+    const ctime_t t0 = begin(node, map);
     map->applyJT(cparams, res, res);
     end(node, map, t0);
 }
@@ -207,15 +207,15 @@ void ConstraintProblem::gaussSeidelConstraintTimed(SReal &timeout, int numItMax)
 {
     SReal error=0.0;
 
-    SReal t0 = (SReal)_timer->getTime() ;
-    SReal timeScale = 1.0 / (SReal)CTime::getTicksPerSec();
+    const SReal t0 = (SReal)_timer->getTime() ;
+    const SReal timeScale = 1.0 / (SReal)CTime::getTicksPerSec();
 
     for(int i=0; i<numItMax; i++)
     {
         error=0.0;
         for(int j=0; j<_dim; ) // increment of j realized at the end of the loop
         {
-            int nb = _constraintsResolutions[j]->getNbLines();
+            const int nb = _constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
@@ -255,8 +255,8 @@ void ConstraintProblem::gaussSeidelConstraintTimed(SReal &timeout, int numItMax)
         }
 
         /////////////////// GAUSS SEIDEL IS TIMED !!! /////////
-        SReal t1 = (SReal)_timer->getTime();
-        SReal dt = (t1 - t0)*timeScale;
+        const SReal t1 = (SReal)_timer->getTime();
+        const SReal dt = (t1 - t0)*timeScale;
         if(dt > timeout)
         {
             return;
@@ -274,10 +274,8 @@ void ConstraintProblem::gaussSeidelConstraintTimed(SReal &timeout, int numItMax)
 
 }
 
-
-ConstraintAnimationLoop::ConstraintAnimationLoop(simulation::Node* gnode)
-    : Inherit(gnode)
-    , d_displayTime(initData(&d_displayTime, false, "displayTime","Display time for each important step of ConstraintAnimationLoop."))
+ConstraintAnimationLoop::ConstraintAnimationLoop() :
+    d_displayTime(initData(&d_displayTime, false, "displayTime","Display time for each important step of ConstraintAnimationLoop."))
     , d_tol( initData(&d_tol, 0.00001_sreal, "tolerance", "Tolerance of the Gauss-Seidel"))
     , d_maxIt( initData(&d_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
     , d_doCollisionsFirst(initData(&d_doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
@@ -406,7 +404,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
 void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params, simulation::Node *context)
 {
-    for (auto cc : constraintCorrections)
+    for (const auto cc : constraintCorrections)
     {
         cc->resetContactForce();
     }
@@ -496,7 +494,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) << "   4. get Compliance " ;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
-    for (auto cc : constraintCorrections)
+    for (const auto cc : constraintCorrections)
     {
         cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
@@ -505,7 +503,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
 
 }
 
-void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, simulation::Node *context)
+void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, simulation::Node *node)
 {
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
             <<"constraintCorrections motion is called" ;
@@ -515,7 +513,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     if(d_schemeCorrection.getValue())
     {
         // IF SCHEME CORRECTIVE=> correct the motion using dF
-        for (auto cc : constraintCorrections)
+        for (const auto cc : constraintCorrections)
         {
             cc->applyContactForce(getCP()->getdF());
         }
@@ -523,24 +521,24 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     else
     {
         // ELSE => only correct the motion using F
-        for (auto cc : constraintCorrections)
+        for (const auto cc : constraintCorrections)
         {
             cc->applyContactForce(getCP()->getF());
         }
     }
 
-    simulation::common::MechanicalOperations mop(params, this->getContext());
+    simulation::common::MechanicalOperations mop(params, node);
 
     mop.propagateV(core::VecDerivId::velocity());
 
     mop.propagateDx(core::VecDerivId::dx(), true);
 
     // "mapped" x = xfree + dx
-    MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(context);
+    MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(node);
 
     if(!d_schemeCorrection.getValue())
     {
-        for (auto cc : constraintCorrections)
+        for (const auto cc : constraintCorrections)
         {
             cc->resetContactForce();
         }
@@ -551,6 +549,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
 
 void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 {
+    auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
     static SReal simulationTime=0.0;
 
@@ -562,17 +561,17 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
-
-
-    SReal startTime = this->gnode->getTime();
-
-    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
-    this->gnode->execute ( beh );
+    
+    
+    SReal startTime = node->getTime();
+    
+    BehaviorUpdatePositionVisitor beh(params , node->getDt());
+    node->execute ( beh );
 
     UpdateInternalDataVisitor uid(params);
-    this->gnode->execute ( uid );
+    node->execute ( uid );
 
 
     if (simulationTime>0.1)
@@ -629,8 +628,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
-    MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
+    MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(node);
+    MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(node);
 
     if (d_doCollisionsFirst.getValue())
     {
@@ -641,7 +640,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-    simulation::BehaviorUpdatePositionVisitor(params, dt).execute(this->gnode);
+    simulation::BehaviorUpdatePositionVisitor(params, dt).execute(node);
     sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
 
 
@@ -651,10 +650,10 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         numConstraints = 0;
 
         //1. Find the new constraint direction
-        writeAndAccumulateAndCountConstraintDirections(params, this->gnode, numConstraints);
+        writeAndAccumulateAndCountConstraintDirections(params, node, numConstraints);
 
         //2. Get the constraint solving process:
-        getIndividualConstraintSolvingProcess(params, this->gnode);
+        getIndividualConstraintSolvingProcess(params, node);
 
         //3. Use the stored forces to compute
         if (EMIT_EXTRA_DEBUG_MESSAGE)
@@ -674,7 +673,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 
     /// FREE MOTION
-    freeMotion(params, this->gnode, dt);
+    freeMotion(params, node, dt);
 
 
 
@@ -686,12 +685,12 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
-    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
+    MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(node);
+    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(node);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
-    setConstraintEquations(params, this->gnode);
+    setConstraintEquations(params, node);
 
     if (EMIT_EXTRA_DEBUG_MESSAGE)
     {
@@ -721,7 +720,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 
     /// CORRECTIVE MOTION
-    correctiveMotion(params, this->gnode);
+    correctiveMotion(params, node);
 
     if ( d_displayTime.getValue() )
     {
@@ -732,31 +731,31 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 
     MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    this->gnode->execute(&endVisitor);
-    this->gnode->setTime ( startTime + dt );
-    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+    node->execute(&endVisitor);
+    node->setTime ( startTime + dt );
+    node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-
-    this->gnode->execute<UpdateMappingVisitor>(params);
+    
+    node->execute<UpdateMappingVisitor>(params);
     sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
     if (d_computeBoundingBox.getValue())
     {
         sofa::helper::ScopedAdvancedTimer updateBBoxTimer("UpdateBBox");
-        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        node->execute<UpdateBoundingBoxVisitor>(params);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1006,8 +1005,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, SReal* dfree, SReal
 
 void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 {
-
-    SReal mu=0.8;
+    const SReal mu=0.8;
     ConstraintProblem& CP = (d_doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
     helper::nlcp_gaussseidel(numConstraints, CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(), mu, d_tol.getValue(), d_maxIt.getValue(), false, EMIT_EXTRA_DEBUG_MESSAGE);
     CP.getF()->clear();
