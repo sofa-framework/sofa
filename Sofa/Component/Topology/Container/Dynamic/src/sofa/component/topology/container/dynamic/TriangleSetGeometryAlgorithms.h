@@ -301,6 +301,11 @@ public:
         sofa::type::vector< Vec3 >& intersected_barycoefs) const;
 
 
+    bool computeTriangleIncisionPath(const PointID last_point, const Vec3& pointA, const Vec3& pointB,
+        TriangleID& ind_triA, TriangleID& ind_triB,
+        TriangleIncisionPath* incisionPath,
+        sofa::type::vector< TriangleSubdivider*> triangleToSplit);
+
     /** \brief Get the triangle in a given direction from a point.
      */
     int getTriangleInDirection(PointID p, const sofa::type::Vec<3,Real>& dir) const;
