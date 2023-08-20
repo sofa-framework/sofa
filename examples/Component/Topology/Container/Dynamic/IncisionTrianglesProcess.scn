@@ -16,6 +16,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="InfinyToolkit"/>
     
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultAnimationLoop/>
@@ -28,6 +29,9 @@
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" printLog="1"/>
+        
+        <TriangleCuttingController name="CutController" template="Vec3" triAID="606"/>
+        
         <DiagonalMass template="Vec3,Vec3" name="default5" massDensity="1.5" />
         <BoxROI template="Vec3" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
         <FixedConstraint template="Vec3" name="fixedConstraint1" indices="@box_roi1.indices"/>
@@ -47,6 +51,6 @@
             <OglModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping name="default8" input="@.." output="@Visual" />
         </Node>
-        <TopologicalChangeProcessor listening="1" filename="IncisionTrianglesProcess.txt" saveIndicesAtInit="true" printLog="false" draw="true" epsilonSnapPath="0.0" epsilonSnapBorder="0.0" />
+        <!--<TopologicalChangeProcessor listening="1" filename="IncisionTrianglesProcess.txt" saveIndicesAtInit="true" printLog="false" draw="true" epsilonSnapPath="0.0" epsilonSnapBorder="0.0" />-->
     </Node>
 </Node>
