@@ -83,6 +83,8 @@ public:
 class TriangleSubdivider
 {
 public:
+    using Triangle = sofa::core::topology::BaseMeshTopology::Triangle;
+
     TriangleSubdivider(TriangleToSplit* _triangleToSplit)
         : m_triangleToSplit(_triangleToSplit)
     {}
@@ -119,6 +121,31 @@ public:
 
     bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
     {
+        if (m_triangleToSplit->m_points.size() != 1)
+        {
+            msg_error("TriangleSubdivider_1Node") << "More than 1 point to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            return false;
+        }
+
+        const PointToAdd* PTA = m_triangleToSplit->m_points[0];
+         
+        Triangle(m_triangleToSplit->m_triangle[0], m_triangleToSplit->m_triangle[1], PTA->m_idPoint);
+        Triangle T1 = Triangle(m_triangleToSplit->m_triangle[1], m_triangleToSplit->m_triangle[2], PTA->m_idPoint);
+        Triangle T2 = Triangle(m_triangleToSplit->m_triangle[2], m_triangleToSplit->m_triangle[0], PTA->m_idPoint);
+
+        type::vector<TriangleID> ancestors;
+        ancestors.push_back(m_triangleToSplit->m_triangleId);
+        type::vector<SReal> coefs;
+        coefs.push_back(0.3333);
+
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            TriangleID uniqID = 1000000 * m_triangleToSplit->m_triangleId + i;
+            Triangle newTri = Triangle(m_triangleToSplit->m_triangle[i], m_triangleToSplit->m_triangle[(i+1)%3], PTA->m_idPoint);
+            auto TTA = new TriangleToAdd(uniqID, newTri, ancestors, coefs);
+            m_trianglesToAdd.push_back(TTA);
+        }
+
         return true;
     }
 };
