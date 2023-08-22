@@ -52,13 +52,13 @@ jobs:
             });
 
             if (repliesResponse.data.length > 0) {
-              const oldestReply = repliesResponse.data[0];
+              const latestReply = repliesResponse.data[repliesResponse.data.length - 1];
 
               // Check if the oldest reply is by a team member and is at least one year old
               if (
-                oldestReply.user.type === "Team" &&
-                oldestReply.user.login === teamName &&
-                new Date(oldestReply.created_at) <= oneYearAgo
+                latestReply.user.type === "Team" &&
+                latestReply.user.login === teamName &&
+                new Date(latestReply.created_at) <= oneYearAgo
               ) {
                 // Print discussion title, ID, and the name of the team member
                 console.log(`Discussion Title: ${discussion.title}`);
@@ -69,7 +69,7 @@ jobs:
                 //await octokit.rest.reactions.createForIssueComment({
                 //  owner: repoOwner,
                 //  repo: repoName,
-                //  comment_id: oldestReply.id,
+                //  comment_id: latestReply.id,
                 //  content: "+1", // You can use a different reaction if desired
                 //});
 
