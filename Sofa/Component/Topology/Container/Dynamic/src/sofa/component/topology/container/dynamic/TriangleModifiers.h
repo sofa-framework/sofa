@@ -102,18 +102,6 @@ public:
 };
 
 
-class TriangleSubdivider_1Edge : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_1Edge(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit)
-    {}
-
-    EdgeID m_edgeId;
-    SReal m_edgeCoef;
-
-    
-};
-
 class TriangleSubdivider_1Node : public TriangleSubdivider
 {
 public:
@@ -129,14 +117,10 @@ public:
 
         const PointToAdd* PTA = m_triangleToSplit->m_points[0];
          
-        Triangle(m_triangleToSplit->m_triangle[0], m_triangleToSplit->m_triangle[1], PTA->m_idPoint);
-        Triangle T1 = Triangle(m_triangleToSplit->m_triangle[1], m_triangleToSplit->m_triangle[2], PTA->m_idPoint);
-        Triangle T2 = Triangle(m_triangleToSplit->m_triangle[2], m_triangleToSplit->m_triangle[0], PTA->m_idPoint);
-
         type::vector<TriangleID> ancestors;
         ancestors.push_back(m_triangleToSplit->m_triangleId);
         type::vector<SReal> coefs;
-        coefs.push_back(0.3333);
+        coefs.push_back(0.3333); // 3 new triangles (need to compute real area proportion)
 
         for (unsigned int i = 0; i < 3; i++)
         {
