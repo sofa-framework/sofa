@@ -135,6 +135,45 @@ public:
 };
 
 
+class TriangleSubdivider_1Edge : public TriangleSubdivider
+{
+public:
+    TriangleSubdivider_1Edge(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit)
+    {}
+
+    EdgeID m_edgeId;
+    SReal m_edgeCoef;
+
+    bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
+    {
+        if (m_triangleToSplit->m_points.size() != 1)
+        {
+            msg_error("TriangleSubdivider_1Node") << "More than 1 point to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            return false;
+        }
+
+        const PointToAdd* PTA = m_triangleToSplit->m_points[0];
+
+        type::vector<TriangleID> ancestors;
+        ancestors.push_back(m_triangleToSplit->m_triangleId);
+        type::vector<SReal> coefs;
+        coefs.push_back(0.5); // 2 new triangles (need to compute real area proportion)
+
+        Triangle newTri0 = Triangle(m_triangleToSplit->m_triangle[(m_edgeId + 1) % 3], PTA->m_idPoint, m_triangleToSplit->m_triangle[m_edgeId]);
+        Triangle newTri1 = Triangle(PTA->m_idPoint, m_triangleToSplit->m_triangle[(m_edgeId + 2) % 3], m_triangleToSplit->m_triangle[m_edgeId]);
+        
+        auto TTA0 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + 1, newTri0, ancestors, coefs);
+        auto TTA1 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + 2, newTri1, ancestors, coefs);
+
+        m_trianglesToAdd.push_back(TTA0);
+        m_trianglesToAdd.push_back(TTA1);
+
+        return true;
+    }
+
+};
+
+
 class TriangleSubdivider_2Edge : public TriangleSubdivider
 {
 public:
