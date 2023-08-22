@@ -199,7 +199,7 @@ public:
     {
         if (m_triangleToSplit->m_points.size() != 2)
         {
-            msg_error("TriangleSubdivider_1Node") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            msg_error("TriangleSubdivider_2Node") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
             return false;
         }
 
@@ -315,6 +315,65 @@ public:
 };
 
 
+class TriangleSubdivider_3Edge : public TriangleSubdivider
+{
+public:
+    TriangleSubdivider_3Edge(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit) {}
+
+    bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
+    {
+        if (m_triangleToSplit->m_points.size() != 3)
+        {
+            msg_error("TriangleSubdivider_3Node") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            return false;
+        }
+
+        sofa::type::fixed_array<PointID, 3> newIDs;
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            const PointID uniqID = getUniqueId(m_triangleToSplit->m_triangle[(i + 1) % 3], m_triangleToSplit->m_triangle[(i + 2) % 3]);
+            bool found = false;
+            for (auto PTA : m_triangleToSplit->m_points)
+            {
+                if (PTA->m_uniqueID == uniqID)
+                {
+                    newIDs[i] = PTA->m_idPoint;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                msg_error("TriangleSubdivider_3Node") << "Unique ID not found in the list of future point to be added: " << uniqID;
+                return false;
+            }
+        }
+
+        
+        type::vector<TriangleID> ancestors;
+        ancestors.push_back(m_triangleToSplit->m_triangleId);
+        type::vector<SReal> coefs;
+        coefs.push_back(0.25);
+
+        sofa::type::fixed_array<Triangle, 4> newTris;
+        newTris[0] = Triangle(newIDs[1], newIDs[0], m_triangleToSplit->m_triangle[2]);
+        newTris[1] = Triangle(newIDs[2], newIDs[1], m_triangleToSplit->m_triangle[0]);
+        newTris[2] = Triangle(newIDs[0], newIDs[2], m_triangleToSplit->m_triangle[1]);
+        newTris[3] = Triangle(newIDs[0], newIDs[1], newIDs[2]);
+
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i + 1, newTris[i], ancestors, coefs);
+            m_trianglesToAdd.push_back(TTA);
+        }
+
+        return true;
+    }
+
+};
+
+
 class TriangleSubdivider_2Node : public TriangleSubdivider
 {
 public:
@@ -324,21 +383,6 @@ public:
     SReal m_edge1Coef;
     sofa::type::Vec<3, SReal> m_baryCoords;
 };
-
-
-class TriangleSubdivider_3N : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_3N(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit) {}
-
-    EdgeID m_edge1Id;
-    SReal m_edge1Coef;
-    EdgeID m_edge2Id;
-    SReal m_edge2Coef;
-    EdgeID m_edge3Id;
-    SReal m_edge3Coef;
-};
-
 
 
 
