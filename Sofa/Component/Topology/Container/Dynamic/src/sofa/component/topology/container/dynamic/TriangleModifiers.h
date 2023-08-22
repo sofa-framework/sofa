@@ -364,7 +364,7 @@ public:
 
         for (unsigned int i = 0; i < 4; i++)
         {
-            auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i + 1, newTris[i], ancestors, coefs);
+            auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTris[i], ancestors, coefs);
             m_trianglesToAdd.push_back(TTA);
         }
 
@@ -379,9 +379,67 @@ class TriangleSubdivider_2Node : public TriangleSubdivider
 public:
     TriangleSubdivider_2Node(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit) {}
 
-    EdgeID m_edge1Id;
-    SReal m_edge1Coef;
-    sofa::type::Vec<3, SReal> m_baryCoords;
+    bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
+    {
+        if (m_triangleToSplit->m_points.size() != 2)
+        {
+            msg_error("TriangleSubdivider_2Node") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            return false;
+        }
+
+        // Find intersected Edge
+        PointID localEdgeId = InvalidID;
+        PointID ptOnEdgeId = InvalidID;
+        PointID ptInTriId = InvalidID;
+
+        const PointToAdd* PTA0 = m_triangleToSplit->m_points[0];
+        const PointToAdd* PTA1 = m_triangleToSplit->m_points[1];
+
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            const PointID uniqID = getUniqueId(m_triangleToSplit->m_triangle[(i + 1) % 3], m_triangleToSplit->m_triangle[(i + 2) % 3]);
+
+            if (PTA0->m_uniqueID == uniqID)
+            {
+                localEdgeId = i;
+                ptOnEdgeId = PTA0->m_idPoint;
+                ptInTriId = PTA1->m_idPoint;
+                break;
+            }
+            else if (PTA1->m_uniqueID == uniqID)
+            {
+                localEdgeId = i;
+                ptOnEdgeId = PTA1->m_idPoint;
+                ptInTriId = PTA0->m_idPoint;
+                break;
+            }
+        }
+
+        if (localEdgeId == InvalidID)
+        {
+            msg_error("TriangleSubdivider_2Node") << "Unique ID on edge not found in the list of future point to be added.";
+            return false;
+        }
+
+        type::vector<TriangleID> ancestors;
+        ancestors.push_back(m_triangleToSplit->m_triangleId);
+        type::vector<SReal> coefs;
+        coefs.push_back(0.25); // 4 new triangles (need to compute real area proportion)
+
+        sofa::type::fixed_array<Triangle, 4> newTris;
+        newTris[0] = Triangle(m_triangleToSplit->m_triangle[localEdgeId], m_triangleToSplit->m_triangle[(localEdgeId + 1) % 3], ptInTriId);
+        newTris[1] = Triangle(m_triangleToSplit->m_triangle[(localEdgeId + 2) % 3], m_triangleToSplit->m_triangle[localEdgeId], ptInTriId);
+        newTris[2] = Triangle(m_triangleToSplit->m_triangle[(localEdgeId + 1) % 3], ptOnEdgeId, ptInTriId);
+        newTris[3] = Triangle(ptOnEdgeId, m_triangleToSplit->m_triangle[(localEdgeId + 2) % 3], ptInTriId);
+
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTris[i], ancestors, coefs);
+            m_trianglesToAdd.push_back(TTA);
+        }
+
+        return true;
+    }
 };
 
 
