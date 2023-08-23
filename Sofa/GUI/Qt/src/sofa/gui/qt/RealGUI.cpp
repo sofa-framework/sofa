@@ -736,7 +736,10 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         m_saveReloadFile=temporaryFile;
         setTitle ( filename );
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
-        m_docbrowser->loadHtml( filename );
+        if (m_docbrowser && filename)
+        {
+            m_docbrowser->loadHtml( filename );
+        }
 #endif
     }
 
@@ -789,7 +792,10 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
     }
     setSceneWithoutMonitor(root, filename, temporaryFile) ;
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
-    m_docbrowser->loadHtml( filename ) ;
+    if (m_docbrowser && filename)
+    {
+        m_docbrowser->loadHtml( filename ) ;
+    }
 #endif
 }
 
