@@ -486,6 +486,82 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
 }
 
 template <class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const VecElement& triangles = m_topology->getTriangles();
+
+    static constexpr auto S = DataTypes::deriv_total_size;
+
+    for (Index i = 0; i < nbTriangles; ++i)
+    {
+        Triangle t = triangles[i];
+        const TriangleInfo& ti = triInfo[i];
+        const TriangleState& ts = triState[i];
+        sofa::type::MatNoInit<3, 4, Real> KJt;
+        const Real factor = -ti.ss_factor;
+        const Real fG = factor * gamma;
+        const Real fGM = factor * (gamma + mu);
+        const Real fM_2 = factor * mu / 2;
+        KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
+        KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
+        KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
+
+        sofa::type::MatNoInit<2, 2, Real> JKJt11, JKJt12, JKJt22;
+        JKJt11[0][0] = ti.cy * KJt[0][0] - ti.cx * KJt[2][0];
+        JKJt11[0][1] = ti.cy * KJt[0][1] - ti.cx * KJt[2][1];
+        JKJt11[1][0] = JKJt11[0][1]; //ti.cy*KJt[2][0] - ti.cx*KJt[1][0];
+        JKJt11[1][1] = ti.cy * KJt[2][1] - ti.cx * KJt[1][1];
+
+        JKJt12[0][0] = -ti.cx * KJt[2][2];
+        JKJt12[0][1] = ti.cy * KJt[0][3];
+        JKJt12[1][0] = ti.cy * KJt[2][2];
+        JKJt12[1][1] = -ti.cx * KJt[1][3];
+
+        JKJt22[0][0] = ti.bx * KJt[2][2];
+        JKJt22[0][1] = 0; //ti.bx*KJt[2][3];
+        JKJt22[1][0] = 0; //ti.bx*KJt[1][2];
+        JKJt22[1][1] = ti.bx * KJt[1][3];
+
+        sofa::type::MatNoInit<2,2,Real> JKJt00, JKJt01, JKJt02;
+        // fA = -fB-fC, dxB/dxA = -1, dxC/dxA = -1
+        // dfA/dxA = -dfB/dxA - dfC/dxA
+        //         = -dfB/dxB * dxB/dxA -dfB/dxC * dxC/dxA   -dfC/dxB * dxB/dxA -dfC/dxC * dxC/dxA
+        //         = dfB/dxB + dfB/dxC + dfC/dxB + dfC/dxC
+        JKJt00 = JKJt11 + JKJt12 + JKJt22 + JKJt12.transposed();
+        // dfA/dxB = -dfB/dxB -dfC/dxB
+        JKJt01 = -JKJt11 - JKJt12.transposed();
+        // dfA/dxC = -dfB/dxC -dfC/dxC
+        JKJt02 = -JKJt12 - JKJt22;
+
+        Transformation frame = ts.frame;
+
+        dfdx(S * t[0], S * t[0]) += frame.multTranspose(JKJt00*frame);
+
+        const MatBloc M01 = frame.multTranspose(JKJt01*frame);
+        dfdx(S * t[0], S * t[1]) += M01;
+        dfdx(S * t[1], S * t[0]) += M01.transposed();
+
+        const MatBloc M02 = frame.multTranspose(JKJt02*frame);
+        dfdx(S * t[0], S * t[2]) += M02;
+        dfdx(S * t[2], S * t[0]) += M02.transposed();
+
+        dfdx(S * t[1], S * t[1]) += frame.multTranspose(JKJt11*frame);
+
+        const MatBloc M12 = frame.multTranspose(JKJt12*frame);
+        dfdx(S * t[1], S * t[2]) += M12;
+        dfdx(S * t[2], S * t[1]) += M12.transposed();
+
+        dfdx(S * t[2], S * t[2]) += frame.multTranspose(JKJt22*frame);
+    }
+}
+
+template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
