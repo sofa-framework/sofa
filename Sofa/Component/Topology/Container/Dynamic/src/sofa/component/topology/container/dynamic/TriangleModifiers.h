@@ -139,12 +139,9 @@ public:
 class TriangleSubdivider_1Edge : public TriangleSubdivider
 {
 public:
-    TriangleSubdivider_1Edge(TriangleToSplit* _triangleToSplit, EdgeID localEdgeId)
+    TriangleSubdivider_1Edge(TriangleToSplit* _triangleToSplit)
         : TriangleSubdivider(_triangleToSplit)
-        , m_localEdgeId(localEdgeId)
     {}
-
-    EdgeID m_localEdgeId;
 
     bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
     {
@@ -155,14 +152,29 @@ public:
         }
 
         const PointToAdd* PTA = m_triangleToSplit->m_points[0];
+        EdgeID localEdgeId = InvalidID;
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            if (m_triangleToSplit->m_triangle[i] != PTA->m_ancestors[0] && m_triangleToSplit->m_triangle[i] != PTA->m_ancestors[1])
+            {
+                localEdgeId = i;
+                break;
+            }
+        }
+
+        if (localEdgeId == InvalidID)
+        {
+            msg_error("TriangleSubdivider_1Node") << "Point to add is not part of one of the edge of this triangle: " << m_triangleToSplit->m_triangleId;
+            return false;
+        }
 
         type::vector<TriangleID> ancestors;
         ancestors.push_back(m_triangleToSplit->m_triangleId);
         type::vector<SReal> coefs;
         coefs.push_back(0.5); // 2 new triangles (need to compute real area proportion)
 
-        Triangle newTri0 = Triangle(m_triangleToSplit->m_triangle[(m_localEdgeId + 1) % 3], PTA->m_idPoint, m_triangleToSplit->m_triangle[m_localEdgeId]);
-        Triangle newTri1 = Triangle(PTA->m_idPoint, m_triangleToSplit->m_triangle[(m_localEdgeId + 2) % 3], m_triangleToSplit->m_triangle[m_localEdgeId]);
+        Triangle newTri0 = Triangle(m_triangleToSplit->m_triangle[(localEdgeId + 1) % 3], PTA->m_idPoint, m_triangleToSplit->m_triangle[localEdgeId]);
+        Triangle newTri1 = Triangle(PTA->m_idPoint, m_triangleToSplit->m_triangle[(localEdgeId + 2) % 3], m_triangleToSplit->m_triangle[localEdgeId]);
         
         auto TTA0 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + 1, newTri0, ancestors, coefs);
         auto TTA1 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + 2, newTri1, ancestors, coefs);
@@ -179,21 +191,9 @@ public:
 class TriangleSubdivider_2Edge : public TriangleSubdivider
 {
 public:
-    TriangleSubdivider_2Edge(TriangleToSplit* _triangleToSplit, EdgeID localEdgeId0, EdgeID localEdgeId1)
+    TriangleSubdivider_2Edge(TriangleToSplit* _triangleToSplit) 
         : TriangleSubdivider(_triangleToSplit) 
-    {
-        if (localEdgeId0 < localEdgeId1)
-        {
-            m_localEdgeId0 = localEdgeId0;
-            m_localEdgeId1 = localEdgeId1;
-        }
-        else
-        {
-            m_localEdgeId0 = localEdgeId1;
-            m_localEdgeId1 = localEdgeId0;
-        }
-    }
-
+    {}
 
     bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
     {
@@ -310,15 +310,15 @@ public:
         return true;
     }
 
-    EdgeID m_localEdgeId0;
-    EdgeID m_localEdgeId1;
 };
 
 
 class TriangleSubdivider_3Edge : public TriangleSubdivider
 {
 public:
-    TriangleSubdivider_3Edge(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit) {}
+    TriangleSubdivider_3Edge(TriangleToSplit* _triangleToSplit) 
+        : TriangleSubdivider(_triangleToSplit) 
+    {}
 
     bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
     {
@@ -377,7 +377,9 @@ public:
 class TriangleSubdivider_2Node : public TriangleSubdivider
 {
 public:
-    TriangleSubdivider_2Node(TriangleToSplit* _triangleToSplit) : TriangleSubdivider(_triangleToSplit) {}
+    TriangleSubdivider_2Node(TriangleToSplit* _triangleToSplit) 
+        : TriangleSubdivider(_triangleToSplit) 
+    {}
 
     bool subdivide(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& ptC) override
     {
