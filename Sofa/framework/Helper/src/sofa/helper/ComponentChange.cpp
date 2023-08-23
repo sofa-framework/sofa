@@ -26,6 +26,7 @@ namespace sofa::helper::lifecycle
 {
 
 const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
+    {"MatrixMass", Deprecated("v19.06", "v19.12")},
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
@@ -33,6 +34,23 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
+    // SofaDistanceGrid was pluginized in #389
+    {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"RayDistanceGridContact", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"DistanceGridForceField", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"RigidDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
+
+    // SofaImplicitField was pluginized in #389
+    {"ImplicitSurfaceContainer", Pluginized("v17.12", "SofaImplicitField")},
+    {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
+    {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
+    {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
+
+    // SofaHaptics was pluginized in #945
+    {"NullForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+    {"LCPForceFeedback", Pluginized("v19.06", "SofaHaptics")},
+
     // SofaValidation was pluginized in #1302
     {"CompareState", Pluginized("v20.06", "SofaValidation")},
     {"CompareTopology", Pluginized("v20.06", "SofaValidation")},
@@ -45,11 +63,11 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"EvalSurfaceDistance", Pluginized("v20.06", "SofaValidation")},
     {"ExtraMonitor", Pluginized("v20.06", "SofaValidation")},
     {"Monitor", Pluginized("v20.06", "SofaValidation")},
-        
+
     // SofaGraphComponent was pluginized in #1531
     { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
     { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
-    
+
     // SofaUserInteraction was pluginized in #1588
     { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
 
@@ -89,11 +107,12 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     /***********************/
     // REMOVED SINCE v21.06
 
+    {"LennardJonesForceField", Removed("v17.12", "v21.06")},
     {"LengthContainer", Removed("v21.06", "v21.06")},
     {"PoissonContainer", Removed("v21.06", "v21.06")},
     {"RadiusContainer", Removed("v21.06", "v21.06")},
     {"StiffnessContainer", Removed("v21.06", "v21.06")},
-        
+
     /***********************/
     // REMOVED SINCE v20.12
 
@@ -104,7 +123,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    
+
     /***********************/
     // REMOVED SINCE v20.06
 
@@ -168,6 +187,39 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"TTriangleModel", Removed("v19.12", "v20.06")},
 
     /***********************/
+    // REMOVED SINCE v18.12
+
+    // SofaBoundaryCondition
+    {"BuoyantForceField", Removed("v17.12", "v18.12")},
+    {"VaccumSphereForceField", Removed("v17.12", "v18.12")},
+
+    // SofaMiscForceField
+    {"ForceMaskOff", Removed("v17.12", "v18.12")},
+    {"LineBendingSprings", Removed("v17.12", "v18.12")},
+    {"WashingMachineForceField", Removed("v17.12", "v18.12")},
+
+    // SofaMiscMapping
+    {"CatmullRomSplineMapping", Removed("v17.12", "v18.12")},
+    {"CenterPointMechanicalMapping", Removed("v17.12", "v18.12")},
+    {"CurveMapping", Removed("v17.12", "v18.12")},
+    {"ExternalInterpolationMapping", Removed("v17.12", "v18.12")},
+    {"ProjectionToLineMapping", Removed("v17.12", "v18.12")},
+    {"ProjectionToPlaneMapping", Removed("v17.12", "v18.12")},
+
+    // SofaMisc
+    {"ParallelCGLinearSolver", Removed("v17.12", "v18.12")},
+
+    // SofaUserInteraction
+    {"ArticulatedHierarchyBVHController", Removed("v17.12", "v18.12")},
+    {"ArticulatedHierarchyController", Removed("v17.12", "v18.12")},
+    {"DisabledContact", Removed("v17.12", "v18.12")},
+    {"EdgeSetController", Removed("v17.12", "v18.12")},
+    {"GraspingManager", Removed("v17.12", "v18.12")},
+    {"InterpolationController", Removed("v17.12", "v18.12")},
+    {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
+    {"NodeToggleController", Removed("v17.12", "v18.12")},
+
+    /***********************/
     // MOVED SINCE v21.06
     { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
 
@@ -178,7 +230,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 
     // MOVED SINCE v22.06
     { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
-    
+
     // SofaMiscSolver was deprecated in #2571
     { "DampVelocitySolver", Moved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
     { "NewmarkImplicitSolver", Moved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Backward") },
@@ -246,7 +298,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "StatsSetting", Moved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
     { "ViewerSetting", Moved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
     { "APIVersion", Moved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
-    
+
     // SofaBaseTopology was deprecated in #2612
     { "EdgeSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
     { "EdgeSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
@@ -418,7 +470,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 
     // SofaDenseSolver was deprecated in #2717
     { "SVDLinearSolver", Moved("v22.06", "SofaDenseSolver", "Sofa.Component.LinearSolver.Direct") },
-        
+
     // SofaPreconditioner was deprecated in #2717
     { "ShewchukPCGLinearSolver", Moved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Iterative") },
     { "JacobiPreconditioner", Moved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
@@ -435,7 +487,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "SubsetMapping", Moved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
     { "MechanicalObject", Moved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
     { "MappedObject", Moved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
-    
+
     // SofaMiscForceField was deprecated in #2752 and ...
     { "MeshMatrixMass", Moved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
     { "GearSpringForceField", Moved("v22.06", "SofaMiscForceField", "Sofa.Component.SolidMechanics.Spring") },
@@ -453,7 +505,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "ArticulationCenter", Moved("v22.06", "Movedgid", "ArticulatedSystemPlugin") },
     { "Articulation", Moved("v22.06", "Movedgid", "ArticulatedSystemPlugin") },
     { "ArticulatedSystemMapping", Moved("v22.06", "Movedgid", "ArticulatedSystemPlugin") },
-    
+
     // SofaMiscMapping was deprecated in #2635
     { "BeamLinearMapping", Moved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
     { "CenterOfMassMapping", Moved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
@@ -697,7 +749,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "Distances", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Analyze") },
     { "DisplacementMatrixEngine", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
     { "ProjectiveTransformEngine", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
-    
+
     // SofaMiscExtra was deprecated in #2917
     { "MeshTetraStuffing", Moved("v22.06", "SofaMiscExtra", "Sofa.Component.Engine.Generate") },
 
