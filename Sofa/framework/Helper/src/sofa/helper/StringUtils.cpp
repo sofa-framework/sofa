@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <cstring>
 #include <sofa/helper/StringUtils.h>
+#include <algorithm>
 
 namespace sofa
 {
