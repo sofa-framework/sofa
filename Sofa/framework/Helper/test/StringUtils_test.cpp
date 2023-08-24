@@ -54,7 +54,7 @@ TEST(removeTrailingCharacterTest, multipleTrailingCharacters)
 TEST(removeTrailingCharactersTest, emptyString)
 {
     constexpr std::string_view input = "";
-    constexpr std::initializer_list<char> characters = {' ', '\t'};
+    const std::initializer_list<char> characters = {' ', '\t'};
     const std::string_view result = sofa::helper::removeTrailingCharacters(input, characters);
     EXPECT_EQ(result, "");
 }
@@ -62,7 +62,7 @@ TEST(removeTrailingCharactersTest, emptyString)
 TEST(removeTrailingCharactersTest, noTrailingCharacters)
 {
     constexpr std::string_view input = "Hello";
-    constexpr std::initializer_list<char> characters = {'o', 'x'};
+    const std::initializer_list<char> characters = {'o', 'x'};
     const std::string_view result = sofa::helper::removeTrailingCharacters(input, characters);
     EXPECT_EQ(result, "Hell");
 }
@@ -70,7 +70,7 @@ TEST(removeTrailingCharactersTest, noTrailingCharacters)
 TEST(removeTrailingCharactersTest, singleTrailingCharacter)
 {
     std::string_view input = "Hello!";
-    constexpr std::initializer_list<char> characters = {'!'};
+    const std::initializer_list<char> characters = {'!'};
     const std::string_view result = sofa::helper::removeTrailingCharacters(input, characters);
     EXPECT_EQ(result, "Hello");
 }
@@ -78,7 +78,7 @@ TEST(removeTrailingCharactersTest, singleTrailingCharacter)
 TEST(removeTrailingCharactersTest, multipleTrailingCharacters)
 {
     constexpr std::string_view input = "Hello...";
-    constexpr std::initializer_list<char> characters = {'.'};
+    const std::initializer_list<char> characters = {'.'};
     const std::string_view result = sofa::helper::removeTrailingCharacters(input, characters);
     EXPECT_EQ(result, "Hello");
 }
@@ -86,7 +86,7 @@ TEST(removeTrailingCharactersTest, multipleTrailingCharacters)
 TEST(removeTrailingCharactersTest, mixOfCharacters)
 {
     constexpr std::string_view input = "Hello!!!\t";
-    constexpr std::initializer_list<char> characters = {'!', '\t'};
+    const std::initializer_list<char> characters = {'!', '\t'};
     const std::string_view result = sofa::helper::removeTrailingCharacters(input, characters);
     EXPECT_EQ(result, "Hello");
 }
