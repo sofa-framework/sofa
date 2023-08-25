@@ -445,24 +445,17 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(PointID ind_p,
 
     if(ind_p == indices[0])
     {
-        p[0]= (Real) c2[0];
-        p[1]= (Real) c2[1];
-        p[2]= (Real) c2[2];
+        p = { c2[0], c2[1], c2[2] };
+    }
+    else if (ind_p == indices[1])
+    {
+        p = { c1[0], c1[1], c1[2] };
     }
     else
     {
-        if(ind_p == indices[1])
-        {
-            p[0]= (Real) c1[0];
-            p[1]= (Real) c1[1];
-            p[2]= (Real) c1[2];
-        }
-        else
-        {
-            p[0]= (Real) ((1.0-coord_p)*c1[0] + coord_p*c2[0]);
-            p[1]= (Real) ((1.0-coord_p)*c1[1] + coord_p*c2[1]);
-            p[2]= (Real) ((1.0-coord_p)*c1[2] + coord_p*c2[2]);
-        }
+        p[0]= (Real) ((1.0-coord_p)*c1[0] + coord_p*c2[0]);
+        p[1]= (Real) ((1.0-coord_p)*c1[1] + coord_p*c2[1]);
+        p[2]= (Real) ((1.0-coord_p)*c1[2] + coord_p*c2[2]);
     }
 
     return p;
@@ -1097,8 +1090,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     point_p[1]= (Real) c_p[1];
     point_p[2]= (Real) c_p[2];
 
-    sofa::type::Vec<3,Real> point_from=(sofa::type::Vec<3,Real>) getOppositePoint(ind_p, indices_from, coord_from);
-    sofa::type::Vec<3,Real> point_to=(sofa::type::Vec<3,Real>) getOppositePoint(ind_p, indices_to, coord_to);
+    sofa::type::Vec<3, Real> point_from = getOppositePoint(ind_p, indices_from, coord_from);
+    sofa::type::Vec<3, Real> point_to = getOppositePoint(ind_p, indices_to, coord_to);
 
     //Vec<3,Real> point_from=(Vec<3,Real>) computeBaryEdgePoint((sofa::type::vector< TriangleID>&) indices_from, coord_from);
     //Vec<3,Real> point_to=(Vec<3,Real>) computeBaryEdgePoint((sofa::type::vector< TriangleID>&) indices_to, coord_to);
