@@ -1972,13 +1972,13 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(c
     {
         sofa::type::vector<EdgeID> intersectedEdges;
         sofa::type::vector<Real> baryCoefs;        
-        std::cout << "computeSegmentTriangleIntersectionInPlane: " << current_triID << " -> " << current_point << std::endl;
+        
         bool is_intersected = computeSegmentTriangleIntersectionInPlane(current_point, b, current_triID, intersectedEdges, baryCoefs);
 
         // no intersection or more than 2 edges intersected should not happened
         if (!is_intersected || intersectedEdges.size() > 2)
         {
-            msg_warning() << "This should not happened!";
+            msg_warning() << "Error in computeSegmentTriangleIntersectionInPlane for triangle: " << current_triID << " | is_intersected is " << is_intersected << " and intersectedEdges.size() : " << intersectedEdges.size();
             break;
         }
 
@@ -2021,8 +2021,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(c
         sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
         sofa::type::Vec<3, Real> p1 = { c1[0], c1[1], c1[2] };
 
-        // update pA with the intersection point on the new edge
-        current_point = p0 + (p1 - p0) * current_bary;
+        // update pA with the intersection point on the new edge 
+        sofa::type::Vec<3, Real> newIntersection = p0 * current_bary + p1 * (1.0 - current_bary) ;
+        current_point = current_point + (newIntersection - current_point) * 0.8; // add a small threshold to the current point projection
 
         // search for next triangle to be intersected
         sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(current_edgeID);
