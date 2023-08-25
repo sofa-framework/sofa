@@ -1946,14 +1946,13 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
 
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(const PointID last_point,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
     const sofa::type::Vec<3, Real>& a,
     const sofa::type::Vec<3, Real>& b,
-    TriangleID& ind_ta, TriangleID& ind_tb,
+    const TriangleID ind_ta, const TriangleID ind_tb,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
-    sofa::type::vector< Real >& coords_list,
-    bool& is_on_boundary) const
+    sofa::type::vector< Real >& coords_list) const
 {   
     sofa::type::Vec<3, Real> current_point = a;
     TriangleID current_triID = ind_ta;
@@ -2382,7 +2381,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     
     bool is_on_boundary = false;
     // using old function:
-    bool pathOK = this->computeIntersectedPointsList2(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
+    bool pathOK = this->computeIntersectedPointsList(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
 
     msg_info() << "*********************************" << msgendl
                 << "* computeIntersectedObjectsList *" << msgendl
