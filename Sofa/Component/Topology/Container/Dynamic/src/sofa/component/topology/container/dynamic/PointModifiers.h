@@ -53,6 +53,8 @@ public:
     PointID m_idPoint = sofa::InvalidID;
     /// Future pointID of this pointToAdd if this point is duplicated due to a cut
     PointID m_idClone = sofa::InvalidID;
+
+    sofa::geometry::ElementType m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
     
     /// List of ancestors (existing point ID of the mesh)
     sofa::type::vector<PointID> m_ancestors;

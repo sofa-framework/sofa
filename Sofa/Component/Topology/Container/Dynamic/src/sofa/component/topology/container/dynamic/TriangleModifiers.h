@@ -50,6 +50,9 @@ public:
     sofa::core::topology::BaseMeshTopology::Triangle m_triangle;
     type::vector<TriangleID> m_ancestors;
     type::vector<SReal> m_coefs;
+
+    sofa::type::fixed_array<sofa::type::Vec3, 3> m_triCoords;
+    bool isUp = false;
 };
 
 
@@ -145,6 +148,7 @@ public:
             coefs.push_back(areaNewTri / areaFull);
 
             auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTri, ancestors, coefs);
+            TTA->m_triCoords = { triCoords[i] , triCoords[(i + 1) % 3] , pG };
             m_trianglesToAdd.push_back(TTA);
         }
 
@@ -200,6 +204,8 @@ public:
 
         auto TTA0 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId, newTri0, ancestors, coefsTri0);
         auto TTA1 = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + 1, newTri1, ancestors, coefsTri1);
+        TTA0->m_triCoords = { triCoords[(localEdgeId + 1) % 3] , pG , triCoords[localEdgeId] };
+        TTA1->m_triCoords = { pG , triCoords[(localEdgeId + 2) % 3] , triCoords[localEdgeId] };
 
         m_trianglesToAdd.push_back(TTA0);
         m_trianglesToAdd.push_back(TTA1);
@@ -287,7 +293,6 @@ public:
         
         sofa::type::fixed_array<Triangle, 3> newTris;
         sofa::type::fixed_array<SReal, 3> newAreas;
-
         if (directOriented) 
         {
             newTris[0] = Triangle(communID, PTA1->m_idPoint, PTA0->m_idPoint); // top triangle
@@ -307,6 +312,9 @@ public:
 
         SReal areaFull = geometry::Triangle::area(triCoords[0], triCoords[1], triCoords[2]);
         newAreas[0] = geometry::Triangle::area(triCoords[communLocalID], p1, p0);
+        
+        sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Vec3, 3>, 3> allTriCoords;
+        allTriCoords[0] = { triCoords[communLocalID], p1, p0 };
 
         if (diag0 < diag1)
         {
@@ -314,6 +322,8 @@ public:
             newTris[2] = Triangle(baseQuadriID[2], baseQuadriID[3], baseQuadriID[0]);
             newAreas[1] = geometry::Triangle::area(quadPoints[0], quadPoints[1], quadPoints[2]);
             newAreas[2] = geometry::Triangle::area(quadPoints[2], quadPoints[3], quadPoints[0]);
+            allTriCoords[1] = { quadPoints[0], quadPoints[1], quadPoints[2] };
+            allTriCoords[2] = { quadPoints[2], quadPoints[3], quadPoints[0] };
         }
         else
         {
@@ -321,6 +331,8 @@ public:
             newTris[2] = Triangle(baseQuadriID[1], baseQuadriID[2], baseQuadriID[3]);
             newAreas[1] = geometry::Triangle::area(quadPoints[0], quadPoints[1], quadPoints[3]);
             newAreas[2] = geometry::Triangle::area(quadPoints[1], quadPoints[2], quadPoints[3]);
+            allTriCoords[1] = { quadPoints[0], quadPoints[1], quadPoints[3] };
+            allTriCoords[2] = { quadPoints[1], quadPoints[2], quadPoints[3] };
         }
 
         type::vector<TriangleID> ancestors;
@@ -330,6 +342,7 @@ public:
             type::vector<SReal> coefs;
             coefs.push_back(newAreas[i] / areaFull);
             auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTris[i], ancestors, coefs);
+            TTA->m_triCoords = allTriCoords[i];
             m_trianglesToAdd.push_back(TTA);
         }
 
@@ -350,7 +363,7 @@ public:
     {
         if (m_triangleToSplit->m_points.size() != 3)
         {
-            msg_error("TriangleSubdivider_3Node") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
+            msg_error("TriangleSubdivider_3Edge") << "There are no 2 points to add to subdivide triangle id: " << m_triangleToSplit->m_triangleId;
             return false;
         }
 
@@ -384,6 +397,7 @@ public:
 
         sofa::type::fixed_array<Triangle, 4> newTris;
         sofa::type::fixed_array<SReal, 4> newAreas;
+        sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Vec3, 3>, 4> allTriCoords;
         newTris[0] = Triangle(newIDs[1], newIDs[0], m_triangleToSplit->m_triangle[2]);
         newTris[1] = Triangle(newIDs[2], newIDs[1], m_triangleToSplit->m_triangle[0]);
         newTris[2] = Triangle(newIDs[0], newIDs[2], m_triangleToSplit->m_triangle[1]);
@@ -394,6 +408,10 @@ public:
         newAreas[1] = geometry::Triangle::area(newPoints[2], newPoints[1], triCoords[0]);
         newAreas[2] = geometry::Triangle::area(newPoints[0], newPoints[2], triCoords[1]);
         newAreas[3] = geometry::Triangle::area(newPoints[0], newPoints[1], newPoints[2]);
+        allTriCoords[0] = { newPoints[1], newPoints[0], triCoords[2] };
+        allTriCoords[1] = { newPoints[2], newPoints[1], triCoords[0] };
+        allTriCoords[2] = { newPoints[0], newPoints[2], triCoords[1] };
+        allTriCoords[3] = { newPoints[0], newPoints[1], newPoints[2] };
 
         type::vector<TriangleID> ancestors;
         ancestors.push_back(m_triangleToSplit->m_triangleId);
@@ -402,6 +420,8 @@ public:
             type::vector<SReal> coefs;
             coefs.push_back(newAreas[i] / areaFull);
             auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTris[i], ancestors, coefs);
+            TTA->m_triCoords = allTriCoords[i];
+
             m_trianglesToAdd.push_back(TTA);
         }
 
@@ -467,6 +487,7 @@ public:
 
         sofa::type::fixed_array<Triangle, 4> newTris;
         sofa::type::fixed_array<SReal, 4> newAreas;
+        sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Vec3, 3>, 4> allTriCoords;
         newTris[0] = Triangle(m_triangleToSplit->m_triangle[localEdgeId], m_triangleToSplit->m_triangle[(localEdgeId + 1) % 3], ptInTriId);
         newTris[1] = Triangle(m_triangleToSplit->m_triangle[(localEdgeId + 2) % 3], m_triangleToSplit->m_triangle[localEdgeId], ptInTriId);
         newTris[2] = Triangle(m_triangleToSplit->m_triangle[(localEdgeId + 1) % 3], ptOnEdgeId, ptInTriId);
@@ -477,6 +498,10 @@ public:
         newAreas[1] = geometry::Triangle::area(triCoords[(localEdgeId + 2) % 3], triCoords[localEdgeId], ptInTri);
         newAreas[2] = geometry::Triangle::area(triCoords[(localEdgeId + 1) % 3], ptOnEdge, ptInTri);
         newAreas[3] = geometry::Triangle::area(ptOnEdge, triCoords[(localEdgeId + 2) % 3], ptInTri);
+        allTriCoords[0] = { triCoords[localEdgeId], triCoords[(localEdgeId + 1) % 3], ptInTri };
+        allTriCoords[1] = { triCoords[(localEdgeId + 2) % 3], triCoords[localEdgeId], ptInTri };
+        allTriCoords[2] = { triCoords[(localEdgeId + 1) % 3], ptOnEdge, ptInTri };
+        allTriCoords[3] = { ptOnEdge, triCoords[(localEdgeId + 2) % 3], ptInTri };
 
         type::vector<TriangleID> ancestors;
         ancestors.push_back(m_triangleToSplit->m_triangleId);
@@ -485,6 +510,8 @@ public:
             type::vector<SReal> coefs;
             coefs.push_back(newAreas[i] / areaFull);
             auto TTA = new TriangleToAdd(1000000 * m_triangleToSplit->m_triangleId + i, newTris[i], ancestors, coefs);
+            TTA->m_triCoords = allTriCoords[i];
+
             m_trianglesToAdd.push_back(TTA);
         }
 
