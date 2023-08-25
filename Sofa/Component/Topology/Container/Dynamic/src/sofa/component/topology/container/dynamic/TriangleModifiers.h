@@ -306,7 +306,7 @@ public:
         auto diag1 = (quadPoints[1] - quadPoints[3]).norm2();
 
         SReal areaFull = geometry::Triangle::area(triCoords[0], triCoords[1], triCoords[2]);
-        newAreas[0] = geometry::Triangle::area(triCoords[0], p1, p0);
+        newAreas[0] = geometry::Triangle::area(triCoords[communLocalID], p1, p0);
 
         if (diag0 < diag1)
         {
