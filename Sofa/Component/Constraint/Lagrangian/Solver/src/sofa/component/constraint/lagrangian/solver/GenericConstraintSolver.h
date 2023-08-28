@@ -37,7 +37,6 @@ namespace sofa::component::constraint::lagrangian::solver
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
 {
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 public:

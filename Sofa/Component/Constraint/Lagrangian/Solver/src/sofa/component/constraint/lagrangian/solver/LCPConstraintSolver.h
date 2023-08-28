@@ -52,7 +52,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintSolver : publ
 public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
