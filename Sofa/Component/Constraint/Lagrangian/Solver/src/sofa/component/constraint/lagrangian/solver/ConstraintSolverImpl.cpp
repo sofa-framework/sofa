@@ -83,6 +83,11 @@ void ConstraintSolverImpl::cleanup()
     ConstraintSolver::cleanup();
 }
 
+void ConstraintSolverImpl::removeConstraintCorrection(core::behavior::BaseConstraintCorrection* s)
+{
+    l_constraintCorrections.remove(s);
+}
+
 void ConstraintSolverImpl::postBuildSystem(const core::ConstraintParams* cParams)
 {
     sofa::simulation::BuildConstraintSystemEndEvent evBegin;
