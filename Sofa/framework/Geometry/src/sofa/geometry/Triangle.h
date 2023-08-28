@@ -73,12 +73,12 @@ struct Triangle
 
 
     /**
-    * @brief	Compute the barycentric coefficients of input point on Edge (n0, n1)
+    * @brief	Compute the barycentric coefficients of the input point according to the Triangle vertices: (n0, n1, n2)
     * @tparam   Node iterable container
     * @tparam   T scalar
-    * @param	point: position of the point to compute the coefficients
-    * @param	n0,n1: nodes of the edge
-    * @return	sofa::type::Vec<2, T> barycentric coefficients
+    * @param	p0: position of the input point to compute the coefficients
+    * @param	n0, n1, n2: nodes of the triangle
+    * @return	sofa::type::Vec<3, T> barycentric coefficients 
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
@@ -149,12 +149,13 @@ struct Triangle
 
 
     /**
-    * @brief	Test if a point is on Edge (n0, n1)
+    * @brief	Test if input point is inside Triangle (n0, n1, n2)
     * @tparam   Node iterable container
     * @tparam   T scalar
     * @param	p0: position of the point to test
-    * @param	n0,n1: nodes of the edge
-    * @return	bool result if point is on Edge.
+    * @param	n0, n1, n2: nodes of the triangle
+    * @param	output parameter: sofa::type::Vec<3, T> barycentric coefficients of the input point in Triangle
+    * @return	bool result if point is inside Triangle.
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
