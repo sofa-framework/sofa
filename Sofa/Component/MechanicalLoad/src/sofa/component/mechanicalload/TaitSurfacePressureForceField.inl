@@ -29,6 +29,8 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <vector>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
 
 namespace sofa::component::mechanicalload
 {
@@ -392,6 +394,64 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
             /*mwriter.add(t[0], t[0], mbc);*/ mwriter.add(t[0], t[1], mca); mwriter.add(t[0], t[2], mab);
             mwriter.add(t[1], t[0], mbc); /*mwriter.add(t[1], t[1], mca);*/ mwriter.add(t[1], t[2], mab);
             mwriter.add(t[2], t[0], mbc); mwriter.add(t[2], t[1], mca); /*mwriter.add(t[2],t[2], mab); */
+        }
+    }
+}
+
+template <class DataTypes>
+void TaitSurfacePressureForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    const auto mstateSize = this->mstate->getSize();
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate.get())
+                       .withRespectToPositionsIn(this->mstate.get());
+
+    const Real currentPressure = m_currentPressure.getValue();
+    const Real currentStiffness = m_currentStiffness.getValue();
+
+    // First compute df = dP*N
+    if (currentStiffness != 0)
+    {
+        for (unsigned int i = 0; i < mstateSize; i++)
+        {
+            Deriv di = gradV[i] * currentStiffness;
+            for (unsigned int j = 0; j < mstateSize; j++)
+            {
+                Deriv dj = gradV[j];
+                MatBloc m = type::dyad(di,dj);
+                dfdx(i * Deriv::total_size, j * Deriv::total_size) += m;
+            }
+        }
+    }
+
+    helper::ReadAccessor<Data<VecCoord> > x = this->mstate->readPositions();
+
+    // Then compute df = P*dN
+    if (currentPressure != 0)
+    {
+        const Real dfscale2 = currentPressure / 6;
+        for (unsigned int i = 0; i < pressureTriangles.size(); i++)
+        {
+            Triangle t = pressureTriangles[i];
+            MatBloc mbc, mca, mab;
+            mbc = matCross((x[t[2]] - x[t[1]]) * dfscale2);
+            mca = matCross((x[t[0]] - x[t[2]]) * dfscale2);
+            mab = matCross((x[t[1]] - x[t[0]]) * dfscale2);
+
+            // Full derivative matrix of triangle (ABC):
+            // K(A,A) = mbc   K(A,B) = mca   K(A,C) = mab
+            // K(B,A) = mbc   K(B,B) = mca   K(B,C) = mab
+            // K(C,A) = mbc   K(C,B) = mca   K(C,C) = mab
+
+            // -> the diagonal contributions become zero for closed meshes
+
+            dfdx(t[0] * Deriv::total_size, t[1] * Deriv::total_size) += mca;
+            dfdx(t[0] * Deriv::total_size, t[2] * Deriv::total_size) += mab;
+            dfdx(t[1] * Deriv::total_size, t[0] * Deriv::total_size) += mbc;
+            dfdx(t[1] * Deriv::total_size, t[2] * Deriv::total_size) += mab;
+            dfdx(t[2] * Deriv::total_size, t[0] * Deriv::total_size) += mbc;
+            dfdx(t[2] * Deriv::total_size, t[1] * Deriv::total_size) += mca;
         }
     }
 }
