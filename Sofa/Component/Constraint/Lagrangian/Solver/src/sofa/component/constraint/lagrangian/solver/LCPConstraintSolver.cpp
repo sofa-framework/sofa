@@ -269,7 +269,7 @@ LCPConstraintSolver::~LCPConstraintSolver()
 
 void LCPConstraintSolver::init()
 {
-    core::behavior::ConstraintSolver::init();
+    ConstraintSolverImpl::init();
 
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())

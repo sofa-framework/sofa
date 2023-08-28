@@ -133,7 +133,7 @@ GenericConstraintSolver::~GenericConstraintSolver()
 
 void GenericConstraintSolver::init()
 {
-    core::behavior::ConstraintSolver::init();
+    ConstraintSolverImpl::init();
 
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
@@ -147,7 +147,9 @@ void GenericConstraintSolver::init()
     constraintCorrectionIsActive.resize(constraintCorrections.size());
     for (auto* constraintCorrection : constraintCorrections)
         constraintCorrection->addConstraintSolver(this);
+
     context = getContext();
+
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
