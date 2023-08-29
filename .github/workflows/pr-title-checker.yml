@@ -1,0 +1,48 @@
+name: Pull Request Title Check
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+
+jobs:
+  check_title:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Pull Request Title
+      id: title_check
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const title = context.payload.pull_request.title;
+          const prNumber = context.payload.pull_request.number;
+
+          const prefixPattern = /\[.*\]/;
+          const endPattern = /\.$/;
+
+          valid = true;
+          commentExplain = "";
+
+          // Check if the PR does starts with a prefix []
+          if (!prefixPattern.test(title)) {
+            core.setFailed('Pull request title should provide a prefix scope, e.g. [MechanicalLoad]');
+            commentExplain = commentExplain + "- PR title should provide a prefix scope, e.g. [MechanicalLoad]<br>"
+            valid = false;
+          }
+
+          // Check if a "." is closing the title
+          if (endPattern.test(title)) {
+            core.setFailed('Pull request title should not end with a "."');
+            commentExplain = commentExplain + "- PR title should not end with a '.'<br>"
+            valid = false;
+          }
+
+          // Add comment in the PR to warn the author
+          if (!valid) {
+            const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR title is not following the required format :pencil2:<br>'+commentExplain+':warning: :warning: :warning:';
+            github.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
