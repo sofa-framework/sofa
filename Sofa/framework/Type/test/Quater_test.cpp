@@ -73,6 +73,22 @@ TEST(QuaterTest, EulerAngles)
     }
 }
 
+// The test QuaterTest::EulerAngles relies on a RNG. This test is the same but with specific values
+// that were problematic in the other test.
+TEST(QuaterTest, EulerAnglesProblematicCase)
+{
+    Quat<double> q0(77 / 100.f - 1.f, 156 / 100.f - 1.f, 123 / 100.f - 1.f, 156 / 100.f - 1.f);
+    q0.normalize();
+
+    const Quat<double> q1 = Quat<double>::createQuaterFromEuler(q0.toEulerVector());
+
+    constexpr sofa::type::Vec<3, double> p(21 / 100.f + 1.f, (37 / 100.f) + 1.f, 56 / 100.f + 1.f);
+    const sofa::type::Vec<3,double> p0 = q0.rotate(p);
+    const sofa::type::Vec<3,double> p1 = q1.rotate(p);
+
+    EXPECT_EQ(p0, p1);
+}
+
 /* Following unit test results have been checked with Matlab 2016a.
  * Note: ambiguous result with rotate and invrotate.
  */
