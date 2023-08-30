@@ -174,7 +174,7 @@ protected:
      * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
      * sense of mappings)
      */
-    MappingJacobians<JacobianMatrixType> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams);
+    MappingJacobians<JacobianMatrixType> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, LocalMappedMatrixType<Real>* crs);
 
     /**
      * Assemble the matrices under mappings into the global matrix
@@ -218,6 +218,9 @@ protected:
 
     void buildGroupsOfComponentAssociatedToMechanicalStates(
         std::map< PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups);
+
+    /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
+    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs);
 };
 
 template<Contribution c, class Real>
