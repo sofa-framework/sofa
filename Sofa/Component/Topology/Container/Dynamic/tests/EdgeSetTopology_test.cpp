@@ -238,7 +238,7 @@ bool EdgeSetTopology_test::testRemovingVertices()
 
     // Check edge around point to be removed
     sofa::type::vector< EdgeID > vIds = { 0, 1, 2 };
-    const EdgesAroundVertex& edgeAVertex = m_topoCon->getEdgesAroundVertex(0);
+    //const EdgesAroundVertex& edgeAVertex = m_topoCon->getEdgesAroundVertex(0);
 
     edgeModifier->removePoints(vIds);
 
