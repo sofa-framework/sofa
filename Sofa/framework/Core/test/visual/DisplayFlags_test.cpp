@@ -32,7 +32,7 @@ TEST(DisplayFlags, getAllFlagsLabels)
     const core::visual::DisplayFlags displayFlags;
     const auto labels = displayFlags.getAllFlagsLabels();
 
-    EXPECT_EQ(labels.size(), 38);
+    EXPECT_EQ(labels.size(), 40);
 
     const sofa::type::vector<std::string> expectedLabels
     { "showRoot", "hideRoot", "showAll", "hideAll", "showVisual", "hideVisual", "showVisualModels", "hideVisualModels", "showBehavior", "hideBehavior", "showBehaviorModels", "hideBehaviorModels", "showForceFields", "hideForceFields", "showInteractionForceFields", "hideInteractionForceFields", "showCollision", "hideCollision", "showCollisionModels", "hideCollisionModels", "showBoundingCollisionModels", "hideBoundingCollisionModels", "showDetectionOutputs", "hideDetectionOutputs", "showMapping", "hideMapping", "showMappings", "hideMappings", "showMechanicalMappings", "hideMechanicalMappings", "showOptions", "hideOptions", "showAdvancedRendering", "showRendering", "hideAdvancedRendering", "hideRendering", "showWireframe", "hideWireframe", "showNormals", "hideNormals"}
