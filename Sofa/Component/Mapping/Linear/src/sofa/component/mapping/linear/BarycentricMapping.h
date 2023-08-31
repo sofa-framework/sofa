@@ -86,9 +86,6 @@ public:
     }
 
 protected:
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1764)", "v21.06 (PR#1764)", "Use sofa::linearsolver::EigenSparseMatrix<Mapping::In, Mapping::Out> instead.")
-    typedef void eigen_type;
-
     BarycentricMapping(core::State<In>* from, core::State<Out>* to,
                        typename Mapper::SPtr m_mapper);
     BarycentricMapping(core::State<In>* from=nullptr, core::State<Out>* to=nullptr,

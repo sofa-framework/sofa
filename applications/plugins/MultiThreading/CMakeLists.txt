@@ -33,7 +33,6 @@ set(SOURCE_FILES
     src/MultiThreading/DataExchange.cpp
     src/MultiThreading/MeanComputation.cpp
     src/MultiThreading/component/animationloop/AnimationLoopParallelScheduler.cpp
-    src/MultiThreading/component/animationloop/StepTask.cpp
     src/MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.cpp
     src/MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.cpp
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_mt.cpp

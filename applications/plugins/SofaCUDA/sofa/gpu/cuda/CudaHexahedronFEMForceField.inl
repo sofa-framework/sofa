@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl")
-#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl")

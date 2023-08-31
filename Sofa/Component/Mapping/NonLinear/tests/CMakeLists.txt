@@ -5,7 +5,6 @@ project(Sofa.Component.Mapping.NonLinear_test)
 set(SOURCE_FILES
     DistanceMapping_test.cpp
     RigidMapping_test.cpp
-    RigidRigidMapping_test.cpp
     SquareDistanceMapping_test.cpp
     SquareMapping_test.cpp
 )
