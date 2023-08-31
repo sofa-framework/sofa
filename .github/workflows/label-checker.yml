@@ -60,11 +60,14 @@ jobs:
               'pr: status ready'
             ];
 
-            // Check if any status label is included in the 'labels' array
-            const hasStatusLabel = labels.some(label => statusLabels.includes(label));
+            // Filter the labels array to get only the status labels
+            const matchingStatusLabels = labels.filter(label => statusLabels.includes(label));
+
+            // Count the number of entries in 'matchingLabels'
+            const matchingLabelsCount = matchingStatusLabels.length;
 
             // If no descriptive label is set, add a comment in the PR and make the action check fail
-            if (!hasStatusLabel) {
+            if (matchingLabelsCount === 0) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does not include any status label :label:<br> Make sure to add one (wip, to review or ready).<br>:warning: :warning: :warning:';
               github.issues.createComment({
                 issue_number: prNumber,
@@ -73,7 +76,14 @@ jobs:
                 body: comment
               });
               core.setFailed('Invalid status PR label')
-            }
+            } else if (matchingLabelsCount > 1) {
+              const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes too many status labels :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
+              github.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+            });
 
             // Add all PR labels in log
             console.log('Labels:', labels.join(', '));
