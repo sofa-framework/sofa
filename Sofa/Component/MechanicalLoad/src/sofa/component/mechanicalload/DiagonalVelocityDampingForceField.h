@@ -44,22 +44,15 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    union
-    {
-        /// velocity damping coefficients (by cinematic dof)
-        Data< VecDeriv > d_dampingCoefficients;
+    /// velocity damping coefficients (by cinematic dof)
+    Data< VecDeriv > d_dampingCoefficients;
 
-        SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
-        Data< VecDeriv > dampingCoefficients;
-    };
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
+    Data< VecDeriv > dampingCoefficients;
 
 protected:
 
     DiagonalVelocityDampingForceField();
-    ~DiagonalVelocityDampingForceField()
-    {
-        d_dampingCoefficients.~Data();
-    }
 
 public:
 

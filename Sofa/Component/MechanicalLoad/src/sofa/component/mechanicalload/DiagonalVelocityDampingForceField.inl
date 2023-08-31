@@ -32,6 +32,8 @@ template<class DataTypes>
 DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
     : d_dampingCoefficients(initData(&d_dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
 {
+    //SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
+    dampingCoefficients.setParent(d_dampingCoefficients);
 }
 
 
