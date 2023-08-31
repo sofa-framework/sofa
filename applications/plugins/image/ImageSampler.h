@@ -535,9 +535,9 @@ public:
         transform.setReadOnly(true);
         f_listening.setValue(true);
 
-        helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                                           ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
-                                           );
+        helper::OptionsGroup methodOptions{"0 - Regular sampling (at voxel center(0) or corners (1)) "
+                                          ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
+                                          };
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
 

@@ -53,10 +53,10 @@ void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechan
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    const Coord center = this->center.getValue();
-    const Coord r = this->vradius.getValue();
-    const Real stiffness = this->stiffness.getValue();
-    const Real damping = this->damping.getValue();
+    const Coord center = this->d_center.getValue();
+    const Coord r = this->d_vradius.getValue();
+    const Real stiffness = this->d_stiffness.getValue();
+    const Real damping = this->d_damping.getValue();
     data.ellipsoid.center = center;
     for (int i=0; i<3; ++i)
         data.ellipsoid.inv_r2[i] = 1/(r[i]*r[i]);
@@ -90,10 +90,10 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::Mecha
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    const Coord center = this->center.getValue();
-    const Coord r = this->vradius.getValue();
-    const Real stiffness = this->stiffness.getValue();
-    const Real damping = this->damping.getValue();
+    const Coord center = this->d_center.getValue();
+    const Coord r = this->d_vradius.getValue();
+    const Real stiffness = this->d_stiffness.getValue();
+    const Real damping = this->d_damping.getValue();
     data.ellipsoid.center = center;
     for (int i=0; i<3; ++i)
         data.ellipsoid.inv_r2[i] = 1/(r[i]*r[i]);

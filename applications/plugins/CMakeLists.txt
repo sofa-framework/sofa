@@ -46,11 +46,14 @@ sofa_add_subdirectory(plugin Geomagic Geomagic)
 sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL)
+sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL)
+sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL)
 sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
+sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL)
 
 
-sofa_add_subdirectory(plugin PSL PSL EXPERIMENTAL)
+sofa_add_subdirectory(plugin PSL PSL EXTERNAL)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc

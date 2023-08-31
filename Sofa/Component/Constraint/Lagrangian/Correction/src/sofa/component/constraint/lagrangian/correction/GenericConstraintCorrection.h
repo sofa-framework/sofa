@@ -64,10 +64,10 @@ public:
     Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    core::objectmodel::lifecycle::RemovedData d_linearSolversName {this, "solverName", "replace solverName with an explicit data link named \"linearSolver\" (PR #3152)"};
+    core::objectmodel::lifecycle::RemovedData d_linearSolversName {this, "v22.12", "v23.06", "solverName", "replace solverName with an explicit data link named \"linearSolver\" (PR #3152)"};
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    core::objectmodel::lifecycle::RemovedData d_ODESolverName {this, "ODESolverName", "replace sODESolverName with an explicit data link named \"ODESolver\" (PR #3152)"};
+    core::objectmodel::lifecycle::RemovedData d_ODESolverName {this, "v22.12", "v23.06", "ODESolverName", "replace sODESolverName with an explicit data link named \"ODESolver\" (PR #3152)"};
 
 protected:
     GenericConstraintCorrection();

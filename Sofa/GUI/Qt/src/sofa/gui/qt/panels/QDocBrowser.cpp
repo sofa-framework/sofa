@@ -207,7 +207,11 @@ DocBrowser::DocBrowser(RealGUI* g) : QDialog(g)
 
 void DocBrowser::loadHtml(const std::string& filename)
 {
-    const bool showView = true ;
+    if (filename.empty())
+    {
+        return;
+    }
+
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
@@ -228,6 +232,8 @@ void DocBrowser::loadHtml(const std::string& filename)
         return;
 
     m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
+
+    constexpr bool showView = true ;
     setVisible(showView);
 }
 

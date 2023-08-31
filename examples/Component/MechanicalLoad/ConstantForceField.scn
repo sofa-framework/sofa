@@ -13,9 +13,10 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <!-- Constant force for a deformable -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop computeBoundingBox="false"/>
+    <InteractiveCamera position="1.27 0.48 4.5" orientation="0 0 0 1"  distance="3.86" fieldOfView="45"/>
     
-    <Node name="BasicDeformableObject">
+    <Node name="BasicDeformableObject" >
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
@@ -35,7 +36,7 @@
         <MechanicalObject template="Rigid3" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
-        <ConstantForceField indices="0" forces="0 0.10 0     0 1 0 0" />
+        <ConstantForceField indices="0" forces="0 0.10 0     0 1 0" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" scale="0.3" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="gray" />
