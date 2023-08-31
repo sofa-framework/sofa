@@ -87,12 +87,19 @@ void DilateEngine<DataTypes>::doUpdate()
     const int nbt = triangles.size();
     const int nbq = quads.size();
 
-    if(nbt == 0)
-        msg_warning() << "No input mesh (no triangle)";
-    if(nbq == 0)
-        msg_warning() << "No input mesh (no quad)";
     if(nbp == 0)
-        msg_warning() << "No input position";
+    {
+        msg_error() << "No input position";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if(nbt == 0 && nbq == 0)
+    {
+        msg_error() << "No input mesh (neither triangle or quad)";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     normals.resize(nbp);
 
