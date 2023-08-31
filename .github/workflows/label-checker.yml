@@ -83,7 +83,9 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: comment
-            });
+              });
+              core.setFailed('Invalid status PR label')
+            }
 
             // Add all PR labels in log
             console.log('Labels:', labels.join(', '));
