@@ -75,7 +75,7 @@ jobs:
                 repo: context.repo.repo,
                 body: comment
               });
-              core.setFailed('Invalid status PR label')
+              core.setFailed('Missing status PR label')
             } else if (matchingLabelsCount > 1) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes **too many status labels** :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
               github.issues.createComment({
@@ -84,7 +84,7 @@ jobs:
                 repo: context.repo.repo,
                 body: comment
               });
-              core.setFailed('Invalid status PR label')
+              core.setFailed('Too many status PR labels')
             }
 
             // Add all PR labels in log
