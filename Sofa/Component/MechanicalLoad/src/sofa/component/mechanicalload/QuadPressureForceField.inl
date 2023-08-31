@@ -220,7 +220,7 @@ bool QuadPressureForceField<DataTypes>::isPointInPlane(Coord p)
 }
 
 template <class DataTypes>
-void QuadPressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void QuadPressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* )
 {
     // force does not depend on the position, so the derivative with respect
     // to position is null => stiffness matrix is null

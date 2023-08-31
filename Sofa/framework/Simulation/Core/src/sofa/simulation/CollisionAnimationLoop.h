@@ -55,23 +55,10 @@ public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
+
 protected:
-    CollisionAnimationLoop(simulation::Node* gnode);
-
+    CollisionAnimationLoop();
     ~CollisionAnimationLoop() override;
-
-
-public:
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
 protected:
 
@@ -97,11 +84,6 @@ protected:
     typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
-
-    // the parent Node of CollisionAnimationLoop its self (usually, this parent node is the root node of the simulation graph)
-    // This pointer is initialized one time at the construction, avoiding dynamic_cast<Node*>(context) every time step
-    simulation::Node* gnode;
-    /// @}
 };
 
 } // namespace simulation

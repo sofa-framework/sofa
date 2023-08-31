@@ -277,12 +277,6 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
     {
         sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
-        for (const auto& node : {oneMapping, twoMappings})
-        {
-            core::behavior::LinearSolver* s =
-                node->get<core::behavior::LinearSolver>(node->getTags(), core::objectmodel::BaseContext::SearchDown);
-        }
-
         compareMechanicalObjects(i, 1e-10_sreal);
     }
 }

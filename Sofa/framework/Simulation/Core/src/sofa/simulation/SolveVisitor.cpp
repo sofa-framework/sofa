@@ -26,6 +26,8 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 
 namespace sofa::simulation
 {
@@ -35,6 +37,16 @@ void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::O
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     s->solve(params, dt, x, v);
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
+}
+
+void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
+{
+    SOFA_UNUSED(node);
+
+    const core::MultiVecDerivId ffId = core::VecDerivId::externalForce();
+    core::MechanicalParams mparams;
+    mparams.setDt(dt);
+    forceField->addForce(&mparams, ffId);
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
@@ -50,6 +62,11 @@ Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
             sequentialSolve(node);
         }
         return RESULT_PRUNE;
+    }
+
+    if (m_computeForceIsolatedInteractionForceFields)
+    {
+        for_each(this, node, node->interactionForceField, &SolveVisitor::fwdInteractionForceField);
     }
     return RESULT_CONTINUE;
 }
@@ -82,12 +99,14 @@ SReal SolveVisitor::getDt() const
 }
 
 SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,
-                           sofa::core::MultiVecDerivId V, bool _parallelSolve)
+                           sofa::core::MultiVecDerivId V, bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
+
         : Visitor(params)
         , dt(_dt)
         , x(X)
         , v(V)
         , m_parallelSolve(_parallelSolve)
+        , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
 {
     if (m_parallelSolve)
     {
@@ -95,8 +114,8 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa
     }
 }
 
-SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve)
-: Visitor(params), dt(_dt), m_parallelSolve(_parallelSolve)
+SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
+: Visitor(params), dt(_dt), m_parallelSolve(_parallelSolve), m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
 {
     if(free)
     {

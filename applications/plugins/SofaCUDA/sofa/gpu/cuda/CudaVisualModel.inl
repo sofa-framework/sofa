@@ -298,7 +298,7 @@ void CudaVisualModel< TDataTypes >::updateVisual()
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawVisual(const core::visual::VisualParams* vparams)
+void CudaVisualModel< TDataTypes >::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent) internalDraw(vparams);

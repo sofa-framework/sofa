@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <cstring>
 #include <sofa/helper/StringUtils.h>
+#include <algorithm>
 
 namespace sofa
 {
@@ -85,6 +86,25 @@ std::string safeCharToString(const char* c)
     return std::string(c);
 }
 
+std::string_view removeTrailingCharacter(std::string_view sv, char character)
+{
+    auto end = sv.end();
+    while (end != sv.begin() && *(end - 1) == character)
+    {
+        --end;
+    }
+    return sv.substr(0, end - sv.begin());
+}
+
+std::string_view removeTrailingCharacters(std::string_view sv, const std::initializer_list<char> characters)
+{
+    auto end = sv.end();
+    while (end != sv.begin() && std::find(characters.begin(), characters.end(), *(end - 1)) != characters.end())
+    {
+        --end;
+    }
+    return sv.substr(0, end - sv.begin());
+}
 
 } // namespace helper
 

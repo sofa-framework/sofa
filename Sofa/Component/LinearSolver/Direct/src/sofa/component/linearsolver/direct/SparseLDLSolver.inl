@@ -31,13 +31,52 @@
 #include <fstream>
 #include <iomanip>      // std::setprecision
 #include <string>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
+
 
 namespace sofa::component::linearsolver::direct 
 {
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
-    : numStep(0){}
+    : numStep(0)
+    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
+        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
+                                  "where M is the matrix of the linear system and J is any "
+                                  "matrix with compatible dimensions"))
+{
+    this->addUpdateCallback("parallelODESolving", {&d_parallelInverseProduct},
+    [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        if (d_parallelInverseProduct.getValue())
+        {
+            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+            assert(taskScheduler);
+
+            if (taskScheduler->getThreadCount() < 1)
+            {
+                taskScheduler->init(0);
+                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+            else
+            {
+                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+        }
+        return this->d_componentState.getValue();
+    },
+    {});
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
+{
+    Inherit::init();
+
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+}
 
 template <class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
@@ -86,7 +125,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     if (n == 0)
     {
-        msg_warning() << "Invalid Linear System to solve (null size). Please insure that there is enough constraints (not rank deficient)." ;
+        showInvalidSystemMessage("null size");
         return true;
     }
 
@@ -94,9 +133,15 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     int * M_rowind = (int *)Mfiltered.getColsIndex().data();
     Real * M_values = (Real *)Mfiltered.getColsValue().data();
 
-    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr || Mfiltered.getRowBegin().size() < (size_t)n)
+    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr)
     {
-        msg_warning() << "Invalid Linear System to solve (invalid matrix data structure). Please insure that there is enough constraints (not rank deficient).";
+        showInvalidSystemMessage("invalid matrix data structure");
+        return true;
+    }
+
+    if (Mfiltered.getRowBegin().size() < (size_t)n)
+    {
+        showInvalidSystemMessage("size mismatch");
         return true;
     }
 
@@ -105,6 +150,12 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     numStep++;
 
     return false;
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::showInvalidSystemMessage(const std::string& reason) const
+{
+    msg_warning() << "Invalid Linear System to solve (" << reason << "). Please insure that there is enough constraints (not rank deficient).";
 }
 
 template<class TMatrix, class TVector, class TThreadManager>
@@ -116,74 +167,121 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 template <class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data)
 {
-    if (J->rowSize()==0) return true;
+    if (!this->isComponentStateValid())
+    {
+        return true;
+    }
+
+    /*
+    J * M^-1 * J^T = J * (L*D*L^T)^-1 * J^t
+                   = (J * (L^T)^-1) * D^-1 * (L^-1 * J^T)
+                   = (L^-1 * J^T)^T * D^-1 * (L^-1 * J^T)
+    */
+
+    if (J->rowSize() == 0)
+    {
+        return true;
+    }
 
     Jlocal2global.clear();
     Jlocal2global.reserve(J->rowSize());
-    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
-        int l = jit->first;
+    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit)
+    {
+        sofa::SignedIndex l = jit->first;
         Jlocal2global.push_back(l);
     }
 
-    if (Jlocal2global.empty()) return true;
+    if (Jlocal2global.empty())
+    {
+        return true;
+    }
 
     const unsigned int JlocalRowSize = (unsigned int)Jlocal2global.size();
 
+    const simulation::ForEachExecutionPolicy execution = d_parallelInverseProduct.getValue() ?
+        simulation::ForEachExecutionPolicy::PARALLEL :
+        simulation::ForEachExecutionPolicy::SEQUENTIAL;
 
+    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler);
 
     JLinv.clear();
     JLinv.resize(J->rowSize(), data->n);
     JLinvDinv.resize(J->rowSize(), data->n);
 
+    // copy J in to JLinv taking into account the permutation
     unsigned int localRow = 0;
-    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow) {
+    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow)
+    {
         Real* line = JLinv[localRow];
-        for (auto it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
+        for (auto it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it)
+        {
             int col = data->invperm[it->first];
-            double val = it->second;
+            Real val = it->second;
 
             line[col] = val;
         }
     }
 
-    //Solve the lower triangular system
-    for (unsigned c = 0; c < JlocalRowSize; c++) {
-        Real* line = JLinv[c];
-
-        for (int j=0; j<data->n; j++) {
-            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
-                int col = data->LT_rowind[p];
-                double val = data->LT_values[p];
-                line[j] -= val * line[col];
+    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+        [&data, this](const auto& range)
+        {
+            for (auto i = range.start; i != range.end; ++i)
+            {
+                Real* line = JLinv[i];
+                sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
             }
-        }
-    }
+        });
 
-    //apply diagonal
-    for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineD = JLinv[j];
-        Real* lineM = JLinvDinv[j];
-        for (unsigned i = 0; i < (unsigned)data->n; i++) {
-            lineM[i] = lineD[i] * data->invD[i];
-        }
-    }
-
-    for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineJ = JLinvDinv[j];
-        int globalRowJ = Jlocal2global[j];
-        for (unsigned i = j; i < JlocalRowSize; i++) {
-            Real* lineI = JLinv[i];
-            int globalRowI = Jlocal2global[i];
-
-            double acc = 0.0;
-            for (unsigned k = 0; k < (unsigned)data->n; k++) {
-                acc += lineJ[k] * lineI[k];
+    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+        [&data, this](const auto& range)
+        {
+            for (auto i = range.start; i != range.end; ++i)
+            {
+                Real* lineD = JLinv[i];
+                Real* lineM = JLinvDinv[i];
+                sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(data->n, lineD, lineM, data->invD.data());
             }
-            acc *= fact;
-            result->add(globalRowJ, globalRowI, acc);
-            if (globalRowI != globalRowJ) result->add(globalRowI, globalRowJ, acc);
-        }
-    }
+        });
+
+    std::mutex mutex;
+    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+        [&data, this, fact, &mutex, result, JlocalRowSize](const auto& range)
+        {
+            sofa::type::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
+            triplets.reserve(JlocalRowSize * (range.end - range.start));
+
+            for (auto j = range.start; j != range.end; ++j)
+            {
+                Real* lineJ = JLinvDinv[j];
+                sofa::SignedIndex globalRowJ = Jlocal2global[j];
+                for (unsigned i = j; i < JlocalRowSize; ++i)
+                {
+                    Real* lineI = JLinv[i];
+                    int globalRowI = Jlocal2global[i];
+
+                    Real acc = 0;
+                    for (unsigned k = 0; k < (unsigned)data->n; k++)
+                    {
+                        acc += lineJ[k] * lineI[k];
+                    }
+                    acc *= fact;
+
+                    triplets.emplace_back(globalRowJ, globalRowI, acc);
+                }
+            }
+
+            std::lock_guard guard(mutex);
+
+            for (const auto& [row, col, value] : triplets)
+            {
+                result->add(row, col, value);
+                if (row != col)
+                {
+                    result->add(col, row, value);
+                }
+            }
+        });
 
     return true;
 }

@@ -408,7 +408,6 @@ public:
     ///   must be specialized in each type implementation to return a pointer of this type
     /// @{
     ///
-public:
 
 
 

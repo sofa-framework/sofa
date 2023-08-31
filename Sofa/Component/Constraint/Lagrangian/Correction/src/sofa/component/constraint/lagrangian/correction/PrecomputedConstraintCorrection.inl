@@ -152,7 +152,8 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         }
         else if (recompute.getValue() == false)
         {
-            if(sofa::helper::system::DataRepository.findFile(fileName))
+            std::stringstream ss;
+            if (sofa::helper::system::DataRepository.findFile(fileName, "", &ss))
             {
                 invM->data = new Real[nbRows * nbCols];
 
@@ -164,6 +165,11 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
                 compFileIn.close();
 
                 return true;
+            }
+            else
+            {
+                msg_info() << sofa::helper::removeTrailingCharacters(ss.str(), {'\n', '\r'})
+                    << ". Compliance will be pre-computed and saved into a file";
             }
         }
 
@@ -177,9 +183,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
-{
-    msg_info() << "saveCompliance in " << fileName;
-
+{    
     std::string filePathInSofaShare;
     const std::string dir = fileDir.getValue();
     if (!dir.empty())
@@ -191,6 +195,11 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
         filePathInSofaShare = helper::system::FileSystem::append(
             sofa::helper::system::DataRepository.getFirstPath(), fileName);
     }
+
+    const bool printLog = this->f_printLog.getValue();
+    this->f_printLog.setValue(true);
+    msg_info() << "Compliance file has been saved in " << filePathInSofaShare << ". Load this file using fileCompliance if you don't want to recompute the compliance matrice at next start.";
+    this->f_printLog.setValue(printLog);
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(Real));
@@ -221,9 +230,24 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     const SReal dt = this->getContext()->getDt();
 
-    invName = f_fileCompliance.getFullPath().empty() ? buildFileName() : f_fileCompliance.getFullPath();
+    invName = f_fileCompliance.getFullPath();
+    bool complianceLoaded = false;
+    if (!invName.empty())
+    {
+        complianceLoaded = loadCompliance(invName);
+        if (!complianceLoaded) 
+        {
+            msg_error() << "A fileCompliance was given at path: " << invName << ", but could not be loaded.";
+            invName = buildFileName();
+        }
+    }
+    else
+    {
+        invName = buildFileName();
+        complianceLoaded = loadCompliance(invName);
+    }
 
-    if (!loadCompliance(invName))
+    if (!complianceLoaded)
     {
         msg_info() << "Compliance being built";
 
@@ -231,7 +255,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::type::Vec3 gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3& gravity = this->getContext()->getGravity();
 
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
@@ -346,8 +370,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
             unitary_force.clear();
             force[f] = unitary_force;
-        }
-        msg_info() << tmpStr.str();
+            msg_info() << tmpStr.str();
+        }        
 
         // Do not recompute the matrix for the rest of the precomputation
         if (linearSolver)
@@ -382,21 +406,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     // Optimisation for the computation of W
     _indexNodeSparseCompliance.resize(v0.size());
-
-    //  Print 400 first row and column of the matrix
-    if (this->notMuted())
-    {
-        msg_info() << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
-
-        for (unsigned int i = 0; i < 20 && i < nbCols; i++)
-        {
-            for (unsigned int j = 0; j < 20 && j < nbCols; j++)
-            {
-                msg_info() << " \t " << appCompliance[j*nbCols + i];
-            }
-        }
-
-    }
 }
 
 
@@ -870,7 +879,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        auto rowWrite = c.writeLine(rowIt.index());
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
         auto colItEnd = rowIt.end();
 
         for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)

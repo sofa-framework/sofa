@@ -365,7 +365,6 @@ bool LCPForceFeedback_test::test_multiThread()
     haptic_thread = std::thread(HapticsThread, std::ref(this->m_terminate), this);
 
     // run simulation for n steps
-    simulation::Simulation* simu = sofa::simulation::getSimulation();
     for (int step = 0; step < 500; step++)
     {
         sofa::simulation::node::animate(m_root.get());

@@ -98,7 +98,7 @@
             <Node name="intermediateMapping"> <!-- this mapping is introduced just to verify that geometric stiffness is well projected -->
 
                 <MechanicalObject template="Rigid3d" name="DOFs" showObject="false"/>
-                <ConstantForceField force="0 0 0.0005 0 0 0"/>
+                <ConstantForceField forces="0 0 0.0005 0 0 0"/>
                 <IdentityMapping input="@../DOFs" output="@DOFs"/>
 
                 <Node name="FEM">

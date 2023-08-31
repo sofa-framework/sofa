@@ -109,6 +109,7 @@ public:
         return 0.0;
     }
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;

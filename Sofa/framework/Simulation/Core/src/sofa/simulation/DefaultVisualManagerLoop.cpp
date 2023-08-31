@@ -39,11 +39,9 @@ int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Lo
         .add< DefaultVisualManagerLoop >()
         ;
 
-DefaultVisualManagerLoop::DefaultVisualManagerLoop(simulation::Node* _gnode)
-    : Inherit()
-    , l_node(initLink("targetNode","Link to the scene's node where the rendering will take place"))
+DefaultVisualManagerLoop::DefaultVisualManagerLoop() :
+    l_node(initLink("targetNode","Link to the scene's node where the rendering will take place"))
 {
-    l_node.set(_gnode);
 }
 
 DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
@@ -155,11 +153,6 @@ void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams*
         if ((SReal)(act.maxBBox[1]) > maxBBox[1] ) maxBBox[1] = (SReal)(act.maxBBox[1]);
         if ((SReal)(act.maxBBox[2]) > maxBBox[2] ) maxBBox[2] = (SReal)(act.maxBBox[2]);
     }
-}
-
-simulation::Node* DefaultVisualManagerLoop::getNodeFromContext(BaseContext* context)
-{
-    return dynamic_cast<simulation::Node*>(context);
 }
 
 } // namespace sofa

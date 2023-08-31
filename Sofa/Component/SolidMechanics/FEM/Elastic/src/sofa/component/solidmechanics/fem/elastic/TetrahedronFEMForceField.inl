@@ -2098,7 +2098,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
         else
             computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-        type::Mat<S, S, double> tmpBlock[4][4];
+        type::Mat<S, S, Real> tmpBlock[4][4];
         for (sofa::Index n1=0; n1 < N; n1++)
         {
             for(sofa::Index i=0; i < S; i++)
@@ -2126,11 +2126,15 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    int IT = 0;
-    StiffnessMatrix JKJt,tmp;
+    StiffnessMatrix JKJt, RJKJtRt;
+    sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
 
-    Transformation Rot;
-    Rot.identity(); //set the transformation to identity
+    static constexpr Transformation identity = []
+    {
+        Transformation i;
+        i.identity();
+        return i;
+    }();
 
     constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
     constexpr auto N = Element::size();
@@ -2138,33 +2142,18 @@ void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::S
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
 
-    for(auto it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
+    sofa::Size tetraId = 0;
+    for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++tetraId)
     {
-        if (method == SMALL)
-            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-        else
-            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
+        const auto& rotation = method == SMALL ? identity : rotations[tetraId];
+        computeStiffnessMatrix(JKJt, RJKJtRt, materialsStiffnesses[tetraId], strainDisplacements[tetraId], rotation);
 
-        type::Mat<S, S, double> tmpBlock[4][4];
-        for (sofa::Index n1=0; n1 < N; n1++)
+        for (sofa::Index n1 = 0; n1 < N; n1++)
         {
-            for(sofa::Index i=0; i < S; i++)
+            for (sofa::Index n2 = 0; n2 < N; n2++)
             {
-                for (sofa::Index n2=0; n2 < N; n2++)
-                {
-                    for (sofa::Index j=0; j < S; j++)
-                    {
-                        tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j];
-                    }
-                }
-            }
-        }
-
-        for (sofa::Index n1=0; n1 < N; n1++)
-        {
-            for (sofa::Index n2=0; n2 < N; n2++)
-            {
-                dfdx((*it)[n1] * S, (*it)[n2] * S) += tmpBlock[n1][n2];
+                RJKJtRt.getsub(S * n1, S * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                dfdx((*it)[n1] * S, (*it)[n2] * S) += -localMatrix;
             }
         }
     }

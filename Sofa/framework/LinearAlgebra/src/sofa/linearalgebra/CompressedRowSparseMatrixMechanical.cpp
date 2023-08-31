@@ -31,7 +31,7 @@ void addBlockMat(TMatrix& self, Index row, Index col, const TBlockMatrix& _M)
 {
     if (row % TBlockMatrix::nbLines == 0 && col % TBlockMatrix::nbCols == 0)
     {
-        *self.wbloc(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
+        *self.wblock(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
     }
     else
     {

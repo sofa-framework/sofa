@@ -37,8 +37,8 @@ class MyObject : public BaseObject
 public:
     SOFA_CLASS(MyObject, BaseObject);
 
-    DeprecatedData deprecatedData {this, "deprecatedData", "You should now use XXXX"};
-    RemovedData removedData {this, "removedData", "You should now use XXXX"};
+    DeprecatedData deprecatedData {this, "v23.06", "v23.12", "deprecatedData", "You should now use XXXX"};
+    RemovedData removedData {this, "v23.06", "v23.12", "removedData", "You should now use XXXX"};
 };
 
 class RemoveData_test: public BaseTest
