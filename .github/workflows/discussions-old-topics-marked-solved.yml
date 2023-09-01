@@ -10,7 +10,7 @@ on:
 
 jobs:
   mark-as-solved:
-    name: name: Mark old discussions as Solved
+    name: Mark old discussions as Solved
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
