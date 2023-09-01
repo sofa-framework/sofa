@@ -3,10 +3,10 @@ on:
   schedule:
     # Schedule this action to run periodically (e.g., daily)
     - cron: '0 0 * * *'
-    pull_request:
-      types:
-        - labeled
-        - unlabeled
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
 
 jobs:
   mark-as-solved:
