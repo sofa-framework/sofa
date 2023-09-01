@@ -16,10 +16,10 @@ jobs:
     name: Check labels
     runs-on: ubuntu-latest
     steps:
-      - name: Delay for 3 Seconds
+      - name: Delay for 10 Seconds
         run: |
-          echo "Waiting for 3 seconds in case other labels get changed"
-          sleep 3
+          echo "Waiting for 10 seconds in case other labels get changed"
+          sleep 10
       - name: Check Labels and Add Comment
         id: check_labels_and_comment
         uses: actions/github-script@v4
