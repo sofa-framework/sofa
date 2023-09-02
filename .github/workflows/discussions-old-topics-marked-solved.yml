@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -41,52 +41,61 @@ jobs:
           // Fetch discussions in the repository
           const repoOwner = "sofa-framework";
           const repoName = "sofa";
-          const discussionsResponse = await octokit.rest.issues.list({
-            owner: repoOwner,
-            repo: repoName,
-            q: `is:discussion is:open`,
-          });
 
-          // Process discussions
-          for (const discussion of discussionsResponse.data.items) {
-            // Get the oldest reply
-            const repliesResponse = await octokit.rest.issues.listComments({
-              owner: repoOwner,
-              repo: repoName,
-              issue_number: discussion.number,
-            });
+          async function processDiscussions() {
+            try {
+              const discussionsResponse = await octokit.rest.issues.list({
+                owner: repoOwner,
+                repo: repoName,
+                q: `is:discussion is:open`,
+              });
 
-            if (repliesResponse.data.length > 0) {
-              const latestReply = repliesResponse.data[repliesResponse.data.length - 1];
+              // Process discussions
+              for (const discussion of discussionsResponse.data.items) {
+                // Get the oldest reply
+                const repliesResponse = await octokit.rest.issues.listComments({
+                  owner: repoOwner,
+                  repo: repoName,
+                  issue_number: discussion.number,
+                });
 
-              // Check if the oldest reply is by a team member and is at least one year old
-              if (
-                latestReply.user.type === "Team" &&
-                latestReply.user.login === teamName &&
-                new Date(latestReply.created_at) <= oneYearAgo
-              ) {
-                // Print discussion title, ID, and the name of the team member
-                console.log(`Discussion Title: ${discussion.title}`);
-                console.log(`Discussion ID: ${discussion.id}`);
-                console.log(`Last Reply by ${teamName} Member: ${lastReplyUserName}`);
+                if (repliesResponse.data.length > 0) {
+                  const latestReply = repliesResponse.data[repliesResponse.data.length - 1];
 
-                // Mark the discussion as solved
-                //await octokit.rest.reactions.createForIssueComment({
-                //  owner: repoOwner,
-                //  repo: repoName,
-                //  comment_id: latestReply.id,
-                //  content: "+1", // You can use a different reaction if desired
-                //});
-
-                // Add a comment "solved"
-                //await octokit.rest.issues.createComment({
-                //  owner: repoOwner,
-                //  repo: repoName,
-                //  issue_number: discussion.number,
-                //  body: "This discussion has been automatically solved due to inactivity.<br>Do not hesitate to re-open the discussion if this is not solved and share with us any update!",
-                //});
+                  // Check if the oldest reply is by a team member and is at least one year old
+                  if (
+                    latestReply.user.type === "Team" &&
+                    latestReply.user.login === teamName &&
+                    new Date(latestReply.created_at) <= oneYearAgo
+                  ) {
+                    // Print discussion title, ID, and the name of the team member
+                    console.log(`Discussion Title: ${discussion.title}`);
+                    console.log(`Discussion ID: ${discussion.id}`);
+                    console.log(`Last Reply by ${teamName} Member: ${latestReply.user.login}`);
+                    // Mark the discussion as solved (uncomment these lines if needed)
+                    // await octokit.rest.reactions.createForIssueComment({
+                    //   owner: repoOwner,
+                    //   repo: repoName,
+                    //   comment_id: latestReply.id,
+                    //   content: "+1", // You can use a different reaction if desired
+                    // });
+                    // Add a comment "solved" (uncomment these lines if needed)
+                    // await octokit.rest.issues.createComment({
+                    //   owner: repoOwner,
+                    //   repo: repoName,
+                    //   issue_number: discussion.number,
+                    //   body: "This discussion has been automatically solved due to inactivity.<br>Do not hesitate to re-open the discussion if this is not solved and share with us any update!",
+                    // });
+                  }
+                }
               }
+            } catch (error) {
+              console.error("Error processing discussions:", error);
             }
           }
+
+          // Call the function to process discussions
+          processDiscussions();
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
