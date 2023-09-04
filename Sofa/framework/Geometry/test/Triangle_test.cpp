@@ -142,6 +142,7 @@ TYPED_TEST(GeometryVec2DTriangle_test, isPointInTriangle)
     //// point inside
     TypeParam p0{ 1.5, 0.5 };
     auto res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
+    std::cout << "bary: " << bary << std::endl;
     EXPECT_TRUE(res);
     EXPECT_FLOAT_EQ(float(bary[0]), 0.25f);
     EXPECT_FLOAT_EQ(float(bary[1]), 0.5f);
