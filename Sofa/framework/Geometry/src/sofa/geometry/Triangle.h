@@ -101,6 +101,7 @@ struct Triangle
         baryCoefs[0] = A0 / area;
         baryCoefs[1] = A1 / area;
         baryCoefs[2] = T(1) - baryCoefs[0] - baryCoefs[1];
+        std::cout << "baryCoefs: " << baryCoefs << std::endl;
 
         if (abs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon())
             baryCoefs[2] = 0;
