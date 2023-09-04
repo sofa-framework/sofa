@@ -142,7 +142,6 @@ TYPED_TEST(GeometryVec2DTriangle_test, isPointInTriangle)
     //// point inside
     TypeParam p0{ 1.5, 0.5 };
     auto res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
-    std::cout << "bary: " << bary << std::endl;
     EXPECT_TRUE(res);
     EXPECT_FLOAT_EQ(float(bary[0]), 0.25f);
     EXPECT_FLOAT_EQ(float(bary[1]), 0.5f);
@@ -153,9 +152,9 @@ TYPED_TEST(GeometryVec2DTriangle_test, isPointInTriangle)
     const auto bVal = float(1.f / 3.f);
     res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
     EXPECT_TRUE(res);
-    EXPECT_NEAR(bary[0], 0.3333, 1e-4);
-    EXPECT_NEAR(bary[1], 0.3333, 1e-4);
-    EXPECT_NEAR(bary[2], 0.3333, 1e-4);
+    EXPECT_NEAR(bary[0], bVal, 1e-4);
+    EXPECT_NEAR(bary[1], bVal, 1e-4);
+    EXPECT_NEAR(bary[2], bVal, 1e-4);
 
     // on edge
     p0 = { 1., 0. };
@@ -223,9 +222,9 @@ TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
     const auto bVal = float(1.f / 3.f);
     res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
     EXPECT_TRUE(res);
-    EXPECT_NEAR(bary[0], 0.3333, 1e-4);
-    EXPECT_NEAR(bary[1], 0.3333, 1e-4);
-    EXPECT_NEAR(bary[2], 0.3333, 1e-4);
+    EXPECT_NEAR(bary[0], bVal, 1e-4);
+    EXPECT_NEAR(bary[1], bVal, 1e-4);
+    EXPECT_NEAR(bary[2], bVal, 1e-4);
 
     // on edge
     p0 = { 1., 1., 1. };
