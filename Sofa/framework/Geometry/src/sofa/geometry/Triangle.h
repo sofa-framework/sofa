@@ -103,9 +103,10 @@ struct Triangle
         baryCoefs[2] = T(1) - baryCoefs[0] - baryCoefs[1];
         std::cout << "baryCoefs: " << baryCoefs << std::endl;
 
-        if (abs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon())
+        if (abs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
             baryCoefs[2] = 0;
-
+            std::cout << "abs(baryCoefs[2]): " << abs(baryCoefs[2]) << std::endl;
+        }
         std::cout << "baryCoefs after: " << baryCoefs << " | " << std::numeric_limits<T>::epsilon() << std::endl;
         
         return baryCoefs;
