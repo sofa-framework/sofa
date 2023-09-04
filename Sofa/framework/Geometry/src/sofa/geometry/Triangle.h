@@ -100,14 +100,11 @@ struct Triangle
         sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
         baryCoefs[0] = A0 / area;
         baryCoefs[1] = A1 / area;
-        baryCoefs[2] = T(1) - baryCoefs[0] - baryCoefs[1];
-        std::cout << "baryCoefs: " << baryCoefs << std::endl;
+        baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
 
-        if (abs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+        if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
             baryCoefs[2] = 0;
-            std::cout << "abs(baryCoefs[2]): " << abs(baryCoefs[2]) << std::endl;
         }
-        std::cout << "baryCoefs after: " << baryCoefs << " | " << std::numeric_limits<T>::epsilon() << std::endl;
         
         return baryCoefs;
     }
