@@ -89,7 +89,7 @@ struct Triangle
         // Point can be written: p0 = a*n0 + b*n1 + c*n2
         // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
         const auto area = Triangle::area(n0, n1, n2);
-        if (abs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+        if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
         {
             return sofa::type::Vec<3, T>(-1, -1, -1);
         }
