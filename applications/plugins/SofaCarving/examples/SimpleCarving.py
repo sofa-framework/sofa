@@ -20,23 +20,25 @@ def createScene(root):
 
     # Load required plugins
     plugins = root.addChild('Plugins')
-    plugins.addObject('RequiredPlugin', name="Mechanical", pluginName="Sofa.Component.AnimationLoop Sofa.Component.LinearSolver.Direct Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.Spring Sofa.Component.StateContainer") 
+    plugins.addObject('RequiredPlugin', name="MechanicalLoop", pluginName="Sofa.Component.AnimationLoop Sofa.Component.ODESolver.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Mapping.NonLinear Sofa.Component.Mapping.Linear") 
+    plugins.addObject('RequiredPlugin', name="MechanicalModel", pluginName="Sofa.Component.StateContainer Sofa.Component.Mass Sofa.Component.SolidMechanics.FEM.Elastic") 
     plugins.addObject('RequiredPlugin', name="Collision", pluginName="Sofa.Component.Collision.Detection.Algorithm Sofa.Component.Collision.Detection.Intersection Sofa.Component.Collision.Geometry Sofa.Component.Collision.Response.Contact") 
     plugins.addObject('RequiredPlugin', name="Constraint", pluginName="Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Constraint.Projective") 
-    plugins.addObject('RequiredPlugin', name="Topology", pluginName="Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Container.Grid") 
+    plugins.addObject('RequiredPlugin', name="Topology", pluginName="Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Mapping") 
     plugins.addObject('RequiredPlugin', name="Visual", pluginName="Sofa.Component.Visual Sofa.GL.Component.Rendering3D") 
+    plugins.addObject('RequiredPlugin', name="Utils", pluginName="Sofa.Component.IO.Mesh SofaCarving")
 
     root.addObject('VisualStyle',displayFlags="showVisualModels")
 
     # Add main scene pipeline components
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
-    root.addObject('CollisionPipeline', depth=6, verbose=False, draw=False)
+    root.addObject('CollisionPipeline', verbose=False, draw=False)
     root.addObject('BruteForceBroadPhase')
     root.addObject('BVHNarrowPhase')    
-    root.addObject('LocalMinDistance', name="localmindistance", alarmDistance=0.1, contactDistance=0.01, angleCone=0.8, coneFactor=0.8)
-    root.addObject('DefaultContactManager', response="FrictionContactConstraint")
-    root.addObject('CarvingManager',active=True, carvingDistance=-0.01)
+    root.addObject('MinProximityIntersection', name="Proximity", alarmDistance=0.08, contactDistance=0.05, useSurfaceNormals=False)
+    root.addObject('CollisionResponse', response="PenalityContactForceField")
+    root.addObject('CarvingManager',active=True, carvingDistance=-0.01, narrowPhaseDetection="@narrowPhase", toolModel="@Instrument/CollisionModel/ParticleModel")
   
      # Add Volume mechanical object to be carved
     TT = root.addChild('TetraVolume')
@@ -66,7 +68,7 @@ def createScene(root):
 
     Visu = T.addChild('VisualModel')
     Visu.addObject('OglModel', name="Visual", material="Default Diffuse 1 0 1 0 1 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100")
-    Visu.addObject('IdentityMapping', input="@Volume", output="@Visual")
+    Visu.addObject('IdentityMapping', input="@../../Volume", output="@Visual")
 
 
     # Add instrument object
