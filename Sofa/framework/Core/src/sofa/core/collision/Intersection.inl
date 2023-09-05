@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_INTERSECTION_INL
-#define SOFA_CORE_COLLISION_INTERSECTION_INL
+#pragma once
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/Factory.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 template<class Elem1, class Elem2, class T>
@@ -104,11 +97,4 @@ void IntersectorMap::add_impl(ElementIntersector* intersector)
 {
     add_impl(classid(Model1), classid(Model2), intersector);
 }
-
-} // namespace collision
-
-} // namespace core
-
 } // namespace sofa
-
-#endif

@@ -30,9 +30,6 @@
 #include <QScrollArea>
 #include <QScreen>
 
-// uncomment to show traces of GUI operations in this file
-//#define DEBUG_GUI
-
 namespace sofa::gui::qt
 {
 
@@ -59,15 +56,8 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 
     if (  (!data->isDisplayed()) && flags.HIDE_FLAG )
     {
-#ifdef DEBUG_GUI
-        std::cout << "GUI: data " << data->getName() << " is hidden." << std::endl;
-#endif
         return;
     }
-
-#ifdef DEBUG_GUI
-    std::cout << "GUI> addData " << data->getName() << std::endl;
-#endif
 
     data->setDisplayed(true);
 
@@ -79,23 +69,15 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
     pixelSize += displaydatawidget->sizeHint().height();
     displaydatawidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
     connect(displaydatawidget, SIGNAL( dataValueChanged(QString) ), SLOT(dataValueChanged(QString) ) );
-#ifdef DEBUG_GUI
-    std::cout << "GUI< addData " << data->getName() << std::endl;
-#endif
 }
 
 
 void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags)
 {
-    //if (  (!link->isDisplayed()) && flags.HIDE_FLAG ) return;
-
-    //link->setDisplayed(true);
-
     const std::string name=link->getName();
     QDisplayLinkWidget* displaylinkwidget = new QDisplayLinkWidget(this,link,flags);
     this->layout()->addWidget(displaylinkwidget);
@@ -152,7 +134,6 @@ bool QTabulationModifyObject::isDirty() const
 bool QTabulationModifyObject::isFull() const
 {
     return pixelSize >= pixelMaxSize;
-    //return size >= maxSize;
 }
 
 bool QTabulationModifyObject::isEmpty() const

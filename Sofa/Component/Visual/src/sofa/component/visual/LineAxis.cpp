@@ -29,34 +29,16 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * lineAxisDeprecatedName = "OglLineAxis";
-
 int LineAxisClass = core::RegisterObject("Display scene axis")
         .add< LineAxis >()
-        .addAlias(lineAxisDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;
-
-void LineAxis::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (std::string(arg->getAttribute("type")) == lineAxisDeprecatedName)
-    {
-        msg_warning(lineAxisDeprecatedName) << lineAxisDeprecatedName << " is deprecated since SOFA v22.12, and has"
-            " been replaced by " << this->getClassName() << ". Please modify your scene. Note that the new component "
-            << this->getClassName() << " is located in another module (Sofa.Component.Visual). It means that you "
-            "probably need to update also the appropriate RequiredPlugin in your scene. For example, in XML, "
-            "consider removing the line <RequiredPlugin name=\"Sofa.GL.Component.Rendering3D\"> to replace it by "
-            "<RequiredPlugin name=\"Sofa.Component.Visual\">.";
-    }
-    Inherit1::parse(arg);
-}
 
 LineAxis::LineAxis()
     : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
     , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
     , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
@@ -80,13 +62,10 @@ void LineAxis::updateVisual()
     m_drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
+void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
     const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if(m_drawX)
@@ -112,9 +91,6 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
             helper::visual::DrawTool::Vec3(0.0, 0.0, s*0.5),
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
-
-
-
 }
 
 

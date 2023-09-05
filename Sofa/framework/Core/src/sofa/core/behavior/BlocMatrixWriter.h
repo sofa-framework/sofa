@@ -51,8 +51,8 @@ public:
         BaseMatrixWriter(linearalgebra::BaseMatrix* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
-            unsigned int i0 = offsetL + bi*NL;
-            unsigned int j0 = offsetC + bj*NC;
+            const unsigned int i0 = offsetL + bi*NL;
+            const unsigned int j0 = offsetC + bj*NC;
             for (unsigned int i=0; i<NL; ++i)
                 for (unsigned int j=0; j<NC; ++j)
                     m->add(i0+i,j0+j,b[i][j]);
@@ -85,7 +85,7 @@ public:
             unsigned int i0 = boffsetL + bi;
             unsigned int j0 = boffsetC + bj;
             //type::Mat<NL,NC,MReal> bconv = b;
-            *m->wbloc(i0,j0,true) += b;
+            *m->wblock(i0,j0,true) += b;
         }
     };
 
@@ -98,11 +98,11 @@ public:
         CRSMatrixWriter(sofa::linearalgebra::CompressedRowSparseMatrix<MReal>* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
-            unsigned int i0 = offsetL + bi*NL;
-            unsigned int j0 = offsetC + bj*NC;
+            const unsigned int i0 = offsetL + bi*NL;
+            const unsigned int j0 = offsetC + bj*NC;
             for (unsigned int i=0; i<NL; ++i)
                 for (unsigned int j=0; j<NC; ++j)
-                    *m->wbloc(i0+i,j0+j,true) += (MReal)b[i][j];
+                    *m->wblock(i0+i,j0+j,true) += (MReal)b[i][j];
         }
     };
 

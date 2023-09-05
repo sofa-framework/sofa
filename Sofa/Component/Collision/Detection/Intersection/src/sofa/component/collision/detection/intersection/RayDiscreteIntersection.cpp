@@ -22,7 +22,6 @@
 #include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
 
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
@@ -85,7 +84,7 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     if (baryCoords[2] < 0 || baryCoords[2] > e1.l())
         return 0; // out of the line
 
-    Vec3 X = P+PQ*baryCoords[2];
+    const Vec3 X = P+PQ*baryCoords[2];
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);

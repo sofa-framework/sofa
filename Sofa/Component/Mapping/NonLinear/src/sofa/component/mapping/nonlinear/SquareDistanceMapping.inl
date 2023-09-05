@@ -22,12 +22,14 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareDistanceMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.inl>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -35,11 +37,8 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
     : Inherit()
-//    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if no restLengths are given and if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-//    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }
@@ -68,12 +67,12 @@ void SquareDistanceMapping<TIn, TOut>::init()
         return;
     }
 
-    SeqEdges links = l_topology->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
     this->getToModel()->resize( links.size() );
 
     // only used for warning message
-    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
+    const bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
     msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
 
     baseMatrices.resize( 1 );
@@ -171,7 +170,7 @@ void SquareDistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
@@ -208,8 +207,12 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
 }
 
 template <class TIn, class TOut>
-void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
+    SOFA_UNUSED(cparams);
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 
@@ -231,7 +234,7 @@ template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
@@ -264,6 +267,43 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readTotalForces();
+    const SeqEdges& links = l_topology->getEdges();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    for(sofa::Size i=0; i<links.size(); i++)
+    {
+        const OutDeriv force_i = childForce[i];
+
+        const sofa::topology::Edge link = links[i];
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( force_i[0] < 0 || geometricStiffness==1 )
+        {
+            const Real tmp = 2 * force_i[0];
+
+            for(unsigned k=0; k<In::spatial_dimensions; k++)
+            {
+                dJdx(link[0] * Nin + k, link[0] * Nin + k) += tmp;
+                dJdx(link[0] * Nin + k, link[1] * Nin + k) += -tmp;
+                dJdx(link[1] * Nin + k, link[0] * Nin + k) += -tmp;
+                dJdx(link[1] * Nin + k, link[1] * Nin + k) += tmp;
+            }
+        }
+    }
 }
 
 template <class TIn, class TOut>

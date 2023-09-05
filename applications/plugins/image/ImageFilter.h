@@ -123,7 +123,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(30	,"0 - None"
+        helper::OptionsGroup filterOptions{"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -153,7 +153,7 @@ public:
                                            ,"27 - Mirror (axis=0)"
                                            ,"28 - Sharpen (sigma)"
                                            ,"29 - Expand ( size )"
-                                           );
+                                          };
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
     }

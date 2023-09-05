@@ -76,7 +76,7 @@ class LineCollisionModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
-    
+
     enum LineFlag
     {
         FLAG_P1  = 1<<0, ///< Point 1  is attached to this line
@@ -90,7 +90,7 @@ public :
 protected:
     struct LineData
     {
-        Index p[2];
+        sofa::Index p[2];
         // Triangles neighborhood
 //		int tRight, tLeft;
     };
@@ -117,7 +117,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
@@ -131,15 +131,15 @@ public:
 
     void handleTopologyChange() override;
 
-    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
+    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    Deriv velocity(Index index)const;
+    Deriv velocity(sofa::Index index)const;
 
-    virtual Index getElemEdgeIndex(Index index) const { return index; }
-    
-    int getLineFlags(Index i);
+    virtual sofa::Index getElemEdgeIndex(sofa::Index index) const { return index; }
+
+    int getLineFlags(sofa::Index i);
 
     Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
@@ -168,7 +168,7 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
+
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;

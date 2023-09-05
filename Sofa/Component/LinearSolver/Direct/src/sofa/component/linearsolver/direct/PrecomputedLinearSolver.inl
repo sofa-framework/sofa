@@ -49,7 +49,6 @@ namespace sofa::component::linearsolver::direct
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
 {
     first = true;
@@ -63,7 +62,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->linearSystem.systemMatrix);
+        loadMatrix(*this->getSystemMatrix());
     }
 }
 
@@ -77,7 +76,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->linearSystem.systemMatrix->rowSize();
+    systemSize = this->getSystemMatrix()->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -198,7 +197,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 
     if (first)
     {
-        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
+        const core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         //TODO get the m b k factor from euler
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
@@ -218,6 +217,18 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
     } return false;
 
     return true;
+}
+
+template <class TMatrix, class TVector>
+void PrecomputedLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
 }
 
 template<class TMatrix,class TVector> template<class JMatrix>

@@ -47,7 +47,6 @@ In this test: x(t=0)= 1 and v(t=0)=0 and K = spring stiffness and phi = 0 of mat
 This tests generates the discrete mass position obtained with central difference solver with different parameter values (K,M,h).
 Then it compares the effective mass position to the computed mass position every time step.
 */
-
 template <typename _DataTypes>
 struct CentralDifferenceExplicitSolverDynamic_test : public component::odesolver::testing::ODESolverSpringTest
 {
@@ -116,8 +115,8 @@ struct CentralDifferenceExplicitSolverDynamic_test : public component::odesolver
 
         else
         {
-            double constantVel =  ((1.0/h) - (rm/2.0))/((1.0/h) + (rm/2.0));
-            double constantAcc = 1.0/((1.0/h) + (rm/2.0));
+            const double constantVel =  ((1.0/h) - (rm/2.0))/((1.0/h) + (rm/2.0));
+            const double constantAcc = 1.0/((1.0/h) + (rm/2.0));
 
             for(int i=1;i< size+1; i++)
             {
@@ -145,7 +144,7 @@ struct CentralDifferenceExplicitSolverDynamic_test : public component::odesolver
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate

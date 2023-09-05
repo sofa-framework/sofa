@@ -22,11 +22,13 @@
 #pragma once
 
 #include <sofa/simulation/config.h>
-#include <string>
+
 #include <sofa/simulation/Task.h>
+#include <sofa/simulation/Locks.h>
+
 #include <thread>
 #include <deque>
-#include <sofa/simulation/Locks.h>
+#include <string>
 
 namespace sofa::simulation
 {
@@ -41,9 +43,6 @@ public:
     WorkerThread(DefaultTaskScheduler* const& taskScheduler, int index, const std::string& name = "Worker");
 
     ~WorkerThread();
-
-    /// Return the WorkerThread corresponding to the current thread
-    static WorkerThread* getCurrent();
 
     // queue task if there is space, and run it otherwise
     bool addTask(Task* pTask);
@@ -81,13 +80,13 @@ private:
 
     void doWork(Task::Status* status);
 
-    // boost thread main loop
+    // thread main loop
     void run(void);
 
     //void	ThreadProc(void);
     void	Idle(void);
 
-    bool isFinished();
+    bool isFinished() const;
 
     enum
     {
@@ -114,4 +113,4 @@ private:
     friend class DefaultTaskScheduler;
 };
 
-}
+} // namespace sofa::simulation

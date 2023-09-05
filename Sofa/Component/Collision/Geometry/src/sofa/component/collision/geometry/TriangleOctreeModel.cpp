@@ -79,9 +79,9 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    std::size_t size2=m_mstate->getSize();
+    const std::size_t size2=m_mstate->getSize();
     pNorms.resize(size2);
-    for(Size i=0; i<size2; i++)
+    for(sofa::Size i=0; i<size2; i++)
     {
         pNorms[i]=type::Vec3(0,0,0);
     }
@@ -120,7 +120,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 
     cubeModel->setParentOf(0, minElem, maxElem); // define the bounding box of the current triangle
     cubeModel->computeBoundingTree(maxDepth);
-    for(Size i=0; i<size2; i++)
+    for(sofa::Size i=0; i<size2; i++)
     {
         pNorms[i].normalize();
     }

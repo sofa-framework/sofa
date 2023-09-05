@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 
 #include <sofa/component/init.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 
 
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     //force load SofaComponentAll
     sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     sofa::gui::common::GUIManager::SetDimension(800, 600);

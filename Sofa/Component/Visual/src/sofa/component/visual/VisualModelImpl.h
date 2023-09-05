@@ -22,44 +22,22 @@
 #pragma once
 #include <sofa/component/visual/config.h>
 
-#include <sofa/core/State.h>
+#include <sofa/type/Vec.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualState.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/core/topology/TopologyData.inl>
+
 #include <string>
 
 namespace sofa::component::visual
 {
 
-using sofa::core::objectmodel::Data ;
+SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() 
+typedef sofa::core::visual::VisualState<defaulttype::Vec3Types> Vec3State;
 
-class SOFA_COMPONENT_VISUAL_API Vec3State : public core::State< sofa::defaulttype::Vec3Types >
-{
-public:
-    core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
-    core::topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
-    core::topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
-    bool modified; ///< True if input vertices modified since last rendering
-
-    Vec3State() ;
-
-    virtual void resize(Size vsize) ;
-    virtual Size getSize() const ;
-
-    //State API
-    virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
-    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v )  const ;
-    virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
-    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
-
-    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return nullptr; }
-    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return nullptr; }
-};
 
 /**
  *  \brief Abstract class which implements partially VisualModel.
@@ -70,17 +48,16 @@ public:
  *  At the moment, it is only implemented by OglModel for OpenGL systems.
  *
  */
-
-class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public Vec3State //, public RigidState
+class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
+    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, sofa::core::visual::VisualState<defaulttype::Vec3Types>);
 
     typedef sofa::type::Vec<2, float> TexCoord;
     typedef type::vector<TexCoord> VecTexCoord;
 
-    using Index = sofa::Index;
-    
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
@@ -91,7 +68,7 @@ public:
     typedef type::vector<VisualTriangle> VecVisualTriangle;
     typedef type::vector<VisualQuad> VecVisualQuad;
 
-    typedef Vec3State::DataTypes DataTypes;
+    typedef sofa::core::visual::VisualState<defaulttype::Vec3Types>::DataTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;
@@ -236,8 +213,8 @@ public:
 
     virtual bool hasTransparent();
     bool hasOpaque();
-
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void drawShadow(const core::visual::VisualParams* vparams) override;
 
@@ -326,7 +303,7 @@ public:
     {
         return m_quads.getValue();
     }
-    
+
     const VecVisualEdge& getEdges() const
     {
         return m_edges.getValue();
@@ -366,7 +343,7 @@ public:
     {
         m_quads.setValue(*q);
     }
-    
+
     void setEdges(VecVisualEdge * e)
     {
         m_edges.setValue(*e);
@@ -395,22 +372,22 @@ public:
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
-    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, Index& vindex, Index& nindex, Index& tindex, int& count) override;
+    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count) override;
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed...
     /// More details on the name customization infrastructure is in NameDecoder.h
     static std::string GetCustomTemplateName()
     {
-        return sofa::helper::NameDecoder::getTemplateName<Vec3State>();
+        return sofa::defaulttype::Vec3Types::Name();
     }
 
     /// Utility method to compute tangent from vertices and texture coordinates.
     static Coord computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
-            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+                                const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
     /// Utility method to compute bitangent from vertices and texture coordinates.
     static Coord computeBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
-            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+                                  const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
     /// Temporary added here from RigidState deprecated inheritance
     sofa::defaulttype::Rigid3fTypes::VecCoord xforms;
@@ -421,7 +398,7 @@ public:
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 protected:
-    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual 
+    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual
     /// This avoid to update the whole mesh.
     std::set< sofa::core::topology::BaseMeshTopology::TriangleID> m_dirtyTriangles;
 

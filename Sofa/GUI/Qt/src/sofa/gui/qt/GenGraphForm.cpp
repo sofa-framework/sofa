@@ -175,23 +175,23 @@ void GenGraphForm::changeFilter()
 {
     displayButton->setEnabled(false);
     if (settingFilter) return;
-    std::set<std::string> filt = getCurrentFilter();
+    const std::set<std::string> filt = getCurrentFilter();
     for (std::map<std::string,std::set<std::string> >::const_iterator it = presetFilters.begin(); it != presetFilters.end(); ++it)
     {
         if (it->second == filt)
         {
-            int index = presetFilter->findText(it->first.c_str());
+            const int index = presetFilter->findText(it->first.c_str());
             presetFilter->setCurrentIndex(index);
             return;
         }
     }
-    int index = presetFilter->findText("");
+    const int index = presetFilter->findText("");
     presetFilter->setCurrentIndex(index);
 }
 
 QString removeFileExt(const QString &s)
 {
-    int ext = s.lastIndexOf('.');
+    const int ext = s.lastIndexOf('.');
     if (ext==-1) return s;
     if (s.indexOf('/', ext+1) != -1|| s.indexOf('\\', ext+1) != -1)
         return s;
@@ -445,11 +445,11 @@ void GenGraphForm::runTask()
     QStringList argv = tasks.front();
     tasks.pop_front();
     exportButton->setText("&Kill");
-    QString cmd = argv.join(QString(" "));
+    const QString cmd = argv.join(QString(" "));
     msg_info("GenGraphForm") << "STARTING TASK " << cmd.toStdString();
 
     auto* p = new QProcess(this);
-    QString program = argv.front();
+    const QString program = argv.front();
     argv.pop_front();
 #if (QT_VERSION < QT_VERSION_CHECK(5, 13, 0))
     p->setReadChannelMode(QProcess::ForwardedChannels);
@@ -466,9 +466,9 @@ void GenGraphForm::runTask()
 
 void GenGraphForm::setFilter()
 {
-    QString fname = presetFilter->currentText();
+    const QString fname = presetFilter->currentText();
     if (fname == "") return;
-    std::string name = fname.toStdString();
+    const std::string name = fname.toStdString();
     if (presetFilters.count(name) > 0)
     {
         const std::set<std::string> & filt = presetFilters[name];
@@ -491,7 +491,7 @@ void GenGraphForm::setFilter()
         this->showMechanicalMappings->setChecked(filt.find("showMechanicalMappings")!=filt.end());
         settingFilter = false;
         displayButton->setEnabled(false);
-        int index = presetFilter->findText(fname);
+        const int index = presetFilter->findText(fname);
         presetFilter->setCurrentIndex(index);
     }
     else

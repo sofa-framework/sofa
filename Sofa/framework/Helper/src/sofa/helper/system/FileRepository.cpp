@@ -31,7 +31,16 @@
 #include <unistd.h>
 #endif
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem>
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
+
 #include <iterator>
 
 #include <cstring>
@@ -63,7 +72,7 @@ std::string cleanPath( const std::string& path )
 {
     std::string p = path;
     size_t pos = p.find("//");
-    size_t len = p.length();
+    const size_t len = p.length();
     while( pos != std::string::npos )
     {
         if ( pos == (len-1))
@@ -245,10 +254,10 @@ std::string FileRepository::getFirstPath()
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
-    std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
+    const std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
 
-    std::filesystem::path p = std::filesystem::u8path(newfname);
-    if (std::filesystem::exists(p))
+    const fs::path p = fs::u8path(newfname);
+    if (fs::exists(p))
     {
         // File found
         filename = newfname;
@@ -320,43 +329,33 @@ const std::string FileRepository::getPathsJoined()
     return implodedStr;
 }
 
-/*static*/
 std::string FileRepository::relativeToPath(std::string path, std::string refPath)
 {
-    /// This condition replace the #ifdef in the code.
-    /// The advantage is that the code is compiled and is
-    /// removed by the optimization pass.
-    if( ! ON_WIN32 )
-    {
-        /// Case sensitive OS.
-        std::string::size_type loc = path.find( refPath, 0 );
-        if (loc==0)
-            path = path.substr(refPath.size()+1);
-
-        return path;
-    }
-
-    /// WIN32 is a pain here because of mixed case formatting with randomly
-    /// picked slash and backslash to separate dirs.
-    std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
 
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-    tmppath = path ;
+    std::string tmppath=path;
     std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
 
-    std::string::size_type loc = tmppath.find( refPath, 0 );
-    if (loc==0)
-        path = path.substr(refPath.size()+1);
+    const std::string::size_type loc = tmppath.find( refPath, 0 );
+    if (loc != std::string::npos)
+    {
+        path = path.substr(refPath.size());
+
+        while(!path.empty() && (path.front() == '/' || path.front() == '\\' ))
+        {
+            path = path.substr(1);
+        }
+    }
 
     return path;
 }
 
 const std::string FileRepository::getTempPath() const
 {
-    return std::filesystem::temp_directory_path().string();
+    return fs::temp_directory_path().string();
 }
 
 } // namespace system

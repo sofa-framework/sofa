@@ -82,6 +82,57 @@ public:
     {
     }
 
+    /// Constructs a 1xC matrix (single-row, multiple columns) or a Lx1 matrix (multiple row, single
+    /// column) and initializes it from a scalar initializer-list.
+    /// Allows to build a matrix with the following syntax:
+    /// sofa::type::Mat<1, 3, int> M {1, 2, 3}
+    /// or
+    /// sofa::type::Mat<3, 1, int> M {1, 2, 3}
+    /// Initializer-list must match matrix column size, otherwise an assert is triggered.
+    template<sofa::Size TL = L, sofa::Size TC = C, typename = std::enable_if_t<(TL == 1 && TC != 1) || (TC == 1 && TL != 1)> >
+    constexpr Mat(std::initializer_list<Real>&& scalars) noexcept
+    {
+        if constexpr (L == 1 && C != 1)
+        {
+            assert(scalars.size() == C);
+            sofa::Size colId {};
+            for (auto scalar : scalars)
+            {
+                this->elems[0][colId++] = scalar;
+            }
+        }
+        else
+        {
+            assert(scalars.size() == L);
+            sofa::Size rowId {};
+            for (auto scalar : scalars)
+            {
+                this->elems[rowId++][0] = scalar;
+            }
+        }
+    }
+
+    /// Constructs a matrix and initializes it from scalar initializer-lists grouped by row.
+    /// Allows to build a matrix with the following syntax:
+    /// sofa::type::Mat<3, 3, int> M {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+    /// Initializer-lists must match matrix size, otherwise an assert is triggered.
+    constexpr Mat(std::initializer_list<std::initializer_list<Real>>&& rows) noexcept
+    {
+        assert(rows.size() == L);
+
+        sofa::Size rowId {};
+        for (const auto& row : rows)
+        {
+            assert(row.size() == C);
+            sofa::Size colId {};
+            for (auto scalar : row)
+            {
+                this->elems[rowId][colId++] = scalar;
+            }
+            ++rowId;
+        }
+    }
+
     template<typename... ArgsT,
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, Line> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
@@ -305,6 +356,12 @@ public:
     /// Special access to fourth line (read-only).
     template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
     constexpr const Line& w() const noexcept { return this->elems[3]; }
+
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
+    constexpr real toReal() const { return this->elems[0][0]; }
+
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
+    constexpr operator real() const { return toReal(); }
 
     /// Set matrix to identity.
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
@@ -640,7 +697,7 @@ public:
         if (&m == this)
         {
             Mat<L,C,real> mat = m;
-            bool res = invertMatrix(*this, mat);
+            const bool res = invertMatrix(*this, mat);
             return res;
         }
         return invertMatrix(*this, m);
@@ -983,7 +1040,7 @@ template<sofa::Size S, class real>
 {
     Mat<S-1,S-1,real> R, R_inv;
     from.getsub(0,0,R);
-    bool b = invertMatrix(R_inv, R);
+    const bool b = invertMatrix(R_inv, R);
 
     Mat<S-1,1,real> t, t_inv;
     from.getsub(0,S-1,t);
@@ -1080,13 +1137,19 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 /// Create a matrix as \f$ u v^T \f$
-template <sofa::Size L, sofa::Size C, typename T>
-constexpr Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v ) noexcept
+template <class Tu, class Tv>
+constexpr Mat<Tu::size(), Tv::size(), typename Tu::value_type>
+dyad(const Tu& u, const Tv& v) noexcept
 {
-    Mat<L,C,T> res(NOINIT);
-    for(sofa::Size i=0; i<L; i++ )
-        for(sofa::Size j=0; j<C; j++ )
-            res[i][j] = u[i]*v[j];
+    static_assert(std::is_same_v<typename Tu::value_type, typename Tv::value_type>);
+    Mat<Tu::size(), Tv::size(), typename Tu::value_type> res(NOINIT);
+    for (sofa::Size i = 0; i < Tu::size(); ++i)
+    {
+        for (sofa::Size j = 0; j < Tv::size(); ++j)
+        {
+            res[i][j] = u[i] * v[j];
+        }
+    }
     return res;
 }
 

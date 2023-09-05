@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.h>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
@@ -232,7 +233,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
             for(int k=0 ; k<8 ; ++k )
             {
-                int indice = k*3;
+                const int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
                     actualDx[indice+j] = _dx[hexahedra[i][k]][j];
             }
@@ -460,15 +461,12 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
+
     std::vector<type::Vec3> pos;
-    pos.resize(x.size());
-    auto posIT = pos.begin();
-    typename VecCoord::const_iterator xIT = x.begin();
-    for(; posIT != pos.end() ; ++posIT, ++xIT)
-    {
-        *posIT = *xIT;
-    }
+    pos.reserve(x.size());
+
+    std::transform(x.begin(), x.end(), std::back_inserter(pos),
+        [](const auto& e){ return DataTypes::getCPos(e); });
 
     vparams->drawTool()->drawPoints(pos,2.0f, sofa::type::RGBAColor::white());
 }

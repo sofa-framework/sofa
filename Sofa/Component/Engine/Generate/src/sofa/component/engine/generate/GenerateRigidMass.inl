@@ -89,7 +89,7 @@ void GenerateRigidMass<DataTypes, MassType>::integrateMesh()
     for (sofa::Size i=0 ; i<10 ; ++i)
         afIntegral[i] = 0.0;
 
-    const type::vector<Vector3>& positions = m_positions.getValue();
+    const type::vector<type::Vec3>& positions = m_positions.getValue();
     const type::vector<MTriangle>& triangles = m_triangles.getValue();
     const type::vector<MQuad>& quads = m_quads.getValue();
     const type::vector<MPolygon>& polygons = m_polygons.getValue();
@@ -130,14 +130,14 @@ void GenerateRigidMass<DataTypes, MassType>::integrateMesh()
 }
 
 template <class DataTypes, class MassType>
-void GenerateRigidMass<DataTypes, MassType>::integrateTriangle(Vector3 kV0,Vector3 kV1,Vector3 kV2)
+void GenerateRigidMass<DataTypes, MassType>::integrateTriangle(type::Vec3 kV0,type::Vec3 kV1,type::Vec3 kV2)
 {
     // order:	1, x, y, z, x^2, y^2, z^2, xy, yz, zx
 
     // get cross product of edges
-    Vector3 kV1mV0 = kV1 - kV0;
-    Vector3 kV2mV0 = kV2 - kV0;
-    Vector3 kN = cross(kV1mV0,kV2mV0);
+    const type::Vec3 kV1mV0 = kV1 - kV0;
+    const type::Vec3 kV2mV0 = kV2 - kV0;
+    type::Vec3 kN = cross(kV1mV0,kV2mV0);
 
     // compute integral terms
     SReal fTmp0, fTmp1, fTmp2;
@@ -206,7 +206,7 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
     // mass
     rigidmass->mass = static_cast<Real>( volume );
     // center of mass
-    Vector3 center(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
+    type::Vec3 center(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
 
     // inertia relative to world origin
     rigidmass->inertiaMatrix[0][0] = static_cast<Real>(  afIntegral[5] + afIntegral[6] );

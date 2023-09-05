@@ -5,11 +5,11 @@
     <RequiredPlugin pluginName='SofaMiscCollision'/>
     <RequiredPlugin pluginName='SofaSimpleFem'/> 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultPipeline depth="6" verbose="0" draw="0" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver"  />
         <SparsePARDISOSolver />

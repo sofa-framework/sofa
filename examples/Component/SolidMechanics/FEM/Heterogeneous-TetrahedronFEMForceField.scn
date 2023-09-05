@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.01" gravity="0 0 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [ShewchukPCGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <VisualStyle displayFlags="showVisualModels showCollisionModels showInteractionForceFields showBehaviorModels"/>
+
+
+    <FreeMotionAnimationLoop/>
+    <GenericConstraintSolver maxIt="500" tolerance="0.0002" scaleTolerance='false' printLog="false" computeConstraintForces="true"/>
+
+
+    <Node name="Topology">
+        <RegularGridTopology name="HexaTop" n="9 9 18" min="-0.05 -0.05 0.210" max="0.05 0.05 0.295"/>
+
+        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="false"/>
+    </Node>
+
+
+    <Node name="FEM">
+        <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1" _velocityDamping="0.5"/>
+        <ShewchukPCGLinearSolver preconditioner="@precond" update_step="15"/>
+        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3"/>
+
+        <TetrahedronSetTopologyContainer name="Container" position="@../Topology/HexaTop.position" tetrahedra="@../Topology/Container.tetrahedra"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+
+        <MechanicalObject name="mstate" template="Vec3" showIndices="0"/>
+        <BoxConstraint name="support" box="-0.06 -0.06 0.29 0.06 0.06 0.295"  drawBoxes="true" />
+
+        <BoxROI name="Gel1" box="-0.05 -0.05 0.210 0.05 0.05 0.225"  drawBoxes="false"/>
+        <BoxROI name="Gel2" box="-0.05 -0.05 0.2245 0.05 0.05 0.245"  drawBoxes="false"/>
+        <BoxROI name="Gel3" box="-0.05 -0.05 0.245 0.05 0.05 0.260"  drawBoxes="false"/>
+        <BoxROI name="Gel4" box="-0.05 -0.05 0.260 0.05 0.05 0.295"  drawBoxes="false"/>
+
+        <IndexValueMapper name="Young1" indices="@Gel1.tetrahedronIndices" value="3e4"/>
+        <IndexValueMapper name="Young2" indices="@Gel2.tetrahedronIndices" value="3e4" inputValues="@Young1.outputValues"/>
+        <IndexValueMapper name="Young3" indices="@Gel3.tetrahedronIndices" value="3e4" inputValues="@Young2.outputValues"/>
+        <IndexValueMapper name="Young4" indices="@Gel4.tetrahedronIndices" value="3e5" inputValues="@Young3.outputValues"/>
+        <TetrahedronFEMForceField youngModulus="@Young4.outputValues" poissonRatio="0.4"/>
+        <ConstantForceField forces="0.1 0 0" />
+        <UniformMass totalMass="0.3"/>
+
+
+        <BoxROI name="Surf1" box="-0.05 -0.05 0.2095 0.05 0.05 0.2105"  drawBoxes="false"/>
+        <BoxROI name="Surf2" box="-0.05 -0.05 0.2245 0.05 0.05 0.2255"  drawBoxes="false"/>
+        <BoxROI name="Surf3" box="-0.05 -0.05 0.2445 0.05 0.05 0.2455"  drawBoxes="false"/>
+        <BoxROI name="Surf4" box="-0.05 -0.05 0.2595 0.05 0.05 0.2605"  drawBoxes="false"/>
+       
+        <Node name="Surfaces">
+            <Node name="Surface1">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Surf1.trianglesInROI"/>
+                <TriangleSetTopologyModifier name="Modifier"/>
+                <MechanicalObject name="dofs"/>
+                <IdentityMapping name="SurfaceMapping"/>
+            </Node>
+
+            <Node name="Surface2">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Surf2.trianglesInROI"/>
+                <TriangleSetTopologyModifier name="Modifier"/>
+                <MechanicalObject name="dofs"/>
+                <IdentityMapping name="SurfaceMapping"/>
+            </Node>
+
+            <Node name="Surface3">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Surf3.trianglesInROI"/>
+                <TriangleSetTopologyModifier name="Modifier"/>
+                <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
+                <IdentityMapping name="SurfaceMapping"/>
+            </Node>
+
+            <Node name="Surface4">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Surf4.trianglesInROI"/>
+                <TriangleSetTopologyModifier name="Modifier"/>
+                <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
+                <IdentityMapping name="SurfaceMapping"/>
+            </Node>
+        </Node>
+
+        <Node name="Visual">
+            <Node name="VisualGel1" activated="1">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Gel1.trianglesInROI"/>
+                <OglModel color="0 0.7 1 0.2" name="visualModel"/>
+                <BarycentricMapping name="VisualMapping"/>
+            </Node>
+            <Node name="VisualGel2" activated="1">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Gel2.trianglesInROI"/>
+                <OglModel color="0.8 0.3 1 0.2" name="visualModel"/>
+                <BarycentricMapping name="VisualMapping"/>
+            </Node>
+            <Node name="VisualGel3" activated="1">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Gel3.trianglesInROI"/>
+                <OglModel color="0.2 0.6 0.5 0.2" name="visualModel"/>
+                <BarycentricMapping name="VisualMapping"/>
+            </Node>
+            <Node name="VisualGel4" activated="1">
+                <TriangleSetTopologyContainer name="Container" triangles="@../../Gel4.trianglesInROI"/>
+                <OglModel color="1 1 0.2 0.2" name="visualModel"/>
+                <BarycentricMapping name="VisualMapping"/>
+            </Node>
+        </Node>
+        <LinearSolverConstraintCorrection linearSolver="@precond"/>
+    </Node>
+
+
+</Node>
+

@@ -20,6 +20,7 @@ The differences are in the way the global system matrix is built and solved:
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
 
     <Node name="DeformableObject">
 
@@ -29,7 +30,7 @@ The differences are in the way the global system matrix is built and solved:
             Iterative linear solver using the template parameter CompressedRowSparseMatrixMat3x3d.
             It means the global system matrix is built explicitly using 3x3 bloc entries, and solved iteratively.
          -->
-        <CGLinearSolver iterations="1000" tolerance="1e-9" threshold="1e-9" template="CompressedRowSparseMatrixMat3x3d"/>
+        <CGLinearSolver iterations="1000" tolerance="1e-9" threshold="1e-9" template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <TetrahedronSetTopologyContainer src="@loader" name="topologyContainer"/>

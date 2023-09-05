@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTFACTORY_H
-#define SOFA_CORE_OBJECTFACTORY_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/NameDecoder.h>
+#include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -44,7 +40,6 @@ namespace core
  *  \see RegisterObject for how new classes should be registered.
  *
  */
-
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
@@ -326,8 +321,8 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        std::string classname = sofa::helper::NameDecoder::getClassName<RealObject>();
-        std::string templatename = sofa::helper::NameDecoder::getTemplateName<RealObject>();
+        const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
+        const std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
@@ -338,9 +333,4 @@ public:
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
     operator int();
 };
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

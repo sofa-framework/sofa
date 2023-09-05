@@ -21,50 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <SofaCUDA/config.h>
 
-
-namespace sofa::component::solidmechanics::tensormass
-{
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::initNeighbourhoodPoints();
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::initNeighbourhoodPoints();
-#endif
-
-inline int& TetrahedralTensorMassForceField_nbMaxEdgesPerNode()
-{
-	static int nbMaxEdgesPerNode = 0;
-	return nbMaxEdgesPerNode;
-}
-
-// WARNING: we do the following because we cannot instantiate a CudaVector (calls cuda functions) during the load of the dynamic library on Windows (its a bug leading to a stale)
-
-inline sofa::gpu::cuda::CudaVector<int>& TetrahedralTensorMassForceField_neighbourhoodPoints()
-{
-	static sofa::gpu::cuda::CudaVector<int> neighbourhoodPoints;
-	return neighbourhoodPoints;
-}
-
-inline sofa::gpu::cuda::CudaVector<float>& TetrahedralTensorMassForceField_contribEdge()
-{
-	static sofa::gpu::cuda::CudaVector<float> contribEdge;
-	return contribEdge;
-}
-
-} // namespace sofa::component::solidmechanics::tensormass
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.h")

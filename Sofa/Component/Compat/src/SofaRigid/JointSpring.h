@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/JointSpring.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/JointSpring.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using JointSpring = sofa::component::solidmechanics::spring::JointSpring<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/JointSpring.h")

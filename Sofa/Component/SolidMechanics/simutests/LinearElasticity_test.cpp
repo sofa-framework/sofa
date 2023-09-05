@@ -42,6 +42,7 @@
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
 #include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
 
@@ -91,6 +92,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     root->setAnimate(false);
     root->setDt(0.05);
 
+    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
 
     // GenerateCylinder object
     typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");
@@ -100,7 +102,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     eng->f_resolutionRadial=resolutionRadial;
     eng->f_resolutionHeight=resolutionHeight;
     // TetrahedronSetTopologyContainer object
-    typename sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer>(root,"Container1");
+    const typename sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer>(root,"Container1");
     sofa::modeling::setDataLink(&eng->f_tetrahedra,&container1->d_tetrahedron);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&container1->d_initPoints);
     container1->d_createTriangleArray=true;
@@ -108,7 +110,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     typename sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 
     // CGLinearSolver
-    typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
+    const typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
     cgLinearSolver->d_maxIter.setValue(maxIter);
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
@@ -197,11 +199,11 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void SetUp()
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        size_t resolutionCircumferential=7;
-        size_t  resolutionRadial=3;
-        size_t  resolutionHeight=7;
-        size_t maxIteration=3000; // maximum iteration for the CG.
+        simulation = sofa::simulation::getSimulation();
+        const size_t resolutionCircumferential=7;
+        const size_t  resolutionRadial=3;
+        const size_t  resolutionHeight=7;
+        const size_t maxIteration=3000; // maximum iteration for the CG.
 
         tractionStruct= createCylinderTractionScene<_DataTypes>(resolutionCircumferential,resolutionRadial,
             resolutionHeight,maxIteration);
@@ -227,7 +229,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     }
     bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
 
-        sofa::simulation::getSimulation()->init(tractionStruct.root.get());
+        sofa::simulation::node::initRoot(tractionStruct.root.get());
 
         size_t i,j,k;
         for (k=0;k<sizeYoungModulusArray;++k) {
@@ -241,17 +243,15 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                 for (i=0;i<sizePressureArray;++i) {
                     // set the pressure on the top part
                     Real pressure= pressureArray[i];
-                    tractionStruct.forceField.get()->pressure=Coord(0,0,pressure);
 
-                    // reset simulation and init the triangle pressure forcefield
-                    sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
-                    // sofa::simulation::getSimulation()->init(tractionStruct.root.get());
-                    tractionStruct.forceField.get()->init();
+                    tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
+                    sofa::simulation::node::reset(tractionStruct.root.get());
+                    
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do one step of the static solver
-                    sofa::simulation::getSimulation()->animate(tractionStruct.root.get(),0.5);
+                    sofa::simulation::node::animate(tractionStruct.root.get(), 0.5_sreal);
 
                     // Get the simulated final position of that vertex
                     Coord p1=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
@@ -284,7 +284,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void TearDown()
     {
         if (tractionStruct.root!=nullptr)
-            sofa::simulation::getSimulation()->unload(tractionStruct.root);
+            sofa::simulation::node::unload(tractionStruct.root);
     }
 
 };

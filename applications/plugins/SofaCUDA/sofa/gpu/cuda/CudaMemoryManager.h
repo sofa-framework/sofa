@@ -30,13 +30,7 @@
 #include <sofa/gl/gl.h>
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 //CPU MemoryManager
@@ -46,9 +40,9 @@ class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 
 public :
 
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = CudaMemoryManager<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
 
@@ -180,10 +174,6 @@ public :
     static device_pointer null() {return NULL;}
     static bool isNull(device_pointer p) {return p==NULL;}
 };
-
-}
-
-}
 
 }
 

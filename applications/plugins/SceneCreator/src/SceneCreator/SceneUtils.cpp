@@ -55,7 +55,6 @@ using type::vector;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
-using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
 

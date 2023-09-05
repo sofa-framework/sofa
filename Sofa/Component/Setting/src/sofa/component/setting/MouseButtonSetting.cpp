@@ -30,7 +30,7 @@ namespace sofa::component::setting
 MouseButtonSetting::MouseButtonSetting():
     button(initData(&button, "button", "Mouse button used"))
 {
-    sofa::helper::OptionsGroup buttonGroup(3,"Left","Middle","Right");
+    const sofa::helper::OptionsGroup buttonGroup{"Left","Middle","Right"};
     button.setValue(buttonGroup);
 }
 

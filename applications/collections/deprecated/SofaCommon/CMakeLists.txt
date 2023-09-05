@@ -7,7 +7,6 @@ set(SOFACOMMON_MODULES
     SofaRigid
     SofaDeformable
     SofaObjectInteraction
-    SofaMeshCollision
     SofaEngine
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver

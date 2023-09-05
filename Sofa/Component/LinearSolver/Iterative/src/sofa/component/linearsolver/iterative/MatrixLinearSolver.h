@@ -34,6 +34,8 @@
 #include <sofa/linearalgebra/DiagonalMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSystem[GraphScattered].h>
 
 #if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
@@ -182,6 +184,8 @@ public:
     MatrixLinearSolver();
     ~MatrixLinearSolver() override ;
 
+    void init() override;
+
     /// Reset the current linear system.
     void resetSystem() override;
 
@@ -198,9 +202,6 @@ public:
     /// Rebuild the system using a mass and force factor
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
 
-    /// Set the linear system matrix (only use for bench)
-    void setSystemMatrix(Matrix* matrix);
-
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v) override;
 
@@ -209,28 +210,31 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override { return linearSystem.systemMatrix; }
+    Matrix* getSystemMatrix() override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemRHVector() { return linearSystem.systemRHVector; }
+    Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemLHVector() { return linearSystem.systemLHVector; }
+    Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    linearalgebra::BaseMatrix* getSystemBaseMatrix() override { return linearSystem.systemMatrix; }
-
-    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem.matrixAccessor; }
+    linearalgebra::BaseMatrix* getSystemBaseMatrix() override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemRHBaseVector() override { return linearSystem.systemRHVector; }
+    linearalgebra::BaseVector* getSystemRHBaseVector() override { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemLHBaseVector() override { return linearSystem.systemLHVector; }
+    linearalgebra::BaseVector* getSystemLHBaseVector() override { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
+
+    /// Returns the linear system component associated to the linear solver
+    sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const { return l_linearSystem.get(); }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
+
+    /// Apply the solution of the system to all the objects
+    void applySystemSolution();
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
@@ -295,6 +299,21 @@ public:
 
 protected:
 
+    virtual void checkLinearSystem();
+
+    /**
+     * Check if compatible linear systems are available in the current context. Otherwise, a linear
+     * system of type TLinearSystemType is created, with a warning to the user.
+     *
+     * @tparam TLinearSystemType Type of linear system created if no linear system found in the
+     * current context.
+     */
+    template<class TLinearSystemType>
+    void doCheckLinearSystem();
+
+    template<class TLinearSystemType>
+    void createDefaultLinearSystem();
+
     using BaseMatrixLinearSolver<Matrix, Vector>::partial_solve;
 
     /// newPartially solve the system
@@ -354,6 +373,13 @@ protected:
 
     SReal currentMFactor, currentBFactor, currentKFactor;
 
+protected:
+    SingleLink<
+        MatrixLinearSolver<Matrix,Vector,NoThreadManager>,
+        sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>,
+        BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK
+    > l_linearSystem;
+
 };
 
 //////////////////////////////////////////////////////////////
@@ -391,13 +417,10 @@ template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::rebuildSystem(SReal massFactor, SReal forceFactor);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::solveSystem();
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applySystemSolution();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
@@ -406,22 +429,19 @@ template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-const core::behavior::MultiMatrixAccessor* MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::getSystemMultiMatrixAccessor() const;
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMatrix(GraphScatteredMatrix * matrix);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f);
+
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::checkLinearSystem();
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;

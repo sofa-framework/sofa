@@ -105,14 +105,14 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
-        simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
+        simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
     void TearDown() override
     {
         if (root!=nullptr)
-            simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
     void createSceneGraph(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms)
@@ -162,7 +162,7 @@ public:
                  MassType expectedTotalMass, MassType expectedMassDensity, const VecMass& expectedVMass, const VecMass& expectedEMass)
     {
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);
-        simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         check(expectedTotalMass, expectedMassDensity, expectedVMass, expectedEMass);
     }
 
@@ -182,7 +182,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' />                                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -222,7 +222,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='2.0' />                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -264,7 +264,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' />                                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -307,7 +307,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -329,10 +329,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
             EXPECT_EQ(mass->getVertexMass()[0], 1.0);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0_sreal);
         }
 
         return ;
@@ -356,7 +356,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
     
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -366,9 +366,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 ); 
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0); // 8 hexa
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0)); // 8 hexa
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
         }
 
         return ;
@@ -388,7 +388,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -399,9 +399,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
         }
 
         return ;
@@ -421,7 +421,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -432,9 +432,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05_sreal);
         }
 
         return ;
@@ -456,7 +456,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='-2.0' />                                              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -466,9 +466,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -487,7 +487,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='-1.0' />                                            "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -497,9 +497,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -518,7 +518,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0 4.0' />                                         "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -528,9 +528,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -550,7 +550,7 @@ public:
                 "               vertexMass='1 -1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -560,9 +560,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -581,7 +581,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 2' />                                  "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -591,9 +591,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -616,7 +616,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -626,9 +626,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -649,7 +649,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -659,9 +659,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125_sreal);
         }
 
         return ;
@@ -692,7 +692,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -709,10 +709,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], SReal(0.25/3.0) );
         }
         return ;
     }
@@ -736,7 +736,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -746,10 +746,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[1], 0.1 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[1], 0.1_sreal);
         }
 
         return ;
@@ -774,7 +774,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -784,9 +784,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(2.0/3.0) );
         }
 
         return ;
@@ -811,7 +811,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -822,9 +822,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0_sreal);
         }
 
         return ;
@@ -854,7 +854,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -864,9 +864,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -891,7 +891,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -902,9 +902,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -929,7 +929,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -940,9 +940,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(2.0/3.0) );
         }
 
         return ;
@@ -970,7 +970,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -980,9 +980,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1007,7 +1007,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1017,9 +1017,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1044,7 +1044,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1054,9 +1054,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1081,7 +1081,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1091,9 +1091,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1117,7 +1117,7 @@ public:
                 "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1127,9 +1127,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1158,7 +1158,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1168,9 +1168,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1197,7 +1197,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1207,9 +1207,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -1255,7 +1255,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1289,8 +1289,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0._sreal);
         }
         
         // -- remove hexahedron id: 0 -- 
@@ -1298,7 +1298,7 @@ public:
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
-        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0_sreal);
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1311,15 +1311,15 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove hexahedron id: 0 --
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 25);
         EXPECT_EQ(eMasses.size(), 84);
-        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 6.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 6.0_sreal);
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1332,8 +1332,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
         
         // -- remove hexahedron id: 0, 1 --
@@ -1354,8 +1354,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[20], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[20], 0._sreal);
         }
 
         // -- remove hexahedron id: 0, 1, 2, 3 --
@@ -1412,7 +1412,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1447,8 +1447,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
         // -- remove tetrahedron id: 0 -- 
@@ -1469,8 +1469,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1491,8 +1491,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1514,8 +1514,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
         // -- remove tetrahedron id: 0, 1 --
@@ -1565,7 +1565,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1600,8 +1600,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0._sreal);
         }
 
         // -- remove quad id: 0 -- 
@@ -1622,8 +1622,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove quad id: 0 --
@@ -1643,8 +1643,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove quad id: 0, 1 --
@@ -1696,7 +1696,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1731,8 +1731,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1754,8 +1754,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0 --
@@ -1775,8 +1775,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0, 1 --
@@ -1797,8 +1797,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0, 1, 2, 3 --
@@ -1850,7 +1850,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         ASSERT_NE(mass, nullptr);
@@ -1931,10 +1931,10 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
     positions.push_back(Coord(0.0f, 1.0f, 0.0f));
 
-    TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
+    const TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
     topologyContainer->addTriangle(0, 1, 2);
 
-    TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType surface = 0.5;
@@ -1955,10 +1955,10 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     positions.push_back(Coord(1.0f, 1.0f, 0.0f));
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
 
-    QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
+    const QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
     topologyContainer->addQuad(0, 1, 2, 3);
 
-    QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType surface = 1.0;
@@ -1978,10 +1978,10 @@ TEST_F(MeshMatrixMass3_test, singleTetrahedron)
     positions.push_back(Coord(1.0f, 0.0f, 0.0f));
     positions.push_back(Coord(0.0f, 0.0f, 1.0f));
 
-    TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
+    const TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
     topologyContainer->addTetra(0, 1, 2, 3);
 
-    TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType volume = MassType(1.0/3.0) * 0.5; // V = 1/3 * B * h
@@ -2005,10 +2005,10 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     positions.push_back(Coord(1.0f, 1.0f, 1.0f));
     positions.push_back(Coord(0.0f, 1.0f, 1.0f));
 
-    HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
+    const HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
     topologyContainer->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
 
-    HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    const HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
 
     static const MassType volume = 1.0;

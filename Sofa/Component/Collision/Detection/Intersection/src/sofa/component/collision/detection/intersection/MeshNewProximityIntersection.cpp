@@ -102,7 +102,7 @@ bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tr
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = NewProximityIntersection::doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
+    const int n = NewProximityIntersection::doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -120,7 +120,7 @@ int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
 int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts, e2.getIndex());
+    const int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -139,7 +139,7 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
     const Index id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
+    const int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
     if (n>0)
     {
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -156,7 +156,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts, e2.getIndex());
+    const int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -242,7 +242,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         return 0;
     }
 
-    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() &&
+    const bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() &&
         (e1.p1Index()==e2.p1Index() || e1.p1Index()==e2.p2Index() || e1.p1Index()==e2.p3Index() ||
          e1.p2Index()==e2.p1Index() || e1.p2Index()==e2.p2Index() || e1.p2Index()==e2.p3Index() ||
          e1.p3Index()==e2.p1Index() || e1.p3Index()==e2.p2Index() || e1.p3Index()==e2.p3Index());
@@ -270,8 +270,8 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const Index id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
 
     bool useNormal = true;
-    bool bothSide1 = e1.getCollisionModel()->d_bothSide.getValue();
-    bool bothSide2 = e2.getCollisionModel()->d_bothSide.getValue();
+    const bool bothSide1 = e1.getCollisionModel()->d_bothSide.getValue();
+    const bool bothSide2 = e2.getCollisionModel()->d_bothSide.getValue();
 
 
     if(bothSide1 && bothSide2)

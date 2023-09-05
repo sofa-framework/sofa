@@ -29,14 +29,10 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , S(nullptr), N(nullptr)
-    , d_typePermutation(initData(&d_typePermutation, "permutation", "Type of fill reducing permutation"))
-{   
-    sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
-    d_typePermutationOptions.setSelectedItem(0); // default None
-    d_typePermutation.setValue(d_typePermutationOptions);
-}
+    : S(nullptr), N(nullptr)
+    , d_typePermutation(initData(&d_typePermutation, {"None", "SuiteSparse", "METIS"},
+        "permutation", "Type of fill reducing permutation"))
+{}
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
@@ -56,19 +52,31 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vec
     {
     case 0://None->identity
     case 1://SuiteSparse
-
-        cs_ipvec (n, S->Pinv,  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
-        cs_lsolve (N->L, tmp.data() );			//x = L\x
-        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-        cs_pvec (n, S->Pinv, tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        if(N)
+        {
+            cs_ipvec (n, S->Pinv,  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
+            cs_lsolve (N->L, tmp.data() );			//x = L\x
+            cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+            cs_pvec (n, S->Pinv, tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        }
+        else
+        {
+            msg_error() << "Cannot solve system due to invalid factorization";
+        }
         break;
 
     case 2://METIS
-
-        cs_ipvec (n, perm.data(),  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
-        cs_lsolve (N->L, tmp.data() );			//x = L\x
-        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-        cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        if(N)
+        {
+            cs_ipvec (n, perm.data(),  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
+            cs_lsolve (N->L, tmp.data() );			//x = L\x
+            cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+            cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        }
+        else
+        {
+            msg_error() << "Cannot solve system due to invalid factorization";
+        }
         break;
 
     default:
@@ -107,7 +115,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         switch (d_typePermutation.getValue().getSelectedId() )
         {
             case 0:
-            default:// None->identity 
+            default:// None->identity
                 suiteSparseFactorization(false);
                 break;
 
@@ -120,19 +128,20 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
                 {
                     perm.resize(A.n);
                     iperm.resize(A.n);
-                    
+
                     fillReducingPermutation( A , iperm.data(), perm.data() ); // compute the fill reducing permutation
                 }
-                
+
                 permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
-                
-                if ( notSameShape ) 
-                { 
+
+                if ( notSameShape )
+                {
                     if (S) cs_sfree(S);
-                    S = symbolic_Chol( permuted_A ); 
-                } // symbolic analysis 
-        
-                N = cs_chol (permuted_A, S) ;		// numeric Cholesky factorization 
+                    S = symbolic_Chol( permuted_A );
+                } // symbolic analysis
+
+                N = cs_chol (permuted_A, S) ;		// numeric Cholesky factorization
+                assert(N);
 
                 cs_free(permuted_A);
                 break;
@@ -158,6 +167,18 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 }
 
 template <class TMatrix, class TVector>
+void SparseCholeskySolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit1::parse(arg);
+}
+
+template <class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix, TVector>::suiteSparseFactorization(bool applyPermutation)
 {
     if( notSameShape )
@@ -169,7 +190,11 @@ void SparseCholeskySolver<TMatrix, TVector>::suiteSparseFactorization(bool apply
         const auto order = applyPermutation ? 0 : -1;
         S = cs_schol (&A, order);
     }
+    assert(S);
+    assert(S->cp);
+    assert(S->parent);
     N = cs_chol (&A, S) ;		// numeric Cholesky factorization
+    msg_error_when(!N) << "Matrix could not be factorized: possibly not positive-definite";
 }
 
 template<class TMatrix, class TVector>

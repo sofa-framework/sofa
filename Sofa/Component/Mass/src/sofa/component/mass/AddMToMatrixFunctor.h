@@ -29,25 +29,25 @@ namespace sofa::component::mass
 {
 
 /**
- * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
+ * Helper struct to add entries in a matrix, based on the type of Mass (MassType).
  *
  * This class is specialized for Rigid types.
  *
  * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
  * MassType is a floating point.
  */
-template<class Deriv, class MassType>
+template<class Deriv, class MassType, class MatrixType>
 struct AddMToMatrixFunctor
 {
     static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
 
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
+    void operator()(MatrixType * mat, MassType mass, int pos, MassType fact)
     {
         this->operator()(mat, mass, pos, pos, fact);
     }
 
     ///Method to add non-diagonal terms
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
+    void operator()(MatrixType * mat, MassType mass, int posRow, int posColumn, MassType fact)
     {
         const auto m = mass * fact;
         for (unsigned int i = 0; i < Deriv::total_size; ++i)
@@ -58,10 +58,10 @@ struct AddMToMatrixFunctor
 /**
  * Specialization for Rigid types
  */
-template<sofa::Size N, typename Real>
-struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
+template<sofa::Size N, typename Real, class MatrixType>
+struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real>, MatrixType >
 {
-    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
+    void operator()(MatrixType * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
     {
         const auto m = mass.mass * fact;
         for (sofa::Size i = 0; i < N; ++i)

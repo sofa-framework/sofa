@@ -25,11 +25,11 @@
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
-#include <sofa/gpu/cuda/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
-#include <sofa/gpu/cuda/CudaRigidMapping.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.h>
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>
 
 
 
@@ -107,9 +107,9 @@ public:
             this->outmodel->resize(n);
         if (this->mapping)
         {
-            this->mapping->points.beginEdit()->fastResize(n);
-            this->mapping->rotatedPoints.fastResize(n);
-            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
+            this->mapping->d_points.beginEdit()->fastResize(n);
+            this->mapping->m_rotatedPoints.fastResize(n);
+            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->d_points.beginEdit()->deviceWrite());
         }
         else
         {

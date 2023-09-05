@@ -23,7 +23,7 @@ namespace engine
 
 using type::vector;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
@@ -37,7 +37,7 @@ public:
     typedef sofa::type::Vec3d Coord;
     typedef vector<Vec3d> VecCoord;
     typedef vector<pixCoord> VecPixCoord;
-    
+
     ContourImageToolBoxNoTemplated():LabelImageToolBox()
         , d_ip(initData(&d_ip, "imageposition",""))
         , d_p(initData(&d_p, "3Dposition",""))
@@ -48,9 +48,9 @@ public:
         , threshold(initData(&threshold,"threshold",""))
         , radius(initData(&radius,"radius",""))
     {
-    
+
     }
-    
+
     void init() override
     {
         d_ip.setGroup("PixelClicked");
@@ -61,17 +61,17 @@ public:
         addOutput(&d_vecCoord);
         addOutput(&d_vecPixCoord);
     }
-    
+
     sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
         return new sofa::gui::qt::ContourImageToolBoxAction(this,parent);
     }
-    
-    
+
+
     virtual void segmentation()=0;
     virtual void getImageSize(unsigned int& x,unsigned int& y,unsigned int &z)=0;
-     
-    
+
+
 public:
     Data<pixCoord> d_ip;
     Data<Vec3d> d_p;
@@ -82,7 +82,7 @@ public:
 
     Data<double> threshold;
     Data<int> radius;
-    
+
 };
 
 
@@ -92,9 +92,9 @@ class SOFA_IMAGE_GUI_API ContourImageToolBox: public ContourImageToolBoxNoTempla
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ContourImageToolBox,_ImageTypes),ContourImageToolBoxNoTemplated);
-    
+
     typedef ContourImageToolBoxNoTemplated Inherited;
-    
+
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
@@ -105,15 +105,15 @@ public:
     typedef sofa::defaulttype::ImageLPTransform<SReal> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    
+
     ContourImageToolBox():ContourImageToolBoxNoTemplated()
         , d_image(initData(&d_image,"image","Input image"))
         , d_transform(initData(&d_transform,"transform","Transform"))
         , d_imageOut(initData(&d_imageOut,"imageOut","Image containing the contour"))
     {
-    
+
     }
-    
+
     void init() override
     {
         Inherited::init();
@@ -127,8 +127,8 @@ public:
 
         segmentation();
     }
-    
-    
+
+
     void segmentation() override
     {
 
@@ -394,14 +394,14 @@ public:
 
         const imCoord dim=rimage->getDimensions();
         Vec<8,Coord> p;
-        p[0]=Vector3(0,0,0);
-        p[1]=Vector3(dim[0]-1,0,0);
-        p[2]=Vector3(0,dim[1]-1,0);
-        p[3]=Vector3(dim[0]-1,dim[1]-1,0);
-        p[4]=Vector3(0,0,dim[2]-1);
-        p[5]=Vector3(dim[0]-1,0,dim[2]-1);
-        p[6]=Vector3(0,dim[1]-1,dim[2]-1);
-        p[7]=Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
+        p[0]=Vec3(0,0,0);
+        p[1]=Vec3(dim[0]-1,0,0);
+        p[2]=Vec3(0,dim[1]-1,0);
+        p[3]=Vec3(dim[0]-1,dim[1]-1,0);
+        p[4]=Vec3(0,0,dim[2]-1);
+        p[5]=Vec3(dim[0]-1,0,dim[2]-1);
+        p[6]=Vec3(0,dim[1]-1,dim[2]-1);
+        p[7]=Vec3(dim[0]-1,dim[1]-1,dim[2]-1);
 
         Coord tp=rtransform->fromImage(p[0]);
         BB[0]=tp;

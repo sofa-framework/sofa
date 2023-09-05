@@ -588,16 +588,16 @@ void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int 
 {
     if (flip)
     {
-        int tmp = p3; p3 = p4; p4 = tmp;
+        const int tmp = p3; p3 = p4; p4 = tmp;
     }
-    Point a = outP[p2] - outP[p1];
-    Point b = outP[p3] - outP[p1];
-    Point c = outP[p4] - outP[p1];
-    Real vol6 = a*(b.cross(c));
+    const Point a = outP[p2] - outP[p1];
+    const Point b = outP[p3] - outP[p1];
+    const Point c = outP[p4] - outP[p1];
+    const Real vol6 = a*(b.cross(c));
     if (vol6 < 0)
     {
         msg_info() << __FILE__ << "(" << line << "): WARNING: final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
-        int tmp = p3; p3 = p4; p4 = tmp;
+        const int tmp = p3; p3 = p4; p4 = tmp;
     }
     outT.push_back(Tetra(p1,p2,p3,p4));
 }
@@ -608,21 +608,21 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
     // make the smallest indice the first vertex
     while(p1 > p2 || p1 > p3 || p1 > p4)
     {
-        int tmp = p1; p1 = p2; p2 = p3; p3 = p4; p4 = tmp; flip = !flip;
+        const int tmp = p1; p1 = p2; p2 = p3; p3 = p4; p4 = tmp; flip = !flip;
     }
     while(q1 > q2 || q1 > q3 || q1 > q4)
     {
-        int tmp = q1; q1 = q2; q2 = q3; q3 = q4; q4 = tmp; flip = !flip;
+        const int tmp = q1; q1 = q2; q2 = q3; q3 = q4; q4 = tmp; flip = !flip;
     }
 
     // make the second smallest indice the second vertex
     while(p2 > p3 || p2 > p4)
     {
-        int tmp = p2; p2 = p3; p3 = p4; p4 = tmp; //flip = !flip;
+        const int tmp = p2; p2 = p3; p3 = p4; p4 = tmp; //flip = !flip;
     }
     while(q2 > q3 || q2 > q4)
     {
-        int tmp = q2; q2 = q3; q3 = q4; q4 = tmp; //flip = !flip;
+        const int tmp = q2; q2 = q3; q3 = q4; q4 = tmp; //flip = !flip;
     }
 
     // the tetrahedra are flipped if the last edge is flipped
@@ -633,20 +633,20 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
 void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line)
 {
     {
-        Point a = outP[p2] - outP[p1];
-        Point b = outP[p3] - outP[p1];
-        Point c = outP[p4] - outP[p1];
-        Real vol6 = a*(b.cross(c));
+        const Point a = outP[p2] - outP[p1];
+        const Point b = outP[p3] - outP[p1];
+        const Point c = outP[p4] - outP[p1];
+        const Real vol6 = a*(b.cross(c));
         if (vol6 < 0)
         {
             msg_info() << "line("<<line<<"): grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
-            int tmp = p3; p3 = p4; p4 = tmp;
+            const int tmp = p3; p3 = p4; p4 = tmp;
         }
     }
-    int in1 = pInside[p1];
-    int in2 = pInside[p2];
-    int in3 = pInside[p3];
-    int in4 = pInside[p4];
+    const int in1 = pInside[p1];
+    const int in2 = pInside[p2];
+    const int in3 = pInside[p3];
+    const int in4 = pInside[p4];
     int nneg = 0, npos = 0, nzero = 0;
     int pneg[4];
     int ppos[4];
@@ -663,7 +663,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     else if (npos == 1)
     {
         // only one tetra, move the negative points
-        int p0 = ppos[0];
+        const int p0 = ppos[0];
         if (in1 < 0) p1 = getSplitPoint(p1,p0);
         if (in2 < 0) p2 = getSplitPoint(p2,p0);
         if (in3 < 0) p3 = getSplitPoint(p3,p0);
@@ -673,11 +673,11 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     else if (npos == 2 && nneg == 1)
     {
         // two tetrahedra
-        int p0 = pzero[0];
-        int cut1 = getSplitPoint(pneg[0],ppos[0]);
-        int cut2 = getSplitPoint(pneg[0],ppos[1]);
-        bool flipD = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
-        bool flipT = needFlip(p0, ppos[0], ppos[1], pneg[0], p1,p2,p3,p4);
+        const int p0 = pzero[0];
+        const int cut1 = getSplitPoint(pneg[0],ppos[0]);
+        const int cut2 = getSplitPoint(pneg[0],ppos[1]);
+        const bool flipD = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
+        const bool flipT = needFlip(p0, ppos[0], ppos[1], pneg[0], p1,p2,p3,p4);
         if (!flipD)
         {
             addFinalTetra(outT,outP, p0,ppos[0],ppos[1],cut2, flipT,__LINE__);
@@ -691,13 +691,13 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     }
     else if (npos == 2 && nneg == 2)
     {
-        int cut1 = getSplitPoint(pneg[0],ppos[0]);
-        int cut2 = getSplitPoint(pneg[0],ppos[1]);
-        int cut3 = getSplitPoint(pneg[1],ppos[0]);
-        int cut4 = getSplitPoint(pneg[1],ppos[1]);
-        bool flipA = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
-        bool flipB = flipDiag(outP, ppos[0],ppos[1],cut4,cut3,pneg[1]);
-        bool flipT = needFlip(ppos[0],ppos[1],pneg[0],pneg[1], p1,p2,p3,p4);
+        const int cut1 = getSplitPoint(pneg[0],ppos[0]);
+        const int cut2 = getSplitPoint(pneg[0],ppos[1]);
+        const int cut3 = getSplitPoint(pneg[1],ppos[0]);
+        const int cut4 = getSplitPoint(pneg[1],ppos[1]);
+        const bool flipA = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
+        const bool flipB = flipDiag(outP, ppos[0],ppos[1],cut4,cut3,pneg[1]);
+        const bool flipT = needFlip(ppos[0],ppos[1],pneg[0],pneg[1], p1,p2,p3,p4);
         if (!flipA && flipB)
         {
             addFinalTetra(outT,outP, ppos[0],ppos[1],cut2,cut3, flipT,__LINE__);
@@ -718,11 +718,11 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     }
     else // npos == 3 && nneg == 1
     {
-        int cut1 = getSplitPoint(pneg[0],ppos[0]);
-        int cut2 = getSplitPoint(pneg[0],ppos[1]);
-        int cut3 = getSplitPoint(pneg[0],ppos[2]);
-        bool flip1 = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
-        bool flip2 = flipDiag(outP, ppos[1],ppos[2],cut3,cut2,pneg[0]);
+        const int cut1 = getSplitPoint(pneg[0],ppos[0]);
+        const int cut2 = getSplitPoint(pneg[0],ppos[1]);
+        const int cut3 = getSplitPoint(pneg[0],ppos[2]);
+        const bool flip1 = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
+        const bool flip2 = flipDiag(outP, ppos[1],ppos[2],cut3,cut2,pneg[0]);
         bool flip3 = flipDiag(outP, ppos[2],ppos[0],cut1,cut3,pneg[0]);
         if (flip1 == flip2 && flip2 == flip3)
         {
@@ -737,7 +737,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         if (!flip1 && flip2)    pc0 = cut2;
         else if (!flip2 && flip3)    pc0 = cut3;
         else /* (!flip3 && flip1) */ pc0 = cut1;
-        bool flipT = needFlip(pneg[0],ppos[0],ppos[1],ppos[2], p1,p2,p3,p4);
+        const bool flipT = needFlip(pneg[0],ppos[0],ppos[1],ppos[2], p1,p2,p3,p4);
         addFinalTetra(outT,outP, pp0, cut1, cut3, cut2, flipT,__LINE__);
         addFinalTetra(outT,outP, pc0, ppos[0], ppos[1], ppos[2], flipT,__LINE__);
         if (flip1 == flip2)    addFinalTetra(outT,outP, ppos[1], cut2, pp0, pc0, needFlip(ppos[1],pneg[0],pp0,(pp0 == ppos[0] ? ppos[2] : ppos[0]), p1,p2,p3,p4),__LINE__);

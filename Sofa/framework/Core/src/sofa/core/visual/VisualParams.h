@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_CORE_VISUAL_VISUALPARAMS_H
-#define SOFA_CORE_VISUAL_VISUALPARAMS_H
+#pragma once
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
@@ -45,7 +43,7 @@ enum
 class SOFA_CORE_API VisualParams : public ExecParams
 {
 public:
-	typedef sofa::type::fixed_array<int, 4> Viewport;
+    typedef sofa::type::fixed_array<int, 4> Viewport;
 
     /// The enumeration used to describe each step of the rendering.
     enum Pass
@@ -140,18 +138,6 @@ public:
     /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
     void getProjectionMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = double(m_projectionMatrix[i]); }
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
-    helper::visual::Transformation& sceneTransform() = delete;
-    
-    //SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
-    //const helper::visual::Transformation& sceneTransform() = delete;
-
-    //SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
-    //sofa::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
-
-    //SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
-    //sofa::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
-
     bool isSupported(unsigned int api) const
     {
         return (m_supportedAPIs & (1<<api)) != 0;
@@ -187,6 +173,3 @@ protected:
 };
 
 } // namespace sofa::core::visual
-
-
-#endif // SOFA_CORE_VISUAL_VISUALPARAMS_H

@@ -35,23 +35,18 @@ namespace core
 namespace objectmodel
 {
 
-BaseNode::BaseNode() : m_root(this)
-{
-}
+BaseNode::BaseNode()
+{}
 
 BaseNode::~BaseNode()
 {}
 
 BaseNode* BaseNode::getRoot() const
 {
-    return m_root;
+    const BaseNode* firstParent = getFirstParent();
+    if (!firstParent) return const_cast<BaseNode*>(this);
+    else return firstParent->getRoot();
 }
-
-void BaseNode::setRoot(BaseNode* newroot)
-{
-    m_root = newroot;
-}
-
 
 core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const
 {
@@ -111,7 +106,7 @@ std::string BaseNode::internalGetPathName() const {
 
 // path name representation of root as "/", as it is done for filesystems
 std::string BaseNode::getPathName() const {
-    Parents parents = getParents();
+    const Parents parents = getParents();
     if (parents.empty())
         return "/";
     return internalGetPathName();

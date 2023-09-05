@@ -207,18 +207,22 @@ DocBrowser::DocBrowser(RealGUI* g) : QDialog(g)
 
 void DocBrowser::loadHtml(const std::string& filename)
 {
-    bool showView = true ;
+    if (filename.empty())
+    {
+        return;
+    }
+
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
-    QUrl currenturl = m_htmlPage->page()->url() ;
+    const QUrl currenturl = m_htmlPage->page()->url() ;
 
     if(currenturl.isLocalFile() && currenturl.path() == asQStr(htmlfile))
     {
         return ;
     }
 
-    std::string extension=FileSystem::getExtension(filename);
+    const std::string extension=FileSystem::getExtension(filename);
     htmlfile.resize(htmlfile.size()-extension.size()-1);
     htmlfile+=".html";
 
@@ -228,6 +232,8 @@ void DocBrowser::loadHtml(const std::string& filename)
         return;
 
     m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
+
+    constexpr bool showView = true ;
     setVisible(showView);
 }
 
@@ -247,9 +253,9 @@ void DocBrowser::onLinkClicked(const QUrl& u)
 
     if( u.isLocalFile() && ! u.hasQuery() )
     {
-        QFileInfo theFile = u.toLocalFile() ;
-        std::string sofafile = asStr( theFile.absoluteDir().absoluteFilePath(u.toLocalFile()) );
-        std::string extension = FileSystem::getExtension(sofafile) ;
+        const QFileInfo theFile(u.toLocalFile());
+        const std::string sofafile = asStr( theFile.absoluteDir().absoluteFilePath(u.toLocalFile()) );
+        const std::string extension = FileSystem::getExtension(sofafile) ;
 
         /// Check if the path is pointing to a sofa scene. If so
         /// open the scene
@@ -268,15 +274,15 @@ void DocBrowser::goTo(const QUrl& u)
     msg_info("DocBrowser") << "Go to " << asStr(u.path()) ;
     if( u.isLocalFile() && u.hasQuery() )
     {
-        QUrlQuery q { u.query() } ;
+        const QUrlQuery q { u.query() } ;
         if( !q.hasQueryItem("sofafile") ) {
             msg_info("DocBrowser") << "Does not have associated sofa file. " ;
             return ;
         }
 
-        QFileInfo htmlfile = u.toLocalFile() ;
-        std::string sofafile = asStr( htmlfile.absoluteDir().absoluteFilePath(q.queryItemValue("sofafile")) );
-        std::string extension = FileSystem::getExtension(sofafile) ;
+        const QFileInfo htmlfile(u.toLocalFile());
+        const std::string sofafile = asStr( htmlfile.absoluteDir().absoluteFilePath(q.queryItemValue("sofafile")) );
+        const std::string extension = FileSystem::getExtension(sofafile) ;
 
         /// Check if the path is pointing to a sofa scene. If so
         /// open the scene

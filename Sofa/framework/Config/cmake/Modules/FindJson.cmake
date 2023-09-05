@@ -67,6 +67,11 @@ else()
         PATH_SUFFIXES
             nlohmann
             include/nlohmann
+        # If cross-compiling and typically use CMAKE_FIND_ROOT_PATH variable,
+        # each of its directory entry will be prepended to PATHS locations, and
+        # JSON_ROOT is set as an absolute path. So we have to disable this behavior
+        # for such external libs
+        NO_CMAKE_FIND_ROOT_PATH
         )
         
     if(JSON_INCLUDE_DIR)

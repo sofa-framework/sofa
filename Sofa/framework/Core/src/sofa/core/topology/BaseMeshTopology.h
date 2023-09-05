@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
+#pragma once
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
@@ -40,9 +33,6 @@ class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
-
-    SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type")
-    typedef DeprecatedAndRemoved index_type;
 
     typedef sofa::type::vector<Edge> 		        SeqEdges;
     typedef sofa::type::vector<Triangle>		    SeqTriangles;
@@ -66,12 +56,12 @@ public:
     typedef sofa::type::fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef sofa::type::fixed_array<EdgeID,12>    EdgesInHexahedron;
 
-    static EdgesInTriangle        InvalidEdgesInTriangles;
-    static EdgesInQuad            InvalidEdgesInQuad;
-    static TrianglesInTetrahedron InvalidTrianglesInTetrahedron;
-    static EdgesInTetrahedron     InvalidEdgesInTetrahedron;
-    static QuadsInHexahedron      InvalidQuadsInHexahedron;
-    static EdgesInHexahedron      InvalidEdgesInHexahedron;
+    static constexpr EdgesInTriangle        InvalidEdgesInTriangles       = type::makeHomogeneousArray<EdgesInTriangle>(sofa::InvalidID);
+    static constexpr EdgesInQuad            InvalidEdgesInQuad            = type::makeHomogeneousArray<EdgesInQuad>(sofa::InvalidID);
+    static constexpr TrianglesInTetrahedron InvalidTrianglesInTetrahedron = type::makeHomogeneousArray<TrianglesInTetrahedron>(sofa::InvalidID);
+    static constexpr EdgesInTetrahedron     InvalidEdgesInTetrahedron     = type::makeHomogeneousArray<EdgesInTetrahedron>(sofa::InvalidID);
+    static constexpr QuadsInHexahedron      InvalidQuadsInHexahedron      = type::makeHomogeneousArray<QuadsInHexahedron>(sofa::InvalidID);
+    static constexpr EdgesInHexahedron      InvalidEdgesInHexahedron      = type::makeHomogeneousArray<EdgesInHexahedron>(sofa::InvalidID);
 
     /// @}
 
@@ -323,11 +313,4 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::topology

@@ -111,8 +111,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         ///  node 1
         node = simu->createNewGraph("root");
@@ -132,12 +132,12 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         /// Load the scene
         node = simu->createNewGraph("root");
-        node = sofa::simulation::getSimulation()->load(filename.c_str());
+        node = sofa::simulation::node::load(filename.c_str());
 
         ///  Get mechanical object
         dof = node->get<DOF>(node->SearchDown);
@@ -157,7 +157,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
      * The change of potential energy is compared to the dot product between displacement and force.
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
-    void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
+    void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef, bool initScene = true )
     {
         if( !(flags & TEST_POTENTIAL_ENERGY) ) msg_warning("ForceFieldTest") << "Potential energy is not tested";
 
@@ -169,14 +169,17 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         std::size_t n = x.size();
 
         // copy the position and velocities to the scene graph
-        this->dof->resize(n);
+        this->dof->resize(static_cast<sofa::Size>(n));
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         sofa::testing::copyToData( xdof, x );
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities();
         sofa::testing::copyToData( vdof, v );
 
         // init scene and compute force
-        sofa::simulation::getSimulation()->init(this->node.get());
+        if (initScene)
+        {
+            sofa::simulation::node::initRoot(this->node.get());
+        }
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
@@ -264,7 +267,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         // check stiffness matrix: compare its product with dx to actual force change
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
-        Sqmat K( n*DataTypes::deriv_total_size, n*DataTypes::deriv_total_size );
+        const sofa::SignedIndex matrixSize = static_cast<sofa::SignedIndex>(n * DataTypes::deriv_total_size);
+        Sqmat K( matrixSize, matrixSize);
         sofa::core::behavior::SingleMatrixAccessor accessor( &K );
         mparams.setKFactor(1.0);
         force->addKToMatrix( &mparams, &accessor);

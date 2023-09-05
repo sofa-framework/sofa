@@ -166,7 +166,7 @@ public:
 
     /// Initialize the components
     void init(const sofa::core::ExecParams* params);
-    bool isInitialized() {return initialized;}
+    bool isInitialized() const {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
     /// Draw the objects (using visual visitors)
@@ -481,11 +481,6 @@ public:
         return getRoot()->getContext();
     }
 
-    Node* getRoot() const
-    {
-        return static_cast<Node*>(BaseNode::getRoot());
-    }
-
     Node* setDebug(bool);
     bool getDebug() const;
     void printComponents();
@@ -514,13 +509,13 @@ public:
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
 
-    virtual void bwdInit();
-
     /// Called after initialization to set the default value of the visual context.
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
     static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
+
+    SOFA_ATTRIBUTE_DEPRECATED_NODECREATENODE()
     static Node::SPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)

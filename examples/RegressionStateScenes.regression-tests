@@ -1,4 +1,10 @@
-# WARNING: 
+# Each line follows this format:
+# - Path to the scene file
+# - Number of steps to run
+# - Threshold when comparing states
+# - 1 if states under mappings must be tested, 0 otherwise
+# - 1 if states are compared only in the last time step, 0 if states are compared for all steps
+# WARNING:
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
@@ -10,54 +16,61 @@ Demos/chainHybridNoGroup.scn 100 1e-2 1 1
 Demos/collisionMultiple.scn 100 1e-4 1 1
 Demos/liver.scn 100 1e-4 1 1
 Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
+Demos/fallingBeamLagrangianCollision.scn 46 1e-7 1 1
 
-### Components scenes ###
-Components/collision/RuleBasedContactManager.scn 100 1e-4 0 1
-Components/constraint/BilateralInteractionConstraint_NNCG.scn 100 1e-4 0 1
-Components/constraint/BilateralInteractionConstraint_PGS.scn 100 1e-4 0 1
-Components/constraint/BilateralInteractionConstraint_UGS.scn 100 1e-4 0 1
-Components/constraint/FixedConstraint.scn 100 1e-4 0 1
-Components/constraint/FrictionContact.scn 100 1e-4 0 1
-Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
-Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4 0 1
-Components/forcefield/HexahedronFEMForceField.scn 300 1e-4 0 1
-Components/forcefield/HexahedronFEMForceFieldAndMass.scn 100 1e-4 0 1
-Components/forcefield/MeshSpringForceField.scn 300 1e-4 0 1
-Components/forcefield/QuadBendingFEMForceField.scn 300 1e-4 0 1
-Components/forcefield/TetrahedralCorotationalFEMForceField.scn 300 1e-4 0 1
-Components/forcefield/TetrahedronFEMForceField.scn 300 1e-4 0 1
-Components/forcefield/TetrahedronFEMForceField_assemble.scn 300 1e-4 0 1
-Components/forcefield/TetrahedronFEMForceField_plasticity.scn 300 1e-4 0 1
-Components/forcefield/TetrahedronHyperelasticityFEMForceField.scn 100 1e-4 0 1
-Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
-Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4 0 1
-Components/solver/EulerExplicitSolver/EulerExplicitSolver.scn 3000 1e-4 0 1
-Components/solver/EulerExplicitSolver/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
-Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1
-Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
-Components/topology/SparseGridTopology.scn 100 1e-4 0 1
-Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
-Components/mass/UniformMass.scn 100 1e-4 0 1
-Components/mass/DiagonalMass.scn 100 1e-4 0 1
-Components/mass/MeshMatrixMass.scn 100 1e-4 0 1
-Components/linearsolver/FEMBAR_CGLinearSolver.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_CGLinearSolver_assembled.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_EigenSparseQR.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
-Components/linearsolver/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
-Components/linearsolver/FEMBAR_SparseLUSolver.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_BlockJacobiPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_JacobiPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_NoPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_SSORPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_PCG_WarpPreconditioner.scn 100 1e-8 0 1
+
+### Component scenes ###
+Component/Collision/Response/RuleBasedContactManager.scn 100 1e-4 0 1
+Component/Collision/Response/FrictionContact.scn 100 1e-4 0 1
+Component/Constraint/Lagrangian/BilateralInteractionConstraint_NNCG.scn 100 1e-4 0 1
+Component/Constraint/Lagrangian/BilateralInteractionConstraint_PGS.scn 100 1e-4 0 1
+Component/Constraint/Lagrangian/BilateralInteractionConstraint_UGS.scn 100 1e-4 0 1
+Component/Constraint/Lagrangian/FrictionContact_LCP_with_friction.scn 500 1e-4 0 1
+Component/Constraint/Lagrangian/FrictionContact_LCP_without_friction.scn 500 1e-4 0 1
+Component/Constraint/Projective/FixedConstraint.scn 100 1e-4 0 1
+Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_EigenSparseQR.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
+Component/LinearSolver/Direct/FEMBAR_SparseLUSolver.scn 100 1e-8 0 1
+Component/LinearSolver/Iterative/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
+Component/LinearSolver/Iterative/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
+Component/LinearSolver/Iterative/FEMBAR_CGLinearSolver.scn 100 1e-8 0 1
+Component/LinearSolver/Iterative/FEMBAR_CGLinearSolver_assembled.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_BlockJacobiPreconditioner.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_JacobiPreconditioner.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_NoPreconditioner.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_SSORPreconditioner.scn 100 1e-8 0 1
+Component/LinearSolver/Preconditioner/FEMBAR_PCG_WarpPreconditioner.scn 100 1e-8 0 1
+Component/Mapping/NonLinear/DistanceMapping.scn 100 1e-8 0 1
+Component/Mapping/NonLinear/DistanceMultiMapping.scn 100 1e-8 0 1
+Component/Mapping/NonLinear/SquareDistanceMapping.scn 100 1e-8 0 1
+Component/Mass/UniformMass.scn 100 1e-4 0 1
+Component/Mass/DiagonalMass.scn 100 1e-4 0 1
+Component/Mass/MeshMatrixMass.scn 100 1e-4 0 1
+Component/MechanicalLoad/InteractionEllipsoidForceField.scn 100 1e-4 0 1
+Component/ODESolver/Forward/EulerExplicitSolver.scn 3000 1e-4 0 1
+Component/ODESolver/Forward/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
+Component/ODESolver/Backward/EulerImplicitSolver.scn 3000 1e-4 0 1
+Component/SolidMechanics/FEM/BeamFEMForceField.scn 100 1e-4 0 1
+Component/SolidMechanics/FEM/HexahedronFEMForceField.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/HexahedronFEMForceFieldAndMass.scn 100 1e-4 0 1
+Component/SolidMechanics/FEM/QuadBendingFEMForceField.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/TetrahedralCorotationalFEMForceField.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/TetrahedronFEMForceField.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/TetrahedronFEMForceField_assemble.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/TetrahedronFEMForceField_plasticity.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/TetrahedronHyperelasticityFEMForceField.scn 100 1e-4 0 1
+Component/SolidMechanics/FEM/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
+Component/SolidMechanics/Spring/FastTriangularBendingSprings.scn 100 1e-4 0 1
+Component/SolidMechanics/Spring/MeshSpringForceField.scn 300 1e-4 0 1
+Component/Topology/Mapping/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
+Component/Topology/Container/Grid/SparseGridTopology.scn 100 1e-4 0 1
+Component/Topology/Container/Grid/SparseGridRamificationTopology.scn 100 1e-4 0 1
 
 
 ### Benchmark scenes ###

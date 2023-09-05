@@ -41,11 +41,11 @@ BaseMechanicalState::~BaseMechanicalState()
 /// By default this method decompose the computation into multiple vOp calls.
 void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops)
 {
-    for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
+    for (const auto& op : ops)
     {
-        VecId r = it->first.getId(this);
-        const type::vector< std::pair< ConstMultiVecId, SReal > >& operands = it->second;
-        size_t nop = operands.size();
+        VecId r = op.first.getId(this);
+        const type::vector< std::pair< ConstMultiVecId, SReal > >& operands = op.second;
+        const size_t nop = operands.size();
         if (nop==0)
         {
             vOp(params, r);

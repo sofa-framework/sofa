@@ -30,20 +30,18 @@
 #include <sofa/simulation/BaseSimulationExporter.h>
 
 ///////////////////////////// FORWARD DECLARATION //////////////////////////////////////////////////
-namespace sofa {
-    namespace core {
-        namespace objectmodel {
-            class Event ;
-        }
-        namespace behavior {
-            class BaseMechanicalState;
-        }
-        namespace topology {
-            class BaseMeshTopology ;
-        }
-    }
+namespace sofa::core
+{
+namespace objectmodel {
+    class Event ;
 }
-
+namespace behavior {
+    class BaseMechanicalState;
+}
+namespace topology {
+    class BaseMeshTopology ;
+}
+}
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////

@@ -27,6 +27,7 @@
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::component::mechanicalload
@@ -176,6 +177,34 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
         }
     }
     this->contacts.endEdit();
+}
+
+template <class DataTypes>
+void SphereForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const Real fact = (Real)(-this->stiffness.getValue());
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& c : sofa::helper::getReadAccessor(contacts))
+    {
+        unsigned int p = c.index;
+        for (sofa::Index l = 0; l < Deriv::total_size; ++l)
+        {
+            for (sofa::Index k = 0; k < Deriv::total_size; ++k)
+            {
+                const SReal coef = (c.normal[l] * c.normal[k] * c.fact + (l == k ? (1 - c.fact) : (SReal)0.0)) * fact;
+                dfdx(p * Deriv::total_size + l, p * Deriv::total_size + k) += coef;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void SphereForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

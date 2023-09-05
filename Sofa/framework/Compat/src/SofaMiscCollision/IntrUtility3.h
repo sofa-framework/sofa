@@ -27,51 +27,8 @@
 #include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
 #define COLLISIONOBBCAPSULE_INTRUTILITY3
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrUtility3.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrUtility3.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_INTRUTILITY3
-
-namespace sofa::component::collision
-{
-	template <typename TReal>
-	using MyBox = collisionobbcapsule::detection::intersection::MyBox<TReal>;
-	template <typename Real>
-	using IntrConfiguration = collisionobbcapsule::detection::intersection::IntrConfiguration<Real>;
-	template <typename Real>
-	using CapIntrConfiguration = collisionobbcapsule::detection::intersection::CapIntrConfiguration<Real>;
-	template <typename Real>
-	using IntrUtil = collisionobbcapsule::detection::intersection::IntrUtil<Real>;
-	template <class Primitive1Class,class Primitive2Class>
-	using IntrAxis = collisionobbcapsule::detection::intersection::IntrAxis<Primitive1Class,Primitive2Class>;
-	template <typename Real>
-	using IntrConfigManager = collisionobbcapsule::detection::intersection::IntrConfigManager<Real>;
-	template <class Primitive1Class,class Primitive2Class>
-	using FindContactSet = collisionobbcapsule::detection::intersection::FindContactSet<Primitive1Class,Primitive2Class>;
-
-	template <typename Real>
-	void ClipConvexPolygonAgainstPlane (const type::Vec<3,Real>& normal,
-    Real bonstant, int& quantity, type::Vec<3,Real>* P)
-    {
-    	collisionobbcapsule::detection::intersection::ClipConvexPolygonAgainstPlane(normal, bonstant, quantity, P);
-    }
-
-	template <typename TReal>
-	type::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal>& box)
-	{
-    	return collisionobbcapsule::detection::intersection::GetPointFromIndex(index, box);
-	}
-
-	template <typename TDataTypes>
-	type::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataTypes>& box)
-	{
-    	return collisionobbcapsule::detection::intersection::getPointFromIndex(index, box);
-	}
-
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_INTRUTILITY3

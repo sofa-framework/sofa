@@ -68,14 +68,14 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
     if(this->d_componentState.getValue() == core::objectmodel::ComponentState::Valid)
     {
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
+        const std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
 
         container::dynamic::PointSetTopologyModifier *to_pstm;
         toModel->getContext()->get(to_pstm);
 
         while( changeIt != itEnd )
         {
-            TopologyChangeType changeType = (*changeIt)->getChangeType();
+            const TopologyChangeType changeType = (*changeIt)->getChangeType();
 
             switch( changeType )
             {

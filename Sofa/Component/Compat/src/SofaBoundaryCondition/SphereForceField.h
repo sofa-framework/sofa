@@ -23,11 +23,4 @@
 
 #include <sofa/component/mechanicalload/SphereForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/SphereForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using SphereForceField = sofa::component::mechanicalload::SphereForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/SphereForceField.h")

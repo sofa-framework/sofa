@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/CenterOfMassMulti2Mapping.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMulti2Mapping.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMulti2Mapping.inl")

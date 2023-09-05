@@ -23,6 +23,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/solidmechanics/spring/FrameSpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <cassert>
@@ -168,6 +169,12 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void FrameSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -181,12 +188,12 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
-    bool external = ( this->mstate1!=this->mstate2 );
+    const bool external = ( this->mstate1!=this->mstate2 );
     const type::vector<Spring>& springs = this->springs.getValue();
 
     for ( unsigned int i=0; i<springs.size(); i++ )
     {
-        double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
+        const double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
         Real d = ( p2[springs[i].m2].getCenter()-p1[springs[i].m1].getCenter()).norm();
         if ( external )
         {

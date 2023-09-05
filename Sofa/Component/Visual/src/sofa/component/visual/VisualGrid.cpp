@@ -28,11 +28,8 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * visualGridDeprecatedName = "OglGrid";
-
 int VisualGridClass = core::RegisterObject("Display a simple grid")
         .add< VisualGrid>()
-        .addAlias(visualGridDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;
@@ -43,7 +40,6 @@ VisualGrid::VisualGrid()
     , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
     , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
     , internalPlane(PLANE_Z)
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
@@ -54,21 +50,6 @@ VisualGrid::VisualGrid()
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 }
-
-void VisualGrid::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (std::string(arg->getAttribute("type")) == visualGridDeprecatedName)
-    {
-        msg_warning(visualGridDeprecatedName) << visualGridDeprecatedName << " is deprecated since SOFA v22.12, and has"
-            " been replaced by " << this->getClassName() << ". Please modify your scene. Note that the new component "
-            << this->getClassName() << " is located in another module (Sofa.Component.Visual). It means that you "
-            "probably need to update also the appropriate RequiredPlugin in your scene. For example, in XML, "
-            "consider removing the line <RequiredPlugin name=\"Sofa.GL.Component.Rendering3D\"> to replace it by "
-            "<RequiredPlugin name=\"Sofa.Component.Visual\">.";
-    }
-    Inherit1::parse(arg);
-}
-
 
 void VisualGrid::init()
 {
@@ -192,16 +173,10 @@ void VisualGrid::buildGrid()
     }
 }
 
-void VisualGrid::drawVisual(const core::visual::VisualParams* vparams)
+void VisualGrid::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
-
     vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
-
-
 
 }
 

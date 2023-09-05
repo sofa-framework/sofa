@@ -22,8 +22,52 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
+#include <sofa/core/behavior/MatrixAPICompatibility.h>
+#include <sofa/core/MechanicalParams.h>
+
 namespace sofa::core::behavior
 {
+void BaseProjectiveConstraintSet::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* zeroDirichletCondition)
+{
+    static std::set<BaseProjectiveConstraintSet*> hasEmittedWarning;
+    if (hasEmittedWarning.insert(this).second)
+    {
+        dmsg_warning() << "applyConstraint(ZeroDirichletCondition*) not implemented: for compatibility reason, the "
+            "deprecated API (applyConstraint(MultiMatrixAccessor*)) will be used (without guarantee). This compatibility will disapear in the "
+            "future, and will cause issues in simulations. Please update the code of " <<
+            this->getClassName() << " to ensure right behavior: the function applyConstraint(MultiMatrixAccessor*) "
+            "has been replaced by applyConstraint(ZeroDirichletCondition*)";
+    }
+
+    MatrixAccessorCompat accessor;
+
+    const auto& mstates = this->getMechanicalStates();
+    std::set<BaseMechanicalState*> uniqueMstates(mstates.begin(), mstates.end());
+
+    for(const auto& mstate1 : uniqueMstates)
+    {
+        if (mstate1)
+        {
+            for(const auto& mstate2 : uniqueMstates)
+            {
+                if (mstate2)
+                {
+                    const auto mat = std::make_shared<ApplyConstraintCompat>();
+                    mat->component = this;
+                    mat->zeroDirichletCondition = zeroDirichletCondition;
+                    accessor.setMatrix(mstate1, mstate2, mat);
+                }
+            }
+        }
+    }
+
+    MechanicalParams params;
+    params.setKFactor(1.);
+    params.setMFactor(1.);
+    params.setBFactor(1.);
+
+    applyConstraint(&params, &accessor);
+}
 
 bool BaseProjectiveConstraintSet::insertInNode( objectmodel::BaseNode* node )
 {

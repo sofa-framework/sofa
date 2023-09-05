@@ -34,18 +34,9 @@ using namespace defaulttype;
 int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
         .add< DistanceMapping< Vec3Types, Vec1Types > >()
         .add< DistanceMapping< Rigid3Types, Vec1Types > >()
-
-        ;
-int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
-        .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
-        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >()
-
         ;
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Vec3Types, Vec1Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Rigid3Types, Vec1Types >;
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Vec3Types, Vec1Types >;
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
-
 
 } // namespace sofa::component::mapping::nonlinear

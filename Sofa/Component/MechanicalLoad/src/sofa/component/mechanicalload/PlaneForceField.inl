@@ -31,6 +31,7 @@
 #include <iostream>
 #include <sofa/type/BoundingBox.h>
 #include <limits>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/simulation/Node.h>
 
 namespace
@@ -38,7 +39,7 @@ namespace
     template<typename DataTypes>
     void get3DFrameFromDPosNormal(const typename DataTypes::DPos& dposnormal, sofa::type::Vec3& v1, sofa::type::Vec3& v2, sofa::type::Vec3& normal)
     {
-        for (auto i = 0; i < dposnormal.size() && i < 3; i++)
+        for (std::size_t i = 0; i < dposnormal.size() && i < 3u; i++)
             normal[i] = dposnormal[i];
 
         // find a first vector inside the plane
@@ -245,6 +246,34 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
                 mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
             }
     }
+}
+
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    if (!this->isComponentStateValid())
+    {
+        return;
+    }
+
+    Deriv normal;
+    DataTypes::setDPos(normal, d_planeNormal.getValue());
+    const auto localMatrix = -this->d_stiffness.getValue() * sofa::type::dyad(normal, normal);
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& contact : m_contacts)
+    {
+        const auto locationInGlobalMatrix = contact * Deriv::total_size;
+        dfdx(locationInGlobalMatrix, locationInGlobalMatrix) += localMatrix;
+    }
+}
+
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

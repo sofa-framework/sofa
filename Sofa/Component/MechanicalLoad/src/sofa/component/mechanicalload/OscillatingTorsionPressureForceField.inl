@@ -97,6 +97,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     trianglePressureMap.createTopologyHandler(m_topology);
 
     initTriangleInformation();
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -112,8 +114,18 @@ SReal OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
+
+    if (pointActive.size() < x.size())
+    {
+        msg_error() << "The component reads a position size different from the size used in the initialization: cannot continue.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     Deriv force;
     Coord deltaPos;
@@ -121,7 +133,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     Real totalDist = 0;
 
     // calculate average rotation angle:
-    for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
+    for (unsigned int i=0; i<x.size(); i++)
+        if (pointActive[i])
         {
             vecFromCenter[i] = getVecFromRotAxis( x[i] );
             distFromCenter[i] = vecFromCenter[i].norm();
@@ -131,6 +144,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
                 totalDist += distFromCenter[i];
             }
         }
+
     avgRotAngle /= totalDist;
 
     rotationAngle = avgRotAngle;
@@ -185,6 +199,18 @@ SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const 
 {
     msg_warning() << "Method getPotentialEnergy not implemented yet.";
     return 0.0;
+}
+
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+{
+
+}
+
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

@@ -42,7 +42,7 @@ public:
 
     }
 
-    void resolution(int line, double** w, double* d, double* force, double *dfree) override
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
@@ -57,16 +57,16 @@ class PreviousForcesContainer
 {
 public:
     PreviousForcesContainer() : resetFlag(true) {}
-    double popForce()
+    SReal popForce()
     {
         resetFlag = true;
         if(forces.empty()) return 0;
-        double f = forces.front();
+        const SReal f = forces.front();
         forces.pop_front();
         return f;
     }
 
-    void pushForce(double f)
+    void pushForce(SReal f)
     {
         if(resetFlag)
         {
@@ -78,14 +78,14 @@ public:
     }
 
 protected:
-    std::deque<double> forces;
+    std::deque<SReal> forces;
     bool resetFlag; // We delete all forces that were not read
 };
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev = nullptr, bool* active = nullptr)
+    UnilateralConstraintResolutionWithFriction(SReal mu, PreviousForcesContainer* prev = nullptr, bool* active = nullptr)
         :core::behavior::ConstraintResolution(3)
         , _mu(mu)
         , _prev(prev)
@@ -93,13 +93,13 @@ public:
     {
     }
 
-    void init(int line, double** w, double* force) override;
-    void resolution(int line, double** w, double* d, double* force, double *dFree) override;
-    void store(int line, double* force, bool /*convergence*/) override;
+    void init(int line, SReal** w, SReal* force) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal *dFree) override;
+    void store(int line, SReal* force, bool /*convergence*/) override;
 
 protected:
-    double _mu;
-    double _W[6];
+    SReal _mu;
+    SReal _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
 };
@@ -152,7 +152,7 @@ protected:
         unsigned int id;
         long contactId;
         PersistentID localId;
-        double mu;		///< angle for friction
+        SReal mu;		///< angle for friction
 
         Coord P, Q;
 
@@ -162,7 +162,7 @@ protected:
     sofa::type::vector<Contact> contacts;
     Real epsilon;
     bool yetIntegrated;
-    double customTolerance;
+    SReal customTolerance;
 
     PreviousForcesContainer prevForces;
     bool* contactsStatus;
@@ -181,18 +181,29 @@ public:
 
     unsigned int constraintId;
 protected:
+
+     virtual type::vector<std::string> getUnilateralInteractionIdentifiers() {return {};}
+
+     virtual type::vector<std::string> getPairInteractionIdentifiers() override final
+     {
+            type::vector<std::string> ids = getUnilateralInteractionIdentifiers();
+            ids.push_back("Unilateral");
+            return ids;
+     }
+
+
     UnilateralInteractionConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
     virtual ~UnilateralInteractionConstraint();
 
 public:
-    void setCustomTolerance(double tol) { customTolerance = tol; }
+    void setCustomTolerance(SReal tol) { customTolerance = tol; }
 
     void clear(int reserve = 0);
 
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+    virtual void addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
-    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
-    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
 
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;

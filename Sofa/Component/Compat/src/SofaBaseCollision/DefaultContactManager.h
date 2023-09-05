@@ -20,12 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/DefaultContactManager.h")
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 
-namespace sofa::component::collision
-{
-    using DefaultContactManager = sofa::component::collision::response::contact::DefaultContactManager;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/CollisionResponse.h")

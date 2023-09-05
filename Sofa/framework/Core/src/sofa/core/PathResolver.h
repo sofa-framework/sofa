@@ -39,7 +39,7 @@ using sofa::core::castTo;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-/// @brief This class expose an API to query a context to find Base* or a BaseData*.
+/// @brief This class exposes an API to query a context to find Base* or a BaseData*.
 ///////////////////////////////////////////////////////////////////////////////////////
 class SOFA_CORE_API PathResolver
 {
@@ -71,7 +71,7 @@ public:
     template<class T>
     static bool CheckPath(Base* base, T*&, const std::string& path, const BaseLink* link)
     {
-        void* result = FindLinkDestClass(base, sofa::core::objectmodel::base::GetClass<T>(), path, link);
+        const void* result = FindLinkDestClass(base, sofa::core::objectmodel::base::GetClass<T>(), path, link);
         return result != nullptr;
     }
 

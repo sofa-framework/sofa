@@ -65,7 +65,7 @@ public:
                  "</Node>                                                                    \n" ;
         c = new SceneInstance("xml", scene.str()) ;
         c->initScene() ;
-        Node* root = c->root.get() ;
+        const Node* root = c->root.get() ;
         Base* b = sofa::core::PathResolver::FindBaseFromPath(root, "@/child1/child2");
         node = dynamic_cast<Node*>(b);
     }
@@ -106,7 +106,7 @@ INSTANTIATE_TEST_SUITE_P(CheckPathToBaseObject,
 // introduced in https://github.com/sofa-framework/sofa/pull/1717
 TEST_F(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject_tofix)
 {
-    std::vector<std::string> t = { "@/child1", "The linked address is pointing to a node while trying to load it in an object. Using two different types should return", "false" };
+    const std::vector<std::string> t = { "@/child1", "The linked address is pointing to a node while trying to load it in an object. Using two different types should return", "false" };
     ASSERT_NE(node, nullptr);
 
     if (t[2] == "true")

@@ -28,7 +28,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/engine/select/PairBoxRoi.h>
 #include <sofa/component/engine/select/BoxROI.h>
-
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa
 {
@@ -74,14 +74,16 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     root->setAnimate(false);
     root->setDt(0.05);
 
+    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
+
     // Node square
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    const component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
-    CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
+    const CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
     cgLinearSolver->d_maxIter.setValue(25);
     cgLinearSolver->d_tolerance.setValue(1e-5);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
@@ -90,7 +92,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     typename UniformMass::SPtr mass = modeling::addNew<UniformMass>(SquareNode,"mass");
 
     // Regular grid topology
-    RegularGridTopology::SPtr gridMesh = modeling::addNew<RegularGridTopology>(SquareNode,"loader");
+    const RegularGridTopology::SPtr gridMesh = modeling::addNew<RegularGridTopology>(SquareNode,"loader");
     gridMesh->setSize(numX,numY,numZ);
     gridMesh->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 

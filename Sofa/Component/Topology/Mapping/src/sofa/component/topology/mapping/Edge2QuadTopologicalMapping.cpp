@@ -64,6 +64,8 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
+    m_inputType = TopologyElementType::EDGE;
+    m_outputType = TopologyElementType::QUAD;
 }
 
 void Edge2QuadTopologicalMapping::init()
@@ -86,7 +88,7 @@ void Edge2QuadTopologicalMapping::init()
         msg_warning() << "Focal Radius is zero or negative";
     }
 
-    SReal rho = d_radius.getValue();
+    const SReal rho = d_radius.getValue();
 
     bool ellipse = false;
     SReal rhoFocal{};
@@ -96,10 +98,18 @@ void Edge2QuadTopologicalMapping::init()
         rhoFocal = d_radiusFocal.getValue();
     }
 
-    unsigned int N = d_nbPointsOnEachCircle.getValue();
+    const unsigned int N = d_nbPointsOnEachCircle.getValue();
 
+    // Check input/output topology
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
-    core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
+    const core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
     core::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
 
     if (fromModel)
@@ -124,7 +134,7 @@ void Edge2QuadTopologicalMapping::init()
 
             // CREATION of the points (new DOFs for the output topology) along the circles around each point of the input topology
 
-            Vec3 X0(1.,0.,0.);
+            const Vec3 X0(1.,0.,0.);
             Vec3 Y0;
             Vec3 Z0;
 
@@ -150,7 +160,7 @@ void Edge2QuadTopologicalMapping::init()
             {
                 for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
                 {
-                    unsigned int p0=i;
+                    const unsigned int p0=i;
 
                     Mat3x3 rotation;
                     (from_mstate->read(core::ConstVecCoordId::position())->getValue())[p0].writeRotationMatrix(rotation);
@@ -190,19 +200,17 @@ void Edge2QuadTopologicalMapping::init()
 
                 for (unsigned int i=0; i<edgeArray.size(); ++i)
                 {
-
-                    unsigned int p0 = edgeArray[i][0];
-                    unsigned int p1 = edgeArray[i][1];
+                    const unsigned int p0 = edgeArray[i][0];
+                    const unsigned int p1 = edgeArray[i][1];
 
                     sofa::type::vector<Index> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-
-                        unsigned int q0 = p0*N+j;
-                        unsigned int q1 = p1*N+j;
-                        unsigned int q2 = p1*N+((j+1)%N);
-                        unsigned int q3 = p0*N+((j+1)%N);
+                        const unsigned int q0 = p0*N+j;
+                        const unsigned int q1 = p1*N+j;
+                        const unsigned int q2 = p1*N+((j+1)%N);
+                        const unsigned int q3 = p0*N+((j+1)%N);
 
                         if (d_flipNormals.getValue())
                         {
@@ -265,6 +273,12 @@ void Edge2QuadTopologicalMapping::init()
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
 
+    }
+    else
+    {
+        // Check type Rigid3 of input mechanical object (required)
+        msg_error() << "Mechanical object associated with the input is not of type Rigid. Edge2QuadTopologicalMapping only supports Rigid3Types to Vec3Types";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
 

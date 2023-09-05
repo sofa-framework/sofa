@@ -219,12 +219,12 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             return;
 
         // process topological changes
-        helper::ReadAccessor< Data<type::vector<Index> > > points = m_pointsToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > edges = m_edgesToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > triangles = m_trianglesToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > quads = m_quadsToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > hexahedra = m_hexahedraToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > points = m_pointsToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > edges = m_edgesToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > triangles = m_trianglesToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > quads = m_quadsToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > hexahedra = m_hexahedraToRemove;
 
         if (!hexahedra.empty())
         {
@@ -345,7 +345,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             buf[0] = '\0';
             while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
-                size_t l = strlen(buf);
+                const size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';
@@ -966,7 +966,7 @@ void TopologicalChangeProcessor::saveIndices()
 
 TopologicalChangeProcessor::Index TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
-    double epsilon = 1e-10;
+    const double epsilon = 1e-10;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( fabs(time - triangleIncisionInformation[i].timeToIncise) < epsilon )
@@ -1046,7 +1046,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vec3 coord, Index& triangleIn
         return;
 
     //get the number of triangle in the topology
-    size_t nbTriangle = m_topology->getNbTriangles();
+    const size_t nbTriangle = m_topology->getNbTriangles();
 
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
@@ -1114,25 +1114,25 @@ void  TopologicalChangeProcessor::findElementIndex(Vec3 coord, Index& triangleIn
     /***
      * Projection of the point followed by a including test
      */
-    SReal x = coord[0], y = coord[1], z = coord[2];
+    const SReal x = coord[0], y = coord[1], z = coord[2];
     //project point along the normal
     for (unsigned int i = 0 ; i < nbTriangle ; i++)
     {
         //get the normal of the current triangle
         auto normal = triangleGeo->computeTriangleNormal(i);
-        SReal normalNorm = normal.norm();
+        const SReal normalNorm = normal.norm();
         if (!normalNorm)
             break;
         //normalize the normal (avoids to divide by the norm)
         normal /= normal.norm();
-        SReal a = normal[0], b = normal[1], c = normal[2];
+        const SReal a = normal[0], b = normal[1], c = normal[2];
 
         //get the coordinates points of the triangle
         sofa::type::Vec3 points[3];
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
+        const SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
         sofa::type::Vec3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
@@ -1198,7 +1198,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
-    int indexOfTime = findIndexInListOfTime(getContext()->getTime());
+    const int indexOfTime = findIndexInListOfTime(getContext()->getTime());
 
     if (indexOfTime == -1)
     {
@@ -1217,7 +1217,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::type::Vec3 b;
 
     sofa::Index a_last = sofa::InvalidID;
-    sofa::Index b_last = sofa::InvalidID;
+    const sofa::Index b_last = sofa::InvalidID;
     bool firstCut= true;
 
     std::vector<Vec3> coordinates;
@@ -1268,7 +1268,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             a_last = sofa::InvalidID;
         else
         {
-            core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
+            const core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
             //get the coordinates of the mechanical state
             const auto &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
             a = v_coords[a_last];
@@ -1278,7 +1278,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         errorTrianglesIndices.push_back(ind_tb);
 
         //Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
-        bool isPathOk = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
+        const bool isPathOk = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
 
         if (!isPathOk)
         {
@@ -1331,7 +1331,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
  */
 void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 {
-    size_t nbTriangleInfo = triangleIncisionInformation.size();
+    const size_t nbTriangleInfo = triangleIncisionInformation.size();
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
@@ -1389,7 +1389,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!triangleGeo)
         return;
 
-    size_t nbTriangles = m_topology->getNbTriangles();
+    const size_t nbTriangles = m_topology->getNbTriangles();
 
     std::vector< Vec3 > trianglesToDraw;
     std::vector< Vec3 > pointsToDraw;
@@ -1398,7 +1398,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
         {
-            unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
+            const unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
 
             if ( triIndex > nbTriangles -1)
                 break;
@@ -1427,7 +1427,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(nullptr) );
 
-        for (unsigned int errorTrianglesIndex : errorTrianglesIndices)
+        for (const unsigned int errorTrianglesIndex : errorTrianglesIndices)
         {
             Vec3Types::Coord coord[3];
             triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndex, coord);

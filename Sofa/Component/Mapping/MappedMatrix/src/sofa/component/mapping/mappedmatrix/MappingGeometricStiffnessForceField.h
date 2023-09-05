@@ -22,48 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/config.h>
 
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/ForceField.h>
-
-namespace sofa::component::mapping::mappedmatrix
-{
-
-template <class DataTypes>
-class MappingGeometricStiffnessForceField final : public sofa::core::behavior::ForceField<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(MappingGeometricStiffnessForceField, DataTypes), 
-               SOFA_TEMPLATE(sofa::core::behavior::ForceField,DataTypes) );
-    
-    typedef Inherit1 Inherit;
-    typedef sofa::SingleLink< MyType, sofa::core::BaseMapping, 
-        sofa::BaseLink::FLAG_STRONGLINK | sofa::BaseLink::FLAG_STOREPATH > MappingLink;
-    typedef typename Inherit::DataVecDeriv DataVecDeriv;
-    typedef typename Inherit::DataVecCoord DataVecCoord;
-
-    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-
-    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-
-    void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&) const override
-    {
-        return 0;
-    }
-
-protected:
-    MappingGeometricStiffnessForceField();
-
-    ~MappingGeometricStiffnessForceField();
-
-private:
-    MappingLink l_mapping;
-};
-
-#if !defined(MAPPINGGEOMETRICSTIFFNESSFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MappingGeometricStiffnessForceField<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MappingGeometricStiffnessForceField<defaulttype::Rigid3Types>;
-#endif
-
-} // namespace sofa::component::mapping::mappedmatrix
+SOFA_DISABLED_HEADER_NOT_REPLACED("v23.06", "v23.12")

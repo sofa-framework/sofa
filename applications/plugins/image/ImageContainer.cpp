@@ -41,6 +41,7 @@ using namespace defaulttype;
 int ImageContainerClass = core::RegisterObject ( "Image Container" )
         .add<ImageContainer<ImageUC> >(true)
         .add<ImageContainer<ImageD> >()
+        .add<ImageContainer<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageContainer<ImageC> >()
         .add<ImageContainer<ImageI> >()
@@ -50,12 +51,12 @@ int ImageContainerClass = core::RegisterObject ( "Image Container" )
         .add<ImageContainer<ImageL> >()
         .add<ImageContainer<ImageUL> >()
         .add<ImageContainer<ImageF> >()
-        .add<ImageContainer<ImageB> >()
 #endif
         ;
 
 template class SOFA_IMAGE_API ImageContainer<ImageUC>;
 template class SOFA_IMAGE_API ImageContainer<ImageD>;
+template class SOFA_IMAGE_API ImageContainer<ImageB>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageContainer<ImageC>;
 template class SOFA_IMAGE_API ImageContainer<ImageI>;
@@ -65,7 +66,6 @@ template class SOFA_IMAGE_API ImageContainer<ImageUS>;
 template class SOFA_IMAGE_API ImageContainer<ImageL>;
 template class SOFA_IMAGE_API ImageContainer<ImageUL>;
 template class SOFA_IMAGE_API ImageContainer<ImageF>;
-template class SOFA_IMAGE_API ImageContainer<ImageB>;
 #endif
 
 } // namespace container

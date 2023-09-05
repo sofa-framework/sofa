@@ -47,16 +47,22 @@ public:
     static NodeSPtr processXML(xml::BaseElement* xml, const char *filename);
 
     /// load a scene from memory (typically : an xml into a string)
+    NodeSPtr doLoadFromMemory(const char* filename, const char* data);
+
+    /// load a scene from memory (typically : an xml into a string)
     static NodeSPtr loadFromMemory(const char* filename, const char* data);
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
-    static NodeSPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
+    SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
+    static NodeSPtr loadFromMemory( const char *filename, const char *data, unsigned int size ) = delete;
 
     /// get the file type description
     virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
     void getExtensionList(ExtensionList* list) override;
+
+    bool syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                       const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded) override;
 
     // Test if load succeed
     static bool loadSucceed;

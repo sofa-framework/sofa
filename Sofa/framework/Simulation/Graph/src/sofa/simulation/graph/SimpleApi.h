@@ -46,6 +46,9 @@ Simulation::SPtr SOFA_SIMULATION_GRAPH_API createSimulation(const std::string& t
 NodeSPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation::SPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
+NodeSPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation* s, const std::string& name,
+    const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
+
 ///@brief Create a sofa object in the provided node.
 ///The parameter "params" is for passing specific data argument to the created object including the
 ///object's type.
@@ -58,7 +61,7 @@ sofa::core::sptr<BaseObject> SOFA_SIMULATION_GRAPH_API createObject( NodeSPtr no
 
 ///@brief create a child to the provided nodeof given name.
 ///The parameter "params" is for passing specific data argument to the created object.
-NodeSPtr SOFA_SIMULATION_GRAPH_API createChild( NodeSPtr& node, const std::string& name,
+NodeSPtr SOFA_SIMULATION_GRAPH_API createChild( NodeSPtr node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided node.

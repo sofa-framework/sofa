@@ -131,6 +131,15 @@ protected:
 
     virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring);
 
+    struct SpringForce
+    {
+        using DPos = typename DataTypes::DPos;
+        Real energy;
+        std::pair<DPos, DPos> force;
+    };
+
+    virtual std::unique_ptr<SpringForce> computeSpringForce(const VecCoord& p1, const VecDeriv& v1, const VecCoord& p2, const VecDeriv& v2, const Spring& spring);
+
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
 
@@ -154,6 +163,9 @@ public:
 
     using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override;
 
     SReal getStiffness() const { return ks.getValue(); }
     SReal getDamping() const { return kd.getValue(); }
@@ -189,7 +201,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<double>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec1Types>;

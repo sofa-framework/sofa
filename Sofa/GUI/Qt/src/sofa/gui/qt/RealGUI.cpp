@@ -22,30 +22,17 @@
 #include "RealGUI.h"
 #include <sofa/version.h>
 
-#ifdef SOFA_PML
-#  include <sofa/filemanager/sofapml/PMLReader.h>
-#  include <sofa/filemanager/sofapml/LMLReader.h>
-#endif
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-#include "sofa/gui/qt/QSofaRecorder.h"
-#endif
-
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include "WindowVisitor.h"
 #include "GraphVisitor.h"
 #endif
 
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
 #include "SofaWindowProfiler.h"
 #endif
 
 #if SOFA_GUI_QT_HAVE_NODEEDITOR
 #include "SofaWindowDataGraph.h"
-#endif
-
-#ifdef SOFA_PML
-#include <sofa/simulation/Node.h>
 #endif
 
 
@@ -111,14 +98,6 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QDesktopWidget>
 #endif
 
-#   ifdef SOFA_GUI_INTERACTION
-#    include <QCursor>
-#   endif
-
-#   ifdef SOFA_GUI_INTERACTION
-#    include <qcursor.h>
-#   endif
-
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
@@ -148,10 +127,6 @@ using sofa::core::ExecParams;
 
 #include <sofa/gui/common/ArgumentParser.h>
 
-
-#ifdef SOFA_PML
-using namespace sofa::gui::filemanager::pml;
-#endif
 
 using namespace sofa::gui::common;
 
@@ -300,7 +275,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 
     //force locale to Standard C
     //(must be done immediatly after the QApplication has been created)
-    QLocale locale(QLocale::C);
+    const QLocale locale(QLocale::C);
     QLocale::setDefault(locale);
 }
 
@@ -308,7 +283,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 
 void RealGUI::InitApplication( RealGUI* _gui)
 {
-    QString pathIcon=(DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
+    const QString pathIcon=(DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
 
     if(SOFA_GUI_QT_ENABLE_NATIVE_MENU)
@@ -332,25 +307,8 @@ void RealGUI::InitApplication( RealGUI* _gui)
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= {
 RealGUI::RealGUI ( const char* viewername)
     :
-      #ifdef SOFA_GUI_INTERACTION
-      interactionButton( nullptr ),
-      #endif
-
-      #ifndef SOFA_GUI_QT_NO_RECORDER
-      recorder(nullptr),
-      #else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-      #endif
-
-      #ifdef SOFA_GUI_INTERACTION
-      m_interactionActived(false),
-      #endif
-
-      #ifdef SOFA_PML
-      pmlreader(nullptr),
-      lmlreader(nullptr),
-      #endif
 
       #ifdef SOFA_DUMP_VISITOR_INFO
       windowTraceVisitor(nullptr),
@@ -448,18 +406,6 @@ RealGUI::RealGUI ( const char* viewername)
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
 
-    // create a Dock Window to receive the Sofa Recorder
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    QDockWidget *dockRecorder=new QDockWidget(this);
-    dockRecorder->setResizeEnabled(true);
-    this->moveDockWindow( dockRecorder, Qt::DockBottom);
-    this->leftDock() ->setAcceptDockWindow(dockRecorder,false);
-    this->rightDock()->setAcceptDockWindow(dockRecorder,false);
-
-    recorder = new QSofaRecorder(dockRecorder);
-    dockRecorder->setWidget(recorder);
-    connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
-#else
     //Status Bar Configuration
     fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
@@ -470,7 +416,6 @@ RealGUI::RealGUI ( const char* viewername)
     timeLabel->clear();
     statusBar()->addWidget ( fpsLabel );
     statusBar()->addWidget ( timeLabel );
-#endif
 
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->addWidget(statWidget);
@@ -505,37 +450,6 @@ RealGUI::RealGUI ( const char* viewername)
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
 
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setChecked(bool) ) );
-    if (recorder && getSofaViewer())
-        connect( recorder, SIGNAL( NewTime() ), getSofaViewer()->getQWidget(), SLOT( update() ) );
-#endif
-
-#ifdef SOFA_GUI_INTERACTION
-    interactionButton = new QPushButton(optionTabs);
-    interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
-    interactionButton->setCheckable(true);
-    interactionButton->setStyleSheet("background-color: cyan;");
-
-    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
-    gridLayout->removeWidget(screenshotButton);
-    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
-
-    interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
-    interactionButton->setShortcut(QSOFAApplication::translate("GUI", "Alt+i", 0));
-#ifndef QT_NO_TOOLTIP
-    interactionButton->setProperty("toolTip", QVariant(QSOFAApplication::translate("GUI", "Start interaction mode", 0)));
-#endif
-
-    connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
-
-    m_interactionActived = false;
-
-    if(mCreateViewersOpt)
-        getSofaViewer()->getQWidget()->installEventFilter(this);
-#endif
-
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
     m_docbrowser = new DocBrowser(this);
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
@@ -552,19 +466,6 @@ RealGUI::RealGUI ( const char* viewername)
 
 RealGUI::~RealGUI()
 {
-#ifdef SOFA_PML
-    if ( pmlreader )
-    {
-        delete pmlreader;
-        pmlreader = nullptr;
-    }
-    if ( lmlreader )
-    {
-        delete lmlreader;
-        lmlreader = nullptr;
-    }
-#endif
-
     if( displayFlag != nullptr )
         delete displayFlag;
 
@@ -590,179 +491,6 @@ void RealGUI::setTraceVisitors(bool b)
 }
 #endif
 
-
-//------------------------------------
-
-#ifdef SOFA_GUI_INTERACTION
-void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
-{
-    if (m_interactionActived)
-    {
-        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
-        QPoint c = QCursor::pos();
-        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
-        QCursor::setPos(p);
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-        return;
-    }
-}
-
-//------------------------------------
-
-void RealGUI::wheelEvent(QWheelEvent* e)
-{
-    if(m_interactionActived)
-    {
-        sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-        e->accept();
-        return;
-    }
-}
-
-//------------------------------------
-
-void RealGUI::mousePressEvent(QMouseEvent * e)
-{
-    if(m_interactionActived)
-    {
-        if (e->type() == QEvent::MouseButtonPress)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-}
-
-//------------------------------------
-
-void RealGUI::mouseReleaseEvent(QMouseEvent * e)
-{
-    if(m_interactionActived)
-    {
-        if (e->type() == QEvent::MouseButtonRelease)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
-                Node* groot = mViewer->getScene();
-                if (groot)
-                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-}
-
-//------------------------------------
-
-void RealGUI::keyReleaseEvent(QKeyEvent * e)
-{
-    if(m_interactionActived)
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        Node* groot = mViewer->getScene();
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
-        return;
-    }
-}
-
-//------------------------------------
-
-bool RealGUI::eventFilter(QObject * /*obj*/, QEvent *e)
-{
-    if (m_interactionActived)
-    {
-        if (e->type() == QEvent::Wheel)
-        {
-            this->wheelEvent((QWheelEvent*)e);
-            return true;
-        }
-    }
-    return false; // pass other events
-}
-#endif
-
-//------------------------------------
-
-#ifdef SOFA_PML
-void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
-{
-    std::string scene = "PML/default.scn";
-    if ( !DataRepository.findFile ( scene ) )
-    {
-        msg_info("RealGUI") << "File '" << scene << "' not found ";
-        return;
-    }
-    this->unloadScene();
-    mSimulation = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
-    getSimulation()->init(mSimulation);
-    if ( mSimulation )
-    {
-        if ( !pmlreader ) pmlreader = new PMLReader;
-        pmlreader->BuildStructure ( filename, mSimulation );
-        setScene ( mSimulation, filename );
-        this->setWindowFilePath(filename); //.c_str());
-    }
-}
-
-//------------------------------------
-
-//lmlOpen
-void RealGUI::lmlOpen ( const char* filename )
-{
-    if ( pmlreader )
-    {
-        Node* root;
-        if ( lmlreader != nullptr ) delete lmlreader;
-        lmlreader = new LMLReader; std::cout <<"New lml reader\n";
-        lmlreader->BuildStructure ( filename, pmlreader );
-        root = getScene();
-        simulation::getSimulation()->init ( root );
-    }
-    else
-        msg_info()<<"You must load the pml file before the lml file"<<endl;
-}
-#endif
 
 //------------------------------------
 
@@ -859,9 +587,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
-    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::node::load ( filename, reload, sceneArgs );
 
-    simulation::getSimulation()->init ( mSimulation.get() );
+    sofa::simulation::node::initRoot(mSimulation.get());
     if ( mSimulation == nullptr )
     {
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
@@ -888,7 +616,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         simulationGraph->expandPathFrom(expandedNodes);
     }
 
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     if (m_windowTimerProfiler)
         m_windowTimerProfiler->resetGraph();
 #endif
@@ -922,7 +650,7 @@ void RealGUI::emitIdle()
 /// This open popup the file selection windows.
 void RealGUI::popupOpenFileSelector()
 {
-    std::string filename(this->windowFilePath().toStdString());
+    const std::string filename(this->windowFilePath().toStdString());
 
     // build the filter with the SceneLoaderFactory
     std::string filter, allKnownFilters = "All known (";
@@ -947,14 +675,7 @@ void RealGUI::popupOpenFileSelector()
     }
     allKnownFilters+=")";
 
-#ifdef SOFA_PML
-    //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
-    filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml)";
-#else
-    //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
     filter += ";;Simulation (*.simu)";
-#endif
-
 
     filter = allKnownFilters+";;"+filter+";;All (*)"; // the first filter is selected by default
 
@@ -966,17 +687,10 @@ void RealGUI::popupOpenFileSelector()
                                   );
     if ( s.length() >0 )
     {
-#ifdef SOFA_PML
-        if ( s.endsWith ( ".pml" ) )
-            pmlOpen ( s );
-        else if ( s.endsWith ( ".lml" ) )
-            lmlOpen ( s );
+        if (s.endsWith( ".simu") )
+            fileOpenSimu(s.toStdString());
         else
-#endif
-            if (s.endsWith( ".simu") )
-                fileOpenSimu(s.toStdString());
-            else
-                fileOpen (s.toStdString());
+            fileOpen (s.toStdString());
     }
 }
 
@@ -1002,16 +716,11 @@ void RealGUI::fileOpenSimu ( std::string s )
         {
             filename = DataRepository.getFile ( filename );
             simulationName = s;
-            std::string::size_type pointSimu = simulationName.rfind(".simu");
+            const std::string::size_type pointSimu = simulationName.rfind(".simu");
             simulationName.resize(pointSimu);
             fileOpen(filename.c_str());
 
             dtEdit->setText(QString(dT.c_str()));
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            if (recorder)
-                recorder->SetSimulation(currentSimulation(), initT, endT, writeName);
-#endif
         }
     }
 }
@@ -1027,7 +736,10 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         m_saveReloadFile=temporaryFile;
         setTitle ( filename );
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
-        m_docbrowser->loadHtml( filename );
+        if (m_docbrowser && filename)
+        {
+            m_docbrowser->loadHtml( filename );
+        }
 #endif
     }
 
@@ -1040,7 +752,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
             msg_warning("RealGUI") << "Global Bounding Box seems very small; Your viewer settings (based on the bbox) are likely invalid, switching to default value of [-1,-1,-1,1,1,1]."
                                    << "This is caused by using component which does not implement properly the computeBBox function."
                                    << "You can remove this warning by manually forcing a value in the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
-            sofa::type::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0);
+            const sofa::type::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0);
             root->f_bbox.setValue(b);
         }
 
@@ -1055,11 +767,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         simulationGraph->expandToDepth(0);
         simulationGraph->resizeColumnToContents(0);
         statWidget->CreateStats(root.get());
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-        if (recorder)
-            recorder->Clear(root.get());
-#endif
 
         getViewer()->setScene( root, filename );
         getViewer()->load();
@@ -1085,7 +792,10 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
     }
     setSceneWithoutMonitor(root, filename, temporaryFile) ;
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
-    m_docbrowser->loadHtml( filename ) ;
+    if (m_docbrowser && filename)
+    {
+        m_docbrowser->loadHtml( filename ) ;
+    }
 #endif
 }
 
@@ -1096,7 +806,7 @@ void RealGUI::unloadScene(bool _withViewer)
     if(_withViewer && getViewer())
         getViewer()->unload();
 
-    simulation::getSimulation()->unload ( currentSimulation() );
+    sofa::simulation::node::unload ( currentSimulation() );
 
     if(_withViewer && getViewer())
         getViewer()->setScene(nullptr);
@@ -1133,8 +843,8 @@ void RealGUI::fileNew()
 
 void RealGUI::fileSave()
 {
-    std::string filename(this->windowFilePath().toStdString());
-    std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
+    const std::string filename(this->windowFilePath().toStdString());
+    const std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
 
     if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
         return;
@@ -1146,7 +856,7 @@ void RealGUI::fileSave()
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    simulation::getSimulation()->exportGraph ( node, filename );
+    sofa::simulation::node::exportGraph ( node, filename );
 }
 
 //------------------------------------
@@ -1162,24 +872,10 @@ void RealGUI::fileReload()
         return;
     }
 
-#ifdef SOFA_PML
-    if ( s.length() >0 )
-    {
-        if ( s.endsWith ( ".pml" ) )
-            pmlOpen ( s );
-        else if ( s.endsWith ( ".lml" ) )
-            lmlOpen ( s );
-        else if (s.endsWith( ".simu") )
-            fileOpenSimu(filename);
-        else
-            fileOpen ( filename, saveReloadFile);
-    }
-#else
     if (s.endsWith( ".simu") )
         fileOpenSimu(s.toStdString());
     else
         fileOpen ( s.toStdString(),m_saveReloadFile );
-#endif
 }
 
 //------------------------------------
@@ -1194,18 +890,14 @@ void RealGUI::fileExit()
 
 void RealGUI::editRecordDirectory()
 {
-    std::string filename(this->windowFilePath().toStdString());
+    const std::string filename(this->windowFilePath().toStdString());
     std::string record_directory;
-    QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    const QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         record_directory = s.toStdString();
         if (record_directory.at(record_directory.size()-1) != '/')
             record_directory+="/";
-#ifndef SOFA_GUI_QT_NO_RECORDER
-        if (recorder)
-            recorder->SetRecordDirectory(record_directory);
-#endif
     }
 }
 
@@ -1213,8 +905,8 @@ void RealGUI::editRecordDirectory()
 
 void RealGUI::editGnuplotDirectory()
 {
-    std::string filename(this->windowFilePath().toStdString());
-    QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    const std::string filename(this->windowFilePath().toStdString());
+    const QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         gnuplotDirectory = s.toStdString();
@@ -1289,8 +981,8 @@ void RealGUI::setViewerResolution ( int w, int h )
 {
     if( isEmbeddedViewer() )
     {
-        QSize winSize = size();
-        QSize viewSize = ( getViewer() ) ? getSofaViewer()->getQWidget()->size() : QSize(0,0);
+        const QSize winSize = size();
+        const QSize viewSize = ( getViewer() ) ? getSofaViewer()->getQWidget()->size() : QSize(0,0);
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
@@ -1349,19 +1041,11 @@ void RealGUI::setFullScreen (bool enable)
         {
             menuBar()->hide();
             statusBar()->hide();
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            if (recorder) recorder->parentWidget()->hide();
-            //statusBar()->addWidget( recorder->getFPSLabel());
-            //statusBar()->addWidget( recorder->getTimeLabel());
-#endif
         }
         else
         {
             menuBar()->show();
             statusBar()->show();
-#ifndef SOFA_GUI_QT_NO_RECORDER
-            recorder->parentWidget()->show();
-#endif
         }
     }
     else
@@ -1442,18 +1126,6 @@ void RealGUI::setExportState(bool b)
 
 //------------------------------------
 
-#ifndef SOFA_GUI_QT_NO_RECORDER
-void RealGUI::setRecordPath(const std::string & path)
-{
-    if (recorder)
-        recorder->SetRecordDirectory(path);
-}
-#else
-void RealGUI::setRecordPath(const std::string&) {}
-#endif
-
-//------------------------------------
-
 void RealGUI::setGnuplotPath(const std::string &path)
 {
     gnuplotDirectory = path;
@@ -1495,7 +1167,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
 void RealGUI::registerViewer(BaseViewer* _viewer)
 {
     // Change our viewer
-    BaseViewer* old = m_viewer;
+    const BaseViewer* old = m_viewer;
     m_viewer = _viewer;
     if(m_viewer != nullptr)
         delete old;
@@ -1624,11 +1296,11 @@ void RealGUI::eventNewStep()
 {
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
-    Node* root = currentSimulation();
+    const Node* root = currentSimulation();
 
     if ( m_frameCounter==0 )
     {
-        ctime_t t = CTime::getRefTime();
+        const ctime_t t = CTime::getRefTime();
         for ( int i=0; i<10; i++ )
             beginTime[i] = t;
     }
@@ -1636,9 +1308,9 @@ void RealGUI::eventNewStep()
     ++m_frameCounter;
     if ( ( m_frameCounter%10 ) == 0 )
     {
-        ctime_t curtime = CTime::getRefTime();
-        int i = ( ( m_frameCounter/10 ) %10 );
-        double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( m_frameCounter<100?m_frameCounter:100 );
+        const ctime_t curtime = CTime::getRefTime();
+        const int i = ( ( m_frameCounter/10 ) %10 );
+        const double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( m_frameCounter<100?m_frameCounter:100 );
         showFPS(fps);
 
         beginTime[i] = curtime;
@@ -1652,36 +1324,26 @@ void RealGUI::eventNewStep()
 
 void RealGUI::showFPS(double fps)
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->setFPS(fps);
-#else
     if (fpsLabel)
     {
         char buf[100];
         sprintf ( buf, "%.1f FPS", fps );
         fpsLabel->setText ( buf );
     }
-#endif
 }
 
 //------------------------------------
 
 void RealGUI::eventNewTime()
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->UpdateTime(currentSimulation());
-#else
-    Node* root = currentSimulation();
+    const Node* root = currentSimulation();
     if (root && timeLabel)
     {
-        double time = root->getTime();
+        const double time = root->getTime();
         char buf[100];
         sprintf ( buf, "Time: %.3g,   Steps:  %i", time, m_frameCounter );
         timeLabel->setText ( buf );
     }
-#endif
 }
 
 //------------------------------------
@@ -1689,24 +1351,6 @@ void RealGUI::eventNewTime()
 void RealGUI::keyPressEvent ( QKeyEvent * e )
 {
     sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(getViewer());
-
-#ifdef SOFA_GUI_INTERACTION
-    if(m_interactionActived)
-    {
-        if ((e->key()==Qt::Key_Escape) || (e->modifiers() && (e->key()=='I')))
-        {
-            this->interactionGUI (false);
-        }
-        else
-        {
-            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            Node* groot = sofaViewer->getScene();
-            if (groot)
-                groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
-        }
-        return;
-    }
-#endif
 
     if (e->modifiers()) return;
 
@@ -2082,7 +1726,7 @@ void RealGUI::createWindowVisitor()
 
 void RealGUI::createAdvancedTimerProfilerWindow()
 {
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     m_windowTimerProfiler = new SofaWindowProfiler(this);
     m_windowTimerProfiler->hide();
     connect( displayTimeProfiler, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayProflierWindow ( bool ) ) );
@@ -2094,8 +1738,8 @@ void RealGUI::createAdvancedTimerProfilerWindow()
 
 void RealGUI::newRootNode(sofa::simulation::Node* root, const char* path)
 {
-    std::string filename(this->windowFilePath().toStdString());
-    std::string message="You are about to change the root node of the scene : "  + filename +
+    const std::string filename(this->windowFilePath().toStdString());
+    const std::string message="You are about to change the root node of the scene : "  + filename +
             "to the root node : " + std::string(path) +
             "\nThis implies that the simulation singleton has to change its root node.\nDo you want to proceed ?";
     if ( QMessageBox::warning ( this, "New root node: ",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
@@ -2116,7 +1760,7 @@ void RealGUI::newRootNode(sofa::simulation::Node* root, const char* path)
 
 void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
 {
-    QSofaListView* sofalistview = (QSofaListView*)sender();
+    const QSofaListView* sofalistview = (QSofaListView*)sender();
 
     if (activate)
         node->setActive(true);
@@ -2140,17 +1784,21 @@ void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
             nodeToProcess.push_back(it->get());
     }
 
-    ActivationFunctor activator( activate, sofalistview->getListener() );
+    const ActivationFunctor activator( activate, sofalistview->getListener() );
     std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
     nodeToChange.clear();
     update();
 
     if ( sofalistview == simulationGraph && activate )
     {
-        if ( node == currentSimulation() )
-            simulation::getSimulation()->init(node);
+        if (node == currentSimulation())
+        {
+            sofa::simulation::node::initRoot(node);
+        }
         else
-            simulation::getSimulation()->initNode(node);
+        {
+            sofa::simulation::node::init(node);
+        }
     }
 }
 
@@ -2166,7 +1814,7 @@ void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 void RealGUI::fileSaveAs(Node *node)
 {
     if (node == nullptr) node = currentSimulation();
-    std::string filename(this->windowFilePath().toStdString());
+    const std::string filename(this->windowFilePath().toStdString());
 
 
     QString filter( "Scenes (");
@@ -2188,24 +1836,14 @@ void RealGUI::fileSaveAs(Node *node)
             }
         }
     }
-#ifdef SOFA_PML
-    filter += " *.pml";
-#endif
 
     filter += ")";
 
 
-
-
-
     QString s = getSaveFileName ( this, filename.empty() ?nullptr:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
-    if ( s.length() >0 )
-#ifdef SOFA_PML
-        if ( pmlreader && s.endsWith ( ".pml" ) )
-            pmlreader->saveAsPML ( s );
-        else
-#endif
-            fileSaveAs ( node,s.toStdString().c_str() );
+    if (s.length() > 0) {
+        fileSaveAs(node, s.toStdString().c_str());
+    }
 
 }
 
@@ -2300,11 +1938,11 @@ void RealGUI::step()
         m_clockBeforeLastStep = currentClock;
     }
 
-    simulation::getSimulation()->animate ( root, dt );
-    simulation::getSimulation()->updateVisual( root );
+    sofa::simulation::node::animate(root, dt);
+    sofa::simulation::node::updateVisual(root);
 
     if ( m_dumpState )
-        simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
+        sofa::simulation::node::dumpState ( root, *m_dumpStateStream );
     if ( m_exportGnuplot )
         exportGnuplot(root,gnuplotDirectory);
 
@@ -2330,7 +1968,7 @@ void RealGUI::step()
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
 
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     if (displayTimeProfiler->isChecked())
     {
         m_windowTimerProfiler->pushStepData();
@@ -2367,7 +2005,7 @@ void RealGUI::resetScene()
     {
         m_frameCounter=0;
 
-        simulation::getSimulation()->reset ( root );
+        sofa::simulation::node::reset(root);
         eventNewTime();
         emit newStep();
     }
@@ -2381,9 +2019,9 @@ void RealGUI::screenshot()
 {
     QString filename;
 
-    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+    const bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
             || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
-    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+    const bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
             || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
 
     if(!pngSupport && !bmpSupport)
@@ -2411,7 +2049,7 @@ void RealGUI::screenshot()
     if ( filename != "" )
     {
         QString prefix;
-        int end = filename.lastIndexOf('_');
+        const int end = filename.lastIndexOf('_');
         if (end > -1) {
             prefix = filename.mid(
                         0,
@@ -2471,10 +2109,6 @@ void RealGUI::updateBackgroundImage()
 
 void RealGUI::clear()
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder)
-        recorder->setRoot(currentSimulation());
-#endif
     simulationGraph->setRoot(currentSimulation());
     statWidget->CreateStats(currentSimulation());
 }
@@ -2494,7 +2128,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 
     sofa::helper::ScopedAdvancedTimer exportOBJTimer("exportOBJ");
 
-    std::string sceneFileName(this->windowFilePath ().toStdString());
+    const std::string sceneFileName(this->windowFilePath ().toStdString());
     std::ostringstream ofilename;
     if ( !sceneFileName.empty() )
     {
@@ -2513,9 +2147,9 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 
     ofilename << '_' << ( oss.str().c_str() );
     ofilename << ".obj";
-    std::string filename = ofilename.str();
+    const std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    simulation::getSimulation()->exportOBJ ( root, filename.c_str(),exportMTL );
+    sofa::simulation::node::exportOBJ ( root, filename.c_str(),exportMTL );
 }
 
 //------------------------------------
@@ -2538,7 +2172,7 @@ void RealGUI::dumpState ( bool value )
 
 void RealGUI::displayComputationTime ( bool value )
 {
-    Node* root = currentSimulation();
+    const Node* root = currentSimulation();
     m_displayComputationTime = value;
     if ( root )
     {
@@ -2558,7 +2192,7 @@ void RealGUI::setExportGnuplot ( bool exp )
     m_exportGnuplot = exp;
     if ( exp && root )
     {
-        sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+        const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
         InitGnuplotVisitor v(params , gnuplotDirectory);
         root->execute( v );
         exportGnuplot(root,gnuplotDirectory);
@@ -2588,7 +2222,7 @@ void RealGUI::setExportVisitor ( bool )
 
 void RealGUI::displayProflierWindow (bool value)
 {
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     if (m_windowTimerProfiler == nullptr)
         return;
 
@@ -2648,7 +2282,7 @@ void RealGUI::changeViewer()
     }
 
     // Reload the scene
-    std::string filename(this->windowFilePath().toStdString());
+    const std::string filename(this->windowFilePath().toStdString());
     fileOpen ( filename.c_str() ); // keep the current display flags
 }
 

@@ -7,8 +7,10 @@ set(SOURCE_FILES
     BaseMatrix_test.cpp
     CompressedRowSparseMatrix_test.cpp
     Matrix_test.cpp
+    RotationMatrix_test.cpp
     SparseMatrixProduct_test.cpp
     SparseMatrixStorageOrder_test.cpp
+    TriangularSystemSolver_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

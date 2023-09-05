@@ -3,9 +3,8 @@ project(oneTetrahedron)
 
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
-sofa_find_package(Sofa.GUI.Component REQUIRED)
 sofa_find_package(Sofa.GL.Component REQUIRED)
-sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(Sofa.GUI REQUIRED)
 
 add_executable(${PROJECT_NAME} oneTetrahedron.cpp)
-target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Graph Sofa.Component Sofa.GUI.Component Sofa.GL.Component SofaGui )
+target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Graph Sofa.Component Sofa.GL.Component Sofa.GUI )

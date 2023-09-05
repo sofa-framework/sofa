@@ -54,50 +54,29 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 // Implementation
 
 Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
-    : flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+    : sofa::core::topology::TopologicalMapping()
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
+    m_inputType = TopologyElementType::HEXAHEDRON;
+    m_outputType = TopologyElementType::QUAD;
 }
 
 void Hexa2QuadTopologicalMapping::init()
 {
     using namespace container::dynamic;
 
-    bool modelsOk = true;
-    if (!fromModel)
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
-        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no input mesh topology could be found.
-        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
-        modelsOk = false;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
-    if (!toModel)
-    {
-        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no output mesh topology could be found.
-        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-
-    // Making sure the output topology is derived from the quad topology container
-    if (!dynamic_cast<QuadSetTopologyContainer *>(toModel.get())) {
-        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
-                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                        " QuadSetTopologyContainer derived object.";
-        modelsOk = false;
-    } else {
-        // Making sure a topology modifier exists at the same level as the output topology
-        QuadSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
-        if (!to_tstm) {
-            msg_error() << "No QuadSetTopologyModifier found in the output topology node '"
-                        << toModel->getContext()->getName() << "'.";
-            modelsOk = false;
-        }
-    }
-
-    if (!modelsOk)
-    {
+    // Making sure a topology modifier exists at the same level as the output topology
+    QuadSetTopologyModifier *to_tstm;
+    toModel->getContext()->get(to_tstm);
+    if (!to_tstm) {
+        msg_error() << "No QuadSetTopologyModifier found in the output topology node '"
+                    << toModel->getContext()->getName() << "'.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -162,13 +141,13 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     toModel->getContext()->get(to_tstm);
 
     auto itBegin=fromModel->beginChange();
-    auto itEnd=fromModel->endChange();
+    const auto itEnd=fromModel->endChange();
 
     auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
-        TopologyChangeType changeType = (*itBegin)->getChangeType();
+        const TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Hexa2QuadTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
@@ -313,7 +292,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             core::topology::BaseMeshTopology::Quad q;
 
                             const core::topology::BaseMeshTopology::Hexahedron &he=hexahedronArray[ind_test];
-                            int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
+                            const int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
                             //unsigned int hh = (fromModel->getQuadsInHexahedron(ind_test))[h];
 
                             //t=from_qstc->getQuad(hh);
@@ -325,8 +304,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                             if(flipN)
                             {
-                                unsigned int tmp3 = q[3];
-                                unsigned int tmp2 = q[2];
+                                const unsigned int tmp3 = q[3];
+                                const unsigned int tmp2 = q[2];
                                 q[3] = q[0];
                                 q[2] = q[1];
                                 q[1] = tmp2;

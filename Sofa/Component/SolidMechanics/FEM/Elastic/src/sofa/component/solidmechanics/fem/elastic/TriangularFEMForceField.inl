@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
-
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
@@ -360,6 +360,93 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 }
 
 template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeElementStiffnessMatrix(type::Mat<9, 9, typename TriangularFEMForceField<DataTypes>::Real>& S, type::Mat<9, 9, typename TriangularFEMForceField<DataTypes>::Real>& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot)
+{
+    type::MatNoInit<3, 6, Real> Jt;
+    Jt.transpose(J);
+
+    type::MatNoInit<6, 6, Real> JKJt;
+    JKJt = J * K * Jt;  // in-plane stiffness matrix, 6x6
+
+    // stiffness JKJt expanded to 3 dimensions
+    type::Mat<9, 9, Real> Ke; // initialized to 0
+    // for each 2x2 block i,j
+    for (unsigned i = 0; i < 3; i++)
+    {
+        for (unsigned j = 0; j < 3; j++)
+        {
+            // copy the block in the expanded matrix
+            for (unsigned k = 0; k < 2; k++)
+                for (unsigned l = 0; l < 2; l++)
+                    Ke[3 * i + k][3 * j + l] = JKJt[2 * i + k][2 * j + l];
+        }
+    }
+
+    // rotation matrices. TODO: use block-diagonal matrices, more efficient.
+    type::Mat<9, 9, Real> RR, RRt; // initialized to 0
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+        {
+            RR[i][j] = RR[i + 3][j + 3] = RR[i + 6][j + 6] = Rot[i][j];
+            RRt[i][j] = RRt[i + 3][j + 3] = RRt[i + 6][j + 6] = Rot[j][i];
+        }
+
+    S = RR * Ke;
+    SR = S * RRt;
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat, SReal k, unsigned int& offset)
+{
+    const auto& triangleInf = triangleInfo.getValue();
+    const auto& triangles = m_topology->getTriangles();
+    const auto nbTriangles = m_topology->getNbTriangles();
+
+    for (sofa::Index i = 0; i < nbTriangles; i++)
+    {
+        const TriangleInformation& tInfo = triangleInf[i];
+        const Triangle& tri = triangles[i];
+
+        type::Mat<9, 9, Real> JKJt(type::NOINIT), RJKJtRt(type::NOINIT);
+        computeElementStiffnessMatrix(JKJt, RJKJtRt, tInfo.materialMatrix, tInfo.strainDisplacementMatrix, tInfo.rotation);
+        this->addToMatrix(mat, offset, tri, RJKJtRt, -k);
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    type::Mat<9, 9, Real> JKJt, RJKJtRt;
+    sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
+
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const auto& triangleInf = triangleInfo.getValue();
+    const auto& triangles = m_topology->getTriangles();
+    const auto nbTriangles = m_topology->getNbTriangles();
+
+    for (sofa::Index i = 0; i < nbTriangles; i++)
+    {
+        const TriangleInformation& tInfo = triangleInf[i];
+        const Triangle& tri = triangles[i];
+
+        computeElementStiffnessMatrix(JKJt, RJKJtRt, tInfo.materialMatrix, tInfo.strainDisplacementMatrix, tInfo.rotation);
+
+        for (sofa::Index n1 = 0; n1 < Element::size(); ++n1)
+        {
+            for (sofa::Index n2 = 0; n2 < Element::size(); ++n2)
+            {
+                RJKJtRt.getsub(S * n1, S * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                dfdx(tri[n1] * S, tri[n2] * S) += -localMatrix;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
 {
     if (val < 0)
@@ -513,8 +600,8 @@ void TriangularFEMForceField<DataTypes>::getRotations()
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
     type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-    int numPoint = m_topology->getNbPoints();
-    int numTri = m_topology->getNbTriangles();
+    const int numPoint = m_topology->getNbPoints();
+    const int numTri = m_topology->getNbTriangles();
 
     //reset the rotation matrix
     for (int i = 0; i < numPoint; i++)
@@ -620,7 +707,11 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(Stiffness& K, const St
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo)
 {
-    Eigen::Matrix<Real, 2, 2> e;
+    SOFA_UNUSED(elementIndex);
+
+    Eigen::Matrix<Real, -1, -1> e;
+    e.resize(2, 2);
+
     e(0,0) = triangleInfo.strain[0];
     e(0,1) = triangleInfo.strain[2];
     e(1,0) = triangleInfo.strain[2];
@@ -647,7 +738,11 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo)
 {
-    Eigen::Matrix<Real, 2, 2> e;
+    SOFA_UNUSED(elementIndex);
+
+    Eigen::Matrix<Real, -1, -1> e;
+    e.resize(2, 2);
+
     //voigt notation to symmetric matrix
     e(0,0) = triangleInfo.stress[0];
     e(0,1) = triangleInfo.stress[2];
@@ -673,7 +768,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     //Hosford yield criterion
     //for plane stress : 1/2 * ( |S_1|^n + |S_2|^n) + 1/2 * |S_1 - S_2|^n = S_y^n
     //with S_i the principal stresses, n is a material-dependent exponent and S_y is the yield stress in uniaxial tension/compression
-    double n = this->hosfordExponant.getValue();
+    const double n = this->hosfordExponant.getValue();
     triangleInfo.differenceToCriteria = (Real)
             pow(0.5 * (pow((double)fabs(S(0)), n) +  pow((double)fabs(S(1)), n) + pow((double)fabs(S(0) - S(1)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
@@ -814,6 +909,39 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     triangleInf[elementIndex].stress = stress;
 }
 
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressPerVertex()
+{
+    auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
+    const auto& triangleInf = sofa::helper::getReadAccessor(triangleInfo);
+
+    m_minStress = std::numeric_limits<Real>::max();
+    m_maxStress = std::numeric_limits<Real>::lowest();
+    for (unsigned int i = 0; i < vertexInf.size(); i++)
+    {
+        const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
+        Real averageStress = 0.0;
+        double sumArea = 0.0;
+        for (auto triID : triangles)
+        {
+            if (triangleInf[triID].area)
+            {
+                averageStress += (fabs(triangleInf[triID].maxStress) * triangleInf[triID].area);
+                sumArea += triangleInf[triID].area;
+            }
+        }
+        if (sumArea)
+            averageStress /= sumArea;
+
+        vertexInf[i].stress = averageStress;
+        if (averageStress < m_minStress)
+            m_minStress = averageStress;
+        if (averageStress > m_maxStress)
+            m_maxStress = averageStress;
+    }
+}
+
 // ----------------------------------------------------------------------------------------------------------------------------------------
 // ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
 // ----------------------------------------------------------------------------------------------------------------------------------------
@@ -884,7 +1012,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h
 {
     Displacement dX;
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -946,8 +1074,8 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h
     Coord x_2;
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
-    unsigned int nbTriangles = m_topology->getNbTriangles();
-    auto triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const auto& triangles = m_topology->getTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -998,7 +1126,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const VecCoord& p)
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -1061,8 +1189,8 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const VecCoord& p)
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-    sofa::Size nbTriangles = m_topology->getNbTriangles();
-    auto triangles = m_topology->getTriangles();
+    const sofa::Size nbTriangles = m_topology->getNbTriangles();
+    const auto& triangles = m_topology->getTriangles();
     for (sofa::Index i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -1149,12 +1277,18 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     }
     f.endEdit();
 
+
     if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
-        unsigned int nbTriangles = m_topology->getNbTriangles();
+        const unsigned int nbTriangles = m_topology->getNbTriangles();
         auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
         for (unsigned int i = 0; i < nbTriangles; ++i)
             computePrincipalStress(i, triangleInf[i]);
+
+        if (showStressValue.getValue()) // if true will compute averageStress per point
+        {
+            computeStressPerVertex();
+        }
     }
 }
 
@@ -1179,7 +1313,11 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
     df.endEdit();
 }
 
-
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 // --------------------------------------------------------------------------------------
@@ -1193,6 +1331,12 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         return;
     }
 
+    p_computeDrawInfo = showStressVector.getValue() || showStressValue.getValue() || showFracturableTriangles.getValue();
+
+    if (!p_computeDrawInfo) {
+        return;
+    }
+
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -1200,20 +1344,17 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    // Force stress computation to display ForceField
-    p_computeDrawInfo = showStressVector.getValue() | showStressValue.getValue() | showFracturableTriangles.getValue();
-
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
-    Size nbTriangles = m_topology->getNbTriangles();
+    const auto& triangles = m_topology->getTriangles();
+    const Size nbTriangles = triangles.size();
 
     if (showStressVector.getValue())
     {
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         std::vector<sofa::type::Vec3> vertices;
         for (Size i = 0; i < nbTriangles; ++i)
         {
-            const Triangle& tri = m_topology->getTriangle(i);
+            const Triangle& tri = triangles[i];
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1227,39 +1368,15 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showStressValue.getValue())
     {
-        type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        Real minStress = std::numeric_limits<Real>::max();
-        Real maxStress = 0.0;
-        for (unsigned int i = 0; i < vertexInf.size(); i++)
-        {
-            const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
-            double averageStress = 0.0;
-            double sumArea = 0.0;
-            for (unsigned int v = 0; v < triangles.size(); v++)
-            {
-                if (triangleInfo.getValue()[triangles[v]].area)
-                {
-                    averageStress += (fabs(triangleInfo.getValue()[triangles[v]].maxStress) * triangleInfo.getValue()[triangles[v]].area);
-                    sumArea += triangleInfo.getValue()[triangles[v]].area;
-                }
-            }
-            if (sumArea)
-                averageStress /= sumArea;
-
-            vertexInf[i].stress = averageStress;
-            if (averageStress < minStress)
-                minStress = averageStress;
-            if (averageStress > maxStress)
-                maxStress = averageStress;
-        }
-
+        const type::vector<VertexInformation>& vertexInf = vertexInfo.getValue();
         std::vector<sofa::type::Vec3> vertices;
-        std::vector<sofa::type::RGBAColor> colorVector;
 
-        auto evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
+        std::vector<sofa::type::RGBAColor> colorVector;
+ 
+        auto evalColor = p_drawColorMap->getEvaluator(m_minStress, m_maxStress);
         for (Size i = 0; i < nbTriangles; ++i)
         {
-            const Triangle& tri = m_topology->getTriangle(i);
+            const Triangle& tri = triangles[i];
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1302,7 +1419,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             if (triangleInf[i].differenceToCriteria > 0)
             {
                 color = sofa::type::RGBAColor(float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference) / (maxDifference - minDifference)), 0.0f, 0.0f, 0.5f);
-                const Triangle& tri = m_topology->getTriangle(i);
+                const Triangle& tri = triangles[i];
                 Index a = tri[0];
                 Index b = tri[1];
                 Index c = tri[2];

@@ -22,23 +22,11 @@
 #include "SceneCheckerListener.h"
 
 #include <sofa/simulation/Node.h>
-#include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
-#include <SceneChecking/SceneCheckDuplicatedName.h>
-#include <SceneChecking/SceneCheckUsingAlias.h>
-#include <SceneChecking/SceneCheckDeprecatedComponents.h>
-#include <SceneChecking/SceneCheckCollisionResponse.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
+#include <SceneChecking/SceneCheckerVisitor.h>
 
 namespace sofa::_scenechecking_
 {
-
-SceneCheckerListener::SceneCheckerListener()
-{
-    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
-}
 
 SceneCheckerListener* SceneCheckerListener::getInstance()
 {
@@ -46,10 +34,19 @@ SceneCheckerListener* SceneCheckerListener::getInstance()
     return &sceneLoaderListener;
 }
 
-void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node, simulation::SceneLoader* sceneLoader)
 {
     if(node.get())
-        m_sceneChecker.validate(node.get());
+    {
+        sofa::scenechecking::SceneCheckerVisitor sceneCheckerVisitor;
+
+        for (const auto& sceneCheck : sofa::simulation::SceneCheckMainRegistry::getRegisteredSceneChecks())
+        {
+            sceneCheckerVisitor.addCheck(sceneCheck);
+        }
+
+        sceneCheckerVisitor.validate(node.get(), sceneLoader);
+    }
 }
 
 

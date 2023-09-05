@@ -96,6 +96,8 @@ public:
     void applyConstraint(const MechanicalParams* mparams, BaseVector* vect,
                                  const MultiMatrixAccessor* matrix) override;
 
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax);
@@ -121,12 +123,7 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::mstate;
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
-    /// These two are implemented depending on the templates
-    bool isPointInPlane(Coord p) const ;
-
-    /// These two are implemented depending on the templates
-    template<class T>
-    void projectResponseImpl(const MechanicalParams* mparams, T& dx) const ;
+    bool isPointInPlane(const Coord& p) const ;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)

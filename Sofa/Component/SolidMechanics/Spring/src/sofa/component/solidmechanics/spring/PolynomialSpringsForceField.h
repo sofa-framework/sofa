@@ -127,6 +127,8 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const core::behavior::MultiMatrixAccessor* matrix) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
@@ -156,10 +158,10 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API PolynomialSpringsForceField<defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
+#endif // !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 
 } // namespace namespace sofa::component::solidmechanics::spring

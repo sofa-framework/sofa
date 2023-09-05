@@ -22,15 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h")
-
-// some files are included in the original file
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
-
-namespace sofa::component::topology
-{
-
-    using TriangleSetTopologyModifier = sofa::component::topology::container::dynamic::TriangleSetTopologyModifier;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h")

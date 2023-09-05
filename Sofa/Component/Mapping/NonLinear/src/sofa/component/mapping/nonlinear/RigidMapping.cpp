@@ -28,13 +28,29 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
+template <>
+void RigidMapping<Rigid3Types, Rigid3Types>::getGlobalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+{
+    result.getCenter() = xFrom.getOrientation().inverse().rotate( xTo.getCenter() - xFrom.getCenter() ) ;
+    result.getOrientation() = xFrom.getOrientation().inverse() * xTo.getOrientation() ;
+}
+
+template <>
+void RigidMapping<Rigid3Types, Rigid3Types>::updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint)
+{
+    omega += getVOrientation(out) + (typename InDeriv::Rot)cross(Out::getCPos(rotatedpoint), Out::getDPos(out));
+}
+
+
 // Register in the Factory
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< RigidMapping< Rigid3Types, Vec3Types > >()
+        .add< RigidMapping< Rigid3Types, Vec3Types > >(true)
+        .add< RigidMapping< Rigid3Types, Rigid3Types > >()
         .add< RigidMapping< Rigid2Types, Vec2Types > >()
         ;
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Rigid3Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid2Types, Vec2Types >;
 
 

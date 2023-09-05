@@ -27,18 +27,8 @@
 #include <sofa/gl/component/rendering3d/ClipPlane.h>
 #define SOFAGL_COMPONENT_CLIPPLANE
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/ClipPlane.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/ClipPlane.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering3d/ClipPlane.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_CLIPPLANE
-
-namespace sofa::component::visualmodel
-{
-    using ClipPlane = sofa::gl::component::rendering3d::ClipPlane;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_CLIPPLANE

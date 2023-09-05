@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/gui/common/ViewerFactory.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/ViewerFactory.h")
-
-namespace sofa::gui
-{
-    using BaseViewerArgument = sofa::gui::common::BaseViewerArgument;
-    using ViewerQtArgument = sofa::gui::common::ViewerQtArgument;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/ViewerFactory.h")

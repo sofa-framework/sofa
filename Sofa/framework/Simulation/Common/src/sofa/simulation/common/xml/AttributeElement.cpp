@@ -39,10 +39,8 @@ AttributeElement::~AttributeElement()
 
 bool AttributeElement::init()
 {
-    int i=0;
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
-        i++;
         it->initNode();
     }
     return initNode();
@@ -50,7 +48,7 @@ bool AttributeElement::init()
 
 bool AttributeElement::initNode()
 {
-    std::string name = getAttribute( "type", "");
+    const std::string name = getAttribute( "type", "");
 
     if (this->replaceAttribute.find(name) != this->replaceAttribute.end())
     {

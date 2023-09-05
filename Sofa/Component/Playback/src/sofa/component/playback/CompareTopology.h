@@ -53,7 +53,10 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (context->getMeshTopology() == nullptr)
+        {
+            arg->logError("Cannot find a mesh topology in the current context");
             return false;
+        }
         return BaseObject::canCreate(obj, context, arg);
     }
 

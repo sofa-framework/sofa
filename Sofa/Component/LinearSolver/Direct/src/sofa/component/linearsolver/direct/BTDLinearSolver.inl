@@ -113,7 +113,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 
     msg_info_when(verbose) << "BTDLinearSolver, invert Matrix = "<< M ;
 
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     const Index nb = M.rowSize() / bsize;
     if (nb == 0) return;
     //alpha.resize(nb);
@@ -193,7 +193,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     {
         // i < j correspond to the upper diagonal
         // for the computation, we use the lower diagonal matrix
-        Index t = i; i = j; j = t;
+        const Index t = i; i = j; j = t;
     }
     if (nBlockComputedMinv[i] > i-j) return; // the block was already computed
 
@@ -203,7 +203,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 
     // the block is computed now :
     // 1. all the diagonal block between N and i need to be computed
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     sofa::SignedIndex i0 = i;
     while (nBlockComputedMinv[i0]==0)
         ++i0;
@@ -297,7 +297,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 template<class Matrix, class Vector>
 double BTDLinearSolver<Matrix,Vector>::getMinvElement(Index i, Index j)
 {
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     if (i < j)
     {
         // lower diagonal
@@ -314,7 +314,7 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 
     msg_info_when(verbose) << "solve, b = "<< b;
 
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     const Index nb = b.size() / bsize;
     if (nb == 0) return;
 
@@ -393,8 +393,8 @@ template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 {
 
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
-    const Index nb = this->linearSystem.systemRHVector->size() / bsize;
+    constexpr Index bsize = Matrix::getSubMatrixDim();
+    const Index nb = this->getSystemRHVector()->size() / bsize;
 
     //TODO => optimisation ??
     bwdContributionOnLH.clear();
@@ -419,7 +419,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
     {
         Vec_dRH[i]=0;
         Vec_dRH[i].resize(bsize);
-        _rh_buf.asub(i,bsize) = this->linearSystem.systemRHVector->asub(i,bsize) ;
+        _rh_buf.asub(i,bsize) = this->getSystemRHVector()->asub(i,bsize) ;
 
     }
 
@@ -435,7 +435,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 {
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     const bool showProblem = d_problem.getValue();
 
     Index b=indMaxBloc;
@@ -456,7 +456,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     {
 
         // evaluate the Right Hand Term for the bloc b
-        RHbloc = this->linearSystem.systemRHVector->asub(b,bsize) ;
+        RHbloc = this->getSystemRHVector()->asub(b,bsize) ;
 
         // compute the contribution on LH created by RH
         _acc_lh_bloc  += Minv.asub(b,b,bsize,bsize) * RHbloc;
@@ -474,7 +474,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 
     b = current_bloc;
     // compute the bloc which indice is current_bloc
-    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
+    this->getSystemLHVector()->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->getSystemRHVector()->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     dmsg_info_when(showProblem) << "LH[" << b << "] = Minv[" << b << "][" << b << "] * (fwdRH(" << b << ") + RH(" << b << ")) + bwdLH(" << b << ")";
@@ -490,7 +490,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
 {
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     _acc_lh_bloc =  bwdContributionOnLH.asub(current_bloc, bsize);
 
     const bool showProblem = d_problem.getValue();
@@ -500,7 +500,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
         dmsg_info_when(showProblem) << "bwdLH[" << current_bloc - 1 << "] = H[" << current_bloc - 1 << "][" << current_bloc << "] *( bwdLH[" << current_bloc << "] + Minv[" << current_bloc << "][" << current_bloc << "] * RH[" << current_bloc << "])";
 
         // BwdLH += Minv*RH
-        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->linearSystem.systemRHVector->asub(current_bloc,bsize) ;
+        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->getSystemRHVector()->asub(current_bloc,bsize) ;
 
         current_bloc--;
         // BwdLH(n-1) = H(n-1)(n)*BwdLH(n)
@@ -531,7 +531,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
 {
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     _acc_rh_bloc =fwdContributionOnRH.asub(current_bloc, bsize);
 
     const bool showProblem = d_problem.getValue();
@@ -540,7 +540,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
     {
 
         // fwdRH(n) += RH(n)
-        _acc_rh_bloc += this->linearSystem.systemRHVector->asub(current_bloc,bsize);
+        _acc_rh_bloc += this->getSystemRHVector()->asub(current_bloc,bsize);
 
         // fwdRH(n+1) = H(n+1)(n) * fwdRH(n)
         _acc_rh_bloc = -(lambda[current_bloc].t() * _acc_rh_bloc);
@@ -556,7 +556,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
 
     Index b = current_bloc;
     // compute the bloc which indice is _indMaxFwdLHComputed
-    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
+    this->getSystemLHVector()->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->getSystemRHVector()->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     dmsg_info_when(showProblem) << "LH[" << b << "] = Minv[" << b << "][" << b << "] * (fwdRH(" << b << ") + RH(" << b << ")) + bwdLH(" << b << ")";
@@ -570,7 +570,7 @@ template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
 {
 
-    const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+    constexpr Index bsize = Matrix::getSubMatrixDim();
     const bool showProblem = d_problem.getValue();
 
     Index b;
@@ -584,13 +584,13 @@ void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
         {
             dmsg_info_when(showProblem) << " fwdRH[" << b + 1 << "] = H[" << b + 1 << "][" << b << "] * (fwdRH(" << b << ") + RH(" << b << "))";
             // fwdRH(n+1) = H(n+1)(n) * (fwdRH(n) + RH(n))
-            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) ;
+            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->getSystemRHVector()->asub(b,bsize) ) ;
         }
 
         _indMaxFwdLHComputed++; b++;
 
         // compute the bloc which indice is _indMaxFwdLHComputed
-        this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
+        this->getSystemLHVector()->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->getSystemRHVector()->asub(b,bsize) ) +
                 bwdContributionOnLH.asub(b, bsize);
 
         dmsg_info_when(showProblem) << "LH["<<b<<"] = Minv["<<b<<"]["<<b<<"] * (fwdRH("<<b<< ") + RH("<<b<<")) + bwdLH("<<b<<")";
@@ -666,14 +666,14 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     // debug: test
     if (d_verification.getValue())
     {
-        const Index bsize = Matrix::getSubMatrixDim(d_blockSize.getValue());
+        constexpr Index bsize = Matrix::getSubMatrixDim();
         Vector *Result_partial_Solve = new Vector();
-        (*Result_partial_Solve) = (*this->linearSystem.systemLHVector);
+        (*Result_partial_Solve) = (*this->getSystemLHVector());
 
-        solve(*this->linearSystem.systemMatrix,*this->linearSystem.systemLHVector, *this->linearSystem.systemRHVector);
+        solve(*this->getSystemMatrix(),*this->getSystemLHVector(), *this->getSystemRHVector());
 
         Vector *Result = new Vector();
-        (*Result) = (*this->linearSystem.systemLHVector);
+        (*Result) = (*this->getSystemLHVector());
 
         Vector *DR = new Vector();
         (*DR) = (*Result);
@@ -763,12 +763,12 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
             double acc = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
             {
-                Index col1 = i1->first;
-                double val1 = i1->second;
+                const Index col1 = i1->first;
+                const double val1 = i1->second;
                 for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
                 {
-                    Index col2 = i2->first;
-                    double val2 = i2->second;
+                    const Index col2 = i2->first;
+                    const double val2 = i2->second;
                     acc += val1 * getMinvElement(col1,col2) * val2;
                 }
             }

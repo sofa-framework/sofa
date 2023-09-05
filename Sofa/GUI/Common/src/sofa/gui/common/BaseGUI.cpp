@@ -70,11 +70,6 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     groot->get(defaultPath, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (defaultPath)
     {
-        if (!defaultPath->recordPath.getValue().empty())
-        {
-            setRecordPath(defaultPath->recordPath.getValue());
-        }
-
         if (!defaultPath->gnuplotPath.getValue().empty())
             setGnuplotPath(defaultPath->gnuplotPath.getValue());
     }
@@ -123,7 +118,7 @@ void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_
 {
     sofa::helper::ScopedAdvancedTimer exportGnuplotTimer("exportGnuplot");
 
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }

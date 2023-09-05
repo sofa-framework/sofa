@@ -1,0 +1,52 @@
+<!-- Automatic incision example: incision path is define in: ./IncisionTrianglesProcess.txt -->
+<Node name="root" gravity="0 0 -50" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [TriangularBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer EdgeSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Triangle2EdgeTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    
+    <VisualStyle displayFlags="showVisual showWireframe" />
+    <DefaultAnimationLoop/>
+
+    <Node name="SquareGravity" gravity="0 0 0">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
+        <MechanicalObject src="@loader" template="Vec3" name="default4" scale3d="10 10 10" restScale="1" />
+        <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <DiagonalMass template="Vec3,Vec3" name="default5" massDensity="1.5" />
+        <BoxROI template="Vec3" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
+        <FixedConstraint template="Vec3" name="fixedConstraint1" indices="@box_roi1.indices"/>
+        <BoxROI template="Vec3" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>
+        <FixedConstraint template="Vec3" name="fixedConstraint2" indices="@box_roi2.indices"/>
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="30000" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="10000" damping="1" />
+        <TriangleCollisionModel name="default7" selfCollision="true" />
+        <Node name="edges">
+            <EdgeSetTopologyContainer name="Edge_topo" />
+            <EdgeSetTopologyModifier name="Modifier" />
+            <EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawEdges="1" />
+            <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Triangle_topo" output="@Edge_topo" />
+        </Node>
+
+        <Node >
+            <OglModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <IdentityMapping name="default8" input="@.." output="@Visual" />
+        </Node>
+        <TopologicalChangeProcessor listening="1" filename="IncisionTrianglesProcess.txt" saveIndicesAtInit="true" printLog="false" draw="true" epsilonSnapPath="0.1" epsilonSnapBorder="0.5" />
+    </Node>
+</Node>

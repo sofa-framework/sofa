@@ -22,14 +22,4 @@
 #pragma once
 #include <sofa/gui/common/OperationFactory.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/OperationFactory.h")
-
-namespace sofa::gui
-{
-    using OperationCreator = sofa::gui::common::OperationCreator;
-    template<class RealOperation>
-    using TOperationCreator = sofa::gui::common::TOperationCreator<RealOperation>;
-    using OperationFactory = sofa::gui::common::OperationFactory;
-    using RegisterOperation = sofa::gui::common::RegisterOperation;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/OperationFactory.h")

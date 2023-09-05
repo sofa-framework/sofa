@@ -72,6 +72,13 @@ void OffSequenceLoader::init()
 {
     MeshOffLoader::init();
 
+    if (this->d_filename.getValue().empty())
+    {
+        msg_error() << "Attribute '" << this->d_filename.getName() << "' is empty.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     //parse the file name to get the index part
     std::string file = this->d_filename.getFullPath();
     m_filenameAndNb = file.substr(0, file.find("."));
@@ -97,10 +104,10 @@ void OffSequenceLoader::handleEvent(sofa::core::objectmodel::Event* event)
             {
                 std::ostringstream os;
                 os << currentIndex;
-                std::string indexStr = os.str();
-                std::string filetmp = m_filenameAndNb.substr(0, m_filenameAndNb.size()-indexStr.size());
+                const std::string indexStr = os.str();
+                const std::string filetmp = m_filenameAndNb.substr(0, m_filenameAndNb.size()-indexStr.size());
 
-                std::string newFile = filetmp + indexStr + std::string(".off");
+                const std::string newFile = filetmp + indexStr + std::string(".off");
 
                 load(newFile.c_str());
             }

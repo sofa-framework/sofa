@@ -230,6 +230,14 @@ public:
         return orientation.rotate(v);
     }
 
+    constexpr RigidCoord<3, real> rotate(const RigidCoord<3, real>& c) const
+    {
+        RigidCoord r;
+        r.center = center + orientation.rotate(c.center);
+        r.orientation = orientation * c.getOrientation();
+        return r;
+    }
+
     constexpr Vec3 inverseRotate(const Vec3& v) const
     {
         return orientation.inverseRotate(v);
@@ -240,11 +248,25 @@ public:
         return v + center;
     }
 
+    constexpr RigidCoord<3, real> translate(const RigidCoord<3, real>& c) const
+    {
+        RigidCoord r;
+        r.center = c.center + center;
+        r.orientation = c.orientation();
+        return r;
+    }
+
     /// Apply a transformation with respect to itself
     constexpr void multRight(const RigidCoord<3, real>& c)
     {
         center += orientation.rotate(c.getCenter());
         orientation = orientation * c.getOrientation();
+    }
+
+    /// compute the product with another frame on the right
+    constexpr Vec3 mult(const Vec3& v) const
+    {
+        return orientation.rotate(v) + center;
     }
 
     /// compute the product with another frame on the right
@@ -267,15 +289,17 @@ public:
         orientation.fromMatrix(rot);
     }
 
-    /// Write to the given matrix
-    template<class Mat>
-    void toMatrix(Mat& m) const
+    /// Write to the given 3x3 matrix
+    void toMatrix( sofa::type::Mat<3,3,real>& m) const
     {
         m.identity();
         orientation.toMatrix(m);
-        m[0][3] = (typename Mat::Real)center[0];
-        m[1][3] = (typename Mat::Real)center[1];
-        m[2][3] = (typename Mat::Real)center[2];
+    }
+
+    /// Write to the given 4x4 matrix
+    void toMatrix( sofa::type::Mat<4,4,real>& m) const
+    {
+        toHomogeneousMatrix(m);
     }
 
     constexpr void toHomogeneousMatrix(HomogeneousMat& m) const
@@ -574,6 +598,14 @@ public:
         return v + center;
     }
 
+    constexpr RigidCoord<2, real> translate(const RigidCoord<2, real>& c) const
+    {
+        RigidCoord r;
+        r.center = c.center + center;
+        r.orientation = c.orientation();
+        return r;
+    }
+
     static constexpr RigidCoord<2, real> identity()
     {
         RigidCoord<2, real> c;
@@ -585,6 +617,12 @@ public:
     {
         center += /*orientation.*/rotate(c.getCenter());
         orientation = orientation + c.getOrientation();
+    }
+
+    /// compute the product with another frame on the right
+    constexpr Vec2 mult(const Vec2& v) const
+    {
+        return /*orientation.*/rotate(v) + center;
     }
 
     /// compute the product with another frame on the right

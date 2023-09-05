@@ -74,7 +74,6 @@ public:
      */
     void addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-    void draw(const core::visual::VisualParams* /* vparams */) override { }
 
 protected:
 

@@ -23,7 +23,6 @@
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 #include <sofa/core/collision/IntersectorFactory.h>
 
 namespace sofa::component::collision::detection::intersection
@@ -50,18 +49,18 @@ bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&)
 
 int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
 {
-    Vec3 n = e2.n();
+    const Vec3 n = e2.n();
     if (n == Vec3()) return 0; // no normal on point -> either an internal points or normal is not available
 
     if (e1.getCollisionModel()->getMechanicalState() == e2.getCollisionModel()->getMechanicalState())
     {
         // self-collisions: make sure the point is not one of the vertices of the tetrahedron
-        int i = e2.getIndex();
+        const int i = e2.getIndex();
         if (i == e1.p1Index() || i == e1.p2Index() || i == e1.p3Index() || i == e1.p4Index())
             return 0;
     }
 
-    Vec3 P = e2.p();
+    const Vec3 P = e2.p();
     Vec3 b0 = e1.getBary(P);
     if (b0[0] < 0 || b0[1] < 0 || b0[2] < 0 || (b0[0]+b0[1]+b0[2]) > 1)
         return 1; // out of tetrahedron
@@ -74,22 +73,22 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
     {
         if (bdir[c] < -1.0e-10)
         {
-            double l = -b0[c]/bdir[c];
+            const double l = -b0[c]/bdir[c];
             if (l < l1) l1 = l;
         }
     }
     // 4th plane : bx+by+bz = 1
     {
-        double bd = bdir[0]+bdir[1]+bdir[2];
+        const double bd = bdir[0]+bdir[1]+bdir[2];
         if (bd > 1.0e-10)
         {
-            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
+            const double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
             if (l < l1) l1 = l;
         }
     }
     if (l1 >= 1.0e9) l1 = 0;
-    double l = l1;
-    Vec3 X = P-n*l;
+    const double l = l1;
+    const Vec3 X = P-n*l;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -110,7 +109,7 @@ bool TetrahedronDiscreteIntersection::testIntersection(Ray&, Tetrahedron&)
 
 int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
 {
-    Vec3 P = e1.origin();
+    const Vec3 P = e1.origin();
     Vec3 PQ = e1.direction();
     Vec3 b0 = e2.getBary(P);
     Vec3 bdir = e2.getDBary(PQ);
@@ -123,32 +122,32 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
         //if (b0[c] > 1 && bdir[c] > 0) return 0; // no intersection
         if (bdir[c] < -1.0e-10)
         {
-            double l = -b0[c]/bdir[c];
+            const double l = -b0[c]/bdir[c];
             if (l < l1) l1 = l;
         }
         else if (bdir[c] > 1.0e-10)
         {
-            double l = -b0[c]/bdir[c];
+            const double l = -b0[c]/bdir[c];
             if (l > l0) l0 = l;
         }
     }
     // 4th plane : bx+by+bz = 1
     {
-        double bd = bdir[0]+bdir[1]+bdir[2];
+        const double bd = bdir[0]+bdir[1]+bdir[2];
         if (bd > 1.0e-10)
         {
-            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
+            const double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
             if (l < l1) l1 = l;
         }
         else if (bd < -1.0e-10)
         {
-            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
+            const double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
             if (l > l0) l0 = l;
         }
     }
     if (l0 > l1) return 0; // empty intersection
-    double l = l0; //(l0+l1)/2;
-    Vec3 X = P+PQ*l;
+    const double l = l0; //(l0+l1)/2;
+    const Vec3 X = P+PQ*l;
 
     //msg_info() << "tetra "<<e2.getIndex()<<": b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
     //msg_info() << "l0 = "<<l0<<" \tl1 = "<<l1<<" \tX = "<<X<<" \tbX = "<<e2.getBary(X)<<" \t?=? "<<(b0+bdir*l)<<sendl;

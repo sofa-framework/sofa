@@ -68,8 +68,8 @@ int GenericConstraintProblem::getNumConstraintGroups()
 
 void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
 {
-    SReal tempTol = tolerance;
-    int tempMaxIt = maxIterations;
+    const SReal tempTol = tolerance;
+    const int tempMaxIt = maxIterations;
 
     tolerance = tol;
     maxIterations = maxIt;
@@ -95,8 +95,8 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
         return;
     }
 
-    SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime() ;
-    SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
+    const SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime() ;
+    const SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
 
     SReal *dfree = getDfree();
     SReal *force = getF();
@@ -189,8 +189,8 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
             }
         }
 
-        SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
-        SReal dt = (t1 - t0)*timeScale;
+        const SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
+        const SReal dt = (t1 - t0)*timeScale;
 
         if(timeout && dt > timeout)
         {
@@ -601,7 +601,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             m_deltaF_new[j] = -(force[j] - m_lam[j]);
         }
 
-        SReal beta = m_deltaF_new.dot(m_deltaF_new) / m_deltaF.dot(m_deltaF);
+        const SReal beta = m_deltaF_new.dot(m_deltaF_new) / m_deltaF.dot(m_deltaF);
         m_deltaF.eq(m_deltaF_new, 1);
 
         if(beta > 1)

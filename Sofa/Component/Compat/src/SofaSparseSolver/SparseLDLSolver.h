@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLDLSolver.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using SparseLDLSolver = sofa::component::linearsolver::direct::SparseLDLSolver<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLDLSolver.h")

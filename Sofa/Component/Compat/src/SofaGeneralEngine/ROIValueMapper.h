@@ -23,10 +23,4 @@
 
 #include <sofa/component/engine/transform/ROIValueMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/ROIValueMapper.h")
-
-namespace sofa::component::engine
-{
-    using ROIValueMapper = sofa::component::engine::transform::ROIValueMapper;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/ROIValueMapper.h")

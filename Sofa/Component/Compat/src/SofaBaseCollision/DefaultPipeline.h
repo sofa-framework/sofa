@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/detection/algorithm/DefaultPipeline.h>
+#include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/DefaultPipeline.h")
-
-namespace sofa::component::collision
-{
-    using DefaultPipeline = sofa::component::collision::detection::algorithm::DefaultPipeline;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")

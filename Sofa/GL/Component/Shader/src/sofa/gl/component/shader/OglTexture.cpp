@@ -82,10 +82,10 @@ void OglTexture::init()
             cubemapFilenameNegZ.getFullPath().empty())
         {
             // "Procedural" texture (actually inline texture data inside the scene file).
-            unsigned int height = proceduralTextureHeight.getValue();
-            unsigned int width = proceduralTextureWidth.getValue();
+            const unsigned int height = proceduralTextureHeight.getValue();
+            const unsigned int width = proceduralTextureWidth.getValue();
             type::vector<unsigned int> textureData = proceduralTextureData.getValue();
-            unsigned int nbb = proceduralTextureNbBits.getValue();
+            const unsigned int nbb = proceduralTextureNbBits.getValue();
 
             if (height > 0 && width > 0 && !textureData.empty() )
             {
@@ -107,7 +107,7 @@ void OglTexture::init()
         else
         {
             // A cubemap with faces stored in separate files.
-            std::string filename[6] =
+            const std::string filename[6] =
             {
                 cubemapFilenamePosX.getFullPath(),
                 cubemapFilenameNegX.getFullPath(),
@@ -181,9 +181,9 @@ void OglTexture::init()
             //create dummy texture
             if (img) { delete img; img=nullptr; }
             img = new helper::io::Image();
-            unsigned int dummyWidth = 128;
-            unsigned int dummyHeight = 128;
-            unsigned int dummyNbb = 8;
+            const unsigned int dummyWidth = 128;
+            const unsigned int dummyHeight = 128;
+            const unsigned int dummyNbb = 8;
 
             img->init(dummyWidth, dummyHeight, dummyNbb);
 

@@ -54,7 +54,7 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::init()
 {
-    unsigned int nb = numberOfTests.getValue();
+    const unsigned int nb = numberOfTests.getValue();
     if (nb%2 == 0)
     {
         msg_warning() << "even number of tests, adding an other ...";

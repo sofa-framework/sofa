@@ -50,7 +50,7 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
     , p_drawVectors(initData(&p_drawVectors, false, "drawVectors", "draw vectors line"))
     , p_vectorLength (initData(&p_vectorLength, (float)10, "drawVectorLength", "vector length visualisation. "))
 {
-    sofa::helper::OptionsGroup m_newoptiongroup(2,"Scalar","Vector");
+    sofa::helper::OptionsGroup m_newoptiongroup{"Scalar","Vector"};
     m_newoptiongroup.setSelectedItem("Scalar");
     p_fieldType.setValue(m_newoptiongroup);
 
@@ -156,7 +156,7 @@ void ValuesFromPositions<DataTypes>::reinit()
 template <class DataTypes>
 typename ValuesFromPositions<DataTypes>::Real ValuesFromPositions<DataTypes>::valueFromPosition(const CPos& p, const TempData& data)
 {
-    int nbv = data.inputValues.size();
+    const int nbv = data.inputValues.size();
 
     if (nbv == 0) return 0;
     else if (nbv == 1) return data.inputValues[0];
@@ -277,12 +277,10 @@ void ValuesFromPositions<DataTypes>::doUpdate()
     const VecCoord* x0 = &f_X0.getValue();
     data.x0 = x0;
 
-    // Compute min and max of BB
-    sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
-    data.bmax = (Real)*sceneMaxBBox.ptr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
+    // Compute min and max of BB    
+    const auto& bbox = this->getContext()->getRootContext()->f_bbox.getValue();
+    data.bmin = (Real)*bbox.minBBoxPtr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
+    data.bmax = (Real)*bbox.maxBBoxPtr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
 
     if (p_fieldType.getValue().getSelectedId() == 0)
         this->updateValues(data);
@@ -296,9 +294,9 @@ void ValuesFromPositions<DataTypes>::updateValues(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
     helper::WriteOnlyAccessor< Data<VecReal> > values = f_values;
@@ -350,9 +348,9 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    const helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
     helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > pointVectors = f_pointVectors;
@@ -409,7 +407,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         vparams->drawTool()->disableLighting();
 
         const VecCoord* x0 = &f_X0.getValue();
-        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+        const helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
         helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;

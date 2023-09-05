@@ -62,30 +62,15 @@ OglModel::OglModel()
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
+    , edgesRevision(-1), trianglesRevision(-1), quadsRevision(-1)
 {
 
     textures.clear();
 
-    sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
-    blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
-    blendEquationOptions->setSelectedItem(0);
-    blendEquation.endEdit();
-
-    // alpha blend values
-    sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
-    sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
-    sourceFactorOptions->setSelectedItem(2);
-    sourceFactor.endEdit();
-
-    sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
-    destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
-    destFactorOptions->setSelectedItem(3);
-    destFactor.endEdit();
-
-    sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
-    primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
-    primitiveTypeOptions->setSelectedItem(0);
-    primitiveType.endEdit();
+    blendEquation.setValue({"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"});
+    sourceFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(2));
+    destFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(3));
+    primitiveType.setValue(helper::OptionsGroup{"DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS"}.setSelectedItem(0));
 }
 
 void OglModel::deleteTextures()
@@ -317,7 +302,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
-    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    const helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
 
     if (groups.empty())
     {
@@ -366,15 +351,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if(!VBOGenDone)
         return;
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
     const VecTexCoord& vtexcoords= this->getVtexcoords();
     const VecCoord& vtangents= this->getVtangents();
     const VecCoord& vbitangents= this->getVbitangents();
-    bool hasTangents = vtangents.size() && vbitangents.size();
+    const bool hasTangents = vtangents.size() && vbitangents.size();
 
 
     glEnable(GL_LIGHTING);
@@ -383,12 +365,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glColor3f(1.0 , 1.0, 1.0);
 
     /// Force the data to be of float type before sending to opengl...
-    GLuint datatype = GL_FLOAT;
-    GLuint vertexdatasize = sizeof(verticesTmpBuffer[0]);
-    GLuint normaldatasize = sizeof(normalsTmpBuffer[0]);
+    const GLuint datatype = GL_FLOAT;
+    const GLuint vertexdatasize = sizeof(verticesTmpBuffer[0]);
+    const GLuint normaldatasize = sizeof(normalsTmpBuffer[0]);
 
-    GLulong vertexArrayByteSize = vertices.size() * vertexdatasize;
-    GLulong normalArrayByteSize = vnormals.size() * normaldatasize;
+    const GLulong vertexArrayByteSize = vertices.size() * vertexdatasize;
+    const GLulong normalArrayByteSize = vnormals.size() * normaldatasize;
 
     //// Update the vertex buffers.
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -408,7 +390,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             tex->bind();
         }
 
-        size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
+        const size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -417,7 +399,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
         if (hasTangents)
         {
-            size_t tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
+            const size_t tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
 
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -570,9 +552,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glDepthMask(GL_TRUE);
     }
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
     if (vparams->displayFlags().getShowNormals())
     {
         glColor3f (1.0, 1.0, 1.0);
@@ -637,7 +616,7 @@ bool OglModel::loadTextures()
         if (!sofa::helper::system::DataRepository.findFile(textureFile))
         {
             textureFile = this->fileMesh.getFullPath();
-            std::size_t position = textureFile.rfind("/");
+            const std::size_t position = textureFile.rfind("/");
             textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[*i].textureFilename);
 
             if (!sofa::helper::system::DataRepository.findFile(textureFile))
@@ -774,7 +753,7 @@ void OglModel::initVertexBuffer()
     const VecTexCoord& vtexcoords= this->getVtexcoords();
     const VecCoord& vtangents= this->getVtangents();
     const VecCoord& vbitangents= this->getVbitangents();
-    bool hasTangents = vtangents.size() && vbitangents.size();
+    const bool hasTangents = vtangents.size() && vbitangents.size();
 
     positionsBufferSize = (vertices.size()*sizeof(Vec3f));
     normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
@@ -790,7 +769,7 @@ void OglModel::initVertexBuffer()
         }
     }
 
-    size_t totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
+    const size_t totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
             tangentsBufferSize + bitangentsBufferSize;
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -810,9 +789,9 @@ void OglModel::initEdgesIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateEdgesIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initTrianglesIndicesBuffer()
@@ -821,9 +800,9 @@ void OglModel::initTrianglesIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateTrianglesIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initQuadsIndicesBuffer()
@@ -832,9 +811,9 @@ void OglModel::initQuadsIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateQuadsIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateVertexBuffer()
@@ -845,7 +824,7 @@ void OglModel::updateVertexBuffer()
     const VecTexCoord& vtexcoords= this->getVtexcoords();
     const VecCoord& vtangents= this->getVtangents();
     const VecCoord& vbitangents= this->getVbitangents();
-    bool hasTangents = vtangents.size() && vbitangents.size();
+    const bool hasTangents = vtangents.size() && vbitangents.size();
 
     size_t positionsBufferSize, normalsBufferSize;
     size_t textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
@@ -855,17 +834,21 @@ void OglModel::updateVertexBuffer()
     const void* positionBuffer = vertices.data();
     const void* normalBuffer = vnormals.data();
 
+    // use only temporary float buffers if vertices/normals are using double
+    if constexpr(std::is_same_v<Coord, sofa::type::Vec3d>)
+    {
+        verticesTmpBuffer.resize( vertices.size() );
+        normalsTmpBuffer.resize( vnormals.size() );
 
-    verticesTmpBuffer.resize( vertices.size() );
-    normalsTmpBuffer.resize( vnormals.size() );
+        copyVector(vertices, verticesTmpBuffer);
+        copyVector(vnormals, normalsTmpBuffer);
 
-    copyVector(vertices, verticesTmpBuffer);
-    copyVector(vnormals, normalsTmpBuffer);
+        positionBuffer = verticesTmpBuffer.data();
+        normalBuffer = normalsTmpBuffer.data();
+    }
 
     positionsBufferSize = (vertices.size()*sizeof(Vec3f));
     normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
-    positionBuffer = verticesTmpBuffer.data();
-    normalBuffer = normalsTmpBuffer.data();
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
@@ -879,37 +862,38 @@ void OglModel::updateVertexBuffer()
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
     //Positions
     glBufferSubData(GL_ARRAY_BUFFER,
-                    0,
-                    positionsBufferSize,
-                    positionBuffer);
+        0,
+        positionsBufferSize,
+        positionBuffer);
 
     //Normals
     glBufferSubData(GL_ARRAY_BUFFER,
-                    positionsBufferSize,
-                    normalsBufferSize,
-                    normalBuffer);
+        positionsBufferSize,
+        normalsBufferSize,
+        normalBuffer);
 
-    //Texture coords
-    if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
+    ////Texture coords
+    if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         glBufferSubData(GL_ARRAY_BUFFER,
-                        positionsBufferSize + normalsBufferSize,
-                        textureCoordsBufferSize,
-                        vtexcoords.data());
+            positionsBufferSize + normalsBufferSize,
+            textureCoordsBufferSize,
+            vtexcoords.data());
 
         if (hasTangents)
         {
             glBufferSubData(GL_ARRAY_BUFFER,
-                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
-                            tangentsBufferSize,
-                            vtangents.data());
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                tangentsBufferSize,
+                vtangents.data());
 
             glBufferSubData(GL_ARRAY_BUFFER,
-                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
-                            bitangentsBufferSize,
-                            vbitangents.data());
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                bitangentsBufferSize,
+                vbitangents.data());
         }
     }
 
@@ -919,16 +903,22 @@ void OglModel::updateVertexBuffer()
 void OglModel::updateEdgesIndicesBuffer()
 {
     const VecVisualEdge& edges = this->getEdges();
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
     const VecVisualTriangle& triangles = this->getTriangles();
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
+
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size() * sizeof(triangles[0])), &triangles[0]);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -936,7 +926,9 @@ void OglModel::updateQuadsIndicesBuffer()
 {
     const VecVisualQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
+
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size() * sizeof(quads[0])), &quads[0]);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void OglModel::updateBuffers()
@@ -970,44 +962,65 @@ void OglModel::updateBuffers()
         //Update VBO & IBO
         else
         {
-            if(oldVerticesSize != vertices.size() ||
-                    oldNormalsSize != normals.size() ||
-                    oldTexCoordsSize != texCoords.size() ||
-                    oldTangentsSize != tangents.size() ||
-                    oldBitangentsSize != bitangents.size())
+            // if any topology change then resize buffer
+            if (oldVerticesSize != vertices.size() ||
+                oldNormalsSize != normals.size() ||
+                oldTexCoordsSize != texCoords.size() ||
+                oldTangentsSize != tangents.size() ||
+                oldBitangentsSize != bitangents.size())
+            {
                 initVertexBuffer();
+            }
             else
-                updateVertexBuffer();
+            {
+                // if no topology change but vertices changes then update buffer
+                if (this->modified)
+                {
+                    updateVertexBuffer();
+                }
+            }
 
 
             //Indices
             //Edges
-            if(useEdges && !edges.empty())
+            if (useEdges && !edges.empty())
+            {
+
                 if(oldEdgesSize != edges.size())
                     initEdgesIndicesBuffer();
                 else
-                    updateEdgesIndicesBuffer();
+                    if(edgesRevision < m_edges.getCounter())
+                        updateEdgesIndicesBuffer();
+
+            }
             else if (edges.size() > 0)
                 createEdgesIndicesBuffer();
 
             //Triangles
-            if(useTriangles && !triangles.empty())
-                if(oldTrianglesSize != triangles.size())
+            if (useTriangles && !triangles.empty())
+            {
+                if (oldTrianglesSize != triangles.size())
                     initTrianglesIndicesBuffer();
                 else
-                    updateTrianglesIndicesBuffer();
+                    if (trianglesRevision < m_triangles.getCounter())
+                        updateTrianglesIndicesBuffer();
+            }
             else if (triangles.size() > 0)
                 createTrianglesIndicesBuffer();
 
             //Quads
             if (useQuads && !quads.empty())
+            {
                 if(oldQuadsSize != quads.size())
                     initQuadsIndicesBuffer();
                 else
-                    updateQuadsIndicesBuffer();
+                    if (quadsRevision < m_quads.getCounter())
+                        updateQuadsIndicesBuffer();
+            }
             else if (quads.size() > 0)
                 createQuadsIndicesBuffer();
         }
+
         oldVerticesSize = vertices.size();
         oldNormalsSize = normals.size();
         oldTexCoordsSize = texCoords.size();
@@ -1016,6 +1029,10 @@ void OglModel::updateBuffers()
         oldEdgesSize = edges.size();
         oldTrianglesSize = triangles.size();
         oldQuadsSize = quads.size();
+
+        edgesRevision = m_edges.getCounter();
+        trianglesRevision = m_triangles.getCounter();
+        quadsRevision = m_quads.getCounter();
     }
 }
 

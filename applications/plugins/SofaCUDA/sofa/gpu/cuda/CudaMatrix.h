@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDAMATRIX_H
 
 //#include "host_runtime.h" // CUDA
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <iostream>
 
 //#define DEBUG_OUT_MATRIX
@@ -149,8 +149,8 @@ public:
             void* prevDevicePointer = devicePointer;
             T* prevHostPointer = hostPointer;
 
-            size_t oldpitch_device = pitch_device;
-            size_t oldpitch_host = pitch_host;
+            const size_t oldpitch_device = pitch_device;
+            const size_t oldpitch_host = pitch_host;
             pitch_host = d_x * sizeof(T);// new pitch_host larger than oldpitch_host : guarantee that data on the host are continuous
 
             mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), allocSizeY);// new pitch_device biger than oldpitch_device

@@ -26,11 +26,7 @@
 
 namespace sofa
 {
-
-namespace core
-{
-
-namespace objectmodel
+namespace core::objectmodel
 {
 
 class Base;
@@ -198,10 +194,7 @@ protected:
         ++m_counter;
     }
 };
-
-} // namespace objectmodel
-
-} // namespace core
+} // namespace core::objectmodel
 
 // the BaseLink class is used everywhere
 using core::objectmodel::BaseLink;

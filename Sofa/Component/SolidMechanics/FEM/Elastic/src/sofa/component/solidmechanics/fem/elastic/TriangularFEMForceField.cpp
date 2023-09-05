@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

@@ -57,7 +57,7 @@ TransformPosition<DataTypes>::TransformPosition()
 
     f_pointSize.setGroup("Visualization");
 
-    f_method.beginEdit()->setNames(9,
+    f_method.setValue({
         "projectOnPlane",
         "translation",
         "rotation",
@@ -66,8 +66,7 @@ TransformPosition<DataTypes>::TransformPosition()
         "scaleTranslation",
         "scaleRotationTranslation",
         "affine",
-        "fromFile");
-    f_method.endEdit();
+        "fromFile"});
 
     addInput(&f_inputX);
     addInput(&f_origin);
@@ -121,7 +120,7 @@ void TransformPosition<DataTypes>::selectTransformationMethod()
         transformationMethod=AFFINE;
         if (f_filename.isSet())
         {
-            std::string fname = f_filename.getValue();
+            const std::string fname = f_filename.getValue();
             if (fname.size()>=4 && fname.substr(fname.size()-4)==".trm")
                 getTransfoFromTrm();
             else if (fname.size()>=4 && (fname.substr(fname.size()-4)==".txt" || fname.substr(fname.size()-4)==".xfm"))
@@ -385,8 +384,8 @@ void TransformPosition<DataTypes>::doUpdate()
     helper::ReadAccessor< Data<Coord> > rotation = f_rotation;
     helper::ReadAccessor< Data<Mat4x4> > affineMatrix = f_affineMatrix;
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
-    helper::ReadAccessor< Data<long> > seed = f_seed;
-    helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
+    const helper::ReadAccessor< Data<long> > seed = f_seed;
+    const helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
 
     helper::WriteOnlyAccessor< Data<VecCoord> > out = f_outputX;
 
@@ -403,7 +402,7 @@ void TransformPosition<DataTypes>::doUpdate()
     case RANDOM :
     {
         sofa::helper::RandomGenerator rg;
-        double dis=(double) maxDisplacement.ref();
+        const double dis=(double) maxDisplacement.ref();
         if (seed.ref()!=0)
             rg.initSeed(seed.ref());
         for (i=0; i< in.size(); ++i)
@@ -433,7 +432,7 @@ void TransformPosition<DataTypes>::doUpdate()
         break;
     case ROTATION :
     {
-        sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        const sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -443,7 +442,7 @@ void TransformPosition<DataTypes>::doUpdate()
     break;
     case SCALE_ROTATION_TRANSLATION :
     {
-        sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        const sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {

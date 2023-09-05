@@ -311,7 +311,6 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
         int c[2]; c[0] = x; c[1] = y;
         bool known = false;
         real phi0 = temp->levelset[ind];
-        real inv_dist2 = 0;
         for (int dim = 0; dim < 2; dim++)
         {
             real dist = RMAX;
@@ -338,12 +337,10 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
             if (border)
             {
                 known = true;
-                inv_dist2 += 1 / (dist*dist);
             }
         }
         if (known)
         {
-            //real phi = 1 / sqrt(inv_dist2);
             real phi = rabs(phi0);
             levelset[ind] = phi;
             fmm_status[ind] = FMM_KNOWN;

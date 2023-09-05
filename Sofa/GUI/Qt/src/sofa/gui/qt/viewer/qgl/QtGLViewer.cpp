@@ -65,7 +65,7 @@ helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 // ---------------------------------------------------------
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
-    : QGLViewer(parent, nullptr, Qt::WindowType::Widget)
+    : QGLViewer(parent, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
@@ -80,14 +80,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     backgroundColour[2]=1.0f;
 
     // setup OpenGL mode for the window
-    //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);
     connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
-    //	_previousEyePos = Vector3(0.0, 0.0, 0.0);
-    // 	_zoom = 1.0;
-    // 	_zoomSpeed = 250.0;
-    // 	_panSpeed = 25.0;
     _video = false;
     m_bShowAxis = false;
     _background = 0;
@@ -582,7 +577,7 @@ void QtGLViewer::DisplayOBJs()
     {
         //		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot.get());
+        sofa::simulation::node::initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -593,7 +588,7 @@ void QtGLViewer::DisplayOBJs()
                                   qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
 
         //Draw Debug information of the components
-        simulation::getSimulation()->draw(vparams,groot.get());
+        sofa::simulation::node::draw(vparams, groot.get());
         if (m_bShowAxis)
         {
             //DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -610,10 +605,10 @@ void QtGLViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
-                    , this->camera()->orientation()[1]
-                    , this->camera()->orientation()[2]
-                    , this->camera()->orientation()[3]);
+            const sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
+                                                  , this->camera()->orientation()[1]
+                                                  , this->camera()->orientation()[2]
+                                                  , this->camera()->orientation()[3]);
             gl::Axis::draw(sofa::type::Vec3(30.0_sreal,30.0_sreal,0.0_sreal),sofaQuat.inverse(), 25.0);
 
             glMatrixMode(GL_PROJECTION);
@@ -823,7 +818,7 @@ void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-    if (!isControlPressed() && !e->isAutoRepeat())
+    if (isControlPressed())
     {
         if (groot )
         {
@@ -952,7 +947,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     px -= p0;
     py -= p0;
     pz -= p0;
-    double r0 = sqrt(px.norm2() + py.norm2());
+    const double r0 = sqrt(px.norm2() + py.norm2());
     double r1 = sqrt(px1.norm2() + py1.norm2());
     r1 = r0 + (r1-r0) / pz.norm();
     px.normalize();
@@ -1057,7 +1052,7 @@ void QtGLViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
+        const std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {
@@ -1069,7 +1064,7 @@ void QtGLViewer::saveView()
     }
 }
 
-void QtGLViewer::getView(Vec3d& pos, Quat<SReal>& ori) const
+void QtGLViewer::getView(Vec3& pos, Quat<SReal>& ori) const
 {
     qglviewer::Vec position = camera()->position();
     for(int i = 0; i < 3; ++i) pos[i] = position[i];
@@ -1077,7 +1072,7 @@ void QtGLViewer::getView(Vec3d& pos, Quat<SReal>& ori) const
     for(int i = 0; i < 4; ++i) ori[i] = orientation[i];
 }
 
-void QtGLViewer::setView(const Vec3d& pos, const Quat<SReal> &ori)
+void QtGLViewer::setView(const Vec3& pos, const Quat<SReal> &ori)
 {
     camera()->setPosition(qglviewer::Vec(pos[0],pos[1],pos[2]));
     camera()->setOrientation(qglviewer::Quaternion(ori[0],ori[1],ori[2],ori[3]));

@@ -85,12 +85,12 @@ public:
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    double getSolutionIntegrationFactor(int outputDerivative) const override ;
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
 
     void init() override ;
 
@@ -129,9 +129,6 @@ protected:
 
     static void solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
                             core::MultiVecDerivId solution, core::MultiVecDerivId rhs);
-
-    SOFA_ATTRIBUTE_DISABLED__EULERSOLVER_OPTIM_DIAGONALMATRIX()
-    DeprecatedAndRemoved d_optimizedForDiagonalMatrix{};
 };
 
 } // namespace sofa::component::odesolver::forward

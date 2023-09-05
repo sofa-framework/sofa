@@ -170,7 +170,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         return ;
 
     // use the OdeSolver to get the position integration factor
-    double factor = 1.0;
+    SReal factor = 1.0_sreal;
 
     switch (cparams->constOrder())
     {
@@ -198,7 +198,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFactor, double forceFactor)
+void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
     l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
@@ -209,7 +209,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const double factor = l_ODESolver.get()->getPositionIntegrationFactor();
+    const SReal factor = l_ODESolver.get()->getPositionIntegrationFactor();
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -254,8 +254,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
-        const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
+        const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
+        const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -281,7 +281,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
 
-        const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
+        const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         for (unsigned int i = 0; i < numDOFs; i++)
         {
             const Deriv dxi = correction[i] * positionFactor;
@@ -305,7 +305,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
+        const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -347,7 +347,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        const double fC1 = f->element(rowIt.index());
+        const SReal fC1 = f->element(rowIt.index());
 
         if (fC1 != 0.0)
         {
@@ -366,10 +366,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
     //TODO: tell the solver not to recompute the matrix
 
     // use the OdeSolver to get the position integration factor
-    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
+    const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
 
     // use the OdeSolver to get the position integration factor
-    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
+    const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
     Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
@@ -430,7 +430,7 @@ void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering)
+void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering)
 {
     verify_constraints();
 
@@ -457,7 +457,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
-        double fC = f[indexC];
+        SReal fC = f[indexC];
 
         if (fC != 0.0)
         {
@@ -573,7 +573,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
+void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal*d, int begin, int end)
 {
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
@@ -584,7 +584,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
     _new_force = false;
 
     // Lambda function adding the constraint displacement using [] if a FullVector is detected or element() else
-    constexpr auto addConstraintDisplacement_impl = [](double* d, unsigned int id, auto* systemLHVector_buf, double positionIntegrationFactor, unsigned int dof, const Deriv& val)
+    constexpr auto addConstraintDisplacement_impl = [](SReal* d, unsigned int id, auto* systemLHVector_buf, SReal positionIntegrationFactor, unsigned int dof, const Deriv& val)
     {
         constexpr const auto derivDim = Deriv::total_size;
         Deriv disp(type::NOINIT);
@@ -634,7 +634,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
+void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(SReal* df, int begin, int end, bool update)
 {
     last_force = begin;
 
@@ -684,7 +684,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
         return ;
 
     // use the OdeSolver to get the position integration factor
-    const double factor = l_ODESolver.get()->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
+    const SReal factor = l_ODESolver.get()->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -707,7 +707,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
             MatrixDerivColConstIterator colItEnd = rowIt.end();
 
             unsigned int dof_buf = 0;
-            int debug = 0;
+            const int debug = 0;
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
@@ -719,7 +719,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
 
                 if (debug!=0)
                 {
-                    int test = dof_buf - dof;
+                    const int test = dof_buf - dof;
                     if (test>2 || test< -2)
                         dmsg_info() << "For constraint id1 dof1 = " << dof_buf << " dof2 = " << dof;
                 }

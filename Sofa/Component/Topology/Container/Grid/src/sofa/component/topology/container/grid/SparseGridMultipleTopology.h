@@ -59,7 +59,7 @@ public:
     void buildVirtualFinerLevels() override;
 
 
-    Index findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override
+    Index findCube(const type::Vec3 &pos, SReal &fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findCube( pos,fx,fy,fz  );
@@ -67,7 +67,7 @@ public:
             return SparseGridTopology::findCube( pos,fx,fy,fz );
     }
 
-    Index findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override
+    Index findNearestCube(const type::Vec3& pos, SReal& fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findNearestCube( pos,fx,fy,fz );

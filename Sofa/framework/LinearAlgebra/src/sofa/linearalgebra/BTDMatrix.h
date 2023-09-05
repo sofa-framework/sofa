@@ -115,8 +115,18 @@ public:
     typedef Block SubMatrixType;
     typedef sofa::type::Mat<N,N,Real> BlockType;
     typedef BlockFullMatrix<N, T> InvMatrixType;
-    // return the dimension of submatrices when requesting a given size
-    static Index getSubMatrixDim(Index) { return BSIZE; }
+
+    // return the dimension of submatrices
+    constexpr static Index getSubMatrixDim()
+    {
+        return BSIZE;
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
+    static Index getSubMatrixDim(Index)
+    {
+        return getSubMatrixDim();
+    }
 
 protected:
     Block* data;
@@ -191,8 +201,8 @@ public:
         FullVector<Real2> res(rowSize());
         for (Index bi=0; bi<nBRow; ++bi)
         {
-            Index b0 = (bi > 0) ? 0 : 1;
-            Index b1 = ((bi < nBRow - 1) ? 3 : 2);
+            const Index b0 = (bi > 0) ? 0 : 1;
+            const Index b1 = ((bi < nBRow - 1) ? 3 : 2);
             for (Index i=0; i<BSIZE; ++i)
             {
                 Real r = 0;

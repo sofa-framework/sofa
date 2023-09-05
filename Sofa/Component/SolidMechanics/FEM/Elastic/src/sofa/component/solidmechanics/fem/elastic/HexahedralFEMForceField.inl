@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
@@ -465,7 +466,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = hexahedronInf[i].rotatedInitialElements[k][j] - deformed[k][j];
     }
@@ -566,7 +567,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = hexahedronInf[i].rotatedInitialElements[k][j] - deformed[k][j];
     }
@@ -623,7 +624,44 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     }
 }
 
+template <class DataTypes>
+void HexahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const type::vector<HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const auto& hexahedra = _topology->getHexahedra();
+
+    for (Size e = 0; e < _topology->getNbHexahedra(); ++e)
+    {
+        const ElementStiffness& Ke = hexahedronInf[e].stiffness;
+
+        // find index of node 1
+        for (sofa::Size n1 = 0; n1 < Element::size(); n1++)
+        {
+            const Index node1 = hexahedra[e][n1];
+
+            // find index of node 2
+            for (sofa::Size n2 = 0; n2 < Element::size(); n2++)
+            {
+                const Index node2 = hexahedra[e][n2];
+                const Mat33 tmp = hexahedronInf[e].rotation.multTranspose(
+                            Mat33(Coord(Ke[3 * n1 + 0][3 * n2 + 0], Ke[3 * n1 + 0][3 * n2 + 1], Ke[3 * n1 + 0][3 * n2 + 2]),
+                                  Coord(Ke[3 * n1 + 1][3 * n2 + 0], Ke[3 * n1 + 1][3 * n2 + 1], Ke[3 * n1 + 1][3 * n2 + 2]),
+                                  Coord(Ke[3 * n1 + 2][3 * n2 + 0], Ke[3 * n1 + 2][3 * n2 + 1], Ke[3 * n1 + 2][3 * n2 + 2])))
+                            * hexahedronInf[e].rotation;
+                dfdx(3 * node1, 3 * node2) += - tmp;
+            }
+        }
+    }
+}
+template <class DataTypes>
+void HexahedralFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>
@@ -640,7 +678,9 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
+    {
         vparams->drawTool()->setPolygonMode(0, true);
+    }
 
     for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {

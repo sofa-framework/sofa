@@ -62,8 +62,18 @@ public:
     typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
 protected:
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
-
     ~MixedInteractionConstraint() override;
+
+    virtual type::vector<std::string> getInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getMixedInteractionIdentifiers();
+        ids.push_back("Mixed");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getMixedInteractionIdentifiers(){ return {}; }
+
+
 public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
@@ -118,15 +128,6 @@ public:
 
         return obj;
     }
-
-    //TODO(dmarchal: 20/04/2020): Have a carefull look that we really want this customize pattern and it is not
-    // a bug.
-    /// Overriding this function is needed otherwise the template returned would be of type DataTypes1::Name()+","+DataType2::Name().
-    static std::string GetCustomTemplateName()
-    {
-        return DataTypes1::Name();
-    }
-
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

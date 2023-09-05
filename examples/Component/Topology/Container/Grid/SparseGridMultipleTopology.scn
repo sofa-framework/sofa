@@ -1,0 +1,62 @@
+<Node name="root" gravity="0 0 0" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridMultipleTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
+    
+    <Node name="frog with several stiffnesses">
+        <SparseGridMultipleTopology n="9 9 7" fileTopology="mesh/frog_body.obj" fileTopologies="mesh/frog_body.obj mesh/frog_eyes.obj mesh/frog_eyebrows.obj mesh/frog_lips.obj" stiffnessCoefs="10 100 100 .2" massCoefs="1 1 1 1" nbVirtualFinerLevels="1" />
+        <!-- body=soft, lips=very soft, eyes=very stiff-->
+        <!-- the order is important: included elements must appear after (lips is included in boby so it appears after)-->
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
+        <MechanicalObject />
+        <UniformMass vertexMass="1" />
+        <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+        <Node name="Visu1">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/frog_body.obj" handleSeams="1" />
+            <OglModel name="VisualBody" src="@meshLoader_0" normals="0" color="0.17 0.70 0.05" />
+            <BarycentricMapping input="@.." output="@VisualBody" />
+        </Node>
+        <Node name="Visu2">
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/frog_eyes.obj" handleSeams="1" />
+            <OglModel name="VisualEyes" src="@meshLoader_2" normals="0" color="0.04 0.19 0.52" />
+            <BarycentricMapping input="@.." output="@VisualEyes" />
+        </Node>
+        <Node name="Visu3">
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/frog_eyebrows.obj" handleSeams="1" />
+            <OglModel name="VisualEyebrows" src="@meshLoader_3" normals="0" color="0.44 0.43 0.00" />
+            <BarycentricMapping input="@.." output="@VisualEyebrows" />
+        </Node>
+        <Node name="Visu4">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/frog_lips.obj" handleSeams="1" />
+            <OglModel name="VisualLips" src="@meshLoader_1" normals="0" color="0.47 0.25 0.03" />
+            <BarycentricMapping input="@.." output="@VisualLips" />
+        </Node>
+        <Node name="Surf">
+            <MeshOBJLoader name="loader" filename="mesh/frog-push25.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <BarycentricMapping />
+        </Node>
+    </Node>
+</Node>

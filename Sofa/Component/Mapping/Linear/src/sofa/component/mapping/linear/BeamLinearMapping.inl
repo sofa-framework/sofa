@@ -63,7 +63,7 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
-    bool local = localCoord.getValue();
+    const bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=nullptr)
     {
         const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -321,11 +321,11 @@ const sofa::linearalgebra::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
 //	        Deriv out1 = getVCenter(in[in1]) - cross(rotatedPoints1[i], omega1);
 
             Coord rotatedPoint0 = rotatedPoints0[outIdx] * (1-fact);
-            MBloc& block0 = *matrixJ->wbloc(outIdx, in0, true);
+            MBloc& block0 = *matrixJ->wblock(outIdx, in0, true);
             RigidMappingMatrixHelper<N, Real>::setMatrix(block0, rotatedPoint0);
 
             Coord rotatedPoint1 = rotatedPoints1[outIdx] * fact;
-            MBloc& block1 = *matrixJ->wbloc(outIdx, in1, true);
+            MBloc& block1 = *matrixJ->wblock(outIdx, in1, true);
             RigidMappingMatrixHelper<N, Real>::setMatrix(block1, rotatedPoint1);
 
         }

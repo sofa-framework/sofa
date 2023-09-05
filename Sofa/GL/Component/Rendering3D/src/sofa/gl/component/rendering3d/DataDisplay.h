@@ -23,18 +23,20 @@
 #include <sofa/gl/component/rendering3d/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/gl/component/rendering2d/OglColorMap.h>
-#include <sofa/component/visual/VisualModelImpl.h>
 
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa::gl::component::rendering3d
 {
 
-class SOFA_GL_COMPONENT_RENDERING3D_API DataDisplay : public core::visual::VisualModel, public sofa::component::visual::Vec3State
+class SOFA_GL_COMPONENT_RENDERING3D_API DataDisplay : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
+    using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
+
     SOFA_CLASS2(DataDisplay, core::visual::VisualModel, Vec3State);
 
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -67,7 +69,7 @@ public:
     Real oldMin, oldMax;
 
     void init() override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void updateVisual() override;
 
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }

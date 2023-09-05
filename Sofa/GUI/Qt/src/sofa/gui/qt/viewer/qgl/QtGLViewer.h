@@ -23,7 +23,7 @@
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gl/gl.h>
-#include <qgl.h>
+
 #include <qtimer.h>
 #include <cmath>
 #include <cstdlib>
@@ -92,7 +92,7 @@ public:
     static QtGLViewer* create(QtGLViewer*, sofa::gui::common::BaseViewerArgument& arg)
     {
         common::BaseViewerArgument* pArg = &arg;
-        common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
+        const common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
                 new QtGLViewer(nullptr, pArg->getName().c_str() )
@@ -187,8 +187,8 @@ public slots:
     void setSizeW(int) override;
     void setSizeH(int) override;
 
-    virtual void getView(type::Vec3d& pos, type::Quat<SReal>& ori) const override;
-    virtual void setView(const type::Vec3d& pos, const type::Quat<SReal> &ori) override;
+    virtual void getView(type::Vec3& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vec3& pos, const type::Quat<SReal> &ori) override;
     virtual void captureEvent() override { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {

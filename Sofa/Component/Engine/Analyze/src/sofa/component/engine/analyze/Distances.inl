@@ -61,7 +61,7 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
 
-    sofa::helper::OptionsGroup distanceTypeOptions(5,"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness");
+    sofa::helper::OptionsGroup distanceTypeOptions{"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness"};
     distanceTypeOptions.setSelectedItem(TYPE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
@@ -96,7 +96,7 @@ void Distances< DataTypes >::init()
     {
         unsigned int size = hexaContainer->getNumberOfHexahedra();
         unsigned int realSize = 0;
-        unsigned int step = initTargetStep.getValue();
+        const unsigned int step = initTargetStep.getValue();
         target->resize( size);
         helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
@@ -105,9 +105,9 @@ void Distances< DataTypes >::init()
         for ( unsigned int i = 0; i < size; i++)
         {
             Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
-            int x = int ( pos[0] / voxelSize[0] );
-            int y = int ( pos[1] / voxelSize[1] );
-            int z = int ( pos[2] / voxelSize[2] );
+            const int x = int ( pos[0] / voxelSize[0] );
+            const int y = int ( pos[1] / voxelSize[1] );
+            const int z = int ( pos[2] / voxelSize[2] );
             if ( !(x%step) && !(y%step) && !(z%step))
             {
                 Coord center = hexaGeoAlgo->computeHexahedronCenter( i) + offSet;
@@ -228,7 +228,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
 template<class DataTypes>
 void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, const double& distMax )
 {
-    unsigned int mapIndex = distanceMap.size();
+    const unsigned int mapIndex = distanceMap.size();
     distanceMap.resize ( mapIndex+1 );
     VecCoord tmpvcoord = beginElts;
     tmpvcoord.push_back( elt);
@@ -308,7 +308,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
 
         unsigned int hexaID1;
         find1DCoord(hexaID1, hexaGeoAlgo->computeHexahedronRestCenter(hexaID));
-        double densityValue1 = densityValues[hexaID1];
+        const double densityValue1 = densityValues[hexaID1];
 
         for ( std::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
         {
@@ -385,9 +385,9 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
-        int x = int ( pos[0] / voxelSize[0] );
-        int y = int ( pos[1] / voxelSize[1] );
-        int z = int ( pos[2] / voxelSize[2] );
+        const int x = int ( pos[0] / voxelSize[0] );
+        const int y = int ( pos[1] / voxelSize[1] );
+        const int z = int ( pos[2] / voxelSize[2] );
         distMap[x][y][z] = dMIndex[i];
     }
 
@@ -477,9 +477,9 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
-        int x = int ( pos[0] / voxelSize[0] );
-        int y = int ( pos[1] / voxelSize[1] );
-        int z = int ( pos[2] / voxelSize[2] );
+        const int x = int ( pos[0] / voxelSize[0] );
+        const int y = int ( pos[1] / voxelSize[1] );
+        const int z = int ( pos[2] / voxelSize[2] );
         dMIndex[i] = distMap[x][y][z];
     }
 
@@ -539,7 +539,7 @@ template<class DataTypes>
 void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, const type::vector<double>& valueRead, const unsigned int& gridID, const int coeff )
 {
     bool existing;
-    core::topology::BaseMeshTopology::HexaID hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID, existing );
+    const core::topology::BaseMeshTopology::HexaID hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID, existing );
     if ( existing )
     {
         valueWrite += coeff * valueRead[hexaID];
@@ -593,7 +593,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, typ
         std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hID, neighbors );
 
-        unsigned int gridID = hexaGeoAlgo->getRegularGridIndexFromTopoIndex ( hID );
+        const unsigned int gridID = hexaGeoAlgo->getRegularGridIndexFromTopoIndex ( hID );
         bool existing;
         core::topology::BaseMeshTopology::HexaID hexaID;
 
@@ -674,9 +674,9 @@ void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& po
     const sofa::type::Vec3i& res = hexaContainer->resolution.getValue();
     const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
 
-    int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
-    int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);
-    int z = int ( ( point[2] - offset.getValue()[2]) / voxelSize[2]);
+    const int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
+    const int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);
+    const int z = int ( ( point[2] - offset.getValue()[2]) / voxelSize[2]);
     hexaID = z*res[0]*res[1] + y*res[0] + x;
 }
 

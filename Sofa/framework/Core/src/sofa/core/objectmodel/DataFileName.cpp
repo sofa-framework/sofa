@@ -108,10 +108,10 @@ void DataFileName::doOnUpdate()
 
 void DataFileName::updatePath()
 {
-    DataFileName* parentDataFileName = dynamic_cast<DataFileName*>(parentData.getTarget());
+    const DataFileName* parentDataFileName = dynamic_cast<DataFileName*>(parentData.getTarget());
     if (parentDataFileName)
     {
-        std::string fullpath = parentDataFileName->getFullPath();
+        const std::string fullpath = parentDataFileName->getFullPath();
         if (getPathType() != PathType::BOTH && getPathType() != parentDataFileName->getPathType())
         {
             msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == PathType::FILE ? "directories" : "files");
@@ -145,7 +145,7 @@ void DataFileName::updatePath()
             {
                 if( m_fullpath.find(path) == 0 )
                 {
-                    m_relativepath = DataRepository.relativeToPath(m_fullpath, path);
+                    m_relativepath = sofa::helper::system::FileRepository::relativeToPath(m_fullpath, path);
                     break;
                 }
             }
@@ -153,7 +153,7 @@ void DataFileName::updatePath()
                 m_relativepath = m_value.getValue();
 
             // Compute the file extension if found.
-            std::size_t found = m_relativepath.find_last_of(".");
+            const std::size_t found = m_relativepath.find_last_of(".");
             if (found != m_relativepath.npos)
                 m_extension = m_relativepath.substr(found + 1);
             else

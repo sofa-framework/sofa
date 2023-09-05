@@ -32,7 +32,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
@@ -40,25 +39,35 @@ using sofa::simulation::Node ;
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::execparams::defaultInstance; 
+using sofa::core::execparams::defaultInstance;
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
+
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
 
 #include <sofa/simulation/graph/SimpleApi.h>
 
 using ::testing::Types;
 
-#include <filesystem>
 namespace {
-std::string tempdir = std::filesystem::temp_directory_path().string() ;
+const std::string tempdir = FileRepository().getTempPath() ;
 
-class MeshExporter_test : public BaseSimulationTest,
-                          public ::testing::WithParamInterface<vector<string>>
+struct TestParam
+{
+    std::string extension;
+    std::string format;
+    sofa::type::vector<std::string> additionalExtensions; //Files that are exported in addition to the main file (example with the tetgen format)
+};
+
+class MeshExporter_test
+        : public BaseSimulationTest,
+          public ::testing::WithParamInterface<TestParam>
 {
 public:
     /// remove the file created...
-    std::vector<string> dataPath ;
+    std::vector<string> dataPath;
 
     void SetUp() override
     {
@@ -68,19 +77,29 @@ public:
 
     void TearDown() override
     {
-        for(auto& pathToRemove : dataPath)
+        for (const auto& pathToRemove : dataPath)
         {
-            if(FileSystem::exists(pathToRemove))
-               FileSystem::removeAll(pathToRemove) ;
-       }
+            if (FileSystem::exists(pathToRemove))
+            {
+                if (FileSystem::isDirectory(pathToRemove))
+                {
+                    FileSystem::removeAll(pathToRemove);
+                }
+                else
+                {
+                    FileSystem::removeFile(pathToRemove);
+                }
+            }
+        }
     }
 
-    void checkBasicBehavior(const std::vector<string>& params, const string& filename, std::vector<string> pathes){
-        dataPath = pathes ;
-        const string extension = params[0] ;
-        const string format = params[1] ;
+    void checkBasicBehavior(const TestParam& params, const string& filename, const std::vector<string>& pathes)
+    {
+        dataPath = pathes;
+        const string extension = params.extension;
+        const string& format = params.format;
 
-        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        EXPECT_MSG_NOEMIT(Error, Warning);
         std::stringstream scene1;
         scene1 <<
                 "<?xml version='1.0'?> \n"
@@ -88,29 +107,30 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporter1' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
-                "</Node>                                                           \n" ;
+                "   <MeshExporter name='exporter1' format='" << format << "' printLog='true' filename='" << filename << "' exportAtBegin='true' /> \n"
+                "</Node>                                                           \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+        sofa::simulation::node::animate(root.get(), 0.5);
 
-        for(auto& pathToCheck : pathes)
+        for (auto& pathToCheck : pathes)
         {
-            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'";
+            EXPECT_TRUE(FileSystem::exists(pathToCheck)) << "Problem with '" << pathToCheck << "'";
         }
     }
 
 
-    void checkSimulationWriteEachNbStep(const std::vector<string>& params, const string& filename, std::vector<string> pathes, unsigned int numstep){
-        dataPath = pathes ;
-        const string extension = params[0] ;
-        const string format = params[1] ;
+    void checkSimulationWriteEachNbStep(const TestParam& params, const string& filename, std::vector<string> pathes, unsigned int numstep)
+    {
+        dataPath = pathes;
+        const string extension = params.extension;
+        const string format = params.format;
 
-        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        EXPECT_MSG_NOEMIT(Error, Warning);
         std::stringstream scene1;
         scene1 <<
                 "<?xml version='1.0'?> \n"
@@ -118,92 +138,119 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporterA' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
-                "</Node>                                                           \n" ;
+                "   <MeshExporter name='exporterA' format='" << format << "' printLog='true' filename='" << filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "</Node>                                                           \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        for(unsigned int i=0;i<numstep;i++)
+        for (unsigned int i = 0; i < numstep; i++)
         {
-            sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
         }
 
-        for(auto& pathToCheck : pathes)
+        for (auto& pathToCheck : pathes)
         {
-            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'";
+            EXPECT_TRUE(FileSystem::exists(pathToCheck)) << "Problem with '" << pathToCheck << "'";
         }
     }
 };
 
-
-std::vector<std::vector<string>> params={
-    {"vtu", "vtkxml"},
-    {"vtk", "vtk"},
-    {"mesh", "netgen"},
-    {"node", "tetgen"},
-    {"gmsh", "gmsh"}
+std::vector<TestParam> params {
+    {"vtu", "vtkxml", {}},
+    {"vtk", "vtk", {}},
+    {"mesh", "netgen", {}},
+    {"node", "tetgen", {"ele", "face"}},
+    {"gmsh", "gmsh", {}}
 };
-
-#define NUM_PARAMS (unsigned int)2
 
 /// run the tests
-TEST_P( MeshExporter_test, checkBasicBehavior) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, "outfile", {"outfile."+params[0]}) ) ;
+TEST_P(MeshExporter_test, checkBasicBehavior)
+{
+    const TestParam& params = GetParam();
+    constexpr std::string_view filename = "outfile";
+    std::vector<std::string> paths { std::string(filename) + "." + params.extension};
+    for (const auto& addExtension : params.additionalExtensions)
+    {
+        paths.push_back(std::string(filename) + "." + addExtension);
+    }
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, "outfile", paths));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorNoFileName) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(GetParam(), "", {"exporter1."+params[0]}) ) ;
+TEST_P(MeshExporter_test, checkBasicBehaviorNoFileName)
+{
+    const TestParam& params = GetParam();
+    constexpr std::string_view filename = "exporter1";
+    std::vector<std::string> paths { std::string(filename) + "." + params.extension};
+    for (const auto& addExtension : params.additionalExtensions)
+    {
+        paths.push_back(std::string(filename) + "." + addExtension);
+    }
+    ASSERT_NO_THROW(this->checkBasicBehavior(GetParam(), "", paths));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorInSubDirName) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/outfile", {tempdir+"/outfile."+params[0]}) ) ;
+TEST_P(MeshExporter_test, checkBasicBehaviorInSubDirName)
+{
+    const TestParam& params = GetParam();
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir+"/outfile", {tempdir+"/outfile." + params.extension}));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidSubDirName) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/invalid/outfile", {tempdir+"/invalid"}) ) ;
+TEST_P(MeshExporter_test, checkBasicBehaviorInInvalidSubDirName)
+{
+    const TestParam& params = GetParam();
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir+"/invalid/outfile", {tempdir+"/invalid"}));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1/invalid2/invalid3"})) ;
+TEST_P(MeshExporter_test, checkBasicBehaviorInInvalidLongSubDirName)
+{
+    const TestParam& params = GetParam();
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1/invalid2/invalid3"}));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, "./invalidPath/outfile", {"./invalidPath"}) ) ;
+TEST_P(MeshExporter_test, checkBasicBehaviorInInvalidRelativeDirName)
+{
+    const TestParam& params = GetParam();
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, "./invalidPath/outfile", {"./invalidPath"}));
 }
 
-TEST_P( MeshExporter_test, checkBasicBehaviorInValidDir) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir, {tempdir+"/exporter1."+params[0]}))  ;
+TEST_P(MeshExporter_test, checkBasicBehaviorInValidDir)
+{
+    const TestParam& params = GetParam();
+    constexpr std::string_view filename = "exporter1";
+    std::vector<std::string> paths { tempdir + "/" + std::string(filename) + "." + params.extension};
+    for (const auto& addExtension : params.additionalExtensions)
+    {
+        paths.push_back(tempdir + "/" + std::string(filename) + "." + addExtension);
+    }
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir, paths));
 }
 
-TEST_P( MeshExporter_test, checkSimulationWriteEachNbStep) {
-    std::vector<string> params = GetParam() ;
-    ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, {tempdir+"/exporterA00001."+params[0],
-                                                        tempdir+"/exporterA00002."+params[0],
-                                                        tempdir+"/exporterA00003."+params[0],
-                                                        tempdir+"/exporterA00004."+params[0]}, 20)) ;
+TEST_P(MeshExporter_test, checkSimulationWriteEachNbStep)
+{
+    const TestParam& params = GetParam();
+    constexpr std::string_view filename = "exporterA";
+    std::vector<std::string> paths;
+    constexpr unsigned int nbTimeSteps { 20 };
+    constexpr unsigned int exportEveryNumberOfSteps { 5 };
+    for (unsigned int i = 0; i < nbTimeSteps / exportEveryNumberOfSteps; ++i)
+    {
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << (i+1);
+
+        paths.push_back(FileSystem::append(tempdir, std::string(filename) + ss.str() + "." + params.extension));
+        for (const auto& addExtension : params.additionalExtensions)
+        {
+            paths.push_back(FileSystem::append(tempdir, std::string(filename) + ss.str() + "." + addExtension));
+        }
+    }
+    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, paths, nbTimeSteps)) ;
 }
 
 INSTANTIATE_TEST_SUITE_P(checkAllBehavior,
-                        MeshExporter_test,
-                        ::testing::ValuesIn(params));
+                         MeshExporter_test,
+                         ::testing::ValuesIn(params));
 
 
 }

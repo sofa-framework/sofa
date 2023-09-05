@@ -41,9 +41,7 @@ using sofa::core::objectmodel::New;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;
-using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 
@@ -52,7 +50,7 @@ using sofa::component::statecontainer::MechanicalObject ;
 
 #include <sofa/simulation/Node.h>
 
-using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3Types;
 
 template <class In, class Out>
 struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public BarycentricMapperTriangleSetTopology<In,Out>
@@ -93,18 +91,17 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
     }
 
     void scene_test(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
+        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         typename BarycentricMapping<In,Out>::SPtr thisObject = New<BarycentricMapping<In,Out>>();
         thisObject->setName("barycentricMapping");
         EXPECT_TRUE(thisObject->getName() == "barycentricMapping");
 
-        Node::SPtr node = simu->createNewGraph("root");
-        Node::SPtr nodeMapping = node->createChild("nodeToMap");
-        TriangleSetTopologyContainer::SPtr triangleContainer = New<TriangleSetTopologyContainer>();
-        TetrahedronSetTopologyContainer::SPtr tetraContainer = New<TetrahedronSetTopologyContainer>();
-        MechanicalObject<Vec3dTypes>::SPtr mecanical = New<MechanicalObject<Vec3dTypes>>();
+        const Node::SPtr node = simu->createNewGraph("root");
+        const Node::SPtr nodeMapping = node->createChild("nodeToMap");
+        const TriangleSetTopologyContainer::SPtr triangleContainer = New<TriangleSetTopologyContainer>();
+        const TetrahedronSetTopologyContainer::SPtr tetraContainer = New<TetrahedronSetTopologyContainer>();
+        const MechanicalObject<Vec3Types>::SPtr mecanical = New<MechanicalObject<Vec3Types>>();
 
         node->addObject(tetraContainer);
         node->addObject(mecanical);
@@ -112,7 +109,9 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
         nodeMapping->addObject(triangleContainer);
         nodeMapping->addObject(thisObject);
 
-        EXPECT_NO_THROW(simu->init(node.get()));
+        EXPECT_NO_THROW(
+            sofa::simulation::node::initRoot(node.get())
+        );
     }
 
     void init_test()
@@ -133,7 +132,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
 };
 
 
-typedef BarycentricMapperTriangleSetTopologyTest< Vec3dTypes, Vec3dTypes> BarycentricMapperTriangleSetTopologyTest_d;
+typedef BarycentricMapperTriangleSetTopologyTest< Vec3Types, Vec3Types> BarycentricMapperTriangleSetTopologyTest_d;
 
 
 TEST_F(BarycentricMapperTriangleSetTopologyTest_d, init)

@@ -165,12 +165,6 @@ void f3()
 
 TEST(LoggingTest, threadingTests)
 {
-    if(!SOFA_WITH_THREADING){
-        /// This cout shouldn't be using the msg_* API.
-        std::cout << "Test canceled because sofa is not compiled with SOFA_WITH_THREADING option." << std::endl ;
-        return ;
-    }
-
     MessageDispatcher::clearHandlers() ;
 
     CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
@@ -422,8 +416,8 @@ TEST(LoggingTest, checkCountingMessageHandler)
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &m );
 
-    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
-                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+    const std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                                   Message::Advice, Message::Deprecated, Message::Fatal} ;
 
     for(auto& type : errortypes)
     {
@@ -459,8 +453,8 @@ TEST(LoggingTest, checkRoutingMessageHandler)
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &m );
 
-    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
-                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+    const std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                                   Message::Advice, Message::Deprecated, Message::Fatal} ;
 
     RichConsoleStyleMessageFormatter* fmt = &RichConsoleStyleMessageFormatter::getInstance();
     ConsoleMessageHandler* consolehandler = new ConsoleMessageHandler(fmt) ;

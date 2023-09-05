@@ -55,9 +55,25 @@ public:
         }
     }
 
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned /*idx*/) override
+    {
+        return type::Vec3();
+    }
+
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned /*idx*/) override
+    {
+        return type::Vec3();
+    }
+
+
+
 private:
     unsigned int m_size { 0 };
     bool* m_isDestroyed {nullptr};
+    sofa::type::vector<DetectionOutput> m_empty;
+
 };
 } //namespace sofa::core::collision
 
@@ -76,7 +92,7 @@ namespace sofa
 using sofa::core::objectmodel::New;
 TEST(NarrowPhaseDetection_test, DetectionOutputMap)
 {
-    auto narrowPhaseDetection = New<sofa::core::collision::DummyNarrowPhaseDetection>();
+    const auto narrowPhaseDetection = New<sofa::core::collision::DummyNarrowPhaseDetection>();
 
     //Generate a collection of dummy collision models
     sofa::type::vector<core::DummyCollisionModel::SPtr> collisionModels;

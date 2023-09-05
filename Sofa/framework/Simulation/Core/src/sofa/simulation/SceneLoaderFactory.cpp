@@ -36,43 +36,100 @@ SceneLoader::Listeners SceneLoader::s_listeners;
 sofa::simulation::NodeSPtr SceneLoader::load(const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs)
 {
     if(reload)
-        notifyReloadingSceneBefore();
+        notifyReloadingSceneBefore(this);
     else
-        notifyLoadingSceneBefore();
+        notifyLoadingSceneBefore(this);
 
     sofa::simulation::NodeSPtr root = doLoad(filename, sceneArgs);
 
     if(reload)
-        notifyReloadingSceneAfter(root);
+        notifyReloadingSceneAfter(root, this);
     else
-        notifyLoadingSceneAfter(root);
+        notifyLoadingSceneAfter(root, this);
 
     return root;
 }
 
-void SceneLoader::notifyLoadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeLoadingScene(); }
-void SceneLoader::notifyReloadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeReloadingScene(); }
-void SceneLoader::notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
-void SceneLoader::notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
+void SceneLoader::notifyLoadingSceneBefore(SceneLoader* sceneLoader)
+{
+    for (auto* l : s_listeners)
+    {
+        l->rightBeforeLoadingScene(sceneLoader);
+    }
+}
+
+void SceneLoader::notifyReloadingSceneBefore(SceneLoader* sceneLoader)
+{
+    for (auto* l : s_listeners)
+    {
+        l->rightBeforeReloadingScene(sceneLoader);
+    }
+}
+
+void SceneLoader::notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node, SceneLoader* sceneLoader)
+{
+    for (auto* l : s_listeners)
+    {
+        l->rightAfterLoadingScene(node, sceneLoader);
+    }
+}
+
+void SceneLoader::notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node,
+                                            SceneLoader* sceneLoader)
+{
+    for (auto* l : s_listeners)
+    {
+        l->rightAfterReloadingScene(node, sceneLoader);
+    }
+}
 
 bool SceneLoader::canLoadFileName(const char *filename)
 {
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    const std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
     return canLoadFileExtension(ext.c_str());
 }
 
 /// Pre-saving check
 bool SceneLoader::canWriteFileName(const char *filename)
 {
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    const std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
     return canWriteFileExtension(ext.c_str());
 }
 
-void SceneLoader::Listener::rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
-void SceneLoader::Listener::rightAfterLoadingScene(sofa::simulation::NodeSPtr) {} ///< callback called just after loading the scene file
+bool SceneLoader::syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                                const std::vector<std::string>& listComponents,
+                                                std::ostream& ss,
+                                                sofa::simulation::Node* nodeWhereAdded)
+{
+    SOFA_UNUSED(pluginName);
+    SOFA_UNUSED(listComponents);
+    SOFA_UNUSED(ss);
+    SOFA_UNUSED(nodeWhereAdded);
 
-void SceneLoader::Listener::rightBeforeReloadingScene() { this->rightBeforeLoadingScene(); } ///< callback called just before reloading the scene file
-void SceneLoader::Listener::rightAfterReloadingScene(sofa::simulation::NodeSPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
+    return false;
+}
+
+void SceneLoader::Listener::rightBeforeLoadingScene(SceneLoader* sceneLoader)
+{
+    SOFA_UNUSED(sceneLoader);
+}
+
+void SceneLoader::Listener::rightAfterLoadingScene(sofa::simulation::NodeSPtr,
+                                                   SceneLoader* sceneLoader)
+{
+    SOFA_UNUSED(sceneLoader);
+}
+
+void SceneLoader::Listener::rightBeforeReloadingScene(SceneLoader* sceneLoader)
+{
+    this->rightBeforeLoadingScene(sceneLoader);
+}
+
+void SceneLoader::Listener::rightAfterReloadingScene(sofa::simulation::NodeSPtr root,
+                                                     SceneLoader* sceneLoader)
+{
+    this->rightAfterLoadingScene(root, sceneLoader);
+}
 
 /// adding a listener
 void SceneLoader::addListener( Listener* l ) { s_listeners.insert(l); }

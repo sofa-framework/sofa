@@ -31,7 +31,7 @@ namespace sofa::core::behavior
  * Interface of user interaction on SOFA Components.
  * Empty class to provide an interface for the Factory
  */
-class BaseController : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseController : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseController, core::objectmodel::BaseObject);

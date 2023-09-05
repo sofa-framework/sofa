@@ -27,8 +27,8 @@ using sofa::testing::BaseSimulationTest;
 #include <SceneChecking/SceneCheckerVisitor.h>
 using sofa::scenechecking::SceneCheckerVisitor;
 
-#include <SceneChecking/SceneCheck.h>
-using sofa::scenechecking::SceneCheck;
+#include <sofa/simulation/SceneCheck.h>
+using sofa::simulation::SceneCheck;
 
 #include <SceneChecking/SceneCheckAPIChange.h>
 using sofa::scenechecking::SceneCheckAPIChange;
@@ -84,7 +84,7 @@ struct SceneChecker_test : public BaseSimulationTest
     {
         PluginManager::getInstance().loadPluginByName("Sofa.Component.ODESolver.Forward");
 
-        std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
+        const std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
@@ -92,8 +92,9 @@ struct SceneChecker_test : public BaseSimulationTest
               << "      <EulerExplicitSolver />               \n"
               << "</Node>                                                           \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        const Node::SPtr root = sceneLoader.doLoadFromMemory ("testscene",
+                                                              scene.str().c_str());
         EXPECT_MSG_NOEMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
@@ -105,12 +106,12 @@ struct SceneChecker_test : public BaseSimulationTest
         if(missing)
         {
             EXPECT_MSG_EMIT(Warning); // [SceneCheckMissingRequiredPlugin]
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else
         {
             EXPECT_MSG_NOEMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 
@@ -138,8 +139,9 @@ struct SceneChecker_test : public BaseSimulationTest
               << "    </Node>                                                     \n"
               << "</Node>                                                         \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        const Node::SPtr root = sceneLoader.doLoadFromMemory ("testscene",
+                                                              scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -147,20 +149,20 @@ struct SceneChecker_test : public BaseSimulationTest
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckDuplicatedName::newSPtr() );
 
-        std::vector<std::string> nodenames = {"nodeCheck", "objectCheck", "mixCheck"};
+        const std::vector<std::string> nodenames = {"nodeCheck", "objectCheck", "mixCheck"};
         for( auto& nodename : nodenames )
         {
             EXPECT_MSG_NOEMIT(Error);
             EXPECT_MSG_EMIT(Warning);
             ASSERT_NE(root->getChild(nodename), nullptr);
-            checker.validate(root->getChild(nodename));
+            checker.validate(root->getChild(nodename), &sceneLoader);
         }
 
         {
             EXPECT_MSG_NOEMIT(Error);
             EXPECT_MSG_NOEMIT(Warning);
             ASSERT_NE(root->getChild("nothingCheck"), nullptr);
-            checker.validate(root->getChild("nothingCheck"));
+            checker.validate(root->getChild("nothingCheck"), &sceneLoader);
         }
 
     }
@@ -170,7 +172,7 @@ struct SceneChecker_test : public BaseSimulationTest
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_MSG_NOEMIT(Warning);
 
-        std::string lvl = (shouldWarn)?"17.06":"17.12";
+        const std::string lvl = (shouldWarn)?"17.06":"17.12";
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
@@ -180,13 +182,14 @@ struct SceneChecker_test : public BaseSimulationTest
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        const Node::SPtr root = sceneLoader.doLoadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
-        SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr();
+        const SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr();
         apichange->installDefaultChangeSets();
         apichange->addHookInChangeSet("17.06", [](Base* o){
             if(o->getClassName() == "ComponentDeprecated")
@@ -197,18 +200,18 @@ struct SceneChecker_test : public BaseSimulationTest
         if(shouldWarn){
             /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
             EXPECT_MSG_EMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else {
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 
     void checkUsingAlias(bool sceneWithAlias)
     {
-        std::string withAlias = "Mesh";
-        std::string withoutAlias = "MeshTopology";
-        std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
+        const std::string withAlias = "Mesh";
+        const std::string withoutAlias = "MeshTopology";
+        const std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
@@ -223,19 +226,20 @@ struct SceneChecker_test : public BaseSimulationTest
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckUsingAlias::newSPtr() );
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        const Node::SPtr root = sceneLoader.doLoadFromMemory("testscene", scene.str().c_str());
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         if(sceneWithAlias)
         {
             EXPECT_MSG_EMIT(Warning); // [SceneCheckUsingAlias]
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else
         {
             EXPECT_MSG_NOEMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 };

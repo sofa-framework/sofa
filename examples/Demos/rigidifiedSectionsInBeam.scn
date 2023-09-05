@@ -37,14 +37,14 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
 
     <Node name="rigidSections">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <SparseLDLSolver/>
 
         <RegularGridTopology name="grid" nx="1" ny="1" nz="20" xmin="0" xmax="0" ymin="-1.5" ymax="1.5" zmin="0" zmax="19" />
-        <MechanicalObject template="Rigid3d" name="DOFs" showObject="true" showObjectScale="1" position="@grid.position"/>
+        <MechanicalObject template="Rigid3" name="DOFs" showObject="true" showObjectScale="1" position="@grid.position"/>
         <FixedConstraint indices="0" />
         <Node name="FEM">
             <RegularGridTopology name="FEM_grid" nx="4" ny="4" nz="20" xmin="-1.5" xmax="1.5" ymin="-1.5" ymax="1.5" zmin="0" zmax="19" />
-            <MechanicalObject template="Vec3d" name="FEM_DOFs" position="@FEM_grid.position"/>
+            <MechanicalObject template="Vec3" name="FEM_DOFs" position="@FEM_grid.position"/>
             <HexahedronSetGeometryAlgorithms/>
             <MeshMatrixMass massDensity="1"/>
             <HexahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.45" method="large" printLog="false"/>
@@ -52,8 +52,8 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
             <RigidMapping globalToLocalCoords="true" rigidIndexPerPoint="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19"/>
 
             <Node name="verification">
-                <ValuesFromIndices name="PFI_a" template="Vec3d" in="@FEM_DOFs.position" indices="160 160 172 175 160 163" />
-                <ValuesFromIndices name="PFI_b" template="Vec3d" in="@FEM_DOFs.position" indices="163 172 175 163 175 172" />
+                <ValuesFromIndices name="PFI_a" template="Vec3" in="@FEM_DOFs.position" indices="160 160 172 175 160 163" />
+                <ValuesFromIndices name="PFI_b" template="Vec3" in="@FEM_DOFs.position" indices="163 172 175 163 175 172" />
                 <DifferenceEngine name="diff" input="@PFI_b.out" substractor="@PFI_a.out"/>
                 <NormEngine input="@diff.output" name="norm"/>
                 
@@ -72,7 +72,7 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         
-        <MechanicalObject template="Vec3d" name="FEM_DOFs"/>
+        <MechanicalObject template="Vec3" name="FEM_DOFs"/>
         <RegularGridTopology nx="4" ny="4" nz="20" xmin="-1.5" xmax="1.5" ymin="-9" ymax="-6" zmin="0" zmax="19" />
         <HexahedronSetGeometryAlgorithms/>
         <MeshMatrixMass massDensity="1" />
@@ -80,8 +80,8 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
         <HexahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.45" method="large" />
 
         <Node name="verification">
-            <ValuesFromIndices name="PFI_a" template="Vec3d" in="@FEM_DOFs.position" indices="160 160 172 175 160 163" />
-            <ValuesFromIndices name="PFI_b" template="Vec3d" in="@FEM_DOFs.position" indices="163 172 175 163 175 172" />
+            <ValuesFromIndices name="PFI_a" template="Vec3" in="@FEM_DOFs.position" indices="160 160 172 175 160 163" />
+            <ValuesFromIndices name="PFI_b" template="Vec3" in="@FEM_DOFs.position" indices="163 172 175 163 175 172" />
             <DifferenceEngine name="diff" input="@PFI_b.out" substractor="@PFI_a.out"/>
             <NormEngine input="@diff.output" name="norm"/>
 

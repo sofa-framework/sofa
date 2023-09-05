@@ -38,7 +38,6 @@ set(SOFACOMPONENTALL_MODULES
     SofaGeneralMeshCollision
     SofaGeneralObjectInteraction
     SofaGeneralRigid
-    SofaGeneralSimpleFem
     SofaGeneralTopology
     SofaGeneralVisual
     SofaGraphComponent

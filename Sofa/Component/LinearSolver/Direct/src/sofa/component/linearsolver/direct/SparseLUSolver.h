@@ -41,7 +41,7 @@ public :
     cs* permuted_A;
     type::vector<int> perm,iperm; ///< fill reducing permutation
     type::vector<int> Previous_colptr,Previous_rowind; ///< shape of the matrix at the previous step
-    type::vector<sofa::Index> A_i, A_p;
+    type::vector<sofa::SignedIndex> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
     bool notSameShape;
@@ -71,13 +71,19 @@ public:
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
     Data<double> f_tol; ///< tolerance of factorization
     
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
     SparseLUSolver();
+
+    bool supportNonSymmetricSystem() const override { return true; }
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 
 protected :
 

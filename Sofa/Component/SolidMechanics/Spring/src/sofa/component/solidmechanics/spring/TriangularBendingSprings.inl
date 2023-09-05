@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangularBendingSprings.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -73,7 +74,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
             if(!(ei.is_initialized))
             {
                 ei.is_initialized = true;
-                unsigned int edgeIndex = te2[j];
+                const unsigned int edgeIndex = te2[j];
                 const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
 
                 if (shell.size() != 2) // Only Manifold triangulation is handled
@@ -108,8 +109,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
                 }
 
                 // get localIndices of the edge in triangle, same index as opposite vertex in triangle
-                int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                const int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                const int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                 // store vertex indices of the spring extremities, as well as global spring stiffness and damping
                 ei.m1 = t1[i1];
@@ -153,7 +154,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
                 continue;
             }
 
-            unsigned int edgeIndex = te[j];
+            const unsigned int edgeIndex = te[j];
 
             const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
             if (shell.size()==3) // This case is possible during remeshing phase (adding/removing triangles)
@@ -186,8 +187,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
                     t2 = m_topology->getTriangle(shell[1]);
                 }
 
-                int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                const int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                const int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                 ei.m1 = t1[i1];
                 ei.m2 = t2[i2];
@@ -247,7 +248,7 @@ void TriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type
         for (j=0; j<shell.size(); ++j)
         {
             Triangle tj = m_topology->getTriangle(shell[j]);
-            int vertexIndex = m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
+            const int vertexIndex = m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
 
             EdgesInTriangle tej = m_topology->getEdgesInTriangle(shell[j]);
             unsigned int ind_j = tej[vertexIndex];
@@ -440,7 +441,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    size_t nbEdges = m_topology->getNbEdges();
+    const size_t nbEdges = m_topology->getNbEdges();
     sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
 
     f.resize(x.size());
@@ -505,7 +506,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbEdges=m_topology->getNbEdges();
     const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     df.resize(dx.size());
 
@@ -524,6 +525,12 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
         df[b]-= dforce * kFactor;
     }
     d_df.endEdit();
+}
+
+template <class DataTypes>
+void TriangularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 
@@ -550,7 +557,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     {
         if(edgeInfo.is_activated)
         {
-            bool external=true;
+            const bool external=true;
             Real d = (x[edgeInfo.m2]-x[edgeInfo.m1]).norm();
             if (external)
             {

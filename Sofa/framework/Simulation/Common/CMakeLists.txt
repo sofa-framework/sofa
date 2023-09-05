@@ -15,7 +15,6 @@ set(HEADER_FILES
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseElement.h
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseMultiMappingElement.h
     ${SOFA_SIMULATION_COMMON_SRC}/xml/DataElement.h
-    ${SOFA_SIMULATION_COMMON_SRC}/xml/ElementNameHelper.h
     ${SOFA_SIMULATION_COMMON_SRC}/xml/Element.h
     ${SOFA_SIMULATION_COMMON_SRC}/xml/Element.inl
     ${SOFA_SIMULATION_COMMON_SRC}/xml/NodeElement.h
@@ -33,7 +32,6 @@ set(SOURCE_FILES
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseMultiMappingElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/DataElement.cpp
-    ${SOFA_SIMULATION_COMMON_SRC}/xml/ElementNameHelper.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/NodeElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/ObjectElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/XML.cpp

@@ -60,7 +60,10 @@ int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of
 // Implementation
 
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
+    : sofa::core::topology::TopologicalMapping()
 {
+    m_inputType = TopologyElementType::QUAD;
+    m_outputType = TopologyElementType::TRIANGLE;
 }
 
 
@@ -72,47 +75,23 @@ void Quad2TriangleTopologicalMapping::init()
 {
     using namespace container::dynamic;
 
-    bool modelsOk = true;
-    if (!fromModel)
-    {
-        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no input mesh topology could be found.
-        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-
-    if (!toModel)
-    {
-        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no output mesh topology could be found.
-        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-
-    // Making sure the output topology is derived from the triangle topology container
-    if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get())) {
-        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
-                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                        " TriangleSetTopologyContainer derived object.";
-        modelsOk = false;
-    } else {
-        // Making sure a topology modifier exists at the same level as the output topology
-        TriangleSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
-        if (!to_tstm)
-        {
-            msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
-                        << toModel->getContext()->getName() << "'.";
-            modelsOk = false;
-        }
-    }
-
-    if (!modelsOk)
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
+        
+    // Making sure a topology modifier exists at the same level as the output topology
+    TriangleSetTopologyModifier *to_tstm;
+    toModel->getContext()->get(to_tstm);
+    if (!to_tstm)
+    {
+        msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
+                    << toModel->getContext()->getName() << "'.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Clear output topology
     toModel->clear();

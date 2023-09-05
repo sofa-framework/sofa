@@ -213,29 +213,18 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataMatrixDeriv> c (cData );
-    const SetIndexArray & indices = d_indices.getValue();
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
 
     if( d_fixAll.getValue() )
     {
         // fix everything
-        while (rowIt != rowItEnd)
-        {
-            rowIt.row().clear();
-            ++rowIt;
-        }
+        c->clear();
     }
     else
     {
-        while (rowIt != rowItEnd)
+        const SetIndexArray& indices = d_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                rowIt.row().erase(*it);
-            }
-            ++rowIt;
+            c->clearColBlock(*it);
         }
     }
 }
@@ -281,7 +270,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    if(core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
+    if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
     {
         const unsigned int N = Deriv::size();
 
@@ -340,6 +329,33 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
             {
                 for (unsigned int c=0; c<N; ++c)
                     vect->clear(offset + N * index + c);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+
+    if( d_fixAll.getValue() )
+    {
+        const sofa::Size size = this->mstate->getMatrixSize();
+        for(sofa::Index i = 0; i < size; ++i)
+        {
+            matrix->discardRowCol(i, i);
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = d_indices.getValue();
+
+        for (const auto index : indices)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                matrix->discardRowCol(N * index + c, N * index + c);
             }
         }
     }

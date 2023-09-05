@@ -216,12 +216,8 @@ public:
             /// return the instance of the factory. Creates it if doesn't exist yet.
             static IdFactory& getInstance()
             {
-                SOFA_THREAD_SPECIFIC_PTR(IdFactory, instance);
-                if (instance == nullptr)
-                {
-                    instance = new IdFactory;
-                }
-                return *instance;
+                static thread_local IdFactory factory;
+                return factory;
             }
         };
 
@@ -377,14 +373,6 @@ public:
      */
     static std::string end(IdTimer id, double time, double dt);
 
-    /**
-     * @brief end Deleted version with a node Pointer ; will throw an error at compile-time if called.
-     * @param id IdTimer, the id of the used timer
-     * @param node simulation::Node* 
-     * @return std::string, the output if JSON format is set
-     */
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
-    static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();
 

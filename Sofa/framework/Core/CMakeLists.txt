@@ -5,6 +5,10 @@ set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/AccumulationVecId.h
+    ${SRC_ROOT}/AccumulationVecId.inl
+    ${SRC_ROOT}/BaseMatrixAccumulatorComponent.h
+    ${SRC_ROOT}/BaseLocalMappingMatrix.h
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
@@ -18,6 +22,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DataTracker.h
     ${SRC_ROOT}/DataTrackerCallback.h
     ${SRC_ROOT}/DataTrackerFunctor.h
+    ${SRC_ROOT}/DerivativeMatrix.h
     ${SRC_ROOT}/DevBaseMonitor.h
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/fwd.h
@@ -25,7 +30,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
     ${SRC_ROOT}/MappingHelper.h
+    ${SRC_ROOT}/MatrixAccumulator.h
     ${SRC_ROOT}/MechanicalParams.h
+    ${SRC_ROOT}/MechanicalStatesMatrixAccumulators.h
     ${SRC_ROOT}/Multi2Mapping.h
     ${SRC_ROOT}/Multi2Mapping.inl
     ${SRC_ROOT}/MultiMapping.h
@@ -48,11 +55,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseLinearSolver.h
+    ${SRC_ROOT}/behavior/BaseLocalForceFieldMatrix.h
+    ${SRC_ROOT}/behavior/BaseLocalMassMatrix.h
     ${SRC_ROOT}/behavior/BaseMass.h
+    ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
+    ${SRC_ROOT}/behavior/BlockType.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/Constraint.h
     ${SRC_ROOT}/behavior/Constraint.inl
@@ -64,6 +75,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
+    ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalMatrix.h
@@ -114,6 +126,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
+    ${SRC_ROOT}/objectmodel/BaseClassNameHelper.h
     ${SRC_ROOT}/objectmodel/BaseContext.h
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
@@ -132,6 +145,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h
+    ${SRC_ROOT}/objectmodel/DeprecatedData.h
+    ${SRC_ROOT}/objectmodel/RemovedData.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
     ${SRC_ROOT}/objectmodel/GUIEvent.h
@@ -165,15 +180,22 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
+    ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
+    ${SRC_ROOT}/visual/FlagTreeItem.h
     ${SRC_ROOT}/visual/Shader.h
+    ${SRC_ROOT}/visual/Tristate.h
     ${SRC_ROOT}/visual/VisualLoop.h
     ${SRC_ROOT}/visual/VisualManager.h
     ${SRC_ROOT}/visual/VisualModel.h
     ${SRC_ROOT}/visual/VisualParams.h
+    ${SRC_ROOT}/visual/VisualState.h
+    ${SRC_ROOT}/visual/VisualState.inl
 )
 
 set(SOURCE_FILES
+    ${SRC_ROOT}/AccumulationVecId.cpp
+    ${SRC_ROOT}/BaseMatrixAccumulatorComponent.cpp
     ${SRC_ROOT}/BaseMapping.cpp
     ${SRC_ROOT}/BaseState.cpp
     ${SRC_ROOT}/BehaviorModel.cpp
@@ -190,6 +212,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/Mapping.cpp
+    ${SRC_ROOT}/MatrixAccumulator.cpp
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
@@ -206,6 +229,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
+    ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/Constraint.cpp
@@ -262,6 +286,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/DataFileNameVector.cpp
     ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
+    ${SRC_ROOT}/objectmodel/DeprecatedData.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp
     ${SRC_ROOT}/objectmodel/GUIEvent.cpp
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
@@ -281,12 +306,15 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
+    ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/FlagTreeItem.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
     ${SRC_ROOT}/visual/VisualManager.cpp
     ${SRC_ROOT}/visual/VisualModel.cpp
     ${SRC_ROOT}/visual/VisualParams.cpp
+    ${SRC_ROOT}/visual/VisualState.cpp
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)

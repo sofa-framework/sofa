@@ -22,14 +22,14 @@
 #ifndef SOFA_GPU_CUDA_CUDATYPES_H
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
-#include "CudaCommon.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
 #include "mycuda.h"
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/gl/gl.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/vector_device.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -57,9 +57,9 @@ class CudaDeprecatedAndRemoved {};
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = DataTypeInfoManager<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
@@ -91,7 +91,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
     static constexpr sofa::Size coord_total_size = Coord::total_size;
@@ -493,7 +493,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
     typedef Vec3 AngularVector;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
@@ -677,7 +677,7 @@ public:
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
 
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T)
@@ -950,24 +950,42 @@ public:
     WriteAccessorVector(container_type& container) : vref(container), data(container.hostWrite()) {}
     ~WriteAccessorVector() {}
 
-    Size size() const { return vref.size(); }
+    ////// Capacity //////
     bool empty() const { return vref.empty(); }
+    Size size() const { return vref.size(); }
+    void reserve(Size s) { vref.reserve(s); data = vref.hostWrite(); }
 
+    ////// Element access //////
     const_reference operator[](Size i) const { return data[i]; }
     reference operator[](Size i) { return data[i]; }
 
     const container_type& ref() const { return vref; }
     container_type& wref() { return vref; }
 
+    ////// Iterators //////
     const_iterator begin() const { return data; }
     iterator begin() { return data; }
     const_iterator end() const { return data+vref.size(); }
     iterator end() { return data+vref.size(); }
 
+    ////// Modifiers //////
     void clear() { vref.clear(); }
-    void resize(Size s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
-    void reserve(Size s) { vref.reserve(s); data = vref.hostWrite(); }
+    void resize(Size s, bool init = true) { 
+        if (init) 
+            vref.resize(s); 
+        else 
+            vref.fastResize(s); 
+        data = vref.hostWrite(); 
+    }
+    
+    iterator erase(iterator pos) { 
+        iterator it = vref.erase(pos); 
+        data = vref.hostWrite();
+        return it;
+    }
+
     void push_back(const_reference v) { vref.push_back(v); data = vref.hostWrite(); }
+    void pop_back() { vref.pop_back(); data = vref.hostWrite(); }
 };
 
 
@@ -1028,5 +1046,20 @@ namespace sofa::component::mass
 
 } // namespace sofa::component::mass
 
+
+// define block traits for Vec3r1 (see matrix_bloc_traits.h)
+// mainly used with CompressedRowSparseMatrix
+namespace sofa::linearalgebra
+{
+
+template <class T, typename IndexType >
+class matrix_bloc_traits < sofa::gpu::cuda::Vec3r1<T>, IndexType > : public matrix_bloc_traits<sofa::type::Vec<3, T>, IndexType>
+{
+public:
+    typedef sofa::gpu::cuda::Vec3r1<T> Block;
+
+};
+
+} // namespace sofa::linearalgebra
 
 #endif

@@ -47,7 +47,7 @@ void FixParticlePerformer<DataTypes>::start()
     }
 
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
-    simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
+    const simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
     fixations.push_back( nodeFixation.get() );
 
     //Create the Container of points

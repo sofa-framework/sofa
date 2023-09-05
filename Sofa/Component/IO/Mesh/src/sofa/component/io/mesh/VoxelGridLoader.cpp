@@ -124,7 +124,7 @@ void VoxelGridLoader::reinit()
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )
                 for ( unsigned int i=(unsigned)ROI[0]; i<=(unsigned)ROI[3]; ++i )
                 {
-                    unsigned int idx = i + j * numVoxelsX + k * numVoxelsX * numVoxelsY;
+                    const unsigned int idx = i + j * numVoxelsX + k * numVoxelsX * numVoxelsY;
 
                     if ( isActive(idx) )
                     {
@@ -229,7 +229,7 @@ void VoxelGridLoader::clear()
 
 bool VoxelGridLoader::canLoad(  )
 {
-    bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
+    const bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
             d_filename.getValue().length()-4, 4, ".raw" ) ==0 );
 
     return sofa::core::loader::VoxelLoader::canLoad() &&  canLoad;
@@ -252,7 +252,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
 {
     helper::io::Image* image = nullptr;
 
-    std::string _filename ( filename );
+    const std::string _filename ( filename );
 
     if(res.norm2() > 0 && bpp > 0)
     {
@@ -361,7 +361,11 @@ int VoxelGridLoader::getActiveDataValue(const unsigned int idx) const
 
 unsigned char * VoxelGridLoader::getData()
 {
-    return image->getPixels();
+    if (image)
+    {
+        return image->getPixels();
+    }
+    return nullptr;
 }
 
 
@@ -420,7 +424,7 @@ void VoxelGridLoader::createSegmentation3DTexture( unsigned char **textureData, 
     for(height=1; resol[1]>height; height <<= 1) ;
     for(depth=1; resol[2]>depth; depth <<= 1) ;
 
-    int textureSize = width*height*depth;
+    const int textureSize = width*height*depth;
 
     *textureData = new unsigned char [textureSize];
     for(unsigned char *ptr = (*textureData) + textureSize; ptr != *textureData; )

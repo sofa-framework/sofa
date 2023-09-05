@@ -54,26 +54,28 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 
 void StringMeshCreator::doClearBuffers()
 {
-
+    sofa::helper::getWriteOnlyAccessor(d_positions).clear();
+    sofa::helper::getWriteOnlyAccessor(d_edges).clear();
 }
 
 
 bool StringMeshCreator::doLoad()
 {
     auto my_positions = sofa::helper::getWriteOnlyAccessor(d_positions);
-    unsigned numX = resolution.getValue();
+    auto my_edges = sofa::helper::getWriteOnlyAccessor(d_edges);
+
+    const unsigned numX = resolution.getValue();
 
     // Warning: Vertex creation order must be consistent with method vert.
     for(unsigned x=0; x<numX; x++)
     {
         my_positions.push_back( Vec3(x * 1./(numX-1), 0, 0) );
     }
-    type::vector<Edge >& my_edges = *(d_edges.beginEdit());
+
     for( unsigned e=1; e<numX; e++ )
     {
         my_edges.push_back( Edge(e-1,e) );
     }
-    d_edges.endEdit();
 
     return true;
 

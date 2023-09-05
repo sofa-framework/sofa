@@ -34,10 +34,7 @@ namespace core
 class ExecParams;
 }
 
-namespace simulation
-{
-
-namespace common
+namespace simulation::common
 {
 
 class SOFA_SIMULATION_CORE_API VectorOperations : public sofa::core::behavior::BaseVectorOperations
@@ -80,7 +77,6 @@ protected:
 
 };
 
-}
 }
 }
 

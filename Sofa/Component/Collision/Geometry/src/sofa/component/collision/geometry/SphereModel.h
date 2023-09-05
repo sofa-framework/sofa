@@ -103,13 +103,13 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -118,9 +118,9 @@ public:
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
-    Real getRadius(const Index i) const;
+    Real getRadius(const sofa::Index i) const;
 
-    const Coord & velocity(Index index)const;
+    const Coord & velocity(sofa::Index index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -195,7 +195,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }

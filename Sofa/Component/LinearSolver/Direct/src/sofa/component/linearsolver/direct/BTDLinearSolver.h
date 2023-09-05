@@ -24,11 +24,15 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
+#include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/BTDMatrix.h>
 #include <sofa/linearalgebra/BlockVector.h>
 #include <cmath>
 #include <sofa/type/Mat.h>
+#include <sofa/component/linearsolver/direct/MatrixLinearSystem[BTDMatrix].h>
+#include <sofa/component/linearsolver/direct/TypedMatrixLinearSystem[BTDMatrix].h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -49,7 +53,6 @@ public:
     Data<bool> d_problem; ///< display debug informations about subpartSolve computation
     Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
     Data<bool> d_verification; ///< verification of the subpartSolve
-    Data<int> d_blockSize; ///< dimension of the blocks in the matrix
 
     SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_verbose")
     DeprecatedAndRemoved f_verbose;
@@ -63,6 +66,9 @@ public:
     DeprecatedAndRemoved f_blockSize;
     SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("test_perf has been removed and not replaced.")
     DeprecatedAndRemoved test_perf;
+
+    SOFA_ATTRIBUTE_DEPRECATED__BTDLINEARSOLVER_DATABLOCKSIZE("d_blockSize has been deleted, as it was never actually used.")
+    DeprecatedAndRemoved d_blockSize;
 
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
@@ -102,15 +108,8 @@ protected:
         , d_problem(initData(&d_problem, false,"showProblem", "display debug informations about subpartSolve computation") )
         , d_subpartSolve(initData(&d_subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
         , d_verification(initData(&d_verification, false,"verification", "verification of the subpartSolve"))
-        , d_blockSize( initData(&d_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
-        Index bsize = Matrix::getSubMatrixDim(0);
-        if (bsize > 0)
-        {
-            // the template uses fixed bloc size
-            d_blockSize.setValue((int)bsize);
-            d_blockSize.setReadOnly(true);
-        }
+
     }
 public:
     void my_identity(SubMatrix& Id, const Index size_id);
@@ -126,15 +125,12 @@ public:
     /// Solve Mx=b
     void solve (Matrix& /*M*/, Vector& x, Vector& b) override;
 
-
-
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
-
 
     /// Init the partial solve
     void init_partial_solve() override;
@@ -148,16 +144,22 @@ public:
     //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
     void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
-
-
     void init_partial_inverse(const Index &nb, const Index &bsize);
-
-
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
 
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherit1::parse(arg);
+
+        if (arg->getAttribute("blockSize"))
+        {
+            msg_deprecated() << "The attribute 'blockSize' is deprecated since SOFA 23.06." << msgendl
+                << "This data was not take into account to get the block size, as it can be deduced automatically from the Matrix template parameter.";
+        }
+    }
 
 private:
 
@@ -183,11 +185,9 @@ private:
     /// (and accumulate the potential local dRH (set in Vec_dRH) [set in step1] that have not been yet taken into account by the global bwd and fwd
     void fwdComputeLHinBloc(Index indMaxBloc);
 
-
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 #endif
-
 } //namespace sofa::component::linearsolver::direct

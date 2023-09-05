@@ -13,6 +13,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <DefaultAnimationLoop/>
     
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
@@ -21,19 +22,19 @@
 
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="5 5 5" min="0 0 0" max="1 1 1"  />
-        <MechanicalObject name="DOF" template="Vec3d" />
+        <MechanicalObject name="DOF" template="Vec3" />
         <UniformMass totalMass="1" />
 
         <!--maintain point (0,0,0) fixed -->
-        <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" />
+        <BoxROI template="Vec3" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" />
         <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" />
 
         <!--constrain point (0,1,0) to the y axis -->
-        <BoxROI template="Vec3d" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" />
+        <BoxROI template="Vec3" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" />
         <ProjectToLineConstraint origin="0 0 0" direction="0 1 0" indices="@[-1].indices" />
 
         <!--constraint face x=0 to stay in this plane-->
-        <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
+        <BoxROI template="Vec3" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
         <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
 
 
@@ -41,15 +42,15 @@
         <Node name="Tetra" >
             <TetrahedronSetTopologyContainer name="TetraContainer" />
             <TetrahedronSetTopologyModifier />
-            <TetrahedronSetGeometryAlgorithms template="Vec3d" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" />
             <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
-            <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />
+            <TetrahedronFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />
 
             <!--Extraction of the external triangles of the tetrahedra -->
             <Node name="Triangles" >
                 <TriangleSetTopologyContainer name="TriangleContainer" />
                 <TriangleSetTopologyModifier />
-                <TriangleSetGeometryAlgorithms template="Vec3d" />
+                <TriangleSetGeometryAlgorithms template="Vec3" />
                 <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 
                 <!--Apply a pressure to the triangles in the x=1 plane -->

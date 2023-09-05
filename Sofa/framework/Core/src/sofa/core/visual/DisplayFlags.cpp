@@ -20,225 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/helper/DiffLib.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::core::visual
 {
-namespace core
-{
-namespace visual
-{
-
-FlagTreeItem::FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent):
-    m_showName({showName}),
-    m_hideName({hideName}),
-    m_state(tristate::neutral_value),
-    m_parent(parent)
-{
-    if( m_parent ) m_parent->m_child.push_back(this);
-}
-
-
-void FlagTreeItem::addAliasShow(const std::string& newAlias)
-{
-    this->addAlias(this->m_showName, newAlias);
-}
-
-
-void FlagTreeItem::addAliasHide(const std::string& newAlias)
-{
-    this->addAlias(this->m_hideName, newAlias);
-}
-
-
-void FlagTreeItem::addAlias(sofa::type::vector<std::string>& name, const std::string& newAlias)
-{
-    name.push_back(newAlias);
-    return;
-}
-
-
-void FlagTreeItem::setValue(const tristate &state)
-{
-    this->m_state = state;
-    propagateStateDown(this);
-    propagateStateUp(this);
-}
-
-void FlagTreeItem::propagateStateDown(FlagTreeItem* origin)
-{
-    ChildIterator iter;
-    for( iter = origin->m_child.begin(); iter != origin->m_child.end(); ++iter)
-    {
-        (*iter)->m_state = origin->m_state;
-        propagateStateDown(*iter);
-    }
-}
-
-void FlagTreeItem::propagateStateUp(FlagTreeItem* origin)
-{
-    FlagTreeItem* parent = origin->m_parent;
-    if(!parent) return;
-
-    tristate flag = origin->m_state;
-    for( unsigned int i = 0 ; i < parent->m_child.size(); ++i)
-    {
-        FlagTreeItem* current = parent->m_child[i];
-        flag = fusion_tristate(current->m_state,flag);
-    }
-
-    parent->m_state=flag;
-    propagateStateUp(parent);
-}
-
-std::ostream& FlagTreeItem::write(std::ostream &os) const
-{
-    std::string s;
-    write_recursive(this,s);
-    s.erase(s.find_last_not_of(" \n\r\t")+1);
-    os << s;
-    return os;
-}
-
-std::istream& FlagTreeItem::read(std::istream &in)
-{
-    std::map<std::string, bool,  ci_comparison> parse_map;
-    create_parse_map(this,parse_map);
-    std::string token;
-    while(in >> token)
-    {
-        if( parse_map.find(token) != parse_map.end() )
-        {
-            std::map<std::string,bool>::const_iterator iter;
-            iter = parse_map.find(token);
-            std::string string1 = iter->first;
-
-            if(string1 != token)
-            {
-                msg_warning("DisplayFlags") << "Case of FlagTreeItem '" << token << "' is not correct, please use '"<< string1 <<"' instead";
-            }
-
-            parse_map[token] = true;
-        }
-        else
-            msg_error("DisplayFlags") << "FlagTreeItem: unknown token " << token;
-    }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-
-    read_recursive(this,parse_map);
-    return in;
-}
-
-
-
-/*static*/
-void FlagTreeItem::create_parse_map(FlagTreeItem *root, std::map<std::string, bool, ci_comparison> &map)
-{
-    size_t sizeShow = root->m_showName.size();
-    size_t sizeHide = root->m_hideName.size();
-    for(size_t i=0; i<sizeShow; i++)
-    {
-        map[root->m_showName[i]] = false;
-    }
-    for(size_t i=0; i<sizeHide; ++i)
-    {
-        map[root->m_hideName[i]] = false;
-    }
-
-    ChildIterator iter;
-    for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
-    {
-        create_parse_map(*iter,map);
-    }
-}
-
-void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string, bool, ci_comparison> &parse_map)
-{
-    ChildIterator iter;
-    std::map<std::string,bool>::const_iterator iter_show;
-    std::map<std::string,bool>::const_iterator iter_hide;
-    for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
-    {
-        size_t sizeShow = (*iter)->m_showName.size();
-        size_t sizeHide = (*iter)->m_hideName.size();
-
-        bool found = false;
-
-        for(size_t i=0; i<sizeHide; i++)
-        {
-            iter_hide = parse_map.find((*iter)->m_hideName[i]);
-            if( iter_hide != parse_map.end() )
-            {
-                bool hide = iter_hide->second;
-                if(hide)
-                {
-                    if(i != 0)
-                    {
-                        msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_hideName[i] << "' is deprecated, please use '"<<(*iter)->m_hideName[0]<<"' instead";
-                    }
-
-                    (*iter)->setValue(tristate::false_value);
-                    found = true;
-                }
-            }
-        }
-        for(size_t i=0; i<sizeShow; i++)
-        {
-            iter_show = parse_map.find((*iter)->m_showName[i]);
-            if( iter_show != parse_map.end() )
-            {
-                bool show  = iter_show->second;
-                if(show)
-                {
-                    if(i != 0)
-                    {
-                        msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_showName[i] << "' is deprecated, please use '"<<(*iter)->m_showName[0]<<"' instead";
-                    }
-
-                    (*iter)->setValue(tristate::true_value);
-                    found = true;
-                }
-            }
-        }
-
-        if(!found)
-        {
-            (*iter)->m_state = tristate::neutral_value;
-            read_recursive(*iter,parse_map);
-        }
-    }
-}
-
-void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
-{
-    ChildConstIterator iter;
-    for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter )
-    {
-        switch( (*iter)->m_state.state )
-        {
-        case tristate::true_value:
-            str.append((*iter)->m_showName[0]);
-            str.append(" ");
-            break;
-        case tristate::false_value:
-            str.append((*iter)->m_hideName[0]);
-            str.append(" ");
-            break;
-        case tristate::neutral_value:
-            write_recursive(*iter,str);
-        }
-    }
-}
-
-std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root )
-{
-    return root.write(os);
-}
-std::istream& operator>> ( std::istream& in, FlagTreeItem& root )
-{
-    return root.read(in);
-}
-
 
 DisplayFlags::DisplayFlags():
     m_root(FlagTreeItem("showRoot","hideRoot",nullptr)),
@@ -252,6 +38,7 @@ DisplayFlags::DisplayFlags():
     m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
     m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
     m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showDetectionOutputs(FlagTreeItem("showDetectionOutputs","hideDetectionOutputs",&m_showCollision)),
     m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
@@ -266,6 +53,7 @@ DisplayFlags::DisplayFlags():
     m_showInteractionForceFields.setValue(tristate::neutral_value);
     m_showCollisionModels.setValue(tristate::neutral_value);
     m_showBoundingCollisionModels.setValue(tristate::neutral_value);
+    m_showDetectionOutputs.setValue(tristate::neutral_value);
     m_showVisualMappings.setValue(tristate::neutral_value);
     m_showMechanicalMappings.setValue(tristate::neutral_value);
     m_showAdvancedRendering.setValue(tristate::neutral_value);
@@ -288,6 +76,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
     m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
     m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showDetectionOutputs(FlagTreeItem("showDetectionOutputs","hideDetectionOutputs",&m_showCollision)),
     m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
@@ -302,6 +91,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
     m_showCollisionModels.setValue(other.m_showCollisionModels.state());
     m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+    m_showDetectionOutputs.setValue(other.m_showDetectionOutputs.state());
     m_showVisualMappings.setValue(other.m_showVisualMappings.state());
     m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
     m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
@@ -322,6 +112,7 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
         m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
         m_showCollisionModels.setValue(other.m_showCollisionModels.state());
         m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+        m_showDetectionOutputs.setValue(other.m_showDetectionOutputs.state());
         m_showVisualMappings.setValue(other.m_showVisualMappings.state());
         m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
         m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
@@ -331,20 +122,37 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
     return *this;
 }
 
+std::istream& DisplayFlags::read(std::istream& in,
+    const std::function<void(std::string)>& unknownFlagFunction,
+    const std::function<void(std::string, std::string)>& incorrectLetterCaseFunction)
+{
+    return m_root.read(in,
+        unknownFlagFunction,
+        incorrectLetterCaseFunction);
+}
+
 bool DisplayFlags::isNeutral() const
 {
     return m_showVisualModels.state().state == tristate::neutral_value
-            && m_showBehaviorModels.state().state == tristate::neutral_value
-            && m_showForceFields.state().state  == tristate::neutral_value
-            && m_showInteractionForceFields.state().state == tristate::neutral_value
-            && m_showBoundingCollisionModels.state().state == tristate::neutral_value
-            && m_showCollisionModels.state().state == tristate::neutral_value
-            && m_showVisualMappings.state().state == tristate::neutral_value
-            && m_showMechanicalMappings.state().state == tristate::neutral_value
-            && m_showAdvancedRendering.state().state == tristate::neutral_value
-            && m_showWireframe.state().state == tristate::neutral_value
-            && m_showNormals.state().state == tristate::neutral_value
-            ;
+           && m_showBehaviorModels.state().state == tristate::neutral_value
+           && m_showForceFields.state().state  == tristate::neutral_value
+           && m_showInteractionForceFields.state().state == tristate::neutral_value
+           && m_showBoundingCollisionModels.state().state == tristate::neutral_value
+           && m_showDetectionOutputs.state().state == tristate::neutral_value
+           && m_showCollisionModels.state().state == tristate::neutral_value
+           && m_showVisualMappings.state().state == tristate::neutral_value
+           && m_showMechanicalMappings.state().state == tristate::neutral_value
+           && m_showAdvancedRendering.state().state == tristate::neutral_value
+           && m_showWireframe.state().state == tristate::neutral_value
+           && m_showNormals.state().state == tristate::neutral_value
+        ;
+}
+
+sofa::type::vector<std::string> DisplayFlags::getAllFlagsLabels() const
+{
+    sofa::type::vector<std::string> labels;
+    m_root.getLabels(labels);
+    return labels;
 }
 
 DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags &current)
@@ -356,6 +164,7 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     merge.m_showInteractionForceFields.setValue( merge_tristate(previous.m_showInteractionForceFields.state(),current.m_showInteractionForceFields.state()) );
     merge.m_showCollisionModels.setValue( merge_tristate(previous.m_showCollisionModels.state(),current.m_showCollisionModels.state()) );
     merge.m_showBoundingCollisionModels.setValue( merge_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
+    merge.m_showDetectionOutputs.setValue( merge_tristate(previous.m_showDetectionOutputs.state(),current.m_showDetectionOutputs.state()) );
     merge.m_showVisualMappings.setValue( merge_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     merge.m_showMechanicalMappings.setValue( merge_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
     merge.m_showAdvancedRendering.setValue( merge_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );
@@ -373,6 +182,7 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showInteractionForceFields.setValue( difference_tristate(previous.m_showInteractionForceFields.state(),current.m_showInteractionForceFields.state()) );
     difference.m_showCollisionModels.setValue( difference_tristate(previous.m_showCollisionModels.state(),current.m_showCollisionModels.state()) );
     difference.m_showBoundingCollisionModels.setValue( difference_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
+    difference.m_showDetectionOutputs.setValue( difference_tristate(previous.m_showDetectionOutputs.state(),current.m_showDetectionOutputs.state()) );
     difference.m_showVisualMappings.setValue( difference_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     difference.m_showMechanicalMappings.setValue( difference_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
     difference.m_showAdvancedRendering.setValue( difference_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );
@@ -389,10 +199,6 @@ std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
 std::istream& operator>> ( std::istream& in, DisplayFlags& flags )
 {
     return flags.m_root.read(in);
-}
-
-}
-
 }
 
 }

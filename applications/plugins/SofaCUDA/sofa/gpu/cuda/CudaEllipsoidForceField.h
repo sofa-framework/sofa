@@ -21,51 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTypes.h"
-#include <sofa/component/mechanicalload/EllipsoidForceField.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa::gpu::cuda
-{
-
-struct GPUEllipsoid
-{
-    type::Vec3f center;
-    type::Vec3f inv_r2;
-    float stiffness;
-    float damping;
-};
-
-} // namespace sofa::gpu::cuda
-
-namespace sofa::component::mechanicalload
-{
-
-template <>
-class EllipsoidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
-{
-public:
-    gpu::cuda::GPUEllipsoid ellipsoid;
-    gpu::cuda::CudaVector<float> tmp;
-};
-
-template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-class EllipsoidForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
-{
-public:
-    gpu::cuda::GPUEllipsoid ellipsoid;
-    gpu::cuda::CudaVector<float> tmp;
-};
-
-template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-} // namespace sofa::component::mechanicalload
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaEllipsoidForceField.h")

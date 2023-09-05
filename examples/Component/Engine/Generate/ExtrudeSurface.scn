@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [ExtrudeSurface RandomPointDistributionInSurface] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [SphereROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <Node name="extrude">
+        <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
+        <MechanicalObject src="@meshLoader"/>
+        <SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0" src="@meshLoader" />
+        <ExtrudeSurface template="Vec3" name="extrusion" triangles="@meshLoader.triangles" surfaceVertices="@meshLoader.position" surfaceTriangles="@surface1.triangleIndices" isVisible="0" />
+        <RandomPointDistributionInSurface template="Vec3" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" />
+    </Node>
+    <Node name="Extrusion">
+        <MeshTopology points="@../extrude/extrusion.extrusionVertices" triangles="@../extrude/extrusion.extrusionTriangles" />
+        <MechanicalObject position="@../extrude/extrusion.extrusionVertices"/>
+        <OglModel color="red" />
+    </Node>
+    <Node>
+        <MeshOBJLoader name='myLoader' filename='mesh/liver.obj'/>
+        <OglModel src='@myLoader'/>
+    </Node>
+</Node>

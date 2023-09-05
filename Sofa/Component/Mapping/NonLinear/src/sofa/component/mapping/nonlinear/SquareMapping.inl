@@ -22,10 +22,12 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -33,7 +35,10 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
     : Inherit()
-    , d_geometricStiffness(initData(&d_geometricStiffness, 1u, "geometricStiffness", "0 -> no GS, 1 -> exact GS (default)"))
+    , d_useGeometricStiffnessMatrix(initData(&d_useGeometricStiffnessMatrix, true, "useGeometricStiffnessMatrix",
+        "If available (cached), the geometric stiffness matrix is used in order to compute the "
+        "product with the parent displacement. Otherwise, the product is computed directly using "
+        "the available vectors (matrix-free method)."))
 {
 }
 
@@ -102,7 +107,7 @@ void SquareMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
@@ -110,26 +115,29 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
     SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
 
-    if( K.compressedMatrix.nonZeros() )
+    if(d_useGeometricStiffnessMatrix.getValue() && K.compressedMatrix.nonZeros() )
     {
         K.addMult( parentForce.wref(), parentDisplacement.ref(), (typename In::Real)kfactor );
     }
     else
     {
-        size_t size = parentDisplacement.size();
+        const size_t size = parentDisplacement.size();
         kfactor *= 2.0;
 
         for(unsigned i=0; i<size; i++ )
         {
-            parentForce[i][0] += childForce[i][0]*kfactor;
+            parentForce[i][0] += parentDisplacement[i][0] * childForce[i][0]*kfactor;
         }
     }
 }
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
-
+    SOFA_UNUSED(cparams);
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 
@@ -151,7 +159,7 @@ template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
@@ -173,4 +181,23 @@ const linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getK()
     return &K;
 }
 
+template <class TIn, class TOut>
+void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readTotalForces();
+    const unsigned int size = this->fromModel->getSize();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    for( sofa::Size i=0 ; i<size ; ++i )
+    {
+        dJdx(i, i) += 2*childForce[i][0];
+    }
+}
 } // namespace sofa::component::mapping::nonlinear

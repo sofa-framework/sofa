@@ -26,6 +26,7 @@ using sofa::testing::BaseSimulationTest ;
 using namespace sofa::simpleapi ;
 
 #include "Node_test.h"
+#include <unordered_set>
 
 namespace sofa
 {
@@ -43,10 +44,10 @@ TEST( Node_test, getPathName)
      */
     EXPECT_MSG_NOEMIT(Error, Warning);
 
-    Node::SPtr root = sofa::simpleapi::createNode("A");
-    Node::SPtr B = createChild(root, "B");
-    Node::SPtr D = createChild(B, "D");
-    BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
+    const Node::SPtr root = sofa::simpleapi::createNode("A");
+    const Node::SPtr B = createChild(root, "B");
+    const Node::SPtr D = createChild(B, "D");
+    const BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
     root->addObject(C);
 
     EXPECT_STREQ(root->getPathName().c_str(), "/");
@@ -57,15 +58,15 @@ TEST( Node_test, getPathName)
 
 TEST(Node_test, addObject)
 {
-    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
-    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
     root->addObject(A);
 
     // adds a second object after the last one.
     root->addObject(B);
-    auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
+    const auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
     ASSERT_NE(b, nullptr);
     ASSERT_EQ(b->getObjects()[0]->getName(), "A");
     ASSERT_EQ(b->getObjects()[1]->getName(), "B");
@@ -73,15 +74,15 @@ TEST(Node_test, addObject)
 
 TEST(Node_test, addObjectAtFront)
 {
-    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
-    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
     root->addObject(A);
 
     // adds a second object before the first one.
     root->addObject(B, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
-    auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
+    const auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
     ASSERT_NE(b, nullptr);
     ASSERT_EQ(b->getObjects()[0]->getName(), "B");
     ASSERT_EQ(b->getObjects()[1]->getName(), "A");
@@ -89,13 +90,13 @@ TEST(Node_test, addObjectAtFront)
 
 TEST(Node_test, addObjectPreventingSharedContext)
 {
-    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
 
-    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
-    auto child1 = sofa::simpleapi::createChild(root, "child1");
-    auto child2 = sofa::simpleapi::createChild(root, "child2");
+    const auto child1 = sofa::simpleapi::createChild(root, "child1");
+    const auto child2 = sofa::simpleapi::createChild(root, "child2");
 
     // add the created object into the node named 'child1'
     child1->addObject(A);
@@ -122,6 +123,59 @@ TEST(Node_test, addObjectPreventingSharedContext)
 
 }
 
+TEST(Node_test, getObjectsStdVector)
+{
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    const Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::vector<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(std::find(objects.begin(), objects.end(), A.get()), objects.end());
+    EXPECT_NE(std::find(objects.begin(), objects.end(), B.get()), objects.end());
+}
+
+TEST(Node_test, getObjectsStdSet)
+{
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    const Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::set<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(objects.find(A.get()), objects.end());
+    EXPECT_NE(objects.find(B.get()), objects.end());
+}
+
+TEST(Node_test, getObjectsStdUnorderedSet)
+{
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    const Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    const Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::unordered_set<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(objects.find(A.get()), objects.end());
+    EXPECT_NE(objects.find(B.get()), objects.end());
+}
 
 }// namespace sofa
 

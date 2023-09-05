@@ -27,18 +27,8 @@
 #include <sofa/gl/component/rendering3d/OglGrid.h>
 #define SOFAGL_COMPONENT_OGLGRID
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglGrid.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglGrid.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglGrid.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLGRID
-
-namespace sofa::component::visualmodel
-{
-    using OglGrid = sofa::gl::component::rendering3d::OglGrid;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLGRID

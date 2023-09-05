@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/QuadBendingSprings.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
@@ -53,7 +54,7 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<
     {
         if ((int)a > localRange.getValue()[1] && (int)b > localRange.getValue()[1]) return;
     }
-    IndexPair ab(a<b?a:b, a<b?b:a);
+    const IndexPair ab(a<b?a:b, a<b?b:a);
     if (springSet.find(ab) != springSet.end()) return;
     springSet.insert(ab);
     const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
@@ -78,7 +79,7 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
     else
     {
         // create a spring between the opposite
-        IndexPair ef = edgeMap[ab];
+        const IndexPair ef = edgeMap[ab];
         this->addSpring(cd.first, ef.first, springSet);
         this->addSpring(cd.second, ef.second, springSet);
     }

@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTI2MAPPING_H
-#define SOFA_CORE_MULTI2MAPPING_H
+#pragma once
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
  *  \brief Specialized interface to describe many to many mapping.
  *   The inputs can be of two different types, while all the outputs must be of the same type.
  */
-
 template <class TIn1, class TIn2, class TOut>
 class Multi2Mapping : public BaseMapping
 {
@@ -223,17 +218,33 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        std::string input1 = arg->getAttribute("input1","");
-        std::string input2 = arg->getAttribute("input2","");
-        std::string output = arg->getAttribute("output","");
-        if (!input1.empty() && !PathResolver::CheckPaths(context, LinkFromModels1::DestType::GetClass(), input1))
-            return false;
-        if (!input2.empty() && !PathResolver::CheckPaths(context, LinkFromModels2::DestType::GetClass(), input2))
-            return false;
-        if (output.empty() || !PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output))
-            return false;
+        static const sofa::type::fixed_array<std::tuple<const char*, const char*, const ::sofa::core::objectmodel::BaseClass*>, 3> attributes {
+            std::make_tuple("input1", In1::Name(), LinkFromModels1::DestType::GetClass()),
+            std::make_tuple("input2", In2::Name(), LinkFromModels2::DestType::GetClass()),
+            std::make_tuple("output", Out::Name(), LinkToModels::DestType::GetClass())
+        };
 
-        return BaseMapping::canCreate(obj, context, arg);
+        bool error = false;
+        for (const auto& [attribute, dataType, classDescription] : attributes)
+        {
+            const std::string attributeStr = arg->getAttribute(attribute,"");
+            if (!attributeStr.empty() && !PathResolver::CheckPaths(context, classDescription, attributeStr))
+            {
+                arg->logError("Data attribute '" + std::string(attribute) + "' does not point to a "
+                            "mechanical state of data type '" + std::string(dataType) + "'");
+                error = true;
+            }
+        }
+
+        const std::string attributeStr = arg->getAttribute("output","");
+        if (attributeStr.empty())
+        {
+            arg->logError("Data attribute 'output' is empty, but it is required to set it. "
+                        "Set this attribute to a mechanical state of data type '" + std::string(Out::Name()) + "'");
+            error = true;
+        }
+
+        return !error && BaseMapping::canCreate(obj, context, arg);
     }
     /// Construction method called by ObjectFactory.
     ///
@@ -311,10 +322,5 @@ extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defau
 
 
 #endif
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core
 

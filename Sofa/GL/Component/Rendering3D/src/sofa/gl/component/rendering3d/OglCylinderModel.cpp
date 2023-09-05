@@ -63,16 +63,14 @@ void OglCylinderModel::reinit()
 {
 }
 
-void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
+void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
     vparams->drawTool()->setLightingEnabled(true);
-    Real _radius = radius.getValue();
+    const float _radius = radius.getValue();
 
-    sofa::type::RGBAColor col( r, g, b, a );
+    const sofa::type::RGBAColor col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 
@@ -151,7 +149,7 @@ void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostre
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();
 
-    int nbv = int(x.size());
+    const int nbv = int(x.size());
 
     *out << "g "<<name<<"\n";
 

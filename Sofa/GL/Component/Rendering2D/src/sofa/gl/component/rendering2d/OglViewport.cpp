@@ -149,7 +149,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
                 );
                 //TODO: invert transform...
                 p = transform * p;
-                double z = -p[2];
+                const double z = -p[2];
                 if (z < zNear) zNear = z;
                 if (z > zFar)  zFar = z;
             }
@@ -177,7 +177,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 
         //Launch FBO process
         const Vec<2, unsigned int> screenSize( vp->viewport()[2], vp->viewport()[3] );
-        double ratio = (double)screenSize[0]/(double)screenSize[1];
+        const double ratio = (double)screenSize[0]/(double)screenSize[1];
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
@@ -237,14 +237,14 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    double ratio = (double)screenSize[0]/(double)screenSize[1];
+    const double ratio = (double)screenSize[0]/(double)screenSize[1];
 
     if (p_swapMainView.getValue())
     {
         GLdouble matrix[16];
         glGetDoublev(GL_PROJECTION_MATRIX, matrix);
-        double mainRatio = (double)viewport[2]/(double)viewport[3];
-        double scale = mainRatio/ratio;
+        const double mainRatio = (double)viewport[2]/(double)viewport[3];
+        const double scale = mainRatio/ratio;
 
         matrix[0] *= scale;
         matrix[4] *= scale;
@@ -302,7 +302,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
                 );
                 //TODO: invert transform...
                 p = transform * p;
-                double z = -p[2];
+                const double z = -p[2];
                 if (z < zNear) zNear = z;
                 if (z > zFar)  zFar = z;
             }
@@ -396,8 +396,8 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
     const Vec<2, int> screenPosition = p_screenPosition.getValue();
     const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
 
-    int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
-    int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
+    const int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
+    const int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
 
     txmin = tymin = 0.0;
     txmax = tymax = 1.0;

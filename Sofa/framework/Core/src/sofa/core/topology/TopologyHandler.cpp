@@ -47,7 +47,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 {
     SOFA_UNUSED(_dataSize);
 
-    if (!m_isRegistered)
+    if (!this->isTopologyHandlerRegistered())
         return;
 
     std::list<const core::topology::TopologyChange*>::iterator changeIt;
@@ -132,10 +132,10 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 void TopologyHandler::update()
 {
     DDGNode::cleanDirty();
-    if (!m_isRegistered)
+    if (!this->isTopologyHandlerRegistered())
         return;
 
-    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
+    const std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
     this->handleTopologyChange();
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
@@ -159,11 +159,6 @@ bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _
     }
 
     return true;
-}
-
-void TopologyHandler::linkToTopologyDataArray(sofa::geometry::ElementType elementType)
-{
-    SOFA_UNUSED(elementType);
 }
 
 } // namespace sofa

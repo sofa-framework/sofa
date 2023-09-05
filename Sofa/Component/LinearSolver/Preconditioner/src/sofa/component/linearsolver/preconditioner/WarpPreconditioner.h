@@ -94,6 +94,10 @@ public:
 
     void updateSystemMatrix() override;
 
+protected:
+
+    void checkLinearSystem() override;
+
 private :
 
     int updateSystemSize,currentSystemSize;

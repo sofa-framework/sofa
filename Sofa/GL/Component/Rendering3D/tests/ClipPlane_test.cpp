@@ -1,3 +1,24 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <vector>
 using std::vector;
 
@@ -43,8 +64,6 @@ public:
     {
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void checkClipPlaneValidAttributes();
@@ -64,7 +83,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -73,12 +92,12 @@ void TestClipPlane::checkClipPlaneValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {"position", "normal", "id", "active"};
+    const vector<string> attrnames = {"position", "normal", "id", "active"};
 
     for(auto& attrname : attrnames)
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -96,14 +115,14 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 

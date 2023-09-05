@@ -21,21 +21,21 @@
 ******************************************************************************/
 #include <sofa/component/visual/VisualModelImpl.h>
 
+#include <sofa/type/Quat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Material.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/topology/TopologyData.inl>
-#include <sofa/component/topology/container/grid/SparseGridTopology.h>
-
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/type/Quat.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/accessor.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/type/Material.h>
-#include <sofa/helper/AdvancedTimer.h>
+
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include <sstream>
 #include <map>
@@ -50,72 +50,6 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using type::vector;
-
-Vec3State::Vec3State()
-    : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
-    , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
-    , modified(false)
-{
-    m_positions.setGroup("Vector");
-    m_restPositions.setGroup("Vector");
-    m_vnormals.setGroup("Vector");
-}
-
-void Vec3State::resize(Size vsize)
-{
-    helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
-    if( positions.size() == vsize ) return;
-    helper::WriteOnlyAccessor< Data<VecCoord > > restPositions = m_restPositions;
-    helper::WriteOnlyAccessor< Data<VecDeriv > > normals = m_vnormals;
-
-    positions.resize(vsize);
-    restPositions.resize(vsize); // todo allocate restpos only when it is necessary
-    normals.resize(vsize);
-
-    modified = true;
-}
-
-Size Vec3State::getSize() const { return Size(m_positions.getValue().size()); }
-
-Data<Vec3State::VecCoord>* Vec3State::write(     core::VecCoordId  v )
-{
-    modified = true;
-
-    if( v == core::VecCoordId::position() )
-        return &m_positions;
-    if( v == core::VecCoordId::restPosition() )
-        return &m_restPositions;
-
-    return nullptr;
-}
-
-const Data<Vec3State::VecCoord>* Vec3State::read(core::ConstVecCoordId  v )  const
-{
-    if( v == core::VecCoordId::position() )
-        return &m_positions;
-    if( v == core::VecCoordId::restPosition() )
-        return &m_restPositions;
-
-    return nullptr;
-}
-
-Data<Vec3State::VecDeriv>*	Vec3State::write(core::VecDerivId v )
-{
-    if( v == core::VecDerivId::normal() )
-        return &m_vnormals;
-
-    return nullptr;
-}
-
-const Data<Vec3State::VecDeriv>* Vec3State::read(core::ConstVecDerivId v ) const
-{
-    if( v == core::VecDerivId::normal() )
-        return &m_vnormals;
-
-    return nullptr;
-}
-
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -229,7 +163,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     // add one identity matrix
     xforms.resize(1);
-        
+
     addUpdateCallback("updateTextures", { &texturename },
         [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
     {
@@ -246,8 +180,8 @@ VisualModelImpl::~VisualModelImpl()
 bool VisualModelImpl::hasTransparent()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
+    const helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    const helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return (material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -265,8 +199,8 @@ bool VisualModelImpl::hasTransparent()
 bool VisualModelImpl::hasOpaque()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
+    const helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    const helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return !(material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -281,7 +215,7 @@ bool VisualModelImpl::hasOpaque()
     return false;
 }
 
-void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
+void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
     {
@@ -388,7 +322,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     std::size_t nbVIn = verticesImport.size();
     // First we compute for each point how many pair of normal/texcoord indices are used
     // The map store the final index of each combinaison
-    vector< std::map< std::pair<Index,Index>, Index > > vertTexNormMap;
+    vector< std::map< std::pair<sofa::Index,sofa::Index>, sofa::Index > > vertTexNormMap;
     vertTexNormMap.resize(nbVIn);
     for (std::size_t i = 0; i < facetsImport.size(); i++)
     {
@@ -457,8 +391,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         for (auto it = vertTexNormMap[i].begin();
              it != vertTexNormMap[i].end(); ++it)
         {
-            Index t = it->first.first;
-            Index n = it->first.second;
+            sofa::Index t = it->first.first;
+            sofa::Index n = it->first.second;
             if ( m_useNormals.getValue() && n < normalsImport.size())
                 vnormals[j] = normalsImport[n];
             if (t < texCoordsImport.size())
@@ -552,7 +486,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
             msg_info() << "loading file " << textureName;
-            bool textureLoaded = loadTexture(textureName);
+            const bool textureLoaded = loadTexture(textureName);
             if(!textureLoaded)
             {
                 msg_error()<<"Texture "<<textureName<<" cannot be loaded";
@@ -598,7 +532,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 return false;
             }
             else
-            {				
+            {
                 if(objLoader.get()->loaderType == "obj")
                 {
                     //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
@@ -606,8 +540,8 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                     msg_warning() << "Loading obj mesh file directly inside the VisualModel will be deprecated soon. Use a MeshOBJLoader and link the Data to the VisualModel. E.g:" << msgendl
                         << "<MeshOBJLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
                         << "<OglModel src='@myLoader'/>";
-                    
-                    setMesh(*objLoader, true); 
+
+                    setMesh(*objLoader, true);
                 }
                 else
                 {
@@ -672,7 +606,7 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    Coord d((Real)dx,(Real)dy,(Real)dz);
+    const Coord d((Real)dx,(Real)dy,(Real)dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -702,7 +636,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
+    const auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -766,8 +700,8 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 {
-    float dUf = float(dU);
-    float dVf = float(dV);
+    const float dUf = float(dU);
+    const float dVf = float(dV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (std::size_t i = 0; i < vtexcoords.size(); i++)
     {
@@ -779,8 +713,8 @@ void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 {
-    float scaleUf = float(scaleU);
-    float scaleVf = float(scaleV);
+    const float scaleUf = float(scaleU);
+    const float scaleVf = float(scaleV);
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (std::size_t i = 0; i < vtexcoords.size(); i++)
     {
@@ -820,7 +754,7 @@ void VisualModelImpl::init()
             if (sofa::helper::system::DataRepository.findFile(textureFilename))
             {
                 msg_info() << "loading file " << textureFilename;
-                bool textureLoaded = loadTexture(textureFilename);
+                const bool textureLoaded = loadTexture(textureFilename);
                 if (!textureLoaded)
                 {
                     msg_error() << "Texture " << textureFilename << " cannot be loaded";
@@ -862,8 +796,8 @@ void VisualModelImpl::initPositionFromVertices()
         m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
     }
     helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
-    helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
-    helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
+    const helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
+    const helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
     std::size_t nbVIn = 0;
     for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
     {
@@ -920,9 +854,9 @@ void VisualModelImpl::initFromTopology()
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::QUAD || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::HEXAHEDRON)
         {
             m_quads.createTopologyHandler(m_topology);
-            m_quads.setCreationCallback([](Index elemID, VisualQuad& visuQuad,
+            m_quads.setCreationCallback([](sofa::Index elemID, VisualQuad& visuQuad,
                 const core::topology::BaseMeshTopology::Quad& topoQuad,
-                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< sofa::Index >& ancestors,
                 const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
@@ -936,9 +870,9 @@ void VisualModelImpl::initFromTopology()
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TRIANGLE || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TETRAHEDRON)
         {
             m_triangles.createTopologyHandler(m_topology);
-            m_triangles.setCreationCallback([](Index elemID, VisualTriangle& visuTri,
+            m_triangles.setCreationCallback([](sofa::Index elemID, VisualTriangle& visuTri,
                 const core::topology::BaseMeshTopology::Triangle& topoTri,
-                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< sofa::Index >& ancestors,
                 const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
@@ -947,13 +881,13 @@ void VisualModelImpl::initFromTopology()
                 visuTri = topoTri; // simple copy from topology Data
             });
         }
-            
+
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
         {
             m_edges.createTopologyHandler(m_topology);
-            m_edges.setCreationCallback([](Index elemID, VisualEdge& visuEdge,
+            m_edges.setCreationCallback([](sofa::Index elemID, VisualEdge& visuEdge,
                 const core::topology::BaseMeshTopology::Edge& topoEdge,
-                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< sofa::Index >& ancestors,
                 const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
@@ -964,25 +898,25 @@ void VisualModelImpl::initFromTopology()
         }
 
         m_positions.createTopologyHandler(m_topology);
-        m_positions.setDestructionCallback([this](Index pointIndex, Coord& coord)
+        m_positions.setDestructionCallback([this](sofa::Index pointIndex, Coord& coord)
         {
             SOFA_UNUSED(pointIndex);
             SOFA_UNUSED(coord);
 
-            auto last = m_positions.getLastElementIndex();
+            const auto last = m_positions.getLastElementIndex();
 
             if (m_topology->getNbTriangles() > 0)
             {
                 const auto& shell = m_topology->getTrianglesAroundVertex(last);
-                for (Index j = 0; j < shell.size(); ++j)
+                for (sofa::Index j = 0; j < shell.size(); ++j)
                 {
                     m_dirtyTriangles.insert(shell[j]);
                 }
             }
             else if (m_topology->getNbQuads() > 0)
-            {                
+            {
                 const auto& shell = m_topology->getQuadsAroundVertex(last);
-                for (Index j = 0; j < shell.size(); ++j)
+                for (sofa::Index j = 0; j < shell.size(); ++j)
                 {
                     m_dirtyQuads.insert(shell[j]);
                 }
@@ -994,9 +928,9 @@ void VisualModelImpl::initFromTopology()
             m_vtexcoords.updateIfDirty();
             m_vtexcoords.setParent(nullptr); // manually break the data link to follow topological changes
             m_vtexcoords.createTopologyHandler(m_topology);
-            m_vtexcoords.setCreationCallback([this](Index pointIndex, TexCoord& tCoord,
+            m_vtexcoords.setCreationCallback([this](sofa::Index pointIndex, TexCoord& tCoord,
                 const core::topology::BaseMeshTopology::Point& point,
-                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< sofa::Index >& ancestors,
                 const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(pointIndex);
@@ -1004,7 +938,7 @@ void VisualModelImpl::initFromTopology()
 
                 const VecTexCoord& texcoords = m_vtexcoords.getValue();
                 tCoord = TexCoord(0, 0);
-                for (Index i = 0; i < ancestors.size(); i++)
+                for (sofa::Index i = 0; i < ancestors.size(); i++)
                 {
                     const TexCoord& tAnces = texcoords[ancestors[i]];
                     tCoord += tAnces * coefs[i];
@@ -1020,7 +954,7 @@ void VisualModelImpl::initFromTopology()
 void VisualModelImpl::computeNormals()
 {
     const VecCoord& vertices = getVertices();
-    //const VecCoord& vertices = m_vertices2.getValue();
+
     if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() == (vertices).size())) return;
 
     const VecVisualTriangle& triangles = m_triangles.getValue();
@@ -1029,38 +963,34 @@ void VisualModelImpl::computeNormals()
 
     if (vertNormIdx.empty())
     {
-        std::size_t nbn = vertices.size();
-
-        VecDeriv& normals = *(m_vnormals.beginEdit());
+        const std::size_t nbn = vertices.size();
+        auto normals = sofa::helper::getWriteOnlyAccessor(m_vnormals);
 
         normals.resize(nbn);
-        for (std::size_t i = 0; i < nbn; i++)
-            normals[i].clear();
+        std::memset(&normals[0], 0, sizeof(normals[0]) * nbn); // bulk reset with zeros
 
-        for (std::size_t i = 0; i < triangles.size(); i++)
+        for (const auto& triangle : triangles)
         {
-            const VisualTriangle& triangle = triangles[i];
             const Coord& v1 = vertices[ triangle[0] ];
             const Coord& v2 = vertices[ triangle[1] ];
             const Coord& v3 = vertices[ triangle[2] ];
-            Coord n = cross(v2-v1, v3-v1);
+            const Coord n = cross(v2-v1, v3-v1);
 
             normals[ triangle[0] ] += n;
             normals[ triangle[1] ] += n;
             normals[ triangle[2] ] += n;
         }
 
-        for (std::size_t i = 0; i < quads.size(); i++)
+        for (const auto& quad : quads)
         {
-            const VisualQuad& quad = quads[i];
             const Coord & v1 = vertices[ quad[0] ];
             const Coord & v2 = vertices[ quad[1] ];
             const Coord & v3 = vertices[ quad[2] ];
             const Coord & v4 = vertices[ quad[3] ];
-            Coord n1 = cross(v2-v1, v4-v1);
-            Coord n2 = cross(v3-v2, v1-v2);
-            Coord n3 = cross(v4-v3, v2-v3);
-            Coord n4 = cross(v1-v4, v3-v4);
+            const Coord n1 = cross(v2-v1, v4-v1);
+            const Coord n2 = cross(v3-v2, v1-v2);
+            const Coord n3 = cross(v4-v3, v2-v3);
+            const Coord n4 = cross(v1-v4, v3-v4);
 
             normals[ quad[0] ] += n1;
             normals[ quad[1] ] += n2;
@@ -1068,49 +998,38 @@ void VisualModelImpl::computeNormals()
             normals[ quad[3] ] += n4;
         }
 
-        for (std::size_t i = 0; i < normals.size(); i++)
-            normals[i].normalize();
-
-        m_vnormals.endEdit();
+        for (auto& normal : normals)
+        {
+            normal.normalize();
+        }
     }
     else
     {
-        vector<Coord> normals;
-        std::size_t nbn = 0;
-        for (std::size_t i = 0; i < vertNormIdx.size(); i++)
-        {
-            if (vertNormIdx[i] >= nbn)
-                nbn = vertNormIdx[i]+1;
-        }
+        const std::size_t nbn = static_cast<std::size_t>(*std::max_element(vertNormIdx.begin(), vertNormIdx.end())) + 1;
+        sofa::type::vector<Coord> normals(nbn); // will call the default ctor, which initializes with zeros
 
-        normals.resize(nbn);
-        for (std::size_t i = 0; i < nbn; i++)
-            normals[i].clear();
-
-        for (std::size_t i = 0; i < triangles.size() ; i++)
+        for (const auto& triangle : triangles)
         {
-            const VisualTriangle& triangle = triangles[i];
             const Coord & v1 = vertices[ triangle[0] ];
             const Coord & v2 = vertices[ triangle[1] ];
             const Coord & v3 = vertices[ triangle[2] ];
-            Coord n = cross(v2-v1, v3-v1);
+            const Coord n = cross(v2-v1, v3-v1);
 
             normals[vertNormIdx[ triangle[0] ]] += n;
             normals[vertNormIdx[ triangle[1] ]] += n;
             normals[vertNormIdx[ triangle[2] ]] += n;
         }
 
-        for (std::size_t i = 0; i < quads.size() ; i++)
+        for (const auto& quad : quads)
         {
-            const VisualQuad& quad = quads[i];
             const Coord & v1 = vertices[ quad[0] ];
             const Coord & v2 = vertices[ quad[1] ];
             const Coord & v3 = vertices[ quad[2] ];
             const Coord & v4 = vertices[ quad[3] ];
-            Coord n1 = cross(v2-v1, v4-v1);
-            Coord n2 = cross(v3-v2, v1-v2);
-            Coord n3 = cross(v4-v3, v2-v3);
-            Coord n4 = cross(v1-v4, v3-v4);
+            const Coord n1 = cross(v2-v1, v4-v1);
+            const Coord n2 = cross(v3-v2, v1-v2);
+            const Coord n3 = cross(v4-v3, v2-v3);
+            const Coord n4 = cross(v1-v4, v3-v4);
 
             normals[vertNormIdx[ quad[0] ]] += n1;
             normals[vertNormIdx[ quad[1] ]] += n2;
@@ -1118,18 +1037,17 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[ quad[3] ]] += n4;
         }
 
-        for (std::size_t i = 0; i < normals.size(); i++)
+        for (auto& normal : normals)
         {
-            normals[i].normalize();
+            normal.normalize();
         }
 
-        VecDeriv& vnormals = *(m_vnormals.beginEdit());
+        auto vnormals = sofa::helper::getWriteOnlyAccessor(m_vnormals);
         vnormals.resize(vertices.size());
         for (std::size_t i = 0; i < vertices.size(); i++)
         {
             vnormals[i] = normals[vertNormIdx[i]];
         }
-        m_vnormals.endEdit();
     }
 }
 
@@ -1264,16 +1182,16 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
 
 void VisualModelImpl::computeUVSphereProjection()
 {
-    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
     auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
-    
+
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
     const VecCoord& coords = getVertices();
 
-    std::size_t nbrV = coords.size();
+    const std::size_t nbrV = coords.size();
     VecCoord m_sphereV;
     m_sphereV.resize(nbrV);
 
@@ -1284,8 +1202,8 @@ void VisualModelImpl::computeUVSphereProjection()
     {
         Coord Vcentered = coords[i] - center;
         SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
-        SReal theta = acos(Vcentered[2] / r);
-        SReal phi = atan2(Vcentered[1], Vcentered[0]);
+        const SReal theta = acos(Vcentered[2] / r);
+        const SReal phi = atan2(Vcentered[1], Vcentered[0]);
 
         r = 1.0;
         m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
@@ -1310,21 +1228,21 @@ void VisualModelImpl::flipFaces()
 
     for (std::size_t i = 0; i < edges.size() ; i++)
     {
-        Index temp = edges[i][1];
+        const sofa::Index temp = edges[i][1];
         edges[i][1] = visual_index_type(edges[i][0]);
         edges[i][0] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < triangles.size() ; i++)
     {
-        Index temp = triangles[i][1];
+        const sofa::Index temp = triangles[i][1];
         triangles[i][1] = visual_index_type(triangles[i][2]);
         triangles[i][2] = visual_index_type(temp);
     }
 
     for (std::size_t i = 0; i < quads.size() ; i++)
     {
-        Index temp = quads[i][1];
+        const sofa::Index temp = quads[i][1];
         quads[i][1] = visual_index_type(quads[i][3]);
         quads[i][3] = visual_index_type(temp);
     }
@@ -1372,13 +1290,13 @@ void VisualModelImpl::updateVisual()
                 // Follow change from static topology, this should not be used as the whole mesh is copied
                 computeMesh();
             }
-            
+
             if (!m_dirtyTriangles.empty())
             {
                 helper::WriteOnlyAccessor< Data<VecVisualTriangle > > triangles = m_triangles;
                 const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
-                for (auto idTri : m_dirtyTriangles)
+                for (const auto idTri : m_dirtyTriangles)
                 {
                     triangles[idTri] = inputTriangles[idTri];
                 }
@@ -1390,7 +1308,7 @@ void VisualModelImpl::updateVisual()
                 helper::WriteOnlyAccessor< Data<VecVisualQuad > > quads = m_quads;
                 const vector< Quad >& inputQuads = m_topology->getQuads();
 
-                for (auto idQuad : m_dirtyQuads)
+                for (const auto idQuad : m_dirtyQuads)
                 {
                     quads[idQuad] = inputQuads[idQuad];
                 }
@@ -1398,28 +1316,30 @@ void VisualModelImpl::updateVisual()
             }
         }
 
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
-        computePositions();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computePositions");
-
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::updateBuffers");
-        updateBuffers();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::updateBuffers");
-
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeNormals");
-        computeNormals();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeNormals");
-        
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computePositions");
+            computePositions();
+        }
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeNormals");
+            computeNormals();
+        }
         if (m_updateTangents.getValue())
         {
-            sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeTangents");
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeTangents");
             computeTangents();
-            sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeTangents");
         }
-        modified = false;
-
         if (m_vtexcoords.getValue().size() == 0)
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();
+        }
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::updateBuffers");
+            updateBuffers();
+        }
+
+        modified = false;
 
     }
 
@@ -1461,7 +1381,7 @@ void VisualModelImpl::computeMesh()
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
         VecCoord& vertices = *(m_positions.beginEdit());
-        
+
         if (m_topology->hasPos())
         {
             if (SparseGridTopology *spTopo = dynamic_cast< SparseGridTopology *>(m_topology))
@@ -1491,7 +1411,7 @@ void VisualModelImpl::computeMesh()
         }
         else
         {
-            BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
+            const BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
             {
@@ -1552,7 +1472,7 @@ void VisualModelImpl::initVisual()
 {
 }
 
-void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, Index& vindex, Index& nindex, Index& tindex, int& count)
+void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count)
 {
     *out << "g "<<name<<"\n";
 
@@ -1616,14 +1536,14 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
-        vector<Index> normVertIdx(nbn);
+        vector<sofa::Index> normVertIdx(nbn);
         for (sofa::Index i = 0; i < vertNormIdx.size(); i++)
         {
             normVertIdx[vertNormIdx[i]]=i;
         }
         for (sofa::Index i = 0; i < nbn; i++)
         {
-            Index j = normVertIdx[i];
+            sofa::Index j = normVertIdx[i];
             *out << "vn "<< std::fixed << vnormals[j][0]<<' '<< std::fixed <<vnormals[j][1]<<' '<< std::fixed <<vnormals[j][2]<<'\n';
         }
     }
@@ -1643,9 +1563,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         *out << "f";
         for (int j=0; j<2; j++)
         {
-            Index i0 = edges[i][j];
-            Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
-            Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            sofa::Index i0 = edges[i][j];
+            sofa::Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            sofa::Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
             if (vtexcoords.empty())
                 *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
             else
@@ -1658,9 +1578,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         *out << "f";
         for (int j=0; j<3; j++)
         {
-            Index i0 = triangles[i][j];
-            Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
-            Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            sofa::Index i0 = triangles[i][j];
+            sofa::Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            sofa::Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
             if (vtexcoords.empty())
                 *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
             else
@@ -1673,9 +1593,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         *out << "f";
         for (int j=0; j<4; j++)
         {
-            Index i0 = quads[i][j];
-            Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
-            Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            sofa::Index i0 = quads[i][j];
+            sofa::Index i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            sofa::Index i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
             if (vtexcoords.empty())
                 *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
             else

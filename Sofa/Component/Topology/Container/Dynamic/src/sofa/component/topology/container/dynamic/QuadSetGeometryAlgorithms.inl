@@ -98,7 +98,7 @@ template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<Real> &ai) const
 {
     //const sofa::type::vector<Quad> &ta=this->m_topology->getQuads();
-    size_t nb_quads = this->m_topology->getNbQuads();
+    const size_t nb_quads = this->m_topology->getNbQuads();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     for(sofa::Index i=0; i<nb_quads; ++i)
@@ -262,9 +262,9 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     for(size_t i=0; i<numVertices; ++i)
     {
-        double x = (double) vect_c[i][0];
-        double y = (double) vect_c[i][1];
-        double z = (double) vect_c[i][2];
+        const double x = (double) vect_c[i][0];
+        const double y = (double) vect_c[i][1];
+        const double z = (double) vect_c[i][2];
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }

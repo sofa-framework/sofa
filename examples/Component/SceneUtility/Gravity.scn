@@ -1,0 +1,90 @@
+<Node name="root" dt="0.03333">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RegularGridSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaGraphComponent"/> <!-- Needed to use components [Gravity] -->
+
+    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
+    <Node name="Torus1">
+        <Gravity gravity="0 -10 0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject dx="0" dy="20" dz="0" ry="90" />
+        <UniformMass totalMass="10" />
+        <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
+        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2_scale3.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="blue" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Surf">
+            <MeshOBJLoader name="loader" filename="mesh/torus2_scale3.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader"/>
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <BarycentricMapping />
+        </Node>
+    </Node>
+    <Node name="Torus2">
+        <Gravity gravity="0 10 0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject dx="0" dy="-20" dz="0" />
+        <UniformMass totalMass="10" />
+        <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
+        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/torus2_scale3.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="blue" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Surf">
+            <MeshOBJLoader name="loader" filename="mesh/torus2_scale3.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <BarycentricMapping />
+        </Node>
+    </Node>
+    <Node name="Floor">
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj" />
+        <MeshTopology src="@loader" />
+        <MechanicalObject src="@loader" dy="30.25" scale="0.7" rx="180" />
+        <TriangleCollisionModel name="FloorTri1" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine1" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPoint1" simulated="0" moving="0" />
+        <MeshOBJLoader name="meshLoader_1" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
+    </Node>
+    <Node name="Floor2">
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj" />
+        <MeshTopology src="@loader" />
+        <MechanicalObject src="@loader" dy="-30.25" scale="0.7" />
+        <TriangleCollisionModel name="FloorTri2" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine2" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPoint2" simulated="0" moving="0" />
+        <MeshOBJLoader name="meshLoader_2" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_2" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
+    </Node>
+</Node>

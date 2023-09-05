@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 /**
  *  \brief Component computing constraints within a simulated body.
  *
- *  This class define the abstract API common to all constraints.
+ *  This class defines the abstract API common to all constraints.
  *  A BaseConstraint computes constraints applied to one or more simulated body
  *  given its current position and velocity.
  *
@@ -99,6 +99,15 @@ public:
     virtual void getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset);
 
     virtual void getConstraintResolution(std::vector<ConstraintResolution*> &resTab, unsigned int &offset);
+
+    type::vector<std::string> getIdentifiers()
+    {
+        type::vector<std::string> ids = getBaseConstraintIdentifiers();
+        ids.push_back("Base");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() = 0;
 
 
     /// Store the constraint lambda at the constraint dofs at the given VecDerivId location. 

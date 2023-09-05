@@ -19,16 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_STATE_INL
-#define SOFA_CORE_STATE_INL
+#pragma once
 
 #include <sofa/core/State.h>
+#include <sofa/core/AccumulationVecId.inl>
 
-namespace sofa
+namespace sofa::core
 {
+template <class TDataTypes>
+void State<TDataTypes>::addToTotalForces(core::ConstVecDerivId forceId)
+{
+    accumulatedForces.addToContributingVecIds(forceId);
+}
 
-namespace core
+template <class TDataTypes>
+void State<TDataTypes>::removeFromTotalForces(core::ConstVecDerivId forceId)
 {
+    accumulatedForces.removeFromContributingVecIds(forceId);
+}
+
+template <class TDataTypes>
+State<TDataTypes>::State()
+    : accumulatedForces(*this)
+{
+    State::addToTotalForces(core::ConstVecDerivId::force());
+}
 
 template<class DataTypes>
 objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
@@ -91,9 +106,4 @@ void State<DataTypes>::computeBBox(const core::ExecParams*, bool)
 {
     this->f_bbox.setValue(computeBBox());
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

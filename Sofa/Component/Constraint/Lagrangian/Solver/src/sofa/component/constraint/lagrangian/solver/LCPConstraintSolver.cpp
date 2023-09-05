@@ -67,7 +67,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
     helper::ScopedAdvancedTimer resetContactForceTimer("resetContactForce");
 
-    for (auto cc : constraintCorrections)
+    for (const auto cc : constraintCorrections)
     {
         cc->resetContactForce();
     }
@@ -101,16 +101,16 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
+    const auto _mu = mu.getValue();
 
     std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
 
     if (build_lcp.getValue())
     {
-
-        SReal _tol = tol.getValue();
-        int _maxIt = maxIt.getValue();
-        SReal _minW = minW.getValue();
-        SReal _maxF = maxF.getValue();
+        const SReal _tol = tol.getValue();
+        const int _maxIt = maxIt.getValue();
+        const SReal _minW = minW.getValue();
+        const SReal _maxF = maxF.getValue();
 
         if (_mu > 0.0)
         {
@@ -172,8 +172,8 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
             _result->resize(_numConstraints);
 
-            SReal _tol = tol.getValue();
-            int _maxIt = maxIt.getValue();
+            const SReal _tol = tol.getValue();
+            const int _maxIt = maxIt.getValue();
 
             build_LCP();
 
@@ -183,6 +183,17 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     }
 
     f_graph.endEdit();
+
+    if(d_computeConstraintForces.getValue())
+    {
+        sofa::helper::WriteOnlyAccessor<Data<type::vector<SReal>>> constraints = d_constraintForces;
+        constraints.resize(lcp->getDimension());
+        for(int i=0; i<lcp->getDimension(); i++)
+        {
+            constraints[i] = _result->ptr()[i];
+        }
+    }
+
     return true;
 }
 
@@ -212,23 +223,26 @@ LCPConstraintSolver::LCPConstraintSolver()
     : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
     , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
-    , tol( initData(&tol, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , tol( initData(&tol, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
-    , mu( initData(&mu, 0.6, "mu", "Friction coefficient"))
-    , minW( initData(&minW, 0.0, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
-    , maxF( initData(&maxF, 0.0, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
+    , mu( initData(&mu, 0.6_sreal, "mu", "Friction coefficient"))
+    , minW( initData(&minW, 0.0_sreal, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
+    , maxF( initData(&maxF, 0.0_sreal, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
     , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
     , multi_grid_levels(initData(&multi_grid_levels, 2, "multi_grid_levels","if multi_grid is active: how many levels to create (>=2)"))
     , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
     , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
     , merge_local_levels( initData(&merge_local_levels, 2, "merge_local_levels", "if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs."))
+    , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
+    , d_computeConstraintForces(initData(&d_computeConstraintForces,true,
+                                        "computeConstraintForces",
+                                        "enable the storage of the constraintForces (default = False)."))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration"))
     , showLevels( initData(&showLevels,0,"showLevels","Number of constraint levels to display"))
     , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
     , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
-    , _mu(0.6)
     , lcp(&lcp1)
     , last_lcp(nullptr)
     , _W(&lcp1.W)
@@ -237,7 +251,6 @@ LCPConstraintSolver::LCPConstraintSolver()
     , _Wdiag(nullptr)
 {
     _numConstraints = 0;
-    _mu = 0.0;
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
 
@@ -291,62 +304,31 @@ void LCPConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstra
     constraintCorrections.erase(std::remove(constraintCorrections.begin(), constraintCorrections.end(), s), constraintCorrections.end());
 }
 
-void LCPConstraintSolver::build_LCP()
+void LCPConstraintSolver::resetConstraints(core::ConstraintParams cparams)
 {
-    _numConstraints = 0;
-    core::ConstraintParams cparams;
+    helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
+    MechanicalResetConstraintVisitor resetCtr(&cparams);
+    resetCtr.execute(context);
+}
 
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
+void LCPConstraintSolver::buildConstraintMatrix(core::ConstraintParams cparams)
+{
+    helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
 
-    {
-        helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
-        MechanicalResetConstraintVisitor resetCtr(&cparams);
-        resetCtr.execute(context);
-    }
+    MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
+    buildConstraintMatrix.execute(context);
+}
 
-    {
-        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
+{
+    helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
 
-        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
-        buildConstraintMatrix.execute(context);
-    }
+    MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
+    accumulateMatrixDeriv.execute(context);
+}
 
-    {
-        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
-
-        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
-        accumulateMatrixDeriv.execute(context);
-    }
-
-    _mu = mu.getValue();
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = _mu;
-    lcp->clear(_numConstraints);
-
-    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd("Get Constraint Value");
-
-    dmsg_info() <<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu ;
-
-    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
-
-    dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
-
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
-    {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->addComplianceInConstraintSpace(&cparams, _W);
-    }
-
-    dmsg_info() << "W=" << *_W ;
-
-    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
-
-    dmsg_info() <<" computeCompliance_done " ;
-
+void LCPConstraintSolver::buildHierarchy()
+{
     int nLevels = 1;
     if (multi_grid.getValue())
     {
@@ -366,7 +348,10 @@ void LCPConstraintSolver::build_LCP()
         hierarchy_constraintDirections[l].clear();
         hierarchy_constraintAreas[l].clear();
     }
+}
 
+void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
+{
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
         sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
@@ -375,6 +360,58 @@ void LCPConstraintSolver::build_LCP()
         if (initial_guess.getValue())
             computeInitialGuess();
     }
+}
+
+void LCPConstraintSolver::addComplianceInConstraintSpace(core::ConstraintParams cparams)
+{
+    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
+
+    dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
+
+    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    {
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->addComplianceInConstraintSpace(&cparams, _W);
+    }
+
+    dmsg_info() << "W=" << *_W ;
+
+    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
+}
+
+void LCPConstraintSolver::build_LCP()
+{
+    _numConstraints = 0;
+    core::ConstraintParams cparams;
+
+    cparams.setX(core::ConstVecCoordId::freePosition());
+    cparams.setV(core::ConstVecDerivId::freeVelocity());
+
+    resetConstraints(cparams);
+
+    buildConstraintMatrix(cparams);
+
+    accumulateMatrixDeriv(cparams);
+
+    const auto _mu = mu.getValue();
+
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
+
+    lcp->mu = _mu;
+    lcp->clear(_numConstraints);
+
+    {
+        helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
+        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
+    }
+
+    dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
+
+    addComplianceInConstraintSpace(cparams);
+
+    buildHierarchy();
+
+    getConstraintInfo(cparams);
 }
 
 void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_merge, int sizeCoarseSystem)
@@ -411,8 +448,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    SReal criterion=0.0;
-    int numContacts = _numConstraints/3;
+    const SReal criterion=0.0;
+    const int numContacts = _numConstraints/3;
 
     hierarchy_contact_group.resize(1);
     hierarchy_constraint_group.resize(1);
@@ -697,27 +734,14 @@ void LCPConstraintSolver::build_problem_info()
 
     _numConstraints = 0;
 
-    {
-        helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
-        MechanicalResetConstraintVisitor resetCtr(&cparams);
-        resetCtr.execute(context);
-    }
+    resetConstraints(cparams);
 
-    {
-        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+    buildConstraintMatrix(cparams);
 
-        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
-        buildConstraintMatrix.execute(context);
-    }
+    accumulateMatrixDeriv(cparams);
 
-    {
-        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
+    const auto _mu = mu.getValue();
 
-        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
-        accumulateMatrixDeriv.execute(context);
-    }
-
-    _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     lcp->mu = _mu;
@@ -733,46 +757,19 @@ void LCPConstraintSolver::build_problem_info()
 
     dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
 
-    {
-        helper::ScopedAdvancedTimer buildHierarchyTimer("Build Hierarchy");
-        int nLevels = 1;
-        if (multi_grid.getValue())
-        {
-            nLevels = multi_grid_levels.getValue();
-            if (nLevels < 2) nLevels = 2;
-        }
-        hierarchy_constraintBlockInfo.resize(nLevels);
-        hierarchy_constraintIds.resize(nLevels);
-        hierarchy_constraintPositions.resize(nLevels);
-        hierarchy_constraintDirections.resize(nLevels);
-        hierarchy_constraintAreas.resize(nLevels);
-        for (int l=0; l<nLevels; ++l)
-        {
-            hierarchy_constraintBlockInfo[l].clear();
-            hierarchy_constraintIds[l].clear();
-            hierarchy_constraintPositions[l].clear();
-            hierarchy_constraintDirections[l].clear();
-            hierarchy_constraintAreas[l].clear();
-        }
-    }
+    buildHierarchy();
 
-    if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
-    {
-        sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
-        MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
-        sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
-        if (initial_guess.getValue())
-            computeInitialGuess();
-    }
+    getConstraintInfo(cparams);
 }
 
 void LCPConstraintSolver::computeInitialGuess()
 {
     sofa::helper::AdvancedTimer::StepVar vtimer("InitialGuess");
 
+    const auto _mu = mu.getValue();
     const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
     const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
+    const int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
 
     for (int c=0; c<numContact; c++)
     {
@@ -785,7 +782,6 @@ void LCPConstraintSolver::computeInitialGuess()
         else
         {
             (*_result)[c] =  0.0;
-            (*_result)[c+numContact] =  0.0;
         }
     }
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
@@ -800,7 +796,7 @@ void LCPConstraintSolver::computeInitialGuess()
         {
             std::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(constraintIds[info.offsetId + c]);
             if (it == buf.persistentToConstraintIdMap.end()) continue;
-            int prevIndex = it->second;
+            const int prevIndex = it->second;
             if (prevIndex >= 0 && prevIndex+nbl <= (int) _previousForces.size())
             {
                 for (int l=0; l<nbl; ++l)
@@ -832,8 +828,8 @@ void LCPConstraintSolver::keepContactForcesValue()
         if (!info.parent) continue;
         if (!info.hasId) continue;
         ConstraintBlockBuf& buf = _previousConstraints[info.parent];
-        int c0 = info.const0;
-        int nbl = info.nbLines;
+        const int c0 = info.const0;
+        const int nbl = info.nbLines;
         buf.nbLines = nbl;
         for (int c = 0; c < info.nbGroups; ++c)
         {
@@ -848,6 +844,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     if(!_numConstraints)
         return 0;
 
+    auto _mu = mu.getValue();
     if(_mu==0.0)
     {
         msg_error() << "frictionless case with unbuilt nlcp is not implemented";
@@ -869,7 +866,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     // data for iterative procedure
     SReal _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
-    SReal _mu = mu.getValue();
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
@@ -1105,6 +1101,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
 
 int LCPConstraintSolver::gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals)
 {
+    const auto _mu = mu.getValue();
+
     if (_mu == 0.0)
         return lcp_gaussseidel_unbuilt(dfree, f, residuals);
     return nlcp_gaussseidel_unbuilt(dfree, f, residuals);
@@ -1114,7 +1112,12 @@ int LCPConstraintSolver::gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* /*residuals*/)
 {
+    if (!_numConstraints)
+        return 0;
+
     auto buildConstraintsTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_constraints");
+
+    const auto _mu = mu.getValue();
 
     if(_mu!=0.0)
     {
@@ -1122,12 +1125,12 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
         return 0;
     }
 
-    int numContacts =  _numConstraints;
+    const int numContacts =  _numConstraints;
     int it,c1;
 
     // data for iterative procedure
-    SReal _tol = tol.getValue();
-    int _maxIt = maxIt.getValue();
+    const SReal _tol = tol.getValue();
+    const int _maxIt = maxIt.getValue();
 
     // indirection of the sequence of contact
     std::list<unsigned int> contact_sequence;
@@ -1156,7 +1159,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (auto cc : constraintCorrections)
+        for (const auto cc : constraintCorrections)
         {
             if(cc->hasConstraintNumber(c1))
             {
@@ -1267,10 +1270,11 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
             /// ATTENTION  NOUVEAU GS_STATE : maintenant dn inclue les forces fn
             //W33[c1].New_GS_State(_mu,dn,dt,ds,fn,ft,fs);
             fn -= dn / W11[c1];
+
             if (fn < 0) fn = 0;
             error += fabs(W11[c1] * (fn - fn0));
 
-            bool update = (fn0 != 0.0 || fn != 0.0);
+            const bool update = (fn0 != 0.0 || fn != 0.0);
 
             if(update)
             {
@@ -1334,13 +1338,14 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     unsigned int showLevels = (unsigned int) this->showLevels.getValue();
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
     if (!showLevels) return;
-    SReal showCellWidth = this->showCellWidth.getValue();
-    type::Vec3 showTranslation = this->showTranslation.getValue();
-    type::Vec3 showLevelTranslation = this->showLevelTranslation.getValue();
+    const SReal showCellWidth = this->showCellWidth.getValue();
+    const type::Vec3 showTranslation = this->showTranslation.getValue();
+    const type::Vec3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
+    const auto _mu = mu.getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
@@ -1395,13 +1400,13 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 ConstDeriv dirFineN  = constraintDirections[info.offsetDirection + 3*c + 0];
                 ConstDeriv dirFineT1 = constraintDirections[info.offsetDirection + 3*c + 1];
                 ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
-                ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
+                const ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
 
                 type::Vec3 centerFine = showTranslation + showLevelTranslation*level;
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
-                SReal radius = sqrt(area*0.5);
+                const SReal radius = sqrt(area*0.5);
 
-                unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
+                const unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
                 color.i = (int) colors[colid + 0];
                 vparams->drawTool()->drawArrow(
                     centerFine,centerFine+dirFineN*radius*2.0f,

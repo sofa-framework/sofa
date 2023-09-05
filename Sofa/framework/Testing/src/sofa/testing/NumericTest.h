@@ -202,6 +202,17 @@ protected:
     EXPECT_PRED_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<std::decay_t<decltype(val1)> >, \
         val1, val2);}
 
+// Generic macro for comparing floating-point numbers
+// Google Test provides ASSERT_FLOAT_EQ and ASSERT_DOUBLE_EQ, but it supposes that the type is known and constant. It
+// cannot rely on a template mechanism for example.
+#define ASSERT_FLOATINGPOINT_EQ(val1, val2) {\
+    static_assert(std::is_same_v<std::decay_t<decltype(val1)>, std::decay_t<decltype(val2)> >,\
+        "Different types for val1 and val2 are not supported");\
+    static_assert(std::is_floating_point_v<std::decay_t<decltype(val1)> >,\
+        "Non-floating-point types are not supported");\
+    ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<std::decay_t<decltype(val1)> >, \
+        val1, val2);}
+
 
 /// Resize the Vector and copy it from the Data
 template<class Vector, class ReadData>
@@ -287,7 +298,7 @@ template<class DataTypes>
 void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot)
 { setRotWrapper<DataTypes, DataTypes::Coord::spatial_dimensions, (unsigned)DataTypes::Coord::total_size == (unsigned)DataTypes::Coord::spatial_dimensions>::setRot(coord, rot); }
 
-/// Create a coord of the specified type from a Vector3 and a Quater
+/// Create a coord of the specified type from a Vec3 and a Quater
 template<class DataTypes>
 typename DataTypes::Coord createCoord(const sofa::type::Vec3& pos, const sofa::type::Quat<SReal>& rot)
 {

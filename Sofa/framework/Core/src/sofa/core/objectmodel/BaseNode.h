@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASENODE_H
-#define SOFA_CORE_OBJECTMODEL_BASENODE_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -53,8 +46,6 @@ public:
 protected:
     BaseNode() ;
     ~BaseNode() override;
-
-    BaseNode* m_root {nullptr} ;
 
 private:
     BaseNode(const BaseNode& n) ;
@@ -79,8 +70,7 @@ public:
     virtual BaseNode* getFirstParent() const = 0;
 
     /// returns the root by following up the first parent for multinodes
-    BaseNode* getRoot() const;
-    void setRoot(BaseNode*) ;
+    virtual BaseNode* getRoot() const;
 
     /// Add a child node
     virtual void addChild(BaseNode::SPtr node) = 0;
@@ -191,11 +181,5 @@ public:
     /// @}
 
 };
+} // namespace sofa::core::objectmodel
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

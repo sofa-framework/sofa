@@ -36,3 +36,12 @@ namespace sofa::component::visual
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::visual
+
+#ifdef SOFA_BUILD__COMPONENT__VISUAL
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.06", "v23.12", \
+        "Vec3State is now an alias of sofa::core::visual::VisualState<defaulttype::Vec3Types>.")
+#endif

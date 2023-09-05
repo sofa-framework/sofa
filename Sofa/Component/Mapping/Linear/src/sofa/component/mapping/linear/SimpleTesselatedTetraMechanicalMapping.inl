@@ -162,10 +162,10 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
 
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                Index indexIn = colIt.index();
+                const Index indexIn = colIt.index();
                 OutDeriv data = (OutDeriv) colIt.val();
 
-                int source = pointSource[indexIn];
+                const int source = pointSource[indexIn];
                 if (source > 0)
                 {
                     o.addCol(source-1, data);

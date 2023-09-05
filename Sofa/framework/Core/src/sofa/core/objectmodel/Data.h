@@ -71,6 +71,8 @@ template < class T = void* >
 class Data : public BaseData
 {
 public:
+    using value_type = T;
+
     using BaseData::m_counter;
     using BaseData::m_isSet;
     using BaseData::setDirtyOutputs;
@@ -218,6 +220,8 @@ protected:
     /// Value
     ValueType m_value;
 
+    std::istream& readValue(std::istream& in);
+
 private:
 
 
@@ -230,6 +234,14 @@ private:
 };
 
 class EmptyData : public Data<void*> {};
+
+template <class T>
+std::istream& Data<T>::readValue(std::istream& in)
+{
+    in >> *beginEdit();
+    endEdit();
+    return in;
+}
 
 /// Specialization for reading strings
 template<>
@@ -274,11 +286,10 @@ bool Data<T>::read(const std::string& s)
     std::istringstream istr( s.c_str() );
 
     // capture std::cerr output (if any)
-    std::stringstream cerrbuffer;
+    const std::stringstream cerrbuffer;
     std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
 
-    istr >> *beginEdit();
-    endEdit();
+    readValue(istr);
 
     // restore the previous cerr
     std::cerr.rdbuf(old);
@@ -357,12 +368,6 @@ public:
 
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type& d) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type* d) = delete;
 };
 
 /// Read/Write Accessor.
@@ -393,12 +398,6 @@ protected:
 public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type& d) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type* d) = delete;
     ~WriteAccessor() { data.endEdit(); }
 };
 
@@ -424,12 +423,6 @@ public:
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) = delete;
 };
 
 
@@ -442,10 +435,6 @@ WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::D
     return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 
-template<class T>
-SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) = delete;
-
 
 /// Returns a read accessor from the provided Data<>
 /// Example of use:
@@ -455,10 +444,6 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 {
     return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
-
-template<class T>
-SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data) = delete;
 
 /// Returns a write only accessor from the provided Data<>
 /// WriteOnly accessors are faster than WriteAccessor because

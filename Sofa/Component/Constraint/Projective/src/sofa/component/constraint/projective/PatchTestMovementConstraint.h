@@ -64,7 +64,7 @@ public:
     typedef type::vector<Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-    static const unsigned int CoordSize = Coord::total_size;
+    static constexpr unsigned int CoordSize = Coord::total_size;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
@@ -137,9 +137,8 @@ public:
      void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    
-    template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
+
+    void projectResponseImpl(VecDeriv& dx);
 
 private:
 

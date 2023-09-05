@@ -44,7 +44,7 @@ AverageCoord<DataTypes>::AverageCoord()
 template <class DataTypes>
 void AverageCoord<DataTypes>::init()
 {
-    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    core::behavior::SingleStateAccessor<DataTypes>::init();
 
     setDirtyValue();
 }
@@ -58,17 +58,33 @@ void AverageCoord<DataTypes>::reinit()
 template <class DataTypes>
 void AverageCoord<DataTypes>::doUpdate()
 {
-    if(mstate==nullptr)
+    if(this->mstate==nullptr)
     {
         msg_info(this) << "This component requires a mechanical state in its context.";
         return;
     }
 
-    helper::ReadAccessor< Data<VecCoord> > coord = *mstate->read(core::VecCoordId(d_vecId.getValue()));
+    const Data<VecCoord>* coordPtr = this->mstate->read(core::VecCoordId(d_vecId.getValue()));
+
+    if (!coordPtr)
+    {
+        msg_error() << "Cannot get coordinates from VecId " << d_vecId.getValue();
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    helper::ReadAccessor< Data<VecCoord> > coord = *coordPtr;
     const VecIndex& indices = d_indices.getValue();
 
     Coord c;
     const auto n = (indices.empty()) ? coord.size() : indices.size();
+
+    if (n == 0)
+    {
+        msg_error() << "Trying to average an empty list of coordinates";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     for( std::size_t i = 0; i < n; ++i )
     {

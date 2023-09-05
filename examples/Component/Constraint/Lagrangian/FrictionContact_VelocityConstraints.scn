@@ -1,0 +1,154 @@
+<Node name="root" dt="0.03" gravity="0 -9.810 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showVisual" />
+    <GenericConstraintSolver tolerance="1e-6" maxIterations="1000"/>
+    <FreeMotionAnimationLoop solveVelocityConstraintFirst="1" />
+    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" useLMDFilters="0" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" />
+    <Node>
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Node name="CUBE_1_1">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="-2.8" dy="-1.5" dz="0.0" rx="0" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_4" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_4" color="0.0 0.5 0.8 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="CUBE_1_2">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="0.0" dy="-1.5" dz="0.0" ry="0" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_1" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_1" color="0.0 0.9 0.8 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="CUBE_1_3">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="2.8" dy="-1.5" dz="0.0" rx="0" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_5" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_5" color="0.0 0.5 0.8 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="CUBE_2_1">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="-1.5" dy="1" dz="0.0" rz="45" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_2" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_2" color="0.5 0.0 0.5 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="CUBE_2_2">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="1.5" dy="1" dz="0.0" rz="45" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_6" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_6" color="0.5 0.0 0.5 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="CUBE_3_1">
+            <MechanicalObject template="Rigid3" scale="0.3" dx="0.0" dy="3.5" dz="0.0" rx="0" />
+            <UniformMass totalMass="100.0" />
+            <UncoupledConstraintCorrection />
+            <Node name="Visu">
+                <MeshOBJLoader name="meshLoader_3" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <OglModel name="Visual" src="@meshLoader_3" color="0.9 0.0 0.2 1.0" />
+                <RigidMapping input="@.." output="@Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshTopology src="@loader"/>
+                <MechanicalObject src="@loader" scale="0.3" />
+                <TriangleCollisionModel />
+                <LineCollisionModel />
+                <PointCollisionModel />
+                <RigidMapping />
+            </Node>
+        </Node>
+        <Node name="BOX">
+            <MeshOBJLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/box_outside.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="0 0.8 0.3 0.3" />
+        </Node>
+    </Node>
+</Node>

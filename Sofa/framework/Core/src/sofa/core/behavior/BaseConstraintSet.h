@@ -39,15 +39,15 @@ public:
 protected:
     BaseConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
-        , m_constraintIndex(initData(&m_constraintIndex, (unsigned int)0, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
+        , m_constraintIndex(initData(&m_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
     {
     }
 
     ~BaseConstraintSet() override { }
 
 private:
-    BaseConstraintSet(const BaseConstraintSet& n) ;
-    BaseConstraintSet& operator=(const BaseConstraintSet& n) ;
+    BaseConstraintSet(const BaseConstraintSet& n) = delete;
+    BaseConstraintSet& operator=(const BaseConstraintSet& n) = delete;
 
 public:
     virtual void resetConstraint() {}

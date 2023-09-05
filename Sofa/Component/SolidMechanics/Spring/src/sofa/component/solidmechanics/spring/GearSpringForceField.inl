@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
@@ -312,6 +313,12 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
 
     data_df1.endEdit();
     data_df2.endEdit();
+}
+
+template <class DataTypes>
+void GearSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

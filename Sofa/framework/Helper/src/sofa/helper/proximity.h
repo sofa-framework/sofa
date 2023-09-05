@@ -19,71 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_PROXIMITY_H
-#define SOFA_COMPONENT_COLLISION_PROXIMITY_H
+#pragma once
 
-#include <sofa/type/Vec.h>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-//-----------------------------------------------------------------------------
-//--DistanceTriTri--
-//------------------
-// this class computes the shortest distance between a triangle P and a triangle Q
-//-----------------------------------------------------------------------------
-class SOFA_HELPER_API DistanceTriTri
-{
-public:
-    DistanceTriTri(); // start a Proximity solver
-    ~DistanceTriTri();
-
-    // init the solver with the new coordinates of the triangle & the segment
-    // solve the lcp
-    void NewComputation(const sofa::type::Vec3& P1, const sofa::type::Vec3& P2, const sofa::type::Vec3& P3, const sofa::type::Vec3& Q1, const sofa::type::Vec3& Q2, const sofa::type::Vec3& Q3, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
-
-};
-
-//-----------------------------------------------------------------------------
-//--DistanceSegTri--
-//------------------
-// this class compute the shortest distance between a triangle and a segment
-//-----------------------------------------------------------------------------
-class SOFA_HELPER_API DistanceSegTri
-{
-public:
-    DistanceSegTri(); // start a Proximity solver
-    ~DistanceSegTri();
-
-    // init the solver with the new coordinates of the triangle & the segment
-    // solve the lcp
-    void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q1, const sofa::type::Vec3 &Q2, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
-};
-
-//-----------------------------------------------------------------------------
-//--DistancePointTri--
-//------------------
-// this class compute the shortest distance between a triangle and a Point
-//-----------------------------------------------------------------------------
-class SOFA_HELPER_API DistancePointTri
-{
-public:
-    DistancePointTri(); // start a Proximity solver
-    ~DistancePointTri();
-
-    // init the solver with the new coordinates of the triangle & the segment
-    // solve the lcp
-    void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q, sofa::type::Vec3 &Presult);
-};
-
-} // namespace helper
-
-} // namespace sofa
-
-
-#endif
-
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/geometry/proximity/PointTriangle.h, sofa/geometry/proximity/SegmentTriangle.h or sofa/geometry/proximity/TriangleTriangle.h")

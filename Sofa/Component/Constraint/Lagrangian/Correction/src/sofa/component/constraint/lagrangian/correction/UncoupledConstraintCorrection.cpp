@@ -38,7 +38,6 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 {
     Inherit::init();
 
-
     const VecReal& comp = compliance.getValue();
 
     double  odeFactor = 1.0;
@@ -62,7 +61,6 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         }
     }
 
-
     if (comp.size() != 7)
     {
         VecReal usedComp;
@@ -71,32 +69,37 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         using sofa::defaulttype::Rigid3Mass;
         using sofa::simulation::Node;
 
-        Node *node = dynamic_cast< Node * >(getContext());
+        const Node *node = dynamic_cast< Node * >(getContext());
         Rigid3Mass massValue;
-
-        //Should use the BaseMatrix API to get the Mass
-        if (node != nullptr)
-        {
-            core::behavior::BaseMass *m = node->mass;
-
-            if (UniformMass< Rigid3Types > *um = dynamic_cast< UniformMass< Rigid3Types >* > (m))
-                massValue = um->getVertexMass();
-            else
-                msg_warning() << "No mass found.";
-        }
-        else
-        {
-            msg_warning() << "Node is not found => massValue could be incorrect in addComplianceInConstraintSpace function.";
-        }
-        
 
         if (defaultCompliance.isSet())
         {
+            msg_info() << "\'defaultCompliance\' data is used: " << defaultCompliance.getValue();
             usedComp.push_back(defaultCompliance.getValue());
         }
         else
         {
-            usedComp.push_back(odeFactor / massValue.mass);
+            //Should use the BaseMatrix API to get the Mass
+            if (node != nullptr)
+            {
+                core::behavior::BaseMass *m = node->mass;
+
+                if (const UniformMass< Rigid3Types > *um = dynamic_cast< UniformMass< Rigid3Types >* > (m))
+                {
+                    massValue = um->getVertexMass();
+                    usedComp.push_back(odeFactor / massValue.mass);
+                    msg_info() << "Compliance matrix is evaluated using the UniformMass";
+
+                }
+                else
+                {
+                    msg_warning() << "Default compliance is not set and no UniformMass is found to evaluate the compliance matrix";
+                }
+            }
+            else
+            {
+                msg_warning() << "Node is not found: massValue could be incorrect in addComplianceInConstraintSpace function.";
+            }
         }
 
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][0]);
@@ -109,10 +112,8 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     }
     else
     {
-        msg_info() << "COMPLIANCE VALUE FOUND";
+        msg_info() << "\'compliance\' data is used: " << compliance.getValue();
     }
-    
-
 }
 
 

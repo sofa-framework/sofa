@@ -5,6 +5,7 @@ project(Sofa.Component.Constraint.Projective_test)
 set(SOURCE_FILES
     AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
+    FixedPlaneConstraint_test.cpp
     PartialFixedConstraint_test.cpp
     ProjectDirectionConstraint_test.cpp
     ProjectToLineConstraint_test.cpp

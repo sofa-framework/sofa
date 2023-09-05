@@ -23,42 +23,29 @@
 
 #include <sofa/simulation/config.h>
 
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/CpuTaskStatus.h>
+
 
 namespace sofa::simulation
 {
-    /**  Base class to implement a CPU task
-     *   all the tasks running on the CPU should inherits from this class
-     */
-    class SOFA_SIMULATION_CORE_API CpuTask : public Task
-    {
-    public:
+/**  Base class to implement a CPU task
+ *   all the tasks running on the CPU should inherits from this class
+ */
+class SOFA_SIMULATION_CORE_API CpuTask : public Task
+{
+public:
 
-        /** CPU Task Status class definition:
-         *  used to synchronize CPU tasks  */
-        class SOFA_SIMULATION_CORE_API Status : public Task::Status
-        {
-        public:
-            Status() : m_busy(0) {}
+    using Status = CpuTaskStatus;
 
-            bool isBusy() const override final;
-
-            int setBusy(bool busy) override final;
-
-        private:
-            std::atomic<int> m_busy;
-        };
+    Status* getStatus(void) const override final;
 
 
-        CpuTask::Status* getStatus(void) const override final;
+    CpuTask(Status* status, int scheduledThread = -1);
 
+    virtual ~CpuTask() = default;
 
-        CpuTask(CpuTask::Status* status, int scheduledThread = -1);
+private:
+    Status* m_status { nullptr };
+};
 
-        virtual ~CpuTask();
-
-    private:
-        CpuTask::Status* m_status;
-    };
-
-}
+} // namespace sofa::simulation

@@ -30,6 +30,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <iostream>
 #include <fstream>
+#include <climits>
 
 namespace sofa {
 
@@ -92,12 +93,11 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         // Simulation gives a slightly different reference:
         refY[0] = -0.106832;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
     }
 
@@ -113,7 +113,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         }
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(this->root.get());
+        sofa::simulation::node::initRoot(this->root.get());
 
         ///  Get mechanical object of tracked points
         dof = mooneyNode->get<DOF>(mooneyNode->SearchDown);
@@ -123,10 +123,10 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
     void animate_scene()
     {
         //Animate simulation
-        unsigned int nbSteps = timeEvaluation/timeStep;
+        const unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
-            sofa::simulation::getSimulation()->animate(root.get(),timeStep);
+            sofa::simulation::node::animate(root.get(), timeStep);
     }
 
 

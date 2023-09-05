@@ -1,0 +1,18 @@
+<Node bbox="0 0 0 20 20 20">
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <DefaultAnimationLoop/>
+    
+    <TriangleSetTopologyContainer name="mesh" 
+                                position="0 0 20 10 0 20 20 0 20 0 10 20 10 10 20"
+                                triangles="0 1 4 1 2 4 0 4 3" />
+    <TriangleSetTopologyModifier name="Modifier" />
+    <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawTriangles="1" />
+    <MechanicalObject position="@mesh.position" showIndices="true" showIndicesScale="0.0002" />
+    <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+    <UniformMass />
+    <TopologicalChangeProcessor listening="1" filename="AddingPointInTriangleProcess.txt" />
+</Node>

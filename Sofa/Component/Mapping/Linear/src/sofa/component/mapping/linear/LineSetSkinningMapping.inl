@@ -39,7 +39,7 @@ type::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const ty
 
     if(v_f*segment>0.0 && -segment*v_l>0.0)
     {
-        double prod = v_f*segment;
+        const double prod = v_f*segment;
         return first + (segment * (prod/segment.norm2()));
     }
     else
@@ -100,7 +100,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
     for(unsigned int line1Index=0; line1Index< (unsigned) m_topology->getNbLines(); line1Index++)
     {
         std::set<int> result;
-        std::insert_iterator<std::set<int> > res_ins(result, result.begin());
+        const std::insert_iterator<std::set<int> > res_ins(result, result.begin());
 
         neighborhood[line1Index] = neighborhoodLinesSet[line1Index];
 
@@ -114,6 +114,9 @@ void LineSetSkinningMapping<TIn, TOut>::init()
             neighborhood[line1Index] = result;
         }
     }
+
+    if (m_topology->getNbLines() == 0)
+        return;
 
     for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
@@ -145,7 +148,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
         }
 
         unsigned int lineInfluencedIndex = 0;
-        int max = lines[lineInfluencedIndex].lineIndex;
+        const int max = lines[lineInfluencedIndex].lineIndex;
         sumWeights += lines[lineInfluencedIndex].weight;
         linesInfluencedByVertice[verticeIndex].push_back(lines[lineInfluencedIndex]);
         influencedVerticeType vertice;

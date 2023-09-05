@@ -1,12 +1,22 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialBasicPendulum -->
 <Node name="root" dt="0.1" gravity="0 0 0">
-  <VisualStyle displayFlags="showBehavior" />
+  <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->  
+  <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+  <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
+  <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+  <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+  <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->  
+  <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+  <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
+
+  <DefaultAnimationLoop/>
+  <VisualStyle displayFlags="showBehavior showCollisionModels"/>
  <!-- Try to test with different solver -->
   <EulerImplicitSolver name="Euler Implicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
  
-  <MechanicalObject name="Particles" template="Vec3d"
+  <MechanicalObject name="Particles" template="Vec3"
                     position="0 0 0 0 0 1"
                     velocity="0 0 0 0 1 0"/>
  

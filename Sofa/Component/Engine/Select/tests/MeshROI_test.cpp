@@ -28,7 +28,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
@@ -69,7 +68,7 @@ struct MeshROI_test : public BaseSimulationTest,
         simpleapi::importPlugin("Sofa.Component.IO.Mesh");
 
         // SetUp3
-        string scene2 =
+        const string scene2 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
@@ -89,7 +88,7 @@ struct MeshROI_test : public BaseSimulationTest,
 
     void TearDown() override
     {
-        simulation::getSimulation()->unload(m_root) ;
+        sofa::simulation::node::unload(m_root) ;
     }
 
     /// It is important to freeze what are the available Data field
@@ -132,7 +131,7 @@ struct MeshROI_test : public BaseSimulationTest,
     /// Test bounding box computation against meshlab result
     void computeBoundingBoxTest()
     {
-        string scene1 =
+        const string scene1 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
@@ -142,7 +141,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.c_str());
         ASSERT_NE(root, nullptr) ;
 
         root->getChild("node")->getObject("MeshROI")->init();

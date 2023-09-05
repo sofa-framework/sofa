@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/nonuniform/NonUniformHexahedralFEMForceFieldAndMass.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/container/dynamic/MultilevelHexahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -57,6 +58,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
     if(_multilevelTopology == nullptr)
     {
         msg_error() << "Object must have a MultilevelHexahedronSetTopologyContainer";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     this->reinit();
@@ -956,7 +959,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
             {
                 Deriv x_2 = Ret * dx[hexahedra[i][k]];
 
-                int indice = k*3;
+                const int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
                     rdx[indice+j] = x_2[j];
             }

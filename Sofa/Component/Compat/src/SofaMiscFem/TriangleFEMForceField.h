@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TriangleFEMForceField = sofa::component::solidmechanics::fem::elastic::TriangleFEMForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h")

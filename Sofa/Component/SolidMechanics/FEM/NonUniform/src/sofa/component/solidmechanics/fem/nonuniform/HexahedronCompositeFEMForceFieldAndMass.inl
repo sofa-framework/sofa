@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <sofa/component/solidmechanics/fem/nonuniform/NonUniformHexahedronFEMForceFieldAndMass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 #include <iomanip>
@@ -438,7 +439,7 @@ void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
     NonUniformHexahedronFEMForceFieldAndMassT::init();
 
 
-    if(d_drawSize.getValue()==-1)
+    if(d_drawSize.getValue()==-1 && this->_sparseGrid != nullptr)
         d_drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
 
 }
@@ -489,7 +490,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
 
     _weights.resize( this->d_nbVirtualFinerLevels.getValue() );
-    int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
+    const int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
 
     for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
     {

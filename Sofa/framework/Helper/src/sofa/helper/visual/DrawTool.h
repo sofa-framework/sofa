@@ -44,7 +44,7 @@ class SOFA_HELPER_API DrawTool
 
 public:
     typedef sofa::type::RGBAColor RGBAColor;
-    typedef sofa::type::Vec3f   Vec3f;
+    typedef sofa::type::Vec3f Vec3f;
     typedef sofa::type::Vec3 Vec3;
     typedef sofa::type::Vec<3,int> Vec3i;
     typedef sofa::type::Vec<2,int> Vec2i;

@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using RigidMapping = sofa::component::mapping::nonlinear::RigidMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidMapping.h")

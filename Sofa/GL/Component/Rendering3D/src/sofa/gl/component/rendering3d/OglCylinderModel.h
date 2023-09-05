@@ -23,7 +23,7 @@
 #include <sofa/gl/component/rendering3d/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/component/visual/VisualModelImpl.h>
+#include <sofa/core/visual/VisualState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
@@ -43,10 +43,11 @@ namespace sofa::gl::component::rendering3d
 {
 
 // I have no idea what is Ogl in this component ?...
-class SOFA_GL_COMPONENT_RENDERING3D_API OglCylinderModel : public core::visual::VisualModel, public sofa::component::visual::Vec3State
+class SOFA_GL_COMPONENT_RENDERING3D_API OglCylinderModel : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel, sofa::component::visual::Vec3State);
+    using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
+    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel, Vec3State);
 
     using Index = sofa::Index;
 protected:
@@ -57,7 +58,7 @@ public:
 
     void reinit() override;
 
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
 

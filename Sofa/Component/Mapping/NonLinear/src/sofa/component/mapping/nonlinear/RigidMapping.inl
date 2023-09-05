@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -51,23 +52,23 @@ class RigidMapping<TIn, TOut>::Loader :
 public:
 
     RigidMapping<TIn, TOut>* dest;
-    helper::WriteAccessor<Data<VecCoord> > points;
+    helper::WriteAccessor<Data<OutVecCoord> > points;
 
     Loader(RigidMapping<TIn, TOut>* dest) :
         dest(dest),
-        points(dest->points)
+        points(dest->d_points)
     {
     }
     void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
                          SReal, SReal, bool, bool) override
     {
-        Coord c;
+        OutCoord c;
         Out::set(c, px, py, pz);
         points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     void addSphere(SReal px, SReal py, SReal pz, SReal) override
     {
-        Coord c;
+        OutCoord c;
         Out::set(c, px, py, pz);
         points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
@@ -76,8 +77,8 @@ public:
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::load(const char *filename)
 {
-    points.beginEdit()->resize(0);
-    points.endEdit();
+    d_points.beginEdit()->resize(0);
+    d_points.endEdit();
 
     if (strlen(filename) > 4
             && !strcmp(filename + strlen(filename) - 4, ".xs3"))
@@ -97,7 +98,7 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh != nullptr)
         {
-            helper::WriteAccessor<Data<VecCoord> > points = this->points;
+            helper::WriteAccessor<Data<OutVecCoord> > points = d_points;
 
             points.resize(mesh->getVertices().size());
             for (unsigned int i = 0; i < mesh->getVertices().size(); i++)
@@ -116,50 +117,50 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
 template <class TIn, class TOut>
 RigidMapping<TIn, TOut>::RigidMapping()
     : Inherit()
-    , points(initData(&points, "initialPoints", "Local Coordinates of the points"))
-    , index(initData(&index, (unsigned)0, "index", "input DOF index"))
-    , fileRigidMapping(initData(&fileRigidMapping, "filename", "Xsp file where rigid mapping information can be loaded from."))
-    , useX0(initData(&useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
-    , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
-    , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
-    , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
-    , geometricStiffness(initData(&geometricStiffness, 0, "geometricStiffness", "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
-    , matrixJ()
-    , updateJ(false)
+    , d_points(initData(&d_points, "initialPoints", "Local Coordinates of the points"))
+    , d_index(initData(&d_index, (unsigned)0, "index", "input DOF index"))
+    , d_fileRigidMapping(initData(&d_fileRigidMapping, "filename", "Xsp file where rigid mapping information can be loaded from."))
+    , d_useX0(initData(&d_useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
+    , d_indexFromEnd(initData(&d_indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
+    , d_rigidIndexPerPoint(initData(&d_rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
+    , d_globalToLocalCoords(initData(&d_globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
+    , m_matrixJ()
+    , m_updateJ(false)
 {
-    this->addAlias(&fileRigidMapping, "fileRigidMapping");
+    this->addAlias(&d_fileRigidMapping, "fileRigidMapping");
+    sofa::helper::getWriteAccessor(this->d_geometricStiffness)->setSelectedItem(0);
 }
 
 template <class TIn, class TOut>
 sofa::Index RigidMapping<TIn, TOut>::getRigidIndex(sofa::Index pointIndex ) const
 {
     // do we really need this crap?
-    if( points.getValue().size() == rigidIndexPerPoint.getValue().size() ) return rigidIndexPerPoint.getValue()[pointIndex];
+    if( d_points.getValue().size() == d_rigidIndexPerPoint.getValue().size() ) return d_rigidIndexPerPoint.getValue()[pointIndex];
     else
     {
-        if( !indexFromEnd.getValue() ) return index.getValue();
-        else return this->fromModel->getSize()-1-index.getValue();
+        if( !d_indexFromEnd.getValue() ) return d_index.getValue();
+        else return this->fromModel->getSize()-1-d_index.getValue();
     }
 }
 
 template <class TIn, class TOut>
-sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c)
+sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c)
 {
-    helper::WriteAccessor<Data<VecCoord> > points = this->points;
-    sofa::Size i = sofa::Size(points.size());
+    helper::WriteAccessor<Data<OutVecCoord> > points = d_points;
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     return i;
 }
 
 template <class TIn, class TOut>
-sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c, sofa::Index indexFrom)
+sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c, sofa::Index indexFrom)
 {
-    VecCoord& points = *this->points.beginEdit();
-    sofa::Size i = sofa::Size(points.size());
+    OutVecCoord& points = *d_points.beginEdit();
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
-    this->points.endEdit();
+    d_points.endEdit();
 
-    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginEdit();
+    type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginEdit();
 
     if( i && rigidIndexPerPoint.size()!=i )
     {
@@ -168,7 +169,7 @@ sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c, sofa::Index indexFr
     }
     else rigidIndexPerPoint.push_back(indexFrom);
 
-    this->rigidIndexPerPoint.endEdit();
+    d_rigidIndexPerPoint.endEdit();
     return i;
 }
 
@@ -176,26 +177,27 @@ sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c, sofa::Index indexFr
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::reinit()
 {
-    if (this->points.getValue().empty() && this->toModel != nullptr && !useX0.getValue())
+    if (d_points.getValue().empty() && this->toModel != nullptr && !d_useX0.getValue())
     {
-        const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-        helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
-        points.resize(xTo.size());
+        const OutVecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        helper::WriteOnlyAccessor<Data<OutVecCoord> > points = d_points;
+        sofa::Size toModelSize = xTo.size();
+        points.resize(toModelSize);
         unsigned int i = 0;
-        if (globalToLocalCoords.getValue())
+        if (d_globalToLocalCoords.getValue())
         {
             unsigned int i = 0;
             const InVecCoord& xFrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-            for (i = 0; i < points.size(); i++)
+            for (i = 0; i < toModelSize; i++)
             {
                 unsigned int rigidIndex = getRigidIndex(i);
-                points[i] = xFrom[rigidIndex].inverseRotate(xTo[i] - xFrom[rigidIndex].getCenter());
+                getGlobalToLocalCoords(points[i], xFrom[rigidIndex], xTo[i]);
             }
         }
         else
         {
-            for (i = 0; i < xTo.size(); i++)
+            for (i = 0; i < toModelSize; i++)
             {
                 points[i] = xTo[i];
             }
@@ -203,14 +205,22 @@ void RigidMapping<TIn, TOut>::reinit()
     }
 }
 
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::getGlobalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+{
+    result = xFrom.inverseRotate(Out::getCPos(xTo) - In::getCPos(xFrom));
+}
+
+
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
-    if (!fileRigidMapping.getValue().empty())
-        this->load(fileRigidMapping.getFullPath().c_str());
+    if (!d_fileRigidMapping.getValue().empty())
+        this->load(d_fileRigidMapping.getFullPath().c_str());
 
-    eigenJacobians.resize( 1 );
-    eigenJacobians[0] = &eigenJacobian;
+    m_eigenJacobians.resize( 1 );
+    m_eigenJacobians[0] = &m_eigenJacobian;
 
     this->reinit();
 
@@ -220,12 +230,12 @@ void RigidMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::clear(sofa::Size reserve)
 {
-    helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
+    helper::WriteOnlyAccessor<Data<OutVecCoord> > points = d_points;
     points.clear();
     if (reserve)
         points.reserve(reserve);
-    this->rigidIndexPerPoint.beginWriteOnly()->clear();
-    this->rigidIndexPerPoint.endEdit();
+    d_rigidIndexPerPoint.beginWriteOnly()->clear();
+    d_rigidIndexPerPoint.endEdit();
 }
 
 template <class TIn, class TOut>
@@ -233,9 +243,9 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
-    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
+    type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -249,7 +259,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
          ++idx;
     }
 
-    this->rigidIndexPerPoint.endEdit();
+    d_rigidIndexPerPoint.endEdit();
 }
 
 template <class TIn, class TOut>
@@ -257,9 +267,9 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> valu
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
-    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
+    type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -272,15 +282,15 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> valu
          }
     }
 
-    this->rigidIndexPerPoint.endEdit();
+    d_rigidIndexPerPoint.endEdit();
 }
 
 template <class TIn, class TOut>
-const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getPoints()
+const typename RigidMapping<TIn, TOut>::OutVecCoord & RigidMapping<TIn, TOut>::getPoints()
 {
-    if (useX0.getValue())
+    if (d_useX0.getValue())
     {
-        const Data<VecCoord>* v = this->toModel.get()->read(core::VecCoordId::restPosition());
+        const Data<OutVecCoord>* v = this->toModel.get()->read(core::VecCoordId::restPosition());
         if (v)
         {
             return v->getValue();
@@ -290,92 +300,89 @@ const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getP
             msg_error()<< "RigidMapping: ERROR useX0 can only be used in MechanicalMappings.";
         }
     }
-    return points.getValue();
+    return d_points.getValue();
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
+void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
-    helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
+    helper::WriteOnlyAccessor< Data<OutVecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
-    const VecCoord& pts = this->getPoints();
+    const OutVecCoord& pts = this->getPoints();
 
-    updateJ = true;
-    eigenJacobian.resizeBlocks(out.size(),in.size());
+    m_updateJ = true;
+    m_eigenJacobian.resizeBlocks(out.size(),in.size());
 
-    rotatedPoints.resize(pts.size());
+    m_rotatedPoints.resize(pts.size());
     out.resize(pts.size());
 
     for (sofa::Index i = 0; i < sofa::Size(pts.size()); i++)
     {
         sofa::Index rigidIndex = getRigidIndex(i);
 
-        rotatedPoints[i] = in[rigidIndex].rotate( pts[i] );
-        out[i] = in[rigidIndex].translate( rotatedPoints[i] );
+        m_rotatedPoints[i] = in[rigidIndex].rotate( Out::getCPos(pts[i]) );
+        out[i] = in[rigidIndex].mult( pts[i]) ;
     }
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
+    helper::WriteOnlyAccessor< Data<OutVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-    const VecCoord& pts = this->getPoints();
+    const OutVecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
     for(sofa::Index i=0 ; i<out.size() ; ++i)
     {
         sofa::Index rigidIndex = getRigidIndex(i);
-        out[i] = velocityAtRotatedPoint( in[rigidIndex], rotatedPoints[i] );
+        out[i] = velocityAtRotatedPoint( in[rigidIndex], m_rotatedPoints[i] );
     }
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn)
+void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
-    helper::ReadAccessor< Data<VecDeriv> > in = dIn;
+    helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;
 
     for(sofa::Index i=0 ; i<in.size() ; ++i)
     {
         sofa::Index rigidIndex = getRigidIndex(i);
 
-        getVCenter(out[rigidIndex]) += in[i];
-        getVOrientation(out[rigidIndex]) += (typename InDeriv::Rot)cross(rotatedPoints[i], in[i]);
+        getVCenter(out[rigidIndex]) += Out::getDPos(in[i]);
+        updateOmega(getVOrientation(out[rigidIndex]), in[i], m_rotatedPoints[i]);
     }
-
 }
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
 {
-    if( !geometricStiffness.getValue() ) return;
+    if( !d_geometricStiffness.getValue().getSelectedId() )
+        return;
 
-    if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
+    if( m_geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
         auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
         auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel.get()));
-        geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
+        m_geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
     }
     else
     {
         // if symmetrized version, force local assembly
-        if( geometricStiffness.getValue() == 2 )
+        if( d_geometricStiffness.getValue().getSelectedId() == 2 )
         {
             updateK( mparams, childForceId );
             auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
             auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel.get()));
 
-            geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
-            geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
+            m_geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
+            m_geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
         else
         {
-            // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
-            assert( !mparams->symmetricMatrix() );
-
-            helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel.get()));
+            helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel.get()));
             helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel.get()));
             InReal kfactor = (InReal)mparams->kFactor();
@@ -386,7 +393,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
 
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
                 const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[rigidIndex]);
-                const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
+                const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( Out::getDPos(childForces[i]), parentRotation, Out::getCPos(m_rotatedPoints[i])) * kfactor;
                 parentTorque -=  torqueDecrement;
             }
         }
@@ -419,20 +426,20 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     {
         for (unsigned int ito = 0; ito < numDofs; ito++)
         {
-            DPos v;
-            DRot omega = DRot();
+            typename InDeriv::Pos v;
+            typename InDeriv::Rot omega = typename InDeriv::Rot();
             bool needToInsert = false;
 
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                unsigned int rigidIndex = getRigidIndex( colIt.index() );
+                const unsigned int rigidIndex = getRigidIndex( colIt.index() );
                 if(rigidIndex != ito)
                     continue;
 
                 needToInsert = true;
-                const Deriv f = colIt.val();
-                v += f;
-                omega += (DRot) cross(rotatedPoints[colIt.index()], f);
+                const OutDeriv f = colIt.val();
+                v += Out::getDPos(f);
+                updateOmega(omega, f, m_rotatedPoints[colIt.index()]);
             }
 
             if (needToInsert)
@@ -451,6 +458,12 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 }
 
 
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint)
+{
+    omega += (typename InDeriv::Rot)cross(Out::getCPos(rotatedpoint), Out::getDPos(out));
+}
+
 namespace impl {
 
 template<class U, class Coord>
@@ -461,6 +474,20 @@ static void fill_block(Eigen::Matrix<U, 3, 6>& block, const Coord& v) {
 
     // note: this is -hat(v)
     block.template rightCols<3>() <<
+
+        0,   z,  -y,
+        -z,  0,   x,
+        y,  -x,   0;
+}
+
+template<class U, class Coord>
+static void fill_block(Eigen::Matrix<U, 6, 6>& block, const Coord& v) {
+    U x = v[0];
+    U y = v[1];
+    U z = v[2];
+
+    // note: this is -hat(v)
+    block.template topRightCorner<3, 3>() <<
 
         0,   z,  -y,
         -z,  0,   x,
@@ -484,15 +511,15 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 template <class TIn, class TOut>
 const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
-    const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-    typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
+    typename SparseMatrixEigen::CompressedMatrix& J = m_eigenJacobian.compressedMatrix;
 
-    if( updateJ || J.size() == 0 )
+    if( m_updateJ || J.size() == 0 )
     {
 
-        updateJ = false;
+        m_updateJ = false;
 
         J.resize(out.size() * NOut, in.size() * NIn);
         J.setZero();
@@ -506,12 +533,11 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::g
         block.template leftCols<NOut>().setIdentity();
 
 
-
-        for(sofa::Index outIdx=0 ; outIdx< rotatedPoints.size() ; ++outIdx)
+        for(sofa::Index outIdx=0 ; outIdx< m_rotatedPoints.size() ; ++outIdx)
         {
             sofa::Index inIdx = getRigidIndex(outIdx);
 
-            const Coord& v = rotatedPoints[outIdx];
+            const OutCoord& v = m_rotatedPoints[outIdx];
 
             impl::fill_block(block, v);
 
@@ -537,7 +563,7 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::g
         J.finalize();
     }
 
-    return &eigenJacobians;
+    return &m_eigenJacobians;
 }
 
 
@@ -546,26 +572,20 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    unsigned geomStiff = geometricStiffness.getValue();
+    const unsigned geomStiff = d_geometricStiffness.getValue().getSelectedId();
 
-    if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
+    if( !geomStiff ) { m_geometricStiffnessMatrix.resize(0,0); return; }
 
-    typedef typename StiffnessSparseMatrixEigen::CompressedMatrix matrix_type;
-    matrix_type& dJ = geometricStiffnessMatrix.compressedMatrix;
+    m_geometricStiffnessMatrix.resizeBlocks( this->fromModel->getSize(), this->fromModel->getSize() );
 
-    size_t insize = TIn::deriv_total_size*this->fromModel->getSize();
-
-    dJ.resize( insize, insize );
-    dJ.setZero(); // necessary ?
-
-    const VecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
+    const OutVecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
 
     // sorted in-out
     typedef std::map<unsigned, type::vector<unsigned> > in_out_type;
     in_out_type in_out;
 
     // wahoo it is heavy, can't we find lighter?
-    for(sofa::Index i = 0, n = rotatedPoints.size(); i < n; ++i)
+    for(sofa::Index i = 0, n = m_rotatedPoints.size(); i < n; ++i)
         in_out[ getRigidIndex(i) ].push_back(i);
 
     for( in_out_type::const_iterator it = in_out.begin(), end = in_out.end() ; it != end; ++it )
@@ -573,80 +593,142 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
         const unsigned rigidIdx = it->first;
 
         static const unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
-
-        type::Mat<rotation_dimension,rotation_dimension,Real> block;
-
+        type::Mat<rotation_dimension,rotation_dimension,OutReal> block;
 
         for( unsigned int w=0 ; w<it->second.size() ; ++w )
         {
             const unsigned pointIdx = it->second[w];
-            block += type::crossProductMatrix<Real>( childForces[pointIdx] ) * type::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+            block += type::crossProductMatrix<OutReal>( Out::getDPos(childForces[pointIdx]) )
+                    * type::crossProductMatrix<OutReal>( Out::getCPos(m_rotatedPoints[pointIdx]) );
         }
 
         if( geomStiff == 2 )
         {
             block.symmetrize(); // symmetrization
-            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            helper::Decompose<OutReal>::NSDProjection( block ); // negative, semi-definite projection
         }
 
         for(unsigned j = 0; j < rotation_dimension; ++j) {
 
             const unsigned row = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + j;
 
-            dJ.startVec( row );
-
-            for(unsigned k = 0; k < rotation_dimension; ++k) {
+            for(unsigned k = 0; k < rotation_dimension; ++k)
+            {
                 const unsigned col = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + k;
 
-                if( block(j, k) ) dJ.insertBack(row, col) += (InReal)block[j][k];
+                if( block(j, k) != static_cast<OutReal>(0))
+                {
+                    m_geometricStiffnessMatrix.add(row, col, (InReal)block[j][k]);
+                }
             }
         }
     }
 
-    dJ.finalize();
+    m_geometricStiffnessMatrix.compress();
 }
 
 
 template <class TIn, class TOut>
 const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getK()
 {
-    if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &geometricStiffnessMatrix;
+    if( m_geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &m_geometricStiffnessMatrix;
     else return nullptr;
+}
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned int geomStiff = d_geometricStiffness.getValue().getSelectedId();
+
+    if( !geomStiff )
+    {
+        return;
+    }
+
+    if constexpr (TOut::spatial_dimensions != 3)
+    {
+        static std::set<RigidMapping<TIn, TOut>*> hasShownError;
+        msg_warning_when(hasShownError.insert(this).second) << "Geometric stiffness is not supported in " << TOut::spatial_dimensions << "d";
+    }
+    else
+    {
+        if (geomStiff == 1)
+        {
+            // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+            checkLinearSolverSymmetry(matrices->getMechanicalParams());
+        }
+
+        const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+        const auto childForces = this->toModel->readTotalForces();
+
+        std::map<unsigned, sofa::type::vector<unsigned> > in_out;
+        for(sofa::Index i = 0; i < m_rotatedPoints.size(); ++i)
+        {
+            in_out[ getRigidIndex(i) ].push_back(i);
+        }
+
+        for (auto& [fst, snd] : in_out)
+        {
+            const unsigned rigidIdx = fst;
+
+            static constexpr unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
+
+            type::Mat<rotation_dimension,rotation_dimension,OutReal> block;
+
+            for (const auto pointIdx : snd)
+            {
+                block += type::crossProductMatrix<OutReal>( Out::getDPos(childForces[pointIdx]) )
+                        * type::crossProductMatrix<OutReal>( Out::getCPos(m_rotatedPoints[pointIdx]) );
+            }
+
+            if( geomStiff == 2 )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<OutReal>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            const auto matrixIndex = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions;
+
+            dJdx(matrixIndex, matrixIndex) += block;
+        }
+    }
 }
 
 
 template <class TIn, class TOut>
 const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 {
-    const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& pts = this->getPoints();
+    const OutVecCoord& pts = this->getPoints();
     assert(pts.size() == out.size());
 
-    if (matrixJ.get() == 0 || updateJ)
+    if (m_matrixJ.get() == 0 || m_updateJ)
     {
-        updateJ = false;
-        if (matrixJ.get() == 0 ||
-                (unsigned int)matrixJ->rowBSize() != out.size() ||
-                (unsigned int)matrixJ->colBSize() != in.size())
+        m_updateJ = false;
+        if (m_matrixJ.get() == 0 ||
+                (unsigned int)m_matrixJ->rowBSize() != out.size() ||
+                (unsigned int)m_matrixJ->colBSize() != in.size())
         {
-            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+            m_matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
         }
         else
         {
-            matrixJ->clear();
+            m_matrixJ->clear();
         }
 
 
         for (unsigned int outIdx = 0; outIdx < pts.size() ; outIdx++)
         {
-            unsigned int inIdx = getRigidIndex(outIdx);
+            const unsigned int inIdx = getRigidIndex(outIdx);
 
             setJMatrixBlock(outIdx, inIdx);
         }
     }
-    matrixJ->compress();
-    return matrixJ.get();
+    m_matrixJ->compress();
+    return m_matrixJ.get();
 }
 
 template<class Real>
@@ -683,8 +765,8 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
-    MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
-    RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
+    MBloc& block = *m_matrixJ->wblock(outIdx, inIdx, true);
+    RigidMappingMatrixHelper<N, OutReal>::setMatrix(block, m_rotatedPoints[outIdx]);
 }
 
 template <class TIn, class TOut>
@@ -695,10 +777,10 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     std::vector<type::Vec3> points;
     type::Vec3 point;
 
-    const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        point = OutDataTypes::getCPos(x[i]);
+        point = Out::getCPos(x[i]);
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow() );

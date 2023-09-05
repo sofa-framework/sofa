@@ -21,16 +21,10 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/QGraphStatWidget.h>
-#include <QtCharts/QChartView>
-#include <QtCharts/QChart>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QValueAxis>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::gui::qt
 {
-
-using namespace QtCharts;
 
 QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves, int bufferSize)
     : QWidget( parent )
@@ -42,7 +36,7 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
     , m_cptStep(0) 
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(1);
     layout->setObjectName(QString( "tabStats" ) + title);
 
@@ -77,7 +71,7 @@ QGraphStatWidget::~QGraphStatWidget()
 
 void QGraphStatWidget::step()
 {
-    SReal time = m_node->getTime();
+    const SReal time = m_node->getTime();
     if (time <= m_lastTime)
         return;
 
@@ -86,7 +80,7 @@ void QGraphStatWidget::step()
 
     if (m_cptStep > m_bufferSize) // start swipping the Xaxis
     {
-        qreal min = m_axisX->min() + m_node->getDt();
+        const qreal min = m_axisX->min() + m_node->getDt();
         m_axisX->setRange(min, time);        
 
         // flush series data not anymore display for memory storage
@@ -115,7 +109,7 @@ void QGraphStatWidget::step()
 
 void QGraphStatWidget::flushSeries()
 {
-    for (auto serie : m_curves)
+    for (const auto serie : m_curves)
     {
         if (serie->count() >= m_bufferSize) {
             serie->removePoints(0, m_bufferSize);

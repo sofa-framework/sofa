@@ -87,7 +87,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
 
-        if( InDataTypes::spatial_dimensions != 3 )
+        if constexpr ( InDataTypes::spatial_dimensions != 3 )
         {
             // RigidMapping::getK is not yet implemented for 2D rigids
             this->flags &= ~Inherit::TEST_getK;
@@ -109,8 +109,9 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
         this->outDofs->resize(Nout);
 
         // child positions
-        rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
-        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
+        rigidMapping->d_globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
+        sofa::helper::getWriteAccessor(rigidMapping->d_geometricStiffness)->setSelectedItem(1); // full unsymmetrized geometric stiffness
+
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
@@ -127,12 +128,10 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         // expected mapped values
         OutVecCoord expectedChildCoords(Nout);
-        RotationMatrix m;
-        xin[0].writeRotationMatrix(m);
         for(unsigned i=0; i<xout.size(); i++ )
         {
             // note that before init, xout is still in relative coordinates
-            expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
+            expectedChildCoords[i] = xin[0].mult(xout[i]);
         }
 
         // The same xin is used twice since xout is given in local coordinates while expectedChildCoords is given in world coordinates
@@ -150,8 +149,9 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
         this->outDofs->resize(Nout);
 
         // child positions
-        rigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
-        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
+        rigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        sofa::helper::getWriteAccessor(rigidMapping->d_geometricStiffness)->setSelectedItem(1); // full unsymmetrized geometric stiffness
+
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
@@ -173,33 +173,39 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         // expected mapped values
         OutVecCoord expectedChildCoords(Nout);
-        RotationMatrix Rfinal, Rinit, invRinit; // matrices are a unified model for 3D (quaternion) and 2D (scalar).
-        xin[0].writeRotationMatrix(Rfinal);
-        xin_init[0].writeRotationMatrix(Rinit);
-        invRinit = Rinit.transposed();
+        OutCoord localCoord;
         for(unsigned i=0; i<xout.size(); i++ )
         {
-            // transformation from initial to final parent position: Tfinal.Rfinal.Rinit^{-1}.Tinit^{-1}
-            expectedChildCoords[i] = xin[0].getCenter()  +  Rfinal * (invRinit*(xout[i] - xin_init[0].getCenter()));
+            globalToLocalCoords(localCoord, xin_init[0], xout[i]);
+            expectedChildCoords[i] = xin[0].mult(localCoord);
         }
 
         return this->runTest(xin_init,xout,xin,expectedChildCoords);
     }
 
+    void globalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+    {
+        result = xFrom.inverseRotate(OutDataTypes::getCPos(xTo) - InDataTypes::getCPos(xFrom));
+    }
+
     /// @todo test with several frames
-
-
     ///@}
-
-
 };
+
+template <>
+void RigidMappingTest<mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>>::globalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+{
+    result.getCenter() = xFrom.getOrientation().inverse().rotate( xTo.getCenter() - xFrom.getCenter() ) ;
+    result.getOrientation() = xFrom.getOrientation().inverse() * xTo.getOrientation() ;
+}
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using ::testing::Types;
 typedef Types<
 mapping::nonlinear::RigidMapping<defaulttype::Rigid2Types,defaulttype::Vec2Types>,
-mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>
+mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>,
+mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

@@ -42,9 +42,9 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(MapIndices,T),core::DataEngine);
     typedef T Value;
     typedef sofa::type::vector<T> VecValue;
-    typedef unsigned int Index;
-    typedef sofa::type::vector<Index> VecIndex;
-    typedef std::map<Index, Index> MapIndex;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+    typedef sofa::type::vector<sofa::Index> VecIndex;
+    typedef std::map<sofa::Index, sofa::Index> MapIndex;
 protected:
     MapIndices();
 
@@ -65,7 +65,7 @@ public:
     template<class V>
     void applyIndex(V& v, const MapIndex& m)
     {
-        typename MapIndex::const_iterator it = m.find(v);
+        const typename MapIndex::const_iterator it = m.find(v);
         if (it != m.end())
             v = it->second;
     }

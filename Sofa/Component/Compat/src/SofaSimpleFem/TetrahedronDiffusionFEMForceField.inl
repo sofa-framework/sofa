@@ -23,4 +23,4 @@
 
 #include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl")

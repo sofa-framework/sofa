@@ -25,6 +25,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Mat.h>
@@ -52,7 +53,7 @@ namespace sofa::component::mapping::nonlinear
 // If the rest lengths are not defined, they are set using the initial values.
 // If computeDistance is set to true, the rest lengths are set to 0.
 template <class TIn, class TOut>
-class SquareDistanceMapping : public core::Mapping<TIn, TOut>
+class SquareDistanceMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SquareDistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -84,11 +85,8 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-//    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-//    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data<Real> d_showObjectScale;        ///< drawing size
+    Data<sofa::type::RGBAColor> d_color; ///< drawing color
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -112,6 +110,7 @@ public:
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const linearalgebra::BaseMatrix* getK() override;
+    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -133,8 +132,6 @@ protected:
 #if  !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
-
-
 #endif
 
 } // namespace sofa::component::mapping::nonlinear

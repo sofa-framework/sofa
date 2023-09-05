@@ -55,7 +55,7 @@ void UnilateralInteractionConstraint<DataTypes>::clear(int reserve)
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm, P, Q, contactDistance, m1, m2,
             this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
@@ -64,7 +64,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm,
             this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
@@ -76,7 +76,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
 {
     contacts.resize(contacts.size() + 1);
     Contact &c = contacts.back();
@@ -402,9 +402,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const Contact& c = contacts[i];
 
-        redVertices.push_back(c.P);
-        redVertices.push_back(c.Q);
-
         otherVertices.push_back(c.P);        
         otherVertices.push_back(c.P + c.norm);
         otherColors.push_back(sofa::type::RGBAColor::white());
@@ -414,7 +411,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
         otherColors.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
 
     }
-    vparams->drawTool()->drawLines(redVertices, 5, sofa::type::RGBAColor::red());
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 

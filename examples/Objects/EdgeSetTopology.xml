@@ -1,7 +1,7 @@
 <Node name="Group"> 
   <EdgeSetTopologyContainer  name="Container" src="@" tags=" " />
   <EdgeSetTopologyModifier   name="Modifier" />
-  <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+  <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
 </Node>
 <!-- 
      Template List 
@@ -19,5 +19,5 @@
        -Rigid2f
 
      Example of use:
-     <include href="Objects/EdgeSetTopology.xml" template="Vec1d" />
+     <include href="Objects/EdgeSetTopology.xml" template="Vec1" />
 -->

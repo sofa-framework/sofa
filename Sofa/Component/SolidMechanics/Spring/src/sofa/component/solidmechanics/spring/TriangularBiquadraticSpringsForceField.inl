@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -238,9 +239,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     const VecDeriv& v = d_v.getValue();
 
     unsigned int j,k,l,v0,v1;
-    size_t nbEdges=m_topology->getNbEdges();
-    size_t nbTriangles=m_topology->getNbTriangles();
-    bool compressible=f_compressible.getValue();
+    const size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbTriangles=m_topology->getNbTriangles();
+    const bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
 
     Real val,L;
@@ -366,7 +367,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
-    int nbTriangles=m_topology->getNbTriangles();
+    const int nbTriangles=m_topology->getNbTriangles();
     bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
     TriangleRestInformation *tinfo;
@@ -519,6 +520,12 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
     d_df.endEdit();
 }
 
+template <class DataTypes>
+void TriangularBiquadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
@@ -541,11 +548,11 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
         vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    size_t nbTriangles=m_topology->getNbTriangles();
+    const size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-    std::vector<sofa::type::Vec3> normals;
+    const std::vector<sofa::type::Vec3> normals;
 
     vparams->drawTool()->disableLighting();
 

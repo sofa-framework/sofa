@@ -166,7 +166,7 @@ public:
     friend SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const BaseVector& v );
 };
 
-/// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
+/// Declare that the operator << exists but is defined in BaseVector.cpp
 SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
 
 } // namespace sofa::linearalgebra

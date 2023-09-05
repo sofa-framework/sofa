@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_CONTACTMANAGER_H
-#define SOFA_CORE_COLLISION_CONTACTMANAGER_H
+#pragma once
 
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/collision/Contact.h>
@@ -28,18 +27,12 @@
 
 #include <vector>
 
-namespace sofa
+namespace sofa::core::collision
 {
 
-namespace core
-{
-
-namespace collision
-{
 /**
  * @brief Given a set of detected contact points, create contact response components
  */
-
 class ContactManager : public virtual CollisionAlgorithm
 {
 public:
@@ -98,11 +91,4 @@ protected:
         contacts.swap(storedContacts[inst]);
     }
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

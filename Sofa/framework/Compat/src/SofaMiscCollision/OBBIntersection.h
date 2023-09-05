@@ -27,19 +27,8 @@
 #include <CollisionOBBCapsule/detection/intersection/OBBIntersection.h>
 #define COLLISIONOBBCAPSULE_OBBINTERSECTION
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/OBBIntersection.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/OBBIntersection.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/OBBIntersection.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_OBBINTERSECTION
-
-namespace sofa::component::collision
-{
-	using RigidDiscreteIntersection = collisionobbcapsule::detection::intersection::RigidDiscreteIntersection;
-	using RigidMeshDiscreteIntersection = collisionobbcapsule::detection::intersection::RigidMeshDiscreteIntersection;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_OBBINTERSECTION

@@ -22,13 +22,4 @@
 #pragma once
 #include <sofa/component/collision/response/contact/RayContact.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/RayContact.h")
-
-namespace sofa::component::collision
-{
-    using BaseRayContact = sofa::component::collision::response::contact::BaseRayContact;
-
-    template<class CM2>
-    using RayContact = sofa::component::collision::response::contact::RayContact<CM2>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/RayContact.h")

@@ -49,7 +49,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     void SetUp() override
     {
         // Load the scene from the xml file
-        std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
+        const std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);
@@ -71,7 +71,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     void TearDown() override
     {
         if (m_instance.root !=nullptr)
-            sofa::simulation::getSimulation()->unload(m_instance.root);
+            sofa::simulation::node::unload(m_instance.root);
     }
 
 };
@@ -81,12 +81,12 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 {
     InciseProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/IncisionTrianglesProcess.scn";
+        m_fileName = "/IncisionTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
 
         if (!root)
         {
@@ -95,7 +95,7 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
         }
 
 
-        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        const Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
         if (!nodeTopo)
         {
             ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
@@ -134,12 +134,12 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTrianglesProcess.scn";
+        m_fileName = "/RemovingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
 
         if (!root)
         {
@@ -148,7 +148,7 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
         }
 
 
-        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        const Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
         if (!nodeTopo)
         {
             ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
@@ -187,12 +187,12 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTrianglesProcess.scn";
+        m_fileName = "/AddingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
 
         if (!root)
         {
@@ -201,7 +201,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
         }
 
 
-        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        const Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
         if (!nodeTopo)
         {
             ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
@@ -241,12 +241,12 @@ struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTetraProcess.scn";
+        m_fileName = "/RemovingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
 
         if (!root)
         {
@@ -255,7 +255,7 @@ struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
         }
 
 
-        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        const Node::SPtr nodeTopo = root.get()->getChild("TT");
         if (!nodeTopo)
         {
             ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;
@@ -297,12 +297,12 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTetraProcess.scn";
+        m_fileName = "/AddingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
     {
-        Node::SPtr root = m_instance.root;
+        const Node::SPtr root = m_instance.root;
 
         if (!root)
         {
@@ -311,7 +311,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
         }
 
 
-        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        const Node::SPtr nodeTopo = root.get()->getChild("TT");
         if (!nodeTopo)
         {
             ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;

@@ -68,14 +68,14 @@ struct Link_test : public BaseSimulationTest
 
     void read_multilink_test()
     {
-        SceneInstance si("root") ;
-        BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
-        BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
-        BaseObject::SPtr C = sofa::core::objectmodel::New<BaseObject>();
+        const SceneInstance si("root") ;
+        const BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
+        const BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        const BaseObject::SPtr C = sofa::core::objectmodel::New<BaseObject>();
         si.root->addObject(A);
         si.root->addObject(B);
 
-        BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
+        const BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
         MultiLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
 
         // 1. test with valid link & owner
@@ -125,11 +125,11 @@ struct Link_test : public BaseSimulationTest
     // introduced initially in https://github.com/sofa-framework/sofa/pull/1436
     void read_test_tofix()
     {
-        SceneInstance si("root");
-        BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
-        BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        const SceneInstance si("root");
+        const BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
+        const BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
         si.root->addObject(A);
-        BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
+        const BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
         SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1);
         SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withoutOwner;
         withoutOwner.setOwner(nullptr);

@@ -23,87 +23,83 @@
 
 #include <sofa/simulation/config.h>
 
-#include <atomic>
-#include <mutex>
-
+#include <cstddef>
 
 namespace sofa::simulation
 {
-        /** Task class interface    */
-        class SOFA_SIMULATION_CORE_API Task
-        {
-        public:
+/** Task class interface    */
+class SOFA_SIMULATION_CORE_API Task
+{
+public:
             
-            // Task Status class interface used to synchronize tasks
-            class Status
-            {
-            public:
-                virtual ~Status() {}
-                virtual bool isBusy() const = 0;
-                virtual int setBusy(bool busy) = 0;
-            };
+    /// Task Status class interface used to synchronize tasks
+    class SOFA_SIMULATION_CORE_API Status
+    {
+    public:
+        virtual ~Status() = default;
+        virtual bool isBusy() const = 0;
+        virtual int setBusy(bool busy) = 0;
+    };
             
-            // Task Allocator class interface used to allocate tasks
-            class Allocator
-            {
-            public:
-                virtual void* allocate(std::size_t sz) = 0;
+    /// Task Allocator class interface used to allocate tasks
+    class SOFA_SIMULATION_CORE_API Allocator
+    {
+    public:
+        virtual void* allocate(std::size_t sz) = 0;
                 
-                virtual void free(void* ptr, std::size_t sz) = 0;
-            };
+        virtual void free(void* ptr, std::size_t sz) = 0;
+    };
+   
+    Task(int scheduledThread);
             
-            
-            
-            Task(int scheduledThread);
-            
-            virtual ~Task();
-            
-            
-            enum MemoryAlloc
-            {
-                Stack     = 1 << 0,
-                Dynamic   = 1 << 1,
-                Static    = 1 << 2,
-            };
-            
-            
-            // Task interface: override these two functions
-            virtual MemoryAlloc run() = 0;
-            
-            
-            static void* operator new (std::size_t sz);
-            
-            // when c++14 is available delete the void  operator delete  (void* ptr)
-            // and define the void operator delete  (void* ptr, std::size_t sz)
-            static void  operator delete  (void* ptr);
-            
-            // only available in c++14.
-            static void operator delete  (void* ptr, std::size_t sz);
-            
-            // no array new and delete operators
-            static void* operator new[](std::size_t sz) = delete;
-            
-            // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
-            // no problem with other sompilers included visual studio 2017
-            //static void operator delete[](void* ptr) = delete;
-            
-            virtual Task::Status* getStatus(void) const = 0;
-            
-            int getScheduledThread() const;
-            
-            static Task::Allocator* getAllocator();
-            
-            static void setAllocator(Task::Allocator* allocator);
-            
-        protected:
+    virtual ~Task() = default;
 
-            int m_scheduledThread;
+    enum MemoryAlloc
+    {
+        Stack     = 1 << 0,
+        Dynamic   = 1 << 1,
+        Static    = 1 << 2,
+    };
             
-        public:
-            int m_id;
             
-        private:
+    // Task interface: override these two functions
+    virtual MemoryAlloc run() = 0;
             
-            static Task::Allocator * _allocator;
-        };
-}
+            
+    static void* operator new (std::size_t sz);
+            
+    // when c++14 is available delete the void  operator delete  (void* ptr)
+    // and define the void operator delete  (void* ptr, std::size_t sz)
+    static void  operator delete  (void* ptr);
+            
+    // only available in c++14.
+    static void operator delete  (void* ptr, std::size_t sz);
+            
+    // no array new and delete operators
+    static void* operator new[](std::size_t sz) = delete;
+            
+    // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
+    // no problem with other sompilers included visual studio 2017
+    // static void operator delete[](void* ptr) = delete;
+            
+    virtual Task::Status* getStatus(void) const = 0;
+            
+    int getScheduledThread() const;
+            
+    static Task::Allocator* getAllocator();
+            
+    static void setAllocator(Task::Allocator* allocator);
+            
+protected:
+
+    int m_scheduledThread;
+            
+public:
+    int m_id;
+            
+private:
+            
+    static Task::Allocator * _allocator;
+};
+
+} // namespace sofa::simulation

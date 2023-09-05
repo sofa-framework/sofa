@@ -23,4 +23,4 @@
 
 #include <sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.inl")

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -346,7 +347,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
     SReal energy=0;
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     const EdgeRestInformation *einfo;
 
@@ -385,7 +386,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
     const VecCoord& x = d_x.getValue();
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -423,7 +424,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -448,6 +449,12 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     d_df.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
+}
+
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 
@@ -475,7 +482,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=m_topology->getNbTriangles();
+    const int nbTriangles=m_topology->getNbTriangles();
 
     for(int i=0;i<nbTriangles; ++i)
     {

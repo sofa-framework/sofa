@@ -29,7 +29,7 @@ using sofa::defaulttype::Vec3Types;
 using Coord3 = sofa::type::Vec3;
 using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/gui/common/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 #include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
@@ -38,6 +38,8 @@ using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/graph/init.h>
 
+#include <sofa/component/io/mesh/MeshOBJLoader.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 using CGLinearSolver = sofa::component::linearsolver::iterative::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
@@ -65,9 +67,6 @@ using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
 using sofa::simulation::Node;
 
-#include <iostream>
-#include <fstream>
-
 
 // ---------------------------------------------------------------------
 // ---
@@ -80,29 +79,33 @@ int main(int argc, char** argv)
 
     //force load all components
     sofa::component::init();
+    sofa::simulation::graph::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     sofa::gui::common::GUIManager::Init(argv[0]);
 
-    // The graph root node : gravity already exists in a GNode by default
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-    auto groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    const auto groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity( sofa::type::Vec3(0,-10,0) );
 
+    groot->addObject(sofa::core::objectmodel::New<sofa::simulation::DefaultAnimationLoop>());
+
     // One solver for all the graph
-    EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();
+    const EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
 
-    CGLinearSolver::SPtr linearSolver = New<CGLinearSolver>();
+    const CGLinearSolver::SPtr linearSolver = New<CGLinearSolver>();
     linearSolver->setName("linearSolver");
     groot->addObject(linearSolver);
+    linearSolver->d_maxIter.setValue(25);
+    linearSolver->d_tolerance.setValue(1e-5);
+    linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
 
     // Tetrahedron degrees of freedom
-    MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
+    const MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
@@ -117,25 +120,25 @@ int main(int argc, char** argv)
 
 
     // Tetrahedron uniform mass
-    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
+    const UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
     groot->addObject(mass);
     mass->setMass(2);
     mass->setName("mass");
 
     // Tetrahedron topology
-    MeshTopology::SPtr topology = sofa::core::objectmodel::New<MeshTopology>();
+    const MeshTopology::SPtr topology = sofa::core::objectmodel::New<MeshTopology>();
     topology->setName("mesh topology");
     groot->addObject( topology );
     topology->addTetra(0,1,2,3);
 
     // Tetrahedron constraints
-    FixedConstraint3::SPtr constraints = sofa::core::objectmodel::New<FixedConstraint3>();
+    const FixedConstraint3::SPtr constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     constraints->setName("constraints");
     groot->addObject(constraints);
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    TetrahedronFEMForceField3::SPtr fem = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
+    const TetrahedronFEMForceField3::SPtr fem = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
     fem->setName("FEM");
     groot->addObject(fem);
     fem->setMethod("polar");
@@ -144,24 +147,31 @@ int main(int argc, char** argv)
     fem->setPoissonRatio(0.45);
 
     // Tetrahedron skin
-    Node::SPtr skin = groot.get()->createChild("skin");
+    const Node::SPtr skin = groot.get()->createChild("skin");
+
+    // Load the visual mesh
+    const auto meshLoader = sofa::core::objectmodel::New<sofa::component::io::mesh::MeshOBJLoader>();
+    meshLoader->setName( "meshLoader" );
+    meshLoader->setFilename(sofa::helper::system::DataRepository.getFile("mesh/liver-smooth.obj"));
+    meshLoader->setScale(0.7, 0.7, 0.7);
+    meshLoader->setTranslation(1.2, 0.8, 0);
+    skin->addObject(meshLoader);
+
     // The visual model
-    OglModel::SPtr visual = sofa::core::objectmodel::New<OglModel>();
+    const OglModel::SPtr visual = sofa::core::objectmodel::New<OglModel>();
     visual->setName( "visual" );
-    visual->load(sofa::helper::system::DataRepository.getFile("mesh/liver-smooth.obj"), "", "");
     visual->setColor("red");
-    visual->applyScale(0.7, 0.7, 0.7);
-    visual->applyTranslation(1.2, 0.8, 0);
+    visual->setSrc("@meshLoader", meshLoader.get());
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    BarycentricMapping3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3>();
+    const BarycentricMapping3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3>();
     mapping->setModels(DOF.get(), visual.get());
     mapping->setName( "mapping" );
     skin->addObject(mapping);
 
     // Display Flags
-    VisualStyle::SPtr style = sofa::core::objectmodel::New<VisualStyle>();
+    const VisualStyle::SPtr style = sofa::core::objectmodel::New<VisualStyle>();
     groot->addObject(style);
     sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
     flags.setShowNormals(false);
@@ -179,7 +189,7 @@ int main(int argc, char** argv)
     sofa::gui::common::GUIManager::SetScene(groot);
 
     // Init the scene
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     groot->setAnimate(false);
 
     //=======================================

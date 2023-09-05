@@ -23,12 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h")
-
-namespace sofa::component::constraintset
-{
-    using GenericConstraintProblem = sofa::component::constraint::lagrangian::solver::GenericConstraintProblem;
-    using GenericConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
-    using MechanicalGetConstraintResolutionVisitor = sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h")

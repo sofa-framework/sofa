@@ -23,35 +23,34 @@ define_property(TARGET
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-### Sofa using type double or float or both
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+### Sofa using type double or float
+set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
     - what template instanciations will be compiled (via the definition of the
     SOFA_FLOAT and SOFA_DOUBLE macros)
-    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-    is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+    - what is the type behind the 'SReal' typedef used throughout SOFA.")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double)
 
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 1)
+    set(SOFA_FLOAT 0)
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 0)
+    set(SOFA_FLOAT 1)
 endif()
 
 # If you really don't understand the negated logics of SOFA_DOUBLE and
 # SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
 # Eg: SOFA_WITH_FLOAT indicate that you need to generate the
 # float code and SOFA_WITH_DOUBLE indicates that you
-# nedd to generate the double related code.
+# need to generate the double related code.
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 0)
 endif()
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
     set(SOFA_WITH_DOUBLE 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
-    set(SOFA_WITH_FLOAT 1)
-    set(SOFA_WITH_DOUBLE 1)
+    set(SOFA_WITH_FLOAT 0)
 endif()
 
 # Options
@@ -61,8 +60,9 @@ option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macr
 if(MSVC)
     option(SOFA_VECTORIZE "(deprecated) Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
     option(SOFA_ENABLE_SIMD "Enable the use of SIMD instructions by the compiler (AVX/AVX2 for msvc, march=native for gcc/clang)." OFF)
-    option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theorically faster but can bring unexpected results/bugs)." OFF)
 endif()
+option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theoretically faster but can bring unexpected results/bugs)." OFF)
+
 ### Mask
 ### Removed since v21.12
 ### Warn the user if he set the option by himself
@@ -72,12 +72,9 @@ if(SOFA_USE_MASK)
 endif()
 
 ### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
-### Threading
-option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
+option(SOFA_WITH_DEVTOOLS "Compile with development extra features." ON)
 
 # Variables to expose in configured files
-sofa_set_01(SOFA_WITH_THREADING_ VALUE ${SOFA_WITH_THREADING}) # build_option_threading.h.in
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
 
 # Create build and install versions of etc/sofa.ini:
@@ -102,7 +99,6 @@ set(SOURCE_FILES
 set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_dump_visitor.h.in
-    ${SOFACONFIGSRC_ROOT}/config/build_option_threading.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
 
@@ -178,6 +174,10 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PUBLIC -Wno-attributes)
+
+    if(SOFA_ENABLE_FAST_MATH)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-ffast-math")
+    endif()
 endif()
 
 ## Windows-specific

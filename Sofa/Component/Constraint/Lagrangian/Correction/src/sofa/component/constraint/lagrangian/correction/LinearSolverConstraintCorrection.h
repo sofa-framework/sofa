@@ -79,7 +79,7 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    void rebuildSystem(double massFactor, double forceFactor) override;
+    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
 
     /// @name Deprecated API
     /// @{
@@ -99,27 +99,17 @@ public:
 
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
-    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
-        }
-    }
-
+    core::objectmodel::lifecycle::RemovedData  solverName{this, "v22.12", "v23.06", "solverName", "replace \"solverName\" by using an explicit data link: \"linearSolver\" (PR #3152)}"};
 
     void verify_constraints();
 
     bool hasConstraintNumber(int index) override;  // virtual ???
 
-    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering) override;
+    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering) override;
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(SReal*d, int begin,int end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(SReal*df, int begin, int end, bool update) override;
 
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 

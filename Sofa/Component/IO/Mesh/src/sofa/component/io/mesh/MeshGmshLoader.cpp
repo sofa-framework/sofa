@@ -136,7 +136,7 @@ void MeshGmshLoader::addInGroup(type::vector< sofa::core::loader::PrimitiveGroup
     }
 
     stringstream ss;
-    string s;
+    const string s;
     ss << tag;
 
     group.push_back(sofa::core::loader::PrimitiveGroup(tag,1,s,s,-1));
@@ -158,12 +158,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
     unsigned int npoints = 0;
     unsigned int nelems = 0;
-
-    unsigned int nlines = 0;
-    unsigned int ntris = 0;
-    unsigned int nquads = 0;
-    unsigned int ntetrahedra = 0;
-    unsigned int ncubes = 0;
 
     // Accessors to complete the loader data
     auto my_positions = getWriteOnlyAccessor(d_positions);
@@ -304,26 +298,21 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             case 1: // Line
                 addInGroup(my_edgesGroups.wref(), tag, my_edges.size());
                 addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
-                ++nlines;
                 break;
             case 2: // Triangle
                 addInGroup(my_trianglesGroups.wref(), tag, my_triangles.size());
                 addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
-                ++ntris;
                 break;
             case 3: // Quad
                 addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
-                ++nquads;
                 break;
             case 4: // Tetra
                 addInGroup(my_tetrahedraGroups.wref(), tag, my_tetrahedra.size());
                 addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
-                ++ntetrahedra;
                 break;
             case 5: // Hexa
                 addInGroup(my_hexahedraGroups.wref(), tag, my_hexahedra.size());
                 addHexahedron(my_hexahedra.wref(), Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
-                ++ncubes;
                 break;
             case 8: // quadratic edge
                 addInGroup(my_edgesGroups.wref(), tag, my_edges.size());
@@ -336,7 +325,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     hoep[3] = 1;
                     my_highOrderEdgePositions.push_back(hoep);
                 }
-                ++nlines;
                 break;
             case 9: // quadratic triangle
                 addInGroup(my_trianglesGroups.wref(), tag, my_triangles.size());
@@ -360,7 +348,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                         }
                     }
                 }
-                ++ntris;
                 break;
             case 11: // quadratic tetrahedron
                 addInGroup(my_tetrahedraGroups.wref(), tag, my_tetrahedra.size());
@@ -384,7 +371,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                         }
                     }
                 }
-                ++ntetrahedra;
                 break;
             default:
                 //if the type is not handled, skip rest of the line
@@ -403,8 +389,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         unsigned int nbEntityBlocks, nbNodes, minNodeTag, maxNodeTag;
         nodesHeader >> nbEntityBlocks >> nbNodes >> minNodeTag >> maxNodeTag;
 
-        unsigned int nodeCount = 0;
-
         for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
         {
             std::getline(file, cmd); // Reading the entity line
@@ -421,7 +405,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 double x, y, z;
                 coordinates >> x >> y >> z;
                 my_positions.push_back(Vec3(x, y, z));
-                nodeCount++;
             }
         }
 
@@ -518,26 +501,21 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 case 1: // Line
                     addInGroup(my_edgesGroups.wref(), elementTag, my_edges.size());
                     addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
-                    ++nlines;
                     break;
                 case 2: // Triangle
                     addInGroup(my_trianglesGroups.wref(), elementTag, my_triangles.size());
                     addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
-                    ++ntris;
                     break;
                 case 3: // Quadrangle
                     addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
-                    ++nquads;
                     break;
                 case 4: // Tetrahedron
                     addInGroup(my_tetrahedraGroups.wref(), elementTag, my_tetrahedra.size());
                     addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
-                    ++ntetrahedra;
                     break;
                 case 5: // Hexahedron
                     addInGroup(my_hexahedraGroups.wref(), elementTag, my_hexahedra.size());
                     addHexahedron(my_hexahedra.wref(), Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
-                    ++ncubes;
                     break;
                 case 8: // Second order line
                     addInGroup(my_edgesGroups.wref(), elementTag, my_edges.size());
@@ -550,7 +528,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                         hoep[3] = 1;
                         my_highOrderEdgePositions.push_back(hoep);
                     }
-                    ++nlines;
                     break;
                 case 9: // Second order triangle
                     addInGroup(my_trianglesGroups.wref(), elementTag, my_triangles.size());
@@ -576,7 +553,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             }
                         }
                     }
-                    ++ntris;
                     break;
                 case 11: // Second order tetrahedron
                     addInGroup(my_tetrahedraGroups.wref(), elementTag, my_tetrahedra.size());
@@ -602,7 +578,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             }
                         }
                     }
-                    ++ntetrahedra;
                     break;
                     // default: if the type is not handled, nothing to be done
                 }

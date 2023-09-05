@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangularQuadraticSpringsForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -216,8 +217,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
     const VecDeriv& v = d_v.getValue();
 
     unsigned int j,k,l,v0,v1;
-    size_t nbEdges=m_topology->getNbEdges();
-    size_t nbTriangles=m_topology->getNbTriangles();
+    const size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbTriangles=m_topology->getNbTriangles();
 
     Real val,L;
     TriangleRestInformation *tinfo;
@@ -286,7 +287,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
-    int nbTriangles = m_topology->getNbTriangles();
+    const int nbTriangles = m_topology->getNbTriangles();
 
     TriangleRestInformation *tinfo;
 
@@ -400,6 +401,12 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     d_df.endEdit();
 }
 
+template <class DataTypes>
+void TriangularQuadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
@@ -421,10 +428,10 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    size_t nbTriangles=m_topology->getNbTriangles();
+    const size_t nbTriangles=m_topology->getNbTriangles();
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-    std::vector<sofa::type::Vec3> normals;
+    const std::vector<sofa::type::Vec3> normals;
 
     vparams->drawTool()->disableLighting();
 

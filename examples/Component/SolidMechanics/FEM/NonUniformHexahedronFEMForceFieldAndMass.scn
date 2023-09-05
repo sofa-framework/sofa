@@ -1,0 +1,69 @@
+<Node name="SandBox" animate="0" dt="0.06" gravity="0 0 -9.81" multiThreadSimulation="0" time="0.0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceFieldAndMass] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.NonUniform"/> <!-- Needed to use components [NonUniformHexahedronFEMForceFieldAndMass] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showVisual" />
+    <CollisionPipeline verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <include name="Salad Bowl 1" href="Objects/SaladBowl.xml" contactStiffness="10000" dy="-10" dz="-20" scale="100" />
+    <include name="Salad Bowl 2" href="Objects/SaladBowl.xml" contactStiffness="10000" dx="70" dy="-10" dz="-20" scale="100" />
+    <Node name="uniform">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <SparseGridTopology n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" />
+        <MechanicalObject dx="70" ry="25" />
+        <HexahedronFEMForceFieldAndMass youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
+        <Node name="Visuunif">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0 1" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Colliunif">
+            <MeshOBJLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel contactStiffness="1" />
+            <LineCollisionModel contactStiffness="1" />
+            <PointCollisionModel contactStiffness="1" />
+            <BarycentricMapping />
+        </Node>
+    </Node>
+    <Node name="non uniform">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <SparseGridTopology n="8 6 7" fileTopology="mesh/Armadillo_verysimplified.obj" nbVirtualFinerLevels="2" />
+        <MechanicalObject ry="25" />
+        <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
+        <Node name="Visunonunif">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="0.4 0.6 1.0" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Collinonunif">
+            <MeshOBJLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel contactStiffness="1" />
+            <LineCollisionModel contactStiffness="1" />
+            <PointCollisionModel contactStiffness="1" />
+            <BarycentricMapping />
+        </Node>
+    </Node>
+</Node>

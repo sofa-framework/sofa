@@ -291,19 +291,19 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 }
 
 
-double EulerImplicitSolver::getPositionIntegrationFactor() const
+SReal EulerImplicitSolver::getPositionIntegrationFactor() const
 {
     return getPositionIntegrationFactor(getContext()->getDt());
 }
 
-double EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+SReal EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
 {
     return getIntegrationFactor(inputDerivative, outputDerivative, getContext()->getDt());
 }
 
-double EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const
+SReal EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative, SReal dt) const
 {
-    double matrix[3][3] =
+    const SReal matrix[3][3] =
     {
         { 1, dt, 0},
         { 0, 1, 0},
@@ -315,14 +315,14 @@ double EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int output
         return matrix[outputDerivative][inputDerivative];
 }
 
-double EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
+SReal EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
 {
     return getSolutionIntegrationFactor(outputDerivative, getContext()->getDt());
 }
 
-double EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative, double dt) const
+SReal EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative, SReal dt) const
 {
-    double vect[3] = { dt, 1, 1/dt};
+    const SReal vect[3] = { dt, 1, 1/dt};
     if (outputDerivative >= 3)
         return 0;
     else

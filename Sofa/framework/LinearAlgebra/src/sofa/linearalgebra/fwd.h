@@ -27,6 +27,6 @@ namespace sofa::linearalgebra
 class BaseMatrix;
 class BaseVector;
 
-template<typename TBlock, typename TVecBlock, typename TVecIndex>
-class CompressedRowSparseMatrix;
+//template<typename TBlock, typename TPolicy>
+//class CompressedRowSparseMatrix;
 }

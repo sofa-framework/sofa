@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/select/SubsetTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SubsetTopology.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using SubsetTopology = sofa::component::engine::select::SubsetTopology<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SubsetTopology.h")

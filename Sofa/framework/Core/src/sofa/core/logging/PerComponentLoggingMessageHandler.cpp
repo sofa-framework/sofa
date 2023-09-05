@@ -26,18 +26,12 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-namespace percomponentloggingmessagehandler
+namespace sofa::helper::logging::percomponentloggingmessagehandler
 {
 
 void PerComponentLoggingMessageHandler::process(Message& m)
 {
-    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>( m.componentInfo().get() ) ;
+    const SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>( m.componentInfo().get() ) ;
     if(nfo != nullptr)
     {
         nfo->m_component->addMessage( m ) ;
@@ -53,10 +47,5 @@ PerComponentLoggingMessageHandler& MainPerComponentLoggingMessageHandler::getIns
     static PerComponentLoggingMessageHandler s_instance;
     return s_instance;
 }
-
-
-} // percomponentloggingmessagehandler
-} // logging
-} // helper
-} // sofa
+} // sofa::helper::logging::percomponentloggingmessagehandler
 

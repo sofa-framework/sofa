@@ -43,8 +43,8 @@ template <class DataTypes>
 void MappedObject<DataTypes>::init()
 {
     if (getSize() == 0)
-    {        
-        sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
+    {
+        const sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
         auto nbp = mstate->getSize();
         if (nbp > 0)
         {

@@ -31,6 +31,11 @@
 namespace sofa::gl
 {
 
+namespace {
+    using sofa::type::Vec3f;
+    using sofa::type::Vec2f;
+}
+
 template <typename T>
 void GlText::setText ( const T& text )
 {
@@ -56,11 +61,11 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
 
     std::ostringstream oss;
     oss << text;
-    std::string str = oss.str();
-	std::size_t length = str.size();
+    const std::string str = oss.str();
+    const std::size_t length = str.size();
 
-    std::vector<Vector3> vertices;
-    std::vector<Vector2> UVs;
+    std::vector<type::Vec3f> vertices;
+    std::vector<type::Vec2f> UVs;
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
@@ -92,10 +97,10 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
 
 	for (std::size_t j = 0; j < length; j++)
     {
-        Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
-        Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
-        Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0, 0.0);
-        Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0, 0.0);
+        Vec3f vertex_up_left = Vec3f(j*worldWidth, worldHeight, 0.0);
+        Vec3f vertex_up_right = Vec3f(j*worldWidth + worldWidth, worldHeight, 0.0);
+        Vec3f vertex_down_right = Vec3f(j*worldWidth + worldWidth, 0.0, 0.0);
+        Vec3f vertex_down_left = Vec3f(j*worldWidth, 0.0, 0.0);
 
         vertices.push_back(vertex_up_left);
         vertices.push_back(vertex_down_left);
@@ -105,15 +110,15 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
         vertices.push_back(vertex_up_right);
         vertices.push_back(vertex_down_left);
 
-        char character = str[j] - 32;
+        const char character = str[j] - 32;
 
         float uv_x = (character % nb_char_width) / (float)nb_char_width;
         float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
 
-        Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
-        Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
-        Vector2 uv_down_right = Vector2(uv_x + (1.0f / (float)nb_char_width), uv_y);
-        Vector2 uv_down_left = Vector2(uv_x, uv_y);
+        Vec2f uv_up_left = Vec2f(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
+        Vec2f uv_up_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
+        Vec2f uv_down_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), uv_y);
+        Vec2f uv_down_left = Vec2f(uv_x, uv_y);
 
         UVs.push_back(uv_up_left);
         UVs.push_back(uv_down_left);

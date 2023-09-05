@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/ProjectDirectionConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ProjectDirectionConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using ProjectDirectionConstraint = sofa::component::constraint::projective::ProjectDirectionConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ProjectDirectionConstraint.h")

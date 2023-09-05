@@ -24,6 +24,91 @@
 namespace sofa::core::topology
 {
 
+TopologicalMapping::TopologicalMapping()
+    : fromModel(initLink("input", "Input topology to map"))
+    , toModel(initLink("output", "Output topology to map"))
+{
+
+}
+
+
+void TopologicalMapping::setTopologies(In* from, Out* to)
+{
+    this->fromModel.set(from);
+    this->toModel.set(to);
+}
+
+
+Index TopologicalMapping::getGlobIndex(Index ind)
+{
+    if (ind < (Loc2GlobDataVec.getValue()).size())
+    {
+        return (Loc2GlobDataVec.getValue())[ind];
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+Index TopologicalMapping::getFromIndex(Index ind) 
+{ 
+    SOFA_UNUSED(ind);
+    return 0; 
+}
+
+
+void TopologicalMapping::dumpGlob2LocMap()
+{
+    std::map<Index, Index>::iterator itM;
+    msg_info() << "## Log Glob2LocMap - size: " << Glob2LocMap.size() << " ##";
+    for (itM = Glob2LocMap.begin(); itM != Glob2LocMap.end(); ++itM)
+        msg_info() << (*itM).first << " - " << (*itM).second;
+
+    msg_info() << "#################";
+}
+
+
+void TopologicalMapping::dumpLoc2GlobVec()
+{
+    const sofa::type::vector<Index>& buffer = Loc2GlobDataVec.getValue();
+    msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
+    for (Index i = 0; i < buffer.size(); ++i)
+        msg_info() << i << " - " << buffer[i];
+
+    msg_info() << "#################";
+}
+
+
+bool TopologicalMapping::checkTopologyInputTypes()
+{
+    if (m_inputType == TopologyElementType::UNKNOWN)
+    {
+        dmsg_error() << "The input TopologyElementType has not been set. Define 'm_inputType' to the correct TopologyElementType in the constructor.";
+        return false;
+    }
+
+    if (m_outputType == TopologyElementType::UNKNOWN)
+    {
+        dmsg_error() << "The output TopologyElementType has not been set. Define 'm_outputType' to the correct TopologyElementType in the constructor.";
+        return false;
+    }
+
+
+    if (fromModel.get()->getTopologyType() != m_inputType)
+    {
+        msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_inputType) << "' topology.";
+        return false;
+    }
+
+    if (toModel.get()->getTopologyType() != m_outputType)
+    {
+        msg_error() << "The type of the output topology '" << toModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_outputType) << "' topology.";
+        return false;
+    }
+
+    return true;
+}
 
 } /// namespace sofa::core::topology
 

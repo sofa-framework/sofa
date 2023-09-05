@@ -68,7 +68,7 @@ public:
             if (i>=map->entries.size()-1) return map->entries.back();
 
             Color c1 = map->entries[i];
-            Color c2 = map->entries[i+1];
+            const Color c2 = map->entries[i+1];
             return c1+(c2-c1)*(e-i);
         }
     protected:

@@ -28,12 +28,17 @@
 namespace sofa::component::visual
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
+
 class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    typedef sofa::type::Vec3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
     enum PLANE
     {
@@ -41,8 +46,6 @@ public:
         PLANE_Y = 1,
         PLANE_Z = 2
     };
-
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string> d_plane; ///< Plane of the grid
 
@@ -52,14 +55,15 @@ public:
 
     Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
     Data<float> d_thickness; ///< Thickness of the lines in the grid
-    Data<bool> d_draw; ///< Display the grid or not
+    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
+
 
     VisualGrid();
     ~VisualGrid() override = default;
 
     void init() override;
     void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
+    void doDrawVisual(const core::visual::VisualParams*) override;
     void updateVisual() override;
     void buildGrid();
 
@@ -68,7 +72,7 @@ protected:
     PLANE internalPlane;
 
     ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vector3> m_drawnPoints;
+    sofa::type::vector<Vec3> m_drawnPoints;
 
 };
 

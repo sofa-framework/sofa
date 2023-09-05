@@ -7,6 +7,8 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showVisualModels showWireframe" />
+    <DefaultAnimationLoop/>
+    
     <Node name="input">
         <MeshTopology name="surface" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" />
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="true" size="0.2" alphaLong="0.2" alphaShort="0.4" inputPoints="@surface.position" inputTriangles="@surface.triangles" inputQuads="@surface.quads"  />
@@ -16,6 +18,6 @@
         <TetrahedronSetTopologyContainer name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <VTKExporter filename="volumetricTongue" edges="0" tetras="1" listening="true" exportAtBegin="true" />
-        <MechanicalObject template="Vec3d"/>
+        <MechanicalObject template="Vec3"/>
     </Node>
 </Node>

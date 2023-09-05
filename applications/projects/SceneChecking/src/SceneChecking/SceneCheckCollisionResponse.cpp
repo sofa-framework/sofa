@@ -22,12 +22,15 @@
 #include "SceneCheckCollisionResponse.h"
 
 #include <sofa/simulation/Node.h>
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
 namespace sofa::_scenechecking_
 {
+
+const bool SceneCheckCollisionResponseRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckCollisionResponse::newSPtr());
 
 using sofa::simulation::Node;
 
@@ -53,15 +56,15 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
         return;
 
     const sofa::core::objectmodel::BaseContext* root = node->getContext()->getRootContext();
-    std::vector<sofa::component::collision::response::contact::DefaultContactManager*> contactManager;
-    root->get<sofa::component::collision::response::contact::DefaultContactManager>(&contactManager, sofa::core::objectmodel::BaseContext::SearchDown);
+    std::vector<sofa::component::collision::response::contact::CollisionResponse*> contactManager;
+    root->get<sofa::component::collision::response::contact::CollisionResponse>(&contactManager, sofa::core::objectmodel::BaseContext::SearchDown);
     m_checkDone=true;
     const sofa::Size nbContactManager = contactManager.size();
     if( nbContactManager  > 0 )
     {
         if( nbContactManager!= 1 )
         {
-            m_message << "Only one DefaultContactManager is needed."<< msgendl;
+            m_message << "Only one CollisionResponse is needed."<< msgendl;
         }
         else
         {
@@ -93,7 +96,26 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
                 {
                     m_message <<"A FreeMotionAnimationLoop must be in the scene to solve FrictionContactConstraint" << msgendl;
                 }
+                else
+                {
+                    checkIfContactStiffnessIsSet(root);
+                }
             }
+        }
+    }
+}
+
+void SceneCheckCollisionResponse::checkIfContactStiffnessIsSet(const sofa::core::objectmodel::BaseContext* root)
+{
+    type::vector<core::CollisionModel*> colModels;
+    root->get<core::CollisionModel>(&colModels, core::objectmodel::BaseContext::SearchDown);
+    for (const auto model : colModels)
+    {
+        if(model->isContactStiffnessSet())
+        {
+            m_message <<"The data \"contactStiffness\" is set in the component " << model->getClassName() <<" named " << model->getName() << msgendl;
+            m_message <<"This data is not used when using a FrictionContactConstraint collision response." << msgendl;
+            m_message <<"Remove the data \"contactStiffness\" to remove this warning" << msgendl;
         }
     }
 }

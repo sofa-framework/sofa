@@ -49,7 +49,6 @@ public:
 
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-
     /// indices of the points the force applies to
     SetIndex d_indices;
 
@@ -60,7 +59,8 @@ public:
     Data< VecDeriv > d_forces;
 
     /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv > d_force;
+    SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA()
+    sofa::core::objectmodel::lifecycle::RemovedData d_force{this, "v23.12", "v24.06", "force", "Replace \"force\" by using the \"forces\" data (providing only one force value) (PR #4019)}"};
 
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv > d_totalForce;
@@ -71,17 +71,11 @@ public:
     /// display color
     Data< sofa::type::RGBAColor > d_color;
 
-    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
-    Data< bool > indexFromEnd;
-
     /// Link to be set to the topology container in the component graph.
     SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Init function
     void init() override;
-
-    /// Re-init function
-    void reinit() override;
 
     /// Add the forces
     void addForce (const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
@@ -95,12 +89,11 @@ public:
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) ;
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Update data and internal vectors
-    void doUpdateInternal() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& force );
@@ -108,21 +101,35 @@ public:
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final
+    {
+        // No damping in this ForceField
+    }
+
 
 protected:
     ConstantForceField();
+
+    /// Functions updating data
+    sofa::core::objectmodel::ComponentState updateFromIndices();
+    sofa::core::objectmodel::ComponentState updateFromForcesVector();
+    sofa::core::objectmodel::ComponentState updateFromTotalForce();
 
     /// Functions checking inputs before update
     bool checkForce(const Deriv&  force);
     bool checkForces(const VecDeriv& forces);
 
     /// Functions computing and updating the constant force vector
-    void computeForceFromSingleForce();
-    void computeForceFromForceVector();
-    void computeForceFromTotalForce();
+    sofa::core::objectmodel::ComponentState computeForceFromSingleForce(const Deriv singleForce);
+    sofa::core::objectmodel::ComponentState computeForceFromForcesVector(const VecDeriv &forces);
+    sofa::core::objectmodel::ComponentState computeForceFromTotalForce(const Deriv &totalForce);
 
     /// Save system size for update of indices (doUpdateInternal)
     size_t m_systemSize;
+
+    /// Boolean specifying whether the data totalMass has been initially given
+    /// (else forces vector is being used)
+    bool m_isTotalForceUsed;
 };
 
 template <>

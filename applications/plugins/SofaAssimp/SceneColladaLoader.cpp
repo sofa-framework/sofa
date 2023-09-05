@@ -1017,8 +1017,8 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                 localRigid.getCenter()[0] = localTranformation[0][3];
                 localRigid.getCenter()[1] = localTranformation[1][3];
                 localRigid.getCenter()[2] = localTranformation[2][3];
-                Mat3x3d rot; rot = localTranformation;
-                localRigid.getOrientation().fromMatrix(rot);
+                Mat3x3d tmprot; tmprot = localTranformation;
+                localRigid.getOrientation().fromMatrix(tmprot);
 
                 skeletonJoint.mTimes[l] = time;
                 skeletonJoint.mChannels[l] = localRigid;

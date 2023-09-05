@@ -151,11 +151,11 @@ template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::handleTopologyChange()
 {
     std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     while( itBegin != itEnd )
     {
-        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        const core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
         switch( changeType )
         {
@@ -247,7 +247,7 @@ void CudaVisualModel< TDataTypes >::updateTopology()
         for (unsigned int j=0; j<e.size(); j++)
             setV(e[j], nelems[e[j]]++, i);
     }
-    int i0 = triangles.size();
+    const int i0 = triangles.size();
     for (unsigned int i=0; i<quads.size(); i++)
     {
         const Quad& e = qptr[i];
@@ -298,23 +298,23 @@ void CudaVisualModel< TDataTypes >::updateVisual()
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawVisual(const core::visual::VisualParams* vparams)
+void CudaVisualModel< TDataTypes >::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent) internalDraw(vparams);
 }
 
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (transparent) internalDraw(vparams);
 }
 
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams* vparams)
 {
-    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent /* && getCastShadow() */ ) internalDraw(vparams);
 }
 
@@ -331,7 +331,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     vparams->drawTool()->enableLighting();
 
-    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    const bool transparent = (matDiffuse.getValue()[3] < 1.0);
 
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -375,7 +375,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     bool vbo = useVBO.getValue();
 
-    GLuint vbo_x = vbo ? x.bufferRead(true) : 0;
+    const GLuint vbo_x = vbo ? x.bufferRead(true) : 0;
     if (vbo_x)
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo_x);
@@ -386,7 +386,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     if (computeNormals.getValue())
     {
-        GLuint vbo_n = vbo ? vnormals.bufferRead(true) : 0;
+        const GLuint vbo_n = vbo ? vnormals.bufferRead(true) : 0;
         if (vbo_n)
         {
             glBindBuffer(GL_ARRAY_BUFFER, vbo_n);
@@ -400,7 +400,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     if (triangles.size() > 0)
     {
-        GLuint vbo_t = vbo ? triangles.bufferRead(true) : 0;
+        const GLuint vbo_t = vbo ? triangles.bufferRead(true) : 0;
         if (vbo_t)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_t);
@@ -412,7 +412,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     if (quads.size() > 0)
     {
-        GLuint vbo_q = vbo ? quads.bufferRead(true) : 0;
+        const GLuint vbo_q = vbo ? quads.bufferRead(true) : 0;
         if (vbo_q)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_q);
@@ -461,6 +461,9 @@ template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, bool)
 {
     SOFA_UNUSED(params);
+
+    if (!state)
+        return;
 
     const VecCoord& x = state->write(core::VecCoordId::position())->getValue();
 

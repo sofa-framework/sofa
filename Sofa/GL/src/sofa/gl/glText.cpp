@@ -106,13 +106,13 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     static const float worldHeight = 1.0f;
     static const float worldWidth = 0.50f;
 
-    std::vector<Vector3> vertices;
-    std::vector<Vector2> UVs;
+    std::vector<Vec3f> vertices;
+    std::vector<Vec2f> UVs;
 
     std::ostringstream oss;
     oss << text;
-    std::string str = oss.str();
-    std::size_t length = str.size();
+    const std::string str = oss.str();
+    const std::size_t length = str.size();
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
@@ -130,25 +130,25 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
     for (std::size_t j = 0; j < length; j++)
     {
-        Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.f);
-        Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.f);
-        Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.f, 0.f);
-        Vector3 vertex_down_left = Vector3(j*worldWidth, 0.f, 0.f);
+        Vec3f vertex_up_left = Vec3f(j*worldWidth, worldHeight, 0.f);
+        Vec3f vertex_up_right = Vec3f(j*worldWidth + worldWidth, worldHeight, 0.f);
+        Vec3f vertex_down_right = Vec3f(j*worldWidth + worldWidth, 0.f, 0.f);
+        Vec3f vertex_down_left = Vec3f(j*worldWidth, 0.f, 0.f);
 
         vertices.push_back(vertex_up_left);
         vertices.push_back(vertex_down_left);
         vertices.push_back(vertex_down_right);
         vertices.push_back(vertex_up_right);
 
-        char character = str[j] - 32;
+        const char character = str[j] - 32;
 
         float uv_x = (character % nb_char_width) / (float)nb_char_width;
         float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
 
-        Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
-        Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
-        Vector2 uv_down_right = Vector2(uv_x + (1.0f / (float)nb_char_width), uv_y);
-        Vector2 uv_down_left = Vector2(uv_x, uv_y);
+        Vec2f uv_up_left = Vec2f(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
+        Vec2f uv_up_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
+        Vec2f uv_down_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), uv_y);
+        Vec2f uv_down_left = Vec2f(uv_x, uv_y);
 
         UVs.push_back(uv_up_left);
         UVs.push_back(uv_down_left);
@@ -199,10 +199,10 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
         std::ostringstream oss;
         oss << i;
         std::string str = oss.str();
-        std::size_t length = str.size();
+        const std::size_t length = str.size();
 
-        std::vector<Vector3> vertices;
-        std::vector<Vector2> UVs;
+        std::vector<Vec3f> vertices;
+        std::vector<Vec2f> UVs;
 
         glDisable(GL_LIGHTING);
 
@@ -223,25 +223,25 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
         glRotatef(180.0, 1, 0, 0);
         for (std::size_t j = 0; j < length; j++)
         {
-            Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0f);
-            Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0f);
-            Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0f, 0.0f);
-            Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0f, 0.0f);
+            Vec3f vertex_up_left = Vec3f(j*worldWidth, worldHeight, 0.0f);
+            Vec3f vertex_up_right = Vec3f(j*worldWidth + worldWidth, worldHeight, 0.0f);
+            Vec3f vertex_down_right = Vec3f(j*worldWidth + worldWidth, 0.0f, 0.0f);
+            Vec3f vertex_down_left = Vec3f(j*worldWidth, 0.0f, 0.0f);
 
             vertices.push_back(vertex_up_left);
             vertices.push_back(vertex_down_left);
             vertices.push_back(vertex_down_right);
             vertices.push_back(vertex_up_right);
 
-            char character = str[j] - 32;
+            const char character = str[j] - 32;
 
             float uv_x = (character % nb_char_width) / (float)nb_char_width;
             float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
 
-            Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
-            Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
-            Vector2 uv_down_right = Vector2(uv_x + (1.0f / (float)nb_char_width), uv_y);
-            Vector2 uv_down_left = Vector2(uv_x, uv_y);
+            Vec2f uv_up_left = Vec2f(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
+            Vec2f uv_up_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
+            Vec2f uv_down_right = Vec2f(uv_x + (1.0f / (float)nb_char_width), uv_y);
+            Vec2f uv_down_left = Vec2f(uv_x, uv_y);
 
             UVs.push_back(uv_up_left);
             UVs.push_back(uv_down_left);

@@ -1,0 +1,94 @@
+<!-- Requires php install. On 30/11/22, installed with Ubuntu 22.04.01, using php 8.1 https://tecadmin.net/how-to-install-php-on-ubuntu-22-04/  -->
+
+<?xml version="1.0" ?>
+<?php echo '<!-- Generated from benchmark_cubes.pscn -->';?>
+
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+
+    <Node name="pluginList" >
+        <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/>
+        <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->  
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline] -->  
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->  
+        <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->  
+        <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->  
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
+        <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->  
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+        <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->  
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+        <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
+    </Node>
+
+
+    <VisualStyle displayFlags="showBehavior showCollisionModels" />
+    <OglSceneFrame/>
+
+    <!-- Basic Components to perform the collision detection -->
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"/>
+    <DefaultPipeline name="CollisionPipeline" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
+    <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
+    <!-- Using a rigid cube using collision triangles, lines and points  -->
+
+    <Node name="grid0">
+
+        <?php
+        $dim_x = 3;
+        $dim_y = 6;
+        $dim_z = 4;
+        echo '<OglLabel label="'.$dim_z*$dim_y*$dim_x.' cubes" selectContrastingColor="true"/>';
+
+
+        for ($z = 0; $z < $dim_z; $z++)
+        {
+            for ($y = 0; $y < $dim_y; $y++)
+            {
+                for ($x = 0; $x < $dim_x; $x++)
+                {
+                    $i = (($z * $dim_y) + $y) * $dim_x + $x;
+                    $tx = 3.5 * $x + rand() / getrandmax();
+                    $ty = 4.5 * $y + rand() / getrandmax();
+                    $tz = 3.5 * $z + rand() / getrandmax();
+        ?>
+
+<?php echo '        <Node name="Cube'.$i.'">';?>
+
+            <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+
+<?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
+
+            <UniformMass name="UniformMass" totalMass="10.0" />
+            <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+            <Node name="Collision Model">
+                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
+                <MechanicalObject name="Collision_Cube" />
+                <!-- Collision Models -->
+                <OBBCollisionModel/>
+                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
+            </Node>
+        </Node>
+
+        <?php
+        }}}
+        ?>
+
+    </Node>
+
+    <Node name="Floor">
+        <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
+        <MechanicalObject name="Floor Particles" scale3d="0.3 1 0.5" rotation="10 0 0"/>
+        <!-- Collision Models -->
+        <TriangleCollisionModel name="Floor Triangle For Collision" moving="0" simulated="0" />
+    </Node>
+</Node>

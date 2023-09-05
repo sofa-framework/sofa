@@ -127,19 +127,32 @@ public:
     /// if they are compatible with the input and output model types of this
     /// mapping.
     template<class T>
-    static bool canCreate ( T*& /*obj*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
-            msg_error(context) << "Cannot create " << T::GetClass()->className << " as the hexas container is missing.";
+        bool error = false;
+        if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr)
+        {
+            arg->logError("Cannot create " + T::GetClass()->className + " as the hexas container is missing.");
+            error = true;
         }
-        if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
-            msg_error(context) << "Cannot create " << T::GetClass()->className << " as the target point set is missing.";
+        else if ( dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
+        {
+            arg->logError("Object pointed by data attribute 'hexaContainerPath' is not of type "
+                + sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer::GetClass()->className);
+            error = true;
         }
-        if ( dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
-            return false;
-        if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )
-            return false;
-        return true;
+
+        if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr)
+        {
+            arg->logError("Cannot create " + T::GetClass()->className + " as the target point set is missing.");
+            error = true;
+        }
+        else if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )
+        {
+            arg->logError("Data attribute 'targetPath' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) +"'.");
+            error = true;
+        }
+        return !error && core::DataEngine::canCreate(obj, context, arg);
     }
     /// Construction method called by ObjectFactory.
     ///

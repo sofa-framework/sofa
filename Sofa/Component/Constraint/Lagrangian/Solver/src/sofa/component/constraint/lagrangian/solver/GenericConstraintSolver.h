@@ -54,7 +54,7 @@ public:
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void buildSystem_matrixFree(unsigned int numConstraints);
     void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
-    void rebuildSystem(double massFactor, double forceFactor) override;
+    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
@@ -106,9 +106,6 @@ protected:
 
     void clearConstraintProblemLocks();
 
-    void parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
-    void sequentialBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
-
     enum { CP_BUFFER_SIZE = 10 };
     sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
@@ -124,29 +121,23 @@ protected:
 
 private:
 
-    class ComputeComplianceTask : public simulation::CpuTask
+    struct ComplianceWrapper
     {
-    public:
-        ComputeComplianceTask(simulation::CpuTask::Status* status): CpuTask(status) {}
-        ~ComputeComplianceTask() override {}
+        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
 
-        MemoryAlloc run() final {
-            cc->addComplianceInConstraintSpace(&cparams, &W);
-            return MemoryAlloc::Stack;
-        }
+        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
+        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
 
-        void set(core::behavior::BaseConstraintCorrection* _cc, core::ConstraintParams _cparams, int dim){
-            cc = _cc;
-            cparams = _cparams;
-            W.resize(dim,dim);
-        }
+        ComplianceMatrixType& matrix();
+
+        void assembleMatrix() const;
 
     private:
-        core::behavior::BaseConstraintCorrection* cc { nullptr };
-        sofa::linearalgebra::LPtrFullMatrix<SReal> W;
-        core::ConstraintParams cparams;
-        friend class GenericConstraintSolver;
+        bool m_isMultiThreaded { false };
+        ComplianceMatrixType& m_complianceMatrix;
+        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
     };
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

@@ -43,7 +43,7 @@ VisualTransform::~VisualTransform()
 
 void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
 {
-    Coord xform = transform.getValue();
+    const Coord xform = transform.getValue();
     vparams->drawTool()->pushMatrix();
     ++nbpush;
     float glTransform[16];
@@ -71,7 +71,7 @@ void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
     //pop(vparams);
 }
 
-void VisualTransform::drawVisual(const sofa::core::visual::VisualParams* vparams)
+void VisualTransform::doDrawVisual(const sofa::core::visual::VisualParams* vparams)
 {
     if (!recursive.getValue())
         pop(vparams);

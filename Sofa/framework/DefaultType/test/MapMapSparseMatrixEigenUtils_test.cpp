@@ -32,11 +32,11 @@ namespace
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
 {
-    typedef Eigen::SparseMatrix<double, Eigen::RowMajor> EigenSparseMatrix;
+    typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> EigenSparseMatrix;
 
     EigenSparseMatrix mat(5,5);
 
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         {0,0,0}, {0,1,3},
         {1,0,22}, {1,4,17},
@@ -50,7 +50,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
 
     int*    outerIndexPtr = mat.outerIndexPtr();
     int*    innerIndexPtr = mat.innerIndexPtr();
-    double* valuePtr = mat.valuePtr();
+    SReal* valuePtr = mat.valuePtr();
 
 
     int nonZero_0 = *(outerIndexPtr + 0+1) - *(outerIndexPtr+0);
@@ -82,7 +82,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
     
     for (int i = 0; i < mat.nonZeros(); ++i)
     {
-        double value = *(valuePtr + i);
+        SReal value = *(valuePtr + i);
         EXPECT_EQ(matEntries[i].value(), value);
     }
 }
@@ -90,14 +90,14 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec1d)
 {
-    typedef sofa::type::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, SReal > TVec;
 
     typedef sofa::defaulttype::EigenSparseToMapMapSparseMatrix< TVec > EigenSparseToMapMapSparseVec1d;
     EigenSparseToMapMapSparseVec1d eigenSparseToMapMapVec1d;
     typedef typename EigenSparseToMapMapSparseVec1d::EigenSparseMatrix EigenSparseMatrix;
     typedef typename EigenSparseToMapMapSparseVec1d::TMapMapSparseMatrix TMapMapSparseMatrix;
 
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         { 0,0,0 },{ 0,1,3 },
         { 1,0,22 },{ 1,4,17 },
@@ -131,7 +131,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec3d)
 {
-    typedef  sofa::type::Vec<3, double > TVec;
+    typedef  sofa::type::Vec<3, SReal > TVec;
     typedef sofa::defaulttype::EigenSparseToMapMapSparseMatrix< TVec > EigenSparseToMapMapSparseVec3d;
     EigenSparseToMapMapSparseVec3d eigenSparseToMapMapVec3d;
     typedef typename EigenSparseToMapMapSparseVec3d::EigenSparseMatrix EigenSparseMatrix;
@@ -139,7 +139,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
 
 
     EigenSparseMatrix eigenMat(12, 12);
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         { 3,3,0.1 },{ 3,4,0.2 },{ 3,5,0.3 }
     };
@@ -166,7 +166,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSparse)
 {
-    typedef sofa::type::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, SReal > TVec;
     typedef sofa::defaulttype::MapMapSparseMatrixToEigenSparse< TVec > MapMapSparseMatrixToEigenSparseVec1d;
     MapMapSparseMatrixToEigenSparseVec1d mapmapSparseToEigenSparse;
     typedef typename MapMapSparseMatrixToEigenSparseVec1d::EigenSparseMatrix EigenSparseMatrix;
@@ -174,7 +174,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
 
     TMapMapSparseMatrix mat;
 
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         { 0,0,0 },{ 0,1,3 },
         { 1,0,22 },{ 1,4,17 },
@@ -186,8 +186,8 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
 
     while(it != matEntries.end())
     {
-        int row = it->row();
-        int col = it->col();
+        const int row = it->row();
+        const int col = it->col();
         TVec vec;
         for (std::size_t i = 0; i < TVec::size(); ++i)
         {
@@ -198,7 +198,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
         mat.writeLine(row).setCol(col,vec);
     }
 
-    EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 5);
+    const EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 5);
 
     for (auto row = mat.begin(); row != mat.end(); ++row)
     {
@@ -217,7 +217,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSparse)
 {
-    typedef sofa::type::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, SReal > TVec;
     typedef sofa::defaulttype::MapMapSparseMatrixToEigenSparse< TVec > checkConversionMapMapSparseVec3dEigenSparse;
     checkConversionMapMapSparseVec3dEigenSparse mapmapSparseToEigenSparse;
     typedef typename checkConversionMapMapSparseVec3dEigenSparse::EigenSparseMatrix EigenSparseMatrix;
@@ -225,7 +225,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
 
     TMapMapSparseMatrix mat;
 
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         { 3,3,0.1 },{ 3,4,0.2 },{ 3,5,0.3 }
     };
@@ -235,8 +235,8 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
 
     while (it != matEntries.end())
     {
-        int row = it->row();
-        int col = it->col();
+        const int row = it->row();
+        const int col = it->col();
         TVec vec;
         for (std::size_t i = 0; i < TVec::size(); ++i)
         {
@@ -247,7 +247,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
         mat.writeLine(row).setCol(col, vec);
     }
 
-    EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 12);
+    const EigenSparseMatrix eigenMat = mapmapSparseToEigenSparse(mat, 12);
 
     for (auto row = mat.begin(); row != mat.end(); ++row)
     {
@@ -266,11 +266,11 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkAddMultTransposeEigenForCumulativeWrite)
 {
-    typedef Eigen::SparseMatrix<double, Eigen::RowMajor> EigenSparseMatrix;
+    typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> EigenSparseMatrix;
 
     EigenSparseMatrix jacobian(3, 6); // as in rigid mapping block
 
-    std::vector< Eigen::Triplet<double> > matEntries =
+    std::vector< Eigen::Triplet<SReal> > matEntries =
     {
         { 0,0,1 }, { 1,1,1 }, {2,2,1}, // identity block
 

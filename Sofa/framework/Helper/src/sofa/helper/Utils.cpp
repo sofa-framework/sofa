@@ -62,7 +62,7 @@ std::wstring Utils::widenString(const std::string& s)
     // Call mbsrtowcs() once to find out the length of the converted string.
     size_t length = mbsrtowcs(nullptr, &src, 0, nullptr);
     if (length == size_t(-1)) {
-        int error = errno;
+        const int error = errno;
         msg_warning("Utils::widenString()") << strerror(error);
         return L"";
     }
@@ -71,7 +71,7 @@ std::wstring Utils::widenString(const std::string& s)
     wchar_t * buffer = new wchar_t[length + 1];
     length = mbsrtowcs(buffer, &src, length + 1, nullptr);
     if (length == size_t(-1)) {
-        int error = errno;
+        const int error = errno;
         msg_warning("Utils::widenString()") << strerror(error);
         delete[] buffer;
         return L"";
@@ -137,7 +137,7 @@ std::string Utils::upcaseString(const std::string& s)
 std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
-    DWORD dwErrorCode = ::GetLastError();
+    const DWORD dwErrorCode = ::GetLastError();
 
     // Get the string corresponding to the error code
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
@@ -158,7 +158,7 @@ std::string Utils::GetLastError() {
                     TEXT("error %d: %s"),
                     dwErrorCode, lpErrMsgBuf);
 
-    std::wstring wsMessage((LPCTSTR)lpMessageBuf);
+    const std::wstring wsMessage((LPCTSTR)lpMessageBuf);
     LocalFree(lpErrMsgBuf);
     LocalFree(lpMessageBuf);
     return narrowString(wsMessage);
@@ -171,9 +171,9 @@ static std::string computeExecutablePath()
 
 #if defined(WIN32)
     std::vector<TCHAR> lpFilename(MAX_PATH);
-    int ret = GetModuleFileName(nullptr, /* nullptr --> executable of the current process */
-        &lpFilename[0],
-        MAX_PATH);
+    const int ret = GetModuleFileName(nullptr, /* nullptr --> executable of the current process */
+                                      &lpFilename[0],
+                                      MAX_PATH);
     if (ret == 0 || ret == MAX_PATH) {
         msg_error("Utils::computeExecutablePath()") << Utils::GetLastError();
     } else {
@@ -219,14 +219,14 @@ const std::string& Utils::getExecutableDirectory()
 
 static std::string computeSofaPathPrefix()
 {
-    char* pathVar = getenv("SOFA_ROOT");
+    const char* pathVar = getenv("SOFA_ROOT");
     if (pathVar != nullptr && FileSystem::exists(pathVar))
     {
         return FileSystem::convertBackSlashesToSlashes(pathVar);
     }
     else {
         const std::string exePath = Utils::getExecutablePath();
-        std::size_t pos = exePath.rfind("/bin/");
+        const std::size_t pos = exePath.rfind("/bin/");
         if (pos == std::string::npos) {
             // This triggers a segfault on MacOS (static call problem): see https://github.com/sofa-framework/sofa/issues/636
             // msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
@@ -248,7 +248,7 @@ const std::string& Utils::getSofaPathPrefix()
 
 const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
 {
-    std::string path = Utils::getSofaPathPrefix() + "/" + pathFromBuildDir;
+    std::string path = FileSystem::append(Utils::getSofaPathPrefix(), pathFromBuildDir);
     if(FileSystem::exists(path))
     {
         return path;
@@ -271,7 +271,7 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
     std::string line;
     while (std::getline(iniFile, line))
     {
-        size_t equalPos = line.find_first_of('=');
+        const size_t equalPos = line.find_first_of('=');
         if (equalPos != std::string::npos)
         {
             const std::string key = line.substr(0, equalPos);

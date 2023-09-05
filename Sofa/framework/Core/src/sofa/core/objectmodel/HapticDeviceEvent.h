@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
-#define SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/type/Quat.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -110,15 +103,8 @@ public:
 private:
 
     unsigned int	m_deviceId;
-    sofa::type::Vec3 m_position; ///< Haptic device coordinates in a Vector3 type.
+    sofa::type::Vec3 m_position; ///< Haptic device coordinates in 3D space.
     sofa::type::Quat<SReal> m_orientation; ///< Haptic device orientation.
     unsigned char m_buttonState;
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
+} // namespace sofa::core::objectmodel

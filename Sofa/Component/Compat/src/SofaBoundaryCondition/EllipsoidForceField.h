@@ -23,11 +23,4 @@
 
 #include <sofa/component/mechanicalload/EllipsoidForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/EllipsoidForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using EllipsoidForceField = sofa::component::mechanicalload::EllipsoidForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/EllipsoidForceField.h")

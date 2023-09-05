@@ -108,8 +108,8 @@ BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vec3& origi
 
     result.dist =  0;
     sofa::type::Vec4f color;
-    int x = mousePosition.x;
-    int y = mousePosition.screenHeight - mousePosition.y;
+    const int x = mousePosition.x;
+    const int y = mousePosition.screenHeight - mousePosition.y;
     TriangleCollisionModel<defaulttype::Vec3Types>* tmodel;
     SphereCollisionModel<defaulttype::Vec3Types>* smodel;
     _fbo.start();

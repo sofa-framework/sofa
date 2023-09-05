@@ -38,10 +38,14 @@ void DynamicSparseGridTopologyModifier::init()
 {
     HexahedronSetTopologyModifier::init();
     this->getContext()->get ( m_DynContainer );
-    if ( ! m_DynContainer )
+
+    if(!m_DynContainer)
     {
-        msg_error() << "init(): DynamicSparseGridTopologyContainer was not found !";
+        msg_error() << "DynamicSparseGridTopologyContainer not found in current node: " << this->getContext()->getName();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
+
     everRenumbered = false;
 }
 
@@ -59,7 +63,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::
 {
     assert( hexahedra.size() == indices.size());
 
-    unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
+    const unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
     type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 

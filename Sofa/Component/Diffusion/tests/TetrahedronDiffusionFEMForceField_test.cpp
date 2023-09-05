@@ -33,6 +33,8 @@ using sofa::testing::BaseSimulationTest;
 
 #include <iostream>
 #include <fstream>
+#include <climits>
+#include <gtest/gtest.h>
 
 namespace sofa {
 
@@ -98,12 +100,12 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         timeStep = 0.0001;
         idMiddlePoint = 1270;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
     }
 
@@ -121,7 +123,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         }
 
         // Beam setup
-        typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
+        const typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
         if(grid)
         {
             grid->setSize(beamResolution);
@@ -129,7 +131,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         }
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(this->root.get());
+        sofa::simulation::node::initRoot(this->root.get());
 
         // Mass parameters
         typename DiagonalMass::SPtr mass = temperatureNode->get<DiagonalMass>(temperatureNode->SearchDown);
@@ -152,17 +154,19 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
     void animate_scene()
     {
         //Animate simulation
-        unsigned int nbSteps = timeEvaluation/timeStep;
+        const unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
-            sofa::simulation::getSimulation()->animate(root.get(),timeStep);
+        {
+            sofa::simulation::node::animate(root.get(), timeStep);
+        }
     }
 
 
     void compute_theory()
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
-        SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
+        const SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
         theorX[0] = std::erfc(temp);
     }
 

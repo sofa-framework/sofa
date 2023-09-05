@@ -132,7 +132,7 @@ void Color_Test::checkCreateFromDouble()
     EXPECT_EQ( RGBAColor::fromFloat(1.0,1.0,0.0,1.0), RGBAColor(1.0,1.0,0.0,1.0)) ;
     EXPECT_EQ( RGBAColor::fromFloat(1.0,1.0,1.0,0.0), RGBAColor(1.0,1.0,1.0,0.0)) ;
 
-    Vec4d tt(2,3,4,5) ;
+    const Vec4d tt(2,3,4,5) ;
     EXPECT_EQ( RGBAColor::fromVec4(tt), RGBAColor(2,3,4,5)) ;
 }
 

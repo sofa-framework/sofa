@@ -71,7 +71,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIP
     if(guiCreators.size())
     {
         std::list<GUICreator>::iterator it = guiCreators.begin();
-        std::list<GUICreator>::iterator itend = guiCreators.end();
+        const std::list<GUICreator>::iterator itend = guiCreators.end();
         while (it != itend && strcmp(name, it->name))
             ++it;
         if (it != itend)
@@ -87,6 +87,8 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIP
     entry.parameters = parameters;
     entry.priority = priority;
     guiCreators.push_back(entry);
+
+    msg_info("GUIManager") << "Registered " << entry.name << " as a GUI.";
     return 0;
 }
 
@@ -115,7 +117,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 const char* GUIManager::GetValidGUIName()
 {
     const char* name;
-    std::string lastGuiFilename = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
+    const std::string lastGuiFilename = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
 
@@ -136,7 +138,7 @@ const char* GUIManager::GetValidGUIName()
 
             // const char* lastGuiNameChar = "qt";
             std::list<GUICreator>::iterator it1 = guiCreators.begin();
-            std::list<GUICreator>::iterator itend1 = guiCreators.end();
+            const std::list<GUICreator>::iterator itend1 = guiCreators.end();
             while(++it1 != itend1)
             {
                 if( strcmp(lastGuiNameChar, it1->name) == 0 )
@@ -152,7 +154,7 @@ const char* GUIManager::GetValidGUIName()
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
-        std::list<GUICreator>::iterator itend =guiCreators.end();
+        const std::list<GUICreator>::iterator itend =guiCreators.end();
         name = it->name;
         int prio = it->priority;
         while (++it != itend)
@@ -171,7 +173,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 {
     if (!name) name = GetValidGUIName();
     std::list<GUICreator>::iterator it =guiCreators.begin();
-    std::list<GUICreator>::iterator itend =guiCreators.end();
+    const std::list<GUICreator>::iterator itend =guiCreators.end();
     while (it != itend && strcmp(name, it->name))
         ++it;
     if (it == itend)
@@ -209,7 +211,7 @@ int GUIManager::Init(const char* argv0, const char* name)
     {
         name = GetValidGUIName(); // get the default gui name
     }
-    GUICreator *creator = GetGUICreator(name);
+    const GUICreator *creator = GetGUICreator(name);
     if(!creator)
     {
         return 1;
@@ -224,7 +226,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
 {
     if (!currentGUI)
     {
-        GUICreator* creator = GetGUICreator(valid_guiname.c_str());
+        const GUICreator* creator = GetGUICreator(valid_guiname.c_str());
         if (!creator)
         {
             return 1;
@@ -315,7 +317,7 @@ void GUIManager::CenterWindow()
 void GUIManager::SaveScreenshot(const char* filename)
 {
     if (currentGUI) {
-        std::string output = (filename?std::string(filename):"output.png");
+        const std::string output = (filename?std::string(filename):"output.png");
         currentGUI->saveScreenshot(output);
     }
 }

@@ -81,6 +81,8 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     this->setTreeWidgetCheckable(itemShowFlag[COLLISIONMODELS], "Collision Models");
     itemShowFlag[BOUNDINGCOLLISIONMODELS]   = new QTreeWidgetItem(itemShowCollision, itemShowFlag[COLLISIONMODELS]);
     this->setTreeWidgetCheckable(itemShowFlag[BOUNDINGCOLLISIONMODELS], "Bounding Collision Models");
+    itemShowFlag[DETECTIONOUTPUTS]   = new QTreeWidgetItem(itemShowCollision, itemShowFlag[COLLISIONMODELS]);
+    this->setTreeWidgetCheckable(itemShowFlag[DETECTIONOUTPUTS], "Detection Outputs");
     QTreeWidgetItem* itemShowMapping   = new QTreeWidgetItem(itemShowAll, itemShowCollision);
     this->setTreeWidgetNodeCheckable(itemShowMapping, "Mapping");
     itemShowFlag[MAPPINGS]   = new QTreeWidgetItem(itemShowMapping);
@@ -105,6 +107,7 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowAll->addChild(itemShowCollision);
     itemShowCollision->addChild(itemShowFlag[COLLISIONMODELS]);
     itemShowCollision->addChild(itemShowFlag[BOUNDINGCOLLISIONMODELS]);
+    itemShowCollision->addChild(itemShowFlag[DETECTIONOUTPUTS]);
     itemShowAll->addChild(itemShowMapping);
     itemShowMapping->addChild(itemShowFlag[MAPPINGS]);
     itemShowMapping->addChild(itemShowFlag[MECHANICALMAPPINGS]);
@@ -149,7 +152,7 @@ void DisplayFlagWidget::mouseReleaseEvent ( QMouseEvent * e )
 
     if ( e->button() == Qt::LeftButton && item )
     {
-        bool value = !(item->checkState(0) == Qt::Checked);
+        const bool value = !(item->checkState(0) == Qt::Checked);
         item->setCheckState(0, ( (value) ? Qt::Checked : Qt::Unchecked) );
 
         emit clicked();
@@ -182,6 +185,7 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::BEHAVIORMODELS, displayFlags.getShowBehaviorModels());
     flags->setFlag(DisplayFlagWidget::COLLISIONMODELS, displayFlags.getShowCollisionModels());
     flags->setFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS, displayFlags.getShowBoundingCollisionModels());
+    flags->setFlag(DisplayFlagWidget::DETECTIONOUTPUTS, displayFlags.getShowDetectionOutputs());
     flags->setFlag(DisplayFlagWidget::MAPPINGS, displayFlags.getShowMappings());
     flags->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS, displayFlags.getShowMechanicalMappings());
     flags->setFlag(DisplayFlagWidget::FORCEFIELDS, displayFlags.getShowForceFields());
@@ -199,6 +203,7 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowBehaviorModels(flags->getFlag(DisplayFlagWidget::BEHAVIORMODELS));
     displayFlags.setShowCollisionModels(flags->getFlag(DisplayFlagWidget::COLLISIONMODELS));
     displayFlags.setShowBoundingCollisionModels(flags->getFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS));
+    displayFlags.setShowDetectionOutputs(flags->getFlag(DisplayFlagWidget::DETECTIONOUTPUTS));
     displayFlags.setShowMappings(flags->getFlag(DisplayFlagWidget::MAPPINGS));
     displayFlags.setShowMechanicalMappings(flags->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
     displayFlags.setShowForceFields(flags->getFlag(DisplayFlagWidget::FORCEFIELDS));

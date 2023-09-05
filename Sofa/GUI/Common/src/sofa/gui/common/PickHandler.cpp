@@ -170,8 +170,12 @@ Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSet
         operations[setting->button.getValue().getSelectedId()] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
-    mouseOp->configure(this,setting);
-    operations[setting->button.getValue().getSelectedId()]=mouseOp;
+    if (mouseOp)
+    {
+        mouseOp->configure(this,setting);
+        operations[setting->button.getValue().getSelectedId()]=mouseOp;
+    }
+
     return mouseOp;
 }
 
@@ -354,7 +358,7 @@ BodyPicked PickHandler::findCollision()
     case RAY_CASTING:
         if (useCollisions)
         {
-            BodyPicked picked = findCollisionUsingPipeline();
+            const BodyPicked picked = findCollisionUsingPipeline();
             if (picked.body) 
                 result = picked;
             else 
@@ -476,7 +480,7 @@ BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
     SOFA_UNUSED(origin);
     SOFA_UNUSED(direction);
 
-    BodyPicked result;
+    const BodyPicked result;
 
     msg_error("PickHandler") << "findCollisionUsingColourCoding not implemented!";
 

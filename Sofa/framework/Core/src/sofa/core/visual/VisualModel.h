@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VISUAL_VISUALMODEL_H
-#define SOFA_CORE_VISUAL_VISUALMODEL_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Quat.h>
-#include <sofa/defaulttype/TopologyTypes.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 class VisualParams;
@@ -55,9 +47,25 @@ class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
+
+    Data<bool> d_enable; ///< Display the visual model or not
+
+    /**
+     *  \brief Display the VisualModel object.
+     *
+     *  TODO(dmarchal, 2023-06-09): Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
+     *  will have to override doDrawVisual;
+     */
+    virtual void drawVisual(const VisualParams* /*vparams*/) final;
+
+
 protected:
-    /// Destructor
+    VisualModel();
     ~VisualModel() override { }
+
+private:
+    virtual void doDrawVisual(const VisualParams* /*vparams*/) {}
+
 public:
     /**
      *  \brief Initialize the textures, or other graphical resources.
@@ -84,12 +92,6 @@ public:
     virtual void bwdDraw(VisualParams* /*vparams*/) {}
 
     /**
-     *  \brief Display the VisualModel object.
-     */
-    virtual void drawVisual(const VisualParams* /*vparams*/) {}
-    //virtual void drawVisual() = 0;
-
-    /**
      *  \brief Display transparent surfaces.
      *
      *  Transparent objects should use this method to get a correct display order.
@@ -106,7 +108,7 @@ public:
      */
     virtual void drawShadow(const VisualParams* vparams)
     {
-        drawVisual(vparams);
+        doDrawVisual(vparams);
     }
 
     /**
@@ -176,11 +178,5 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
+} // namespace sofa::core::visual
 
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_VISUAL_VISUALMODEL_H

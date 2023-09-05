@@ -540,20 +540,21 @@ void MeshTopology::init()
     const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
     const auto edges = sofa::helper::getReadAccessor(seqEdges);
 
-    if (nbPoints==0)
-    {
-        // looking for upper topology
-        if (!hexahedra.empty())
-            m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
-        else if (!tetrahedra.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
-        else if (!quads.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
-        else if (!triangles.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
-        else
-            m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
-    }
+
+    // looking for upper topology
+    if (!hexahedra.empty())
+        m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+    else if (!tetrahedra.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
+    else if (!quads.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
+    else if (!triangles.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
+    else if (!edges.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
+    else
+        m_upperElementType = sofa::core::topology::TopologyElementType::POINT;
+
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)
@@ -588,7 +589,7 @@ void MeshTopology::init()
         {
             seqEdges.delInput(seqEdges.getParent());
         }
-        EdgeUpdate::SPtr edgeUpdate = sofa::core::objectmodel::New<EdgeUpdate>(this);
+        const EdgeUpdate::SPtr edgeUpdate = sofa::core::objectmodel::New<EdgeUpdate>(this);
         edgeUpdate->setName("edgeUpdate");
         this->addSlave(edgeUpdate);
     }
@@ -598,7 +599,7 @@ void MeshTopology::init()
         {
             seqTriangles.delInput(seqTriangles.getParent());
         }
-        TriangleUpdate::SPtr triangleUpdate = sofa::core::objectmodel::New<TriangleUpdate>(this);
+        const TriangleUpdate::SPtr triangleUpdate = sofa::core::objectmodel::New<TriangleUpdate>(this);
         triangleUpdate->setName("triangleUpdate");
         this->addSlave(triangleUpdate);
     }
@@ -608,7 +609,7 @@ void MeshTopology::init()
         {
             seqQuads.delInput(seqQuads.getParent());
         }
-        QuadUpdate::SPtr quadUpdate = sofa::core::objectmodel::New<QuadUpdate>(this);
+        const QuadUpdate::SPtr quadUpdate = sofa::core::objectmodel::New<QuadUpdate>(this);
         quadUpdate->setName("quadUpdate");
         this->addSlave(quadUpdate);
     }
@@ -859,7 +860,7 @@ void MeshTopology::createEdgesInTriangleArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<3; ++j)
         {
-            EdgeID edgeIndex=getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
+            const EdgeID edgeIndex=getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
             assert(edgeIndex != InvalidID);
             m_edgesInTriangle[i][j]=edgeIndex;
         }
@@ -878,7 +879,7 @@ void MeshTopology::createEdgesInQuadArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<4; ++j)
         {
-            EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+            const EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
             assert(edgeIndex != InvalidID);
             m_edgesInQuad[i][j]=edgeIndex;
         }
@@ -898,7 +899,7 @@ void MeshTopology::createEdgesInTetrahedronArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<6; ++j)
         {
-            EdgeID edgeIndex = getEdgeIndex(t[edgesInTetrahedronArray[j][0]], t[edgesInTetrahedronArray[j][1]]);
+            const EdgeID edgeIndex = getEdgeIndex(t[edgesInTetrahedronArray[j][0]], t[edgesInTetrahedronArray[j][1]]);
             assert(edgeIndex != InvalidID);
             m_edgesInTetrahedron[i][j]=edgeIndex;
         }
@@ -919,7 +920,7 @@ void MeshTopology::createEdgesInHexahedronArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<12; ++j)
         {
-            EdgeID edgeIndex = getEdgeIndex(h[edgesInHexahedronArray[j][0]], h[edgesInHexahedronArray[j][1]]);
+            const EdgeID edgeIndex = getEdgeIndex(h[edgesInHexahedronArray[j][0]], h[edgesInHexahedronArray[j][1]]);
             assert(edgeIndex != InvalidID);
             m_edgesInHexahedron[i][j]=edgeIndex;
         }
@@ -1075,7 +1076,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
             currentEdge = nextEdge;
             nextEdge = InvalidID;
             // FIX: check is currentEdge is not already in orientedEdgesAroundVertex to avoid infinite loops in case of non manifold topology
-            for (unsigned int j = 0; i < m_orientedEdgesAroundVertex[i].size(); ++i)
+            for (const unsigned int j = 0; i < m_orientedEdgesAroundVertex[i].size(); ++i)
             {
                 if (m_orientedEdgesAroundVertex[i][j] == currentEdge)
                 {
@@ -1124,7 +1125,7 @@ void MeshTopology::createTrianglesInTetrahedronArray ()
         // adding triangles in the triangle list of the ith tetrahedron  i
         for (unsigned int j=0; j<4; ++j)
         {
-            TriangleID triangleIndex=getTriangleIndex(t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
+            const TriangleID triangleIndex=getTriangleIndex(t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
             assert(triangleIndex != InvalidID);
             m_trianglesInTetrahedron[i][j]=triangleIndex;
         }
@@ -2265,7 +2266,7 @@ void MeshTopology::reOrientateTriangle(TriangleID id)
         return;
     }
     Triangle& tri = (*seqTriangles.beginEdit())[id];
-    unsigned int tmp = tri[1];
+    const unsigned int tmp = tri[1];
     tri[1] = tri[2];
     tri[2] = tmp;
     seqTriangles.endEdit();
@@ -2364,7 +2365,7 @@ bool MeshTopology::checkConnexity()
         return false;
     }
 
-    auto elemAll = this->getConnectedElement(0);
+    const auto elemAll = this->getConnectedElement(0);
 
     if (elemAll.size() != nbr)
     {

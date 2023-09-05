@@ -45,9 +45,12 @@ BaseObject::BaseObject()
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
 {
-    l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
+    auto bindChangeContextLink = [this](auto&& before, auto&& after) { return this->changeContextLink(before, after); };
+    l_context.setValidator(bindChangeContextLink);
     l_context.set(BaseContext::getDefault());
-    l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
+
+    auto bindChangeSlavesLink = [this](auto&& ptr, auto&& index, auto&& add) { return this->changeSlavesLink(ptr, index, add); };
+    l_slaves.setValidator(bindChangeSlavesLink);
     f_listening.setAutoLink(false);
 }
 
@@ -95,7 +98,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
-        std::string valueString(arg->getAttribute("src"));
+        const std::string valueString(arg->getAttribute("src"));
 
         if (valueString[0] != '@')
         {
@@ -122,7 +125,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
 {
-    BaseObject* loader = nullptr;
+    const BaseObject* loader = nullptr;
 
     std::size_t posAt = valueString.rfind('@');
     if (posAt == std::string::npos) posAt = 0;
@@ -140,7 +143,7 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
 
 void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader, std::vector< std::string > *attributeList)
 {
-    BaseObject* obj = this;
+    const BaseObject* obj = this;
 
     BaseObject::MapData dataLoaderMap = loader->m_aliasData;
     BaseObject::MapData::iterator it_map;
@@ -231,7 +234,7 @@ BaseObject* BaseObject::getSlave(const std::string& name) const
 
 void BaseObject::addSlave(BaseObject::SPtr s)
 {
-    BaseObject::SPtr previous = s->getMaster();
+    const BaseObject::SPtr previous = s->getMaster();
     if (previous == this) return;
     if (previous)
         previous->l_slaves.remove(s);
@@ -252,7 +255,7 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-    for(auto data: this->m_vecData)
+    for(const auto data: this->m_vecData)
     {
         if (data->isRequired() && !data->isSet())
         {

@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/sceneutility/PauseAnimation.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/PauseAnimation.h")
-
-namespace sofa::component::misc
-{
-
-    using PauseAnimation = sofa::component::sceneutility::PauseAnimation;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/PauseAnimation.h")

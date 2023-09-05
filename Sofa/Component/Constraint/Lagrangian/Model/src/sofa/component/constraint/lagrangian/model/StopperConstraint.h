@@ -44,16 +44,16 @@ public:
     { 
     }
 
-    void init(int line, double** w, double *force) override
+    void init(int line, SReal** w, SReal*force) override
     {
         _w = w[line][line];
         _invW = 1.0/_w;
         force[line  ] = 0.0;
     }
 
-    void resolution(int line, double** /*w*/, double* d, double* force, double*) override
+    void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal*) override
     {
-        double dfree = d[line] - _w * force[line];
+        const double dfree = d[line] - _w * force[line];
 
         if (dfree > _max)
             force[line] = (_max - dfree) * _invW;
@@ -89,14 +89,28 @@ protected:
     unsigned int cid;
 
     Data<int> index; ///< index of the stop constraint
-    Data<double> min; ///< minimum value accepted
-    Data<double> max; ///< maximum value accepted
+    Data<SReal> min; ///< minimum value accepted
+    Data<SReal> max; ///< maximum value accepted
 
 
 
     StopperConstraint(MechanicalState* object = nullptr);
 
     virtual ~StopperConstraint() {}
+
+
+    virtual type::vector<std::string> getConstraintIdentifiers() override final
+    {
+        type::vector<std::string> ids = getStopperIdentifiers();
+        ids.push_back("Stopper");
+        ids.push_back("Unilateral");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getStopperIdentifiers(){ return {}; }
+
+
+
 public:
     void init() override;
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
@@ -106,7 +120,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
-extern template class StopperConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperConstraint<defaulttype::Vec1Types>;
 
 #endif
 

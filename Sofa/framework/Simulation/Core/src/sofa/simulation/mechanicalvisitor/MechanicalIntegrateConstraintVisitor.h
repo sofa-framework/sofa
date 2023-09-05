@@ -22,7 +22,6 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 namespace sofa::simulation::mechanicalvisitor
 {
 
@@ -37,7 +36,6 @@ public:
     sofa::core::MultiVecDerivId dxId;
     sofa::core::MultiVecCoordId xId;
     sofa::core::MultiVecDerivId vId;
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalIntegrateConstraintsVisitor(
@@ -46,8 +44,7 @@ public:
         sofa::core::ConstMultiVecDerivId correction,
         sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
         sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
-        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()),
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr);
+        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()));
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override;
 

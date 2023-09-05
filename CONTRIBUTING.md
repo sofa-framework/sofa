@@ -66,6 +66,11 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - Pull in changes from upstream often to [**sync your fork**](https://help.github.com/articles/syncing-a-fork/) so that merge conflicts will be less likely in your pull request.
 - [**Create a pull request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
 
+
+### Start easy and simple
+
+For newcomers in the community, we regularly identify issues easy to tackle and to get started with, using a [label "*good first issue*"](https://github.com/sofa-framework/sofa/issues?q=label%3A%22good+first+issue%22). Choose one, solve it and create your first pull request!
+
 ### Rules
 
 - Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
@@ -74,7 +79,7 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
-### Lifecycle
+### Management of pull requests
 
 Standard pull-requests are reviewed and approved by the "Reviewers" team.  
 Major pull-requests (BREAKING, major features) are reviewed by the "Reviewers" team and approved by the "STC members" team through a vote within a maximum period of 2 weeks.
@@ -150,3 +155,8 @@ By making a contribution to this project, I certify that:
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
 ```
+
+
+# Annual development cycle
+
+<center><figure><img src="https://www.sofa-framework.org/wp-content/uploads/2023/04/SOFA-contribution-process.png" alt="Annual dev cycle" style="width:75%"><figcaption align = "center"><b>A year of development within the SOFA community: dev meeting and events</b></figcaption></figure></center>

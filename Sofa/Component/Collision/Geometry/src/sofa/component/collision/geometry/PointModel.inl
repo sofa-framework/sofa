@@ -44,7 +44,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::resize(Size size)
+void PointCollisionModel<DataTypes>::resize(sofa::Size size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -74,7 +74,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -92,12 +92,11 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, Collisio
         const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
         const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
 
-        for (Index i1=0; i1<verticesAroundVertex1.size(); i1++)
+        for (sofa::Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
+            const sofa::Index v1 = verticesAroundVertex1[i1];
 
-            Index v1 = verticesAroundVertex1[i1];
-
-            for (Index i2=0; i2<verticesAroundVertex2.size(); i2++)
+            for (sofa::Index i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
 
                 if (v1 == verticesAroundVertex2[i2] || v1 == index2 || index == verticesAroundVertex2[i2])
@@ -133,7 +132,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     {
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         const SReal distance = this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const type::Vec3& pt = p.p();
@@ -166,7 +165,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
         const SReal distance = (SReal)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const type::Vec3& pt = p.p();
@@ -203,7 +202,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbTetrahedra()>0)
         {
             const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
-            for (Index i=0; i < elems.size(); ++i)
+            for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Tetra &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -240,7 +239,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbTriangles()>0)
         {
             const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
-            for (Index i=0; i < elems.size(); ++i)
+            for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Triangle &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -259,7 +258,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbQuads()>0)
         {
             const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
-            for (Index i=0; i < elems.size(); ++i)
+            for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Quad &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -281,7 +280,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
     }
     for (sofa::Index i=0; i<n; ++i)
     {
-        SReal l = normals[i].norm();
+        const SReal l = normals[i].norm();
         if (l > 1.0e-3)
             normals[i] *= 1/l;
         else
@@ -305,7 +304,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (Size i=0; i<size; i++)
+    for (sofa::Size i=0; i<size; i++)
     {
         Element e(this,i);
         const Coord& p = e.p();
@@ -323,7 +322,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, Index index)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, sofa::Index index)
 {
     SOFA_UNUSED(index);
     //TODO(fred roy 2018-06-21)...please implement.
@@ -345,13 +344,13 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
 
         std::vector< type::Vec3 > pointsP;
         std::vector< type::Vec3 > pointsL;
-        for (Size i = 0; i < size; i++)
+        for (sofa::Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
             if (p.isActive())
             {
                 pointsP.push_back(p.p());
-                if (i < Size(normals.size()))
+                if (i < sofa::Size(normals.size()))
                 {
                     pointsL.push_back(p.p());
                     pointsL.push_back(p.p() + normals[i] * 0.1f);
@@ -359,7 +358,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             }
         }
 
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawPoints(pointsP, 3, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->drawLines(pointsL, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
@@ -367,7 +366,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         {
             std::vector< type::Vec3 > pointsPFree;
 
-            for (Size i = 0; i < size; i++)
+            for (sofa::Size i = 0; i < size; i++)
             {
                 TPoint<DataTypes> p(this, i);
                 if (p.isActive())

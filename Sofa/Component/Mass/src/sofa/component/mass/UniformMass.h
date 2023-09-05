@@ -39,7 +39,6 @@ namespace sofa::component::mass
 {
 
 template <class DataTypes>
-
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
@@ -144,6 +143,9 @@ public:
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     SReal getElementMass(sofa::Index index) const override;
     void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
@@ -155,17 +157,7 @@ public:
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
         Inherited::parse(arg);
-
-        if (arg->getAttribute("template"))
-        {
-            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
-            if (splitTemplates.size() > 1)
-            {
-                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
-            }
-        }
+        parseMassTemplate<MassType>(arg, this);
     }
 
 private:

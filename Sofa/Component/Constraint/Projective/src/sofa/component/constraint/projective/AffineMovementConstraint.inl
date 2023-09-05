@@ -98,7 +98,7 @@ void AffineMovementConstraint<DataTypes>::init()
 
     if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
-        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
         m_indices.createTopologyHandler(_topology);
@@ -124,8 +124,7 @@ void AffineMovementConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-template <class DataDeriv>
-void AffineMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
+void AffineMovementConstraint<DataTypes>::projectResponseImpl(VecDeriv& dx)
 {
     const SetIndexArray & indices = m_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -137,8 +136,9 @@ void AffineMovementConstraint<DataTypes>::projectResponseT(const core::Mechanica
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseImpl(res.wref());
 }
 
 
@@ -146,8 +146,9 @@ void AffineMovementConstraint<DataTypes>::projectResponse(const core::Mechanical
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseImpl(res.wref());
 }
 
 template <class DataTypes>
@@ -248,7 +249,7 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetInde
     RotationMatrix rotationMat(0);
     const Quat quat =  m_quaternion.getValue();
     quat.toMatrix(rotationMat);
-    const Vector3 translation = m_translation.getValue();
+    const Vec3 translation = m_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
@@ -263,7 +264,7 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetInde
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
 {
-    Vector3 translation = m_translation.getValue();
+    Vec3 translation = m_translation.getValue();
 
     for (size_t i=0; i < indices.size() ; ++i)
     {
@@ -278,11 +279,11 @@ void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetInd
     helper::WriteAccessor<DataVecCoord> x = xData;
 
     xf.resize(x.size());
-    
+
     // if the positions were not initialized
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
-    
+
     transform(indices,x0,xf);
 }
 
@@ -291,11 +292,11 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 {
     const SetIndexArray & indices = m_indices.getValue();
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    Vector3 point;
+    Vec3 point;
 
     if(m_drawConstrainedPoints.getValue())
     {
-        std::vector< Vector3 > points;
+        std::vector< Vec3 > points;
         for( auto& index : indices )
         {
             point = DataTypes::getCPos(x[index]);

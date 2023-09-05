@@ -21,57 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
-{
-
-template <class TCoord, class TDeriv, class TReal>
-class TriangularFEMForceFieldOptimInternalData< gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> >
-{
-public:
-    typedef gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> DataTypes;
-    typedef TriangularFEMForceFieldOptim<DataTypes> Main;
-    
-    struct GPUTriangleInfo
-    {
-        int ia, ib, ic;
-    };
-
-    typedef gpu::cuda::CudaVector<GPUTriangleInfo> VecGPUTriangleInfo;
-
-    VecGPUTriangleInfo gpuTriangleInfo;
-
-    void reinit(Main* m)
-    {
-
-        const typename Main::VecElement& triangles = m->l_topology.get()->getTriangles();
-        helper::WriteAccessor< VecGPUTriangleInfo > gpuTriangleInfo = this->gpuTriangleInfo;
-
-        gpuTriangleInfo.resize(triangles.size());
-        for (unsigned int i=0;i<triangles.size();++i)
-        {
-            gpuTriangleInfo[i].ia = triangles[i][0];
-            gpuTriangleInfo[i].ib = triangles[i][1];
-            gpuTriangleInfo[i].ic = triangles[i][2];
-        }
-    }
-
-};
-
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace sofa::component::solidmechanics::fem::elastic
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h")

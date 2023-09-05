@@ -54,8 +54,6 @@ using sofa::helper::system::FileSystem;
 #include <sofa/gui/common/GUIManager.h>
 using sofa::gui::common::GUIManager;
 
-#include <SofaGui/initSofaGui.h>
-
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
@@ -67,6 +65,8 @@ using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/gui/common/BaseGUI.h>
 using sofa::gui::common::BaseGUI;
+
+#include <sofa/gui/batch/init.h>
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -96,7 +96,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <sofa/gui/common/ArgumentParser.h>
-
 
 
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
@@ -145,8 +144,6 @@ int main(int argc, char** argv)
     }
 #endif
 
-    sofa::gui::initSofaGui();
-
     string fileName ;
     bool        startAnim = false;
     bool        showHelp = false;
@@ -183,6 +180,9 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
+    // Argument parser has 2 stages
+    // one is for the runSofa options itself
+    // second is for the eventual options the GUIs can add (i.e batch with the "-n" number of iterations option) 
     sofa::gui::common::ArgumentParser* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
 
     argParser->addArgument(
@@ -311,9 +311,8 @@ int main(int argc, char** argv)
         "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
     );
 
-    addGUIParameters(argParser);
+    // first option parsing to see if the user requested to show help
     argParser->parse();
-    files = argParser->getInputFileList();
 
     if(showHelp)
     {
@@ -327,7 +326,7 @@ int main(int argc, char** argv)
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
-    sofa::simulation::setSimulation(new DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -386,8 +385,8 @@ int main(int argc, char** argv)
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
-    if (!files.empty())
-        fileName = files[0];
+    // Add Batch GUI (runSofa without any GUIs wont be useful)
+    sofa::gui::batch::init();
 
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
@@ -417,6 +416,15 @@ int main(int argc, char** argv)
         msg_info("runSofa") << "Automatic plugin loading disabled.";
     }
 
+    // Parse again to take into account the potential new options
+    addGUIParameters(argParser);
+    argParser->parse();
+
+    // Fetching file name must be done after the additionnal potential options have been added
+    // otherwise the first parsing will take the unknown options as the file name
+    // (because of its positional parameter)
+    files = argParser->getInputFileList();
+
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
@@ -426,6 +434,9 @@ int main(int argc, char** argv)
 
         return err;
     }
+
+    if (!files.empty())
+        fileName = files[0];
 
     if (fileName.empty())
     {
@@ -442,7 +453,6 @@ int main(int argc, char** argv)
         fileName = DataRepository.getFile(fileName);
     }
 
-
     if (int err=GUIManager::createGUI(nullptr))
         return err;
 
@@ -457,7 +467,7 @@ int main(int argc, char** argv)
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
+    Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 
@@ -474,7 +484,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
@@ -514,11 +524,11 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+        sofa::simulation::node::exportInXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)
-        sofa::simulation::getSimulation()->unload(groot);
+        sofa::simulation::node::unload(groot);
 
 
     GUIManager::closeGUI();

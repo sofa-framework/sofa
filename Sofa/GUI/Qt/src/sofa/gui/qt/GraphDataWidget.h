@@ -34,9 +34,12 @@
 #include <QPixmap>
 #include <QFile>
 
-using namespace QtCharts;
-
 #include <fstream>
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
 
 namespace sofa::gui::qt
 {
@@ -235,7 +238,7 @@ public:
 
     void exportGNUPlot(const std::string &baseFileName) const
     {
-        int n = trait::size(currentData);
+        const int n = trait::size(currentData);
         for (int i=0; i<n; ++i)
         {
             const curve_type& v = *(trait::get(currentData,i));
@@ -274,12 +277,12 @@ protected:
     QChartView* w;
 
     /// Pointer to the chart Data
-    QtCharts::QChart *m_chart;
+    QChart *m_chart;
 
     /// x axis pointer
-    QtCharts::QValueAxis* m_axisX;
+    QValueAxis* m_axisX;
     /// y axis pointer
-    QtCharts::QValueAxis* m_axisY;
+    QValueAxis* m_axisY;
 
     /// vector of series to be ploted
     std::map<QString, CurveData*> m_curves;
@@ -369,7 +372,7 @@ public:
     GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget <T>(parent,name,d) { }
     virtual bool createWidgets()
     {
-        bool b = GraphDataWidget<T>::createWidgets();
+        const bool b = GraphDataWidget<T>::createWidgets();
         //typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
         //if (w)
         //{

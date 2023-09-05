@@ -77,9 +77,7 @@ protected:
         Real  dl;  // the current unit direction
         Real stiffness;
 
-        EdgeRestInformation()
-        {
-        }
+        EdgeRestInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
@@ -101,9 +99,8 @@ protected:
         Real stiffness[3]; // the elongation stiffness
         Mat3 DfDx[3]; /// the edge stiffness matrix
 
-        TriangleRestInformation()
-        {
-        }
+        TriangleRestInformation()= default;
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
         {
@@ -142,6 +139,7 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";

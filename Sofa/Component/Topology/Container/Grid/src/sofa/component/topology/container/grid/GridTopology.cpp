@@ -44,16 +44,16 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
 }
 
 void GridTopology::GridUpdate::doUpdate()
-{   
+{
     if (m_topology->d_computeHexaList.getValue())
         updateHexas();
 
     if (m_topology->d_computeQuadList.getValue())
         updateQuads();
-    
+
     if (m_topology->d_computeTriangleList.getValue())
-        updateTriangles();    
-    
+        updateTriangles();
+
     if (m_topology->d_computeEdgeList.getValue())
         updateEdges();
 }
@@ -67,7 +67,7 @@ void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
         int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
         int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
-        d_n.setValue(Vec3i(nx,ny,nz));
+        d_n.setValue(type::Vec3i(nx,ny,nz));
     }
 
     this->setNbGridPoints();
@@ -87,7 +87,7 @@ void GridTopology::GridUpdate::updateEdges()
     const SeqTriangles& triangles = m_topology->seqTriangles.getValue();
     if (triangles.empty()) // if has triangles will create edges using triangles, otherwise will use the quads from the grid
     {
-        const Vec3i& n = m_topology->d_n.getValue();
+        const type::Vec3i& n = m_topology->d_n.getValue();
         edges.reserve((n[0] - 1)*n[1] * n[2] +
             n[0] * (n[1] - 1)*n[2] +
             n[0] * n[1] * (n[2] - 1));
@@ -109,7 +109,7 @@ void GridTopology::GridUpdate::updateEdges()
     }
     else
     {
-        // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer 
+        // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer
         // create a temporary map to find redundant edges
         std::map<Edge, EdgeID> edgeMap;
         for (size_t i = 0; i<triangles.size(); ++i)
@@ -162,7 +162,7 @@ void GridTopology::GridUpdate::updateTriangles()
 void GridTopology::GridUpdate::updateQuads()
 {
     SeqQuads& quads = *m_topology->seqQuads.beginWriteOnly();
-    const Vec3i& n = m_topology->d_n.getValue();
+    const type::Vec3i& n = m_topology->d_n.getValue();
     quads.clear();
     quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
     // quads along XY plane
@@ -196,7 +196,7 @@ void GridTopology::GridUpdate::updateQuads()
 void GridTopology::GridUpdate::updateHexas()
 {
     SeqHexahedra& hexahedra = *m_topology->seqHexahedra.beginWriteOnly();
-    const Vec3i& n = m_topology->d_n.getValue();
+    const type::Vec3i& n = m_topology->d_n.getValue();
     hexahedra.clear();
     hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
     for (int z=0; z<n[2]-1; z++)
@@ -215,7 +215,7 @@ void GridTopology::GridUpdate::updateHexas()
 /// The following constructor is "chained" by the other constructors to
 /// defined only one the member initialization.
 GridTopology::GridTopology()
-    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
+    : d_n(initData(&d_n,type::Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
     , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
     , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
     , d_computeTriangleList(initData(&d_computeTriangleList, true, "computeTriangleList", "put true if the list of triangle is needed during init (default=true)"))
@@ -224,21 +224,21 @@ GridTopology::GridTopology()
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
 {
     setNbGridPoints();
-    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    const GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
 
 /// This constructor is chained with the one without parameter
-GridTopology::GridTopology(const Vec3i& dimXYZ ) :
+GridTopology::GridTopology(const type::Vec3i& dimXYZ ) :
     GridTopology()
 {
     d_n.setValue(dimXYZ);
     checkGridResolution();
 }
 
-/// This constructor is chained with the one with a Vec3i parameter
+/// This constructor is chained with the one with a type::Vec3i parameter
 GridTopology::GridTopology(int nx, int ny, int nz) :
-    GridTopology(Vec3i(nx,ny,nz))
+    GridTopology(type::Vec3i(nx,ny,nz))
 {
 }
 
@@ -258,7 +258,7 @@ void GridTopology::init()
 
     if (d_computeQuadList.getValue())
         this->computeQuadList();
-    
+
     if (d_computeEdgeList.getValue())
         this->computeEdgeList();
 
@@ -275,7 +275,7 @@ void GridTopology::setSize(int nx, int ny, int nz)
     const auto n = this->d_n.getValue();
     if (nx == n[0] && ny == n[1] && nz == n[2])
         return;
-    this->d_n.setValue(Vec3i(nx,ny,nz));
+    this->d_n.setValue(type::Vec3i(nx,ny,nz));
     setNbGridPoints();
 
     checkGridResolution();
@@ -283,7 +283,7 @@ void GridTopology::setSize(int nx, int ny, int nz)
 
 void GridTopology::checkGridResolution()
 {
-    const Vec3i& _n = d_n.getValue();
+    const type::Vec3i& _n = d_n.getValue();
 
     if (_n[0] < 1 || _n[1] < 1 || _n[2] < 1)
     {
@@ -292,7 +292,7 @@ void GridTopology::checkGridResolution()
                          " Continuing with default value=[2; 2; 2]."
                          " Set a valid grid resolution to remove this warning message.";
 
-        this->d_n.setValue(Vec3i(2,2,2));
+        this->d_n.setValue(type::Vec3i(2,2,2));
         changeGridResolutionPostProcess();
     }
 
@@ -301,16 +301,16 @@ void GridTopology::checkGridResolution()
 
 Grid_dimension GridTopology::getDimensions() const
 {
-	const Vec3i& _n = d_n.getValue();
+	const type::Vec3i& _n = d_n.getValue();
 	int dim = 0;
 	for (int i = 0; i<3; i++)
-		if (_n[i] > 1) 
+		if (_n[i] > 1)
 			dim++;
 
 	return (Grid_dimension)dim;
 }
 
-void GridTopology::setSize(Vec3i n)
+void GridTopology::setSize(type::Vec3i n)
 {
     setSize(n[0],n[1],n[2]);
 }
@@ -336,7 +336,7 @@ void GridTopology::computeEdgeList()
 
 void GridTopology::computePointList()
 {
-    auto nbPoints= this->getNbPoints();
+    const auto nbPoints= this->getNbPoints();
     // put the result in seqPoints
     SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
@@ -359,9 +359,9 @@ GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 sofa::type::Vec3 GridTopology::getPoint(Index i) const
 {
     const auto& n = d_n.getValue();
-    int x = i%n[0]; i/=n[0];
-    int y = i%n[1]; i/=n[1];
-    int z = int(i);
+    const int x = i%n[0]; i/=n[0];
+    const int y = i%n[1]; i/=n[1];
+    const int z = int(i);
 
     return getPointInGrid(x,y,z);
 }
@@ -370,7 +370,7 @@ sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
     const auto& spoints = seqPoints.getValue();
 
-    Index id = this->getIndex(i, j, k);
+    const Index id = this->getIndex(i, j, k);
     if (id < spoints.size())
         return spoints[id];
     else
@@ -382,9 +382,9 @@ GridTopology::Hexa GridTopology::getHexaCopy(Index i)
 {
     const auto& n = d_n.getValue();
 
-    int x = i%(n[0]-1); i/=(n[0]-1);
-    int y = i%(n[1]-1); i/=(n[1]-1);
-    int z = int(i);
+    const int x = i%(n[0]-1); i/=(n[0]-1);
+    const int y = i%(n[1]-1); i/=(n[1]-1);
+    const int z = int(i);
     return getHexahedron(x,y,z);
 }
 
@@ -403,25 +403,25 @@ GridTopology::Quad GridTopology::getQuadCopy(Index i)
 
     if (n[0] == 1)
     {
-        int y = i%(n[1]-1);
+        const int y = i%(n[1]-1);
         i/=(n[1]-1);
-        int z = i%(n[2]-1);
+        const int z = i%(n[2]-1);
 
         return getQuad(1,y,z);
     }
     else if (n[1] == 1)
     {
-        int x = i%(n[0]-1);
+        const int x = i%(n[0]-1);
         i/=(n[0]-1);
-        int z = i%(n[2]-1);
+        const int z = i%(n[2]-1);
 
         return getQuad(x,1,z);
     }
     else
     {
-        int x = i%(n[0]-1);
+        const int x = i%(n[0]-1);
         i/=(n[0]-1);
-        int y = i%(n[1]-1);
+        const int y = i%(n[1]-1);
 
         return getQuad(x,y,1);
     }

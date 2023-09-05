@@ -84,6 +84,14 @@ TYPED_TEST( SquareMappingTest , test )
     ASSERT_TRUE(this->test());
 }
 
+TYPED_TEST( SquareMappingTest , testNoGeometricStiffnessMatrix )
+{
+    TypeParam* map = static_cast<TypeParam*>( this->mapping );
+    map->d_useGeometricStiffnessMatrix.setValue(false);
+
+    ASSERT_TRUE(this->test());
+}
+
 
 
 } // namespace

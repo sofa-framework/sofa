@@ -57,6 +57,21 @@ protected:
     unsigned int m_constraintIndex;
 
     UniformConstraint();
+
+    virtual type::vector<std::string> getConstraintIdentifiers() override final
+    {
+        type::vector<std::string> ids = getStopperIdentifiers();
+        ids.push_back("Uniform");
+        ids.push_back("Bilateral");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getStopperIdentifiers(){ return {}; }
+
 };
+
+#if !defined(SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_UNIFORMCONSTRAINT_CPP)
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UniformConstraint<sofa::defaulttype::Vec1Types>;
+#endif
 
 } // namespace sofa::component::constraint::lagrangian::model

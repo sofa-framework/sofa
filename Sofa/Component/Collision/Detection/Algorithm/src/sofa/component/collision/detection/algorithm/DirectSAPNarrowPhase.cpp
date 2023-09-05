@@ -31,8 +31,7 @@ namespace sofa::component::collision::detection::algorithm
 using namespace sofa::component::collision::geometry;
 
 DirectSAPNarrowPhase::DirectSAPNarrowPhase()
-        : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))
-        , d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
+        : d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
         , d_nbPairs(initData(&d_nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
         , m_currentAxis(0)
         , m_alarmDist(0)
@@ -263,7 +262,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
     // Iterators to activeBoxes are stored in a map for a fast access from a box id
     std::unordered_map<int, decltype(activeBoxes)::const_iterator> activeBoxesIt;
 
-    for (auto* endPoint : m_sortedEndPoints)
+    for (const auto* endPoint : m_sortedEndPoints)
     {
         assert(endPoint != nullptr);
 
@@ -289,9 +288,9 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
         {
             const DSAPBox& box0 = m_boxes[boxId0];
             core::CollisionModel *cm0 = data0.lastCollisionModel;
-            auto collisionElement0 = data0.collisionElementIterator;
+            const auto collisionElement0 = data0.collisionElementIterator;
 
-            for (int boxId1 : activeBoxes)
+            for (const int boxId1 : activeBoxes)
             {
                 const BoxData& data1 = m_boxData[boxId1];
 
@@ -369,7 +368,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionForPair(core::collision::Elem
 
 void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue())
+    if (!vparams->displayFlags().getShowDetectionOutputs())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

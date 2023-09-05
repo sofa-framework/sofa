@@ -46,7 +46,10 @@ public:
     typedef typename Vector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<bool> f_verbose; ///< Dump system state at each iteration
+    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v22.06", "v22.12", "verbose",
+                                                              "Attribute 'verbose' has no use in this component. "
+                                                              "To remove this error, remove the use of the attribute from the scene."};
 
     CholeskySolver();
 

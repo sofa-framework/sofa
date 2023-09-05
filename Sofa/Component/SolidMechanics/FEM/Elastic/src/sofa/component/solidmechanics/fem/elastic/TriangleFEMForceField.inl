@@ -24,8 +24,10 @@
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -94,7 +96,7 @@ void TriangleFEMForceField<DataTypes>::init()
     {
         msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
-        int nbcubes = m_topology->getNbQuads();
+        const int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes * 2);
         for (int i = 0; i < nbcubes; i++)
         {
@@ -530,6 +532,18 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, 
 }
 
 
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (!onlyVisible) return;
+    if (!this->mstate) return;
+
+    const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+    this->f_bbox.setValue(std::move(bbox));
+}
+
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -613,6 +627,40 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMat
         computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
         this->addToMatrix(mat, offset, (*_indexedElements)[i], RJKJtRt, -k);
     }
+}
+
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    StiffnessMatrix JKJt, RJKJtRt;
+    sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
+
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+    unsigned int i = 0;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto nodeIndex : *_indexedElements)
+    {
+        computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
+
+        for (sofa::Index n1 = 0; n1 < Element::size(); ++n1)
+        {
+            for (sofa::Index n2 = 0; n2 < Element::size(); ++n2)
+            {
+                RJKJtRt.getsub(S * n1, S * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                dfdx(nodeIndex[n1] * S, nodeIndex[n2] * S) += -localMatrix;
+            }
+        }
+        ++i;
+    }
+}
+
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

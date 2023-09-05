@@ -59,22 +59,17 @@ void PartialFixedConstraint<DataTypes>::reinit()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
+void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res,
+    const std::function<void(DataDeriv&, const unsigned int, const VecBool&)>& clear)
 {
     const VecBool& blockedDirection = d_fixedDirections.getValue();
 
     if (this->d_fixAll.getValue() == true)
     {
-        // fix everyting
-        for( unsigned i=0; i<res.size(); i++ )
+        // fix everything
+        for( std::size_t i=0; i<res.size(); i++ )
         {
-            for (unsigned j = 0; j < NumDimensions; j++)
-            {
-                if (blockedDirection[j])
-                {
-                    res[i][j] = (Real) 0.0;
-                }
-            }
+            clear(res, i, blockedDirection);
         }
     }
     else
@@ -82,13 +77,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
         const SetIndexArray & indices = this->d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (unsigned j = 0; j < NumDimensions; j++)
-            {
-                if (blockedDirection[j])
-                {
-                    res[*it][j] = (Real) 0.0;
-                }
-            }
+            clear(res, *it, blockedDirection);
         }
     }
 }
@@ -96,8 +85,14 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), 
+        [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+        { 
+            for (std::size_t j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; 
+        }
+    );
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -144,16 +139,30 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
+    projectResponseT<MatrixDeriv>(c.wref(),
+        [](MatrixDeriv& res, const unsigned int index, const VecBool& btype)
+        {
+            auto itRow = res.begin();
+            auto itRowEnd = res.end();
 
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+            while (itRow != itRowEnd)
+            {
+                for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
+                {
+                    if (index == (unsigned int)colIt.index())
+                    {
+                        Deriv b = colIt.val();
+                        for (unsigned int j = 0; j < btype.size(); j++)
+                            if (btype[j]) b[j] = 0.0;
+                        res.writeLine(itRow.index()).setCol(colIt.index(), b);
+                    }
+                }
+                ++itRow;
+            }
+        });
 }
 
 template <class DataTypes>
@@ -293,4 +302,42 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Base
     }
 }
 
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::applyConstraint(
+    sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+
+    if( this->d_fixAll.getValue() )
+    {
+        const sofa::Size size = this->mstate->getSize();
+
+        for(sofa::Index i = 0; i < size; ++i)
+        {
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    matrix->discardRowCol(N * i + c, N * i + c);
+                }
+            }
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = this->d_indices.getValue();
+
+        for (const auto index : indices)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    matrix->discardRowCol(N * index + c, N * index + c);
+                }
+            }
+        }
+    }
+}
 } // namespace sofa::component::constraint::projective

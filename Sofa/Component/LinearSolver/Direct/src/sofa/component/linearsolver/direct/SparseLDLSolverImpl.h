@@ -27,6 +27,10 @@
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <csparse.h>
+#include <sofa/linearalgebra/DiagonalSystemSolver.h>
+#include <sofa/linearalgebra/TriangularSystemSolver.h>
+
+
 extern "C" {
 #include <metis.h>
 }
@@ -41,9 +45,25 @@ public :
     ~SparseLDLImplInvertData() override = default;
 
     int n, P_nnz, L_nnz;
-    VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
+
+    //CSR matrix P, a copy of the matrix to invert
+    VecInt P_rowind, P_colptr;
+    VecReal P_values;
+
+    //CSC matrix L, the lower unitriangular matrix of the LDL decomposition
+    VecInt L_rowind, L_colptr;
+    VecReal L_values;
+
+    //CSC matrix L^T, the transpose of the lower unitriangular matrix of the LDL decomposition
+    VecInt LT_rowind, LT_colptr;
+    VecReal LT_values;
+
+    //permutation
     VecInt perm, invperm;
-    VecReal P_values,L_values,LT_values,invD;
+
+    //diagonal of D^-1
+    VecReal invD;
+
     type::vector<int> Parent;
     bool new_factorization_needed;
 };
@@ -55,7 +75,7 @@ inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,i
         Parent [k] = -1 ;	    // parent of k is not yet known 
         Flag [k] = k ;		    // mark node k as visited 
         Lnz [k] = 0 ;		    // count of nonzeros in column k of L 
-        int kk = perm[k];  // kth original, or permuted, column 
+        const int kk = perm[k];  // kth original, or permuted, column 
         for (int p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
         {
             // A (i,k) is nonzero (original or permuted A) 
@@ -157,36 +177,54 @@ protected :
     {}
 
     template<class VecInt,class VecReal>
-    void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
+    void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data)
+    {
         int n = data->n;
-        const Real * invD = data->invD.data();
+        if (n == 0)
+        {
+            return;
+        }
+
         const int * perm = data->perm.data();
-        const int * L_colptr = data->L_colptr.data();
-        const int * L_rowind = data->L_rowind.data();
-        const Real * L_values = data->L_values.data();
-        const int * LT_colptr = data->LT_colptr.data();
-        const int * LT_rowind = data->LT_rowind.data();
-        const Real * LT_values = data->LT_values.data();
 
         Tmp.clear();
         Tmp.fastResize(n);
 
-        for (int j = 0 ; j < n ; j++) {
-            Real acc = b[perm[j]];
-            for (int p = LT_colptr [j] ; p < LT_colptr[j+1] ; p++) {
-                acc -= LT_values[p] * Tmp[LT_rowind[p]];
-            }
-            Tmp[j] = acc;
+        // A x = b
+        //   <=> (L * D * L^T) * x = b
+        //   <=> L y = b  with y = D * L^T * x  # Step 1: compute y from the system L y = b
+        //   <=> D z = y  with z = L^T * x      # Step 2: compute z from the system D z = y
+        //   <=> L^T * x = z                    # Step 3: compute x from the system L^T x = z
+
+        // b, x, y and z can be read/written in the same vector:
+        Real* const bPermuted = Tmp.data();
+        Real* const xPermuted = Tmp.data();
+        Real* const y = Tmp.data();
+        Real* const z = Tmp.data();
+
+        // apply the permutation to the right-hand side
+        for (int i = 0; i < n; ++i)
+        {
+            bPermuted[i] = b[perm[i]];
         }
 
-        for (int j = n-1 ; j >= 0 ; j--) {
-            Tmp[j] *= invD[j];
+        // Step 1: compute y from the system L y = b
+        // Note that L^T, stored in CSC, corresponds to L in CSR
+        sofa::linearalgebra::solveLowerUnitriangularSystemCSR(n, bPermuted, y,
+            data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
 
-            for (int p = L_colptr[j] ; p < L_colptr[j+1] ; p++) {
-                Tmp[j] -= L_values[p] * Tmp[L_rowind[p]];
-            }
+        // Step 2: compute z from the system D z = y
+        sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(n, y, z, data->invD.data());
 
-            x[perm[j]] = Tmp[j];
+        // Step 3: compute x from the system L^T x = z
+        // Note that L, stored in CSC, corresponds to L^T in CSR
+        sofa::linearalgebra::solveUpperUnitriangularSystemCSR(n, z, xPermuted,
+            data->L_colptr.data(), data->L_rowind.data(), data->L_values.data());
+
+        // apply the permutation to the solution
+        for (int i = 0; i < n; ++i)
+        {
+            x[perm[i]] = xPermuted[i];
         }
     }
 
@@ -228,21 +266,29 @@ protected :
         CSPARSE_symbolic(n,M_colptr,M_rowind,colptr,perm,invperm,Parent,Flag.data(),Lnz.data());
     }
 
-    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent) {
+    void LDL_numeric(int n,
+                     int* M_colptr, int* M_rowind, Real* M_values,
+                     int* colptr, int* rowind, Real* values,
+                     Real* D, int* perm, int* invperm, int* Parent)
+    {
         Y.resize(n);
 
         CSPARSE_numeric<Real>(n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,perm,invperm,Parent,Flag.data(),Lnz.data(),Pattern.data(),Y.data());
     }
 
     template<class VecInt,class VecReal>
-    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
-        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || compareMatrixShape(n, M_colptr, M_rowind, data->n,
-                                                                                                                                         (int *) data->P_colptr.data(),(int *) data->P_rowind.data());
+    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data)
+    {
+        data->new_factorization_needed =
+            data->P_colptr.size() == 0 ||
+            data->P_rowind.size() == 0 ||
+            compareMatrixShape(n, M_colptr, M_rowind, data->n, (int*)data->P_colptr.data(), (int*)data->P_rowind.data());
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
-        data->P_values.clear();data->P_values.fastResize(data->P_nnz);
-        memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
+        data->P_values.clear();
+        data->P_values.fastResize(data->P_nnz);
+        memcpy(data->P_values.data(), M_values, data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
@@ -291,16 +337,20 @@ protected :
         //Numeric Factorization
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("numeric_factorization");
-            LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
-                        data->perm.data(),data->invperm.data(),data->Parent.data());
+            LDL_numeric(data->n, M_colptr, M_rowind, M_values, colptr, rowind, values, D,
+                        data->perm.data(), data->invperm.data(), data->Parent.data());
 
             //inverse the diagonal
-            for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+            for (int i = 0; i < data->n; i++)
+            {
+                D[i] = 1 / D[i];
+            }
         }
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
+        {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -317,13 +367,15 @@ protected :
         tran_countvec.clear();
         tran_countvec.resize(data->n);
 
-        for (int j=0;j<data->n;j++) {
-          for (int i=colptr[j];i<colptr[j+1];i++) {
-            int line = rowind[i];
-            tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
-            tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
-            tran_countvec[line]++;
-          }
+        for (int j = 0; j < data->n; j++)
+        {
+            for (int i = colptr[j]; i < colptr[j + 1]; i++)
+            {
+                const int line = rowind[i];
+                tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
+                tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
+                tran_countvec[line]++;
+            }
         }
     }
 

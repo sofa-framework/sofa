@@ -36,7 +36,7 @@ namespace routingmessagehandler
 
 void RoutingMessageHandler::process(Message& m)
 {
-    for(auto& f : m_filters)
+    for(const auto& f : m_filters)
     {
         if(f.first(m))
         {

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VECID_H
-#define SOFA_CORE_VECID_H
+#pragma once
 
 #include <sofa/core/config.h>
 
@@ -183,8 +182,6 @@ public:
     static MyVecId constraintJacobian()    { return MyVecId(1);} // jacobian matrix of constraints
     static MyVecId mappingJacobian() { return MyVecId(2);}         // accumulated matrix of the mappings
 
-    SOFA_ATTRIBUTE_DISABLED("v17.06 (PR#276)", "v21.06", "See VecId.h to remove this message and replace by constraintMatrix")
-    static MyVecId holonomicC() = delete;
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)
@@ -276,11 +273,11 @@ public:
     VecType getType() const { return type; }
     unsigned int getIndex() const { return index; }
 
-	VecType type;
+    VecType type;
     unsigned int index;
 
 protected:
-	BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
+    BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
 };
 
 /// This class is only here as fix for a VC2010 compiler otherwise padding TVecId<V_ALL,?> with 4 more bytes than TVecId<?,?>, 
@@ -316,7 +313,7 @@ public:
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
 
-	template<VecAccess vaccess2>
+    template<VecAccess vaccess2>
     explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
@@ -449,14 +446,56 @@ typedef TVecId<V_ALL, V_READ> ConstVecId;
 typedef TVecId<V_ALL, V_WRITE> VecId;
 
 /// Typedefs for each type of state vectors
-typedef TVecId<V_COORD, V_READ> ConstVecCoordId;
-typedef TVecId<V_COORD, V_WRITE>     VecCoordId;
-typedef TVecId<V_DERIV, V_READ> ConstVecDerivId;
-typedef TVecId<V_DERIV, V_WRITE>     VecDerivId;
-typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
-typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
+typedef TVecId<V_COORD   , V_READ > ConstVecCoordId;
+typedef TVecId<V_COORD   , V_WRITE>      VecCoordId;
+typedef TVecId<V_DERIV   , V_READ > ConstVecDerivId;
+typedef TVecId<V_DERIV   , V_WRITE>      VecDerivId;
+typedef TVecId<V_MATDERIV, V_READ > ConstMatrixDerivId;
+typedef TVecId<V_MATDERIV, V_WRITE>      MatrixDerivId;
 
 static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
-} // namespace sofa
 
-#endif
+
+/// Maps a VecType to a DataTypes member typedef representing the state variables
+/// Example: StateType_t<DataTypes, core::V_COORD> returns the type DataTypes::Coord
+template<class DataTypes, core::VecType vtype> struct StateType {};
+template<class DataTypes, core::VecType vtype> using StateType_t = typename StateType<DataTypes, vtype>::type;
+
+template<class DataTypes> struct StateType<DataTypes, core::V_COORD>
+{
+    using type = typename DataTypes::Coord;
+};
+template<class DataTypes> struct StateType<DataTypes, core::V_DERIV>
+{
+    using type = typename DataTypes::Deriv;
+};
+
+/// Maps a VecType to a DataTypes member static variable representing the size of the state variables
+/// Example: StateTypeSize_v<DataTypes, core::V_COORD> is the value of DataTypes::coord_total_size
+template<class DataTypes, core::VecType vtype> struct StateTypeSize {};
+template<class DataTypes, core::VecType vtype> inline constexpr sofa::Size StateTypeSize_v = StateTypeSize<DataTypes, vtype>::total_size;
+
+template<class DataTypes> struct StateTypeSize<DataTypes, core::V_COORD>
+{
+    static constexpr sofa::Size total_size = DataTypes::coord_total_size;
+};
+template<class DataTypes> struct StateTypeSize<DataTypes, core::V_DERIV>
+{
+    static constexpr sofa::Size total_size = DataTypes::deriv_total_size;
+};
+
+/// Maps a VecType to a DataTypes member typedef representing a vector of state variables
+/// Example: StateVecType_t<DataTypes, core::V_COORD> returns the type DataTypes::VecCoord
+template<class DataTypes, core::VecType vtype> struct StateVecType {};
+template<class DataTypes, core::VecType vtype> using StateVecType_t = typename StateVecType<DataTypes, vtype>::type;
+
+template<class DataTypes> struct StateVecType<DataTypes, core::V_COORD>
+{
+    using type = typename DataTypes::VecCoord;
+};
+template<class DataTypes> struct StateVecType<DataTypes, core::V_DERIV>
+{
+    using type = typename DataTypes::VecDeriv;
+};
+
+} // namespace sofa::core

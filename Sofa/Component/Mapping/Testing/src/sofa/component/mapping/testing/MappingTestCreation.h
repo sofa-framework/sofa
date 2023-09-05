@@ -29,8 +29,6 @@ using sofa::testing::NumericTest;
 
 #include <sofa/simulation/VectorOperations.h>
 
-#include <SceneCreator/SceneCreator.h>
-
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
@@ -125,39 +123,53 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         /// Parent node
         root = simulation->createNewGraph("root");
-        inDofs = modeling::addNew<InDOFs>(root);
+
+        inDofs = core::objectmodel::New<InDOFs>();
+        root->addObject(inDofs);
 
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = modeling::addNew<OutDOFs>(childNode);
-        mapping = modeling::addNew<Mapping>(childNode).get();
+        outDofs = core::objectmodel::New<OutDOFs>();
+        childNode->addObject(outDofs);
+        auto mappingSptr = core::objectmodel::New<Mapping>();
+        mapping = mappingSptr.get();
+        childNode->addObject(mapping);
+
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
+    Mapping_test(std::string fileName)
+        : simulation(sofa::simulation::getSimulation()),
+          deltaRange(1, 1000),
+          errorMax(100),
+          errorFactorDJ(1),
+          flags(TEST_ASSEMBLY_API|TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        assert(simulation);
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false);
+        root = sofa::simulation::node::load(fileName.c_str(), false);
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
 
         // Get child nodes
-        simulation::Node::SPtr patchNode = root->getChild("Patch");
+        const simulation::Node::SPtr patchNode = root->getChild("Patch");
         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
         // Add OutDofs
-        outDofs = modeling::addNew<OutDOFs>(elasticityNode);
+        outDofs = core::objectmodel::New<OutDOFs>();
+        elasticityNode->addObject(outDofs);
 
         // Add mapping to the scene
-        mapping = modeling::addNew<Mapping>(elasticityNode).get();
+        auto mappingSptr = core::objectmodel::New<Mapping>();
+        mapping = mappingSptr.get();
+        elasticityNode->addObject(mapping);
         mapping->setModels(inDofs.get(),outDofs.get());
         
     }
@@ -223,7 +235,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         sofa::testing::copyToData(xin,parentInit); // xin = parentInit
@@ -233,7 +245,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData(xout,childInit);
 
         /// Init based on parentInit
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         /// Updated to parentNew
         sofa::testing::copyToData(xin,parentNew);
@@ -471,7 +483,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     ~Mapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 protected:

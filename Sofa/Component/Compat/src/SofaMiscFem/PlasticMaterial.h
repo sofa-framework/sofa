@@ -23,10 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/PlasticMaterial.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/PlasticMaterial.h")
-
-namespace sofa::component::fem::material
-{
-    using PlasticMaterial = sofa::component::solidmechanics::fem::hyperelastic::material::PlasticMaterial;
-
-} // namespace sofa::component::fem
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/PlasticMaterial.h")

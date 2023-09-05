@@ -71,13 +71,13 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the tests.
     void SetUp() override
     {
-        // Init
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
+        ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+        const PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
         root->addObject(topology);
 
         dofs = New<MechanicalObject>();
@@ -111,7 +111,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
     }
 
     /** Constrain all the particles.
@@ -124,7 +124,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::getSimulation()->init(root.get());
+         sofa::simulation::node::initRoot(root.get());
     }
     ///@}
 
@@ -210,7 +210,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

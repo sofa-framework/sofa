@@ -50,6 +50,13 @@ void EdgeSetTopologyModifier::init()
 {
     PointSetTopologyModifier::init();
     getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "EdgeSetTopologyContainer not found in current node: " << this->getContext()->getName();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
@@ -87,7 +94,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     if (m_container->m_edgesAroundVertex.size() != nbrP)
         m_container->m_edgesAroundVertex.resize(nbrP);
 
-    sofa::Index edgeId = m_container->getNumberOfEdges();
+    const sofa::Index edgeId = m_container->getNumberOfEdges();
 
     sofa::type::vector< EdgeID > &shell0 = m_container->m_edgesAroundVertex[e[0]];
     shell0.push_back((EdgeID)edgeId);
@@ -114,7 +121,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges)
     m_container->setEdgeTopologyToDirty();
 
     // Warning that edges just got created
-    EdgesAdded *e = new EdgesAdded(nEdges);
+    const EdgesAdded *e = new EdgesAdded(nEdges);
     addTopologyChange(e);
 }
 
@@ -126,7 +133,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
     m_container->setEdgeTopologyToDirty();
 
     // Warning that edges just got created
-    EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
+    const EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
     addTopologyChange(e);
 }
 
@@ -139,7 +146,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
     m_container->setEdgeTopologyToDirty();
 
     // Warning that edges just got created
-    EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
+    const EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
     addTopologyChange(e);
 }
 
@@ -153,7 +160,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
     m_container->setEdgeTopologyToDirty();
 
     // Warning that edges just got created
-    EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
+    const EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
     addTopologyChange(e);
 }
 
@@ -184,7 +191,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
     }
 
     // Warning that edges just got created
-    EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestorElems, ancestors, baryCoefs);
+    const EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestorElems, ancestors, baryCoefs);
     addTopologyChange(e);
 }
 
@@ -197,7 +204,7 @@ void EdgeSetTopologyModifier::removeEdgesWarning(sofa::type::vector<EdgeID> &edg
     std::sort( edges.begin(), edges.end(), std::greater<EdgeID>() );
 
     // Warning that these edges will be deleted
-    EdgesRemoved *e = new EdgesRemoved(edges);
+    const EdgesRemoved *e = new EdgesRemoved(edges);
     addTopologyChange(e);
 }
 
@@ -652,7 +659,7 @@ void EdgeSetTopologyModifier::removeItems(const sofa::type::vector< EdgeID >& it
 void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges)
 {
     sofa::helper::AdvancedTimer::stepBegin("addEdges");
-    sofa::Size nEdges = m_container->getNumberOfEdges();
+    const sofa::Size nEdges = m_container->getNumberOfEdges();
 
     // actually add edges in the topology container
     sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
@@ -683,7 +690,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
         const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
 {
     sofa::helper::AdvancedTimer::stepBegin("addEdges with ancestors");
-    sofa::Index nEdges = m_container->getNumberOfEdges();
+    const sofa::Index nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
     sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
@@ -712,7 +719,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
 void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
         const sofa::type::vector< core::topology::EdgeAncestorElem >& ancestorElems)
 {
-    sofa::Size nEdge = m_container->getNumberOfEdges();
+    const sofa::Size nEdge = m_container->getNumberOfEdges();
 
     assert(ancestorElems.size() == edges.size());
 
@@ -782,7 +789,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::type::vector<int>& invers
 
     inverse_permutation.resize(num_vertices(G));
 
-    property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
+    const property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
 
     std::vector<Vertex> inv_perm(num_vertices(G));
     std::vector<Size> perm(num_vertices(G));
@@ -814,7 +821,7 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::type::vector<PointI
         const bool moveDOF)
 {
     SOFA_UNUSED(moveDOF);
-    size_t nbrVertex = id.size();
+    const size_t nbrVertex = id.size();
     bool doublet;
     sofa::type::vector<EdgeID> edgesAroundVertex2Move;
     sofa::type::vector< Edge > edgeArray;
@@ -846,7 +853,7 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::type::vector<PointI
     std::sort( edgesAroundVertex2Move.begin(), edgesAroundVertex2Move.end(), std::greater<EdgeID>() );
 
     // Step 2/4 - Create event to delete all elements before moving and propagate it:
-    EdgesMoved_Removing *ev1 = new EdgesMoved_Removing (edgesAroundVertex2Move);
+    const EdgesMoved_Removing *ev1 = new EdgesMoved_Removing (edgesAroundVertex2Move);
     this->addTopologyChange(ev1);
     propagateTopologicalChanges();
 
@@ -861,7 +868,7 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::type::vector<PointI
     for (size_t i = 0; i<edgesAroundVertex2Move.size(); i++)
         edgeArray.push_back (m_container->getEdgeArray()[ edgesAroundVertex2Move[i] ]);
 
-    EdgesMoved_Adding *ev2 = new EdgesMoved_Adding (edgesAroundVertex2Move, edgeArray);
+    const EdgesMoved_Adding *ev2 = new EdgesMoved_Adding (edgesAroundVertex2Move, edgeArray);
     this->addTopologyChange(ev2); // This event should be propagated with global workflow
 }
 
@@ -875,7 +882,7 @@ bool EdgeSetTopologyModifier::removeConnectedComponents(EdgeID elemID)
         return false;
     }
 
-    sofa::type::vector<EdgeID> elems = m_container->getConnectedElement(elemID);
+    const sofa::type::vector<EdgeID> elems = m_container->getConnectedElement(elemID);
     this->removeItems(elems);
     return true;
 }
@@ -889,7 +896,7 @@ bool EdgeSetTopologyModifier::removeConnectedElements(EdgeID elemID)
         return false;
     }
 
-    sofa::type::vector<EdgeID> elems = m_container->getElementAroundElement(elemID);
+    const sofa::type::vector<EdgeID> elems = m_container->getElementAroundElement(elemID);
     this->removeItems(elems);
     return true;
 }
@@ -909,7 +916,7 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(sofa::Size scaleElem)
         return false;
     }
 
-    sofa::Size nbr = this->m_container->getNumberOfElements();
+    const sofa::Size nbr = this->m_container->getNumberOfElements();
     sofa::type::vector<EdgeID> elemAll = m_container->getConnectedElement(0);
     sofa::type::vector<EdgeID> elem, elemMax, elemToRemove;
 
@@ -968,7 +975,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepBegin("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
 
     auto& edgeTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoHandler : edgeTopologyHandlerList)
+    for (const auto topoHandler : edgeTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

@@ -109,12 +109,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorRotationMode = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
-#ifdef TRACKING
-    savedX = 0;
-    savedY = 0;
-    firstTime = true;
-    tracking = false;
-#endif // TRACKING
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
@@ -301,7 +295,7 @@ void QtViewer::Display3DText(float x, float y, float z, char* string)
 // ---------------------------------------------------
 void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
 {
-    float fontScale = (float) (arrowSize * 0.25);
+    const float fontScale = (float) (arrowSize * 0.25);
 
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
@@ -566,20 +560,19 @@ void QtViewer::DisplayOBJs()
     {
         // 		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot.get());
+        sofa::simulation::node::initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
 
     {
 
-        getSimulation()->draw(vparams,groot.get());
+        sofa::simulation::node::draw(vparams, groot.get());
 
         if (m_bShowAxis)
         {
-
-            SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
-            SReal* maxBBox = vparams->sceneBBox().maxBBoxPtr();
+            const SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
+            const SReal* maxBBox = vparams->sceneBBox().maxBBoxPtr();
             SReal maxDistance = std::numeric_limits<SReal>::min();
 
             maxDistance = maxBBox[0] - minBBox[0];
@@ -687,14 +680,14 @@ void QtViewer::drawScene(void)
 
     int width = _W;
     int height = _H;
-    bool stereo = currentCamera->getStereoEnabled();
+    const bool stereo = currentCamera->getStereoEnabled();
     bool twopass = stereo;
     sofa::component::visual::BaseCamera::StereoMode smode = currentCamera->getStereoMode();
-    sofa::component::visual::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
-    double sShift = currentCamera->getStereoShift();
+    const sofa::component::visual::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
+    const double sShift = currentCamera->getStereoShift();
     bool stencil = false;
     bool viewport = false;
-    bool supportStereo = currentCamera->isStereo();
+    const bool supportStereo = currentCamera->isStereo();
     sofa::core::visual::VisualParams::Viewport vpleft, vpright;
     if(supportStereo)
     {
@@ -817,8 +810,8 @@ void QtViewer::drawScene(void)
             }
             else if(sStrat == sofa::component::visual::BaseCamera::TOEDIN)
             {
-                double distance = currentCamera ? currentCamera->getDistance() : 10*sShift;
-                double angle = atan2(sShift,distance)*180.0/M_PI;
+                const double distance = currentCamera ? currentCamera->getDistance() : 10*sShift;
+                const double angle = atan2(sShift,distance)*180.0/M_PI;
                 glTranslated(0,0,-distance);
                 glRotated(-angle,0,1,0);
                 glTranslated(0,0,distance);
@@ -1087,7 +1080,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 
 void QtViewer::keyPressEvent(QKeyEvent * e)
 {
-    if (!isControlPressed() && !e->isAutoRepeat())
+    if (isControlPressed())
     {
         if (groot)
         {
@@ -1148,29 +1141,6 @@ void QtViewer::mouseReleaseEvent(QMouseEvent * e)
 
 void QtViewer::mouseMoveEvent(QMouseEvent * e)
 {
-
-#ifdef TRACKING
-    if (tracking)
-    {
-        if (groot)
-        {
-            if (firstTime)
-            {
-                savedX = e->x();
-                savedY = e->y();
-                firstTime = false;
-            }
-
-            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,e->x()-savedX,e->y()-savedY);
-            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
-            QCursor::setPos(mapToGlobal(QPoint(savedX, savedY)));
-        }
-    }
-    else
-    {
-        firstTime = true;
-    }
-#endif // TRACKING
     //if the mouse move is not "interactive", give the event to the camera
     if(!mouseEvent(e))
         SofaViewer::mouseMoveEvent(e);
@@ -1180,8 +1150,8 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
 bool QtViewer::mouseEvent(QMouseEvent * e)
 {
     bool isInteractive = false;
-    int eventX = e->x();
-    int eventY = e->y();
+    const int eventX = e->x();
+    const int eventY = e->y();
     if (_mouseInteractorRotationMode)
     {
         switch (e->type())
@@ -1345,8 +1315,8 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
         }
         if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
         {
-            int dx = eventX - _mouseInteractorSavedPosX;
-            int dy = eventY - _mouseInteractorSavedPosY;
+            const int dx = eventX - _mouseInteractorSavedPosX;
+            const int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
                 _lightPosition[0] -= dx * 0.1;
@@ -1361,8 +1331,8 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
         }
         else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
         {
-            int dx = eventX - _mouseInteractorSavedPosX;
-            int dy = eventY - _mouseInteractorSavedPosY;
+            const int dx = eventX - _mouseInteractorSavedPosX;
+            const int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
                 //g_DepthBias[0] += dx*0.01;
@@ -1376,9 +1346,8 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
         }
         else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
         {
-
-            int dx = eventX - _mouseInteractorSavedPosX;
-            int dy = eventY - _mouseInteractorSavedPosY;
+            const int dx = eventX - _mouseInteractorSavedPosX;
+            const int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
                 //g_DepthOffset[0] += dx * 0.01;
@@ -1424,7 +1393,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
     px -= p0;
     py -= p0;
     pz -= p0;
-    double r0 = sqrt(px.norm2() + py.norm2());
+    const double r0 = sqrt(px.norm2() + py.norm2());
     double r1 = sqrt(px1.norm2() + py1.norm2());
     r1 = r0 + (r1 - r0) / pz.norm();
     px.normalize();
@@ -1467,7 +1436,7 @@ void QtViewer::resetView()
 
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
+        const std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         fileRead = currentCamera->importParametersFromFile(viewFileName);
     }
 
@@ -1509,7 +1478,7 @@ void QtViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
+        const std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         if(currentCamera->exportParametersInFile(viewFileName))
             std::cout << "View parameters saved in " << viewFileName << std::endl;
         else
@@ -1575,7 +1544,7 @@ void QtViewer::screenshot(const std::string& filename, int compression_level)
     QImage screenshot;
 
     screenshot = this->grabFramebuffer();
-    bool res = screenshot.save(filename.c_str(), nullptr, (compression_level == -1) ? -1 : compression_level*100); // compression_level is either -1 or [0,100]
+    const bool res = screenshot.save(filename.c_str(), nullptr, (compression_level == -1) ? -1 : compression_level*100); // compression_level is either -1 or [0,100]
     if(res)
     {
         msg_info("QtViewer") << "Saved " << screenshot.width() << "x" << screenshot.height() << " screen image to " << filename;

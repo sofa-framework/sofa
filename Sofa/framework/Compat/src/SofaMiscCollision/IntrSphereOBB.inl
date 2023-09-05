@@ -26,7 +26,7 @@
 #if __has_include(<CollisionOBBCapsule/detection/intersection/IntrSphereOBB.inl>)
 #include <CollisionOBBCapsule/detection/intersection/IntrSphereOBB.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrSphereOBB.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrSphereOBB.inl")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/IntrSphereOBB.inl> instead of this one."

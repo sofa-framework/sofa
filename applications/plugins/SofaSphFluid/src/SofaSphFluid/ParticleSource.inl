@@ -85,6 +85,7 @@ void ParticleSource<DataTypes>::init()
         m_lastparticles.createTopologyHandler(_topology);
         m_lastparticles.setDestructionCallback([this](Index pointIndex, Index& val)
         {
+            SOFA_UNUSED(val);
             m_lastpos[pointIndex] = m_lastpos[m_lastpos.size() - 1];
             m_lastpos.pop_back();
         });

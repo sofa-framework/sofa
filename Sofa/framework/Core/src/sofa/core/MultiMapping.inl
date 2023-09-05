@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTIMAPPING_INL
-#define SOFA_CORE_MULTIMAPPING_INL
+#pragma once
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 template< class In, class Out>
@@ -77,7 +73,7 @@ template< class In, class Out >
 type::vector<BaseState*> MultiMapping<In,Out>::getFrom()
 {
     const VecFromModels& models = getFromModels();
-    size_t size = models.size();
+    const size_t size = models.size();
     type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
@@ -87,7 +83,7 @@ template< class In, class Out >
 type::vector<BaseState* > MultiMapping<In,Out>::getTo()
 {
     const VecToModels& models = getToModels();
-    size_t size = models.size();
+    const size_t size = models.size();
     type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
@@ -171,9 +167,4 @@ template <class In, class Out>
 void MultiMapping<In,Out>::disable()
 {
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

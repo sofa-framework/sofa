@@ -161,7 +161,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
     validLines.clear();
     std::string line, cmd;
 
-    double epsilon = 0.00000001;
+    const double epsilon = 0.00000001;
 
 
     while ((double)nextTime <= (time + epsilon))
@@ -184,7 +184,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
             buf[0] = '\0';
             while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
-                size_t l = strlen(buf);
+                const size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';

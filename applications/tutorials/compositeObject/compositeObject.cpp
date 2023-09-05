@@ -45,7 +45,7 @@
 
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/init.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 
 
 
@@ -213,9 +213,9 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     // Mapped particles. The RigidMapping requires to cluster the particles based on their parent frame.
     mappedParticles_dof->resize(numMapped);
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions(); // parent positions
-    mappedParticles_mapping->globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
+    mappedParticles_mapping->d_globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
 
-    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
+    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->d_rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
     rigidIndexPerPoint.clear();
     rigidIndexPerPoint.reserve( numMapped );
     unsigned mappedIndex=0;
@@ -230,7 +230,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
             mappedIndex++;
         }
     }
-    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
+    mappedParticles_mapping->d_rigidIndexPerPoint.endEdit();
 
     // Declare all the particles to the multimapping
     for( unsigned i=0; i<xgrid.size(); i++ )
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
     //force load SofaComponentAll
     sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;

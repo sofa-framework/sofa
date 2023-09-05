@@ -76,7 +76,7 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
         return ;
     }
 
-    string stype(type) ;
+    const string stype(type) ;
 
     if(stype=="sofa"){
         MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;

@@ -227,7 +227,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentInit); // xin = parentInit

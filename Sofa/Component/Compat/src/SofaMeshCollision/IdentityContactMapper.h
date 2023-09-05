@@ -23,11 +23,4 @@
 
 #include <sofa/component/collision/response/mapper/IdentityContactMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/IdentityContactMapper.h")
-
-namespace sofa::component::collision
-{
-    template<class TCollisionModel, class DataTypes>
-    using IdentityContactMapper = sofa::component::collision::response::mapper::IdentityContactMapper<TCollisionModel, DataTypes>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/IdentityContactMapper.h")

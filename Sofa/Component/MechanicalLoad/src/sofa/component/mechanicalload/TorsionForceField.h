@@ -77,6 +77,8 @@ public:
 	void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v) override;
 	void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
 	void addKToMatrix(linearalgebra::BaseMatrix *matrix, SReal kFact, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+	void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 

@@ -105,7 +105,12 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+
+    void computeElementStiffnessMatrix(type::Mat<9, 9, Real>& S, type::Mat<9, 9, Real>& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -113,7 +118,7 @@ public:
     class TriangleInformation
     {
     public:
-        /// material stiffness matrices of each tetrahedron
+        /// material stiffness matrices of each triangle
         MaterialStiffness materialMatrix;
         ///< the strain-displacement matrices vector
         StrainDisplacement strainDisplacementMatrix;
@@ -132,10 +137,11 @@ public:
         Real maxStress;
         Coord principalStrainDirection;
         Real maxStrain;
+        Real differenceToCriteria;
 
         type::vector<Coord> lastNStressDirection;
 
-        TriangleInformation() { }
+        TriangleInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& /*ti*/ )
@@ -148,8 +154,6 @@ public:
         {
             return in;
         }
-
-        Real differenceToCriteria;
     };
 
 
@@ -196,7 +200,7 @@ public:
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val);
     void setPoissonArray(const type::vector<Real>& values);
-    
+
     Real getYoung() { return (f_young.getValue())[0]; }
     void setYoung(Real val);
     void setYoungArray(const type::vector<Real>& values);
@@ -227,6 +231,7 @@ protected :
     void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
     void computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo);
     void computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo);
+    void computeStressPerVertex(); ///< Method to compute the averageStress per vertex. Call if @sa showStressValue is true
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
@@ -286,8 +291,10 @@ public:
 #endif
 
 private:
-    bool p_computeDrawInfo;
-    sofa::helper::ColorMap* p_drawColorMap;
+    bool p_computeDrawInfo; ///< bool set to true if at least one of @sa showStressValue, @sa showStressVector or @sa showFracturableTriangles is true
+    sofa::helper::ColorMap* p_drawColorMap; ///< colormap to display the gradiant of stress if @sa showStressValue is set to true
+    Real m_minStress = 0; ///< min stress computed for @sa showStressValue
+    Real m_maxStress = 0; ///< max stress computed for @sa showStressValue
 
     TriangleFEMUtils<DataTypes> m_triangleUtils;
 };

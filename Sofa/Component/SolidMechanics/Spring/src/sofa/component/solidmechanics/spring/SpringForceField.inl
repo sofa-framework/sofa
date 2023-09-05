@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
@@ -295,23 +296,42 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
 template<class DataTypes>
 void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring)
 {
+    const auto springForce = this->computeSpringForce(p1, v1, p2, v2, spring);
+
+    if (springForce)
+    {
+        sofa::Index a = spring.m1;
+        sofa::Index b = spring.m2;
+
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(springForce->force)) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(springForce->force)) ;
+
+        ener += springForce->energy;
+    }
+}
+
+template <class DataTypes>
+auto SpringForceField<DataTypes>::computeSpringForce(const VecCoord& p1, const VecDeriv& v1, const VecCoord& p2, const VecDeriv& v2, const Spring& spring)
+-> std::unique_ptr<SpringForce>
+{
     sofa::Index a = spring.m1;
     sofa::Index b = spring.m2;
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
-        return;
+        return {};
+    std::unique_ptr<SpringForce> springForce = std::make_unique<SpringForce>();
+
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
     Real elongation = d - spring.initpos;
-    ener += elongation * elongation * spring.ks /2;
+    springForce->energy = elongation * elongation * spring.ks /2;
     typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
     typename DataTypes::DPos force = u*forceIntensity;
-
-    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
-    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
+    springForce->force = std::make_pair(force, -force);
+    return springForce;
 }
 
 template<class DataTypes>
@@ -320,26 +340,23 @@ void SpringForceField<DataTypes>::addForce(
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-
-    VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 = data_x1.getValue();
     const VecDeriv& v1 = data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
+
     const VecCoord& x2 = data_x2.getValue();
     const VecDeriv& v2 = data_v2.getValue();
 
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
 
     const type::vector<Spring>& springs= this->springs.getValue();
-
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    for (unsigned int i=0; i < springs.size(); i++)
     {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce(this->m_potentialEnergy,f1.wref(),x1,v1,f2.wref(),x2,v2, i, springs[i]);
     }
-    data_f1.endEdit();
-    data_f2.endEdit();
 }
 
 template<class DataTypes>
@@ -378,6 +395,18 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>
@@ -390,12 +419,17 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     std::vector< Vec3 > points[4];
-    bool external = (this->mstate1 != this->mstate2);
+    const bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
+        assert(i < springs.size());
+        assert(springs[i].m2 < p2.size());
+        assert(springs[i].m1 < p1.size());
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
         Vec3 point2, point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);

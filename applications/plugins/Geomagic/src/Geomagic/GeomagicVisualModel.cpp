@@ -133,7 +133,7 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         visualNode[i].mapping->f_mapConstraints.setValue(false);
         visualNode[i].mapping->f_mapForces.setValue(false);
         visualNode[i].mapping->f_mapMasses.setValue(false);
-        visualNode[i].mapping->index.setValue(i + 1);
+        visualNode[i].mapping->d_index.setValue(i + 1);
         visualNode[i].mapping->init();
     }
 
@@ -141,10 +141,10 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
-        sofa::type::vector< sofa::type::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        sofa::type::vector< sofa::type::Vec3 > &scaleMapping = *(visualNode[j].mapping->d_points.beginEdit());
         for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(_scale);
-        visualNode[j].mapping->points.endEdit();
+        visualNode[j].mapping->d_points.endEdit();
         visualNode[j].node->updateContext();
     }
 

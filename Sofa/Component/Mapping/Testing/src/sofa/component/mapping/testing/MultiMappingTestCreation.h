@@ -37,7 +37,6 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <SceneCreator/SceneCreator.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
@@ -83,8 +82,8 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
 
 
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
-    type::vector<InDOFs*>  inDofs;  ///< mapping input
-    OutDOFs* outDofs; ///< mapping output
+    type::vector<typename InDOFs::SPtr>  inDofs;  ///< mapping input
+    typename OutDOFs::SPtr outDofs; ///< mapping output
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Node::SPtr child; ///< Child node, created by setupScene
     type::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
@@ -93,10 +92,12 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
-    MultiMapping_test():deltaRange(1,1000),errorMax(10)
+    MultiMapping_test()
+        : simulation(sofa::simulation::getSimulation()),
+          deltaRange(1, 1000),
+          errorMax(10)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
+        assert(simulation);
     }
 
     /** Create scene with given number of parent states. Currently, only one child state is handled.
@@ -108,9 +109,12 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
 
         /// Child node
         child = root->createChild("childNode");
-        outDofs = modeling::addNew<OutDOFs>(child).get();
-        mapping = modeling::addNew<Mapping>(child).get();
-        mapping->addOutputModel(outDofs);
+        outDofs = core::objectmodel::New<OutDOFs>();
+        child->addObject(outDofs);
+        auto mappingSptr = core::objectmodel::New<Mapping>();
+        mapping = mappingSptr.get();
+        child->addObject(mapping);
+        mapping->addOutputModel(outDofs.get());
 
         /// Parent states, added to specific parentNode{i} nodes. This is not a simulable scene.
         for( int i=0; i<numParents; i++ )
@@ -118,9 +122,11 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             std::stringstream ss;
             ss << "parentNode" << i;
             parents.push_back(root->createChild(ss.str()));
-            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i],ss.str().c_str());
+            typename InDOFs::SPtr inDof = core::objectmodel::New<InDOFs>();
+            inDof->setName(ss.str().c_str());
+            parents[i]->addObject(inDof);
             mapping->addInputModel( inDof.get() );
-            inDofs.push_back(inDof.get());
+            inDofs.push_back(inDof);
         }
 
     }
@@ -157,7 +163,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
 
         // transfer the parent values in the parent states
         for( size_t i=0; i<parentCoords.size(); i++ )
@@ -168,7 +174,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
@@ -419,7 +425,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     ~MultiMapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 };

@@ -23,18 +23,4 @@
 
 #include <sofa/component/engine/select/BoxROI.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/BoxROI.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using BoxROI = sofa::component::engine::select::BoxROI<DataTypes>;
-
-} // namespace sofa::component::engine
-
-namespace sofa::component::engine::boxselect
-{
-    template<class DataTypes>
-    using BoxROI = sofa::component::engine::select::BoxROI<DataTypes>;
-
-} // namespace sofa::component::engine::boxselect
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/BoxROI.h")

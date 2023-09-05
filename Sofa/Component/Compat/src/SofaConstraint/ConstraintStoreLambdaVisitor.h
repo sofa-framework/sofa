@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h")
-
-namespace sofa::simulation
-{
-    using ConstraintStoreLambdaVisitor = sofa::component::constraint::lagrangian::solver::ConstraintStoreLambdaVisitor;
-    
-} // namespace sofa::simulation
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h")

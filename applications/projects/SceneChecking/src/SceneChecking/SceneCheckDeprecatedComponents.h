@@ -22,12 +22,12 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
+#include <sofa/simulation/SceneCheck.h>
 
 namespace sofa::_scenechecking_
 {
 
-class SOFA_SCENECHECKING_API SceneCheckDeprecatedComponents : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckDeprecatedComponents : public sofa::simulation::SceneCheck
 {
 public:
     virtual ~SceneCheckDeprecatedComponents() {}
@@ -40,4 +40,4 @@ public:
     void doPrintSummary() override;
 };
 
-} //namespace sofa::_scenechecking_
+}

@@ -68,14 +68,14 @@ template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     using namespace sofa::type;
     using namespace sofa::defaulttype;
-    Vector3 sph_center = sph.center();
-    Vector3 cap_p1 = cap.point1();
-    Vector3 cap_p2 = cap.point2();
+    type::Vec3 sph_center = sph.center();
+    type::Vec3 cap_p1 = cap.point1();
+    type::Vec3 cap_p2 = cap.point2();
     SReal cap_rad = cap.radius();
     SReal sph_rad = sph.r();
 
-    Vector3 AB = cap_p2 - cap_p1;
-    Vector3 AC = sph_center - cap_p1;
+    type::Vec3 AB = cap_p2 - cap_p1;
+    type::Vec3 AC = sph_center - cap_p1;
 
     SReal theory_contactDist = (SReal) cap_rad + sph_rad + contactDist;
     SReal contact_exists = (SReal) cap_rad + sph_rad + alarmDist;
@@ -84,7 +84,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
     if(alpha < 0.000001){//S is the sphere center, here is the case :
                          //        S
                          //           A--------------B
-        Vector3 PQ = sph_center - cap_p1;
+        type::Vec3 PQ = sph_center - cap_p1;
 
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;
@@ -108,7 +108,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
     else if(alpha > 0.999999){//the case :
                               //                         S
                               //      A-------------B
-        Vector3 PQ = sph_center - cap_p2;
+        type::Vec3 PQ = sph_center - cap_p2;
 
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;
@@ -132,8 +132,8 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
     else{//the case :
          //              S
          //      A-------------B
-        Vector3 P = cap_p1 + alpha * AB;
-        Vector3 PQ = sph_center - P;
+        type::Vec3 P = cap_p1 + alpha * AB;
+        type::Vec3 PQ = sph_center - P;
 
         if(PQ.norm2() > contact_exists * contact_exists)
             return 0;

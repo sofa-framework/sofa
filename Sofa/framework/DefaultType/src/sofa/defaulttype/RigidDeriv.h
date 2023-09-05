@@ -27,9 +27,11 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/type/vector.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/helper/rmath.h>
 #include <cmath>
 
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa::defaulttype
 {
@@ -321,7 +323,16 @@ constexpr const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<
 template<typename T, typename R>
 constexpr type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
 {
-    return getLinear(v) + cross( getAngular(v),p );
+    return getLinear(v) + cross( getAngular(v), p );
+}
+
+template<typename T, typename R>
+constexpr RigidDeriv<3,R> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const RigidCoord<3,T>& p)
+{
+    RigidDeriv<3,R> r;
+    r.getLinear() = getLinear(v) + cross( getAngular(v), p.getCenter() );
+    r.getAngular() = getAngular(v);
+    return r;
 }
 
 template<typename real>
@@ -554,4 +565,48 @@ constexpr type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const 
     return getVCenter(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
 }
 
+template<typename R, typename T>
+constexpr RigidDeriv<2,T> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const RigidCoord<2,R>& p)
+{
+    RigidDeriv<2,T> r;
+    r.getLinear() = getLinear(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+    r.getAngular() = getAngular(v);
+    return r;
+}
+
 } // namespace sofa::defaulttype
+
+
+namespace sofa::linearalgebra
+{
+    template <Size N, class T, typename IndexType>
+    class matrix_bloc_traits < defaulttype::RigidDeriv<N, T>, IndexType >
+    {
+    public:
+        typedef defaulttype::RigidDeriv<N, T> Block;
+        typedef T Real;
+        typedef Block BlockTranspose;
+
+        enum { NL = 1 };
+        enum { NC = defaulttype::RigidDeriv<N, T>::total_size };
+
+        static const Real& v(const Block& b, int /*row*/, int col) { return b[col]; }
+        static Real& v(Block& b, int /*row*/, int col) { return b[col]; }
+        static void vset(Block& b, int /*row*/, int col, Real v) { b[col] = v; }
+        static void vadd(Block& b, int /*row*/, int col, Real v) { b[col] += v; }
+        static void clear(Block& b) { b.clear(); }
+        static bool empty(const Block& b)
+        {
+            for (int i = 0; i < NC; ++i)
+                if (b[i] != 0) return false;
+            return true;
+        }
+
+        static BlockTranspose transposed(const Block& b) { return b; }
+
+        static void transpose(BlockTranspose& res, const Block& b) { res = b; }
+
+        static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real,IndexType>::getElementType(); }
+        static const char* Name() { return defaulttype::DataTypeName<defaulttype::RigidDeriv<N, T>>::name(); }
+    };
+}

@@ -68,13 +68,13 @@ public:
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
-    double getVelocityIntegrationFactor() const override
+    SReal getVelocityIntegrationFactor() const override
     {
         return 1.0; // getContext()->getDt();
     }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
-    double getPositionIntegrationFactor() const override
+    SReal getPositionIntegrationFactor() const override
     {
         return getContext()->getDt(); //*getContext()->getDt());
     }
@@ -94,10 +94,10 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
-        const double dt = getContext()->getDt();
-        double matrix[3][3] =
+        const auto dt = getContext()->getDt();
+        const SReal matrix[3][3] =
         {
             { 1, dt, 0},
             { 0, 1, 0},
@@ -111,10 +111,10 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const override
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override
     {
-        const double dt = getContext()->getDt();
-        double vect[3] = { dt, 1, 1/dt};
+        const auto dt = getContext()->getDt();
+        const SReal vect[3] = { dt, 1, 1/dt};
         if (outputDerivative >= 3)
             return 0;
         else

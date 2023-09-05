@@ -27,7 +27,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
@@ -122,16 +121,16 @@ struct PlaneForceField_test : public BaseSimulationTest
     {
         if(m_simulation==nullptr){
             BackTrace::autodump() ;
-            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
+            m_simulation = sofa::simulation::getSimulation();
         }
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");
         m_root->setGravity(Vec3d(-9.8, 0.0,0.0));
 
-        typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
+        const typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
         m_root->addObject(eulerImplicitSolver);
 
-        typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
+        const typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);
         cgLinearSolver->d_maxIter.setValue(25);
         cgLinearSolver->d_tolerance.setValue(1e-5);
@@ -162,12 +161,12 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
-        simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void tearDownDefaultScene()
     {
-        m_simulation->unload( m_root );
+        sofa::simulation::node::unload(m_root);
     }
 
     bool testBasicAttributes()
@@ -204,7 +203,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -272,7 +271,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -303,7 +302,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -314,9 +313,9 @@ struct PlaneForceField_test : public BaseSimulationTest
 
     bool testPlaneForceField()
     {
-        for(int i=0; i<100; i++){
-            m_simulation->animate(m_root.get(),(double)0.01);
-
+        for(int i=0; i<100; i++)
+        {
+            sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
         Real x = m_mechanicalObj->x.getValue()[0][0];
 
@@ -337,12 +336,10 @@ struct PlaneForceField_test : public BaseSimulationTest
 using ::testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
-              ,TypeTuple<Vec1dTypes, double>
-              ,TypeTuple<Vec2dTypes, double>
-              ,TypeTuple<Vec3dTypes, double>
-              ,TypeTuple<Vec6dTypes, double>
-              ,TypeTuple<Rigid3dTypes, Rigid3dMass>
-
+              ,TypeTuple<Vec1Types, SReal>
+              ,TypeTuple<Vec2Types, SReal>
+              ,TypeTuple<Vec3Types, SReal>
+              ,TypeTuple<Vec6Types, SReal>
 > DataTypes;
 
 // Test suite for all the instanciations

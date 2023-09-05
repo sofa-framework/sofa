@@ -118,7 +118,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<statecontainer::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate

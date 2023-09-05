@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/AngularSpringForceField.h>
-
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -148,9 +148,9 @@ template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const int N = 6;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
@@ -160,6 +160,42 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
         for(int i = 3; i < 6; i++)
             mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < this->k.size() ? this->k[index] : this->k[0]));
     }
+}
+
+template <class DataTypes>
+void AngularSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+    assert(!k.empty());
+
+    const auto& indicesValue = indices.getValue();
+    const auto addValueToMatrix = [&dfdx](const sofa::Index nodeIndex, Real v)
+    {
+        for(sofa::Size j = Deriv::spatial_dimensions; j < Deriv::total_size; ++j)
+        {
+            const sofa::Size row = Deriv::total_size * nodeIndex + j;
+            dfdx(row, row) += v;
+        }
+    };
+
+    //separate the loop in 2 in case k.size() != indicesValue.size()
+    const auto minSize = std::min(indicesValue.size(), this->k.size());
+    for (std::size_t i = 0; i < minSize; ++i)
+    {
+        addValueToMatrix(indicesValue[i], -this->k[i]);
+    }
+
+    for (std::size_t i = minSize; i < indicesValue.size(); ++i)
+    {
+        addValueToMatrix(indicesValue[i], -this->k[0]);
+    }
+}
+
+template <class DataTypes>
+void AngularSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 template<class DataTypes>

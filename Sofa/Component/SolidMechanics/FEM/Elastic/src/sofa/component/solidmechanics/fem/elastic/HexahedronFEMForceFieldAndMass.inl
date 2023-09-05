@@ -22,7 +22,10 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+#include <sofa/core/behavior/BaseLocalMassMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -189,7 +192,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
             for(int k=0 ; k<8 ; ++k )
             {
-                int indice = k*3;
+                const int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
                     actualDx[indice+j] = _dx[(*it)[k]][j];
 
@@ -245,6 +248,39 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
                         r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, tmp[i][j]*mFactor);
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    HexahedronFEMForceFieldT::buildStiffnessMatrix(matrix);
+}
+
+template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+{
+    int e = 0;
+    for(auto it = this->getIndexedElements()->begin(); it != this->getIndexedElements()->end() ; ++it, ++e)
+    {
+        const ElementMass &Me = d_elementMasses.getValue()[e];
+
+        // find index of node 1
+        for (int n1 = 0; n1<8; n1++)
+        {
+            const int node1 = (*it)[n1];
+
+            // find index of node 2
+            for (int n2 = 0; n2<8; n2++)
+            {
+                const int node2 = (*it)[n2];
+
+                const Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
+                        Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
+                        Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
+                matrices->add(3 * node1, 3 * node2, tmp);
             }
         }
     }
@@ -313,7 +349,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
+    // since drawTool requires a std::vector<Vec3> we have to convert x in an ugly way
     std::vector<type::Vec3> pos;
     pos.resize(x.size());
     auto posIT = pos.begin();

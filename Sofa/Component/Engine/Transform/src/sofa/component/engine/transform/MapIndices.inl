@@ -81,7 +81,7 @@ template <class T>
 void MapIndices<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > in = f_in;
-    helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
+    const helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
     const bool transpose = f_transpose.getValue();
 
     helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
@@ -89,7 +89,7 @@ void MapIndices<T>::doUpdate()
     out.clear();
     out.reserve(in.size());
 
-    std::map<Index, Index> old2new;
+    std::map<sofa::Index, sofa::Index> old2new;
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         if (transpose) old2new[i] = indices[i];

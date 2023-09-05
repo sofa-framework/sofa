@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
+#include <sofa/simulation/SceneCheck.h>
 
 #include <map>
 #include <sstream>
@@ -30,7 +30,7 @@
 namespace sofa::_scenechecking_
 {
     
-class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public sofa::simulation::SceneCheck
 {
 public:
     virtual ~SceneCheckCollisionResponse() {}
@@ -45,6 +45,8 @@ public:
 private:
     bool m_checkDone = false;
     std::stringstream m_message;
+
+    void checkIfContactStiffnessIsSet(const core::objectmodel::BaseContext *root);
 };
 
 } // namespace sofa::_scenechecking_

@@ -5,8 +5,8 @@
 		<!--<CGImplicit iterations="10" tolerance="1e-15" threshold="1e-15" />-->
 		<!--<EulerImplicit />                <CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>-->
 		<MechanicalObject template="Vec3f" />
-<!--		<UniformMass totalmass="20" /> -->
-<?php echo '<UniformMass totalmass="'.(20*$size).'" />'."\n"; ?>
+<!--		<UniformMass totalMass="20" /> -->
+<?php echo '<UniformMass totalMass="'.(20*$size).'" />'."\n"; ?>
 <!--		<RegularGrid
 			nx="16" ny="16" nz="6"
 			xmin="0" xmax="3"

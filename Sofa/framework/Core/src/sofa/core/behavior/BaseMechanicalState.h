@@ -70,8 +70,8 @@ protected:
 
     ~BaseMechanicalState() override;
 private:
-	BaseMechanicalState(const BaseMechanicalState& n);
-	BaseMechanicalState& operator=(const BaseMechanicalState& n);
+    BaseMechanicalState(const BaseMechanicalState& n) = delete;
+    BaseMechanicalState& operator=(const BaseMechanicalState& n) = delete;
 
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
@@ -282,7 +282,7 @@ public:
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual type::Vec3 getScale() const { return type::Vector3(1.0_sreal,1.0_sreal,1.0_sreal); }
+    virtual type::Vec3 getScale() const { return type::Vec3(1.0_sreal,1.0_sreal,1.0_sreal); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
@@ -323,6 +323,9 @@ public:
     /// \brief Copy data to a local vector from the state stored in a global BaseVector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void copyFromBaseVector(VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) = 0;
+
+    /// \brief Copy data to a global BaseMatrix from the state stored in a local vector.
+    virtual void copyToBaseMatrix(linearalgebra::BaseMatrix* dest, ConstMatrixDerivId src, unsigned int& offset) = 0;
 
     /// \brief Copy data to an external, user-allocated buffer.
     ///

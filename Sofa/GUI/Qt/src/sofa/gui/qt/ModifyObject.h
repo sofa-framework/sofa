@@ -50,7 +50,7 @@ namespace sofa::gui::qt
 {
 
 class QTransformationWidget;
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
 class QEnergyStatWidget;
 class QMomentumStatWidget;
 #endif
@@ -172,10 +172,7 @@ protected:
     QPushButton *buttonUpdate;
     int m_numMessages;
 
-    //Widget specific to Node:
-    //Transformation widget: translation, rotation, scale ( only experimental and deactivated)
-    QTransformationWidget* transformation;
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
     //Momentum widget: plot the linear & angular momentum

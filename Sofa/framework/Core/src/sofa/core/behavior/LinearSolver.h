@@ -23,7 +23,6 @@
 
 #include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
@@ -57,6 +56,9 @@ public:
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
+
+    /// Returns true if the solver supports non-symmetric systems
+    virtual bool supportNonSymmetricSystem() const { return false; }
 
     /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
     virtual bool hasUpdatedMatrix() { return true; }
@@ -142,9 +144,6 @@ public:
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
     virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
-
-    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
     virtual linearalgebra::BaseVector* getSystemRHBaseVector() { return nullptr; }

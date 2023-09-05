@@ -32,18 +32,16 @@ class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
 public:
     SOFA_CLASS(LineAxis, VisualModel);
 
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
-
     Data<std::string> d_axis; ///< Axis to draw
     Data<float> d_size; ///< Size of the squared grid
     Data<float> d_thickness; ///< Thickness of the lines in the grid
-    Data<bool> d_draw; ///< Display the grid or not
+    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
 
     LineAxis();
 
     void init() override;
     void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
+    void doDrawVisual(const core::visual::VisualParams*) override;
     void updateVisual() override;
 
 protected:

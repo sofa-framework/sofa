@@ -145,7 +145,7 @@ void  ProjectToLineConstraint<DataTypes>::updateJacobian()
     std::sort(tmp.begin(),tmp.end());
 
     // resize the jacobian
-    unsigned numBlocks = this->mstate->getSize();
+    const unsigned numBlocks = this->mstate->getSize();
     const unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
@@ -185,7 +185,9 @@ void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalP
     SOFA_UNUSED(mparams);
     
     helper::WriteAccessor<DataVecDeriv> res(resData);
-    if( (jacobian.colSize() / DataTypes::deriv_total_size) != (decltype(jacobian.colSize()))res.size())
+
+    using Size = decltype(jacobian.colSize());
+    if( (jacobian.colSize() / Size(DataTypes::deriv_total_size)) != Size(res.size()))
     {
         updateJacobian();
     }

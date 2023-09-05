@@ -22,10 +22,11 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/BaseState.h>
-namespace sofa
-{
+#include <sofa/core/BaseLocalMappingMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/BaseMatrixAccumulatorComponent.h>
 
-namespace core
+namespace sofa::core
 {
 
 BaseMapping::BaseMapping()
@@ -138,12 +139,17 @@ sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior:
     return nullptr;
 }
 
+void BaseMapping::buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    SOFA_UNUSED(matrices);
+}
+
 bool BaseMapping::testMechanicalState(BaseState* state)
 {
     bool isMecha = false;
     if(state)
     {
-        behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
+        const behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
         isMecha = (toMechaModel) ? true : false;
     }
     return isMecha;
@@ -164,7 +170,4 @@ bool BaseMapping::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core

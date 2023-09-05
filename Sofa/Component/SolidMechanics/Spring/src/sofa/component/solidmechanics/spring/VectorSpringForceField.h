@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/spring/config.h>
 
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -140,6 +140,8 @@ public:
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 

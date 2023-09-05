@@ -265,10 +265,6 @@ public:
     /// Print key mass informations (totalMass, vertexMass and massDensity)
     void printMass();
 
-    /// Compute the mass from input values
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
-    void computeMass() = delete;
-
     /// @name Read and write access functions in mass information
     /// @{
     virtual const Real &getMassDensity();
@@ -315,7 +311,9 @@ public:
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     SReal getElementMass(sofa::Index index) const override;
     void getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
@@ -328,21 +326,7 @@ public:
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
         Inherited::parse(arg);
-
-        if (arg->getAttribute("template"))
-        {
-            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
-            if (splitTemplates.size() > 1)
-            {
-                // check if the given 2nd template is the deprecated MassType one
-                if (splitTemplates[1] == "float" || splitTemplates[1] == "double" || splitTemplates[1].find("RigidMass") != std::string::npos)
-                {
-                    msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                        << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                    msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
-                }
-            }
-        }
+        parseMassTemplate<MassType>(arg, this);
         if (arg->getAttribute("mass"))
         {
             msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";

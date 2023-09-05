@@ -3,6 +3,7 @@
     <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
     
 	<BackgroundSetting color="0 0.16862745098 0.21176470588"/>
     <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />

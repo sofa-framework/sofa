@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/QuadularBendingSprings.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <sofa/type/RGBAColor.h>
@@ -65,8 +66,6 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
 
     unsigned int u,v;
 
-    unsigned int nb_activated = 0;
-
     const typename DataTypes::VecCoord& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
@@ -101,9 +100,6 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
                 const auto& shell = this->m_topology->getQuadsAroundEdge(edgeIndex);
                 if (shell.size()==2)
                 {
-
-                    nb_activated+=1;
-
                     EdgesInQuad te1;
                     Quad t1;
 
@@ -121,8 +117,8 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
                         t1 = this->m_topology->getQuad(shell[0]);
                     }
 
-                    int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
-                    int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
+                    const int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
+                    const int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
 
                     ei.m1 = t1[i1]; // i1
                     ei.m2 = t2[(i2+3)%4]; // i2
@@ -226,8 +222,8 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
                         }
                     }
 
-                    int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
-                    int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
+                    const int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
+                    const int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
 
                     ei.m1 = t1[i1];
                     ei.m2 = t2[(i2+3)%4];
@@ -274,7 +270,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
-    bool debug_mode = false;
+    const bool debug_mode = false;
 
     unsigned int last = this->m_topology->getNbPoints() -1;
     unsigned int i,j;
@@ -312,7 +308,7 @@ void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::
 
             Quad tj = this->m_topology->getQuad(shell[j]);
 
-            unsigned int vertexIndex = this->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
+            const unsigned int vertexIndex = this->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
 
             EdgesInQuad tej = this->m_topology->getEdgesInQuad(shell[j]);
 
@@ -525,7 +521,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbEdges=m_topology->getNbEdges();
 
     EdgeInformation *einfo;
 
@@ -649,7 +645,7 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbEdges=m_topology->getNbEdges();
 
     const EdgeInformation *einfo;
 
@@ -686,6 +682,12 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
 
 }
 
+template <class DataTypes>
+void QuadularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -713,7 +715,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     {
         if(edgeInf[i].is_activated)
         {
-            bool external=true;
+            const bool external=true;
             Real d1 = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
             if (external)
             {

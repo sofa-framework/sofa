@@ -95,7 +95,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
     // Track TopologyData last index before applying changes. special case if id is invalid == start with empty buffer
-    int LastDataId = (this->m_lastElementIndex == sofa::InvalidID) ? -1 : int(this->m_lastElementIndex);
+    const int LastDataId = (this->m_lastElementIndex == sofa::InvalidID) ? -1 : int(this->m_lastElementIndex);
 
     // if no new element are added to this subset. Just update the lastElementIndex for future deletion
     if (!this->isNewTopologyElementsSupported())
@@ -107,7 +107,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     helper::WriteOnlyAccessor<Data<container_type> > data = this;
 
     // first resize the subsetData. value will be applied in the loop using callbacks
-    Size size = data.size();
+    const Size size = data.size();
     data.resize(size + nbElements);
     
 
@@ -230,7 +230,7 @@ void TopologySubsetData <TopologyElementType, VecT>::swapPostProcess(Index i1, I
     }
 
     //apply same change to map:
-    Index tmp2 = m_map2Elements[i1];
+    const Index tmp2 = m_map2Elements[i1];
     m_map2Elements[i1] = m_map2Elements[i2];
     m_map2Elements[i2] = tmp2;
 }

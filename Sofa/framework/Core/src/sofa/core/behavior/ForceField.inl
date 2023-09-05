@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::core::behavior
 {

@@ -92,7 +92,7 @@ template <class DataTypes>
 void ComplementaryROI<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > position(d_position);
-    ReadAccessor<Data<unsigned int> > nbSet(d_nbSet);
+    const ReadAccessor<Data<unsigned int> > nbSet(d_nbSet);
 
     WriteAccessor<Data<SetIndex> > indices(d_indices);
     WriteAccessor<Data<VecCoord> > pointsInROI(d_pointsInROI);
@@ -102,15 +102,15 @@ void ComplementaryROI<DataTypes>::doUpdate()
     indices.clear();
     pointsInROI.clear();
 
-    set<Index> myIndices;
-    for (Index i=0 ; i<position.size() ; ++i)
+    set<sofa::Index> myIndices;
+    for (sofa::Index i=0 ; i<position.size() ; ++i)
         myIndices.insert(i);
 
     // build the set of indices in the ROI
     for (unsigned int i=0;i<vd_setIndices.size();++i) {
         ReadAccessor< Data<SetIndex> > setIndices(vd_setIndices[i]);
         for (unsigned int j=0;j<setIndices.size();++j) {
-            set<Index>::iterator it = myIndices.find(setIndices[j]);
+            set<sofa::Index>::iterator it = myIndices.find(setIndices[j]);
             if (it == myIndices.end())
                 msg_error() << "index " << setIndices[j] << " does not exist";
             else

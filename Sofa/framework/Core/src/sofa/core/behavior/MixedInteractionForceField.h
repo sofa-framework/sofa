@@ -144,24 +144,6 @@ public:
     /// by the generic MixedInteractionForceField::getPotentialEnergy() method.
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
-
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {

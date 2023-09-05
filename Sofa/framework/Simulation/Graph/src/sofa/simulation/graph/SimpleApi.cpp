@@ -62,12 +62,18 @@ Simulation::SPtr createSimulation(const std::string& type)
         return nullptr ;
     }
 
-    return new simulation::graph::DAGSimulation() ;
+    return std::make_shared<simulation::graph::DAGSimulation>();
 }
 
 
 Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
                                               const std::map<std::string, std::string>& params)
+{
+    return createRootNode(s.get(), name, params);
+}
+
+NodeSPtr createRootNode(Simulation* s, const std::string& name,
+    const std::map<std::string, std::string>& params)
 {
     Node::SPtr root = s->createNewNode(name) ;
 
@@ -111,7 +117,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     return createObject(parent, desc);
 }
 
-Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
+Node::SPtr createChild(Node::SPtr node, const std::string& name, const std::map<std::string, std::string>& params)
 {
     BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)

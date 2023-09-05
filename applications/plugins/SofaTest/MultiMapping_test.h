@@ -152,7 +152,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
 
         // transfer the parent values in the parent states
         for( size_t i=0; i<parentCoords.size(); i++ )
