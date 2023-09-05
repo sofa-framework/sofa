@@ -27,6 +27,7 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
+#include <sofa/core/objectmodel/DataDefaultValue.h>
 namespace sofa
 {
 namespace core::objectmodel
@@ -68,7 +69,7 @@ namespace core::objectmodel
  * \endcode
  */
 template < class T = void* >
-class Data : public BaseData
+class Data : public BaseData, protected DataDefaultValue<T>
 {
 public:
     using value_type = T;
@@ -78,6 +79,7 @@ public:
     using BaseData::setDirtyOutputs;
     using BaseData::updateIfDirty;
     using BaseData::notifyEndEdit;
+    using DataDefaultValue<T>::storeDefaultValue;
 
     /// @name Construction / destruction
     /// @{
@@ -111,6 +113,10 @@ public:
     {
         m_value = ValueType(init.value);
         m_hasDefaultValue = true;
+        if constexpr (storeDefaultValue)
+        {
+            this->m_defaultValue = init.value;
+        }
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
@@ -200,6 +206,7 @@ public:
     bool read( const std::string& s ) override;
     void printValue(std::ostream& out) const override;
     std::string getValueString() const override;
+    std::string getDefaultValueString() const override;
     std::string getValueTypeString() const override;
 
     void operator =( const T& value )
@@ -259,13 +266,29 @@ void Data<T>::printValue( std::ostream& out) const
     out << getValue() << " ";
 }
 
-/// General case for printing default value
+/// General case for printing value
 template<class T>
 std::string Data<T>::getValueString() const
 {
     std::ostringstream out;
     out << getValue();
     return out.str();
+}
+
+/// General case for printing default value
+template<class T>
+std::string Data<T>::getDefaultValueString() const
+{
+    if constexpr (storeDefaultValue)
+    {
+        if (hasDefaultValue())
+        {
+            std::ostringstream out;
+            out << this->m_defaultValue;
+            return out.str();
+        }
+    }
+    return {};
 }
 
 template<class T>
