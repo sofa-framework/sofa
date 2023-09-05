@@ -317,7 +317,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     tabErrors.resize(dimension);
 
-
     for(iter=0; iter<maxIterations; iter++)
     {
         bool constraintsAreVerified = true;
@@ -327,8 +326,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
         }
 
         error=0.0;
-        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
+        for (auto it_c = this->constraints_sequence.begin(); it_c != constraints_sequence.end(); )  // increment of it_c realized at the end of the loop
         {
+            const auto j = *it_c;
             //1. nbLines provide the dimension of the constraint
             nb = constraintsResolutions[j]->getNbLines();
 
@@ -404,7 +404,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
                 std::copy(tempF.begin(), tempF.end(), &force[j]);
             }
 
-            j += nb;
+            std::advance(it_c, nb);
         }
 
         if(showGraphs)
