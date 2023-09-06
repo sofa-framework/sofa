@@ -33,7 +33,7 @@ class ParallelCGLinearSolver :
     public TaskSchedulerUser
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
+    SOFA_CLASS2(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
                SOFA_TEMPLATE2(sofa::component::linearsolver::iterative::CGLinearSolver,TMatrix,TVector),
                TaskSchedulerUser);
 
