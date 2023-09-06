@@ -90,7 +90,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
-                                        "enable the storage of the constraintForces (default = False)."))
+                                        "enable the storage of the constraintForces."))
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {

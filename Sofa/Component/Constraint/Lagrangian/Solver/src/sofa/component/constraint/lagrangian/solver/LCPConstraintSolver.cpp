@@ -236,7 +236,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
-                                        "enable the storage of the constraintForces (default = False)."))
+                                        "enable the storage of the constraintForces."))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration"))
     , showLevels( initData(&showLevels,0,"showLevels","Number of constraint levels to display"))
