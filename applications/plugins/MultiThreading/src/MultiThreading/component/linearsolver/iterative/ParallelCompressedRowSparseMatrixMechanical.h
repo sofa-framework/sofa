@@ -29,6 +29,11 @@ namespace multithreading::component::linearsolver::iterative
 {
 using sofa::linearalgebra::CRSMechanicalPolicy;
 
+
+/**
+ * Simplified equivalent of CompressedRowSparseMatrixMechanical where some
+ * methods are multithreaded.
+ */
 template<typename TBlock, typename TPolicy = CRSMechanicalPolicy >
 class ParallelCompressedRowSparseMatrixMechanical : public sofa::linearalgebra::BaseMatrix
 {

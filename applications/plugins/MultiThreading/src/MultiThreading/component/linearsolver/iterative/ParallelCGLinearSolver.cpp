@@ -54,7 +54,7 @@ ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::
 
 
 
-int CGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
+int ParallelCGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
     .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true)
     .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> > >();
 

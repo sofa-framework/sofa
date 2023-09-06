@@ -28,14 +28,17 @@ namespace multithreading::component::linearsolver::iterative
 {
 
 template<class TMatrix, class TVector>
-class ParallelCGLinearSolver : public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>, public TaskSchedulerUser
+class ParallelCGLinearSolver :
+    public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>,
+    public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
-               SOFA_TEMPLATE2(sofa::component::linearsolver::iterative::CGLinearSolver,TMatrix,TVector));
+               SOFA_TEMPLATE2(sofa::component::linearsolver::iterative::CGLinearSolver,TMatrix,TVector),
+               TaskSchedulerUser);
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
+    using Matrix = TMatrix;
+    using Vector = TVector;
 
     void init() override;
 
@@ -45,6 +48,7 @@ public:
 #if !defined(SOFA_MULTITHREADING_PARALLELCGLINEARSOLVER_CPP)
 extern template class SOFA_MULTITHREADING_PLUGIN_API
 ParallelCGLinearSolver< ParallelCompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+ParallelCGLinearSolver< ParallelCompressedRowSparseMatrix<sofa::type::Mat<3, 3, Real> >, sofa::linearalgebra::FullVector<SReal> >;
 #endif
 
 }
