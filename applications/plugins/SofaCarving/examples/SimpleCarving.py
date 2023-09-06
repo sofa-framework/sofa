@@ -12,8 +12,10 @@ def main():
     Sofa.Gui.GUIManager.MainLoop(root)
     Sofa.Gui.GUIManager.closeGUI()
 
+
+# This scene demonstrate how the use the CarvingManager component to perform carving operations (deleting topological element like triangle/tetrahedron) between a tool and a target object on a target object. 
+# The tool performing the carving as well as the object to be carved need to be represented by collision models.
 def createScene(root):
-    
     root.gravity=[0, 0, 0]
     root.dt=0.05
     root.showBoundingTree = 0
@@ -35,12 +37,15 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('CollisionPipeline', verbose=False, draw=False)
     root.addObject('BruteForceBroadPhase')
-    root.addObject('BVHNarrowPhase')    
+    root.addObject('BVHNarrowPhase', name="narrowPhase")    
     root.addObject('MinProximityIntersection', name="Proximity", alarmDistance=0.08, contactDistance=0.05, useSurfaceNormals=False)
     root.addObject('CollisionResponse', response="PenalityContactForceField")
+    
+    # Add the CarvingManger object, linking the collision pipeline, as well as the collision model of the tool used to carve. The collisions models to be carved are found using the tags: CarvingSurface.
+    # the carvingDistance need to be lower than the contactDistance of the collision pipeline. 
     root.addObject('CarvingManager',active=True, carvingDistance=-0.01, narrowPhaseDetection="@narrowPhase", toolModel="@Instrument/CollisionModel/ParticleModel")
   
-     # Add Volume mechanical object to be carved
+    # Add Volume mechanical object to be carved
     TT = root.addChild('TetraVolume')
     
     TT.addObject('EulerImplicitSolver',name="cg_odesolver", printLog=False, rayleighStiffness=0.1, rayleighMass=0.1)
