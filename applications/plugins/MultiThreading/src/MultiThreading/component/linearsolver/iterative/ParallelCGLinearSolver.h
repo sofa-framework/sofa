@@ -24,6 +24,7 @@
 #include <MultiThreading/TaskSchedulerUser.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
+#include <sofa/simulation/ParallelForEach.h>
 #include <sofa/simulation/TaskScheduler.h>
 
 
@@ -108,43 +109,47 @@ public:
 
         const_cast<Base*>(&m_crs)->compress();
         vresize(res, this->rowBSize(), this->rowSize());
-        for (Index xi = 0; xi < (Index)m_crs.rowIndex.size(); ++xi)
-        // for each non-empty block row
+        sofa::simulation::parallelForEachRange(*m_taskScheduler, static_cast<std::size_t>(0), m_crs.rowIndex.size(),
+        [this, &vec, &res](const auto& range)
         {
-            sofa::type::Vec<NL, Real> r;
-            // local block-sized vector to accumulate the product of the block row  with the large vector
-
-            // multiply the non-null blocks with the corresponding chunks of the large vector
-            typename Base::Range rowRange(m_crs.rowBegin[xi], m_crs.rowBegin[xi + 1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (auto xi = range.start; xi < range.end; ++xi)
             {
-                // transfer a chunk of large vector to a local block-sized vector
-                sofa::type::Vec<NC, Real> v;
-                //Index jN = colsIndex[xj] * NC;    // scalar column index
-                for (Index bj = 0; bj < NC; ++bj)
-                {
-                    v[bj] = vget(vec, m_crs.colsIndex[xj], NC, bj);
-                }
+                sofa::type::Vec<NL, Real> r;
+                // local block-sized vector to accumulate the product of the block row  with the large vector
 
-                // multiply the block with the local vector
-                const typename Base::Block& b = m_crs.colsValue[xj];
-                // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (Index bi = 0; bi < NL; ++bi)
+                // multiply the non-null blocks with the corresponding chunks of the large vector
+                typename Base::Range rowRange(m_crs.rowBegin[xi], m_crs.rowBegin[xi + 1]);
+                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
                 {
+                    // transfer a chunk of large vector to a local block-sized vector
+                    sofa::type::Vec<NC, Real> v;
+                    //Index jN = colsIndex[xj] * NC;    // scalar column index
                     for (Index bj = 0; bj < NC; ++bj)
                     {
-                        r[bi] += Base::traits::v(b, bi, bj) * v[bj];
+                        v[bj] = vget(vec, m_crs.colsIndex[xj], NC, bj);
+                    }
+
+                    // multiply the block with the local vector
+                    const typename Base::Block& b = m_crs.colsValue[xj];
+                    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                    for (Index bi = 0; bi < NL; ++bi)
+                    {
+                        for (Index bj = 0; bj < NC; ++bj)
+                        {
+                            r[bi] += Base::traits::v(b, bi, bj) * v[bj];
+                        }
                     }
                 }
-            }
 
-            // transfer the local result  to the large result vector
-            //Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (Index bi = 0; bi < NL; ++bi)
-            {
-                vset(res, m_crs.rowIndex[xi], NL, bi, r[bi]);
+                // transfer the local result  to the large result vector
+                //Index iN = rowIndex[xi] * NL;                      // scalar row index
+                for (Index bi = 0; bi < NL; ++bi)
+                {
+                    vset(res, m_crs.rowIndex[xi], NL, bi, r[bi]);
+                }
             }
-        }
+        });
+
     }
 
     template<class Vec>
@@ -153,14 +158,18 @@ public:
         Vec res;
         tmul( res, v );
         return res;
-
-        // return m_crs * v;
     }
 
     SReal element(BaseMatrix::Index i, BaseMatrix::Index j) const override
-    { return m_crs.element(i, j); }
+    {
+        return m_crs.element(i, j);
+    }
+
     void resize(BaseMatrix::Index nbRow, BaseMatrix::Index nbCol) override
-    { m_crs.resize(nbRow, nbCol); }
+    {
+        m_crs.resize(nbRow, nbCol);
+    }
+
     void clear() override
     {
         m_crs.clear();
