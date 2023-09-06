@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_MULTITHREADING_PARALLELCGLINEARSOLVER_CPP
-#include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h>
+#include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.inl>
 #include <MultiThreading/config.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
