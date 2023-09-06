@@ -21,7 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
+#include <sofa/simulation/TaskScheduler.h>
+
 
 namespace multithreading::component::linearsolver::iterative
 {
@@ -167,13 +171,50 @@ public:
         m_crs.add(row, col, v);
     }
 
+    void setTaskScheduler(sofa::simulation::TaskScheduler* taskScheduler)
+    {
+        m_taskScheduler = taskScheduler;
+    }
+
 private:
     Base m_crs;
+    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 };
+
+template<class TMatrix, class TVector>
+class ParallelCGLinearSolver : public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>, public TaskSchedulerUser
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
+               SOFA_TEMPLATE2(sofa::component::linearsolver::iterative::CGLinearSolver,TMatrix,TVector));
+
+    typedef TMatrix Matrix;
+    typedef TVector Vector;
+
+    void init() override;
+
+    void solve(Matrix& A, Vector& x, Vector& b) override;
+};
+
+
+template <class TMatrix, class TVector>
+void ParallelCGLinearSolver<TMatrix, TVector>::init()
+{
+    Inherit1::init();
+    initTaskScheduler();
+}
+
+template <class TMatrix, class TVector>
+void ParallelCGLinearSolver<TMatrix, TVector>::solve(
+    Matrix& A, Vector& x, Vector& b)
+{
+    A.setTaskScheduler(this->m_taskScheduler);
+    Inherit1::solve(A, x, b);
+}
 
 #if !defined(SOFA_MULTITHREADING_PARALLELCGLINEARSOLVER_CPP)
 extern template class SOFA_MULTITHREADING_PLUGIN_API
-sofa::component::linearsolver::iterative::CGLinearSolver< ParallelCompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+ParallelCGLinearSolver< ParallelCompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
 #endif
 
 }

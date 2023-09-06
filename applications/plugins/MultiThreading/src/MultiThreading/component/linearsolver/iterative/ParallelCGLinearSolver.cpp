@@ -38,7 +38,10 @@ sofa::component::linearsystem::MatrixLinearSystem< ParallelCompressedRowSparseMa
 template class SOFA_MULTITHREADING_PLUGIN_API
 sofa::component::linearsolver::MatrixLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
 template class SOFA_MULTITHREADING_PLUGIN_API
-sofa::component::linearsolver::iterative::CGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+
+int CGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
+        .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true);
 
 
 }
