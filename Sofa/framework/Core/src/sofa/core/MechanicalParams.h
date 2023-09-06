@@ -111,31 +111,31 @@ public:
 
     /// Read access to current position vector
     template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readX(state.get())")
+    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readX(state.get())")
     const Data<typename S::VecCoord>* readX(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_x[state.get()].read();    }
 
     /// Read access to current velocity vector
     template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readV(state.get())")
+    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readV(state.get())")
     const Data<typename S::VecDeriv>* readV(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_v[state.get()].read();    }
 
     /// Read access to current force vector
     template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readF(state.get())")
+    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readF(state.get())")
     const Data<typename S::VecDeriv>* readF(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_f[state.get()].read();    }
 
     /// Read access to current dx vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readDx(state.get())")
+    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readDx(state.get())")
     const Data<typename S::VecDeriv>* readDx(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_dx[state.get()].read();    }
 
     /// Read access to current df vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readDf(state.get())")
+    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readDf(state.get())")
     const Data<typename S::VecDeriv>* readDf(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_df[state.get()].read();    }
 

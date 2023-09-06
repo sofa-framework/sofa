@@ -353,14 +353,6 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),
                                       (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
-
-    if (arg->getAttribute("isToPrint")!=nullptr)
-    {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
-                            "Please contact sofa-dev team in case you need similar.";
-    }
-
-
 }
 
 
