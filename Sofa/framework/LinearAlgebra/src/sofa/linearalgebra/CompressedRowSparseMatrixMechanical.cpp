@@ -70,8 +70,8 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -135,8 +135,8 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -200,8 +200,8 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
