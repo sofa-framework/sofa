@@ -14,11 +14,12 @@
 
     <Node>
         <EulerImplicitSolver name="eulerimplicit_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <ParallelCGLinearSolver template="ParallelCompressedRowSparseMatrixd" iterations="100" tolerance="1e-20" threshold="1e-20" warmStart="1" />
+        <ParallelCGLinearSolver template="ParallelCompressedRowSparseMatrixMat3x3d" iterations="100" tolerance="1e-20" threshold="1e-20" warmStart="1" />
         <MechanicalObject />
         <UniformMass name="mass" totalMass="320" />
         <RegularGridTopology name="grid" nx="8" ny="8" nz="40" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
-        <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
-        <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+        <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
+        <FixedConstraint indices="@box.indices" />
+        <ParallelHexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
     </Node>
 </Node>
