@@ -30,6 +30,7 @@ namespace multithreading::component::linearsolver::iterative
 {
 
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelCompressedRowSparseMatrixMechanical<SReal>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>;
 
 template class SOFA_MULTITHREADING_PLUGIN_API
 sofa::component::linearsystem::TypedMatrixLinearSystem< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
@@ -40,8 +41,21 @@ sofa::component::linearsolver::MatrixLinearSolver< ParallelCompressedRowSparseMa
 template class SOFA_MULTITHREADING_PLUGIN_API
 ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
 
+
+template class SOFA_MULTITHREADING_PLUGIN_API
+sofa::component::linearsystem::TypedMatrixLinearSystem< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> >;
+template class SOFA_MULTITHREADING_PLUGIN_API
+sofa::component::linearsystem::MatrixLinearSystem< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> >;
+template class SOFA_MULTITHREADING_PLUGIN_API
+sofa::component::linearsolver::MatrixLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> >;
+template class SOFA_MULTITHREADING_PLUGIN_API
+ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> >;
+
+
+
 int CGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
-        .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true);
+    .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true)
+    .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> > >();
 
 
 }
