@@ -13,6 +13,7 @@ set(HEADER_FILES
     src/MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h
     src/MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h
     src/MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h
+    src/MultiThreading/component/linearsolver/iterative/ParallelCompressedRowSparseMatrixMechanical.h
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_tasks.inl

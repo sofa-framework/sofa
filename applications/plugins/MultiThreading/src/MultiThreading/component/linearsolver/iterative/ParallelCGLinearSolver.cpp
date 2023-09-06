@@ -25,6 +25,7 @@
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
+#include <MultiThreading/component/linearsolver/iterative/ParallelCompressedRowSparseMatrixMechanical.h>
 
 namespace multithreading::component::linearsolver::iterative
 {
