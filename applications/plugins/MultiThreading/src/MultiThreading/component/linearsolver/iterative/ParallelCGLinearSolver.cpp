@@ -28,10 +28,13 @@
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 #include <MultiThreading/component/linearsolver/iterative/ParallelCompressedRowSparseMatrixMechanical.h>
 
-using multithreading::component::linearsolver::iterative::ParallelCompressedRowSparseMatrixMechanical;
-
+namespace multithreading::component::linearsolver::iterative
+{
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelCompressedRowSparseMatrixMechanical<SReal>;
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>;
+}
+
+using multithreading::component::linearsolver::iterative::ParallelCompressedRowSparseMatrixMechanical;
 
 template class SOFA_MULTITHREADING_PLUGIN_API
 sofa::component::linearsystem::TypedMatrixLinearSystem< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> >;
