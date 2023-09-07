@@ -23,70 +23,68 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaGeneralLoader/MeshSTLLoader.h>
+#include <sofa/component/io/mesh/MeshSTLLoader.h>
 #include <sofa/helper/BackTrace.h>
 
-using namespace sofa::component::loader;
+using namespace sofa::component::io::mesh;
 using sofa::testing::BaseTest;
 using sofa::helper::BackTrace;
 
-namespace sofa
-{
-namespace meshstlloader_test
+namespace sofa::meshstlloader_test
 {
 
-    int initTestEnvironment()
-    {
-        BackTrace::autodump();
-        return 0;
-    }
-    int s_autodump = initTestEnvironment();
+int initTestEnvironment()
+{
+    BackTrace::autodump();
+    return 0;
+}
+int s_autodump = initTestEnvironment();
 
 
-    class MeshSTLLoaderTest : public BaseTest,
-                              public MeshSTLLoader
-    {
-    public:
+class MeshSTLLoaderTest : public BaseTest, public MeshSTLLoader
+{
+public:
 
-        MeshSTLLoaderTest()
-        {}
+    MeshSTLLoaderTest()
+    {}
 
-        /**
-         * Helper function to check mesh loading.
-         * Compare basic values from a mesh with given results.
-         */
-        void loadTest(std::string filename, int nbPositions, int nbEdges, int nbTriangles, int nbQuads, int nbPolygons,
-                      int nbTetra, int nbHexa, int nbNormals)
-        {
-            this->setFilename(sofa::helper::system::DataRepository.getFile(filename));
-
-            EXPECT_EQ((size_t)nbPositions, this->d_positions.getValue().size());
-            EXPECT_EQ((size_t)nbEdges, this->d_edges.getValue().size());
-            EXPECT_EQ((size_t)nbTriangles, this->d_triangles.getValue().size()) << "Added this failing test in PR#2999 (wrong number of triangles detected). To be fixed (see issue #3043)";
-            EXPECT_EQ((size_t)nbQuads, this->d_quads.getValue().size());
-            EXPECT_EQ((size_t)nbPolygons, this->d_polygons.getValue().size());
-            EXPECT_EQ((size_t)nbTetra, this->d_tetrahedra.getValue().size());
-            EXPECT_EQ((size_t)nbHexa, this->d_hexahedra.getValue().size());
-            EXPECT_EQ((size_t)nbNormals, this->d_normals.getValue().size());
-        }
-
-    };
-
-    /** MeshGmshLoader::load()
-    * For a given meshes check that imported data are correct
+    /**
+    * Helper function to check mesh loading.
+    * Compare basic values from a mesh with given results.
     */
-    TEST_F(MeshSTLLoaderTest, LoadCall)
+    void loadTest(std::string filename, int nbPositions, int nbEdges, int nbTriangles, int nbQuads, int nbPolygons,
+                    int nbTetra, int nbHexa, int nbNormals)
     {
-        //Check loader high level result for one file
-        this->setFilename(sofa::helper::system::DataRepository.getFile("mesh/circle_knot_ascii.stl"));
-        EXPECT_TRUE(this->load());
+        this->setFilename(sofa::helper::system::DataRepository.getFile(filename));
 
-        // Testing number of : nodes/positions, edges, triangles, quads, polygons, tetra, hexa, normals
-        // for several STL meshes in share/mesh/
-        loadTest("mesh/circle_knot_ascii.stl", 6144, 0, 12288, 0, 0, 0, 0, 12288);
-        loadTest("mesh/dragon.stl", 1190, 0, 2526, 0, 0, 0, 0, 2526);
-        loadTest("mesh/pliers_binary.stl", 5356, 0, 10708, 0, 0, 0, 0, 10712);
+        EXPECT_EQ((size_t)nbPositions, this->d_positions.getValue().size());
+        EXPECT_EQ((size_t)nbEdges, this->d_edges.getValue().size());
+        EXPECT_EQ((size_t)nbTriangles, this->d_triangles.getValue().size()) << "Added this failing test in PR#2999 (wrong number of triangles detected). To be fixed (see issue #3043)";
+        EXPECT_EQ((size_t)nbQuads, this->d_quads.getValue().size());
+        EXPECT_EQ((size_t)nbPolygons, this->d_polygons.getValue().size());
+        EXPECT_EQ((size_t)nbTetra, this->d_tetrahedra.getValue().size());
+        EXPECT_EQ((size_t)nbHexa, this->d_hexahedra.getValue().size());
+        EXPECT_EQ((size_t)nbNormals, this->d_normals.getValue().size());
     }
 
-} // namespace meshstlloader_test
-} // namespace sofa
+};
+
+/** MeshSTLLoader::load()
+* For a given meshes check that imported data are correct
+*/
+TEST_F(MeshSTLLoaderTest, LoadCall)
+{
+    //Check loader high level result for one file
+    EXPECT_MSG_EMIT(Error);
+    EXPECT_FALSE(this->load());
+    this->setFilename(sofa::helper::system::DataRepository.getFile("mesh/circle_knot_ascii.stl"));
+    EXPECT_TRUE(this->load());
+
+    // Testing number of : nodes/positions, edges, triangles, quads, polygons, tetra, hexa, normals
+    // for several STL meshes in share/mesh/
+    loadTest("mesh/circle_knot_ascii.stl", 6144, 0, 12288, 0, 0, 0, 0, 12288);
+    loadTest("mesh/dragon.stl", 1190, 0, 2526, 0, 0, 0, 0, 2526);
+    loadTest("mesh/pliers_binary.stl", 5356, 0, 10708, 0, 0, 0, 0, 10712);
+}
+
+} // namespace sofa::meshstlloader_test
