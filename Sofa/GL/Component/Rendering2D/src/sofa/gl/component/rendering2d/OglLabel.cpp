@@ -143,16 +143,6 @@ void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->setLightingEnabled(false);
 
-    // color of the text
-    glColor4fv( d_color.getValue().data() );
-
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, d_color.getValue().data() );
-    static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
-    static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-    glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
-
     const std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
 
     vparams->drawTool()->writeOverlayText(
