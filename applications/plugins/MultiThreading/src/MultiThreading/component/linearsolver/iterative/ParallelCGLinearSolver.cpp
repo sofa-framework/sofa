@@ -22,6 +22,7 @@
 #define SOFA_MULTITHREADING_PARALLELCGLINEARSOLVER_CPP
 #include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.inl>
 #include <MultiThreading/config.h>
+#include <MultiThreading/ParallelImplementationsRegistry.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
@@ -58,5 +59,8 @@ ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::
 int ParallelCGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
     .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true)
     .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> > >();
+
+const bool isParallelCGLinearSolverImplementationRegistered =
+    ParallelImplementationsRegistry::addEquivalentImplementations("CGLinearSolver", "ParallelCGLinearSolver");
 
 }
