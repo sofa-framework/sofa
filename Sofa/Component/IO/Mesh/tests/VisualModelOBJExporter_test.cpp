@@ -87,7 +87,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <VisualModelOBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
+                "   <VisualModelOBJExporter name='exporter1' printLog='false' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
@@ -113,7 +113,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <VisualModelOBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <VisualModelOBJExporter name='exporterA' printLog='false' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
