@@ -59,7 +59,7 @@ public:
 
         EXPECT_EQ((size_t)nbPositions, this->d_positions.getValue().size());
         EXPECT_EQ((size_t)nbEdges, this->d_edges.getValue().size());
-        EXPECT_EQ((size_t)nbTriangles, this->d_triangles.getValue().size()) << "Added this failing test in PR#2999 (wrong number of triangles detected). To be fixed (see issue #3043)";
+        EXPECT_EQ((size_t)nbTriangles, this->d_triangles.getValue().size());
         EXPECT_EQ((size_t)nbQuads, this->d_quads.getValue().size());
         EXPECT_EQ((size_t)nbPolygons, this->d_polygons.getValue().size());
         EXPECT_EQ((size_t)nbTetra, this->d_tetrahedra.getValue().size());
