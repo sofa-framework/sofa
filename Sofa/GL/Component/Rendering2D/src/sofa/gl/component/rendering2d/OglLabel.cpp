@@ -141,6 +141,12 @@ void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
 
 void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
+    // Workaround: Disable showWireframe (polygon mode set to true forcefully in VisualModel drawVisual())
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, false);
+    }
+
     vparams->drawTool()->setLightingEnabled(false);
 
     const std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
@@ -149,6 +155,12 @@ void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
         d_x.getValue(), d_y.getValue(), d_fontsize.getValue(),  // x, y, size
         d_color.getValue(),
         text.c_str());
+
+    // restore polygon mode if needed
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, true);
+    }
 }
 
 void OglLabel::setColor(float r, float g, float b, float a)
