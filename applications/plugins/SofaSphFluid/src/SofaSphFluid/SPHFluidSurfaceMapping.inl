@@ -489,6 +489,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     if (!grid)
         return;
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     grid->draw(vparams);
 
     float scale = (float)d_mStep.getValue();
