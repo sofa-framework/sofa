@@ -289,6 +289,12 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     for (auto* cc : constraintCorrections)
     {
         if (!cc->isActive()) continue;
+
+        current_cp->constraints_sequence.resize(numConstraints);
+        std::iota(current_cp->constraints_sequence.begin(), current_cp->constraints_sequence.end(), 0);
+
+        // some constraint corrections (e.g LinearSolverConstraintCorrection)
+        // can change the order of the constraints, to optimize later computations
         cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
     }
 
