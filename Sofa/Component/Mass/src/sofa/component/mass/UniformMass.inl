@@ -375,7 +375,6 @@ void UniformMass<DataTypes>::updateMassOnResize(sofa::Size newSize)
 {
     if (newSize == 0)
     {
-        d_vertexMass.setValue(static_cast<MassType>(0.0));
         d_totalMass.setValue(Real(0));
         return;
     }
