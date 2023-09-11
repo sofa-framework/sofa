@@ -117,7 +117,7 @@ protected:
     SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
     sofa::core::objectmodel::lifecycle::RemovedData  merge{this, "v22.12", "v23.06", "merge", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
 
-    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
     sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "v22.12", "v23.06", "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
 
 
