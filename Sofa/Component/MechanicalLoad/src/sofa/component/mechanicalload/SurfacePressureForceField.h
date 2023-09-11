@@ -102,6 +102,7 @@ public:
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override;
 

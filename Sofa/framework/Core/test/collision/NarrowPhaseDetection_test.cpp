@@ -55,9 +55,25 @@ public:
         }
     }
 
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned /*idx*/) override
+    {
+        return type::Vec3();
+    }
+
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned /*idx*/) override
+    {
+        return type::Vec3();
+    }
+
+
+
 private:
     unsigned int m_size { 0 };
     bool* m_isDestroyed {nullptr};
+    sofa::type::vector<DetectionOutput> m_empty;
+
 };
 } //namespace sofa::core::collision
 

@@ -511,6 +511,8 @@ public:
         M.compress();
         this->nBlockRow = M.rowBSize();
         this->nBlockCol = M.colBSize();
+        this->nRow = M.rowSize();
+        this->nCol = M.colSize();
         this->rowIndex.clear();
         this->rowBegin.clear();
         this->colsIndex.clear();

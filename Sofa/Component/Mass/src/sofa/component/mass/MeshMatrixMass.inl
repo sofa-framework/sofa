@@ -59,8 +59,6 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , m_massTopologyType(TopologyElementType::UNKNOWN)
 {
     f_graph.setWidget("graph");
-
-    /// Internal data, not supposed to be accessed by the user
 }
 
 template <class DataTypes, class GeometricalTypes>
@@ -1024,6 +1022,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 
     //everything has been initialized so mark the component in a valid state
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
+    // Adding callback warning in case d_lumping data is modified after init()
+    sofa::core::objectmodel::Base::addUpdateCallback("updateLumping", {&d_lumping}, [this](const core::DataTracker& )
+    {
+        msg_error() << "Data \'lumping\' should not be modified after the component initialization";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, {});
 }
 
 

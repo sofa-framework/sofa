@@ -22,7 +22,7 @@
     <BVHNarrowPhase/>
     <CollisionResponse response="PenalityContactForceField" />
     <DiscreteIntersection />
-    <Node name="Liver">
+    <Node name="sphere">
         <EulerImplicitSolver name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshOBJLoader name="loader" filename="mesh/sphere_02b.obj" scale="0.25 0.25 0.25" rotation="-90 0 0" triangulate="1" />

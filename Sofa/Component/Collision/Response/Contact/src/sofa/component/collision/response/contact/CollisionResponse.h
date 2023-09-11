@@ -59,6 +59,28 @@ public :
         if (arg)
             obj->parse(arg);
 
+        //SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2522)", "v24.06","This attribute was only added to build a compatibility layer on the response name.")
+        {
+            static const std::map<std::string,std::string> renamingResponseMethod = {
+                {"ray", "RayContact"},
+                {"default", "PenalityContactForceField"},
+                {"FrictionContact", "FrictionContactConstraint"},
+                {"registration", "RegistrationContactForceField"},
+                {"stick", "StickContactForceField"},
+            };
+
+            const std::string responseDesired = arg->getAttribute("response","");
+            const auto it = renamingResponseMethod.find(responseDesired);
+
+            if(it != renamingResponseMethod.end())
+            {
+                msg_error("CollisionResponse")
+                    << "Option \"" << it->first << "\" "
+                    << "for data \"response\" has been renamed since v21.12 (PR#2522). "
+                    << "Use \"" << it->second << "\" instead.";
+            }
+        }
+        
         return obj;
     }
 

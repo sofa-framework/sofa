@@ -111,14 +111,15 @@ protected:
 
     std::vector<Vec3d> prevForces;
 
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been removed, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
-    sofa::core::objectmodel::lifecycle::RemovedData  activateAtIteration{this, "activateAtIteration", "use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327)."};
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been removed, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
+    sofa::core::objectmodel::lifecycle::RemovedData  activateAtIteration{this, "v22.12", "v23.06", "activateAtIteration", "use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327)."};
 
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    sofa::core::objectmodel::lifecycle::RemovedData  merge{this, "merge", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    sofa::core::objectmodel::lifecycle::RemovedData  merge{this, "v22.12", "v23.06", "merge", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
 
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "v22.12", "v23.06", "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
+
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralInteractionConstraint(MechanicalState* object) ;

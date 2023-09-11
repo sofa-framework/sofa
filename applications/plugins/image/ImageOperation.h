@@ -81,13 +81,13 @@ public:
         inputImage1.setReadOnly(true);  this->addAlias(&inputImage1, "image1");
         inputImage2.setReadOnly(true);  this->addAlias(&inputImage2, "image2");
         outputImage.setReadOnly(true);  this->addAlias(&outputImage, "image");
-        helper::OptionsGroup operationOptions(6	,"0 - Addition"
-                                              ,"1 - Subtraction"
-                                              ,"2 - Multiplication"
-                                              ,"3 - Division"
-                                              ,"4 - Dice coefficient"
-                                              ,"5 - Concatenate in two channels"
-                                              );
+        helper::OptionsGroup operationOptions{"0 - Addition"
+                                             ,"1 - Subtraction"
+                                             ,"2 - Multiplication"
+                                             ,"3 - Division"
+                                             ,"4 - Dice coefficient"
+                                             ,"5 - Concatenate in two channels"
+                                             };
         operationOptions.setSelectedItem(SUBTRACTION);
         operation.setValue(operationOptions);
     }

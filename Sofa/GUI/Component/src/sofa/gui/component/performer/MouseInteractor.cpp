@@ -82,10 +82,9 @@ bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 
 void BaseMouseInteractor::updatePosition(SReal )
 {
-    VecPerformer::iterator it=performers.begin(), it_end=performers.end();
-    for (; it!=it_end; ++it)
+    for (const auto perf : performers)
     {
-        (*it)->execute();
+        perf->execute();
     }
 }
 

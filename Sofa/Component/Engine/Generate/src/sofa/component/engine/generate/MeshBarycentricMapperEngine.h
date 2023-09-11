@@ -77,7 +77,7 @@ public:
 
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
 
-    core::objectmodel::lifecycle::RemovedData d_imputMeshName {this, "InputMeshName",
+    core::objectmodel::lifecycle::RemovedData d_imputMeshName {this, "v20.12", "v22.12", "InputMeshName",
                                                    "Input data 'InputMeshName' changed for 'topology', please update your scene"
                                                    "(see PR#1487)" };
 

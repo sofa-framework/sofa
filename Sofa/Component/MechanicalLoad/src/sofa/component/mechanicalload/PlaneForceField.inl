@@ -258,7 +258,7 @@ void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::Stif
 
     Deriv normal;
     DataTypes::setDPos(normal, d_planeNormal.getValue());
-    const auto localMatrix = sofa::type::dyad(normal, normal);
+    const auto localMatrix = -this->d_stiffness.getValue() * sofa::type::dyad(normal, normal);
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);

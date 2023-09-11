@@ -25,6 +25,7 @@
 #include <gtest/gtest.h>
 #include <cstdlib>
 #include <ctime>
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
 using sofa::type::Quat;
 
@@ -32,44 +33,57 @@ double errorThreshold = 1e-6;
 
 TEST(QuaterTest, EulerAngles)
 {
+    sofa::testing::LinearCongruentialRandomGenerator lcg(46515387);
+
     // Try to tranform a Quater (q0) to Euler angles and then back to a Quater (q1)
     // Compare the result of a rotation defined by q0 and q1 on a vector
-    srand (time(nullptr));
     for (int i = 0; i < 100; ++i)
     {
         // Generate random Quater and avoid singular values
-        Quat<double> q0 (((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f);
-        while( fabs(q0[0]) == 0.5 && fabs(q0[1]) == 0.5 && fabs(q0[2]) == 0.5 && fabs(q0[3]) == 0.5 )
+        Quat<double> q0(
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.));
+        q0.normalize();
+
+        for(sofa::Size j = 0 ; j < Quat<double>::size() ; ++j)
         {
-            q0 = Quat<double>( ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f );
+            ASSERT_FALSE( std::isnan(q0[j]) );
         }
-        q0.Quat<double>::normalize();
 
-        for(std::size_t i = 0 ; i < q0.size() ; ++i)
+        const sofa::type::Vec3d eulerAngles = q0.toEulerVector();
+
+        // make sure the angles don't lead to a singularity
+        for (const auto& angle : eulerAngles)
         {
-            ASSERT_FALSE( std::isnan(q0[i]) );
+            ASSERT_TRUE(std::abs(angle - M_PI / 2) >= 1e-3);
+            ASSERT_TRUE(std::abs(angle + M_PI / 2) >= 1e-3);
         }
 
-        // Transform q0 into Euler angles and back to a quaternion (q1)
-        Quat<double> q1 = Quat<double>::createQuaterFromEuler(q0.toEulerVector());
+        // Transform Euler angles back to a quaternion (q1)
+        Quat<double> q1 = Quat<double>::createQuaterFromEuler(eulerAngles);
 
-        for(std::size_t i = 0 ; i < q1.size() ; ++i)
+        for(sofa::Size j = 0 ; j < Quat<double>::size() ; ++j)
         {
-            ASSERT_FALSE( std::isnan(q1[i]) );
+            ASSERT_FALSE( std::isnan(q1[j]) );
         }
 
         // Compute a random rotation with each Quater
-        sofa::type::Vec<3,double> p(((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f);
-        sofa::type::Vec<3,double> p0 = q0.Quat<double>::rotate(p);
-        sofa::type::Vec<3,double> p1 = q1.Quat<double>::rotate(p);
+        sofa::type::Vec<3,double> p(
+            lcg.generateInRange(1., 2.),
+            lcg.generateInRange(1., 2.),
+            lcg.generateInRange(1., 2.));
+        sofa::type::Vec<3,double> p0 = q0.rotate(p);
+        sofa::type::Vec<3,double> p1 = q1.rotate(p);
         // Compare the result of the two rotations
         EXPECT_EQ(p0, p1);
 
         // Specific check for a certain value of p
-        sofa::type::Vec<3,double> p2(2,1,1);
-        p0 = q0.Quat<double>::rotate(p2);
-        p1 = q1.Quat<double>::rotate(p2);
-        EXPECT_EQ(p0,p1);
+        sofa::type::Vec<3, double> p2(2, 1, 1);
+        p0 = q0.rotate(p2);
+        p1 = q1.rotate(p2);
+        EXPECT_EQ(p0, p1);
     }
 }
 

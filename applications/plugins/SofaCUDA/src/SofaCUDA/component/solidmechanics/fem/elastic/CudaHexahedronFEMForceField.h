@@ -335,11 +335,11 @@ public:
 
     void initPtrData(Main* m)
     {
-        m->_gatherPt.beginEdit()->setNames(3,"1","4","8");
+        m->_gatherPt.beginEdit()->setNames({"1","4","8"});
         m->_gatherPt.beginEdit()->setSelectedItem("8");
         m->_gatherPt.endEdit();
 
-        m->_gatherBsize.beginEdit()->setNames(4,"32","64","128","256");
+        m->_gatherBsize.beginEdit()->setNames({"32","64","128","256"});
         m->_gatherBsize.beginEdit()->setSelectedItem("256");
         m->_gatherBsize.endEdit();
     }

@@ -162,7 +162,7 @@ public:
         , outValue(initData(&outValue,(Real)0,"outValue","default value outside image"))
         , time((unsigned int)0)
     {
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        helper::OptionsGroup InterpolationOptions{"Nearest", "Linear", "Cubic"};
         InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
         Interpolation.setValue(InterpolationOptions);
 

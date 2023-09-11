@@ -31,7 +31,7 @@ void addBlockMat(TMatrix& self, Index row, Index col, const TBlockMatrix& _M)
 {
     if (row % TBlockMatrix::nbLines == 0 && col % TBlockMatrix::nbCols == 0)
     {
-        *self.wbloc(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
+        *self.wblock(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
     }
     else
     {
@@ -70,8 +70,8 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -135,8 +135,8 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -200,8 +200,8 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     M.compress();
     nRow = M.rowSize();
     nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
+    nBlockRow = M.rowSize();
+    nBlockCol = M.colSize();
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();

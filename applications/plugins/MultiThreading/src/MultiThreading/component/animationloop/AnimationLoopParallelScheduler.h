@@ -48,13 +48,13 @@ public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-    SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
-    sofa::core::objectmodel::lifecycle::RemovedData schedulerName {this,
+    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
+    sofa::core::objectmodel::lifecycle::RemovedData schedulerName {this, "v23.06", "v23.12",
                                                                    "scheduler",
                                                                    "To fix you scene you can rename 'scheduler' with 'taskSchedulerType'."};
 
-    SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
-    sofa::core::objectmodel::lifecycle::RemovedData threadNumber {this,
+    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
+    sofa::core::objectmodel::lifecycle::RemovedData threadNumber {this, "v23.06", "v23.12",
                                                                   "threadNumber",
                                                                   "To fix you scene you can rename 'threadNumber' with 'nbThreads'."};
 
