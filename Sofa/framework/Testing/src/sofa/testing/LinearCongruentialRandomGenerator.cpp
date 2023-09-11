@@ -19,16 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::testing
+{
 
-#define SOFAMESHCOLLISION_VERSION @PROJECT_VERSION@
+LinearCongruentialRandomGenerator::LinearCongruentialRandomGenerator(const unsigned int initialSeed)
+: m_seed(initialSeed)
+{}
 
-#ifdef SOFA_BUILD_SOFAMESHCOLLISION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFAMESHCOLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAMESHCOLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+unsigned LinearCongruentialRandomGenerator::generateRandom()
+{
+    // Parameters for the LCG formula (adjust as needed)
+    constexpr unsigned int a = 1664525;
+    constexpr unsigned int c = 1013904223;
+
+    m_seed = a * m_seed + c; // LCG formula
+    return m_seed;
+}
+
+double LinearCongruentialRandomGenerator::generateInRange(const double rmin, const double rmax)
+{
+    return rmin + generateInUnitRange<double>() * (rmax - rmin);
+}
+
+float LinearCongruentialRandomGenerator::generateInRange(const float rmin, const float rmax)
+{
+    return rmin + generateInUnitRange<float>() * (rmax - rmin);
+}
+
+}

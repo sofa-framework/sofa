@@ -34,12 +34,12 @@ namespace sofa::core::objectmodel::lifecycle
 /// so a warning will be issued if users continue accessing it;
 ///
 /// Use case:
-///    RemovedData d_sofaIsGreatM(this, "sofaIsGreat", "")
+///    RemovedData d_sofaIsGreatM(this, "v23.06", "v23.12", "sofaIsGreat", "")
 class SOFA_CORE_API RemovedData : public DeprecatedData
 {
 public:
-    RemovedData(Base* b, const std::string& name, const std::string& helptext) :
-        DeprecatedData(b,name,helptext)
+    RemovedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext) :
+        DeprecatedData(b,deprecationVersion, removalVersion, name,helptext)
     {
         m_isRemoved = true;
     }

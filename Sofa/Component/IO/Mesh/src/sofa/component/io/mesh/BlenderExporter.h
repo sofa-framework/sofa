@@ -120,12 +120,4 @@ namespace exporter {
     using BlenderExporter = _blenderexporter_::BlenderExporter<T>;
 } // namespace exporter
 
-// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    template<class T>
-    using BlenderExporter
-        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
-        = DeprecatedAndRemoved;
-} // namespace misc
-
 } // namespace sofa::component

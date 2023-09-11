@@ -25,6 +25,7 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixGeneric.h
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixMechanical.h
     ${SOFALINEARALGEBRASRC_ROOT}/DiagonalMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/DiagonalSystemSolver.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.h
@@ -40,6 +41,7 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].h
+    ${SOFALINEARALGEBRASRC_ROOT}/TriangularSystemSolver.h
     ${SOFALINEARALGEBRASRC_ROOT}/matrix_bloc_traits.h
 )
 

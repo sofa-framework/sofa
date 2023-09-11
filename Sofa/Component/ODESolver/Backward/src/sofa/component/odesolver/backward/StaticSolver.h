@@ -144,8 +144,6 @@ public:
             return vect[outputDerivative];
     }
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
 protected:
 
     Data<unsigned> d_newton_iterations; ///< Number of newton iterations between each load increments (normally, one load increment per simulation time-step.

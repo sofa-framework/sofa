@@ -12,7 +12,6 @@ sofa_add_subdirectory(collection modules/SofaSimpleFem SofaSimpleFem ON WHEN_TO_
 sofa_add_subdirectory(collection modules/SofaRigid SofaRigid ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaDeformable SofaDeformable ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaObjectInteraction SofaObjectInteraction ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(collection modules/SofaMeshCollision SofaMeshCollision ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaEngine SofaEngine ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaExplicitOdeSolver SofaExplicitOdeSolver ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaImplicitOdeSolver SofaImplicitOdeSolver ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
@@ -30,7 +29,6 @@ sofa_add_subdirectory(collection modules/SofaGeneralExplicitOdeSolver SofaGenera
 sofa_add_subdirectory(collection modules/SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaGeneralLinearSolver SofaGeneralLinearSolver ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaGeneralRigid SofaGeneralRigid ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(collection modules/SofaGeneralSimpleFem SofaGeneralSimpleFem ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaGeneralTopology SofaGeneralTopology ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaTopologyMapping SofaTopologyMapping ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaUserInteraction SofaUserInteraction ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
@@ -57,10 +55,8 @@ sofa_add_subdirectory(collection modules/SofaMiscSolver SofaMiscSolver ON WHEN_T
 sofa_add_subdirectory(collection modules/SofaMiscFem SofaMiscFem ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaMiscMapping SofaMiscMapping ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaMiscCollision SofaMiscCollision ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-
 sofa_add_subdirectory(collection modules/SofaHaptics SofaHaptics ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin modules/SofaValidation SofaValidation ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(collection modules/SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ## GUI
 sofa_add_subdirectory(collection SofaGui SofaGui ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)

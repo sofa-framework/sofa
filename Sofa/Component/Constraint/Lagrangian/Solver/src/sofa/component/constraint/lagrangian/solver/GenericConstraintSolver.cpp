@@ -88,9 +88,9 @@ GenericConstraintSolver::GenericConstraintSolver()
     , currentError(initData(&currentError, 0.0_sreal, "currentError", "OUTPUT: current error"))
     , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
-    , d_computeConstraintForces(initData(&d_computeConstraintForces,true,
+    , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
-                                        "enable the storage of the constraintForces (default = False)."))
+                                        "enable the storage of the constraintForces."))
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
@@ -289,6 +289,12 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     for (auto* cc : constraintCorrections)
     {
         if (!cc->isActive()) continue;
+
+        current_cp->constraints_sequence.resize(numConstraints);
+        std::iota(current_cp->constraints_sequence.begin(), current_cp->constraints_sequence.end(), 0);
+
+        // some constraint corrections (e.g LinearSolverConstraintCorrection)
+        // can change the order of the constraints, to optimize later computations
         cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
     }
 

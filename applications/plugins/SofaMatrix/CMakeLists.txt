@@ -5,7 +5,6 @@ project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
-sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 sofa_find_package(Sofa.GUI.Qt QUIET)
 
@@ -13,7 +12,6 @@ set(SOFA_MODULES
     Sofa.Component.Constraint.Lagrangian.Solver
     Sofa.Component.LinearSolver.Direct
     Sofa.Core
-    CImgPlugin
     Eigen3::Eigen
 )
 

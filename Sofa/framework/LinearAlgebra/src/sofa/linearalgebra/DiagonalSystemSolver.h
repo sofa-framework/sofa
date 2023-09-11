@@ -20,7 +20,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")
+namespace sofa::linearalgebra
+{
+
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of entries in the diagonal
+template<typename Real>
+void solveDiagonalSystem(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const D_values)
+{
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] / D_values[i];
+    }
+}
+
+/// Solves a linear system D*x = b, where:
+/// D is a diagonal matrix
+/// x is the solution vector
+/// b is the right-hand side vector
+/// The diagonal matrix is stored as the list of the inverse of the entries in the diagonal
+template<typename Real>
+void solveDiagonalSystemUsingInvertedValues(
+    const sofa::Size systemSize,
+    const Real* rightHandSideVector,
+    Real* solution,
+    const Real* const Dinv_values)
+{
+    for (sofa::Size i = 0 ; i < systemSize; ++i)
+    {
+        solution[i] = rightHandSideVector[i] * Dinv_values[i];
+    }
+}
+
+}

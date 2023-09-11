@@ -125,9 +125,6 @@ public:
 
     void draw(sofa::helper::visual::DrawTool* drawtool);
 
-    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "This function now takes directly a DrawTool instead of a VisualParams.")
-    void draw(const sofa::core::visual::VisualParams* vparams) = delete;
-
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
     int trace (type::Vec3 origin, type::Vec3 direction, traceResult &result);
 

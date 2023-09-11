@@ -82,8 +82,6 @@ private:
 protected:
     MeshTopology();
 public:
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
     void init() override;
 
     Size getNbPoints() const override;

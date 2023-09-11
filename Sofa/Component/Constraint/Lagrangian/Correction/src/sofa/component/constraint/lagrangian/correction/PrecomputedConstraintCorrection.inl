@@ -152,7 +152,8 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         }
         else if (recompute.getValue() == false)
         {
-            if(sofa::helper::system::DataRepository.findFile(fileName))
+            std::stringstream ss;
+            if (sofa::helper::system::DataRepository.findFile(fileName, "", &ss))
             {
                 invM->data = new Real[nbRows * nbCols];
 
@@ -164,6 +165,11 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
                 compFileIn.close();
 
                 return true;
+            }
+            else
+            {
+                msg_info() << sofa::helper::removeTrailingCharacters(ss.str(), {'\n', '\r'})
+                    << ". Compliance will be pre-computed and saved into a file";
             }
         }
 
@@ -873,7 +879,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        auto rowWrite = c.writeLine(rowIt.index());
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
         auto colItEnd = rowIt.end();
 
         for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)

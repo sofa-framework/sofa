@@ -23,9 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
-#include <MultiThreading/component/animationloop/StepTask.h>
-namespace sofa::simulation
-{
-    using StepTask = multithreading::component::animationloop::StepTask;
-}
+SOFA_DISABLED_HEADER_NOT_REPLACED("v23.06", "v23.12")

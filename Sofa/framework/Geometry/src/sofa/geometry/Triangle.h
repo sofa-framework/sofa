@@ -71,6 +71,45 @@ struct Triangle
         }
     }
 
+
+    /**
+    * @brief	Compute the barycentric coordinates of the input point in the Triangle. It can be interpreted as masses placed at the vertices of Triangle (n0, n1, n2), such that the point is the center of mass of these masses.
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	p0: position of the input point to compute the coefficients
+    * @param	n0, n1, n2: nodes of the triangle
+    * @return	sofa::type::Vec<3, T> barycentric coefficients of each vertex of the Triangle. These masses can be zero or negative; they are all positive if and only if the point is inside the Triangle. 
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr auto getBarycentricCoordinates(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+    {
+        // Point can be written: p0 = a*n0 + b*n1 + c*n2
+        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
+        const auto area = Triangle::area(n0, n1, n2);
+        if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+        {
+            return sofa::type::Vec<3, T>(-1, -1, -1);
+        }
+        
+        const auto A0 = Triangle::area(n1, n2, p0);
+        const auto A1 = Triangle::area(n0, p0, n2);
+
+        sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
+        baryCoefs[0] = A0 / area;
+        baryCoefs[1] = A1 / area;
+        baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+        if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+            baryCoefs[2] = 0;
+        }
+        
+        return baryCoefs;
+    }
+
+
     /**
     * @brief	Compute the normal of a triangle
     * @remark   triangle normal computation is only possible in 3D
@@ -108,6 +147,34 @@ struct Triangle
         }
 
     }
+
+
+    /**
+    * @brief	Test if input point is inside Triangle (n0, n1, n2) using Triangle @sa getBarycentricCoordinates . The point is inside the Triangle if and only if Those coordinates are all positive.
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	p0: position of the point to test
+    * @param	n0, n1, n2: nodes of the triangle
+    * @param	output parameter: sofa::type::Vec<3, T> barycentric coordinates of the input point in Triangle
+    * @return	bool result if point is inside Triangle.
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs)
+    {
+        baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
+
+        for (int i = 0; i < 3; ++i)
+        {
+            if (baryCoefs[i] < 0 || baryCoefs[i] > 1)
+                return false;
+        }
+
+        return true;
+    }
+
 
     /**
     * @brief	Test if a ray intersects a triangle, and gives barycentric coordinates of the intersection if applicable
