@@ -57,11 +57,6 @@ class CudaDeprecatedAndRemoved {};
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
     static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
 };

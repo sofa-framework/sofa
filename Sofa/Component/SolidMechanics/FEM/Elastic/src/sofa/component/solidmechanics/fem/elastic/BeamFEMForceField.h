@@ -157,8 +157,6 @@ public:
 
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
-    SOFA_ATTRIBUTE_DISABLED__REMOVE_UNUSED_ASSEMBLING()
-    DeprecatedAndRemoved m_assembling;
     SReal m_lastUpdatedStep;
 
     Quat<SReal>& beamQuat(int i);
@@ -185,8 +183,6 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void setUpdateStiffnessMatrix(bool val);
-    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2901)", "v22.12", "Removing unused boolean data assembling in forcefields.")
-    void setComputeGlobalMatrix(bool val) = delete;
     void setBeam(Index i, SReal E, SReal L, SReal nu, SReal r, SReal rInner);
     void initBeams(std::size_t size);
 

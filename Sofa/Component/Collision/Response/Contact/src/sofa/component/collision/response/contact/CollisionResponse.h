@@ -80,7 +80,7 @@ public :
                     << "Use \"" << it->second << "\" instead.";
             }
         }
-
+        
         return obj;
     }
 

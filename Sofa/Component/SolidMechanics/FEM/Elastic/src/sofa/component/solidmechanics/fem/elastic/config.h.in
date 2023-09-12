@@ -31,15 +31,6 @@
 #  define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#define SOFA_ATTRIBUTE_DISABLED__REMOVE_UNUSED_ASSEMBLING()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__REMOVE_UNUSED_ASSEMBLING() \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v22.06 (PR#2901)", "v22.12",\
-    "Removing unused boolean data assembling in forcefields.")
-#endif
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

@@ -70,7 +70,6 @@ public:
 
     /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
     void solve (Matrix& A, Vector& x, Vector& b) override;
-
 };
 
 template<>

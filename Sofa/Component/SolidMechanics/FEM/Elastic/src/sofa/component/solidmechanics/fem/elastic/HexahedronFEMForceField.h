@@ -117,8 +117,6 @@ public:
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
     Data<bool> f_updateStiffnessMatrix;
-    SOFA_ATTRIBUTE_DISABLED__REMOVE_UNUSED_ASSEMBLING()
-    DeprecatedAndRemoved f_assembling;
     Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
     Data<bool> f_drawing; ///<  draw the forcefield if true
@@ -131,8 +129,6 @@ public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
     void setMethod(int val) ;
-    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2901)", "v22.12", "Removing unused boolean data assembling in forcefields.")
-    void setComputeGlobalMatrix(bool val) = delete;
 
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 

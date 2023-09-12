@@ -237,11 +237,6 @@ public:
     template<class T2>
     using rebind_to = vector_id< T2, TIndex, CheckIndices, type::rebind_to<MemoryManager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
 
     /// Basic constructor
     vector_id() : Inherit() {}

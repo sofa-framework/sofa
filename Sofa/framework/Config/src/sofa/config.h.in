@@ -214,7 +214,7 @@ class DeprecatedAndRemoved {};
         DeprecatedAndRemoved type
 
 #define SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(type, newtype) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v22.12 (PR#3357)", "v23.12", \
         "This type member " sofa_tostring(type) " is now deprecated. To update your code please replace it with " sofa_tostring(newtype)) \
         typedef newtype type
