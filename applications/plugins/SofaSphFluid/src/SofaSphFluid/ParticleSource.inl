@@ -333,6 +333,8 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (time < d_start.getValue() || time > d_stop.getValue())
         return;
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
     std::vector< sofa::type::Vec3 > pointsInit;

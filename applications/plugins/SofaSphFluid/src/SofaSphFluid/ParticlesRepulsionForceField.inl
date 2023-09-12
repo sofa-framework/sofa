@@ -187,7 +187,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -217,7 +217,6 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
         }
     }
     vparams->drawTool()->drawLines(vertices,1,colorVector);
-    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield
