@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -263,13 +263,15 @@ public:
 
     void cleanup() override
     {
-        if (exportAtEnd.getValue()) write();
+        if (exportAtEnd.getValue())
+        {
+            write();
+        }
     }
 
 
 protected:
 
-    bool m_firstStep = true;
     unsigned int m_stepCounter;
     unsigned int m_time;
 
@@ -326,16 +328,14 @@ protected:
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
         }
-        else if ( /*simulation::AnimateBeginEvent* ev =*/ simulation::AnimateBeginEvent::checkEventType(event))
+        else if ( simulation::SimulationInitDoneEvent::checkEventType(event))
         {
-            if (m_firstStep && exportAtBegin.getValue())
+            if (exportAtBegin.getValue())
             {
                 write();
-                m_firstStep = false;
             }
         }
     }
-
 };
 
 } // namespace misc

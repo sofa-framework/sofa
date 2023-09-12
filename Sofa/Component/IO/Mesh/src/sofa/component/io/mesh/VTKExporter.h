@@ -42,7 +42,6 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::core::behavior::BaseMechanicalState* m_mstate;
     unsigned int m_stepCounter;
-    bool m_isFirstStep = true;
 
     std::ofstream* outfile;
 

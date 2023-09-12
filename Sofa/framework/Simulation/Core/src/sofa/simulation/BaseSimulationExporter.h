@@ -76,7 +76,6 @@ protected:
     const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering);
     void updateFromDataField();
     unsigned int m_stepCounter {0};
-    bool firstStep = true;
 };
 
 } /// namespace _baseexporter_
