@@ -23,9 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h")
-#include <MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h>
-namespace sofa::component::collision
-{
-    using ParallelBruteForceBroadPhase = multithreading::component::collision::detection::algorithm::ParallelBruteForceBroadPhase;
-}
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h")

@@ -18,11 +18,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/SolidTypes.h
     ${SRC_ROOT}/SolidTypes.inl
     ${SRC_ROOT}/TemplatesAliases.h
-    ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/TypeInfoID.h
     ${SRC_ROOT}/TypeInfoRegistry.h
     ${SRC_ROOT}/TypeInfoRegistryTools.h
-    ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h

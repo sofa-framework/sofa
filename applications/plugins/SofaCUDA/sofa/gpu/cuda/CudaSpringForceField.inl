@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl")
-#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl")

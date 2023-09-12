@@ -68,13 +68,6 @@ public:
                                     sofa::type::rebind_to<memory_manager, T2>,
                                     sofa::type::rebind_to<datatypeinfo_manager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
-
-
 protected:
     Size     vectorSize;     ///< Current size of the vector
     Size     allocSize;      ///< Allocated size on host

@@ -402,9 +402,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const Contact& c = contacts[i];
 
-        redVertices.push_back(c.P);
-        redVertices.push_back(c.Q);
-
         otherVertices.push_back(c.P);        
         otherVertices.push_back(c.P + c.norm);
         otherColors.push_back(sofa::type::RGBAColor::white());
@@ -414,7 +411,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
         otherColors.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
 
     }
-    vparams->drawTool()->drawLines(redVertices, 5, sofa::type::RGBAColor::red());
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 

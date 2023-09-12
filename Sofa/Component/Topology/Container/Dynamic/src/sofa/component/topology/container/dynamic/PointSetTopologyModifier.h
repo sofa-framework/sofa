@@ -102,10 +102,6 @@ public:
     virtual void removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF = true);
 
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1860)", "v21.06 (PR#1860)", "This method was never used nor supported.")
-    void propagateTopologicalChangesWithoutReset() = delete;
-
-
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
     * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology

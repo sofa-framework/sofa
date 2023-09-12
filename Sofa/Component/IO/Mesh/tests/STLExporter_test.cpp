@@ -95,7 +95,7 @@ public:
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
                 "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
+                "   <STLExporter name='exporter1' printLog='false' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
@@ -126,7 +126,7 @@ public:
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
                 "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <STLExporter name='exporterA' printLog='false' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());

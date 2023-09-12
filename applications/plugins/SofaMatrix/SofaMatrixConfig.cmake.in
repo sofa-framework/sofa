@@ -9,7 +9,6 @@ set(SOFAMATRIX_HAVE_QT5CORE @SOFAMATRIX_HAVE_QT5CORE@)
 find_package(Sofa.Core QUIET REQUIRED)
 find_package(Sofa.Component.Constraint.Lagrangian.Solver QUIET REQUIRED)
 find_package(Sofa.Component.LinearSolver.Direct QUIET REQUIRED)
-find_package(CImgPlugin QUIET REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 
 if(SOFAMATRIX_HAVE_SOFA_GUI_QT )

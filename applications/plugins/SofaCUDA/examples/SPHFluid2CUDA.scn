@@ -114,7 +114,6 @@
 "		        translation="3 9 0" radius="0 0 0" velocity="0 0 -15" delay="0.013333" start="-0.04" stop="4" />
 
 		<UniformMass name="M1" mass="1" />
-        <!--<WashingMachineForceField size="16 16 16" center="3 8 -8" speed="0" damping="0" />-->
 		<PlaneForceField damping="0" normal="1 0 0" d="-5" />
 		<PlaneForceField damping="0" normal="-1 0 0" d="-11" />
 		<PlaneForceField damping="0" normal="0 1 0" d="0" />

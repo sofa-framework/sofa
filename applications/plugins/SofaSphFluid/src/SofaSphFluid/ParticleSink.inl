@@ -211,7 +211,7 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!d_showPlane.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     type::Vec3d normal; normal = d_planeNormal.getValue();
 
@@ -243,8 +243,6 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vertices.push_back(sofa::type::Vec3(corners[2]));
     vertices.push_back(sofa::type::Vec3(corners[3]));
     vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::type::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
-
-    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace misc

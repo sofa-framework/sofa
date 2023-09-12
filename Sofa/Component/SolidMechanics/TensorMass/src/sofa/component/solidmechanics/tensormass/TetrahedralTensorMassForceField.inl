@@ -104,7 +104,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
             k = m_topology->getLocalEdgesInTetrahedron(j)[0];
             l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
-            Mat3 &m=edgeData[te[j]].DfDx;
+            auto& m = edgeData[te[j]].DfDx;
 
             val1= dot(shapeVector[k],shapeVector[l])*mustar;
 
@@ -185,7 +185,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
             k = m_topology->getLocalEdgesInTetrahedron(j)[0];
             l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
-            Mat3 &m=edgeData[te[j]].DfDx;
+            auto& m = edgeData[te[j]].DfDx;
 
             val1= dot(shapeVector[k],shapeVector[l])*mustar;
             // print if obtuse tetrahedron along that edge
@@ -365,7 +365,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
         dp = dp1-dp0;
         force=einfo->DfDx*dp;
         energy+=dot(force,dp1);
-        force=einfo->DfDx.transposeMultiply(dp);
+        force=einfo->DfDx.multTranspose(dp);
         energy-=dot(force,dp0);
     }
 
@@ -404,7 +404,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
         dp = dp1-dp0;
 
         f[v1]+=einfo->DfDx*dp;
-        f[v0]-=einfo->DfDx.transposeMultiply(dp);
+        f[v0]-=einfo->DfDx.multTranspose(dp);
     }
 
     edgeInfo.endEdit();
@@ -442,13 +442,40 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
         dp = dp1-dp0;
 
         df[v1]+= (einfo->DfDx*dp) * kFactor;
-        df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
+        df[v0]-= (einfo->DfDx.multTranspose(dp)) * kFactor;
     }
     edgeInfo.endEdit();
 
     d_df.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
+}
+
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+    const sofa::Size nbEdges = m_topology->getNbEdges();
+
+    const auto edgeInf = sofa::helper::getReadAccessor(edgeInfo);
+    const auto edges = m_topology->getEdges();
+
+    for (sofa::Size i = 0; i < nbEdges; ++i)
+    {
+        const sofa::topology::Edge& edge = edges[i];
+
+        const unsigned p0 = Deriv::total_size * edge[0];
+        const unsigned p1 = Deriv::total_size * edge[1];
+
+        const auto& localDfdx = edgeInf[i].DfDx;
+        const auto localDfdx_T = edgeInf[i].DfDx.transposed();
+
+        dfdx(p0, p0) +=  localDfdx_T;
+        dfdx(p0, p1) += -localDfdx_T;
+        dfdx(p1, p0) += -localDfdx;
+        dfdx(p1, p1) +=  localDfdx;
+    }
 }
 
 template <class DataTypes>

@@ -451,7 +451,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->enableBlending();
     vparams->drawTool()->disableDepthTest();
@@ -552,8 +552,6 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     vparams->drawTool()->drawPoints(vertices,5,colorVector);
     vertices.clear();
     colorVector.clear();
-
-    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

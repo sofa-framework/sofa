@@ -567,6 +567,35 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalge
 }
 
 template <class DataTypes>
+void StandardTetrahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const sofa::Size nbEdges = m_topology->getNbEdges();
+    const type::vector< Edge>& edgeArray=m_topology->getEdges();
+
+    const edgeInformationVector& edgeInf = edgeInfo.getValue();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (sofa::Size l = 0; l < nbEdges; ++l)
+    {
+        const auto& einfo = edgeInf[l];
+        const Index node0 = edgeArray[l][0];
+        const Index node1 = edgeArray[l][1];
+        const Index N0 = 3 * node0;
+        const Index N1 = 3 * node1;
+
+        const Matrix3& stiff = einfo.DfDx;
+        const Matrix3 stiffTransposed = stiff.transposed();
+
+        dfdx(N0, N0) +=  stiffTransposed;
+        dfdx(N1, N1) +=  stiff;
+        dfdx(N0, N1) += -stiffTransposed;
+        dfdx(N1, N0) += -stiff;
+    }
+}
+
+template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField

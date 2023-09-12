@@ -13,7 +13,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel PointSplatModel] -->
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [ParticleSink ParticleSource SPHFluidForceField SpatialGridContainer SpatialGridPointModel] -->
 
-
+    <DefaultAnimationLoop/>
     <CollisionPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceBroadPhase/>
@@ -26,7 +26,28 @@
 
 		<PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
-		<ParticleSource name="Source" center="&#x0A;&#x09;&#x09;&#x09;&#x09;-0.375 0 -0.75&#x0A;&#x09;&#x09;&#x09;&#x09; 0.0   0 -0.75&#x0A;&#x09;&#x09;&#x09;&#x09; 0.375 0 -0.75&#x0A;&#x09;&#x09;&#x09;&#x09;-0.75  0 -0.375&#x0A;&#x09;&#x09;&#x09;&#x09;-0.375 0 -0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.0   0 -0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.375 0 -0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.75  0 -0.375&#x0A;&#x09;&#x09;&#x09;&#x09;-0.75  0  0.0&#x0A;&#x09;&#x09;&#x09;&#x09;-0.375 0  0.0&#x0A;&#x09;&#x09;&#x09;&#x09; 0.0   0  0.0&#x0A;&#x09;&#x09;&#x09;&#x09; 0.375 0  0.0&#x0A;&#x09;&#x09;&#x09;&#x09; 0.75  0  0.0&#x0A;&#x09;&#x09;&#x09;&#x09;-0.75  0  0.375&#x0A;&#x09;&#x09;&#x09;&#x09;-0.375 0  0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.0   0  0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.375 0  0.375&#x0A;&#x09;&#x09;&#x09;&#x09; 0.75  0  0.375&#x0A;&#x09;&#x09;&#x09;&#x09;-0.375 0  0.75&#x0A;&#x09;&#x09;&#x09;&#x09; 0.0   0  0.75&#x0A;&#x09;&#x09;&#x09;&#x09; 0.375 0  0.75&#x0A;&#x09;&#x09;&#x09;&#x09; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" /> 
+		<ParticleSource name="Source" translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" 
+        center="-0.375 0 -0.75 
+            0.0 0.0 -0.75 
+            0.375 0.0 -0.75 
+            -0.75  0.0 -0.375 
+            -0.375 0.0 -0.375 
+            0.0 0.0 -0.375 
+            0.375 0.0 -0.375 
+            0.75 0.0 -0.375 
+            -0.75 0.0 0.0 
+            -0.375 0.0 0.0 
+            0.0 0.0 0.0 
+            0.375 0.0 0.0 
+            0.75 0.0 0.0 
+            -0.75 0.0 0.375 
+            -0.375 0.0 0.375 
+            0.0 0.0 0.375 
+            0.375 0.0 0.375 
+            0.75 0.0 0.375 
+            -0.375 0.0 0.75 
+            0.0 0.0 0.75 
+            0.375 0.0 0.75"/> 
 		<ParticleSink normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="true" />
 
         <UniformMass name="M1" vertexMass="1" />

@@ -58,27 +58,12 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public type::fixed_array<Deriv,3>
-    {
-    public:
-        Deriv operator*(const Deriv& v) const
-        {
-            return Deriv((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
-        }
-        Deriv transposeMultiply(const Deriv& v) const
-        {
-            return Deriv(v[0]*((*this)[0])[0]+v[1]*((*this)[1])[0]+v[2]*((*this)[2][0]),
-                    v[0]*((*this)[0][1])+v[1]*((*this)[1][1])+v[2]*((*this)[2][1]),
-                    v[0]*((*this)[0][2])+v[1]*((*this)[1][2])+v[2]*((*this)[2][2]));
-        }
-    };
-
 protected:
 
     class EdgeRestInformation
     {
     public:
-        Mat3 DfDx; /// the edge stiffness matrix
+        sofa::type::Mat<3, 3, Real> DfDx; /// the edge stiffness matrix
         float vertices[2]; // the vertices of this edge
 
         EdgeRestInformation()
@@ -123,6 +108,7 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {

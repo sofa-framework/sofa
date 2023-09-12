@@ -70,28 +70,6 @@ public:
 
     /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
     void solve (Matrix& A, Vector& x, Vector& b) override;
-
-    //Temporary function to warn the user when old attribute names are used until v21.12
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit::parse(arg);
-
-        if (arg->getAttribute("verbose"))
-        {
-            msg_warning() << "input data 'verbose' changed for 'printLog', please update your scene (see PR#2098)";
-        }
-    }
-
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_maxIter")
-    DeprecatedAndRemoved f_maxIter;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_tolerance")
-    DeprecatedAndRemoved f_tolerance;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_smallDenominatorThreshold")
-    DeprecatedAndRemoved f_smallDenominatorThreshold;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_warmStart")
-    DeprecatedAndRemoved f_warmStart;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_graph")
-    DeprecatedAndRemoved f_graph;
 };
 
 template<>

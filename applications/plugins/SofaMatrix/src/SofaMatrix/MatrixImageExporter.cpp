@@ -22,7 +22,8 @@
 #include <SofaMatrix/MatrixImageExporter.h>
 #include <sofa/defaulttype/MatrixExporter.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <CImgPlugin/ImageCImg.h>
+#include <sofa/helper/io/STBImage.h>
+
 
 namespace sofa::defaulttype
 {
@@ -34,7 +35,7 @@ bool writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatr
         const auto nx = matrix->colSize();
         const auto ny = matrix->rowSize();
 
-        sofa::helper::io::ImageCImg image;
+        sofa::helper::io::STBImage image;
         image.init(nx, ny, 1, 1, sofa::helper::io::Image::DataType::UNORM8, sofa::helper::io::Image::ChannelFormat::L);
 
         unsigned char* pixels = image.getPixels();
@@ -69,15 +70,11 @@ void initializeMatrixExporterComponents()
             sofa::defaulttype::matrixExporterOptionsGroup.setItemName(sofa::defaulttype::matrixExporterOptionsGroup.size() - 1, format);
         };
 
-#if CIMGPLUGIN_HAVE_JPEG
-        addMatrixExporter("jpg", sofa::defaulttype::writeMatrixImage);
-#endif // CIMGPLUGIN_HAVE_JPEG
-
-#if CIMGPLUGIN_HAVE_PNG
         addMatrixExporter("png", sofa::defaulttype::writeMatrixImage);
-#endif // CIMGPLUGIN_HAVE_PNG
-
+        addMatrixExporter("jpg", sofa::defaulttype::writeMatrixImage);
+        addMatrixExporter("jpeg", sofa::defaulttype::writeMatrixImage);
         addMatrixExporter("bmp", sofa::defaulttype::writeMatrixImage);
+        addMatrixExporter("tga", sofa::defaulttype::writeMatrixImage);
 
         first = false;
     }

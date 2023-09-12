@@ -31,6 +31,7 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 
 namespace sofa::component::mechanicalload
@@ -259,6 +260,29 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
                         mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
                     }
                 }
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void SurfacePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    if (m_useTangentStiffness.getValue())
+    {
+        static constexpr auto N = Deriv::total_size;
+
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                   .withRespectToPositionsIn(this->mstate);
+
+        for (std::size_t i = 0; i < derivTriNormalIndices.size(); i++)
+        {
+            for (std::size_t j = 0; j < derivTriNormalIndices[i].size(); j++)
+            {
+                const unsigned int v = derivTriNormalIndices[i][j];
+                const Mat33& Kiv = derivTriNormalValues[i][j];
+
+                dfdx(N * i, N * v) += Kiv;
             }
         }
     }

@@ -34,9 +34,6 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
-    SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type")
-    typedef DeprecatedAndRemoved index_type;
-
     typedef sofa::type::vector<Edge> 		        SeqEdges;
     typedef sofa::type::vector<Triangle>		    SeqTriangles;
     typedef sofa::type::vector<Quad>		        SeqQuads;

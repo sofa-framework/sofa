@@ -107,7 +107,7 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporter1' format='" << format << "' printLog='true' filename='" << filename << "' exportAtBegin='true' /> \n"
+                "   <MeshExporter name='exporter1' format='" << format << "' printLog='false' filename='" << filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n";
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
@@ -138,7 +138,7 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporterA' format='" << format << "' printLog='true' filename='" << filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <MeshExporter name='exporterA' format='" << format << "' printLog='false' filename='" << filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n";
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());

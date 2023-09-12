@@ -45,10 +45,11 @@ public:
     SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
 private:
-    Data < bool > bDraw; ///< enable/disable display of results
+    SOFA_ATTRIBUTE_DEPRECATED__DRAWNARROWPHASE()
+    sofa::core::objectmodel::lifecycle::DeprecatedData bDraw{this, "v23.12", "v24.06", "draw", "Use display flag 'showDetectionOutputs' instead"}; ///< enable/disable display of results
 
 protected:
-    RayTraceNarrowPhase();
+    RayTraceNarrowPhase() = default;
 
 public:
     void addCollisionPair (const std::pair < core::CollisionModel *,
@@ -56,11 +57,6 @@ public:
 
     void findPairsVolume (collision::geometry::CubeCollisionModel * cm1, collision::geometry::CubeCollisionModel* cm2);
 
-    void draw (const core::visual::VisualParams* vparams) override;
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
 };
 
 }

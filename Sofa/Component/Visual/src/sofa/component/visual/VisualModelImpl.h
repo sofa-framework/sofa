@@ -35,7 +35,7 @@
 namespace sofa::component::visual
 {
 
-SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() 
+SOFA_ATTRIBUTE_DISABLED__VEC3STATE_AS_VISUALSTATE() 
 typedef sofa::core::visual::VisualState<defaulttype::Vec3Types> Vec3State;
 
 

@@ -234,9 +234,9 @@ LCPConstraintSolver::LCPConstraintSolver()
     , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
     , merge_local_levels( initData(&merge_local_levels, 2, "merge_local_levels", "if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs."))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
-    , d_computeConstraintForces(initData(&d_computeConstraintForces,true,
+    , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
-                                        "enable the storage of the constraintForces (default = False)."))
+                                        "enable the storage of the constraintForces."))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration"))
     , showLevels( initData(&showLevels,0,"showLevels","Number of constraint levels to display"))

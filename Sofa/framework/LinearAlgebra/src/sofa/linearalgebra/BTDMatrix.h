@@ -122,7 +122,7 @@ public:
         return BSIZE;
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
+    SOFA_ATTRIBUTE_DISABLED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
     static Index getSubMatrixDim(Index)
     {
         return getSubMatrixDim();

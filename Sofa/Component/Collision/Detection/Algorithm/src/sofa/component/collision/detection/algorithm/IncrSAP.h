@@ -261,10 +261,6 @@ public:
 
     void beginNarrowPhase() override;
 
-
-    /* for debugging */
-    void draw(const core::visual::VisualParams*) override {}
-
     inline bool needsDeepBoundingTree()const override {return false;}
 
     void showEndPoints()const;
