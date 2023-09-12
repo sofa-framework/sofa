@@ -9,11 +9,13 @@
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [SPHFluidForceField SpatialGridContainer] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
+
+    <DefaultAnimationLoop/>
     <Node>
         <EulerExplicitSolver symplectic="1" />
         <MechanicalObject name="MModel" />
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
-        <RegularGridTopology nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0" drawEdges="1"/>
+        <RegularGridTopology nx="5" ny="40" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="12" zmin="-1.5" zmax="0"/>
         <UniformMass name="M1" vertexMass="1" />
         <SpatialGridContainer cellWidth="0.75" />
         <SPHFluidForceField radius="0.745" density="15" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />

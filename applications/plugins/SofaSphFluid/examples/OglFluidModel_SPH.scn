@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -20 0.0" >
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->
@@ -8,6 +9,7 @@
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [OglFluidModel SPHFluidForceField SpatialGridContainer] -->
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideCollisionModels" />
 
+    <DefaultAnimationLoop/>
     <Node name="SPH" >
         <EulerExplicitSolver symplectic="1" />
         <RegularGridTopology nx="5" ny="400" nz="5" xmin="-3.0" xmax="0" ymin="-3" ymax="36" zmin="-3.0" zmax="0" />

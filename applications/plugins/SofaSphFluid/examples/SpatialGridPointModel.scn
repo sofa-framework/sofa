@@ -8,30 +8,27 @@
     <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
-    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [ParticleSink ParticleSource SPHFluidForceField SPHFluidSurfaceMapping SpatialGridContainer SpatialGridPointModel] -->
 
 
-    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <VisualStyle displayFlags="showVisual showBehaviorModels hideForceFields" />
+    <DefaultAnimationLoop/>
     <CollisionPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <CollisionResponse response="PenalityContactForceField" />
     <Node name="Fluid">
-        <RungeKutta4Solver />
-        <PointSetTopologyContainer />
+        <RungeKutta4Solver />        
+        <RegularGridTopology nx="5" ny="30" nz="5" xmin="-1.5" xmax="0" ymin="-3" ymax="9" zmin="-1.5" zmax="0" drawEdges="0"/>
         <MechanicalObject name="MModel" />
-        <PointSetTopologyContainer name="con" />
-        <PointSetTopologyModifier name="mod" />
-        <ParticleSource name="Source" center="&#x0A;-0.375 0 -0.75&#x0A; 0.0   0 -0.75&#x0A; 0.375 0 -0.75&#x0A;-0.75  0 -0.375&#x0A;-0.375 0 -0.375&#x0A; 0.0   0 -0.375&#x0A; 0.375 0 -0.375&#x0A; 0.75  0 -0.375&#x0A;-0.75  0  0.0&#x0A;-0.375 0  0.0&#x0A; 0.0   0  0.0&#x0A; 0.375 0  0.0&#x0A; 0.75  0  0.0&#x0A;-0.75  0  0.375&#x0A;-0.375 0  0.375&#x0A; 0.0   0  0.375&#x0A; 0.375 0  0.375&#x0A; 0.75  0  0.375&#x0A;-0.375 0  0.75&#x0A; 0.0   0  0.75&#x0A; 0.375 0  0.75&#x0A; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
-        <ParticleSink normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="false" />
         <UniformMass name="M1" vertexMass="1" />
         <SpatialGridContainer cellWidth="0.75" sortPoints="true" />
-        <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
-        <Node id="Visual">
+        <SPHFluidForceField radius="0.745" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
+        <Node name="Visual">
             <OglModel name="VModel" color="blue" />
             <SPHFluidSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.5" radius="0.75" step="0.25" />
         </Node>
@@ -43,6 +40,6 @@
         <TriangleCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <LineCollisionModel contactStiffness="20" moving="false" simulated="false" />
         <PointCollisionModel contactStiffness="20" moving="false" simulated="false" />
-        <OglModel name="VModel" color="0.95 1.0 0.95 0.25" printLog="true" />
+        <OglModel name="VModel" color="0.95 1.0 0.95 0.25" printLog="false" />
     </Node>
 </Node>
