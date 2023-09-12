@@ -91,7 +91,7 @@ protected:
 
     MultiLink< ConstraintSolverImpl,
         core::behavior::BaseConstraintCorrection,
-        BaseLink::FLAG_STOREPATH | BaseLink::FLAG_DOUBLELINK> l_constraintCorrections;
+        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
 
 };
 
