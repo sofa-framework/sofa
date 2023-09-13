@@ -411,20 +411,11 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
         const KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
         switch(ev->getKey())
         {
-
         case 'A':
         case 'a':
-            if (d_activate.getValue())
-            {
-                msg_info() << "Unactivating constraint";
-                d_activate.setValue(false);
-            }
-            else
-            {
-                msg_info() << "Activating constraint";
-                d_activate.setValue(true);
-            }
-            
+            msg_deprecated() << "This component had hard coded user interaction. This behavior was deprecated in PR#. "
+                                "If you need the old behavior, you must re-implement it with a Controller object. "
+                                "This can be done c++ or python.";
             break;
         }
     }

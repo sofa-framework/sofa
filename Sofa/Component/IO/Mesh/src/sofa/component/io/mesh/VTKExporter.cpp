@@ -944,16 +944,11 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         case 'E':
         case 'e':
-            if(fileFormat.getValue())
-                writeVTKXML();
-            else
-                writeVTKSimple();
-            break;
-
         case 'F':
         case 'f':
-            if(fileFormat.getValue())
-                writeParallelFile();
+            msg_deprecated() << "This component had hard coded user interaction. This behavior was deprecated in PR#. "
+                                "If you need the old behavior, you need to re-implement with a controller. This can be done"
+                                " c++ or python. If you see this message please report at XXXX";
         }
     }
 
