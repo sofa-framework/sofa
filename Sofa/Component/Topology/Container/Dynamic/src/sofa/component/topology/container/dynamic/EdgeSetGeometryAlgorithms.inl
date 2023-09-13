@@ -872,7 +872,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
 {
     using namespace sofa::core::topology;
 
-    if (ancestorElem.type != core::topology::TopologyElementType::EDGE)
+    if (ancestorElem.type != geometry::ElementType::EDGE)
     {
         PointSetGeometryAlgorithms< DataTypes >::initPointAdded(index, ancestorElem, coordVecs, derivVecs);
     }

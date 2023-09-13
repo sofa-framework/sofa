@@ -692,7 +692,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
                 // Output declarations
-                sofa::type::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
+                sofa::type::vector<sofa::geometry::ElementType>       topoPath_list;
                 sofa::type::vector<Index> indices_list;
                 sofa::type::vector<Vec3 > coords2_list;
 
@@ -1260,7 +1260,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         b = coordinates[i];
 
         // Output declarations
-        sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
+        sofa::type::vector< sofa::geometry::ElementType> topoPath_list;
         sofa::type::vector<Index> indices_list;
         sofa::type::vector< Vec3 > coords2_list;
 
