@@ -133,21 +133,11 @@ GenericConstraintSolver::~GenericConstraintSolver()
 
 void GenericConstraintSolver::init()
 {
-    core::behavior::ConstraintSolver::init();
+    ConstraintSolverImpl::init();
 
-    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
-    if (!constraintCorrections.empty())
-    {
-        for (auto* constraintCorrection : constraintCorrections)
-            constraintCorrection->removeConstraintSolver(this);
-        constraintCorrections.clear();
-    }
-
-    getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
-    constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (auto* constraintCorrection : constraintCorrections)
-        constraintCorrection->addConstraintSolver(this);
+    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
     context = getContext();
+
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
@@ -176,19 +166,10 @@ void GenericConstraintSolver::init()
 
 void GenericConstraintSolver::cleanup()
 {
-    for (auto* constraintCorrection : constraintCorrections)
-        constraintCorrection->removeConstraintSolver(this);
-    constraintCorrections.clear();
-
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     vop.v_free(m_lambdaId, false, true);
     vop.v_free(m_dxId, false, true);
-    core::behavior::ConstraintSolver::cleanup();
-}
-
-void GenericConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s)
-{
-    constraintCorrections.erase(std::remove(constraintCorrections.begin(), constraintCorrections.end(), s), constraintCorrections.end());
+    sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl::cleanup();
 }
 
 bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
@@ -256,8 +237,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     msg_info() <<"GenericConstraintSolver: "<<numConstraints<<" constraints";
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
-    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-        constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
+    for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
+        constraintCorrectionIsActive[i] = !l_constraintCorrections[i]->getContext()->isSleeping();
 
     // Resolution depending on the method selected
     switch ( d_resolutionMethod.getValue().getSelectedId() )
@@ -286,7 +267,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints)
 {
-    for (auto* cc : constraintCorrections)
+    for (const auto& cc : l_constraintCorrections)
     {
         if (!cc->isActive()) continue;
 
@@ -304,7 +285,7 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     // for each contact, the constraint corrections that are involved with the contact are memorized
     current_cp->cclist_elems.clear();
     current_cp->cclist_elems.resize(numConstraints);
-    const int nbCC = constraintCorrections.size();
+    const int nbCC = l_constraintCorrections.size();
     for (unsigned int i = 0; i < numConstraints; i++)
         current_cp->cclist_elems[i].resize(nbCC, nullptr);
 
@@ -315,9 +296,9 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
         nbObjects++;
         const unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
 
-        for (unsigned int j = 0; j < constraintCorrections.size(); j++)
+        for (unsigned int j = 0; j < l_constraintCorrections.size(); j++)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
+            core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[j];
             if (!cc->isActive()) continue;
             if (cc->hasConstraintNumber(c_id))
             {
@@ -374,7 +355,7 @@ void GenericConstraintSolver::ComplianceWrapper::assembleMatrix() const
 void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintParams *cParams)
 {
     sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
-    dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
+    dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
 
     const bool multithreading = d_multithreading.getValue();
 
@@ -387,7 +368,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
 
     std::mutex mutex;
 
-    simulation::forEachRange(execution, *taskScheduler, constraintCorrections.begin(), constraintCorrections.end(),
+    simulation::forEachRange(execution, *taskScheduler, l_constraintCorrections.begin(), l_constraintCorrections.end(),
         [&cParams, this, &multithreading, &mutex](const auto& range)
         {
             ComplianceWrapper compliance(current_cp->W, multithreading);
@@ -410,7 +391,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
 
 void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    for (auto* cc : constraintCorrections)
+    for (const auto& cc : l_constraintCorrections)
     {
         if (!cc->isActive()) continue;
         cc->rebuildSystem(massFactor, forceFactor);
@@ -517,7 +498,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 {
-    for (auto* cc : constraintCorrections)
+    for (const auto& cc : l_constraintCorrections)
     {
         cc->computeResidual(eparam,&current_cp->f);
     }
@@ -537,10 +518,10 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     {
         const core::MultiVecCoordId xId(res1);
         const core::MultiVecDerivId vId(res2);
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = constraintCorrections[i];
+            BaseConstraintCorrection* cc = l_constraintCorrections[i];
             if (!cc->isActive()) continue;
 
             sofa::helper::AdvancedTimer::stepBegin("ComputeCorrection on: " + cc->getName());
@@ -555,10 +536,10 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     else if (cParams->constOrder() == core::ConstraintParams::POS)
     {
         const core::MultiVecCoordId xId(res1);
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = constraintCorrections[i];
+            BaseConstraintCorrection* cc = l_constraintCorrections[i];
             if (!cc->isActive()) continue;
 
             {
@@ -575,10 +556,10 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     else if (cParams->constOrder() == core::ConstraintParams::VEL)
     {
         const core::MultiVecDerivId vId(res1);
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = constraintCorrections[i];
+            BaseConstraintCorrection* cc = l_constraintCorrections[i];
             if (!cc->isActive()) continue;
 
             {
