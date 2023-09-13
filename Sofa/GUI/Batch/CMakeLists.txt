@@ -6,6 +6,7 @@ set(SOFAGUIBATCH_ROOT src/sofa/gui/batch)
 set(HEADER_FILES
     ${SOFAGUIBATCH_ROOT}/config.h.in
     ${SOFAGUIBATCH_ROOT}/init.h
+    ${SOFAGUIBATCH_ROOT}/indicators.hpp
     ${SOFAGUIBATCH_ROOT}/BatchGUI.h
 )
 

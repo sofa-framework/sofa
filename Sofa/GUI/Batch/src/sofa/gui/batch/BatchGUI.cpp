@@ -30,6 +30,7 @@
 #include <sofa/gui/common/ArgumentParser.h>
 
 #include <cxxopts.hpp>
+#include "indicators.hpp"
 
 #include <fstream>
 #include <string>
@@ -74,8 +75,22 @@ int BatchGUI::mainLoop()
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
-        signed int i = 1; //one simulatin step is animated above  
-       
+        signed int i = 1; //one simulation step is animated above
+
+        indicators::ProgressBar progressBar{
+            indicators::option::BarWidth{50},
+            indicators::option::Start{"\r["},
+            indicators::option::Fill{"#"},
+            indicators::option::Lead{"#"},
+            indicators::option::Remainder{"-"},
+            indicators::option::End{"]"},
+            indicators::option::PostfixText{},
+            indicators::option::ForegroundColor{indicators::Color::cyan},
+            indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}},
+            indicators::option::ShowPercentage(true)
+        };
+        indicators::show_console_cursor(false);
+
         while (i <= nbIter || nbIter == -1)
         {
             if (i != nbIter)
@@ -105,9 +120,13 @@ int BatchGUI::mainLoop()
                 }
             }
 
+            progressBar.set_option(indicators::option::PostfixText{std::to_string(i) + "/" + std::to_string(nbIter)});
+            progressBar.set_progress(100 * i / nbIter);
+
             i++;
         }
-        
+
+        indicators::show_console_cursor(true);
     }
     return 0;
 }
