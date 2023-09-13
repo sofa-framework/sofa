@@ -181,6 +181,26 @@ public:
         m_crs.add(row, col, v);
     }
 
+    void add(Index row, Index col, const sofa::type::Mat3x3d & _M) override
+    {
+        m_crs.add(row, col, _M);
+    }
+
+    void add(Index row, Index col, const sofa::type::Mat3x3f & _M) override
+    {
+        m_crs.add(row, col, _M);
+    }
+
+    void add(Index row, Index col, const sofa::type::Mat2x2d & _M) override
+    {
+        m_crs.BaseMatrix::add(row, col, _M);
+    }
+
+    void add(Index row, Index col, const sofa::type::Mat2x2f & _M) override
+    {
+        m_crs.BaseMatrix::add(row, col, _M);
+    }
+
     void setTaskScheduler(sofa::simulation::TaskScheduler* taskScheduler)
     {
         m_taskScheduler = taskScheduler;
