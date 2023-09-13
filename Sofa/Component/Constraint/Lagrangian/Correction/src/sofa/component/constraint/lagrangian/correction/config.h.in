@@ -41,6 +41,6 @@ namespace sofa::component::constraint::lagrangian::correction
 #define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v22.12 (#3152)", "v23.06", "String data of this ConstraintCorrection were replaced by explicit links")
 #endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION

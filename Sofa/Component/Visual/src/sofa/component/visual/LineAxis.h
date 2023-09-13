@@ -35,7 +35,7 @@ public:
     Data<std::string> d_axis; ///< Axis to draw
     Data<float> d_size; ///< Size of the squared grid
     Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "draw", "Use the 'enable' data field instead of 'draw'"};
+    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
 
     LineAxis();
 

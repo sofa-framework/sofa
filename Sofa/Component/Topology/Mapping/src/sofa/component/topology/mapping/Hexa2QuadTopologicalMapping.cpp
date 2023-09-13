@@ -57,8 +57,8 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
     , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
-    m_inputType = TopologyElementType::HEXAHEDRON;
-    m_outputType = TopologyElementType::QUAD;
+    m_inputType = geometry::ElementType::HEXAHEDRON;
+    m_outputType = geometry::ElementType::QUAD;
 }
 
 void Hexa2QuadTopologicalMapping::init()

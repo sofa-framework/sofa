@@ -45,9 +45,6 @@ public:
 
     objectmodel::DataFileName d_filename;
 
-    SOFA_ATTRIBUTE_DISABLED__LOADER_FILENAME("To fix your code, use d_filename")
-    DeprecatedAndRemoved f_filename{};
-
 protected:
     BaseLoader() ;
     ~BaseLoader() override ;

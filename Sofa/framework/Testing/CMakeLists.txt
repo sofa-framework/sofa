@@ -16,6 +16,7 @@ set(HEADER_FILES
     ${SOFATESTINGSRC_ROOT}/config.h.in
     ${SOFATESTINGSRC_ROOT}/initSofa.Testing.h
     ${SOFATESTINGSRC_ROOT}/BaseTest.h
+    ${SOFATESTINGSRC_ROOT}/LinearCongruentialRandomGenerator.h
     ${SOFATESTINGSRC_ROOT}/NumericTest.h
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.h
     ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.h
@@ -24,6 +25,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFATESTINGSRC_ROOT}/initSofa.Testing.cpp
     ${SOFATESTINGSRC_ROOT}/BaseTest.cpp
+    ${SOFATESTINGSRC_ROOT}/LinearCongruentialRandomGenerator.cpp
     ${SOFATESTINGSRC_ROOT}/NumericTest.cpp
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
     ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.cpp

@@ -270,7 +270,7 @@ simulation::Node::SPtr createScene()
     xmrigid[9].getCenter()=Vec3d(0.00765, 0.0569, -0.0227938);
 	
 	// Mapping between bones and joint
-    RigidRigidMappingRigid3d_to_Rigid3d::SPtr mapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(jointNode,"mapping");
+    RigidMappingRigid3d_to_Rigid3d::SPtr mapping = addNew<RigidMappingRigid3d_to_Rigid3d>(jointNode,"mapping");
     mapping->setModels( rigid_dof.get(), mapped_rigid_dof.get() );
 	sofa::type::vector<unsigned int> repartition;
 	repartition.resize(5);
@@ -412,7 +412,7 @@ simulation::Node::SPtr createScene()
 	originShapeFunction->f_nbRef.setValue(1);
 	
 	// Mapping between bones and 
-    RigidRigidMappingRigid3d_to_Rigid3d::SPtr originMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(originNode,"mapping");
+    RigidMappingRigid3d_to_Rigid3d::SPtr originMapping = addNew<RigidMappingRigid3d_to_Rigid3d>(originNode,"mapping");
     originMapping->setModels( rigid_dof.get(), originRigidDof.get() );
 	sofa::type::vector<unsigned int> originRepartition;
 	originRepartition.resize(5);
@@ -463,7 +463,7 @@ simulation::Node::SPtr createScene()
 	insertionShapeFunction->f_nbRef.setValue(1);
 	
 	// Mapping between bones and 
-    RigidRigidMappingRigid3d_to_Rigid3d::SPtr insertionMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(insertionNode,"mapping");
+    RigidMappingRigid3d_to_Rigid3d::SPtr insertionMapping = addNew<RigidMappingRigid3d_to_Rigid3d>(insertionNode,"mapping");
     insertionMapping->setModels( rigid_dof.get(), insertionRigidDof.get() );
 	sofa::type::vector<unsigned int> insertionRepartition;
 	insertionRepartition.resize(5);

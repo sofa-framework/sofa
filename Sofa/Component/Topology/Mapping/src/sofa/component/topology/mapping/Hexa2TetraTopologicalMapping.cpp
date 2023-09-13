@@ -58,8 +58,8 @@ Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
     , swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
 {
-    m_inputType = TopologyElementType::HEXAHEDRON;
-    m_outputType = TopologyElementType::TETRAHEDRON;
+    m_inputType = geometry::ElementType::HEXAHEDRON;
+    m_outputType = geometry::ElementType::TETRAHEDRON;
 }
 
 Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()

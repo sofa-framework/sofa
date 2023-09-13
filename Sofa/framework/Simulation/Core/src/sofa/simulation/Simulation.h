@@ -96,9 +96,6 @@ public:
 
     using SPtr = std::shared_ptr<Simulation>;
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1730)", "v21.12", "Use sofa::core::visual::DisplayFlags instead.")
-    typedef DeprecatedAndRemoved DisplayFlags;
-
     Simulation();
     virtual ~Simulation();
 

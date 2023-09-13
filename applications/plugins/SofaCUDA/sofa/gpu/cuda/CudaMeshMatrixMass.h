@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mass/CudaMeshMatrixMass.h")
-#include <SofaCUDA/component/mass/CudaMeshMatrixMass.h>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mass/CudaMeshMatrixMass.h")

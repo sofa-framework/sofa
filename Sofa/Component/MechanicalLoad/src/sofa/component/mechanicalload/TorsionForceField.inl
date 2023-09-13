@@ -25,6 +25,8 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
 
 namespace sofa::component::mechanicalload
 {
@@ -116,6 +118,28 @@ void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matri
 		const unsigned int c = offset + Deriv::total_size * id;
 		matrix->add(c, c, D);
 	}
+}
+
+template <typename DataTypes>
+void TorsionForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const VecId& indices = m_indices.getValue();
+    const Real& tau = m_torque.getValue();
+
+    sofa::type::MatNoInit<3,3, Real> D;
+    D(0,0) = 1 - m_u(0)*m_u(0) ;	D(0,1) = -m_u(1)*m_u(0) ;		D(0,2) = -m_u(2)*m_u(0);
+    D(1,0) = -m_u(0)*m_u(1) ;		D(1,1) = 1 - m_u(1)*m_u(1) ;	D(1,2) = -m_u(2)*m_u(1);
+    D(2,0) = -m_u(0)*m_u(2) ;		D(2,1) = -m_u(1)*m_u(2) ;		D(2,2) = 1 - m_u(3)*m_u(3);
+    D *= tau;
+
+    for (const auto id : indices)
+    {
+        const unsigned int c = Deriv::total_size * id;
+        dfdx(c, c) += D;
+    }
 }
 
 template <typename DataTypes>

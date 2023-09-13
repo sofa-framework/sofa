@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/collision/geometry/CudaSphereModel.h")
-#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/collision/geometry/CudaSphereModel.h")

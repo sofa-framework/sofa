@@ -71,11 +71,6 @@ public:
     DualQuatCoord3(const DualQuatCoord3<real2>& c)
         : dual(c.getDual()), orientation(c.getOrientation()) {}
 
-    template<typename real2>
-    // Deprecated flag is commented, as MSVC2017 cannot handle the associated template syntax. (works well with MSVC2019)
-    //SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1790)", "v21.12", "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")
-    DualQuatCoord3(const sofa::defaulttype::RigidCoord<3, real2>& c) = delete;
-
     DualQuatCoord3(const Pos& p, const sofa::type::Quat<real>& q)
     {
         for (unsigned int i = 0; i < 4; i++)

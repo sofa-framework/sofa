@@ -23,5 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl")
-#include <MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl")

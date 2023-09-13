@@ -62,8 +62,8 @@ int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
 {
-    m_inputType = TopologyElementType::QUAD;
-    m_outputType = TopologyElementType::TRIANGLE;
+    m_inputType = geometry::ElementType::QUAD;
+    m_outputType = geometry::ElementType::TRIANGLE;
 }
 
 

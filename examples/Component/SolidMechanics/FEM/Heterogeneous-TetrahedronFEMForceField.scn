@@ -58,7 +58,7 @@
         <IndexValueMapper name="Young3" indices="@Gel3.tetrahedronIndices" value="3e4" inputValues="@Young2.outputValues"/>
         <IndexValueMapper name="Young4" indices="@Gel4.tetrahedronIndices" value="3e5" inputValues="@Young3.outputValues"/>
         <TetrahedronFEMForceField youngModulus="@Young4.outputValues" poissonRatio="0.4"/>
-        <ConstantForceField force="0.1 0 0" />
+        <ConstantForceField forces="0.1 0 0" />
         <UniformMass totalMass="0.3"/>
 
 

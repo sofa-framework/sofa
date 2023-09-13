@@ -19,8 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
-#include <sofa/config.h>
+namespace sofa::testing
+{
 
-SOFA_DISABLED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")
+LinearCongruentialRandomGenerator::LinearCongruentialRandomGenerator(const unsigned int initialSeed)
+: m_seed(initialSeed)
+{}
+
+unsigned LinearCongruentialRandomGenerator::generateRandom()
+{
+    // Parameters for the LCG formula (adjust as needed)
+    constexpr unsigned int a = 1664525;
+    constexpr unsigned int c = 1013904223;
+
+    m_seed = a * m_seed + c; // LCG formula
+    return m_seed;
+}
+
+double LinearCongruentialRandomGenerator::generateInRange(const double rmin, const double rmax)
+{
+    return rmin + generateInUnitRange<double>() * (rmax - rmin);
+}
+
+float LinearCongruentialRandomGenerator::generateInRange(const float rmin, const float rmax)
+{
+    return rmin + generateInUnitRange<float>() * (rmax - rmin);
+}
+
+}

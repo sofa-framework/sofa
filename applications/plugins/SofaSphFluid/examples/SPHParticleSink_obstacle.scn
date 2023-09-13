@@ -9,12 +9,14 @@
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [OglFluidModel ParticleSink ParticleSource SPHFluidForceField SpatialGridContainer] -->
-    <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
+    <VisualStyle displayFlags="showVisual hideBehaviorModels hideForceFields hideWireframe" />
 
+    <DefaultAnimationLoop/>
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
@@ -50,11 +52,11 @@
         
         <PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
-        <UniformMass name="M1" totalMass="1.0" />
+        <UniformMass name="M1" vertexMass="1.0" />
         <SpatialGridContainer cellWidth="0.75" />
         <SPHFluidForceField radius="0.7" density="25" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
 
-        <ParticleSink name="sink" normal="0 1 0" d0="0" d1="-1" showPlane="1" printLog="0" />
+        <ParticleSink name="sink" normal="0 1 0" d0="-3.5" d1="-4" showPlane="1" printLog="0" />
         <Node name="Collision">
             <MechanicalObject />
             <SphereCollisionModel radius="0.05" showImpostors="true" />
@@ -63,19 +65,21 @@
         <Node name="Fluid" >            
             <OglFluidModel template="Vec3d" position="@../MModel.position" 
             debugFBO="9" 
-            spriteRadius="0.5" spriteThickness="0.015" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
+            spriteRadius="0.5" spriteThickness="0.04" spriteBlurRadius="10" spriteBlurScale="10" spriteBlurDepthFalloff="1"  />
         </Node>
-        
     </Node>
 
-    <Node name="Obstacle" >            
+    
+    <Node name="Obstacle" >      
+        <MeshOBJLoader name='loader' filename='mesh/dragon.obj' scale3d="0.5 0.5 0.5" translation="0 0 1"/>
         <Node name="Collision" >            
-            <MechanicalObject template="Vec3d" position="0 0 0" />
-            <SphereCollisionModel radius="1.0" showImpostors="false" contactStiffness="100" />
+            <MeshTopology src="@../loader" />
+            <MechanicalObject src="@../loader" />
+            <TriangleCollisionModel contactStiffness="50"/>
         </Node>    
         <Node name="Visual" >   
-            <MeshOBJLoader name="loader" filename="mesh/sphere.obj" />         
-            <OglModel src="@loader" />
+            <OglModel src="@../loader" />
         </Node>   
     </Node>
+    
 </Node>

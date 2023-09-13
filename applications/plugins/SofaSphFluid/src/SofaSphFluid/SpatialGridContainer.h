@@ -30,8 +30,6 @@
 #include <sofa/helper/rmath.h>
 #include <list>
 
-#include <sofa/defaulttype/TopologyTypes.h>
-
 #include <unordered_map>
 
 namespace sofa

@@ -37,7 +37,6 @@ namespace sofa::component::constraint::lagrangian::solver
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
 {
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 public:
@@ -60,7 +59,6 @@ public:
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
-    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
 
@@ -110,7 +108,7 @@ protected:
     sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
-    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+    SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_CONSTRAINTCORRECTIONS() DeprecatedAndRemoved constraintCorrections; //use ConstraintSolverImpl::l_constraintCorrections instead
     type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 

@@ -6,8 +6,9 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [ParticleSink ParticleSource SPHFluidForceField SpatialGridContainer] -->
-    <VisualStyle displayFlags="showBehaviorModels showForceFields showWireframe" />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
+    <DefaultAnimationLoop/>
     <Node name="Particles">
         <EulerExplicitSolver symplectic="1" />
         <MechanicalObject name="MModel" />
@@ -37,7 +38,7 @@
         
         <PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
-        <UniformMass name="M1" totalMass="1.0" />
+        <UniformMass name="M1" vertexMass="1.0" />
         <SpatialGridContainer cellWidth="0.75" />
         <SPHFluidForceField radius="0.7" density="25" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
 

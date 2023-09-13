@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node dt="0.005" gravity="0 -10 0">
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -9,6 +10,8 @@
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [SPHFluidForceField SPHFluidSurfaceMapping SpatialGridContainer] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <DefaultAnimationLoop/>
     <Node name="Liver">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

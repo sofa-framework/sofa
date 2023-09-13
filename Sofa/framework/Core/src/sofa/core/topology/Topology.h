@@ -31,16 +31,6 @@
 namespace sofa::core::topology
 {
 
-
-SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementType has moved to sofa::geometry::ElementType.")
-typedef sofa::geometry::ElementType TopologyElementType;
-
-
-template<class TopologyElement>
-using TopologyElementInfo 
-SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementInfo has moved to sofa::geometry::ElementInfo.")
-= sofa::geometry::ElementInfo<TopologyElement>;
-
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
 // As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...) against BaseMeshTopology
 class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseObject
@@ -94,13 +84,13 @@ public:
     using SetIndex = sofa::topology::SetIndex;
     using SetIndices = sofa::topology::SetIndices;
 
-    using Edge = sofa::topology::Edge;
-    using Triangle = sofa::topology::Triangle;
-    using Quad = sofa::topology::Quad;
-    using Tetrahedron = sofa::topology::Tetrahedron;
-    using Pentahedron = sofa::topology::Pentahedron;
-    using Pyramid = sofa::topology::Pyramid;
-    using Hexahedron = sofa::topology::Hexahedron;
+    using Edge = sofa::topology::Element<sofa::geometry::Edge>;
+    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
+    using Quad = sofa::topology::Element<sofa::geometry::Quad>;
+    using Tetrahedron = sofa::topology::Element<sofa::geometry::Tetrahedron>;
+    using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
+    using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
+    using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Tetra alias has been deprecated, please use Tetrahedron instead")
     typedef Tetrahedron Tetra;
@@ -108,7 +98,7 @@ public:
     typedef Pentahedron Penta;
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Hexa alias has been deprecated, please use Hexahedron instead")
     typedef Hexahedron Hexa;
-        
+
     bool insertInNode(objectmodel::BaseNode* node) override;
     bool removeInNode(objectmodel::BaseNode* node) override;
 
@@ -134,10 +124,6 @@ SOFA_CORE_API extern const unsigned int trianglesOrientationInTetrahedronArray[4
 
 /// List of pair of vertex indices (edge) in a hexahedron
 SOFA_CORE_API extern const unsigned int edgesInHexahedronArray[12][2];
-
-/// Old static array with not relevant orientation. @sa quadsOrientationInHexahedronArray is the right orientation convention
-SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "quadsInHexahedronArray structure has been deprecated, please use the right array instead: quadsOrientationInHexahedronArray")
-const DeprecatedAndRemoved quadsInHexahedronArray;
 
 /// List of 4 vertex indices (quad) in a hexahedron
 SOFA_CORE_API extern const unsigned int quadsOrientationInHexahedronArray[6][4];

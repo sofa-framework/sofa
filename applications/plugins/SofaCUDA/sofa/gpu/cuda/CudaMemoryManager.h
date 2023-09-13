@@ -39,13 +39,6 @@ class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 {
 
 public :
-
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
-
     typedef T* host_pointer;
     typedef /*mutable*/ void* device_pointer;
 #if SOFACUDA_HAVE_SOFA_GL == 1

@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaSphereForceField.h")
-#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.h>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaSphereForceField.h")

@@ -33,6 +33,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <iostream>
 #include <fstream>
+#include <climits>
 #include <gtest/gtest.h>
 
 namespace sofa {
