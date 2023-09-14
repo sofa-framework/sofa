@@ -128,7 +128,7 @@ void BaseSimulationExporter::updateFromDataField()
         d_filename.setValue(getName());
     }
 
-    /// Activate the listening to the event in order to be able to export file at first step or the nth-step
+    /// Activate the listening to the event in order to be able to export file once initialization is done or the nth-step
     if(d_exportEveryNbSteps.getValue() != 0 || d_exportAtBegin.getValue())
         this->f_listening.setValue(true);
 }
