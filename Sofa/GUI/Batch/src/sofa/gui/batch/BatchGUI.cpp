@@ -30,11 +30,12 @@
 #include <sofa/gui/common/ArgumentParser.h>
 
 #include <cxxopts.hpp>
-#include "indicators.hpp"
 
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <sofa/gui/batch/ProgressBar.h>
+
 
 namespace sofa::gui::batch
 {
@@ -77,19 +78,7 @@ int BatchGUI::mainLoop()
           
         signed int i = 1; //one simulation step is animated above
 
-        indicators::ProgressBar progressBar{
-            indicators::option::BarWidth{50},
-            indicators::option::Start{"\r["},
-            indicators::option::Fill{"#"},
-            indicators::option::Lead{"#"},
-            indicators::option::Remainder{"-"},
-            indicators::option::End{"]"},
-            indicators::option::PostfixText{},
-            indicators::option::ForegroundColor{indicators::Color::cyan},
-            indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}},
-            indicators::option::ShowPercentage(true)
-        };
-        indicators::show_console_cursor(false);
+        ProgressBar progressBar(nbIter);
 
         while (i <= nbIter || nbIter == -1)
         {
@@ -120,13 +109,11 @@ int BatchGUI::mainLoop()
                 }
             }
 
-            progressBar.set_option(indicators::option::PostfixText{std::to_string(i) + "/" + std::to_string(nbIter)});
-            progressBar.set_progress(100 * i / nbIter);
+            progressBar.tick();
 
             i++;
         }
 
-        indicators::show_console_cursor(true);
     }
     return 0;
 }
