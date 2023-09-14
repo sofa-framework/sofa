@@ -853,12 +853,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     {
         core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
-
-        if(notMuted())
-        {
-            core::ConstraintParams cparams;
-            cc->addComplianceInConstraintSpace(&cparams, _W);
-        }
     }
 
     sofa::helper::advancedtimer::stepEnd("build_constraints");
