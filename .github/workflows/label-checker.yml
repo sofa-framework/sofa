@@ -17,13 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check current repository
-        id: check_and_skip
+        id: check_owner
         run: |
-          owner=$(jq -r .repository.owner.login $GITHUB_EVENT_PATH)
-          if [ "$owner" != "sofa-framework" ]; then
-            echo "Skipping the action because the owner is not sofa-framework."
+          REPO_OWNER=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/owner" | jq -r .login)
+          echo "Repository Owner: $REPO_OWNER"
+          
+          if [[ "$REPO_OWNER" != "sofa-framework" ]]; then
+            echo "Skipping workflow because the repository owner is not 'sofa-framework'."
             exit 0
           fi
+          
+          echo "Repository owner is 'sofa-framework', continuing with the workflow..."
+        shell: bash
       - name: Delay for 10 Seconds
         run: |
           echo "Waiting for 10 seconds in case other labels get changed"
