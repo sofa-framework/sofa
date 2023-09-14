@@ -12,6 +12,7 @@ jobs:
   mark-as-solved:
     name: Mark old discussions as Solved
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,7 +28,8 @@ jobs:
       - name: Find and Mark Discussions as Solved
         run: |
           # Import necessary modules
-          const { Octokit } = require("@octokit/rest");
+          import { Octokit } from '@octokit/rest'
+          //const { Octokit } = require("@octokit/rest");
           const githubToken = process.env.GITHUB_TOKEN;
           const octokit = new Octokit({ auth: githubToken });
 
