@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <execution>
 #include <optional>
 #include <unordered_set>
 #include <mutex>
