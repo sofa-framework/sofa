@@ -116,115 +116,115 @@ TEST(GeometryEdge_test, length3f)
 
 
 
-TEST(GeometryEdge_test, pointBaryCoefs1f)
+TEST(GeometryEdge_test, getBarycentricCoordinates1f)
 {
     const sofa::type::Vec1f a1{ 0.f };
     const sofa::type::Vec1f b1{ 2.f };
     
     const sofa::type::Vec1f p1{ 1.f };
-    const auto res1 = sofa::geometry::Edge::pointBaryCoefs(p1, a1, b1);    
+    const auto res1 = sofa::geometry::Edge::getBarycentricCoordinates(p1, a1, b1);
     EXPECT_FLOAT_EQ(res1[0], 0.5f);
     EXPECT_FLOAT_EQ(res1[1], 0.5f);
 
     const sofa::type::Vec1f p2{ 0.25f };
-    const auto res2 = sofa::geometry::Edge::pointBaryCoefs(p2, a1, b1);
+    const auto res2 = sofa::geometry::Edge::getBarycentricCoordinates(p2, a1, b1);
     EXPECT_FLOAT_EQ(res2[0], 0.875f);
     EXPECT_FLOAT_EQ(res2[1], 0.125f);
 
     //special cases
     // Edge null
     const sofa::type::Vec1f c1{ 2.f };
-    const auto res4 = sofa::geometry::Edge::pointBaryCoefs(p2, b1, c1);
+    const auto res4 = sofa::geometry::Edge::getBarycentricCoordinates(p2, b1, c1);
     EXPECT_FLOAT_EQ(res4[0], 0.5f);
     EXPECT_FLOAT_EQ(res4[1], 0.5f);
 
     // Point on one Node
-    const auto res5 = sofa::geometry::Edge::pointBaryCoefs(b1, a1, b1);
+    const auto res5 = sofa::geometry::Edge::getBarycentricCoordinates(b1, a1, b1);
     EXPECT_FLOAT_EQ(res5[0], 0.0f);
     EXPECT_FLOAT_EQ(res5[1], 1.0f);
 
     // Point out of Edge
     const sofa::type::Vec1f p4{ -1.0f };
-    const auto res6 = sofa::geometry::Edge::pointBaryCoefs(p4, a1, b1);
+    const auto res6 = sofa::geometry::Edge::getBarycentricCoordinates(p4, a1, b1);
     EXPECT_FLOAT_EQ(res6[0], 1.5f);
     EXPECT_FLOAT_EQ(res6[1], 0.5f);
 }
 
-TEST(GeometryEdge_test, pointBaryCoefs2f)
+TEST(GeometryEdge_test, getBarycentricCoordinates2f)
 {
     const sofa::type::Vec2f a1{ 0.f, 0.f };
     const sofa::type::Vec2f b1{ 2.f, 2.f };
 
     const sofa::type::Vec2f p1{ 1.f, 1.f };
-    const auto res1 = sofa::geometry::Edge::pointBaryCoefs(p1, a1, b1);
+    const auto res1 = sofa::geometry::Edge::getBarycentricCoordinates(p1, a1, b1);
     EXPECT_FLOAT_EQ(res1[0], 0.5f);
     EXPECT_FLOAT_EQ(res1[1], 0.5f);
 
     const sofa::type::Vec2f p2{ 0.25f, 0.25f};
-    const auto res2 = sofa::geometry::Edge::pointBaryCoefs(p2, a1, b1);
+    const auto res2 = sofa::geometry::Edge::getBarycentricCoordinates(p2, a1, b1);
     EXPECT_FLOAT_EQ(res2[0], 0.875f);
     EXPECT_FLOAT_EQ(res2[1], 0.125f);
 
     const sofa::type::Vec2f p3{ 1.0f, 0.25f };
-    const auto res3 = sofa::geometry::Edge::pointBaryCoefs(p3, a1, b1);
+    const auto res3 = sofa::geometry::Edge::getBarycentricCoordinates(p3, a1, b1);
     EXPECT_FLOAT_EQ(res3[0], 0.71260965);
     EXPECT_FLOAT_EQ(res3[1], 0.36443448);
 
     //special cases
     // Edge null
     const sofa::type::Vec2f c1{ 2.f, 2.f };
-    const auto res4 = sofa::geometry::Edge::pointBaryCoefs(p2, b1, c1);
+    const auto res4 = sofa::geometry::Edge::getBarycentricCoordinates(p2, b1, c1);
     EXPECT_FLOAT_EQ(res4[0], 0.5f);
     EXPECT_FLOAT_EQ(res4[1], 0.5f);
 
     // Point on one Node
-    const auto res5 = sofa::geometry::Edge::pointBaryCoefs(b1, a1, b1);
+    const auto res5 = sofa::geometry::Edge::getBarycentricCoordinates(b1, a1, b1);
     EXPECT_FLOAT_EQ(res5[0], 0.0f);
     EXPECT_FLOAT_EQ(res5[1], 1.0f);
 
     // Point out of Edge
     const sofa::type::Vec2f p4{ -1.0f, -1.0f };
-    const auto res6 = sofa::geometry::Edge::pointBaryCoefs(p4, a1, b1);
+    const auto res6 = sofa::geometry::Edge::getBarycentricCoordinates(p4, a1, b1);
     EXPECT_FLOAT_EQ(res6[0], 1.5f);
     EXPECT_FLOAT_EQ(res6[1], 0.5f);
 }
 
 
-TEST(GeometryEdge_test, pointBaryCoefs3f)
+TEST(GeometryEdge_test, getBarycentricCoordinates3f)
 {
     const sofa::type::Vec3f a1{ 0.f, 0.f, 0.f };
     const sofa::type::Vec3f b1{ 2.f, 2.f, 2.f };
     
     const sofa::type::Vec3f p1{ 1.f, 1.f, 1.f };
-    const auto res1 = sofa::geometry::Edge::pointBaryCoefs(p1, a1, b1);
+    const auto res1 = sofa::geometry::Edge::getBarycentricCoordinates(p1, a1, b1);
     EXPECT_FLOAT_EQ(res1[0], 0.5f);
     EXPECT_FLOAT_EQ(res1[1], 0.5f);
 
     const sofa::type::Vec3f p2{ 0.25f, 0.25f, 0.25f };
-    const auto res2 = sofa::geometry::Edge::pointBaryCoefs(p2, a1, b1);
+    const auto res2 = sofa::geometry::Edge::getBarycentricCoordinates(p2, a1, b1);
     EXPECT_FLOAT_EQ(res2[0], 0.875f);
     EXPECT_FLOAT_EQ(res2[1], 0.125f);
 
     const sofa::type::Vec3f p3{ 1.0f, 0.25f, 0.25f };
-    const auto res3 = sofa::geometry::Edge::pointBaryCoefs(p3, a1, b1);
+    const auto res3 = sofa::geometry::Edge::getBarycentricCoordinates(p3, a1, b1);
     EXPECT_FLOAT_EQ(res3[0], 0.77055174);
     EXPECT_FLOAT_EQ(res3[1], 0.3061862);
    
     //special cases
     // Edge null
     const sofa::type::Vec3f c1{ 2.f, 2.f, 2.f };
-    const auto res4 = sofa::geometry::Edge::pointBaryCoefs(p2, b1, c1);
+    const auto res4 = sofa::geometry::Edge::getBarycentricCoordinates(p2, b1, c1);
     EXPECT_FLOAT_EQ(res4[0], 0.5f);
     EXPECT_FLOAT_EQ(res4[1], 0.5f);
 
     // Point on one Node
-    const auto res5 = sofa::geometry::Edge::pointBaryCoefs(b1, a1, b1);
+    const auto res5 = sofa::geometry::Edge::getBarycentricCoordinates(b1, a1, b1);
     EXPECT_FLOAT_EQ(res5[0], 0.0f);
     EXPECT_FLOAT_EQ(res5[1], 1.0f);
 
     // Point out of Edge
     const sofa::type::Vec3f p4{ -1.0f, -1.0f, -1.0f };
-    const auto res6 = sofa::geometry::Edge::pointBaryCoefs(p4, a1, b1);
+    const auto res6 = sofa::geometry::Edge::getBarycentricCoordinates(p4, a1, b1);
     EXPECT_FLOAT_EQ(res6[0], 1.5f);
     EXPECT_FLOAT_EQ(res6[1], 0.5f);
 }
