@@ -25,4 +25,4 @@ jobs:
         run: npm install @octokit/core
 
       - name: Run script
-        run:  node ./mark_old_topics_as_solved.js
+        run:  node ./mark_old_topics_as_closed.js
