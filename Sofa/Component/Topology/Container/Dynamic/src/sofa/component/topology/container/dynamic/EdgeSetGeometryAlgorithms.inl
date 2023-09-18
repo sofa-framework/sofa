@@ -363,7 +363,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3
 
 //
 template<class DataTypes>
-auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
+auto EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeBarycentricCoordinates(
     const sofa::type::Vec<3, Real> &p,
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector< SReal >
@@ -437,7 +437,7 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 }
 
 template<class DataTypes>
-auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
+auto EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeBarycentricCoordinates(
     const sofa::type::Vec<3, Real>& p,
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector<SReal>
@@ -515,7 +515,7 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const E
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
     sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
 
-    auto barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+    auto barycoord = computeEdgeBarycentricCoordinates(h, theEdge[0], theEdge[1]);
     return barycoord;
 
 }
