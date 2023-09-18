@@ -50,6 +50,9 @@ template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 
+static AdvancedTimer::BaseTimerMethodWrapper* s_timerWrapper = NULL;
+
+
 class TimerData
 {
 public:
@@ -354,30 +357,33 @@ bool AdvancedTimer::isActive()
     return true;
 }
 
-void AdvancedTimer::stepBegin(IdStep id)
+
+//namespace SofaTimerMethodWrapper
+//{
+void AdvancedTimer::SofaTimerMethodWrapper::stepBegin(IdStep id)
 {
-    type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
-    Record r;
-    r.time = CTime::getTime();
-    r.type = Record::RSTEP_BEGIN;
-    r.id = id;
-    curRecords->push_back(r);
+	type::vector<Record>* curRecords = getCurRecords();
+	if (!curRecords) return;
+	Record r;
+	r.time = CTime::getTime();
+	r.type = Record::RSTEP_BEGIN;
+	r.id = id;
+	curRecords->push_back(r);
 }
 
-void AdvancedTimer::stepBegin(IdStep id, IdObj obj)
+void AdvancedTimer::SofaTimerMethodWrapper::stepBegin(AdvancedTimer::IdStep id, AdvancedTimer::IdObj obj)
 {
-    type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
-    Record r;
-    r.time = CTime::getTime();
-    r.type = Record::RSTEP_BEGIN;
-    r.id = id;
-    r.obj = obj;
-    curRecords->push_back(r);
+	type::vector<Record>* curRecords = getCurRecords();
+	if (!curRecords) return;
+	Record r;
+	r.time = CTime::getTime();
+	r.type = Record::RSTEP_BEGIN;
+	r.id = id;
+	r.obj = obj;
+	curRecords->push_back(r);
 }
 
-void AdvancedTimer::stepEnd  (IdStep id)
+void AdvancedTimer::SofaTimerMethodWrapper::stepEnd  (AdvancedTimer::IdStep id)
 {
     type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
@@ -389,7 +395,7 @@ void AdvancedTimer::stepEnd  (IdStep id)
     curRecords->push_back(r);
 }
 
-void AdvancedTimer::stepEnd  (IdStep id, IdObj obj)
+void AdvancedTimer::SofaTimerMethodWrapper::stepEnd  (AdvancedTimer::IdStep id, AdvancedTimer::IdObj obj)
 {
     type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
@@ -399,6 +405,70 @@ void AdvancedTimer::stepEnd  (IdStep id, IdObj obj)
     r.id = id;
     r.obj = obj;
     curRecords->push_back(r);
+}
+//};
+
+void AdvancedTimer::SofaTimerMethodWrapper::valSet(sofa::helper::AdvancedTimer::IdVal id, double val)
+{
+	type::vector<Record>* curRecords = getCurRecords();
+	if (!curRecords) return;
+	Record r;
+	r.time = CTime::getTime();
+	r.type = Record::RVAL_SET;
+	r.id = id;
+	r.val = val;
+	curRecords->push_back(r);
+}
+
+void AdvancedTimer::SofaTimerMethodWrapper::valAdd(sofa::helper::AdvancedTimer::IdVal id, double val)
+{
+	type::vector<Record>* curRecords = getCurRecords();
+	if (!curRecords) return;
+	Record r;
+	r.time = CTime::getTime();
+	r.type = Record::RVAL_ADD;
+	r.id = id;
+	r.val = val;
+	curRecords->push_back(r);
+}
+//};
+
+
+AdvancedTimer::BaseTimerMethodWrapper*  AdvancedTimer::getTimerWrapper()
+{
+	if(!s_timerWrapper)
+		s_timerWrapper = new SofaTimerMethodWrapper;
+	return s_timerWrapper;
+}
+
+void  AdvancedTimer::setTimerWrapper(AdvancedTimer::BaseTimerMethodWrapper* wrapper)
+{
+	delete s_timerWrapper;
+	s_timerWrapper = wrapper;
+
+}
+
+void AdvancedTimer::stepBegin(IdStep id)
+{
+	getTimerWrapper()->stepBegin(id);
+}
+
+void AdvancedTimer::stepBegin(IdStep id, IdObj obj)
+{
+	getTimerWrapper()->stepBegin(id,obj);
+
+}
+
+void AdvancedTimer::stepEnd  (IdStep id)
+{
+	getTimerWrapper()->stepEnd(id);
+
+}
+
+void AdvancedTimer::stepEnd  (IdStep id, IdObj obj)
+{
+	getTimerWrapper()->stepEnd(id,obj);
+
 }
 
 void AdvancedTimer::stepNext (IdStep prevId, IdStep nextId)
@@ -443,26 +513,12 @@ void AdvancedTimer::step     (IdStep id, IdObj obj)
 
 void AdvancedTimer::valSet(IdVal id, double val)
 {
-    type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
-    Record r;
-    r.time = CTime::getTime();
-    r.type = Record::RVAL_SET;
-    r.id = id;
-    r.val = val;
-    curRecords->push_back(r);
+	getTimerWrapper()->valSet(id,val);
 }
 
 void AdvancedTimer::valAdd(IdVal id, double val)
 {
-    type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
-    Record r;
-    r.time = CTime::getTime();
-    r.type = Record::RVAL_ADD;
-    r.id = id;
-    r.val = val;
-    curRecords->push_back(r);
+	getTimerWrapper()->valAdd(id,val);
 }
 
 // API using strings instead of Id, to remove the need for Id creation when no timing is recorded

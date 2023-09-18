@@ -156,6 +156,7 @@ class SOFA_HELPER_API AdvancedTimer
 {
 public:
 
+
     template<class Base>
     class Id : public Base
     {
@@ -283,6 +284,28 @@ public:
     typedef Id<Step> IdStep;
     typedef Id<Val> IdVal;
     typedef Id<Obj> IdObj;
+
+
+
+	struct BaseTimerMethodWrapper
+	{
+		virtual void stepBegin(IdStep id) = 0;
+		virtual void stepBegin(IdStep id, IdObj obj) = 0;
+		virtual void stepEnd  (IdStep id) = 0;
+		virtual void stepEnd  (IdStep id, IdObj obj) = 0;
+		virtual void valSet(IdVal id, double val) = 0;
+		virtual void valAdd(IdVal id, double val) = 0;
+	};
+
+	struct SofaTimerMethodWrapper : public BaseTimerMethodWrapper
+	{
+		virtual void stepBegin(IdStep id);
+		virtual void stepBegin(IdStep id, IdObj obj);
+		virtual void stepEnd  (IdStep id);
+		virtual void stepEnd  (IdStep id, IdObj obj);
+		virtual void valSet(IdVal id, double val);
+		virtual void valAdd(IdVal id, double val);
+	};
 
     enum outputType
     {
@@ -500,7 +523,15 @@ public:
     typedef void (*SyncCallBack)(void* userData);
     static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = nullptr);
 
+
+	static BaseTimerMethodWrapper*  getTimerWrapper();
+	static void  setTimerWrapper(BaseTimerMethodWrapper* );
+
+
+
 };
+
+
 
 #if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
