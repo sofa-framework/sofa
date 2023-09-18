@@ -254,7 +254,14 @@ public :
 
     const VecIndex& getRowIndex() const { return rowIndex; }
     const VecIndex& getRowBegin() const { return rowBegin; }
-    Range getRowRange(Index id) const { return Range(rowBegin[id], rowBegin[id+1]); }
+
+    Range getRowRange(Index id) const
+    {
+        if ((unsigned) id+1 >= rowBegin.size()) return Range();
+
+        return Range(rowBegin[id], rowBegin[id+1]);
+    }
+
     const VecIndex& getColsIndex() const { return colsIndex; }
     const VecBlock& getColsValue() const { return colsValue; }
 
