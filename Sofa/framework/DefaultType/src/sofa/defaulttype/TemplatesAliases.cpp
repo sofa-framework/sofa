@@ -139,8 +139,8 @@ static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Ty
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
 
 // Compatibility aliases used previously in DataExchange (see PR#3380)
-static RegisterTemplateAlias floatAlias("float", sofa::defaulttype::DataTypeName<float>::name(), true);
-static RegisterTemplateAlias doubleAlias("double", sofa::defaulttype::DataTypeName<double>::name(), true);
+//static RegisterTemplateAlias floatAlias("float", sofa::defaulttype::DataTypeName<float>::name(), true);
+//static RegisterTemplateAlias doubleAlias("double", sofa::defaulttype::DataTypeName<double>::name(), true);
 static RegisterTemplateAlias vector_intAlias("vector<int>", sofa::defaulttype::DataTypeName<sofa::type::vector<int> >::name(), true);
 static RegisterTemplateAlias vector_uintAlias("vector<unsigned_int>", sofa::defaulttype::DataTypeName<sofa::type::vector<unsigned int> >::name(), true);
 static RegisterTemplateAlias vector_floatAlias("vector<float>", sofa::defaulttype::DataTypeName<sofa::type::vector<float> >::name(), true);
