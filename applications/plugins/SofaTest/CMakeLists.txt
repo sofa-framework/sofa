@@ -35,7 +35,7 @@ target_link_libraries(${PROJECT_NAME} SceneCreator Sofa.Framework Sofa.Component
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     PACKAGE_VERSION ${PROJECT_VERSION}
-    RELOCATABLE "plugins"
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )
