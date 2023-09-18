@@ -39,7 +39,14 @@ ScopedAdvancedTimer::ScopedAdvancedTimer( const char* message )
 
 ScopedAdvancedTimer::~ScopedAdvancedTimer()
 {
-    AdvancedTimer::stepEnd( m_id );
+    if (m_objId.has_value())
+    {
+        AdvancedTimer::stepEnd( m_id, *m_objId );
+    }
+    else
+    {
+        AdvancedTimer::stepEnd( m_id );
+    }
 }
 
 } /// sofa::helper

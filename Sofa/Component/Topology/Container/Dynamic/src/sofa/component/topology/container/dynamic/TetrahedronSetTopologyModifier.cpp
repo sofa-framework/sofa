@@ -28,6 +28,8 @@
 #include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -613,19 +615,22 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::type::vector<T
     }
 
     /// add the topological changes in the queue
-    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraWarning");
-    removeTetrahedraWarning(tetrahedraIds_filtered);
-    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraWarning");
+    {
+        helper::ScopedAdvancedTimer timer("removeTetrahedraWarning");
+        removeTetrahedraWarning(tetrahedraIds_filtered);
+    }
 
     // inform other objects that the triangles are going to be removed
-    sofa::helper::AdvancedTimer::stepBegin("propagateTopologicalChanges");
-    propagateTopologicalChanges();
-    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+    {
+        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        propagateTopologicalChanges();
+    }
 
     // now destroy the old tetrahedra.
-    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraProcess");
-    removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
-    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraProcess");
+    {
+        helper::ScopedAdvancedTimer timer("removeTetrahedraProcess");
+        removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
+    }
 
     m_container->checkTopology();
 

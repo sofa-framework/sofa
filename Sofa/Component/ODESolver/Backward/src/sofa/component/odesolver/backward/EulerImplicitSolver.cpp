@@ -27,6 +27,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrix.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 namespace sofa::component::odesolver::backward
@@ -110,14 +111,16 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     msg_info() << "trapezoidal factor = " << tr;
 
-    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-    mop->setImplicit(true); // this solver is implicit
-    // compute the net forces at the beginning of the time step
-    mop.computeForce(f);
+    {
+        helper::ScopedAdvancedTimer timer("ComputeForce");
+        mop->setImplicit(true); // this solver is implicit
+        // compute the net forces at the beginning of the time step
+        mop.computeForce(f);
 
-    msg_info() << "EulerImplicitSolver, initial f = " << f;
+        msg_info() << "EulerImplicitSolver, initial f = " << f;
+    }
 
-    sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
+    sofa::helper::AdvancedTimer::stepBegin("ComputeRHTerm");
     if( firstOrder )
     {
         b.eq(f);
@@ -159,9 +162,11 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
 #endif
-    sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
-    matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system
-    sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
+    sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
+    {
+        helper::ScopedAdvancedTimer timer("MBKSolve");
+        matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system}
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
 #endif
@@ -255,19 +260,18 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             ops[1].second.push_back(std::make_pair(newVel.id(),h));
         }
 
-        sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
+        helper::ScopedAdvancedTimer updateVAndXTimer("UpdateVAndX");
         vop.v_multiop(ops);
-        if (!solveConstraint)
+        if (solveConstraint)
         {
-            sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
-        }
-        else
-        {
-            sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
-            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-            sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-            mop.solveConstraint(newPos,core::ConstraintParams::POS);
-            sofa::helper::AdvancedTimer::stepEnd  ("UpdateVAndX");
+            {
+                helper::ScopedAdvancedTimer correctVTimer("CorrectV");
+                mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+            }
+            {
+                helper::ScopedAdvancedTimer correctXTimer("CorrectX");
+                mop.solveConstraint(newPos,core::ConstraintParams::POS);
+            }
         }
     }
 #endif

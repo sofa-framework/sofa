@@ -34,9 +34,8 @@ namespace sofa::simulation
 
 void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
+    helper::ScopedAdvancedTimer timer("Mechanical",node);
     s->solve(params, dt, x, v);
-    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
 void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
