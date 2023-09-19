@@ -144,7 +144,6 @@ private:
 
 
     /// common built-unbuilt
-    sofa::core::objectmodel::BaseContext *context;
     sofa::linearalgebra::FullVector<SReal> *_dFree, *_result;
     ///
 

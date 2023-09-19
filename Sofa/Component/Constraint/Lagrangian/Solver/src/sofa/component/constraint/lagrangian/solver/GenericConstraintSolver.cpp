@@ -133,7 +133,6 @@ void GenericConstraintSolver::init()
     ConstraintSolverImpl::init();
 
     constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-    context = getContext();
 
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -203,6 +202,8 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     unsigned int numConstraints = 0;
+
+    auto* context = getContext();
 
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints

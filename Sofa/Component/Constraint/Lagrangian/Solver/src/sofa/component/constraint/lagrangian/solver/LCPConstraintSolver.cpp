@@ -61,7 +61,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
-    MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( getContext()); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
@@ -272,14 +272,13 @@ void LCPConstraintSolver::init()
     ConstraintSolverImpl::init();
 
     constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-    context = getContext();
 }
 
 void LCPConstraintSolver::resetConstraints(core::ConstraintParams cparams)
 {
     helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
     MechanicalResetConstraintVisitor resetCtr(&cparams);
-    resetCtr.execute(context);
+    resetCtr.execute(getContext());
 }
 
 void LCPConstraintSolver::buildConstraintMatrix(core::ConstraintParams cparams)
@@ -287,7 +286,7 @@ void LCPConstraintSolver::buildConstraintMatrix(core::ConstraintParams cparams)
     helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
 
     MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
-    buildConstraintMatrix.execute(context);
+    buildConstraintMatrix.execute(getContext());
 }
 
 void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
@@ -295,7 +294,7 @@ void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
     helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
 
     MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
-    accumulateMatrixDeriv.execute(context);
+    accumulateMatrixDeriv.execute(getContext());
 }
 
 void LCPConstraintSolver::buildHierarchy()
@@ -326,7 +325,7 @@ void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
         sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
-        MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
+        MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(getContext());
         sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
         if (initial_guess.getValue())
             computeInitialGuess();
@@ -373,7 +372,7 @@ void LCPConstraintSolver::build_LCP()
 
     {
         helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
+        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
     }
 
     dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
@@ -723,7 +722,7 @@ void LCPConstraintSolver::build_problem_info()
 
     {
         helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
+        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
     }
 
     dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
