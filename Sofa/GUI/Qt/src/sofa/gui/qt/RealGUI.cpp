@@ -57,6 +57,9 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/helper/system/SetDirectory.h>
+#ifdef TRACY_ENABLE
+#include <tracy/Tracy.hpp>
+#endif
 using sofa::helper::system::SetDirectory;
 
 #include <sofa/helper/system/FileSystem.h>
@@ -1976,6 +1979,9 @@ void RealGUI::step()
 #endif
 
     sofa::helper::AdvancedTimer::end("Animate");
+#ifdef TRACY_ENABLE
+    FrameMark;
+#endif
 }
 
 //------------------------------------

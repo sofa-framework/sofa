@@ -48,3 +48,11 @@ struct SOFA_HELPER_API ScopedAdvancedTimer
 
 } /// sofa::helper
 
+#ifdef TRACY_ENABLE
+    #include <tracy/Tracy.hpp>
+    #define SCOPED_TIMER(name) ZoneScopedN(name)
+    #define SCOPED_TIMER_VARNAME(varname, name) ZoneNamedN(varname, name, true)
+#else
+    #define SCOPED_TIMER(name) sofa::helper::ScopedAdvancedTimer timer(name)
+    #define SCOPED_TIMER_VARNAME(varname, name) sofa::helper::ScopedAdvancedTimer varname(name)
+#endif
