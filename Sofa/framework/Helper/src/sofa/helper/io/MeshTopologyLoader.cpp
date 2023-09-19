@@ -150,8 +150,9 @@ bool MeshTopologyLoader::loadGmsh(const char *filename)
     return addMeshtoTopology();
 }
 
-bool MeshTopologyLoader::loadMesh(std::ifstream &/*file*/)
+bool MeshTopologyLoader::loadMesh(std::ifstream &file)
 {
+    SOFA_UNUSED(file);
     return false;
 }
 
