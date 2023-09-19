@@ -286,12 +286,6 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
         if(m_navigationMode.getValue())
             this->moveCamera_navigation();
     }
-    else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
-    {
-        const sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
-        msg_info() <<" handleEvent gets character '" << ke->getKey() <<"'. ";
-    }
-
 }
 
 
