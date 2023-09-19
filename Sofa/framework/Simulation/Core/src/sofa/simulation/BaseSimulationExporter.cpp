@@ -95,6 +95,14 @@ void BaseSimulationExporter::handleEvent(Event *event){
             }
         }
     }
+    else if (AnimateBeginEvent::checkEventType(event))
+    {
+        if (firstStep && d_isEnabled.getValue() && d_exportAtBegin.getValue())
+        {
+            write();
+            firstStep = false;
+        }
+    }
 
     BaseObject::handleEvent(event) ;
 }
@@ -121,10 +129,11 @@ void BaseSimulationExporter::updateFromDataField()
         d_filename.setValue(getName());
     }
 
-    /// Activate the listening to the event in order to be able to export file at the nth-step
-    if(d_exportEveryNbSteps.getValue() != 0)
+    /// Activate the listening to the event in order to be able to export file at first step or the nth-step
+    if(d_exportEveryNbSteps.getValue() != 0 || d_exportAtBegin.getValue())
         this->f_listening.setValue(true);
 }
+
 
 void BaseSimulationExporter::cleanup()
 {
@@ -132,12 +141,6 @@ void BaseSimulationExporter::cleanup()
         write();
 }
 
-
-void BaseSimulationExporter::bwdInit()
-{
-    if (d_isEnabled.getValue() && d_exportAtBegin.getValue())
-        write();
-}
 
 } /// namespace _baseexporter_
 
