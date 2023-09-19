@@ -126,10 +126,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
-{
-    if(d_multithreading.getValue())
-        simulation::MainTaskSchedulerFactory::createInRegistry()->stop();
-}
+{}
 
 void GenericConstraintSolver::init()
 {
