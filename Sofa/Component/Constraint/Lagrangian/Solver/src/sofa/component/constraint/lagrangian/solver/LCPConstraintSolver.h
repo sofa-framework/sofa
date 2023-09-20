@@ -52,7 +52,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintSolver : publ
 public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
@@ -67,8 +66,6 @@ protected:
     ~LCPConstraintSolver() override;
 public:
     void init() override;
-
-    void cleanup() override;
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
@@ -106,10 +103,7 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
-    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
-
 private:
-    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
     type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();
     void keepContactForcesValue();

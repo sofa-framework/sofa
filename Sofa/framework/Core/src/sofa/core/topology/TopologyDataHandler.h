@@ -37,7 +37,7 @@ namespace sofa::core::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class TopologyElementType, class VecT>
+template< class ElementType, class VecT>
 class TopologyDataHandler : public sofa::core::topology::TopologyHandler
 {
 public:
@@ -45,8 +45,8 @@ public:
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
 
-    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
-    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef geometry::ElementInfo<ElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<ElementType> ChangeElementInfo;
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;

@@ -284,7 +284,7 @@ public:
     /// @}
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::TETRAHEDRON;}
+    sofa::geometry::ElementType getTopologyType() const override {return sofa::geometry::ElementType::TETRAHEDRON;}
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

@@ -89,14 +89,14 @@ void DilateEngine<DataTypes>::doUpdate()
 
     if(nbp == 0)
     {
-        msg_error() << "No input position";
+        msg_warning() << "No input position";
         d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     if(nbt == 0 && nbq == 0)
     {
-        msg_error() << "No input mesh (neither triangle or quad)";
+        msg_warning() << "No input mesh (neither triangle or quad)";
         d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
         return;
     }

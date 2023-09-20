@@ -48,7 +48,7 @@ public:
     /// Output Topology
     using Out = BaseMeshTopology;
 
-    using TopologyElementType = sofa::core::topology::TopologyElementType;
+    using ElementType = sofa::geometry::ElementType;
 
     using Index = sofa::Index;
 
@@ -210,8 +210,8 @@ protected:
 
     std::map<Index, sofa::type::vector<Index> > In2OutMap;
 
-    TopologyElementType m_inputType = TopologyElementType::UNKNOWN;
-    TopologyElementType m_outputType = TopologyElementType::UNKNOWN;
+    ElementType m_inputType = geometry::ElementType::UNKNOWN;
+    ElementType m_outputType = geometry::ElementType::UNKNOWN;
 };
 } // namespace sofa::core::topology
 

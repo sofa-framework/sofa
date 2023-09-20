@@ -52,8 +52,8 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
     , m_outTopoModifier(nullptr)
 {
-    m_inputType = TopologyElementType::TRIANGLE;
-    m_outputType = TopologyElementType::EDGE;
+    m_inputType = geometry::ElementType::TRIANGLE;
+    m_outputType = geometry::ElementType::EDGE;
 }
 
 

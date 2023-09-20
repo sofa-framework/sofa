@@ -50,8 +50,8 @@ int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Specia
 SimpleTesselatedHexaTopologicalMapping::SimpleTesselatedHexaTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
 {
-    m_inputType = TopologyElementType::HEXAHEDRON;
-    m_outputType = TopologyElementType::HEXAHEDRON;
+    m_inputType = geometry::ElementType::HEXAHEDRON;
+    m_outputType = geometry::ElementType::HEXAHEDRON;
 }
 
 void SimpleTesselatedHexaTopologicalMapping::init()

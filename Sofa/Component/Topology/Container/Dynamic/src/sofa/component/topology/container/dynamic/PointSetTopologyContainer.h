@@ -85,7 +85,7 @@ public:
     SReal getPZ(Index i) const override;
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::POINT;}
+    sofa::geometry::ElementType getTopologyType() const override {return sofa::geometry::ElementType::POINT;}
     
     /// @}
 

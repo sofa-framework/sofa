@@ -54,8 +54,39 @@ unsigned int ConstraintProblem::getProblemId()
     return problemId;
 }
 
+ConstraintSolverImpl::ConstraintSolverImpl()
+    : l_constraintCorrections(initLink("constraintCorrections", "List of constraint corrections handled by this constraint solver"))
+{}
+
 ConstraintSolverImpl::~ConstraintSolverImpl()
 {}
+
+void ConstraintSolverImpl::init()
+{
+    ConstraintSolver::init();
+
+    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
+    clearConstraintCorrections();
+
+    // add all BaseConstraintCorrection from this context to the list of links and register this solver
+    for (const auto& constraintCorrection :
+        getContext()->getObjects<core::behavior::BaseConstraintCorrection>(core::objectmodel::BaseContext::SearchDown))
+    {
+        l_constraintCorrections.add(constraintCorrection);
+        constraintCorrection->addConstraintSolver(this);
+    }
+}
+
+void ConstraintSolverImpl::cleanup()
+{
+    clearConstraintCorrections();
+    ConstraintSolver::cleanup();
+}
+
+void ConstraintSolverImpl::removeConstraintCorrection(core::behavior::BaseConstraintCorrection* s)
+{
+    l_constraintCorrections.remove(s);
+}
 
 void ConstraintSolverImpl::postBuildSystem(const core::ConstraintParams* cParams)
 {
@@ -70,6 +101,15 @@ void ConstraintSolverImpl::postSolveSystem(const core::ConstraintParams* cParams
     sofa::simulation::SolveConstraintSystemEndEvent evBegin;
     sofa::simulation::PropagateEventVisitor eventPropagation( cParams, &evBegin);
     eventPropagation.execute(this->getContext());
+}
+
+void ConstraintSolverImpl::clearConstraintCorrections()
+{
+    for (const auto& constraintCorrection : l_constraintCorrections)
+    {
+        constraintCorrection->removeConstraintSolver(this);
+    }
+    l_constraintCorrections.clear();
 }
 
 
