@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
 #include <sofa/helper/logging/TracyMessageHandler.h>
 #include <sofa/helper/logging/MessageFormatter.h>
 #ifdef TRACY_ENABLE
@@ -32,7 +33,12 @@ namespace sofa::helper::logging
 
 TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
     : m_formatter(formatter)
-{}
+{
+    if (m_formatter == nullptr)
+    {
+        m_formatter = &DefaultStyleMessageFormatter::getInstance();
+    }
+}
 
 void TracyMessageHandler::process(Message& m)
 {
