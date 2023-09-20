@@ -232,7 +232,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
     }
 
-    msg_info() <<"GenericConstraintSolver: "<<numConstraints<<" constraints";
+    msg_info() << numConstraints << " constraints";
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)

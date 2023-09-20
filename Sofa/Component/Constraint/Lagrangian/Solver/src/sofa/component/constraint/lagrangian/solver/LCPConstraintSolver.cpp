@@ -80,14 +80,12 @@ LCPConstraintSolver::LCPConstraintSolver()
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
-    , _Wdiag(nullptr)
 {
     _numConstraints = 0;
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
 
     f_graph.setWidget("graph");
-    _Wdiag = new sofa::linearalgebra::SparseMatrix<SReal>();
 
     tol.setRequired(true);
     maxIt.setRequired(true);
@@ -95,8 +93,6 @@ LCPConstraintSolver::LCPConstraintSolver()
 
 LCPConstraintSolver::~LCPConstraintSolver()
 {
-    if (_Wdiag != nullptr)
-        delete _Wdiag;
 }
 
 void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
@@ -718,7 +714,7 @@ void LCPConstraintSolver::build_problem_info()
     lcp->clear(_numConstraints);
 
     // as _Wdiag is a sparse matrix resize do not allocate memory
-    _Wdiag->resize(_numConstraints,_numConstraints);
+    _Wdiag.resize(_numConstraints,_numConstraints);
 
     {
         helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
@@ -932,17 +928,17 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     /////////// for each contact, the pair of constraintcorrection is called to add the contribution
     for (c1=0; c1<numContacts; c1++)
     {
-        dmsg_info() <<"contact "<<c1<<" cclist_elem1 : "<<_cclist_elem1[c1]->getName();
+        dmsg_info() << "contact " << c1 << " cclist_elem1 : " << _cclist_elem1[c1]->getName();
 
         // compliance of object1
         if (_cclist_elem1[c1] != nullptr)
         {
-            _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, 3 * c1, 3 * c1 + 2);
+            _cclist_elem1[c1]->getBlockDiagonalCompliance(&_Wdiag, 3 * c1, 3 * c1 + 2);
         }
         // compliance of object2 (if object2 exists)
         if(_cclist_elem2[c1] != nullptr)
         {
-            _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
+            _cclist_elem2[c1]->getBlockDiagonalCompliance(&_Wdiag, 3*c1, 3*c1+2);
 
 
            dmsg_info() <<"  _cclist_elem2 : "<<_cclist_elem2[c1]->getName();
@@ -960,17 +956,17 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     for (c1=0; c1<numContacts; c1++)
     {
         SReal w[6];
-        w[0] = _Wdiag->element(3*c1  , 3*c1  );
-        w[1] = _Wdiag->element(3*c1  , 3*c1+1);
-        w[2] = _Wdiag->element(3*c1  , 3*c1+2);
-        w[3] = _Wdiag->element(3*c1+1, 3*c1+1);
-        w[4] = _Wdiag->element(3*c1+1, 3*c1+2);
-        w[5] = _Wdiag->element(3*c1+2, 3*c1+2);
+        w[0] = _Wdiag.element(3*c1  , 3*c1  );
+        w[1] = _Wdiag.element(3*c1  , 3*c1+1);
+        w[2] = _Wdiag.element(3*c1  , 3*c1+2);
+        w[3] = _Wdiag.element(3*c1+1, 3*c1+1);
+        w[4] = _Wdiag.element(3*c1+1, 3*c1+2);
+        w[5] = _Wdiag.element(3*c1+2, 3*c1+2);
         W33[c1].compute(w[0], w[1] , w[2], w[3], w[4] , w[5]);
     }
 
     dmsg_info() <<" Compliance In constraint Space : \n W ="<<(* _W)<<msgendl
-                <<"getBlockDiagonalCompliance   \n Wdiag = "<<(* _Wdiag) ;
+                <<"getBlockDiagonalCompliance   \n Wdiag = "<< _Wdiag ;
 
     buildDiagonalTimer.reset();
 
@@ -1187,12 +1183,12 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
         // compliance of object1
         if (_cclist_elem1[c1] != nullptr)
         {
-            _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
+            _cclist_elem1[c1]->getBlockDiagonalCompliance(&_Wdiag, c1, c1);
         }
         // compliance of object2 (if object2 exists)
         if(_cclist_elem2[c1] != nullptr)
         {
-            _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
+            _cclist_elem2[c1]->getBlockDiagonalCompliance(&_Wdiag, c1, c1);
         }
     }
 
@@ -1200,7 +1196,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     SReal *W11 = &(unbuilt_W11[0]);
     for (c1=0; c1<numContacts; c1++)
     {
-        W11[c1] = _Wdiag->element(c1, c1);
+        W11[c1] = _Wdiag.element(c1, c1);
     }
 
     buildDiagonalTimer.reset();
