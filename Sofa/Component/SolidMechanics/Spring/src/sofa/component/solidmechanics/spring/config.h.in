@@ -36,11 +36,3 @@ namespace sofa::component::solidmechanics::spring
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::solidmechanics::spring
-
-#ifdef SOFA_BUILD_SOFADEFORMABLE
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg)
-#else
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg) \
-SOFA_ATTRIBUTE_DISABLED( \
-"v22.06 (PR#2602)", "v22.12", msg)
-#endif

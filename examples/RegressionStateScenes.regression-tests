@@ -1,4 +1,10 @@
-# WARNING: 
+# Each line follows this format:
+# - Path to the scene file
+# - Number of steps to run
+# - Threshold when comparing states
+# - 1 if states under mappings must be tested, 0 otherwise
+# - 1 if states are compared only in the last time step, 0 if states are compared for all steps
+# WARNING:
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
@@ -10,6 +16,7 @@ Demos/chainHybridNoGroup.scn 100 1e-2 1 1
 Demos/collisionMultiple.scn 100 1e-4 1 1
 Demos/liver.scn 100 1e-4 1 1
 Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
+Demos/fallingBeamLagrangianCollision.scn 46 1e-7 1 1
 
 
 ### Component scenes ###

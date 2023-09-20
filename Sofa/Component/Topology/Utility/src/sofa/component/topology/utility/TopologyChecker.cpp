@@ -84,15 +84,15 @@ void TopologyChecker::reinit()
 bool TopologyChecker::checkTopology()
 {
     bool result = false;
-    if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
+    if (m_topology->getTopologyType() == geometry::ElementType::HEXAHEDRON)
         result = checkHexahedronTopology();
-    if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
+    if (m_topology->getTopologyType() == geometry::ElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
+    else if (m_topology->getTopologyType() == geometry::ElementType::QUAD)
         result = checkQuadTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
+    else if (m_topology->getTopologyType() == geometry::ElementType::TRIANGLE)
         result = checkTriangleTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
+    else if (m_topology->getTopologyType() == geometry::ElementType::EDGE)
         result = checkEdgeTopology();
 
     return result;

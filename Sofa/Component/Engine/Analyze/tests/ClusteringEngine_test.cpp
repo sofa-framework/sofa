@@ -89,7 +89,6 @@ struct ClusteringEngine_test : public BaseSimulationTest,
         EXPECT_TRUE( m_thisObject->findData("outFile") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
-        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
         EXPECT_NO_THROW( m_thisObject->reinit() ) ;
         EXPECT_NO_THROW( m_thisObject->reset() ) ;
 

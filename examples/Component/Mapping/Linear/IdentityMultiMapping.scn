@@ -43,7 +43,7 @@
                 <IdentityMultiMapping template="Vec3,Vec3" input="@../../dof1 @../dof2" output="@./dofall" />
                 <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />
-                <ConstantForceField indices="0" force="1 0 0"/>
+                <ConstantForceField indices="0" forces="1 0 0"/>
             </Node>
             
         </Node>

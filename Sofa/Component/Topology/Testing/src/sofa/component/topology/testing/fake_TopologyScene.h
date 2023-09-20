@@ -32,7 +32,7 @@ public:
     /**
     * Default constructor, take the filepath of the mesh file to load, the type of topology and if the topology is static (MeshTopology)
     */
-    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyElementType topoType, bool staticTopo = false)
+    fake_TopologyScene(const std::string& filename, sofa::geometry::ElementType topoType, bool staticTopo = false)
         : m_topoType(topoType)
         , m_filename(filename)
         , m_staticTopology(staticTopo)
@@ -61,7 +61,7 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
 
         std::string loaderType = "MeshOBJLoader";
-        if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
+        if (m_topoType == sofa::geometry::ElementType::TETRAHEDRON || m_topoType == sofa::geometry::ElementType::HEXAHEDRON)
             loaderType = "MeshGmshLoader";
 
 
@@ -84,17 +84,17 @@ public:
         else
         {
             std::string topoType = "";
-            if (m_topoType == TopologyElementType::POINT)
+            if (m_topoType == sofa::geometry::ElementType::POINT)
                 topoType = "Point";
-            else if (m_topoType == TopologyElementType::EDGE)
+            else if (m_topoType == sofa::geometry::ElementType::EDGE)
                 topoType = "Edge";
-            else if (m_topoType == TopologyElementType::TRIANGLE)
+            else if (m_topoType == sofa::geometry::ElementType::TRIANGLE)
                 topoType = "Triangle";
-            else if (m_topoType == TopologyElementType::QUAD)
+            else if (m_topoType == sofa::geometry::ElementType::QUAD)
                 topoType = "Quad";
-            else if (m_topoType == TopologyElementType::TETRAHEDRON)
+            else if (m_topoType == sofa::geometry::ElementType::TETRAHEDRON)
                 topoType = "Tetrahedron";
-            else if (m_topoType == TopologyElementType::HEXAHEDRON)
+            else if (m_topoType == sofa::geometry::ElementType::HEXAHEDRON)
                 topoType = "Hexahedron";
 
             // create topology components
@@ -109,7 +109,7 @@ public:
             // Add some mechanical components
             createObject(m_root, "MeshMatrixMass");
 
-            if (m_topoType == TopologyElementType::EDGE) {
+            if (m_topoType == sofa::geometry::ElementType::EDGE) {
                 sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
                 createObject(m_root, "VectorSpringForceField", { {"useTopology", "true"} });
             }
@@ -132,7 +132,7 @@ private:
     sofa::simulation::Node::SPtr m_root;
 
     /// Type of topology asked
-    sofa::core::topology::TopologyElementType m_topoType;
+    sofa::geometry::ElementType m_topoType;
     /// filepath of the mesh to load
     std::string m_filename;
     /// Bool storing if static or dynamyc topology.

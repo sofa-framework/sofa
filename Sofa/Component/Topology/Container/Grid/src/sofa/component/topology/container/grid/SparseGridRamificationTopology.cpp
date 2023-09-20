@@ -56,6 +56,9 @@ void SparseGridRamificationTopology::init()
 {
     SparseGridTopology::init();
 
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
     if( this->isVirtual || _nbVirtualFinerLevels.getValue() > 0)
         findCoarsestParents(); // in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 }
@@ -64,6 +67,11 @@ void SparseGridRamificationTopology::buildAsFinest()
 {
     SparseGridTopology::buildAsFinest();
 
+    if (getNbHexahedra() == 0)
+    {
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
     {
@@ -90,7 +98,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     // Finest level is asked
     if (_finestConnectivity.getValue())
     {
-        const std::string filename = this->fileTopology.getValue();
+        const std::string& filename = this->fileTopology.getValue();
         if (!filename.empty()) // file given, try to load it.
         {
             mesh = helper::io::Mesh::Create(filename.c_str());
@@ -409,7 +417,11 @@ void SparseGridRamificationTopology::buildFromFiner()
 {
     SparseGridRamificationTopology* finerSparseGridRamification = dynamic_cast<SparseGridRamificationTopology*>(_finerSparseGrid);
 
-
+    if (finerSparseGridRamification->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     setNx( _finerSparseGrid->getNx()/2+1 );
     setNy( _finerSparseGrid->getNy()/2+1 );

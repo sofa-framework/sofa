@@ -128,7 +128,7 @@ bool STBImage::save(std::string filename, int compression_level )
     }
     if (ext == "jpg" || ext == "jpeg")
     {
-        res = stbi_write_png(filename.c_str(), getWidth(), getHeight(), getChannelCount(), getPixels(), compression_level);
+        res = stbi_write_jpg(filename.c_str(), getWidth(), getHeight(), getChannelCount(), getPixels(), compression_level);
     }
     if (ext == "bmp")
     {

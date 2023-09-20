@@ -56,6 +56,7 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
 
+    void init() override;
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
@@ -63,14 +64,7 @@ public :
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved f_saveMatrixToFile;
-
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved d_filename;
-
-    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-    DeprecatedAndRemoved d_precision;
+    Data<bool> d_parallelInverseProduct;
 
     MatrixInvertData * createInvertData() override {
         return new InvertData();
@@ -79,11 +73,13 @@ public :
 protected :
     SparseLDLSolver();
 
-    type::vector<int> Jlocal2global;
+    type::vector<sofa::SignedIndex> Jlocal2global;
     sofa::linearalgebra::FullMatrix<Real> JLinvDinv, JLinv;
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
 
     bool factorize(Matrix& M, InvertData * invertData);
+
+    void showInvalidSystemMessage(const std::string& reason) const;
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)

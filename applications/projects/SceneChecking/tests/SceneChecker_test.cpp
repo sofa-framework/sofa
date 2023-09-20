@@ -27,8 +27,8 @@ using sofa::testing::BaseSimulationTest;
 #include <SceneChecking/SceneCheckerVisitor.h>
 using sofa::scenechecking::SceneCheckerVisitor;
 
-#include <SceneChecking/SceneCheck.h>
-using sofa::scenechecking::SceneCheck;
+#include <sofa/simulation/SceneCheck.h>
+using sofa::simulation::SceneCheck;
 
 #include <SceneChecking/SceneCheckAPIChange.h>
 using sofa::scenechecking::SceneCheckAPIChange;

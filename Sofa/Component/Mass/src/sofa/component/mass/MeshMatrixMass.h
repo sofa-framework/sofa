@@ -117,14 +117,14 @@ public:
 protected:
 
     /// The type of topology to build the mass from the topology
-    sofa::core::topology::TopologyElementType m_massTopologyType;
+    sofa::geometry::ElementType m_massTopologyType;
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
     ~MeshMatrixMass() override;
 
-    sofa::core::topology::TopologyElementType checkTopology();
-    void initTopologyHandlers(sofa::core::topology::TopologyElementType topologyType);
+    sofa::geometry::ElementType checkTopology();
+    void initTopologyHandlers(sofa::geometry::ElementType topologyType);
     void massInitialization();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
@@ -139,12 +139,12 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *event) override;
     void doUpdateInternal() override;
 
-    sofa::core::topology::TopologyElementType getMassTopologyType() const
+    sofa::geometry::ElementType getMassTopologyType() const
     {
         return m_massTopologyType;
     }
 
-    void setMassTopologyType(sofa::core::topology::TopologyElementType t)
+    void setMassTopologyType(sofa::geometry::ElementType t)
     {
         m_massTopologyType = t;
     }

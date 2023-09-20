@@ -28,10 +28,6 @@
 //constexpr std::string with C++20 only
 constexpr char SOFA_TESTING_RESOURCES_DIR[] = "@SOFA_TESTING_RESOURCES_DIR@";
 
-SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2000)", "v21.12", \
-        "Use the compile-time constant SOFA_TESTING_RESOURCES_DIR instead.")
-constexpr char FRAMEWORK_TEST_RESOURCES_DIR[] = "@SOFA_TESTING_RESOURCES_DIR@";
-
 
 #ifdef SOFA_BUILD_SOFA_TESTING
 #  define SOFA_TARGET @PROJECT_NAME@

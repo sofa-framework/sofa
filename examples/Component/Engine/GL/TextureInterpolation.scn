@@ -29,7 +29,7 @@
             <!-- Components used in heat diffusion, still in work in Sophia. the potentiel
 	evolve and interpolation is computed at the same time to display the diffusion. -->
             <!--   <TriangularDiffusionForceField template="Vec1" name="ffDiffusion" tags="elec"/>
-             <MatrixMass template="Vec1" name="mass" tags="elec" />   -->
+             <MeshMatrixMass template="Vec1" name="mass" tags="elec" />   -->
         </Node>
         <Node name="visu" gravity="0 0 0">
             <TextureInterpolation template="Vec1" name="EngineInterpolation" input_states="@../ElecNode/ElecObj.position" input_coordinates="@../mecaObj.position" min_value="0.0" max_value="10.0" manual_scale="1" drawPotentiels="1" />

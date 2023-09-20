@@ -19,24 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
-#define SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
 #include <sofa/simulation/fwd.h>
 
+
 namespace sofa::core
 {
-class ExecParams ;
+class ExecParams;
 }
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -44,48 +41,54 @@ namespace simulation
  *
  *
  */
-
 class SOFA_SIMULATION_CORE_API DefaultAnimationLoop : public sofa::core::behavior::BaseAnimationLoop
 {
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
+    SOFA_CLASS(DefaultAnimationLoop, sofa::core::behavior::BaseAnimationLoop);
 protected:
-    DefaultAnimationLoop(simulation::Node* gnode = nullptr);
+    explicit DefaultAnimationLoop(simulation::Node* gnode = nullptr);
 
     ~DefaultAnimationLoop() override;
-public:
-    /// Set the simulation node this animation loop is controlling
-    virtual void setNode( simulation::Node* );
 
-    /// Set the simulation node to the local context if not specified previously
+public:
+    Data<bool> d_parallelODESolving; ///<If true, solves ODE solvers in parallel
+
     void init() override;
+
+    /// Set the simulation node this animation loop is controlling
+    virtual void setNode(simulation::Node*);
 
     /// perform one animation step
     void step(const sofa::core::ExecParams* params, SReal dt) override;
 
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = node::getNodeFrom(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
-
 protected :
+    simulation::Node* m_node { nullptr };
 
-    simulation::Node* gnode;  ///< the node controlled by the loop
+    void behaviorUpdatePosition(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateInternalData(const sofa::core::ExecParams* params) const;
+    void resetConstraint(const sofa::core::ExecParams* params) const;
+    void beginIntegration(const sofa::core::ExecParams* params, SReal dt) const;
+    void propagateIntegrateBeginEvent(const sofa::core::ExecParams* params) const;
+    void buildConstraintMatrix(sofa::core::ConstraintParams cparams) const;
+    void accumulateMatrixDeriv(sofa::core::ConstraintParams cparams) const;
+    void solve(const sofa::core::ExecParams* params, SReal dt) const;
+    void propagateIntegrateEndEvent(const sofa::core::ExecParams* params) const;
+    void endIntegration(const sofa::core::ExecParams* params, SReal dt) const;
+    void projectPositionAndVelocity(SReal nextTime, const sofa::core::MechanicalParams& mparams) const;
+    void propagateOnlyPositionAndVelocity(SReal nextTime, const sofa::core::MechanicalParams& mparams) const;
+    void propagateCollisionBeginEvent(const sofa::core::ExecParams* params) const;
+    void propagateCollisionEndEvent(const sofa::core::ExecParams* params) const;
+    void collisionDetection(const sofa::core::ExecParams* params) const;
+    void animate(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateSimulationContext(const sofa::core::ExecParams* params, SReal dt, SReal startTime) const;
+    void propagateAnimateEndEvent(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateMapping(const sofa::core::ExecParams* params, SReal dt) const;
+    void computeBoundingBox(const sofa::core::ExecParams* params) const;
+    void propagateAnimateBeginEvent(const sofa::core::ExecParams* params, SReal dt) const;
 
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H */
+} // namespace sofa::simulation

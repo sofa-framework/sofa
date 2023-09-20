@@ -23,5 +23,4 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaEllipsoidForceField.inl")
-#include <SofaCUDA/component/mechanicalload/CudaEllipsoidForceField.inl>
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaEllipsoidForceField.inl")

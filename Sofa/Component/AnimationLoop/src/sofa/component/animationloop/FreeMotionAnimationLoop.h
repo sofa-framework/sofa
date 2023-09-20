@@ -42,17 +42,6 @@ public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
     void init() override;
 
-    /// Construction method called by ObjectFactory. An animation loop can only
-    /// be created if
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
@@ -60,13 +49,13 @@ public:
     Data<bool> d_parallelODESolving; ///<If true, executes all free motions in parallel
 
 protected:
-    FreeMotionAnimationLoop(simulation::Node* gnode);
+    FreeMotionAnimationLoop();
     ~FreeMotionAnimationLoop() override ;
 
     ///< The ConstraintSolver used in this animation loop (required)
     SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 
-    void FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
+    void computeFreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
                                          sofa::core::MultiVecId pos,
                                          sofa::core::MultiVecId freePos,
                                          sofa::core::MultiVecDerivId freeVel,

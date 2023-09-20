@@ -25,7 +25,6 @@
 #include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/TopologyTypes.h>
 
 #include <sofa/component/mapping/linear/Mesh2PointTopologicalMapping.h>
 

@@ -70,11 +70,6 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     groot->get(defaultPath, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (defaultPath)
     {
-        if (!defaultPath->recordPath.getValue().empty())
-        {
-            setRecordPath(defaultPath->recordPath.getValue());
-        }
-
         if (!defaultPath->gnuplotPath.getValue().empty())
             setGnuplotPath(defaultPath->gnuplotPath.getValue());
     }

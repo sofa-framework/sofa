@@ -386,7 +386,7 @@ public:
     }
 
     /// precomputed identity matrix of size (L,L)
-    SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
+    SOFA_ATTRIBUTE_DISABLED__STATIC_MATRIX_IDENTITY()
     static const Mat<L, L, real>& s_identity;
 
     template<Size S>

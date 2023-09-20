@@ -36,7 +36,7 @@
 //  Z
 //
 // Hexahedron quads are ordered as {BACK, FRONT, BOTTOM, RIGHT, TOP, LEFT}
-// const unsigned int quadsInHexahedronArray[6][4]={{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}}
+// const unsigned int quadsOrientationInHexahedronArray[6][4]={{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}}
 // The quads orientation is clockwise
 //
 
@@ -310,7 +310,7 @@ public:
     /// @}
 
     /** \brief Returns the type of the topology */
-	sofa::core::topology::TopologyElementType getTopologyType() const override {return core::topology::TopologyElementType::HEXAHEDRON;}
+	sofa::geometry::ElementType getTopologyType() const override {return geometry::ElementType::HEXAHEDRON;}
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

@@ -82,8 +82,6 @@ private:
 protected:
     MeshTopology();
 public:
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
     void init() override;
 
     Size getNbPoints() const override;
@@ -601,7 +599,7 @@ public:
     Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
-    sofa::core::topology::TopologyElementType getTopologyType() const override { return m_upperElementType; }
+    sofa::geometry::ElementType getTopologyType() const override { return m_upperElementType; }
   
     int revision;
 
@@ -618,8 +616,8 @@ public:
     virtual void updateHexahedra();
 
 protected:
-    /// Type of higher topology element contains in this container @see TopologyElementType
-    sofa::core::topology::TopologyElementType m_upperElementType;
+    /// Type of higher topology element contains in this container @see ElementType
+    sofa::geometry::ElementType m_upperElementType;
 };
 
 } //namespace sofa::component::topology::container::constant

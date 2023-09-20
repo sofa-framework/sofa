@@ -532,6 +532,18 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, 
 }
 
 
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (!onlyVisible) return;
+    if (!this->mstate) return;
+
+    const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+    this->f_bbox.setValue(std::move(bbox));
+}
+
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

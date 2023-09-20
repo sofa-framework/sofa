@@ -342,23 +342,25 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot )
 {
     type::MatNoInit<6, 12, Real> Jt;
-    Jt.transpose( J );
+    Jt.transpose(J);
 
     type::MatNoInit<12, 12, Real> JKJt;
-    JKJt = J*K*Jt;
+    JKJt = J * K * Jt;
 
-    type::MatNoInit<12, 12, Real> RR,RRt;
+    type::MatNoInit<12, 12, Real> RR, RRt;
     RR.clear();
     RRt.clear();
-    for(int i=0; i<3; ++i)
-        for(int j=0; j<3; ++j)
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
         {
-            RR[i][j]=RR[i+3][j+3]=RR[i+6][j+6]=RR[i+9][j+9]=Rot[i][j];
-            RRt[i][j]=RRt[i+3][j+3]=RRt[i+6][j+6]=RRt[i+9][j+9]=Rot[j][i];
+            RR[i][j] = RR[i + 3][j + 3] = RR[i + 6][j + 6] = RR[i + 9][j + 9] = Rot[i][j];
+            RRt[i][j] = RRt[i + 3][j + 3] = RRt[i + 6][j + 6] = RRt[i + 9][j + 9] = Rot[j][i];
         }
+    }
 
-    S = RR*JKJt;
-    SR = S*RRt;
+    S = RR * JKJt;
+    SR = S * RRt;
 }
 
 template<class DataTypes>
@@ -1340,6 +1342,44 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::lineara
     }
 }
 
+template <class DataTypes>
+void TetrahedralCorotationalFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    StiffnessMatrix JKJt, RJKJtRt;
+    sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
+
+    static constexpr Transformation identity = []
+    {
+        Transformation i;
+        i.identity();
+        return i;
+    }();
+
+    const type::vector<TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = m_topology->getTetrahedra();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (std::size_t tetraId = 0; tetraId != tetrahedra.size(); ++tetraId)
+    {
+        const auto& rotation = method == SMALL ? identity : tetrahedronInf[tetraId].rotation;
+        computeStiffnessMatrix(JKJt, RJKJtRt, tetrahedronInf[tetraId].materialMatrix,
+                               tetrahedronInf[tetraId].strainDisplacementTransposedMatrix, rotation);
+
+        const core::topology::BaseMeshTopology::Tetrahedron tetra = tetrahedra[tetraId];
+
+        static constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+        for (sofa::Size n1 = 0; n1 < core::topology::BaseMeshTopology::Tetrahedron::size(); ++n1)
+        {
+            for (sofa::Size n2 = 0; n2 < core::topology::BaseMeshTopology::Tetrahedron::size(); ++n2)
+            {
+                RJKJtRt.getsub(S * n1, S * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                dfdx(S * tetra[n1], S * tetra[n2]) += -localMatrix;
+            }
+        }
+    }
+}
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {

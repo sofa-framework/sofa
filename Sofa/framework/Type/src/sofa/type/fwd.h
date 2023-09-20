@@ -64,15 +64,15 @@ typedef Vec<6,int> Vec6i;
 typedef Vec<6,unsigned> Vec6u;
 typedef Vec<6,SReal> Vec6;
 
-SOFA_ATTRIBUTE_DEPRECATED__VECTOR("Replace Vector1 with Vec1")
+SOFA_ATTRIBUTE_DISABLED__VECTOR("Replace Vector1 with Vec1")
 typedef Vec1 Vector1; ///< alias
-SOFA_ATTRIBUTE_DEPRECATED__VECTOR("Replace Vector2 with Vec2")
+SOFA_ATTRIBUTE_DISABLED__VECTOR("Replace Vector2 with Vec2")
 typedef Vec2 Vector2; ///< alias
-SOFA_ATTRIBUTE_DEPRECATED__VECTOR("Replace Vector3 with Vec3")
+SOFA_ATTRIBUTE_DISABLED__VECTOR("Replace Vector3 with Vec3")
 typedef Vec3 Vector3; ///< alias
-SOFA_ATTRIBUTE_DEPRECATED__VECTOR("Replace Vector4 with Vec4")
+SOFA_ATTRIBUTE_DISABLED__VECTOR("Replace Vector4 with Vec4")
 typedef Vec4 Vector4; ///< alias
-SOFA_ATTRIBUTE_DEPRECATED__VECTOR("Replace Vector6 with Vec6")
+SOFA_ATTRIBUTE_DISABLED__VECTOR("Replace Vector6 with Vec6")
 typedef Vec6 Vector6; ///< alias
 
 

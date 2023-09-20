@@ -147,7 +147,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
             core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
             switch (ancestorElems[i].type)
             {
-            case core::topology::TopologyElementType::POINT :
+            case geometry::ElementType::POINT :
                 {
                     ancestorPointIndices[i].resize(1);
                     ancestorPointIndices[i][0] = ancestorIndex;
@@ -156,7 +156,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
                     baryCoefs[i][0] = 1;
                     break;
                 }
-            case core::topology::TopologyElementType::EDGE :
+            case geometry::ElementType::EDGE :
                 {
                     const core::topology::Topology::Edge& e = m_container->getEdge(ancestorIndex);
                     ancestorPointIndices[i].resize(2);
@@ -168,7 +168,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
                     baryCoefs[i][1] = localCoords[0];
                     break;
                 }
-            case core::topology::TopologyElementType::TRIANGLE :
+            case geometry::ElementType::TRIANGLE :
                 {
                     const core::topology::Topology::Triangle& t = m_container->getTriangle(ancestorIndex);
                     ancestorPointIndices[i].resize(3);
@@ -182,7 +182,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
                     baryCoefs[i][2] = localCoords[1];
                     break;
                 }
-            case core::topology::TopologyElementType::TETRAHEDRON :
+            case geometry::ElementType::TETRAHEDRON :
                 {
                     const core::topology::Topology::Tetrahedron& t = m_container->getTetrahedron(ancestorIndex);
                     ancestorPointIndices[i].resize(4);
@@ -199,7 +199,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
                     break;
                 }
-            case core::topology::TopologyElementType::QUAD :
+            case geometry::ElementType::QUAD :
                 {
                     const core::topology::Topology::Quad& q = m_container->getQuad(ancestorIndex);
                     ancestorPointIndices[i].resize(4);
@@ -216,7 +216,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
                     break;
                 }
-            case core::topology::TopologyElementType::HEXAHEDRON :
+            case geometry::ElementType::HEXAHEDRON :
                 {
                     const core::topology::Topology::Hexahedron& h = m_container->getHexahedron(ancestorIndex);
                     ancestorPointIndices[i].resize(8);

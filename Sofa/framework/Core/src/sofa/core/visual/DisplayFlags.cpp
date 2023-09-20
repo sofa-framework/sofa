@@ -38,6 +38,7 @@ DisplayFlags::DisplayFlags():
     m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
     m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
     m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showDetectionOutputs(FlagTreeItem("showDetectionOutputs","hideDetectionOutputs",&m_showCollision)),
     m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
@@ -52,6 +53,7 @@ DisplayFlags::DisplayFlags():
     m_showInteractionForceFields.setValue(tristate::neutral_value);
     m_showCollisionModels.setValue(tristate::neutral_value);
     m_showBoundingCollisionModels.setValue(tristate::neutral_value);
+    m_showDetectionOutputs.setValue(tristate::neutral_value);
     m_showVisualMappings.setValue(tristate::neutral_value);
     m_showMechanicalMappings.setValue(tristate::neutral_value);
     m_showAdvancedRendering.setValue(tristate::neutral_value);
@@ -74,6 +76,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
     m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
     m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showDetectionOutputs(FlagTreeItem("showDetectionOutputs","hideDetectionOutputs",&m_showCollision)),
     m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
@@ -88,6 +91,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
     m_showCollisionModels.setValue(other.m_showCollisionModels.state());
     m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+    m_showDetectionOutputs.setValue(other.m_showDetectionOutputs.state());
     m_showVisualMappings.setValue(other.m_showVisualMappings.state());
     m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
     m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
@@ -108,6 +112,7 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
         m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
         m_showCollisionModels.setValue(other.m_showCollisionModels.state());
         m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+        m_showDetectionOutputs.setValue(other.m_showDetectionOutputs.state());
         m_showVisualMappings.setValue(other.m_showVisualMappings.state());
         m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
         m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
@@ -133,6 +138,7 @@ bool DisplayFlags::isNeutral() const
            && m_showForceFields.state().state  == tristate::neutral_value
            && m_showInteractionForceFields.state().state == tristate::neutral_value
            && m_showBoundingCollisionModels.state().state == tristate::neutral_value
+           && m_showDetectionOutputs.state().state == tristate::neutral_value
            && m_showCollisionModels.state().state == tristate::neutral_value
            && m_showVisualMappings.state().state == tristate::neutral_value
            && m_showMechanicalMappings.state().state == tristate::neutral_value
@@ -158,6 +164,7 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     merge.m_showInteractionForceFields.setValue( merge_tristate(previous.m_showInteractionForceFields.state(),current.m_showInteractionForceFields.state()) );
     merge.m_showCollisionModels.setValue( merge_tristate(previous.m_showCollisionModels.state(),current.m_showCollisionModels.state()) );
     merge.m_showBoundingCollisionModels.setValue( merge_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
+    merge.m_showDetectionOutputs.setValue( merge_tristate(previous.m_showDetectionOutputs.state(),current.m_showDetectionOutputs.state()) );
     merge.m_showVisualMappings.setValue( merge_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     merge.m_showMechanicalMappings.setValue( merge_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
     merge.m_showAdvancedRendering.setValue( merge_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );
@@ -175,6 +182,7 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showInteractionForceFields.setValue( difference_tristate(previous.m_showInteractionForceFields.state(),current.m_showInteractionForceFields.state()) );
     difference.m_showCollisionModels.setValue( difference_tristate(previous.m_showCollisionModels.state(),current.m_showCollisionModels.state()) );
     difference.m_showBoundingCollisionModels.setValue( difference_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
+    difference.m_showDetectionOutputs.setValue( difference_tristate(previous.m_showDetectionOutputs.state(),current.m_showDetectionOutputs.state()) );
     difference.m_showVisualMappings.setValue( difference_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     difference.m_showMechanicalMappings.setValue( difference_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
     difference.m_showAdvancedRendering.setValue( difference_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );

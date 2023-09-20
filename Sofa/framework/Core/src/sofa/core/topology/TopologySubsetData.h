@@ -36,15 +36,15 @@ namespace sofa::core::topology
 * This class is a wrapper of class type::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: elements added, removed, fused, renumbered).
 */
-template< class TopologyElementType, class VecT>
-class TopologySubsetData : public sofa::core::topology::TopologyData<TopologyElementType, VecT>
+template< class ElementType, class VecT>
+class TopologySubsetData : public sofa::core::topology::TopologyData<ElementType, VecT>
 {
 public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
 
-    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
-    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef geometry::ElementInfo<ElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<ElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
     /// Default Constructor to init Data
@@ -89,12 +89,12 @@ public:
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     virtual void add(sofa::Size nbElements,
-        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< ElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     void add(const sofa::type::vector<Index>& index,
-        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< ElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const sofa::type::vector< AncestorElem >& ancestorElems) override;
@@ -113,7 +113,7 @@ public:
     /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
     /// TODO epernod 2021-05-24: check if needed and implement it if needed.
     void addOnMovedPosition(const sofa::type::vector<Index>& indexList,
-        const sofa::type::vector< TopologyElementType >& elems) override;
+        const sofa::type::vector< ElementType >& elems) override;
 
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     /// TODO epernod 2021-05-24: check if needed and implement it if needed.

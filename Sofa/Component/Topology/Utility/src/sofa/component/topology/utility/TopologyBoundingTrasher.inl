@@ -82,52 +82,52 @@ void TopologyBoundingTrasher<DataTypes>::init()
     
     if (m_topology->getNbHexahedra() > 0)
     {
-        m_topologyType = TopologyElementType::HEXAHEDRON;
+        m_topologyType = geometry::ElementType::HEXAHEDRON;
         this->getContext()->get(hexaModifier);
         if (!hexaModifier)
         {
             msg_error() << "Hexahedron topology but no Modifier found. Add the component HexahedronSetTopologyModifier.";
-            m_topologyType = TopologyElementType::UNKNOWN;
+            m_topologyType = geometry::ElementType::UNKNOWN;
         }        
     }
     else if (m_topology->getNbTetrahedra() > 0)
     {
-        m_topologyType = TopologyElementType::TETRAHEDRON;
+        m_topologyType = geometry::ElementType::TETRAHEDRON;
         this->getContext()->get(tetraModifier);
         if (!tetraModifier)
         {
             msg_error() << "Tetrahedron topology but no modifier found. Add the component TetrahedronSetTopologyModifier.";
-            m_topologyType = TopologyElementType::UNKNOWN;
+            m_topologyType = geometry::ElementType::UNKNOWN;
         }        
     }
     else if (m_topology->getNbQuads() > 0)
     {
-        m_topologyType = TopologyElementType::QUAD;
+        m_topologyType = geometry::ElementType::QUAD;
         this->getContext()->get(quadModifier);
         if (!quadModifier)
         {
             msg_error() << "Quad topology but no modifier found. Add the component QuadSetTopologyModifier.";
-            m_topologyType = TopologyElementType::UNKNOWN;
+            m_topologyType = geometry::ElementType::UNKNOWN;
         }        
     }
     else if (m_topology->getNbTriangles() > 0)
     {
-        m_topologyType = TopologyElementType::TRIANGLE;
+        m_topologyType = geometry::ElementType::TRIANGLE;
         this->getContext()->get(triangleModifier);
         if (!triangleModifier)
         {
             msg_error() << "Triangle topology but no modifier found. Add the component TriangleSetTopologyModifier.";
-            m_topologyType = TopologyElementType::UNKNOWN;
+            m_topologyType = geometry::ElementType::UNKNOWN;
         }        
     }
     else if (m_topology->getNbEdges() > 0)
     {
-        m_topologyType = TopologyElementType::EDGE;
+        m_topologyType = geometry::ElementType::EDGE;
         this->getContext()->get(edgeModifier);
         if (!edgeModifier)
         {
             msg_error() << "Edge topology but no modifier found. Add the component EdgeSetTopologyModifier.";
-            m_topologyType = TopologyElementType::UNKNOWN;
+            m_topologyType = geometry::ElementType::UNKNOWN;
         }        
     }
 
@@ -153,7 +153,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
     const Vec6& border = d_borders.getValue();
     m_indicesToRemove.clear();
     int cpt = 0;
-    if (m_topologyType == TopologyElementType::HEXAHEDRON)
+    if (m_topologyType == geometry::ElementType::HEXAHEDRON)
     {
         const BaseMeshTopology::SeqHexahedra& hexahedra = m_topology->getHexahedra();
         for (auto& hexa : hexahedra)
@@ -169,7 +169,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             cpt++;
         }
     }
-    else if (m_topologyType == TopologyElementType::TETRAHEDRON)
+    else if (m_topologyType == geometry::ElementType::TETRAHEDRON)
     {
         const BaseMeshTopology::SeqTetrahedra& tetrahedra = m_topology->getTetrahedra();
         for (auto& tetra : tetrahedra)
@@ -185,7 +185,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             cpt++;
         }
     }
-    else if (m_topologyType == TopologyElementType::QUAD)
+    else if (m_topologyType == geometry::ElementType::QUAD)
     {
         const BaseMeshTopology::SeqQuads& quads = m_topology->getQuads();
         for (auto& quad : quads)
@@ -201,7 +201,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             cpt++;
         }
     }
-    else if (m_topologyType == TopologyElementType::TRIANGLE)
+    else if (m_topologyType == geometry::ElementType::TRIANGLE)
     {
         const BaseMeshTopology::SeqTriangles& triangles = m_topology->getTriangles();
         for (auto& triangle : triangles)
@@ -217,7 +217,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             cpt++;
         }
     }
-    else if (m_topologyType == TopologyElementType::EDGE)
+    else if (m_topologyType == geometry::ElementType::EDGE)
     {
         const BaseMeshTopology::SeqEdges& edges = m_topology->getEdges();
         for (auto& edge : edges)
@@ -244,23 +244,23 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
 template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::removeElements()
 {
-    if (m_topologyType == TopologyElementType::HEXAHEDRON)
+    if (m_topologyType == geometry::ElementType::HEXAHEDRON)
     {
         hexaModifier->removeHexahedra(m_indicesToRemove);
     }
-    else if (m_topologyType == TopologyElementType::TETRAHEDRON)
+    else if (m_topologyType == geometry::ElementType::TETRAHEDRON)
     {
         tetraModifier->removeTetrahedra(m_indicesToRemove);
     }
-    else if (m_topologyType == TopologyElementType::QUAD)
+    else if (m_topologyType == geometry::ElementType::QUAD)
     {
         quadModifier->removeQuads(m_indicesToRemove, true, true);
     }
-    else if (m_topologyType == TopologyElementType::TRIANGLE)
+    else if (m_topologyType == geometry::ElementType::TRIANGLE)
     {
         triangleModifier->removeTriangles(m_indicesToRemove, true, true);
     }
-    else if (m_topologyType == TopologyElementType::EDGE)
+    else if (m_topologyType == geometry::ElementType::EDGE)
     {
         edgeModifier->removeEdges(m_indicesToRemove);
     }

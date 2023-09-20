@@ -65,12 +65,6 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::bwdInit()
-{
-    checkInput();
-}
-
-template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
 {
     if (d_curveEdges.getValue().size() < 1 || d_curveVertices.getValue().size() < 1)
@@ -86,14 +80,14 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
 {
+    checkInput();
+
     const vector<BaseMeshTopology::Edge>& curveEdges = d_curveEdges.getValue();
     const VecCoord& curveVertices = d_curveVertices.getValue();
 
     if (curveEdges.size() < 1 || curveVertices.size() < 1)
     {
-
         msg_warning() << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
-
         return;
     }
 

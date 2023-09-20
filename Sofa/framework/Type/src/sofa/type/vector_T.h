@@ -67,12 +67,6 @@ public:
     template<class T2>
     using rebind_to = vector< T2, CPUMemoryManager<T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
-
     /// Basic constructor
     vector() : std::vector<T,Alloc>() {}
     /// Constructor

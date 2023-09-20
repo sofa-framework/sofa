@@ -19,19 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
+#pragma once
 
 #include <sofa/helper/config.h>
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <sstream>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 ///@brief Split one string by a given delimiter and returns that into a std::vector
@@ -89,8 +87,10 @@ SOFA_HELPER_API bool ends_with(const std::string& suffix, const std::string& ful
 ///@brief converts a char* string into a c++ string. The special case with nullptr is coerced to an empty string.
 SOFA_HELPER_API std::string safeCharToString(const char* c);
 
-} // namespace helper
+///@brief Removes specified trailing character from a string view
+SOFA_HELPER_API std::string_view removeTrailingCharacter(std::string_view sv, char character);
 
-} // namespace sofa
+///@brief Removes specified trailing characters from a string view.
+SOFA_HELPER_API std::string_view removeTrailingCharacters(std::string_view sv, std::initializer_list<char> characters);
 
-#endif //SOFA_HELPER_STRING_UTILS_H
+} // namespace sofa::helper
