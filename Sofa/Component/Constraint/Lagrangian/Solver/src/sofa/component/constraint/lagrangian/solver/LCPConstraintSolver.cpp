@@ -95,6 +95,13 @@ LCPConstraintSolver::~LCPConstraintSolver()
 {
 }
 
+void LCPConstraintSolver::init()
+{
+    ConstraintSolverImpl::init();
+
+    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
+}
+
 void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 {
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
@@ -261,13 +268,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     dmsg_info() <<"applyContactForce in constraintCorrection done" ;
 
     return true;
-}
-
-void LCPConstraintSolver::init()
-{
-    ConstraintSolverImpl::init();
-
-    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
 }
 
 void LCPConstraintSolver::resetConstraints(core::ConstraintParams cparams)
