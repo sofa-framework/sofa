@@ -258,7 +258,7 @@ struct LocalMatrixMaps
 
     void clear()
     {
-        for (const auto& [component, matrixMap] : mappedLocalMatrix)
+        for (const auto& [component, matrixMap] : componentLocalMatrix)
         {
             for (const auto& [pair, matrix] : matrixMap)
             {

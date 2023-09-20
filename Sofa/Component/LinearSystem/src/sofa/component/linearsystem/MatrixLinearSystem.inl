@@ -644,7 +644,9 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
 
             msg_info() << "No local matrix found: a new local matrix of type "
                 << mat->getClassName() << " (template " << mat->getTemplateName()
-                << ") is created and associated to " << component->getPathName();
+                << ") is created and associated to " << component->getPathName()
+                << " for a contribution on states " << mstate0->getPathName()
+                << " and " << mstate1->getPathName();
 
             auto insertResult = componentLocalMatrix.insert({pairs, mat});
             it = insertResult.first;
