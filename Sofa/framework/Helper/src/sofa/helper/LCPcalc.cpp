@@ -220,13 +220,18 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
 }
 
 
+int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
+{
+    return solveLCP(dim, q, M, res);
+}
+
 //#include "mex.h"
 /* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
+int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
 {
 
     // déclaration des variables
@@ -409,10 +414,23 @@ int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
     return result;
 }
 
+void afficheSyst(SReal* q, SReal** M, int* base, SReal** mat, int dim)
+{
+    printSyst(q, M, base, mat, dim);
+}
+
+void afficheLCP(SReal* q, SReal** M, int dim)
+{
+    printLCP(q, M, dim);
+}
+
+void afficheLCP(SReal* q, SReal** M, SReal* f, int dim)
+{
+    printLCP(q, M, f, dim);
+}
 
 
-
-void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim)
+void printSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim)
 {
     int compteur, compteur2;
 
@@ -458,7 +476,7 @@ void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim)
 }
 
 /********************************************************************************************/
-void afficheLCP(SReal *q, SReal **M, int dim)
+void printLCP(SReal *q, SReal **M, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
@@ -483,7 +501,7 @@ void afficheLCP(SReal *q, SReal **M, int dim)
 }
 
 /********************************************************************************************/
-void afficheLCP(SReal *q, SReal **M, SReal *f, int dim)
+void printLCP(SReal *q, SReal **M, SReal *f, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
@@ -1295,7 +1313,7 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
     if(verbose)
     {
         dmsg_info("LCPcalc") <<"initial steps at the finest level " ;
-        afficheLCP(dfree, W, f, dim);
+        printLCP(dfree, W, f, dim);
     }
 
     // STEP 2: DESCENTE AU NIVEAU GROSSIER => PROJECTION
@@ -1426,7 +1444,7 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
     if(verbose)
     {
         dmsg_info("LCPcalc")<< "LCP at the COARSE LEVEL: " ;
-        afficheLCP(d_free_coarse, W_coarse, F_coarse,num_group*3);
+        printLCP(d_free_coarse, W_coarse, F_coarse,num_group*3);
     }
 
 
@@ -1716,7 +1734,7 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
     if (verbose)
     {
         msg_warning("LCPcalc")<<"No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations";
-        afficheLCP(dfree,W,f,dim);
+        printLCP(dfree,W,f,dim);
     }
 
     return 0;
@@ -1821,7 +1839,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
                     delete W33[i];
                 free(W33);
                 //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
-                //afficheLCP(dfree,W,f,dim);
+                //printLCP(dfree,W,f,dim);
                 return 1;
             }
         }
@@ -1833,7 +1851,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
                 delete W33[i];
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
-            //afficheLCP(dfree,W,f,dim);
+            //printLCP(dfree,W,f,dim);
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
         }
@@ -1847,7 +1865,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
     if (verbose)
     {
         printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
-        afficheLCP(dfree,W,f,dim);
+        printLCP(dfree,W,f,dim);
     }
 
     return 0;

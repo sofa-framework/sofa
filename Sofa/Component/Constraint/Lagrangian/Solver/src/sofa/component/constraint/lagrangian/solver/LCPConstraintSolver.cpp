@@ -205,7 +205,10 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
             sofa::helper::AdvancedTimer::stepEnd  ("LCP GaussSeidel");
-            if (notMuted()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+            if (notMuted())
+            {
+                helper::printLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+            }
         }
     }
     else
