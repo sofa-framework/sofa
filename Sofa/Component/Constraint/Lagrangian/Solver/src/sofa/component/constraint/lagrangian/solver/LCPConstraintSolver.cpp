@@ -51,6 +51,54 @@ using sofa::core::VecId;
 namespace sofa::component::constraint::lagrangian::solver
 {
 
+LCPConstraintSolver::LCPConstraintSolver()
+    : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
+    , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
+    , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
+    , tol( initData(&tol, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    , mu( initData(&mu, 0.6_sreal, "mu", "Friction coefficient"))
+    , minW( initData(&minW, 0.0_sreal, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
+    , maxF( initData(&maxF, 0.0_sreal, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
+    , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
+    , multi_grid_levels(initData(&multi_grid_levels, 2, "multi_grid_levels","if multi_grid is active: how many levels to create (>=2)"))
+    , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
+    , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
+    , merge_local_levels( initData(&merge_local_levels, 2, "merge_local_levels", "if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs."))
+    , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
+    , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
+                                        "computeConstraintForces",
+                                        "enable the storage of the constraintForces."))
+    , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration"))
+    , showLevels( initData(&showLevels,0,"showLevels","Number of constraint levels to display"))
+    , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
+    , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
+    , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
+    , lcp(&lcp1)
+    , last_lcp(nullptr)
+    , _W(&lcp1.W)
+    , _dFree(&lcp1.dFree)
+    , _result(&lcp1.f)
+    , _Wdiag(nullptr)
+{
+    _numConstraints = 0;
+    constraintGroups.beginEdit()->insert(0);
+    constraintGroups.endEdit();
+
+    f_graph.setWidget("graph");
+    _Wdiag = new sofa::linearalgebra::SparseMatrix<SReal>();
+
+    tol.setRequired(true);
+    maxIt.setRequired(true);
+}
+
+LCPConstraintSolver::~LCPConstraintSolver()
+{
+    if (_Wdiag != nullptr)
+        delete _Wdiag;
+}
+
 void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 {
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
@@ -217,54 +265,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     dmsg_info() <<"applyContactForce in constraintCorrection done" ;
 
     return true;
-}
-
-LCPConstraintSolver::LCPConstraintSolver()
-    : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
-    , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
-    , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
-    , tol( initData(&tol, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
-    , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
-    , mu( initData(&mu, 0.6_sreal, "mu", "Friction coefficient"))
-    , minW( initData(&minW, 0.0_sreal, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
-    , maxF( initData(&maxF, 0.0_sreal, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
-    , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
-    , multi_grid_levels(initData(&multi_grid_levels, 2, "multi_grid_levels","if multi_grid is active: how many levels to create (>=2)"))
-    , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
-    , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
-    , merge_local_levels( initData(&merge_local_levels, 2, "merge_local_levels", "if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs."))
-    , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
-    , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
-                                        "computeConstraintForces",
-                                        "enable the storage of the constraintForces."))
-    , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration"))
-    , showLevels( initData(&showLevels,0,"showLevels","Number of constraint levels to display"))
-    , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
-    , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
-    , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
-    , lcp(&lcp1)
-    , last_lcp(nullptr)
-    , _W(&lcp1.W)
-    , _dFree(&lcp1.dFree)
-    , _result(&lcp1.f)
-    , _Wdiag(nullptr)
-{
-    _numConstraints = 0;
-    constraintGroups.beginEdit()->insert(0);
-    constraintGroups.endEdit();
-
-    f_graph.setWidget("graph");
-    _Wdiag = new sofa::linearalgebra::SparseMatrix<SReal>();
-
-    tol.setRequired(true);
-    maxIt.setRequired(true);
-}
-
-LCPConstraintSolver::~LCPConstraintSolver()
-{
-    if (_Wdiag != nullptr)
-        delete _Wdiag;
 }
 
 void LCPConstraintSolver::init()
