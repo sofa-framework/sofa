@@ -47,6 +47,12 @@ using sofa::helper::system::FileSystem ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;
 
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+using sofa::simulation::SimulationInitDoneEvent;
+
+#include <sofa/simulation/PropagateEventVisitor.h>
+using sofa::simulation::PropagateEventVisitor;
+
 #include <sofa/simulation/graph/SimpleApi.h>
 
 using ::testing::Types;
@@ -114,6 +120,11 @@ public:
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
+
+        // SimulationInitDoneEvent is used to trigger exportAtBegin
+        SimulationInitDoneEvent endInit;
+        PropagateEventVisitor pe{sofa::core::execparams::defaultInstance(), &endInit};
+        root->execute(pe);
 
         sofa::simulation::node::animate(root.get(), 0.5);
 
