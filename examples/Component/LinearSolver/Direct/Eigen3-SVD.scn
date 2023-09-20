@@ -15,7 +15,7 @@
     <DefaultAnimationLoop/>
     <Node>
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <SVDLinearSolver template="FullMatrix" printLog="1" verbose="0" />
+        <SVDLinearSolver template="FullMatrix" printLog="0" verbose="0" />
         <MechanicalObject />
         <UniformMass vertexMass="1" />
         <RegularGridTopology nx="4" ny="4" nz="4" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="3" />
