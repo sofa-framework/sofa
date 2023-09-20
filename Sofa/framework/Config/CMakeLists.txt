@@ -236,17 +236,19 @@ endif()
 ## Tracy
 option(SOFA_TRACY "Compile SOFA with the Tracy profiler client")
 if (SOFA_TRACY)
+    set(SOFA_TRACY_VERSION v0.9.1)
     include(FetchContent)
     option(TRACY_STATIC "Whether to build Tracy as a static library" OFF)
     FetchContent_Declare (
         tracy
         GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-        GIT_TAG v0.9.1
+        GIT_TAG ${SOFA_TRACY_VERSION}
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
     FetchContent_MakeAvailable (tracy)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient )
+    message(STATUS "SOFA is compiled with the Tracy profiler client. Use the Tracy server ${SOFA_TRACY_VERSION}.")
 endif()
 
 # An important C++11 feature may be not enabled due to
