@@ -55,11 +55,9 @@
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/SimulationLoop.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
 using sofa::helper::system::SetDirectory;
 
 #include <sofa/helper/system/FileSystem.h>
@@ -1915,6 +1913,7 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    SIMULATION_LOOP_SCOPE
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
@@ -1979,9 +1978,6 @@ void RealGUI::step()
 #endif
 
     sofa::helper::AdvancedTimer::end("Animate");
-#ifdef TRACY_ENABLE
-    FrameMark;
-#endif
 }
 
 //------------------------------------
