@@ -81,8 +81,6 @@ protected:
 
     void defineEdgeCubaturePoints();
 public:
-    //virtual void reinit();
-
     void draw(const core::visual::VisualParams* vparams) override;
 
     /// computes the length of edge no i and returns it
@@ -160,6 +158,15 @@ public:
         const sofa::type::Vec<3,Real>& a,
         const sofa::type::Vec<3, Real>& b,
         Real &baryCoef);
+
+
+    // compute barycentric coefficients
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates")
+    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
+    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+
 
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.

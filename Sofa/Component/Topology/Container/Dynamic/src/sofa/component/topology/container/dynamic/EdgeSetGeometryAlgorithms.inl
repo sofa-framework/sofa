@@ -866,4 +866,32 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
     return ( (this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())) || Inherit1::mustComputeBBox() );
 }
 
+
+template <class DataTypes>
+sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const
+{
+    sofa::type::Vec<2, Real> coefs = computeEdgeBarycentricCoordinates(p, ind_p1, ind_p2);
+    sofa::type::vector< SReal > baryCoefs;
+
+    baryCoefs.push_back(coefs[0]);
+    baryCoefs.push_back(coefs[1]);
+
+    return baryCoefs;
+}
+
+
+template <class DataTypes>
+sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const
+{
+    sofa::type::Vec<2, Real> coefs = computeEdgeBarycentricCoordinates(p, ind_p1, ind_p2, true);
+    sofa::type::vector< SReal > baryCoefs;
+
+    baryCoefs.push_back(coefs[0]);
+    baryCoefs.push_back(coefs[1]);
+
+    return baryCoefs;
+}
+
+
+
 } //namespace sofa::component::topology::container::dynamic
