@@ -808,7 +808,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, SReal* dfree, SReal
 
     if(d_schemeCorrection.getValue())
     {
-        std::cout<<"shemeCorrection => LCP before step 1"<<std::endl;
+        msg_info() << "shemeCorrection => LCP before step 1";
         helper::printLCP(dfree, w, force,  dim);
         ///////// scheme correction : step 1 => modification of dfree
         for(int j=0; j<dim; j++)
