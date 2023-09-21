@@ -236,10 +236,10 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::applyProjectiveConstraints
         }
 
         //replace the local matrix components by new ones that use the hash table
-        replaceLocalMatrices(mparams, this->getLocalMatrixMap<Contribution::STIFFNESS>());
-        replaceLocalMatrices(mparams, this->getLocalMatrixMap<Contribution::MASS>());
-        replaceLocalMatrices(mparams, this->getLocalMatrixMap<Contribution::DAMPING>());
-        replaceLocalMatrices(mparams, this->getLocalMatrixMap<Contribution::GEOMETRIC_STIFFNESS>());
+        replaceLocalMatrices(mparams, this->template getLocalMatrixMap<Contribution::STIFFNESS>());
+        replaceLocalMatrices(mparams, this->template getLocalMatrixMap<Contribution::MASS>());
+        replaceLocalMatrices(mparams, this->template getLocalMatrixMap<Contribution::DAMPING>());
+        replaceLocalMatrices(mparams, this->template getLocalMatrixMap<Contribution::GEOMETRIC_STIFFNESS>());
 
         m_isConstantSparsityPatternUsedYet = true;
     }
@@ -342,10 +342,10 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::preAssembleSystem(const co
             // mat.second->compressed = true;
         }
 
-        reinitLocalMatrices(this->getLocalMatrixMap<Contribution::STIFFNESS>());
-        reinitLocalMatrices(this->getLocalMatrixMap<Contribution::MASS>());
-        reinitLocalMatrices(this->getLocalMatrixMap<Contribution::DAMPING>());
-        reinitLocalMatrices(this->getLocalMatrixMap<Contribution::GEOMETRIC_STIFFNESS>());
+        reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::STIFFNESS>());
+        reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::MASS>());
+        reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::DAMPING>());
+        reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::GEOMETRIC_STIFFNESS>());
     }
 }
 
