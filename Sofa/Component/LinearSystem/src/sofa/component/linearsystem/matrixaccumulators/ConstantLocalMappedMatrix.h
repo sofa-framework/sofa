@@ -29,11 +29,13 @@ namespace sofa::component::linearsystem
 
 template<core::matrixaccumulator::Contribution c, class TBlockType>
 class ConstantLocalMappedMatrix :
-    public ConstantLocalMatrix<c>,
+    public ConstantLocalMatrix<linearalgebra::CompressedRowSparseMatrix<TBlockType>, c>,
     public AssemblingMappedMatrixAccumulator<c, TBlockType>
 {
 public:
-    SOFA_CLASS2(ConstantLocalMappedMatrix, ConstantLocalMatrix<c>, SOFA_TEMPLATE2(AssemblingMappedMatrixAccumulator, c, TBlockType));
+    SOFA_CLASS2(ConstantLocalMappedMatrix,
+        SOFA_TEMPLATE2(ConstantLocalMatrix, linearalgebra::CompressedRowSparseMatrix<TBlockType>, c),
+        SOFA_TEMPLATE2(AssemblingMappedMatrixAccumulator, c, TBlockType));
     using ComponentType = typename Inherit1::ComponentType;
 
     using Inherit1::add;

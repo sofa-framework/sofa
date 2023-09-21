@@ -22,14 +22,13 @@
 #pragma once
 
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
-#include <sofa/component/linearsystem/ConstantSparsityPatternSystem.h>
 
 namespace sofa::component::linearsystem
 {
 /**
  * Local matrix using the insertion order to insert the value directly into the compressed matrix
  */
-template<core::matrixaccumulator::Contribution c>
+template<class TMatrix, core::matrixaccumulator::Contribution c>
 class ConstantLocalMatrix : public virtual AssemblingMatrixAccumulator<c>
 {
 public:
@@ -50,22 +49,22 @@ protected:
 
 };
 
-template <core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, float value)
+template <class TMatrix, core::matrixaccumulator::Contribution c>
+void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, float value)
 {
-    static_cast<ConstantSparsityPatternSystem::Matrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
+    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
         += this->m_cachedFactor * value;
 }
 
-template <core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value)
+template <class TMatrix, core::matrixaccumulator::Contribution c>
+void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value)
 {
-    static_cast<ConstantSparsityPatternSystem::Matrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
+    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
         += this->m_cachedFactor * value;
 }
 
-template <core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
+template <class TMatrix, core::matrixaccumulator::Contribution c>
+void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<3, 3, float>& value)
 {
     for (sofa::SignedIndex i = 0; i < 3; ++i)
@@ -77,8 +76,8 @@ void ConstantLocalMatrix<c>::add(const core::matrixaccumulator::no_check_policy&
     }
 }
 
-template <core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
+template <class TMatrix, core::matrixaccumulator::Contribution c>
+void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<3, 3, double>& value)
 {
     for (sofa::SignedIndex i = 0; i < 3; ++i)

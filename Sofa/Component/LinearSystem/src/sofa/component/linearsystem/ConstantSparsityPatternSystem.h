@@ -25,8 +25,6 @@
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-#include "matrixaccumulators/AssemblingMappedMatrixAccumulator.h"
-
 namespace sofa::component::linearsystem
 {
 
@@ -51,15 +49,17 @@ using core::matrixaccumulator::no_check_policy;
  * 1) The local matrices assume the order of insertion did not change. Therefore, they rely only on the ordered list of
  * ids to know where in the values array to insert the matrix contribution. The row and column ids are useless.
  */
-class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityPatternSystem : public MatrixLinearSystem<
-    sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >
+template<class TMatrix, class TVector>
+class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityPatternSystem : public MatrixLinearSystem<TMatrix, TVector >
 {
 public:
-    SOFA_CLASS(ConstantSparsityPatternSystem,
-        SOFA_TEMPLATE2(MatrixLinearSystem, sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal>));
+    SOFA_CLASS(
+        SOFA_TEMPLATE2(ConstantSparsityPatternSystem, TMatrix, TVector),
+        SOFA_TEMPLATE2(MatrixLinearSystem, TMatrix, TVector));
 
-    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
-    using Vector = sofa::linearalgebra::FullVector<SReal>;
+    using Matrix = TMatrix;
+    using Vector = TVector;
+    using Real = typename TMatrix::Real;
 
     void applyProjectiveConstraints(const core::MechanicalParams* mparams) override;
     void resizeSystem(sofa::Size n) override;
@@ -104,6 +104,10 @@ private:
     template<Contribution c>
     static std::unique_ptr<CreateMatrixDispatcher<c>> makeCreateDispatcher();
 };
+
+#if !defined(SOFA_COMPONENT_LINEARSYSTEM_CONSTANTSPARSITYPATTERNSYSTEM_CPP)
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityPatternSystem<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+#endif
 
 
 }
