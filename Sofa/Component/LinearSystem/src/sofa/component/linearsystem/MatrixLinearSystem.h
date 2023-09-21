@@ -263,7 +263,6 @@ struct LocalMatrixMaps
             for (const auto& [pair, matrix] : matrixMap)
             {
                 component->removeSlave(matrix);
-                matrix->reset();
             }
         }
 
