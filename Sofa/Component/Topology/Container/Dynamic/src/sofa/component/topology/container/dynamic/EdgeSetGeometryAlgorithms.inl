@@ -441,7 +441,7 @@ template<class Vec>
 sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
 {
     using Real = typename Vec::value_type;
-    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::pointBaryCoefs(p, a, b);
+    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::getBarycentricCoordinates(p, a, b);
 
     sofa::type::vector< Real > baryCoefs;
     baryCoefs.push_back(coefs[0]);
