@@ -46,7 +46,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixMapped(c
             {
                 const auto& insertionOrderList = sparsityPatternMatrix->getInsertionOrderList();
 
-                const auto factor = Inherit1::getContributionFactor<c>(mparams, component);
+                const auto factor = Inherit1::template getContributionFactor<c>(mparams, component);
 
                 auto mat = sofa::core::objectmodel::New<ConstantLocalMappedMatrix<c, Real>>();
                 configureCreatedMatrixComponent<c>(mat, component, factor, !this->notMuted());
@@ -119,7 +119,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatricesNonMap
             {
                 const auto& insertionOrderList = sparsityPatternMatrix->getInsertionOrderList();
 
-                SReal factor = Inherit1::getContributionFactor<c>(mparams, component);
+                SReal factor = Inherit1::template getContributionFactor<c>(mparams, component);
 
                 auto mat = sofa::core::objectmodel::New<ConstantLocalMatrix<TMatrix, c>>();
                 configureCreatedMatrixComponent<c>(mat, component, factor, !this->notMuted());
