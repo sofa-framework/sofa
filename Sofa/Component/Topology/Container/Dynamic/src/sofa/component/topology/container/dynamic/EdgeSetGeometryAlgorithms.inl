@@ -444,8 +444,8 @@ sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const V
     sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::pointBaryCoefs(p, a, b);
 
     sofa::type::vector< Real > baryCoefs;
-    baryCoefs.push_back(coef_a);
-    baryCoefs.push_back(coef_b);
+    baryCoefs.push_back(coefs[0]);
+    baryCoefs.push_back(coefs[1]);
 
     return baryCoefs;
 }
