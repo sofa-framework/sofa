@@ -385,9 +385,6 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
         }
     }
 
-    // affichage du nb de boucles
-    //printf("\n %d boucle(s) ",boucles);
-
     // stockage du resultat
     for(compteur=0; compteur<2*dim; compteur++)
     {
@@ -1838,8 +1835,6 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
                 for (int i = 0; i < numContacts; i++)
                     delete W33[i];
                 free(W33);
-                //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
-                //printLCP(dfree,W,f,dim);
                 return 1;
             }
         }
@@ -1850,8 +1845,6 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
             for (int i = 0; i < numContacts; i++)
                 delete W33[i];
             free(W33);
-            //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
-            //printLCP(dfree,W,f,dim);
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
         }
