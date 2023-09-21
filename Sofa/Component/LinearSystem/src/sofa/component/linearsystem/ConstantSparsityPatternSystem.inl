@@ -261,11 +261,11 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 {
     this->allocateSystem();
 
-    if (getSystemMatrix())
+    if (this->getSystemMatrix())
     {
-        if (n != getSystemMatrix()->rowSize() || n != getSystemMatrix()->colSize())
+        if (n != this->getSystemMatrix()->rowSize() || n != this->getSystemMatrix()->colSize())
         {
-            getSystemMatrix()->resize(n, n);
+            this->getSystemMatrix()->resize(n, n);
         }
         else
         {
@@ -275,7 +275,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
             auto& values = this->getSystemMatrix()->colsValue;
             std::fill(values.begin(), values.end(), 0_sreal);
 
-            for (auto& m : m_localMappedMatrices)
+            for (auto& m : this->m_localMappedMatrices)
             {
                 std::fill(m.second->colsValue.begin(), m.second->colsValue.end(), 0_sreal);
             }
@@ -302,7 +302,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::clearSystem()
             std::fill(values.begin(), values.end(), 0_sreal);
 
             unsigned int i = 0;
-            for (auto& m : m_localMappedMatrices)
+            for (auto& m : this->m_localMappedMatrices)
             {
                 std::fill(m.second->colsValue.begin(), m.second->colsValue.end(), 0_sreal);
                 ++i;
@@ -312,14 +312,14 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::clearSystem()
         }
     }
 
-    if (getRHSVector())
+    if (this->getRHSVector())
     {
-        getRHSVector()->clear();
+        this->getRHSVector()->clear();
     }
 
-    if (getSolutionVector())
+    if (this->getSolutionVector())
     {
-        getSolutionVector()->clear();
+        this->getSolutionVector()->clear();
     }
 }
 
@@ -352,10 +352,10 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::preAssembleSystem(const co
 template<class TMatrix, class TVector>
 void ConstantSparsityPatternSystem<TMatrix, TVector>::makeCreateDispatcher()
 {
-    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::STIFFNESS          >();
-    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::MASS               >();
-    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::DAMPING            >();
-    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>>(this->m_createDispatcher) = makeCreateDispatcher<Contribution::STIFFNESS          >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>>(this->m_createDispatcher) = makeCreateDispatcher<Contribution::MASS               >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>>(this->m_createDispatcher) = makeCreateDispatcher<Contribution::DAMPING            >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(this->m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
 }
 
 template<class TMatrix, class TVector>
