@@ -246,45 +246,6 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, c
     return false;
 }
 
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for(size_t i=0; i<numVertices; ++i)
-    {
-        const double x = (double) vect_c[i][0];
-        const double y = (double) vect_c[i][1];
-        const double z = (double) vect_c[i][2];
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Quad>& qa = this->m_topology->getQuads();
-
-    myfile << qa.size() <<"\n";
-
-    for(size_t i=0; i<qa.size(); ++i)
-    {
-        myfile << i+1 << " 3 1 1 4 " << qa[i][0]+1 << " " << qa[i][1]+1 << " " << qa[i][2]+1 << " " << qa[i][3]+1 << "\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
-}
 
 template <class DataTypes>
 bool QuadSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const

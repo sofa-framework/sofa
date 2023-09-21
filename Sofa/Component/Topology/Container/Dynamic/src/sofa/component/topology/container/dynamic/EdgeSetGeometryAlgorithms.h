@@ -134,7 +134,6 @@ public:
     bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
     bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
 
-    void writeMSHfile(const char *filename) const;
 
     /** Computes weights allowing to compute the deformation gradient (deformed basis)  at each vertex during the simulation, for a volumetric object.
       For each vertex, computes the weights associated with each edge around the vertex, so that the weighted sum of the edges corresponds to the identity.
@@ -162,6 +161,8 @@ public:
         const sofa::type::Vec<3, Real>& b,
         Real &baryCoef);
 
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
     Data<bool>  d_drawEdges; ///< if true, draw the edges in the topology.
