@@ -112,8 +112,7 @@ public:
     bool isPointOnEdge(const sofa::type::Vec<3, Real> &pt, const EdgeID ind_e) const;
 
     // compute barycentric coefficients
-    sofa::type::vector< SReal > computeEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
-    sofa::type::vector< SReal > computeRestEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::type::Vec<2, Real> computeEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2, bool useRestPosition = false) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
