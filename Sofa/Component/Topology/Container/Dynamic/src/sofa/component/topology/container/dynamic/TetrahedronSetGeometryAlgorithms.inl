@@ -2285,7 +2285,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< SReal > coef = this->computeRestEdgeBarycentricCoordinates(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->computeEdgeBarycentricCoordinates(p, theEdge[0], theEdge[1], true);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
