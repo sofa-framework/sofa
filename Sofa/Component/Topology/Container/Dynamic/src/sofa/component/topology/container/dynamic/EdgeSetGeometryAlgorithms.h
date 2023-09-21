@@ -109,8 +109,15 @@ public:
     // test if a point is on the triangle indexed by ind_e
     bool isPointOnEdge(const sofa::type::Vec<3, Real> &pt, const EdgeID ind_e) const;
 
-    // compute barycentric coefficients
-    sofa::type::Vec<2, Real> computeEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2, bool useRestPosition = false) const;
+
+    /** \brief Compute the barycentric coordinates of input point p between edge of indices [ind_p1; ind_p2] using either current position or restPosition depending on useRestPosition value.
+    * @param p position of the point to compute the coefficients.
+    * @param ind_p1 PointID of first vertex to be used to compute the barycentric coordinates of input point.
+    * @param ind_p2 PointID of second vertex to be used to compute the barycentric coordinates of input point.
+    * @param useRestPosition bool false to use position, true to use rest_position.
+    * @return the 2 barycentric coordinates inside a vector<SReal>.
+    */
+    sofa::type::vector< SReal > computeEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2, bool useRestPosition = false) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
