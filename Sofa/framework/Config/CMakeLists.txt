@@ -119,11 +119,19 @@ set(SOFACONFIG_LINK_OPTIONS "")
 set(SOFACONFIG_LINK_OPTIONS_DEBUG "")
 set(SOFACONFIG_LINK_OPTIONS_RELEASE "")
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
-
 ## Link-time optimization
-if (IS_IPO_SUPPORTED)
+if(NOT IPO_CHECK_DONE)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
+    set(IPO_CHECK_DONE ON CACHE INTERNAL "IPO check has been done" FORCE)
+    if (IS_IPO_SUPPORTED)
+        set(IPO_SUPPORTED ON CACHE INTERNAL "IPO can be activated" FORCE)
+    else()
+        message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
+    endif()
+endif()
+
+if (IPO_SUPPORTED)
     # Focus on max speed with link-time optimization
     option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable interprocedural optimization" OFF)
     if (SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
