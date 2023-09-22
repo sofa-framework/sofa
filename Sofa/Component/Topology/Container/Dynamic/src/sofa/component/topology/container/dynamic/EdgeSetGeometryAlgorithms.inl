@@ -437,20 +437,6 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
         return false;
 }
 
-template<class Vec>
-sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
-{
-    using Real = typename Vec::value_type;
-    sofa::type::Vec<2, Real> coefs = sofa::geometry::Edge::getBarycentricCoordinates(p, a, b);
-
-    sofa::type::vector< Real > baryCoefs;
-    baryCoefs.push_back(coefs[0]);
-    baryCoefs.push_back(coefs[1]);
-
-    return baryCoefs;
-}
-
-
 template<class DataTypes>
 auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
         sofa::type::Vec<3, Real> c,
@@ -883,7 +869,6 @@ sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2Po
 {
     return computeEdgeBarycentricCoordinates(p, ind_p1, ind_p2, true);
 }
-
 
 
 } //namespace sofa::component::topology::container::dynamic
