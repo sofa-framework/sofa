@@ -29,8 +29,6 @@
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
-#include <sofa/linearalgebra/BTDMatrix.h>
-#include <sofa/linearalgebra/BlockVector.h>
 
 namespace sofa::component::linearsystem
 {
@@ -42,8 +40,6 @@ using sofa::linearalgebra::BlockDiagonalMatrix;
 using sofa::linearalgebra::RotationMatrix;
 using sofa::linearalgebra::FullMatrix;
 using sofa::linearalgebra::FullVector;
-using sofa::linearalgebra::BTDMatrix;
-using sofa::linearalgebra::BlockVector;
 
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< FullMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< SparseMatrix<SReal>, FullVector<SReal> >;
@@ -56,7 +52,6 @@ template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRow
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< RotationMatrix<SReal>, FullVector<SReal> >;
-template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal>  >;
 
 int AssemblingMatrixLinearSystemClass = core::RegisterObject("Linear system")
         .add<MatrixLinearSystem< FullMatrix<SReal>, FullVector<SReal> > >()
@@ -67,7 +62,6 @@ int AssemblingMatrixLinearSystemClass = core::RegisterObject("Linear system")
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> > >()
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> > >()
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> > >()
-        .add<MatrixLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal> > >()
         ;
 
 } //namespace sofa::component::linearsystem
