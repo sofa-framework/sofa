@@ -126,17 +126,13 @@ GenericConstraintSolver::GenericConstraintSolver()
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
-{
-    if(d_multithreading.getValue())
-        simulation::MainTaskSchedulerFactory::createInRegistry()->stop();
-}
+{}
 
 void GenericConstraintSolver::init()
 {
     ConstraintSolverImpl::init();
 
     constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-    context = getContext();
 
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -207,6 +203,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 {
     unsigned int numConstraints = 0;
 
+    auto* context = getContext();
+
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     MechanicalResetConstraintVisitor(cParams).execute(context);
@@ -234,7 +232,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
     }
 
-    msg_info() <<"GenericConstraintSolver: "<<numConstraints<<" constraints";
+    msg_info() << numConstraints << " constraints";
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)

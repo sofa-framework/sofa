@@ -711,7 +711,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
 
     if (EMIT_EXTRA_DEBUG_MESSAGE)
-        helper::afficheLCP(CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(),  CP.getSize());
+        helper::printLCP(CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(),  CP.getSize());
 
     if ( d_displayTime.getValue() )
     {
@@ -808,8 +808,8 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, SReal* dfree, SReal
 
     if(d_schemeCorrection.getValue())
     {
-        std::cout<<"shemeCorrection => LCP before step 1"<<std::endl;
-        helper::afficheLCP(dfree, w, force,  dim);
+        msg_info() << "shemeCorrection => LCP before step 1";
+        helper::printLCP(dfree, w, force,  dim);
         ///////// scheme correction : step 1 => modification of dfree
         for(int j=0; j<dim; j++)
         {

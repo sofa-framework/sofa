@@ -144,7 +144,6 @@ private:
 
 
     /// common built-unbuilt
-    sofa::core::objectmodel::BaseContext *context;
     sofa::linearalgebra::FullVector<SReal> *_dFree, *_result;
     ///
 
@@ -154,7 +153,7 @@ private:
     int nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
     int gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
 
-    sofa::linearalgebra::SparseMatrix<SReal> *_Wdiag;
+    sofa::linearalgebra::SparseMatrix<SReal> _Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 

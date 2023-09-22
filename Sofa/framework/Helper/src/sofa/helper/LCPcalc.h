@@ -99,12 +99,16 @@ inline SOFA_HELPER_API SReal absError(SReal f1x, SReal f1y, SReal f1z, SReal f2x
 {return sqrt ((f2x-f1x)*(f2x-f1x) + (f2y-f1y)*(f2y-f1y) + (f2z-f1z)*(f2z-f1z));}
 
 
-SOFA_HELPER_API int resoudreLCP(int, SReal *, SReal **, SReal *);
+SOFA_HELPER_API SOFA_LCPCALC_RESOUDRELCP_DEPRECATED() int resoudreLCP(int, SReal *, SReal **, SReal *);
+SOFA_HELPER_API int solveLCP(int, SReal *, SReal **, SReal *);
 
 
-SOFA_HELPER_API void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim);
-SOFA_HELPER_API void afficheLCP(SReal *q, SReal **M, int dim);
-SOFA_HELPER_API void afficheLCP(SReal *q, SReal **M, SReal *f, int dim);
+SOFA_HELPER_API SOFA_LCPCALC_AFFICHESYST_DEPRECATED() void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim);
+SOFA_HELPER_API SOFA_LCPCALC_AFFICHELCP_DEPRECATED() void afficheLCP(SReal *q, SReal **M, int dim);
+SOFA_HELPER_API SOFA_LCPCALC_AFFICHELCP_DEPRECATED() void afficheLCP(SReal *q, SReal **M, SReal *f, int dim);
+SOFA_HELPER_API void printSyst(SReal* q, SReal** M, int* base, SReal** mat, int dim);
+SOFA_HELPER_API void printLCP(SReal* q, SReal** M, int dim);
+SOFA_HELPER_API void printLCP(SReal* q, SReal** M, SReal* f, int dim);
 SOFA_HELPER_API void resultToString(std::ostream& s, SReal *f, int dim);
 
 typedef SReal FemClipsReal;
