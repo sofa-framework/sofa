@@ -81,7 +81,7 @@ public:
     Data< bool > d_applyProjectiveConstraints; ///< If true, projective constraints are applied on the global matrix
     Data< bool > d_applyMappedComponents; ///< If true, mapped components contribute to the global matrix
     Data< bool > d_checkIndices; ///< If true, indices are verified before being added in to the global matrix, favoring security over speed
-    Data< bool > d_parallelAssemblyIndependantMatrices; ///< If true, independant matrices (global matrix vs mapped matrices) are assembled in parallel
+    Data< bool > d_parallelAssemblyIndependentMatrices; ///< If true, independent matrices (global matrix vs mapped matrices) are assembled in parallel
 
 protected:
 

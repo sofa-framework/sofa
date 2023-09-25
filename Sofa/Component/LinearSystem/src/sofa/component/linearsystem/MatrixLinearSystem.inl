@@ -61,8 +61,8 @@ MatrixLinearSystem<TMatrix, TVector>::MatrixLinearSystem()
     , d_applyProjectiveConstraints(initData(&d_applyProjectiveConstraints, true,  "applyProjectiveConstraints", "If true, projective constraints are applied on the global matrix"))
     , d_applyMappedComponents     (initData(&d_applyMappedComponents,      true,  "applyMappedComponents",      "If true, mapped components contribute to the global matrix"))
     , d_checkIndices              (initData(&d_checkIndices,               false, "checkIndices",               "If true, indices are verified before being added in to the global matrix, favoring security over speed"))
-    , d_parallelAssemblyIndependantMatrices
-        (initData(&d_parallelAssemblyIndependantMatrices, true, "parallelAssemblyIndependantMatrices", "If true, independant matrices (global matrix vs mapped matrices) are assembled in parallel"))
+    , d_parallelAssemblyIndependentMatrices
+        (initData(&d_parallelAssemblyIndependentMatrices, true, "parallelAssemblyIndependentMatrices", "If true, independent matrices (global matrix vs mapped matrices) are assembled in parallel"))
 {
     this->addUpdateCallback("updateCheckIndices", {&d_checkIndices}, [this](const core::DataTracker& t)
     {
@@ -167,12 +167,12 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleSystem(const core::Mechanical
         simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
         assert(taskScheduler);
 
-        if (d_parallelAssemblyIndependantMatrices.getValue() && taskScheduler && taskScheduler->getThreadCount() < 1)
+        if (d_parallelAssemblyIndependentMatrices.getValue() && taskScheduler && taskScheduler->getThreadCount() < 1)
         {
             taskScheduler->init(0);
         }
 
-        const simulation::ForEachExecutionPolicy execution = d_parallelAssemblyIndependantMatrices.getValue() ?
+        const simulation::ForEachExecutionPolicy execution = d_parallelAssemblyIndependentMatrices.getValue() ?
             simulation::ForEachExecutionPolicy::PARALLEL :
             simulation::ForEachExecutionPolicy::SEQUENTIAL;
 
