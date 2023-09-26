@@ -139,7 +139,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     unsigned nb_iter = 0;
     const char* endcond = "iterations";
 
-    ScopedAdvancedTimer timer("CG-Solve");
+    sofa::helper::AdvancedTimer::stepBegin("CG-Solve");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("VectorAllocation");
@@ -319,13 +319,15 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
         }
     }
 
+    sofa::helper::AdvancedTimer::stepEnd("CG-Solve");
+
     d_graph.endEdit();
     timeStepCount ++;
 
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
 
     msg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
-    msg_info() << "solve, solution = "<< x ;
+    msg_info() <<"solve, solution = "<< x ;
 
     /// Delete all temporary vectors p, q and r
     vtmp.deleteTempVector(&p);
