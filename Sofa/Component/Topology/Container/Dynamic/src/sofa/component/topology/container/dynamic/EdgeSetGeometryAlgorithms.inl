@@ -498,10 +498,10 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (Edg
 template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected)
 {
-    const type::Vec3& a0 = DataTypes::getCPos(edge1[0]);
-    const type::Vec3& a1 = DataTypes::getCPos(edge1[1]);
-    const type::Vec3& b0 = DataTypes::getCPos(edge2[0]);
-    const type::Vec3& b1 = DataTypes::getCPos(edge2[1]);
+    auto a0 = DataTypes::getCPos(edge1[0]);
+    auto a1 = DataTypes::getCPos(edge1[1]);
+    auto b0 = DataTypes::getCPos(edge2[0]);
+    auto b1 = DataTypes::getCPos(edge2[1]);
 
     type::Vec2 baryCoords(type::NOINIT);
     intersected = sofa::geometry::Edge::intersectionWithEdge(a0, a1, b0, b1, baryCoords);
@@ -521,8 +521,8 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegme
 
     const typename DataTypes::Coord& e0 = pos[theEdge[0]];
     const typename DataTypes::Coord& e1 = pos[theEdge[1]];
-    const type::Vec3& p0 = DataTypes::getCPos(e0);
-    const type::Vec3& p1 = DataTypes::getCPos(e1);
+    auto p0 = DataTypes::getCPos(e0);
+    auto p1 = DataTypes::getCPos(e1);
 
     type::Vec2 baryCoords(type::NOINIT);
     intersected = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
@@ -750,8 +750,8 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
 
     const typename DataTypes::Coord& e0 = pos[theEdge[0]];
     const typename DataTypes::Coord& e1 = pos[theEdge[1]];
-    const type::Vec3& p0 = DataTypes::getCPos(e0);
-    const type::Vec3& p1 = DataTypes::getCPos(e1);
+    auto p0 = DataTypes::getCPos(e0);
+    auto p1 = DataTypes::getCPos(e1);
 
     type::Vec2 baryCoords(type::NOINIT);
     bool is_intersect = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
