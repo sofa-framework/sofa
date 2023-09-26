@@ -317,10 +317,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     tabErrors.resize(dimension);
 
-    // pre-allocated buffers
-    constexpr std::size_t bufferSize = 10;
-    std::vector<SReal> errF(bufferSize);
-    std::vector<SReal> tempF(bufferSize);
+    // temporary buffers
+    std::vector<SReal> errF;
+    std::vector<SReal> tempF;
 
     for(iter=0; iter < static_cast<unsigned int>(maxIterations); iter++)
     {
@@ -339,7 +338,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            if(nb > bufferSize)
+            if(nb > errF.size())
             {
                 errF.resize(nb);
             }
@@ -399,7 +398,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
             if(update)
             {
-                if (nb > bufferSize)
+                if (nb > tempF.size())
                 {
                     tempF.resize(nb);
                 }
