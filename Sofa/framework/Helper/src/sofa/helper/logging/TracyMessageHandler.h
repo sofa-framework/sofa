@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,40 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/*****************************************************************************
+* User of this library should read the documentation
+* in the messaging.h file.
+******************************************************************************/
 #pragma once
 
+#include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/config.h>
-#include<string>
 
-#include <sofa/helper/AdvancedTimer.h>
-
-namespace sofa::helper
+namespace sofa::helper::logging
 {
 
-/// Scoped (RAII) AdvancedTimer to simplify a basic usage
-/// Example of use
-/// {   ///< open a scope to start measuring
-///     ScopedAdvancedTimer t("myMeasurement")
-///     ...
-///     ...
-/// }   ///< close the scope... the timer t is destructed and the
-///     measurement recorded.
-struct SOFA_HELPER_API ScopedAdvancedTimer
-{
-    AdvancedTimer::IdStep m_id;
+class MessageFormatter;
 
-    explicit ScopedAdvancedTimer(const std::string& message);
-    explicit ScopedAdvancedTimer( const char* message );
-    ~ScopedAdvancedTimer();
+/// Send the message to the Tracy profiler
+class SOFA_HELPER_API TracyMessageHandler : public MessageHandler
+{
+public:
+    /// Create a new ConsoleMessageHandler. By default the handler is using the
+    /// DefaultStyleMessageFormatter object to format the message.
+    TracyMessageHandler(MessageFormatter* formatter = nullptr);
+    void process(Message &m) override ;
+    void setMessageFormatter( MessageFormatter* formatter );
+
+private:
+    MessageFormatter *m_formatter { nullptr };
+
 };
 
-} /// sofa::helper
+///
+/// \brief The MainTracyMessageHandler class contains a singleton to TracyMessageHandler
+/// and offer static version of TracyMessageHandler API
+///
+/// \see TracyMessageHandler
+///
+class SOFA_HELPER_API MainTracyMessageHandler
+{
+public:
+    static TracyMessageHandler& getInstance() ;
+};
+} // namespace sofa::helper::logging
 
-#ifdef TRACY_ENABLE
-    #include <tracy/Tracy.hpp>
-    #define SCOPED_TIMER(name) ZoneScopedN(name)
-    #define SCOPED_TIMER_VARNAME(varname, name) ZoneNamedN(varname, name, true)
-#else
-    #define SCOPED_TIMER(name) sofa::helper::ScopedAdvancedTimer timer(name)
-    #define SCOPED_TIMER_VARNAME(varname, name) sofa::helper::ScopedAdvancedTimer varname(name)
-#endif
