@@ -92,11 +92,11 @@ template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     sofa::helper::AdvancedTimer::valSet("PCG::buildMBK", 1);
-    sofa::helper::AdvancedTimer::stepBegin("PCG::setSystemMBKMatrix");
 
-    Inherit::setSystemMBKMatrix(mparams);
-
-    sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix");
+    {
+        helper::ScopedAdvancedTimer timer("PCG::setSystemMBKMatrix");
+        Inherit::setSystemMBKMatrix(mparams);
+    }
 
     if (l_preconditioner.get()==nullptr) return;
 

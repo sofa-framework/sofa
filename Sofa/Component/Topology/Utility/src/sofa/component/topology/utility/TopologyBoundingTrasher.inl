@@ -30,6 +30,7 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 namespace sofa::component::topology::utility
@@ -148,7 +149,8 @@ void TopologyBoundingTrasher<DataTypes>::reinit()
 template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
 {
-    sofa::helper::AdvancedTimer::stepBegin("filterElementsToRemove");
+    helper::ScopedAdvancedTimer timer("filterElementsToRemove");
+
     const VecCoord& positions = d_positions.getValue();
     const Vec6& border = d_borders.getValue();
     m_indicesToRemove.clear();
@@ -236,8 +238,6 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
    
     if (!m_indicesToRemove.empty())
         removeElements();
-
-    sofa::helper::AdvancedTimer::stepEnd("filterElementsToRemove");
 }
 
 

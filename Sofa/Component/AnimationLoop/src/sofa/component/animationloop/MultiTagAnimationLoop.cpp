@@ -71,7 +71,8 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+    helper::ScopedAdvancedTimer animationStepTimer("AnimationStep");
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -121,16 +122,16 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
         node->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    node->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        helper::ScopedAdvancedTimer updateMappingTimer("UpdateMapping");
+        node->execute<UpdateMappingVisitor>(params);
+    }
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
         node->execute ( act );
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
     if (d_computeBoundingBox.getValue())
     {
@@ -141,8 +142,6 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif
-
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 void MultiTagAnimationLoop::clear()

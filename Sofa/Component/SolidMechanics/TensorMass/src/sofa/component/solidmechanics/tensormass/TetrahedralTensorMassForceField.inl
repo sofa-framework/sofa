@@ -27,6 +27,8 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::solidmechanics::tensormass
 {
@@ -340,7 +342,7 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 template <class DataTypes>
 SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
 {
-    sofa::helper::AdvancedTimer::stepBegin("getPotentialEnergy");
+    helper::ScopedAdvancedTimer timer("getPotentialEnergy");
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -373,14 +375,13 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 
     msg_info() << "energy="<<energy ;
 
-    sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
     return(energy);
 }
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
+    helper::ScopedAdvancedTimer timer("addForceTetraTensorMass");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -409,15 +410,13 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
     edgeInfo.endEdit();
     d_f.endEdit();
-
-    sofa::helper::AdvancedTimer::stepEnd("addForceTetraTensorMass");
 }
 
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
+    helper::ScopedAdvancedTimer timer("addDForceTetraTensorMass");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -447,8 +446,6 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     edgeInfo.endEdit();
 
     d_df.endEdit();
-
-    sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
 }
 
 template <class DataTypes>

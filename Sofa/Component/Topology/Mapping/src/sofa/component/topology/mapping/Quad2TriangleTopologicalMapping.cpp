@@ -37,6 +37,8 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::topology::mapping
 {
@@ -177,7 +179,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("Update Quad2TriangleTopologicalMapping");
+    helper::ScopedAdvancedTimer timer("Update Quad2TriangleTopologicalMapping");
 
     TriangleSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
@@ -191,7 +193,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        helper::ScopedAdvancedTimer topoChangetimer(topoChangeType);
 
         switch( changeType )
         {
@@ -401,11 +403,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");
 }
 
 

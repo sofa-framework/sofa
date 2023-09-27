@@ -257,9 +257,10 @@ void CollisionPipeline::doCollisionResponse()
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "Create Contacts " << contactManager->getName() ;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
-    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
-    sofa::helper::AdvancedTimer::stepEnd("CreateContacts");
+    {
+        helper::ScopedAdvancedTimer createContactsTimer("CreateContacts");
+        contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
+    }
 
     // finally we start the creation of collisionGroup
 
@@ -268,24 +269,25 @@ void CollisionPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     type::vector<Contact::SPtr> notStaticContacts;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
-    for (const auto& contact : contacts)
     {
-        const auto collisionModels = contact->getCollisionModels();
-        if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
+        helper::ScopedAdvancedTimer createStaticObjectsResponseTimer("CreateStaticObjectsResponse");
+        for (const auto& contact : contacts)
         {
-            contact->createResponse(collisionModels.second->getContext());
-        }
-        else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
-        {
-            contact->createResponse(collisionModels.first->getContext());
-        }
-        else
-        {
-            notStaticContacts.push_back(contact);
+            const auto collisionModels = contact->getCollisionModels();
+            if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
+            {
+                contact->createResponse(collisionModels.second->getContext());
+            }
+            else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
+            {
+                contact->createResponse(collisionModels.first->getContext());
+            }
+            else
+            {
+                notStaticContacts.push_back(contact);
+            }
         }
     }
-    sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
 
     if (groupManager == nullptr)
     {

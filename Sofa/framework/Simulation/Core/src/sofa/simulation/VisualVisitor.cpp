@@ -26,6 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
@@ -157,9 +158,8 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    sofa::helper::AdvancedTimer::stepBegin("VisualUpdateVisitor process: " + vm->getName());
+    helper::ScopedAdvancedTimer timer("VisualUpdateVisitor process: " + vm->getName());
     vm->updateVisual();
-    sofa::helper::AdvancedTimer::stepEnd("VisualUpdateVisitor process: " + vm->getName());
 }
 
 

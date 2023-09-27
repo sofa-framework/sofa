@@ -163,20 +163,22 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     // # Before starting any newton iterations, we first need to compute         #
     // # the residual with the updated right-hand side (the new load increment)  #
     // ###########################################################################
-    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-    // Step 1   Assemble the force vector
-    // 1. Clear the force vector (F := 0)
-    // 2. Go down in the current context tree calling addForce on every forcefields
-    // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop.computeForce(force, true /* clear */);
+    {
+        helper::ScopedAdvancedTimer computeForceTimer("ComputeForce");
 
-    // Step 2   Projective constraints
-    // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
-    // current context tree. An example of such constraint set is the FixedConstraint. In this case,
-    // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
-    // freedom.
-    mop.projectResponse(force);
-    sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+        // Step 1   Assemble the force vector
+        // 1. Clear the force vector (F := 0)
+        // 2. Go down in the current context tree calling addForce on every forcefields
+        // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
+        mop.computeForce(force, true /* clear */);
+
+        // Step 2   Projective constraints
+        // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
+        // current context tree. An example of such constraint set is the FixedConstraint. In this case,
+        // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
+        // freedom.
+        mop.projectResponse(force);
+    }
 
     // Compute the initial residual
     R_squared_norm = force.dot(force);
