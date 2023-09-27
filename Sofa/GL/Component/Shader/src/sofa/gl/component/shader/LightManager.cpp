@@ -492,7 +492,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'L':
             msg_deprecated() << "This component was implemented with hard coded user interactions. This behavior was deprecated in PR#4163. "
                                 "If you need the old behavior, you need to re-implement with a controller. This can be done"
-                                " c++ or python. If you see this message  and are unable implement a controller on your own, please report at https://github.com/sofa-framework/sofa/pull/4163";
+                                " c++ or python. If you see this message and are unable to implement a controller on your own, please report at https://github.com/sofa-framework/sofa/pull/4163";
             break;
         }
     }
