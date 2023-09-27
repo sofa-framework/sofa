@@ -412,7 +412,7 @@ void exportGraph(Node* root, const char* filename)
 
 void dumpState(Node* root, std::ofstream& out)
 {
-    sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
+    SCOPED_TIMER_VARNAME(dumpStateTimer, "dumpState");
 
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out << root->getTime() << " ";

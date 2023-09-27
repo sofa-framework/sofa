@@ -268,7 +268,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
                                          const bool addDOF)
 {
-    helper::ScopedAdvancedTimer addPointsTimer("addPoints");
+    SCOPED_TIMER_VARNAME(addPointsTimer, "addPoints");
 
     {
         SCOPED_TIMER("addPointsProcess");
@@ -291,7 +291,7 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
      const sofa::type::vector< sofa::type::vector< SReal> >& coefs,
      const bool addDOF)
 {
-    helper::ScopedAdvancedTimer addPointsTimer("addPoints with ancestors");
+    SCOPED_TIMER_VARNAME(addPointsTimer, "addPoints with ancestors");
 
     {
         SCOPED_TIMER("addPointsProcess");
@@ -346,7 +346,7 @@ void PointSetTopologyModifier::renumberPoints(const sofa::type::vector< PointID 
     const sofa::type::vector< PointID >& inv_index,
     const bool renumberDOF)
 {
-    helper::ScopedAdvancedTimer renumberPointsTimer("Renumber Points");
+    SCOPED_TIMER_VARNAME(renumberPointsTimer, "Renumber Points");
 
     {
         SCOPED_TIMER("renumberPointsWarning");
@@ -367,7 +367,7 @@ void PointSetTopologyModifier::renumberPoints(const sofa::type::vector< PointID 
 
 void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF)
 {
-    helper::ScopedAdvancedTimer removePointsTimer("Remove Points");
+    SCOPED_TIMER_VARNAME(removePointsTimer, "Remove Points");
 
     {
         SCOPED_TIMER("removePointsWarning");

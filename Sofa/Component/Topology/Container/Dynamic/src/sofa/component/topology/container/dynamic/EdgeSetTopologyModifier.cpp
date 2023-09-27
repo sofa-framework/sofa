@@ -624,7 +624,7 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::type::vector<EdgeID> &indi
 void EdgeSetTopologyModifier::removeEdges(const sofa::type::vector< EdgeID >& edgeIds,
         const bool removeIsolatedPoints)
 {
-    helper::ScopedAdvancedTimer removeEdgesTimer("removeEdges");
+    SCOPED_TIMER_VARNAME(removeEdgesTimer, "removeEdges");
 
     sofa::type::vector<EdgeID> edgeIds_filtered;
     for (size_t i = 0; i < edgeIds.size(); i++)
@@ -663,14 +663,14 @@ void EdgeSetTopologyModifier::removeItems(const sofa::type::vector< EdgeID >& it
 
 void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges)
 {
-    helper::ScopedAdvancedTimer addEdgesTimer("addEdges");
+    SCOPED_TIMER_VARNAME(addEdgesTimer, "addEdges");
     const sofa::Size nEdges = m_container->getNumberOfEdges();
 
     sofa::type::vector<EdgeID> edgesIndex;
 
     // actually add edges in the topology container
     {
-        helper::ScopedAdvancedTimer addEdgesProcessTimer("addEdgesProcess");
+        SCOPED_TIMER_VARNAME(addEdgesProcessTimer, "addEdgesProcess");
         addEdgesProcess(edges);
 
         edgesIndex.reserve(edges.size());
@@ -682,7 +682,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges)
 
     // add topology event in the stack of topological events
     {
-        helper::ScopedAdvancedTimer addEdgesWarningTimer("addEdgesWarning");
+        SCOPED_TIMER_VARNAME(addEdgesWarningTimer, "addEdgesWarning");
         addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex);
     }
 
@@ -697,7 +697,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
         const sofa::type::vector< sofa::type::vector< EdgeID > > & ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
 {
-    helper::ScopedAdvancedTimer addEdgesTimer("addEdges with ancestors");
+    SCOPED_TIMER_VARNAME(addEdgesTimer, "addEdges with ancestors");
     const sofa::Index nEdges = m_container->getNumberOfEdges();
 
     sofa::type::vector<EdgeID> edgesIndex;

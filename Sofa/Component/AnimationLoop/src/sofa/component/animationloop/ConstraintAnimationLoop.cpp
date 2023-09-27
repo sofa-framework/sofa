@@ -357,7 +357,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     {
-        helper::ScopedAdvancedTimer freeMotionTimer("Free Motion");
+        SCOPED_TIMER_VARNAME(freeMotionTimer, "Free Motion");
 
         MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
@@ -416,7 +416,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
     msg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) <<"constraints Matrix construction is called" ;
 
     {
-        helper::ScopedAdvancedTimer constraintDefinitionTimer("Constraints definition");
+        SCOPED_TIMER_VARNAME(constraintDefinitionTimer, "Constraints definition");
 
         if(!d_schemeCorrection.getValue())
         {
@@ -495,7 +495,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     /// calling getCompliance => getDelassusOperator(_W) = H*C*Ht
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) << "   4. get Compliance " ;
 
-    helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
+    SCOPED_TIMER_VARNAME(getComplianceTimer, "Get Compliance");
     for (const auto cc : constraintCorrections)
     {
         cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
@@ -507,7 +507,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
             <<"constraintCorrections motion is called" ;
 
-    helper::ScopedAdvancedTimer correctiveMotionTimer("Corrective Motion");
+    SCOPED_TIMER_VARNAME(correctiveMotionTimer, "Corrective Motion");
 
     if(d_schemeCorrection.getValue())
     {
@@ -637,7 +637,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
     {
-        helper::ScopedAdvancedTimer behaviorUpdateTimer("BehaviorUpdate");
+        SCOPED_TIMER_VARNAME(behaviorUpdateTimer, "BehaviorUpdate");
         simulation::BehaviorUpdatePositionVisitor(params, dt).execute(node);
     }
 
@@ -697,7 +697,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 
     {
-        helper::ScopedAdvancedTimer gaussSeidelTimer("GaussSeidel");
+        SCOPED_TIMER_VARNAME(gaussSeidelTimer, "GaussSeidel");
         if (EMIT_EXTRA_DEBUG_MESSAGE)
             msg_info() << "Gauss-Seidel solver is called on problem of size " << CP.getSize() ;
 
@@ -739,7 +739,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 
     {
-        helper::ScopedAdvancedTimer updateMappingTimer("UpdateMapping");
+        SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
 
         node->execute<UpdateMappingVisitor>(params);
         sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
@@ -752,7 +752,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     if (d_computeBoundingBox.getValue())
     {
-        sofa::helper::ScopedAdvancedTimer updateBBoxTimer("UpdateBBox");
+        SCOPED_TIMER_VARNAME(updateBBoxTimer, "UpdateBBox");
         node->execute<UpdateBoundingBoxVisitor>(params);
     }
 

@@ -65,7 +65,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     if (dt == 0)
         dt = node->getDt();
 
-    helper::ScopedAdvancedTimer animationStepTimer("AnimationStep");
+    SCOPED_TIMER_VARNAME(animationStepTimer, "AnimationStep");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -122,7 +122,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
 
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     {
-        helper::ScopedAdvancedTimer updateMappingTimer("UpdateMapping");
+        SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
         node->execute<UpdateMappingVisitor>(params);
     }
     {

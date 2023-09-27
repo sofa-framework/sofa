@@ -260,16 +260,16 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             ops[1].second.push_back(std::make_pair(newVel.id(),h));
         }
 
-        helper::ScopedAdvancedTimer updateVAndXTimer("UpdateVAndX");
+        SCOPED_TIMER_VARNAME(updateVAndXTimer, "UpdateVAndX");
         vop.v_multiop(ops);
         if (solveConstraint)
         {
             {
-                helper::ScopedAdvancedTimer correctVTimer("CorrectV");
+                SCOPED_TIMER_VARNAME(correctVTimer, "CorrectV");
                 mop.solveConstraint(newVel,core::ConstraintParams::VEL);
             }
             {
-                helper::ScopedAdvancedTimer correctXTimer("CorrectX");
+                SCOPED_TIMER_VARNAME(correctXTimer, "CorrectX");
                 mop.solveConstraint(newPos,core::ConstraintParams::POS);
             }
         }

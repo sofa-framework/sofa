@@ -109,7 +109,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     else if (f_build_precond.getValue())
     {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
-        helper::ScopedAdvancedTimer mbkTimer("PCG::PrecondSetSystemMBKMatrix");
+        SCOPED_TIMER_VARNAME(mbkTimer, "PCG::PrecondSetSystemMBKMatrix");
 
         if (f_update_step.getValue()>0)
         {
@@ -155,7 +155,7 @@ void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
-    helper::ScopedAdvancedTimer solveTimer("PCGLinearSolver::solve");
+    SCOPED_TIMER_VARNAME(solveTimer, "PCGLinearSolver::solve");
 
     std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
 //    sofa::type::vector<double>& graph_error = graph["Error"];
@@ -181,7 +181,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
     if (apply_precond)
     {
-        helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
+        SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
         l_preconditioner.get()->setSystemLHVector(w);
         l_preconditioner.get()->setSystemRHVector(r);
         l_preconditioner.get()->solveSystem();
@@ -206,7 +206,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
         if (apply_precond)
         {
-            helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
+            SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
             l_preconditioner.get()->setSystemLHVector(s);
             l_preconditioner.get()->setSystemRHVector(r);
             l_preconditioner.get()->solveSystem();

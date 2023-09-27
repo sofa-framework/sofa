@@ -313,7 +313,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::type::vector<Trian
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-    helper::ScopedAdvancedTimer removeTrianglesTimer("removeTriangles");
+    SCOPED_TIMER_VARNAME(removeTrianglesTimer, "removeTriangles");
 
     sofa::type::vector<TriangleID> triangleIds_filtered;
     for (size_t i = 0; i < triangleIds.size(); i++)
