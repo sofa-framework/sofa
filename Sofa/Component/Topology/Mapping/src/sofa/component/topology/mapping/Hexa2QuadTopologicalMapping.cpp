@@ -138,7 +138,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    helper::ScopedAdvancedTimer timer("Update Hexa2QuadTopologicalMapping");
+    SCOPED_TIMER("Update Hexa2QuadTopologicalMapping");
     container::dynamic::QuadSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 

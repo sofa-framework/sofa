@@ -495,7 +495,7 @@ MatrixLinearSystem<TMatrix, TVector>::getLocalMatrixMap() const
 template<class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(const core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer timer("InitializeSystem");
+    SCOPED_TIMER("InitializeSystem");
 
     m_needClearLocalMatrices.updateIfDirty();
     if (m_needClearLocalMatrices.getValue())

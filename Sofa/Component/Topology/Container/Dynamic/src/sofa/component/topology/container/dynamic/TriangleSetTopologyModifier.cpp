@@ -328,19 +328,19 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::type::vector<Trian
     {
         /// add the topological changes in the queue
         {
-            helper::ScopedAdvancedTimer timer("removeTrianglesWarning");
+            SCOPED_TIMER("removeTrianglesWarning");
             removeTrianglesWarning(triangleIds_filtered);
         }
 
         // inform other objects that the triangles are going to be removed
         {
-            helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+            SCOPED_TIMER("propagateTopologicalChanges");
             propagateTopologicalChanges();
         }
 
         // now destroy the old triangles.
         {
-            helper::ScopedAdvancedTimer timer("removeTrianglesProcess");
+            SCOPED_TIMER("removeTrianglesProcess");
             removeTrianglesProcess(triangleIds_filtered ,removeIsolatedEdges, removeIsolatedPoints);
         }
 
@@ -946,7 +946,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    helper::ScopedAdvancedTimer timer("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
+    SCOPED_TIMER("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
 
     auto& triangleTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TRIANGLE);
     for (const auto topoHandler : triangleTopologyHandlerList)

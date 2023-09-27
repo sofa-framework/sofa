@@ -123,12 +123,12 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
         MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
 
 		{
-		    helper::ScopedAdvancedTimer timer("ComputeForce");
+		    SCOPED_TIMER("ComputeForce");
 		    mop.computeForce(f);
 		}
 
 	    {
-		    helper::ScopedAdvancedTimer timer("AccFromF");
+		    SCOPED_TIMER("AccFromF");
 
 	        f.peq(p,1.0/h);
 
@@ -193,7 +193,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			// and matrix=-K+4/h^(2)M
 
 			{
-			    helper::ScopedAdvancedTimer timer("ComputeForce");
+			    SCOPED_TIMER("ComputeForce");
 			    mop.computeForce(f);
 			}
 
@@ -215,12 +215,12 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
 		    {
-			    helper::ScopedAdvancedTimer timer("MBKBuild");
+			    SCOPED_TIMER("MBKBuild");
 			    matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h));
 		    }
 
             {
-			    helper::ScopedAdvancedTimer timer("MBKSolve");
+			    SCOPED_TIMER("MBKSolve");
                 // resolution of matrix*res=b
                 matrix.solve(res, b); //Call to ODE resolution.
             }
@@ -340,7 +340,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
     sofa::helper::AdvancedTimer::stepEnd("CorrectV");
     {
-        helper::ScopedAdvancedTimer timer("CorrectX");
+        SCOPED_TIMER("CorrectX");
         mop.solveConstraint(x_1,core::ConstraintParams::POS);
     }
 

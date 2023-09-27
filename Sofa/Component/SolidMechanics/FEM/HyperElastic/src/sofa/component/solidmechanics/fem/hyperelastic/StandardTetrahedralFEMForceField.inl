@@ -268,7 +268,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodEdges(){}
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    helper::ScopedAdvancedTimer timer("addForceStandardTetraFEM");
+    SCOPED_TIMER("addForceStandardTetraFEM");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -449,7 +449,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    helper::ScopedAdvancedTimer timer("addDForceStandardTetraFEM");
+    SCOPED_TIMER("addDForceStandardTetraFEM");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

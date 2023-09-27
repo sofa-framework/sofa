@@ -94,7 +94,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     sofa::helper::AdvancedTimer::valSet("PCG::buildMBK", 1);
 
     {
-        helper::ScopedAdvancedTimer timer("PCG::setSystemMBKMatrix");
+        SCOPED_TIMER("PCG::setSystemMBKMatrix");
         Inherit::setSystemMBKMatrix(mparams);
     }
 

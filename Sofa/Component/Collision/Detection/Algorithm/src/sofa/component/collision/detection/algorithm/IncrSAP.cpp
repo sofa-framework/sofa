@@ -370,7 +370,7 @@ void IncrSAP::boxPrune(){
     const int axis1 = (1  << _cur_axis) & 3;
     const int axis2 = (1  << axis1) & 3;
 
-    helper::ScopedAdvancedTimer timer("Box Prune SAP intersection");
+    SCOPED_TIMER("Box Prune SAP intersection");
 
     std::deque<int> active_boxes; // active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                   // if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max

@@ -616,19 +616,19 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::type::vector<T
 
     /// add the topological changes in the queue
     {
-        helper::ScopedAdvancedTimer timer("removeTetrahedraWarning");
+        SCOPED_TIMER("removeTetrahedraWarning");
         removeTetrahedraWarning(tetrahedraIds_filtered);
     }
 
     // inform other objects that the triangles are going to be removed
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 
     // now destroy the old tetrahedra.
     {
-        helper::ScopedAdvancedTimer timer("removeTetrahedraProcess");
+        SCOPED_TIMER("removeTetrahedraProcess");
         removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
     }
 

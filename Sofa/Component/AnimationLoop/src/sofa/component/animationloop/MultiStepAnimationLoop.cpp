@@ -133,7 +133,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
 
     if (d_computeBoundingBox.getValue())
     {
-        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
+        SCOPED_TIMER("UpdateBBox");
         node->execute<UpdateBoundingBoxVisitor>(params);
     }
 

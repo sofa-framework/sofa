@@ -342,7 +342,7 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 template <class DataTypes>
 SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
 {
-    helper::ScopedAdvancedTimer timer("getPotentialEnergy");
+    SCOPED_TIMER("getPotentialEnergy");
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -381,7 +381,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    helper::ScopedAdvancedTimer timer("addForceTetraTensorMass");
+    SCOPED_TIMER("addForceTetraTensorMass");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -416,7 +416,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    helper::ScopedAdvancedTimer timer("addDForceTetraTensorMass");
+    SCOPED_TIMER("addDForceTetraTensorMass");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

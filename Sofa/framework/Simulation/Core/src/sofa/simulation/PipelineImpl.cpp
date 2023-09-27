@@ -106,7 +106,7 @@ void PipelineImpl::computeCollisionReset()
     if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
 
-    helper::ScopedAdvancedTimer timer("CollisionReset");
+    SCOPED_TIMER("CollisionReset");
     doCollisionReset();
 }
 
@@ -124,7 +124,7 @@ void PipelineImpl::computeCollisionResponse()
     const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
 
-    helper::ScopedAdvancedTimer timer("CollisionResponse");
+    SCOPED_TIMER("CollisionResponse");
     doCollisionResponse();
 }
 

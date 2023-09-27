@@ -149,7 +149,7 @@ void TopologyBoundingTrasher<DataTypes>::reinit()
 template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
 {
-    helper::ScopedAdvancedTimer timer("filterElementsToRemove");
+    SCOPED_TIMER("filterElementsToRemove");
 
     const VecCoord& positions = d_positions.getValue();
     const Vec6& border = d_borders.getValue();

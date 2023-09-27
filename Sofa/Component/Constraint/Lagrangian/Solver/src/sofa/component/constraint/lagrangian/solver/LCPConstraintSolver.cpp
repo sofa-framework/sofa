@@ -170,7 +170,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             if (multi_grid.getValue())
             {
                 {
-                    helper::ScopedAdvancedTimer timer("ConstraintsMerge");
+                    SCOPED_TIMER("ConstraintsMerge");
                     MultigridConstraintsMerge();
                 }
 
@@ -182,7 +182,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 graph_levels.clear();
 
                 {
-                    helper::ScopedAdvancedTimer timer("NLCP MultiGrid");
+                    SCOPED_TIMER("NLCP MultiGrid");
                     helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                            hierarchy_contact_group, hierarchy_num_group, hierarchy_constraint_group, hierarchy_constraint_group_fact,  notMuted(), &graph_residuals, &graph_levels, &graph_violations);
                 }
@@ -196,7 +196,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 graph_violations.clear();
 
                 {
-                    helper::ScopedAdvancedTimer timer("NLCP GaussSeidel");
+                    SCOPED_TIMER("NLCP GaussSeidel");
                     helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                            notMuted(), _minW, _maxF, &graph_error, &graph_violations);
                 }
@@ -208,7 +208,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             graph_error.clear();
 
             {
-                helper::ScopedAdvancedTimer timer("LCP GaussSeidel");
+                SCOPED_TIMER("LCP GaussSeidel");
                 helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
             }
             if (notMuted())
@@ -224,7 +224,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         graph_error.clear();
 
         {
-            helper::ScopedAdvancedTimer timer("NLCP GaussSeidel Unbuild");
+            SCOPED_TIMER("NLCP GaussSeidel Unbuild");
             gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
         }
 
@@ -267,7 +267,7 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     dmsg_info() << "keepContactForces done" ;
 
     {
-        helper::ScopedAdvancedTimer timer("Apply Contact Force");
+        SCOPED_TIMER("Apply Contact Force");
         for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
         {
             if (!constraintCorrectionIsActive[i]) continue;
@@ -332,7 +332,7 @@ void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
         {
-            helper::ScopedAdvancedTimer timer("Get Constraint Info");
+            SCOPED_TIMER("Get Constraint Info");
             MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(getContext());
         }
         if (initial_guess.getValue())
@@ -342,7 +342,7 @@ void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
 
 void LCPConstraintSolver::addComplianceInConstraintSpace(core::ConstraintParams cparams)
 {
-    helper::ScopedAdvancedTimer timer("Get Compliance");
+    SCOPED_TIMER("Get Compliance");
 
     dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
 

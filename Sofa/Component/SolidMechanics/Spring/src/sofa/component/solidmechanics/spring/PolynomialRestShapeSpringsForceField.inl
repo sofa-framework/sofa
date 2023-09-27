@@ -455,7 +455,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 {    
     msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
 
-    helper::ScopedAdvancedTimer timer("restShapePolynomialSpringAddKToMatrix");
+    SCOPED_TIMER("restShapePolynomialSpringAddKToMatrix");
 
     const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;

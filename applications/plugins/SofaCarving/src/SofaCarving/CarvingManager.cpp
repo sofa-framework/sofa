@@ -121,7 +121,7 @@ void CarvingManager::doCarve()
     if (detectionOutputs.size() == 0)
         return;
 
-    sofa::helper::ScopedAdvancedTimer timer("CarvingElems");
+    SCOPED_TIMER("CarvingElems");
 
     // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const SReal& carvDist = d_carvingDistance.getValue();

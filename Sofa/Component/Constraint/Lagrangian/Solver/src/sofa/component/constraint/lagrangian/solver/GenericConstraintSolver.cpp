@@ -204,7 +204,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     unsigned int numConstraints = 0;
 
     {
-        helper::ScopedAdvancedTimer timer("Accumulate Constraint");
+        SCOPED_TIMER("Accumulate Constraint");
 
         auto* context = getContext();
 
@@ -513,7 +513,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     msg_info() << "KeepContactForces done" ;
 
     {
-        helper::ScopedAdvancedTimer timer("Compute And Apply Motion Correction");
+        SCOPED_TIMER("Compute And Apply Motion Correction");
 
         if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
         {
@@ -581,7 +581,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
     {
-        helper::ScopedAdvancedTimer timer("Store Constraint Lambdas");
+        SCOPED_TIMER("Store Constraint Lambdas");
 
         /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
         /// In order to be sure that we are not accumulating things twice, we need to clear.

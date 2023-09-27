@@ -112,7 +112,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     msg_info() << "trapezoidal factor = " << tr;
 
     {
-        helper::ScopedAdvancedTimer timer("ComputeForce");
+        SCOPED_TIMER("ComputeForce");
         mop->setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
         mop.computeForce(f);
@@ -164,7 +164,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #endif
     sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
     {
-        helper::ScopedAdvancedTimer timer("MBKSolve");
+        SCOPED_TIMER("MBKSolve");
         matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system}
     }
 #ifdef SOFA_DUMP_VISITOR_INFO

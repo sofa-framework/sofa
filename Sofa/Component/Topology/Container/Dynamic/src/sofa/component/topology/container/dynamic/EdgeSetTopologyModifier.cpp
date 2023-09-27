@@ -637,19 +637,19 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::type::vector< EdgeID >& ed
 
     // add the topological changes in the queue
     {
-        helper::ScopedAdvancedTimer timer("removeEdgesWarning");
+        SCOPED_TIMER("removeEdgesWarning");
         removeEdgesWarning(edgeIds_filtered);
     }
 
     // inform other objects that the edges are going to be removed
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 
     // now destroy the old edges.
     {
-        helper::ScopedAdvancedTimer timer("removeEdgesProcess");
+        SCOPED_TIMER("removeEdgesProcess");
         removeEdgesProcess( edgeIds_filtered, removeIsolatedPoints );
     }
 
@@ -688,7 +688,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges)
 
     // inform other objects that the edges are already added
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 }
@@ -704,7 +704,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
 
     /// actually add edges in the topology container
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         addEdgesProcess(edges);
 
         edgesIndex.reserve(edges.size());
@@ -716,13 +716,13 @@ void EdgeSetTopologyModifier::addEdges(const sofa::type::vector< Edge >& edges,
 
     // add topology event in the stack of topological events
     {
-        helper::ScopedAdvancedTimer timer("addEdgesWarning");
+        SCOPED_TIMER("addEdgesWarning");
         addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex, ancestors, baryCoefs);
     }
 
     // inform other objects that the edges are already added
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 }
@@ -983,7 +983,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    helper::ScopedAdvancedTimer timer("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
+    SCOPED_TIMER("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
 
     auto& edgeTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
     for (const auto topoHandler : edgeTopologyHandlerList)

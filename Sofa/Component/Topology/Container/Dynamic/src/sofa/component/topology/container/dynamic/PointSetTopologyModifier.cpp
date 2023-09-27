@@ -271,17 +271,17 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
     helper::ScopedAdvancedTimer addPointsTimer("addPoints");
 
     {
-        helper::ScopedAdvancedTimer timer("addPointsProcess");
+        SCOPED_TIMER("addPointsProcess");
         addPointsProcess(nPoints);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("addPointsWarning");
+        SCOPED_TIMER("addPointsWarning");
         addPointsWarning(nPoints, addDOF);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 }
@@ -294,17 +294,17 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
     helper::ScopedAdvancedTimer addPointsTimer("addPoints with ancestors");
 
     {
-        helper::ScopedAdvancedTimer timer("addPointsProcess");
+        SCOPED_TIMER("addPointsProcess");
         addPointsProcess(nPoints);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("addPointsWarning");
+        SCOPED_TIMER("addPointsWarning");
         addPointsWarning(nPoints, ancestors, coefs, addDOF);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 }
@@ -349,17 +349,17 @@ void PointSetTopologyModifier::renumberPoints(const sofa::type::vector< PointID 
     helper::ScopedAdvancedTimer renumberPointsTimer("Renumber Points");
 
     {
-        helper::ScopedAdvancedTimer timer("renumberPointsWarning");
+        SCOPED_TIMER("renumberPointsWarning");
         renumberPointsWarning(index, inv_index, renumberDOF);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 
     {
-        helper::ScopedAdvancedTimer timer("renumberPointsProcess");
+        SCOPED_TIMER("renumberPointsProcess");
         renumberPointsProcess(index, inv_index, renumberDOF);
     }
 }
@@ -370,17 +370,17 @@ void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indic
     helper::ScopedAdvancedTimer removePointsTimer("Remove Points");
 
     {
-        helper::ScopedAdvancedTimer timer("removePointsWarning");
+        SCOPED_TIMER("removePointsWarning");
         removePointsWarning(indices, removeDOF);
     }
 
     {
-        helper::ScopedAdvancedTimer timer("propagateTopologicalChanges");
+        SCOPED_TIMER("propagateTopologicalChanges");
         propagateTopologicalChanges();
     }
 
     {
-        helper::ScopedAdvancedTimer timer("removePointsProcess");
+        SCOPED_TIMER("removePointsProcess");
         removePointsProcess(indices, removeDOF);
     }
 }
@@ -390,7 +390,7 @@ void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indic
 void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &indices,
         const bool removeDOF)
 {
-    helper::ScopedAdvancedTimer timer("removePointsWarning");
+    SCOPED_TIMER("removePointsWarning");
     m_container->setPointTopologyToDirty();
 
     // sort points so that they are removed in a descending order
@@ -411,7 +411,7 @@ void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &
 void PointSetTopologyModifier::removePointsProcess(const sofa::type::vector<PointID> & indices,
         const bool removeDOF)
 {
-    helper::ScopedAdvancedTimer timer("removePointsProcess");
+    SCOPED_TIMER("removePointsProcess");
     if(removeDOF)
     {
         propagateStateChanges();
@@ -472,7 +472,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
         return;
 
-    helper::ScopedAdvancedTimer timer("PointSetTopologyModifier::propagateTopologicalEngineChanges");
+    SCOPED_TIMER("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
 
     auto& pointTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::POINT);
