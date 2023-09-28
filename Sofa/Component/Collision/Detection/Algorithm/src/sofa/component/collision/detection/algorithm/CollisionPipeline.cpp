@@ -258,7 +258,7 @@ void CollisionPipeline::doCollisionResponse()
         << "Create Contacts " << contactManager->getName() ;
 
     {
-        helper::ScopedAdvancedTimer createContactsTimer("CreateContacts");
+        SCOPED_TIMER_VARNAME(createContactsTimer, "CreateContacts");
         contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
     }
 
@@ -270,7 +270,7 @@ void CollisionPipeline::doCollisionResponse()
     type::vector<Contact::SPtr> notStaticContacts;
 
     {
-        helper::ScopedAdvancedTimer createStaticObjectsResponseTimer("CreateStaticObjectsResponse");
+        SCOPED_TIMER_VARNAME(createStaticObjectsResponseTimer, "CreateStaticObjectsResponse");
         for (const auto& contact : contacts)
         {
             const auto collisionModels = contact->getCollisionModels();

@@ -134,7 +134,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    helper::ScopedAdvancedTimer timer("Update Triangle2EdgeTopologicalMapping");
+    SCOPED_TIMER("Update Triangle2EdgeTopologicalMapping");
 
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();

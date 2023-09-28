@@ -179,7 +179,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    helper::ScopedAdvancedTimer timer("Update Quad2TriangleTopologicalMapping");
+    SCOPED_TIMER("Update Quad2TriangleTopologicalMapping");
 
     TriangleSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);

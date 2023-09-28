@@ -40,7 +40,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::Me
     allocateSystem();
 
     {
-        sofa::helper::ScopedAdvancedTimer mappingGraphTimer("getContributors");
+        SCOPED_TIMER_VARNAME(mappingGraphTimer, "getContributors");
 
         m_forceFields.clear();
         m_masses.clear();
@@ -63,7 +63,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::Me
     }
 
     {
-        sofa::helper::ScopedAdvancedTimer mappingGraphTimer("buildMappingGraph");
+        SCOPED_TIMER_VARNAME(mappingGraphTimer, "buildMappingGraph");
         // build the mapping graph: this is used to know the relationship between the mechanical states and their associated components
         m_mappingGraph.build(mparams, getSolveContext());
     }

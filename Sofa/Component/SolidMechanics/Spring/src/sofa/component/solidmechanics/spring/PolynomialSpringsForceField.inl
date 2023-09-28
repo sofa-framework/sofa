@@ -402,7 +402,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
 {
     msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
 
-    helper::ScopedAdvancedTimer timer("restShapeSpringAddKToMatrix");
+    SCOPED_TIMER("restShapeSpringAddKToMatrix");
 
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     unsigned int firstIndex = 0;

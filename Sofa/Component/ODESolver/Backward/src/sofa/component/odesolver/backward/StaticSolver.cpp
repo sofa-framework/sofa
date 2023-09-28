@@ -164,7 +164,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     // # the residual with the updated right-hand side (the new load increment)  #
     // ###########################################################################
     {
-        helper::ScopedAdvancedTimer computeForceTimer("ComputeForce");
+        SCOPED_TIMER_VARNAME(computeForceTimer, "ComputeForce");
 
         // Step 1   Assemble the force vector
         // 1. Clear the force vector (F := 0)

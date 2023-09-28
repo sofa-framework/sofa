@@ -148,7 +148,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    helper::ScopedAdvancedTimer timer("Update Tetra2TriangleTopologicalMapping");
+    SCOPED_TIMER("Update Tetra2TriangleTopologicalMapping");
 
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();

@@ -309,7 +309,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
 template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/, DataVecDeriv& dataf, const DataVecCoord& datax, const DataVecDeriv& /*v*/)
 {
-    helper::ScopedAdvancedTimer timer("addForceDiffusion");
+    SCOPED_TIMER("addForceDiffusion");
 
     auto f = sofa::helper::getWriteOnlyAccessor(dataf);
     const VecCoord& x = datax.getValue();
@@ -334,7 +334,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::Mechani
 template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX)
 {
-    helper::ScopedAdvancedTimer timer("addDForceDiffusion");
+    SCOPED_TIMER("addDForceDiffusion");
     auto df = sofa::helper::getWriteOnlyAccessor(datadF);
     const VecDeriv& dx=datadX.getValue();
     Real kFactor = mparams->kFactor();
@@ -359,7 +359,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
 template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    helper::ScopedAdvancedTimer timer("addKToMatrix");
+    SCOPED_TIMER("addKToMatrix");
     const auto N = defaulttype::DataTypeInfo<Deriv>::size();
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = r.matrix;

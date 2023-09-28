@@ -1317,25 +1317,25 @@ void VisualModelImpl::updateVisual()
         }
 
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computePositions");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computePositions");
             computePositions();
         }
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeNormals");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeNormals");
             computeNormals();
         }
         if (m_updateTangents.getValue())
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeTangents");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeTangents");
             computeTangents();
         }
         if (m_vtexcoords.getValue().size() == 0)
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeUVSphereProjection");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();
         }
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::updateBuffers");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::updateBuffers");
             updateBuffers();
         }
 
