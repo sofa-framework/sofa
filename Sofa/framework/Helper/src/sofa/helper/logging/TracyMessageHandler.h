@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,16 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/*****************************************************************************
+* User of this library should read the documentation
+* in the messaging.h file.
+******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/helper/logging/MessageHandler.h>
+#include <sofa/helper/config.h>
 
-#define SOFAMESHCOLLISION_VERSION @PROJECT_VERSION@
+namespace sofa::helper::logging
+{
 
-#ifdef SOFA_BUILD_SOFAMESHCOLLISION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFAMESHCOLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAMESHCOLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+class MessageFormatter;
+
+/// Send the message to the Tracy profiler
+class SOFA_HELPER_API TracyMessageHandler : public MessageHandler
+{
+public:
+    /// Create a new ConsoleMessageHandler. By default the handler is using the
+    /// DefaultStyleMessageFormatter object to format the message.
+    TracyMessageHandler(MessageFormatter* formatter = nullptr);
+    void process(Message &m) override ;
+    void setMessageFormatter( MessageFormatter* formatter );
+
+private:
+    MessageFormatter *m_formatter { nullptr };
+
+};
+
+///
+/// \brief The MainTracyMessageHandler class contains a singleton to TracyMessageHandler
+/// and offer static version of TracyMessageHandler API
+///
+/// \see TracyMessageHandler
+///
+class SOFA_HELPER_API MainTracyMessageHandler
+{
+public:
+    static TracyMessageHandler& getInstance() ;
+};
+} // namespace sofa::helper::logging
+

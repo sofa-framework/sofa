@@ -22,14 +22,4 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/simulation/SceneCheck.h")
-#include <sofa/simulation/SceneCheck.h>
-
-namespace sofa::_scenechecking_
-{
-    using sofa::simulation::SceneCheck;
-}
-namespace sofa::scenechecking
-{
-    using sofa::simulation::SceneCheck;
-} // namespace sofa::scenechecking
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/simulation/SceneCheck.h")

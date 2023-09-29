@@ -47,7 +47,7 @@ def addPart(node, name, index, filename1, filename2=None, translation=[0, 0, 0])
 
     part = node.addChild(name)
     part.addObject('MechanicalObject', template='Rigid3', position=[0,0,0,0,0,0,1])
-    part.addObject('RigidRigidMapping', index=index, globalToLocalCoords=True)
+    part.addObject('RigidMapping', index=index, globalToLocalCoords=True)
 
     addVisu(part, 1, filename1, translation=translation)
     addVisu(part, 2, filename2, translation=translation)

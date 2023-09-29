@@ -159,7 +159,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
-    ${SRC_ROOT}/proximity.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
     ${SRC_ROOT}/system/FileSystem.cpp
     ${SRC_ROOT}/system/Locale.cpp
@@ -197,6 +196,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_macosx.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
+endif()
+
+if (SOFA_TRACY)
+    list(APPEND HEADER_FILES ${SRC_ROOT}/logging/TracyMessageHandler.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/logging/TracyMessageHandler.cpp)
 endif()
 
 sofa_find_package(Sofa.Config REQUIRED)

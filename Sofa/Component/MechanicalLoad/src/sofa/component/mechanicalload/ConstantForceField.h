@@ -60,7 +60,7 @@ public:
 
     /// Force applied at each point, if per-point forces are not specified
     SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA()
-    sofa::core::objectmodel::lifecycle::RemovedData d_force{this, "force", "Replace \"force\" by using the \"forces\" data (providing only one force value) (PR #4019)}"};
+    sofa::core::objectmodel::lifecycle::RemovedData d_force{this, "v23.12", "v24.06", "force", "Replace \"force\" by using the \"forces\" data (providing only one force value) (PR #4019)}"};
 
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv > d_totalForce;

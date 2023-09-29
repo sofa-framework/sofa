@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <iterator>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
@@ -267,7 +268,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodEdges(){}
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
+    SCOPED_TIMER("addForceStandardTetraFEM");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -442,15 +443,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
     tetrahedronInfo.endEdit();
     edgeInfo.endEdit();
     d_f.endEdit();
-
-    sofa::helper::AdvancedTimer::stepEnd("addForceStandardTetraFEM");
 }
 
 
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceStandardTetraFEM");
+    SCOPED_TIMER("addDForceStandardTetraFEM");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -536,8 +535,6 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     edgeInfo.endEdit();
 //	tetrahedronInfo.endEdit();
     d_df.beginEdit();
-
-    sofa::helper::AdvancedTimer::stepEnd("addDForceStandardTetraFEM");
 }
 
 template<class DataTypes>
@@ -563,6 +560,35 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalge
         mat->add(N1,N1,  stiff);
         mat->add(N0,N1, -stiffTransposed);
         mat->add(N1,N0, -stiff);
+    }
+}
+
+template <class DataTypes>
+void StandardTetrahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const sofa::Size nbEdges = m_topology->getNbEdges();
+    const type::vector< Edge>& edgeArray=m_topology->getEdges();
+
+    const edgeInformationVector& edgeInf = edgeInfo.getValue();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (sofa::Size l = 0; l < nbEdges; ++l)
+    {
+        const auto& einfo = edgeInf[l];
+        const Index node0 = edgeArray[l][0];
+        const Index node1 = edgeArray[l][1];
+        const Index N0 = 3 * node0;
+        const Index N1 = 3 * node1;
+
+        const Matrix3& stiff = einfo.DfDx;
+        const Matrix3 stiffTransposed = stiff.transposed();
+
+        dfdx(N0, N0) +=  stiffTransposed;
+        dfdx(N1, N1) +=  stiff;
+        dfdx(N0, N1) += -stiffTransposed;
+        dfdx(N1, N0) += -stiff;
     }
 }
 

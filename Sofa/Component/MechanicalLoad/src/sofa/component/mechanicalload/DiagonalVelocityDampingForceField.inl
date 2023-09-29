@@ -31,7 +31,7 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
-    : dampingCoefficients(initData(&dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
+    : d_dampingCoefficients(initData(&d_dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
 {
 }
 
@@ -40,7 +40,7 @@ DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField(
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord&, const DataVecDeriv&_v)
 {
-    const auto coefs = sofa::helper::getReadAccessor(dampingCoefficients);
+    const auto coefs = sofa::helper::getReadAccessor(d_dampingCoefficients);
 
     if( !coefs.empty() )
     {
@@ -63,7 +63,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::Mechanic
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    const auto& coefs = dampingCoefficients.getValue();
+    const auto& coefs = d_dampingCoefficients.getValue();
     std::size_t nbDampingCoeff = coefs.size();
     const Real bfactor = (Real)mparams->bFactor();
 
@@ -98,7 +98,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::buildStiffnessMatrix(core::be
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
-    const auto& coefs = dampingCoefficients.getValue();
+    const auto& coefs = d_dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
 
     if (!nbDampingCoeff)
@@ -128,7 +128,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalge
 template <class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
 {
-    const auto& coefs = dampingCoefficients.getValue();
+    const auto& coefs = d_dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
 
     if (!nbDampingCoeff)

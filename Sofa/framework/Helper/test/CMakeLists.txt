@@ -8,6 +8,7 @@ set(SOURCE_FILES
     KdTree_test.cpp
     NameDecoder_test.cpp
     OptionsGroup_test.cpp
+    StringUtils_test.cpp
     TagFactory_test.cpp
     Utils_test.cpp
     accessor/ReadAccessor.cpp

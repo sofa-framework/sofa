@@ -111,10 +111,10 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleSystem(const core::Mechanical
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer assembleSystemTimer("AssembleSystem");
+    SCOPED_TIMER_VARNAME(assembleSystemTimer, "AssembleSystem");
 
     {
-        sofa::helper::ScopedAdvancedTimer buildMatricesTimer("buildMatrices");
+        SCOPED_TIMER_VARNAME(buildMatricesTimer, "buildMatrices");
 
         if (d_assembleStiffness.getValue())
         {
@@ -495,7 +495,7 @@ MatrixLinearSystem<TMatrix, TVector>::getLocalMatrixMap() const
 template<class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(const core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer timer("InitializeSystem");
+    SCOPED_TIMER("InitializeSystem");
 
     m_needClearLocalMatrices.updateIfDirty();
     if (m_needClearLocalMatrices.getValue())
@@ -510,7 +510,7 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
     m_discarder.m_globalMatrix = this->getSystemMatrix();
 
     {
-        sofa::helper::ScopedAdvancedTimer resizeTimer("resizeSystem");
+        SCOPED_TIMER_VARNAME(resizeTimer, "resizeSystem");
         const auto rowSize = this->getSystemMatrix() ? this->getSystemMatrix()->rowSize() : 0;
         const auto colSize = this->getSystemMatrix() ? this->getSystemMatrix()->colSize() : 0;
         this->resizeSystem(totalSize);
@@ -520,12 +520,12 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
             "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
     }
     {
-        sofa::helper::ScopedAdvancedTimer clearSystemTimer("clearSystem");
+        SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
         this->clearSystem();
     }
 
     {
-        sofa::helper::ScopedAdvancedTimer localMatricesTimer("initializeLocalMatrices");
+        SCOPED_TIMER_VARNAME(localMatricesTimer, "initializeLocalMatrices");
 
         if (d_assembleMass.getValue())
         {
@@ -757,12 +757,18 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
             continue;
         }
 
-        const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams);
-        const MappingJacobians<JacobianMatrixType> J1 = computeJacobiansFrom(pair[1], mparams);
+        LocalMappedMatrixType<Real>* crs = mappedMatrix.get();
+
+        crs->compress();
+        if (crs->colsValue.empty())
+        {
+            continue;
+        }
+
+        const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
+        const MappingJacobians<JacobianMatrixType> J1 = computeJacobiansFrom(pair[1], mparams, crs);
 
         const sofa::type::fixed_array<MappingJacobians<JacobianMatrixType>, 2> mappingMatricesMap { J0, J1 };
-
-        LocalMappedMatrixType<Real>* crs = mappedMatrix.get();
 
         sofa::component::linearsystem::addMappedMatrixToGlobalMatrixEigen(
             pair, crs, mappingMatricesMap, m_mappingGraph, this->getSystemMatrix());
@@ -770,7 +776,32 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
 }
 
 template <class TMatrix, class TVector>
-auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams)
+std::vector<unsigned int> MatrixLinearSystem<TMatrix, TVector>::identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs)
+{
+    const auto blockSize = mstate->getMatrixBlockSize();
+    std::set<unsigned int> setAffectedDoFs;
+
+    for (std::size_t it_rows_k = 0; it_rows_k < crs->rowIndex.size(); it_rows_k++)
+    {
+        const auto row = crs->rowIndex[it_rows_k];
+        {
+            const sofa::SignedIndex dofId = row / blockSize;
+            setAffectedDoFs.insert(dofId);
+        }
+        typename LocalMappedMatrixType<Real>::Range rowRange(crs->rowBegin[it_rows_k], crs->rowBegin[it_rows_k + 1]);
+        for (auto xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-null block
+        {
+            const sofa::SignedIndex col = crs->colsIndex[xj];
+            const sofa::SignedIndex dofId = col / blockSize;
+            setAffectedDoFs.insert(dofId);
+        }
+    }
+
+    return std::vector( setAffectedDoFs.begin(), setAffectedDoFs.end() );
+}
+
+template <class TMatrix, class TVector>
+auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, LocalMappedMatrixType<Real>* crs)
 -> MappingJacobians<JacobianMatrixType>
 {
     auto cparams = core::ConstraintParams(*mparams);
@@ -786,9 +817,15 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
 
     auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
 
-    sofa::type::vector<unsigned int> listAffectedDoFs(mstate->getSize());
-    std::iota(listAffectedDoFs.begin(), listAffectedDoFs.end(), 0);
-    mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
+    {
+        const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
+
+        if (listAffectedDoFs.empty())
+        {
+            return jacobians;
+        }
+        mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
+    }
 
     const auto parentMappings = getMappingGraph().getBottomUpMappingsFrom(mstate);
     for (auto* mapping : parentMappings)
@@ -819,7 +856,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleMappedMatrices(const core::Me
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer buildMappedMatricesTimer("projectMappedMatrices");
+    SCOPED_TIMER_VARNAME(buildMappedMatricesTimer, "projectMappedMatrices");
     projectMappedMatrices(mparams);
 }
 
@@ -827,7 +864,7 @@ template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::applyProjectiveConstraints(const core::MechanicalParams* mparams)
 {
     SOFA_UNUSED(mparams);
-    sofa::helper::ScopedAdvancedTimer applyProjectiveConstraintTimer("applyProjectiveConstraint");
+    SCOPED_TIMER_VARNAME(applyProjectiveConstraintTimer, "applyProjectiveConstraint");
     for (auto* constraint : this->m_projectiveConstraints)
     {
         if (constraint)

@@ -385,6 +385,21 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(const core::Mechanical
     }
 }
 
+template <class TDataTypes>
+void LinearMovementConstraint<TDataTypes>::applyConstraint(
+    sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    constexpr unsigned int N = Deriv::size();
+
+    for (const auto index : m_indices.getValue())
+    {
+        for (unsigned int c = 0; c < N; ++c)
+        {
+            matrix->discardRowCol(N * index + c, N * index + c);
+        }
+    }
+}
+
 //display the path the constrained dofs will go through
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)

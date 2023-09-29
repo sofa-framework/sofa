@@ -851,7 +851,7 @@ void VisualModelImpl::initFromTopology()
     // add the functions to handle topology changes.
     if (m_handleDynamicTopology.getValue())
     {
-        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::QUAD || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::HEXAHEDRON)
+        if (m_topology->getTopologyType() == sofa::geometry::ElementType::QUAD || m_topology->getTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
         {
             m_quads.createTopologyHandler(m_topology);
             m_quads.setCreationCallback([](sofa::Index elemID, VisualQuad& visuQuad,
@@ -867,7 +867,7 @@ void VisualModelImpl::initFromTopology()
         }
 
 
-        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TRIANGLE || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TETRAHEDRON)
+        if (m_topology->getTopologyType() == sofa::geometry::ElementType::TRIANGLE || m_topology->getTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
         {
             m_triangles.createTopologyHandler(m_topology);
             m_triangles.setCreationCallback([](sofa::Index elemID, VisualTriangle& visuTri,
@@ -882,7 +882,7 @@ void VisualModelImpl::initFromTopology()
             });
         }
 
-        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
+        if (m_topology->getTopologyType() == sofa::geometry::ElementType::EDGE)
         {
             m_edges.createTopologyHandler(m_topology);
             m_edges.setCreationCallback([](sofa::Index elemID, VisualEdge& visuEdge,
@@ -1317,25 +1317,25 @@ void VisualModelImpl::updateVisual()
         }
 
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computePositions");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computePositions");
             computePositions();
         }
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeNormals");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeNormals");
             computeNormals();
         }
         if (m_updateTangents.getValue())
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeTangents");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeTangents");
             computeTangents();
         }
         if (m_vtexcoords.getValue().size() == 0)
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeUVSphereProjection");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();
         }
         {
-            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::updateBuffers");
+            SCOPED_TIMER_VARNAME(t, "VisualModelImpl::updateBuffers");
             updateBuffers();
         }
 

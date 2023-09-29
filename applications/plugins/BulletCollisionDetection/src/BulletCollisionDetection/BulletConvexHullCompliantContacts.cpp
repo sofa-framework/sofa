@@ -4,9 +4,9 @@
 #include <Compliant/contact/FrictionCompliantContact.h>
 
 
-#include <SofaConstraint/FrictionContact.inl>
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/contact/FrictionContact.inl>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include "BulletConvexHullContactMapper.h"
 
 

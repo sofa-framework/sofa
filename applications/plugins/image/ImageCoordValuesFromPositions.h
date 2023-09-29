@@ -186,7 +186,7 @@ public:
       , addPosition(initData(&addPosition,true,"addPosition","add positions to interpolated values (to get translated positions)"))
       , time((unsigned int)0)
     {
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        helper::OptionsGroup InterpolationOptions{"Nearest", "Linear", "Cubic"};
         InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
         Interpolation.setValue(InterpolationOptions);
 

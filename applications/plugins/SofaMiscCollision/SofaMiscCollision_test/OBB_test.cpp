@@ -30,6 +30,8 @@ using sofa::testing::BaseTest;
 #include "OBBCapsPrimitiveCreator.h"
 #include <SofaMeshCollision_test/MeshPrimitiveCreator.h>
 
+
+// DEPRECATED includes
 #include <SofaBaseCollision/BaseIntTool.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 

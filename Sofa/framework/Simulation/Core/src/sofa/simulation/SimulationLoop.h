@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,6 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-
-SOFA_DISABLED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.h")
+#ifdef TRACY_ENABLE
+#include <tracy/Tracy.hpp>
+#define SIMULATION_LOOP_SCOPE FrameMark;
+#else
+#define SIMULATION_LOOP_SCOPE
+#endif

@@ -23,9 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h")
-#include <MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h>
-namespace sofa::simulation
-{
-    using AnimationLoopParallelScheduler = multithreading::component::animationloop::AnimationLoopParallelScheduler;
-}
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h")

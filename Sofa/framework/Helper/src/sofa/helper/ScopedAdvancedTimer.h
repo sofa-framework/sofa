@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <optional>
 #include <sofa/helper/config.h>
 #include<string>
 
@@ -40,11 +41,33 @@ namespace sofa::helper
 struct SOFA_HELPER_API ScopedAdvancedTimer
 {
     AdvancedTimer::IdStep m_id;
+    std::optional<AdvancedTimer::IdObj> m_objId;
 
     explicit ScopedAdvancedTimer(const std::string& message);
     explicit ScopedAdvancedTimer( const char* message );
+
+    template<class T>
+    explicit ScopedAdvancedTimer(const char* message, T* obj);
+
     ~ScopedAdvancedTimer();
 };
 
+
+template <class T>
+ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
+    : m_id(message)
+    , m_objId(obj->getName())
+{
+    AdvancedTimer::stepBegin(m_id, *m_objId);
+}
+
 } /// sofa::helper
 
+#ifdef TRACY_ENABLE
+    #include <tracy/Tracy.hpp>
+    #define SCOPED_TIMER(name) ZoneScopedN(name)
+    #define SCOPED_TIMER_VARNAME(varname, name) ZoneNamedN(varname, name, true)
+#else
+    #define SCOPED_TIMER(name) sofa::helper::ScopedAdvancedTimer timer(name)
+    #define SCOPED_TIMER_VARNAME(varname, name) sofa::helper::ScopedAdvancedTimer varname(name)
+#endif

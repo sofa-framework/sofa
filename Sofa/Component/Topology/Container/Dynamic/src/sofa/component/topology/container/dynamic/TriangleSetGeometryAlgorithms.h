@@ -266,7 +266,7 @@ public:
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
-     * @return List of object intersect (type enum @see core::topology::TopologyElementType)
+     * @return List of object intersect (type enum @see geometry::ElementType)
      * @return List of indices of these objetcs
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
@@ -274,7 +274,7 @@ public:
     bool computeIntersectedObjectsList (const PointID last_point,
             const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+            sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
             sofa::type::vector<ElemID>& indices_list,
             sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const;
 
@@ -324,7 +324,7 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
         sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
         sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
@@ -334,13 +334,13 @@ public:
     /* void SnapAlongPath (sofa::type::vector<TriangleID>& triangles_list, sofa::type::vector<EdgeID>& edges_list,
       sofa::type::vector<Real>& coords_list, sofa::type::vector<Real>& points2Snap);*/
 
-    void SnapAlongPath(sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+    void SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
         Real epsilonSnapPath);
 
     void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
         sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,

@@ -58,12 +58,10 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes));
 
 protected:
-
     DiagonalMass()
     {
         this->d_lumping.setValue(true);
     }
-
 };
 
 } // namespace sofa::component::mass

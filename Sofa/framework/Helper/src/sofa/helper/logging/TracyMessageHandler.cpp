@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,8 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/config.h>
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
+#include <sofa/helper/logging/TracyMessageHandler.h>
+#include <sofa/helper/logging/MessageFormatter.h>
+#ifdef TRACY_ENABLE
+#include <tracy/Tracy.hpp>
+#endif
 
-SOFA_DISABLED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")
+
+namespace sofa::helper::logging
+{
+
+TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
+    : m_formatter(formatter)
+{
+    if (m_formatter == nullptr)
+    {
+        m_formatter = &DefaultStyleMessageFormatter::getInstance();
+    }
+}
+
+void TracyMessageHandler::process(Message& m)
+{
+#ifdef TRACY_ENABLE
+    std::stringstream ss;
+    m_formatter->formatMessage(m, ss) ;
+    TracyMessage(ss.str().c_str(), ss.str().size());
+#endif
+}
+
+void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+{
+    m_formatter = formatter;
+}
+
+TracyMessageHandler& MainTracyMessageHandler::getInstance()
+{
+    static TracyMessageHandler s_instance;
+    return s_instance;
+}
+
+}

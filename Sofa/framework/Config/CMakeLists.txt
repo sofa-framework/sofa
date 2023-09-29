@@ -63,13 +63,6 @@ if(MSVC)
 endif()
 option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theoretically faster but can bring unexpected results/bugs)." OFF)
 
-### Mask
-### Removed since v21.12
-### Warn the user if he set the option by himself
-if(SOFA_USE_MASK)
-    message(WARNING "SOFA_USE_MASK is set ; use of ForceMask has been removed in v21.12. If you are using this feature, your own code will most likely not compile anymore.
-            For more information: https://github.com/sofa-framework/sofa/pull/2316")
-endif()
 
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with development extra features." ON)
@@ -126,11 +119,19 @@ set(SOFACONFIG_LINK_OPTIONS "")
 set(SOFACONFIG_LINK_OPTIONS_DEBUG "")
 set(SOFACONFIG_LINK_OPTIONS_RELEASE "")
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
-
 ## Link-time optimization
-if (IS_IPO_SUPPORTED)
+if(NOT IPO_CHECK_DONE)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
+    set(IPO_CHECK_DONE ON CACHE INTERNAL "IPO check has been done" FORCE)
+    if (IS_IPO_SUPPORTED)
+        set(IPO_SUPPORTED ON CACHE INTERNAL "IPO can be activated" FORCE)
+    else()
+        message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
+    endif()
+endif()
+
+if (IPO_SUPPORTED)
     # Focus on max speed with link-time optimization
     option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable interprocedural optimization" OFF)
     if (SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
@@ -238,6 +239,24 @@ if(SOFA_OPENMP)
     else()
         message("WARNING: Your compiler does not implement OpenMP.")
     endif()
+endif()
+
+## Tracy
+option(SOFA_TRACY "Compile SOFA with the Tracy profiler client")
+if (SOFA_TRACY)
+    set(SOFA_TRACY_VERSION v0.9.1)
+    include(FetchContent)
+    option(TRACY_STATIC "Whether to build Tracy as a static library" OFF)
+    FetchContent_Declare (
+        tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+        GIT_TAG ${SOFA_TRACY_VERSION}
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
+    )
+    FetchContent_MakeAvailable (tracy)
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient )
+    message(STATUS "SOFA is compiled with the Tracy profiler client. Use the Tracy server ${SOFA_TRACY_VERSION}.")
 endif()
 
 # An important C++11 feature may be not enabled due to

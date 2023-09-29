@@ -47,6 +47,12 @@ using sofa::helper::system::FileSystem ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;
 
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+using sofa::simulation::SimulationInitDoneEvent;
+
+#include <sofa/simulation/PropagateEventVisitor.h>
+using sofa::simulation::PropagateEventVisitor;
+
 namespace{
 const std::string tempdir = FileRepository().getTempPath() ;
 
@@ -87,13 +93,18 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <VisualModelOBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
+                "   <VisualModelOBJExporter name='exporter1' printLog='false' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
+
+        // SimulationInitDoneEvent is used to trigger exportAtBegin
+        SimulationInitDoneEvent endInit;
+        PropagateEventVisitor pe{sofa::core::execparams::defaultInstance(), &endInit};
+        root->execute(pe);
 
         sofa::simulation::node::animate(root.get(), 0.5);
 
@@ -113,7 +124,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <VisualModelOBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <VisualModelOBJExporter name='exporterA' printLog='false' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str());

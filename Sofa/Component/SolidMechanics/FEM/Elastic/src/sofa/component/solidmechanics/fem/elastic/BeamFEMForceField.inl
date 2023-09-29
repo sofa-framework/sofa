@@ -70,21 +70,11 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     d_youngModulus.setReadOnly(true);
 }
 
+
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 {
-
 }
-
-template <class DataTypes>
-void BeamFEMForceField<DataTypes>::bwdInit()
-{
-    const core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    if(!state)
-        msg_warning() << "Missing mechanical state";
-    m_lastUpdatedStep=-1.0;
-}
-
 
 
 template <class DataTypes>

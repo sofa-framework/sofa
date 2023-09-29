@@ -37,9 +37,6 @@ using sofa::helper::TriangleOctree;
 
 int RayTraceNarrowPhaseClass = core::RegisterObject("Collision detection using TriangleOctreeModel").add < RayTraceNarrowPhase > ();
 
-RayTraceNarrowPhase::RayTraceNarrowPhase()
-:bDraw (initData(&bDraw, false, "draw","enable/disable display of results"))
-{}
 
 void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
@@ -226,46 +223,6 @@ void RayTraceNarrowPhase::addCollisionPair (const std::pair <
         findPairsVolume (cm1, cm2);
         findPairsVolume (cm2, cm1);
     }
-}
-
-
-void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
-{
-    if (!bDraw.getValue ())
-        return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->disableLighting();
-
-    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
-    vparams->drawTool()->setPolygonMode(0, true);
-    std::vector<sofa::type::Vec3> vertices;
-
-    const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
-
-    for (DetectionOutputMap::const_iterator it = outputsMap.begin ();
-         it != outputsMap.end (); ++it)
-    {
-        TDetectionOutputVector < TriangleOctreeModel,
-        TriangleOctreeModel > *outputs =
-                static_cast <
-                        sofa::core::collision::TDetectionOutputVector <
-                                TriangleOctreeModel, TriangleOctreeModel > *>(it->second);
-        for (TDetectionOutputVector < TriangleOctreeModel,
-                TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
-             it2 != outputs->end (); ++it2)
-        {
-            vertices.push_back(sofa::type::Vec3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::type::Vec3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
-
-            msg_error() << it2->point[0] << " " << it2->point[0];
-
-            it2->elem.first.draw(vparams);
-            it2->elem.second.draw(vparams);
-        }
-    }
-    vparams->drawTool()->drawLines(vertices,3,color);
-
 }
 
 } // namespace sofa::component::collision::detection::algorithm

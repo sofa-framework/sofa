@@ -135,12 +135,6 @@ void LeapMotionDriver::init()
 }
 
 
-void LeapMotionDriver::bwdInit()
-{
-    msg_info() <<"LeapMotionDriver::bwdInit()";
-}
-
-
 void LeapMotionDriver::reset()
 {
     msg_info() <<"LeapMotionDriver::reset()";

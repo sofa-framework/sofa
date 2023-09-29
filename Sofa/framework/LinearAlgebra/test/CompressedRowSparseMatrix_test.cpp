@@ -218,3 +218,33 @@ TEST(CompressedRowSparseMatrix, fullRowsWithEntries)
     EXPECT_NO_THROW(A.fullRows());
     EXPECT_EQ(A.getRowIndex().size(), 1321);
 }
+
+
+TEST(CompressedRowSparseMatrix, copyNonZeros)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+    const auto numberNonZeroValues3 = B.colsValue.size();
+
+    EXPECT_EQ(B.rowBSize(), A.rowBSize());
+    EXPECT_EQ(B.colBSize(), A.colBSize());
+
+    EXPECT_EQ(B.rowSize(), A.rowSize());
+    EXPECT_EQ(B.colSize(), A.colSize());
+
+    EXPECT_EQ(numberNonZeroValues1, numberNonZeroValues3);
+}

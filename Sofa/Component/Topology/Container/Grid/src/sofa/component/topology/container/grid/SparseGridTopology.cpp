@@ -134,6 +134,12 @@ void SparseGridTopology::init()
     for(unsigned i=0; i<seqPoints.getValue().size(); ++i)
         _nodeAdjacency[i].assign(InvalidID);
 
+    if (_nodeAdjacency.empty())
+    {
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     const auto& hexahedra = seqHexahedra.getValue();
 
     for(unsigned i=0; i<hexahedra.size(); ++i)
@@ -183,7 +189,7 @@ void SparseGridTopology::init()
         }
     }
 
-    m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+    m_upperElementType = geometry::ElementType::HEXAHEDRON;
 
 }
 
@@ -198,7 +204,7 @@ void SparseGridTopology::buildAsFinest(  )
     }
     else
     {
-        const std::string _filename = fileTopology.getFullPath();
+        const std::string& _filename = fileTopology.getFullPath();
 
         if (_filename.length() > 4 && _filename.compare(_filename.length() - 4, 4, ".raw") == 0)
         {
@@ -998,6 +1004,12 @@ void SparseGridTopology::computeBoundingBox(const type::vector<type::Vec3>& vert
 
 void SparseGridTopology::buildFromFiner()
 {
+    if (_finerSparseGrid->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     setNx( _finerSparseGrid->getNx()/2+1 );
     setNy( _finerSparseGrid->getNy()/2+1 );
     setNz( _finerSparseGrid->getNz()/2+1 );
@@ -1053,7 +1065,6 @@ void SparseGridTopology::buildFromFiner()
                     if( fineIndices[w] == InvalidID ) inside=false;
                     else
                     {
-
                         if( _finerSparseGrid->getType( fineIndices[w] ) == BOUNDARY ) { inside=false; outside=false; }
                         else if( _finerSparseGrid->getType( fineIndices[w] ) == INSIDE ) {outside=false;}
                     }
@@ -1090,7 +1101,6 @@ void SparseGridTopology::buildFromFiner()
             }
         }
     }
-
 
     // compute corner indices
     int cornerCounter=0;

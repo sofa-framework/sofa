@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Node dt="0.01" gravity="0 -10 0" bbox="-4 -4 -4 4 4 4">
+<Node dt="0.01" gravity="0 -10 0" bbox="-6 -6 -6  6 6 6">
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -8,9 +8,10 @@
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [OglFluidModel ParticleSink ParticleSource SPHFluidForceField SpatialGridContainer] -->
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
 
+    <DefaultAnimationLoop/>
     <Node name="Particles">
         <EulerExplicitSolver symplectic="1" />
-        <MechanicalObject name="MModel" />
+        <MechanicalObject name="MModel"/>
         <ParticleSource name="Source" translation="0 20 0" radius="0.01 0.1 0.01" velocity="0 -10 0" delay="0.02" start="0.0" stop="10" printLog="0"
         center="-0.375 0 -0.75 
             0.0 0.0 -0.75 
@@ -34,7 +35,7 @@
             0.0 0.0 0.75 
             0.375 0.0 0.75"  />
         
-        <UniformMass name="M1" totalMass="1.0" />
+        <UniformMass name="M1" vertexMass="1.0" />
         <PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
         

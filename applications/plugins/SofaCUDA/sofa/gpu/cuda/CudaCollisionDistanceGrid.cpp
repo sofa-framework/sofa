@@ -26,8 +26,8 @@
 #include "CudaContactMapper.h"
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaDistanceGridCollisionModel.h"
-#include <sofa/gpu/cuda/CudaSphereModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 
 #include <sofa/gui/component/performer/MouseInteractor.inl>
 #include <sofa/gui/component/performer/ComponentMouseInteraction.inl>

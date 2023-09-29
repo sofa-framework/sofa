@@ -40,7 +40,7 @@ namespace sofa::core::topology
 * This class is a wrapper of class type::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: element added, removed, fused, renumbered).
 */
-template< class TopologyElementType, class VecT>
+template< class ElementType, class VecT>
 class TopologyData : public sofa::core::topology::BaseTopologyData<VecT>
 {
 
@@ -56,10 +56,10 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
-    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
-    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef geometry::ElementInfo<ElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<ElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
-    typedef typename sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>  TopologyDataElementHandler;
+    typedef typename sofa::core::topology::TopologyDataHandler< ElementType, VecT>  TopologyDataElementHandler;
     typedef typename TopologyDataElementHandler::TopologyChangeCallback TopologyChangeCallback;
 
     /// Constructor
@@ -89,7 +89,7 @@ public:
     /// Add some values. Values are added at the end of the vector.
     /// This (new) version gives more information for element indices and ancestry
     virtual void add(const sofa::type::vector<Index>& index,
-        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< ElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const sofa::type::vector< AncestorElem >& ancestorElems) override;
@@ -104,7 +104,7 @@ public:
 
     /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void addOnMovedPosition(const sofa::type::vector<Index>& indexList,
-        const sofa::type::vector< TopologyElementType >& elems);
+        const sofa::type::vector< ElementType >& elems);
 
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void removeOnMovedPosition(const sofa::type::vector<Index>& indices);
@@ -119,17 +119,17 @@ public:
     * This is only to specify a specific behevior/computation when adding an element in this container. Otherwise default constructor of the element is used.
     * @param Index of the element which is created.
     * @param value_type value hold by this container.
-    * @param TopologyElementType type of topologyElement created.
+    * @param ElementType type of topologyElement created.
     * @param List of ancestor indices.
     * @param List of coefficient respect to the ancestor indices.
     */
-    void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> func) { p_onCreationCallback = func; }
+    void setCreationCallback(std::function<void(Index, value_type&, const ElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> func) { p_onCreationCallback = func; }
 
     /// Method to add a Callback method to be registered in the TopologyHandler. This callback will be used when TopologyChangeType @sa type is fired.
     void addTopologyEventCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
 
     std::function<void(Index, value_type&)> p_onDestructionCallback;
-    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> p_onCreationCallback;
+    std::function<void(Index, value_type&, const ElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> p_onCreationCallback;
 
 protected:
     std::unique_ptr<TopologyDataElementHandler> m_topologyHandler;

@@ -30,24 +30,6 @@
 namespace sofa::core::collision
 {
 
-/**
- *  \brief Abstract description of a set of contact point.
- */
-
-class DetectionOutputVector
-{
-protected:
-    virtual ~DetectionOutputVector() {}
-public:
-    /// Clear the content of this vector
-    virtual void clear() = 0;
-    /// Current size (number of detected contacts
-    virtual unsigned int size() const = 0;
-    /// Test if the vector is empty
-    bool empty() const { return size()==0; }
-    /// Delete this vector from memory once the contact pair is no longer active
-    virtual void release() { delete this; }
-};
 
 
 /**
@@ -100,6 +82,30 @@ public:
     }
 };
 
+/**
+ *  \brief Abstract description of a set of contact point.
+ */
+
+class DetectionOutputVector
+{
+   protected:
+    virtual ~DetectionOutputVector() {}
+   public:
+    /// Clear the content of this vector
+    virtual void clear() = 0;
+    /// Current size (number of detected contacts
+    virtual unsigned int size() const = 0;
+    /// Test if the vector is empty
+    bool empty() const { return size()==0; }
+    /// Delete this vector from memory once the contact pair is no longer active
+    virtual void release() { delete this; }
+
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned idx) = 0;
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned idx) = 0;
+
+};
 
 
 /**
@@ -122,5 +128,18 @@ public:
     {
         return (unsigned int)this->Vector::size();
     }
+
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned idx) override
+    {
+        return (*this)[idx].point[0];
+    }
+
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned idx) override
+    {
+        return (*this)[idx].point[1];
+    }
+
 };
 } // namespace sofa::core::collision

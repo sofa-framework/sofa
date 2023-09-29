@@ -18,6 +18,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [ParticlesRepulsionForceField SpatialGridContainer] -->
 
+    <DefaultAnimationLoop/>
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

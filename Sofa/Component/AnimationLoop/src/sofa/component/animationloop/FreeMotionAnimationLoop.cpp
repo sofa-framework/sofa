@@ -383,7 +383,7 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
     {
-        sofa::helper::ScopedAdvancedTimer timer("FreeMotion");
+        SCOPED_TIMER("FreeMotion");
         simulation::SolveVisitor freeMotion(params, dt, true, d_parallelODESolving.getValue());
         node->execute(&freeMotion);
     }
@@ -394,7 +394,7 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
     if (cparams.constOrder() == sofa::core::ConstraintParams::POS ||
         cparams.constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
     {
-        sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
+        SCOPED_TIMER("freePosEqPosPlusFreeVelDt");
         MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
         freePosEqPosPlusFreeVelDt.setMapped(true);
         node->executeVisitor(&freePosEqPosPlusFreeVelDt);

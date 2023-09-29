@@ -435,10 +435,6 @@ WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::D
     return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 
-template<class T>
-SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) = delete;
-
 
 /// Returns a read accessor from the provided Data<>
 /// Example of use:
@@ -448,10 +444,6 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 {
     return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
-
-template<class T>
-SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data) = delete;
 
 /// Returns a write only accessor from the provided Data<>
 /// WriteOnly accessors are faster than WriteAccessor because

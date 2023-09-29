@@ -47,6 +47,12 @@ using sofa::helper::system::FileSystem ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;
 
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+using sofa::simulation::SimulationInitDoneEvent;
+
+#include <sofa/simulation/PropagateEventVisitor.h>
+using sofa::simulation::PropagateEventVisitor;
+
 #include <sofa/simulation/graph/SimpleApi.h>
 
 using ::testing::Types;
@@ -107,13 +113,18 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporter1' format='" << format << "' printLog='true' filename='" << filename << "' exportAtBegin='true' /> \n"
+                "   <MeshExporter name='exporter1' format='" << format << "' printLog='false' filename='" << filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n";
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
+
+        // SimulationInitDoneEvent is used to trigger exportAtBegin
+        SimulationInitDoneEvent endInit;
+        PropagateEventVisitor pe{sofa::core::execparams::defaultInstance(), &endInit};
+        root->execute(pe);
 
         sofa::simulation::node::animate(root.get(), 0.5);
 
@@ -138,7 +149,7 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='1'/> \n"
-                "   <MeshExporter name='exporterA' format='" << format << "' printLog='true' filename='" << filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <MeshExporter name='exporterA' format='" << format << "' printLog='false' filename='" << filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n";
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());

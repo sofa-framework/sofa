@@ -22,13 +22,4 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/component/collision/response/contact/CollisionResponse.h")
-
-#include <sofa/component/collision/response/contact/CollisionResponse.h>
-
-namespace sofa::component::collision::response::contact
-{
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONRESPONSE()
-    using DefaultContactManager= sofa::component::collision::response::contact::CollisionResponse;
-
-} // namespace sofa::component::collision::response::contact
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/component/collision/response/contact/CollisionResponse.h")
