@@ -61,7 +61,7 @@ public:
     Data<type::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
-#if  !defined(RIGIDTOQUATENGINE_CPP)
+#if !defined(RIGIDTOQUATENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API RigidToQuatEngine<defaulttype::Vec3Types>;
 #endif
 

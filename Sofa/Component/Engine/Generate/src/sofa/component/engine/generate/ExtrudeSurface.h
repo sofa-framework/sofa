@@ -73,7 +73,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeSurface<defaulttype::Vec3Types>;
  
 #endif

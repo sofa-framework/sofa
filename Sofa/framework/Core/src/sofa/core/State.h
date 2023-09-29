@@ -159,7 +159,7 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
-#if  !defined(SOFA_CORE_STATE_CPP)
+#if !defined(SOFA_CORE_STATE_CPP)
 extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API State<defaulttype::Vec1Types>;

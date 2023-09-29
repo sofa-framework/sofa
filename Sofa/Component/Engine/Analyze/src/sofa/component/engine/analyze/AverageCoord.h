@@ -67,7 +67,7 @@ public:
     void onBeginAnimationStep(const double /*dt*/);
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API AverageCoord<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API AverageCoord<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API AverageCoord<defaulttype::Rigid2Types>;

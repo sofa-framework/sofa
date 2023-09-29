@@ -167,7 +167,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangularBendingSprings<defaulttype::Vec3Types>;
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 

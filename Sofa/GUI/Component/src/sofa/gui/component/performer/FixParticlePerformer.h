@@ -119,7 +119,7 @@ protected:
     inline static MapTypeFunction* s_mapSupportedModels = nullptr;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API FixParticlePerformer<defaulttype::Vec3Types>;
 
 #endif

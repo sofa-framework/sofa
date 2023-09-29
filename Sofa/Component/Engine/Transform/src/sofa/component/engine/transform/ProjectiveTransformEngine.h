@@ -69,7 +69,7 @@ protected:
     Data<Real> focal_distance; ///< focal distance i.e. distance between the optical center and the image plane
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 

@@ -72,7 +72,7 @@ public:
 
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec1Types>;

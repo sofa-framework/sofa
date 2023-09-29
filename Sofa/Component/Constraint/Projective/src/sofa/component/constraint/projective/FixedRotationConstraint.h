@@ -72,7 +72,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
 extern template class FixedRotationConstraint<defaulttype::Rigid3Types>;
 
 #endif

@@ -81,7 +81,7 @@ public:
 };
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GenerateGrid<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GenerateGrid<defaulttype::Vec2Types>;
 

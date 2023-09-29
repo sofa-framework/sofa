@@ -180,7 +180,7 @@ private:
     type::vector<std::set<int> > neighborhood;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 

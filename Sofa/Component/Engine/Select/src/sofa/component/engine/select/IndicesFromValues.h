@@ -66,7 +66,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<std::string>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<int>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<unsigned int>;

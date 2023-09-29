@@ -129,7 +129,7 @@ protected:
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 #endif

@@ -218,7 +218,7 @@ private:
 
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_DistanceMultiMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_DistanceMultiMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 #endif

@@ -120,7 +120,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointConstraint<defaulttype::Vec1Types>;

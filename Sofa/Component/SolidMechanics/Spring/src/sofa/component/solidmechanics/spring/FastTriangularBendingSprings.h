@@ -210,7 +210,7 @@ protected:
     SReal m_potentialEnergy;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FastTriangularBendingSprings<defaulttype::Vec3Types>;
 
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)

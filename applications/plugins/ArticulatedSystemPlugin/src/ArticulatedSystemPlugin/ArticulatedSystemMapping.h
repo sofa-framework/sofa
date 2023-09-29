@@ -243,7 +243,7 @@ private:
     void checkIndexFromRoot();
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
 
 extern template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 

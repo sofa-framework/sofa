@@ -100,7 +100,7 @@ protected:
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
 
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 

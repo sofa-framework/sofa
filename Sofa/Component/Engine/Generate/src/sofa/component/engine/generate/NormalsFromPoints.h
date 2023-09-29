@@ -64,7 +64,7 @@ public:
     Data<bool> useAngles; ///< Use incident angles to weight faces normal contributions at each vertex
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API NormalsFromPoints<defaulttype::Vec3Types>; 
 #endif
 

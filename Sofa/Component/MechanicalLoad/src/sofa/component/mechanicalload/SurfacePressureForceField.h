@@ -170,7 +170,7 @@ template <>
 void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v, VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API SurfacePressureForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API SurfacePressureForceField<defaulttype::Rigid3Types>;

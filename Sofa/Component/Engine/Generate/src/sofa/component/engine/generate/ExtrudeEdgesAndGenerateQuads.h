@@ -76,7 +76,7 @@ protected:
     void checkInput();
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3Types>;
  
 #endif

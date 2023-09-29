@@ -157,7 +157,7 @@ template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const
 template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<defaulttype::Rigid3Types>;
 #endif

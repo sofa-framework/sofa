@@ -38,6 +38,7 @@ int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center
 ;
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< Rigid2Types, Vec2Types >;
 
 
 } // namespace sofa::component::mapping::linear

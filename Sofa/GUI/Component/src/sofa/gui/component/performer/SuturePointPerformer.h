@@ -70,7 +70,7 @@ protected:
     FixObjectType *FixObject;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
 #endif

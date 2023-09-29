@@ -78,7 +78,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 template<>
 inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha);
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::FullMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::SparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;

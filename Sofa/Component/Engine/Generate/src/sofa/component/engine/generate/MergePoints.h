@@ -66,7 +66,7 @@ public:
     Data<bool>     f_noUpdate; ///< do not update the output at eacth time step (false)
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergePoints<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergePoints<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergePoints<defaulttype::Vec3Types>;

@@ -157,10 +157,9 @@ private:
     void transform(const SetIndexArray & indices, VecCoord& x0 , VecCoord& xf);
 };
 
-#if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP)
+#if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENTCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Rigid3Types>;
-
-#endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
+#endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENTCONSTRAINT_CPP
 
 } // namespace sofa::component::constraint::projective

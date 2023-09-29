@@ -186,7 +186,7 @@ protected:
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadularBendingSprings<sofa::defaulttype::Vec3Types>;
 
