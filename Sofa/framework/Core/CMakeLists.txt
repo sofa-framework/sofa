@@ -142,7 +142,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/Data.h
     ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/DataContentValue.h
-    ${SRC_ROOT}/objectmodel/DataDefaultValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h

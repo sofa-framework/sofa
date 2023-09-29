@@ -27,7 +27,6 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
-#include <sofa/core/objectmodel/DataDefaultValue.h>
 namespace sofa
 {
 namespace core::objectmodel
@@ -69,7 +68,7 @@ namespace core::objectmodel
  * \endcode
  */
 template < class T = void* >
-class Data : public BaseData, protected DataDefaultValue<T>
+class Data : public BaseData
 {
 public:
     using value_type = T;
@@ -79,7 +78,6 @@ public:
     using BaseData::setDirtyOutputs;
     using BaseData::updateIfDirty;
     using BaseData::notifyEndEdit;
-    using DataDefaultValue<T>::storeDefaultValue;
 
     /// @name Construction / destruction
     /// @{
@@ -113,10 +111,7 @@ public:
     {
         m_value = ValueType(init.value);
         m_hasDefaultValue = true;
-        if constexpr (storeDefaultValue)
-        {
-            this->m_defaultValue = init.value;
-        }
+        m_defaultValue = init.value;
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
@@ -223,6 +218,7 @@ public:
 
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
+    T m_defaultValue;
 
     /// Value
     ValueType m_value;
@@ -279,14 +275,11 @@ std::string Data<T>::getValueString() const
 template<class T>
 std::string Data<T>::getDefaultValueString() const
 {
-    if constexpr (storeDefaultValue)
+    if (hasDefaultValue())
     {
-        if (hasDefaultValue())
-        {
-            std::ostringstream out;
-            out << this->m_defaultValue;
-            return out.str();
-        }
+        std::ostringstream out;
+        out << this->m_defaultValue;
+        return out.str();
     }
     return {};
 }
