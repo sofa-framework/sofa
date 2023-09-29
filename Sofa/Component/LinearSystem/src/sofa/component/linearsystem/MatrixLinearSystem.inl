@@ -62,7 +62,7 @@ MatrixLinearSystem<TMatrix, TVector>::MatrixLinearSystem()
     , d_applyMappedComponents     (initData(&d_applyMappedComponents,      true,  "applyMappedComponents",      "If true, mapped components contribute to the global matrix"))
     , d_checkIndices              (initData(&d_checkIndices,               false, "checkIndices",               "If true, indices are verified before being added in to the global matrix, favoring security over speed"))
     , d_parallelAssemblyIndependentMatrices
-        (initData(&d_parallelAssemblyIndependentMatrices, true, "parallelAssemblyIndependentMatrices", "If true, independent matrices (global matrix vs mapped matrices) are assembled in parallel"))
+        (initData(&d_parallelAssemblyIndependentMatrices, false, "parallelAssemblyIndependentMatrices", "If true, independent matrices (global matrix vs mapped matrices) are assembled in parallel"))
 {
     this->addUpdateCallback("updateCheckIndices", {&d_checkIndices}, [this](const core::DataTracker& t)
     {
