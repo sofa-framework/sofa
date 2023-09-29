@@ -78,7 +78,11 @@ int BatchGUI::mainLoop()
           
         signed int i = 1; //one simulation step is animated above
 
-        ProgressBar progressBar(nbIter);
+        std::unique_ptr<ProgressBar> progressBar;
+        if (!hideProgressBar)
+        {
+            progressBar = std::make_unique<ProgressBar>(nbIter);
+        }
 
         while (i <= nbIter || nbIter == -1)
         {
@@ -109,11 +113,13 @@ int BatchGUI::mainLoop()
                 }
             }
 
-            progressBar.tick();
+            if (progressBar)
+            {
+                progressBar->tick();
+            }
 
             i++;
         }
-
     }
     return 0;
 }
@@ -192,7 +198,11 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
         "(only batch) Number of iterations of the simulation",
         BatchGUI::OnNbIterChange
     );
-    //Parses the string and passes it to setNumIterations as argument
+    argumentParser->addArgument(
+        cxxopts::value<bool>(hideProgressBar)->default_value("false"),
+        "hideProgressBar",
+        "if defined, hides the progress bar"
+    );
     return 0;
 }
 

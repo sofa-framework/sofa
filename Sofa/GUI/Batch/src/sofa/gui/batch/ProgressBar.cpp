@@ -25,7 +25,9 @@
 
 namespace sofa::gui::batch
 {
-ProgressBar::ProgressBar(const int nbIterations): m_nbIterations(nbIterations)
+ProgressBar::ProgressBar(const int nbIterations)
+    : m_nbIterations(nbIterations)
+    , m_currentNbIterations(1)
 {
     if (nbIterations != -1)
     {
@@ -56,19 +58,32 @@ ProgressBar::ProgressBar(const int nbIterations): m_nbIterations(nbIterations)
     }
 
     indicators::show_console_cursor(false);
+    m_lastTick = std::chrono::high_resolution_clock::now();
 }
 
 ProgressBar::~ProgressBar()
 {
-    if (m_progressBar)
-    {
-        m_progressBar->mark_as_completed();
-    }
     indicators::show_console_cursor(true);
+}
+
+bool ProgressBar::isDurationFromLastTickEnough() const
+{
+    const auto now = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> durationFromLastTick = now - m_lastTick;
+    constexpr auto minimumDuration = std::chrono::milliseconds(1000 / 30); // 30Hz
+    return durationFromLastTick < minimumDuration;
 }
 
 void ProgressBar::tick()
 {
+    //checking that enough time has passed to update the progress bar
+    //otherwise it could slow down the simulation, printing too often in the console
+    if (m_currentNbIterations < m_nbIterations - 1 && isDurationFromLastTickEnough())
+    {
+        ++m_currentNbIterations;
+        return;
+    }
+
     if (m_nbIterations != -1 && m_progressBar)
     {
         m_progressBar->set_option(indicators::option::PostfixText{std::to_string(m_currentNbIterations) + "/" + std::to_string(m_nbIterations)});
@@ -79,6 +94,8 @@ void ProgressBar::tick()
         m_indeterminateProgressBar->tick();
         m_indeterminateProgressBar->set_option(indicators::option::PostfixText{std::to_string(m_currentNbIterations)});
     }
+
+    m_lastTick = std::chrono::high_resolution_clock::now();
     ++m_currentNbIterations;
 }
 

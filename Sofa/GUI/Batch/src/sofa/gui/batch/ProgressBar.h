@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <chrono>
 #include <sofa/gui/batch/config.h>
 #include <memory>
 
@@ -48,6 +49,9 @@ private:
 
     int m_nbIterations{1};
     int m_currentNbIterations{};
+
+    bool isDurationFromLastTickEnough() const;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTick;
 };
 
 }
