@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gui/batch/ProgressBar.h>
-#include "indicators.hpp"
+#include "indicators/indicators.hpp"
 #include <csignal>
 
 namespace sofa::gui::batch
