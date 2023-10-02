@@ -113,6 +113,50 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
     return true;
 }
 
+
+void LCPConstraintSolver::buildSystem()
+{
+    core::ConstraintParams cparams;
+
+    cparams.setX(core::ConstVecCoordId::freePosition());
+    cparams.setV(core::ConstVecDerivId::freeVelocity());
+
+    _numConstraints = 0;
+
+    resetConstraints(&cparams);
+    buildConstraintMatrix(&cparams, _numConstraints);
+    accumulateMatrixDeriv(&cparams);
+
+    const auto muValue = mu.getValue();
+
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
+
+    lcp->mu = muValue;
+    lcp->clear(_numConstraints);
+
+    {
+        SCOPED_TIMER("Get Constraint Value");
+        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
+    }
+
+    dmsg_info() << _numConstraints << " constraints, mu = " << muValue;
+
+    if (build_lcp.getValue())
+    {
+        addComplianceInConstraintSpace(cparams);
+    }
+    else
+    {
+        // When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
+        _Wdiag.resize(_numConstraints,_numConstraints);
+    }
+
+    buildHierarchy();
+
+    getConstraintInfo(cparams);
+
+}
+
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     const auto _mu = mu.getValue();
@@ -598,50 +642,6 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         msg_info() << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
                 << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
     }
-}
-
-
-void LCPConstraintSolver::buildSystem()
-{
-    core::ConstraintParams cparams;
-
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
-
-    _numConstraints = 0;
-
-    resetConstraints(&cparams);
-    buildConstraintMatrix(&cparams, _numConstraints);
-    accumulateMatrixDeriv(&cparams);
-
-    const auto muValue = mu.getValue();
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = muValue;
-    lcp->clear(_numConstraints);
-
-    {
-        SCOPED_TIMER("Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
-    }
-
-    dmsg_info() << _numConstraints << " constraints, mu = " << muValue;
-
-    if (build_lcp.getValue())
-    {
-        addComplianceInConstraintSpace(cparams);
-    }
-    else
-    {
-        // When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
-        _Wdiag.resize(_numConstraints,_numConstraints);
-    }
-
-    buildHierarchy();
-
-    getConstraintInfo(cparams);
-
 }
 
 void LCPConstraintSolver::computeInitialGuess()
