@@ -254,25 +254,3 @@ protected:
 };
 
 } // namespace sofa::core
-
-#define CONSTORDER_TIMER_STRINGIZE(x) #x
-
-/// Tracy only allows constant strings for naming a zone.
-/// The following macro is a trick to allow dynamic names based on a finite
-/// number of enumerations.
-#ifdef TRACY_ENABLE
-    #define CONSTORDER_TIMER(prefix, varname, constOrder) \
-        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataPos { CONSTORDER_TIMER_STRINGIZE(prefix ## : POSITION), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
-        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataVel { CONSTORDER_TIMER_STRINGIZE(prefix ## : VELOCITY), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
-        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataAcc { CONSTORDER_TIMER_STRINGIZE(prefix ## : ACCELERATION), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
-        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataPosAndVel { CONSTORDER_TIMER_STRINGIZE(prefix ## : POSITION AND VELOCITY), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
-        const tracy::SourceLocationData* data { nullptr };\
-        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::POS) data = &sofaConstOrderSourceLocationDataPos;\
-        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::VEL) data = &sofaConstOrderSourceLocationDataVel;\
-        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::ACC) data = &sofaConstOrderSourceLocationDataAcc;\
-        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::POS_AND_VEL) data = &sofaConstOrderSourceLocationDataPosAndVel;\
-        tracy::ScopedZone varname( data, true );
-#else
-    #define CONSTORDER_TIMER(prefix, varname, constOrder) \
-        sofa::helper::ScopedAdvancedTimer varname(CONSTORDER_TIMER_STRINGIZE(prefix) + std::string(": ") + std::string(sofa::core::ConstraintParams::constOrderToString(constOrder)));
-#endif

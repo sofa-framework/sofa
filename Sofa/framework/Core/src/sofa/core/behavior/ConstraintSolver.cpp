@@ -33,17 +33,17 @@ ConstraintSolver::~ConstraintSolver() = default;
 
 void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
 {
-    CONSTORDER_TIMER(SolveConstraint, solveConstraintTimer, cParams->constOrder())
+    SCOPED_TIMER("SolveConstraint");
 
     bool continueSolving = true;
     {
-        CONSTORDER_TIMER(PrepareState, prepareStateTimer, cParams->constOrder())
+        SCOPED_TIMER("PrepareState");
         continueSolving = prepareStates(cParams, res1, res2);
     }
 
     if (continueSolving)
     {
-        CONSTORDER_TIMER(BuildSystem, buildSystemTimer, cParams->constOrder())
+        SCOPED_TIMER("BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
 
         postBuildSystem(cParams);
@@ -51,7 +51,7 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        CONSTORDER_TIMER(SolveSystem, solveSystemTimer, cParams->constOrder())
+        SCOPED_TIMER("SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
 
         postSolveSystem(cParams);
@@ -59,7 +59,7 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        CONSTORDER_TIMER(ApplyCorrection, applyCorrectionTimer, cParams->constOrder())
+        SCOPED_TIMER("ApplyCorrection");
         applyCorrection(cParams, res1, res2);
     }
 }
