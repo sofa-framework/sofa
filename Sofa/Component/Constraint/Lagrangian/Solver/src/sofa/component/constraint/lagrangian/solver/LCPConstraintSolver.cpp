@@ -95,13 +95,6 @@ LCPConstraintSolver::~LCPConstraintSolver()
 {
 }
 
-void LCPConstraintSolver::init()
-{
-    ConstraintSolverImpl::init();
-
-    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-}
-
 void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 {
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
@@ -125,13 +118,6 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
 bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-
-    // Test if the nodes containing the constraint correction are active (not sleeping)
-    for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-    {
-        constraintCorrectionIsActive[i] = !l_constraintCorrections[i]->getContext()->isSleeping();
-    }
-
     if(build_lcp.getValue())
     {
         SCOPED_TIMER_VARNAME(buildTimer, "build_LCP");
@@ -259,21 +245,18 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     if (initial_guess.getValue())
-        keepContactForcesValue();
-
-    dmsg_info() << "keepContactForces done" ;
-
     {
-        SCOPED_TIMER("Apply Contact Force");
-        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-        {
-            if (!constraintCorrectionIsActive[i]) continue;
-            core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
-            cc->applyContactForce(_result);
-        }
+        keepContactForcesValue();
     }
 
-    dmsg_info() <<"applyContactForce in constraintCorrection done" ;
+    SCOPED_TIMER("Apply Contact Force");
+    for (const auto& l_constraintCorrection : l_constraintCorrections)
+    {
+        if (!l_constraintCorrection->getContext()->isSleeping())
+        {
+            l_constraintCorrection->applyContactForce(_result);
+        }
+    }
 
     return true;
 }

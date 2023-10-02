@@ -109,7 +109,6 @@ protected:
     sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
     SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_CONSTRAINTCORRECTIONS() DeprecatedAndRemoved constraintCorrections; //use ConstraintSolverImpl::l_constraintCorrections instead
-    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
@@ -132,6 +131,17 @@ private:
         ComplianceMatrixType& m_complianceMatrix;
         std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
     };
+
+
+    sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections() const;
+
+    void computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, GenericConstraintSolver::MultiVecId res1, GenericConstraintSolver::MultiVecId res2) const;
+    void applyMotionCorrection(
+        const core::ConstraintParams* cParams,
+        const core::MultiVecCoordId xId,
+        const core::MultiVecDerivId vId,
+        core::behavior::BaseConstraintCorrection* constraintCorrection) const;
+    void storeConstraintLambdas(const core::ConstraintParams* cParams);
 
 };
 

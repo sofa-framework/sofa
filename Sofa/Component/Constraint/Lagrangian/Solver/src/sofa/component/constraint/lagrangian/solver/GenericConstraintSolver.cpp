@@ -57,6 +57,7 @@ namespace
 
 using sofa::helper::WriteOnlyAccessor;
 using sofa::core::objectmodel::Data;
+using sofa::core::ConstraintParams;
 
 template< typename TMultiVecId >
 void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core::ConstraintParams* cParams, const TMultiVecId& vid)
@@ -131,8 +132,6 @@ GenericConstraintSolver::~GenericConstraintSolver()
 void GenericConstraintSolver::init()
 {
     ConstraintSolverImpl::init();
-
-    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
 
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -232,10 +231,6 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
     msg_info() << numConstraints << " constraints";
-
-    // Test if the nodes containing the constraint correction are active (not sleeping)
-    for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-        constraintCorrectionIsActive[i] = !l_constraintCorrections[i]->getContext()->isSleeping();
 
     // Resolution depending on the method selected
     switch ( d_resolutionMethod.getValue().getSelectedId() )
@@ -502,92 +497,87 @@ void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 }
 
 
+sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintSolver::filteredConstraintCorrections() const
+{
+    sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections;
+    filteredConstraintCorrections.reserve(l_constraintCorrections.size());
+    std::copy_if(l_constraintCorrections.begin(), l_constraintCorrections.end(),
+         std::back_inserter(filteredConstraintCorrections),
+         [](const auto& constraintCorrection)
+         {
+             return constraintCorrection &&
+                     !constraintCorrection->getContext()->isSleeping() &&
+                     constraintCorrection->isActive();
+         });
+    return filteredConstraintCorrections;
+}
+
+void GenericConstraintSolver::applyMotionCorrection(
+    const core::ConstraintParams* cParams,
+    const core::MultiVecCoordId xId,
+    const core::MultiVecDerivId vId,
+    core::behavior::BaseConstraintCorrection* constraintCorrection) const
+{
+    if (cParams->constOrder() == ConstraintParams::ConstOrder::POS_AND_VEL)
+    {
+        constraintCorrection->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
+    }
+    else if (cParams->constOrder() == ConstraintParams::ConstOrder::POS)
+    {
+        constraintCorrection->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
+    }
+    else if (cParams->constOrder() == ConstraintParams::ConstOrder::VEL)
+    {
+        constraintCorrection->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
+    }
+}
+
+void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, GenericConstraintSolver::MultiVecId res1, GenericConstraintSolver::MultiVecId res2) const
+{
+    SCOPED_TIMER("Compute And Apply Motion Correction");
+
+    static constexpr auto supportedCorrections = {
+        ConstraintParams::ConstOrder::POS_AND_VEL,
+        ConstraintParams::ConstOrder::POS,
+        ConstraintParams::ConstOrder::VEL
+    };
+
+    if (std::find(supportedCorrections.begin(), supportedCorrections.end(), cParams->constOrder()) != supportedCorrections.end())
+    {
+        const core::MultiVecCoordId xId(res1);
+        const core::MultiVecDerivId vId(res2);
+
+        for (const auto& constraintCorrection : filteredConstraintCorrections())
+        {
+            {
+                SCOPED_TIMER("ComputeCorrection");
+                constraintCorrection->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+            }
+
+            SCOPED_TIMER("ApplyCorrection");
+            applyMotionCorrection(cParams, xId, vId, constraintCorrection);
+        }
+    }
+}
+
+void GenericConstraintSolver::storeConstraintLambdas(const core::ConstraintParams* cParams)
+{
+    SCOPED_TIMER("Store Constraint Lambdas");
+
+    /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
+    /// In order to be sure that we are not accumulating things twice, we need to clear.
+    clearMultiVecId(getContext(), cParams, m_lambdaId);
+
+    /// Store lambda and accumulate.
+    ConstraintStoreLambdaVisitor v(cParams, &current_cp->f);
+    this->getContext()->executeVisitor(&v);
+}
+
+
 bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
-    using sofa::helper::AdvancedTimer;
-    using core::behavior::BaseConstraintCorrection;
-
-    msg_info() << "KeepContactForces done" ;
-
-    {
-        SCOPED_TIMER("Compute And Apply Motion Correction");
-
-        if (cParams->constOrder() == core::ConstraintParams::ConstOrder::POS_AND_VEL)
-        {
-            const core::MultiVecCoordId xId(res1);
-            const core::MultiVecDerivId vId(res2);
-            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-            {
-                if (!constraintCorrectionIsActive[i]) continue;
-                BaseConstraintCorrection* cc = l_constraintCorrections[i];
-                if (!cc->isActive()) continue;
-
-                {
-                    helper::ScopedAdvancedTimer computeCorrectonFromLambdaTimer("ComputeCorrection on: " + cc->getName());
-                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
-                }
-
-                {
-                    helper::ScopedAdvancedTimer applyCorrectonFromLambdaTimer("ApplyCorrection on: " + cc->getName());
-                    cc->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
-                }
-            }
-        }
-        else if (cParams->constOrder() == core::ConstraintParams::ConstOrder::POS)
-        {
-            const core::MultiVecCoordId xId(res1);
-            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-            {
-                if (!constraintCorrectionIsActive[i]) continue;
-                BaseConstraintCorrection* cc = l_constraintCorrections[i];
-                if (!cc->isActive()) continue;
-
-                {
-                    sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
-                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
-                }
-
-                {
-                    sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
-                    cc->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
-                }
-            }
-        }
-        else if (cParams->constOrder() == core::ConstraintParams::ConstOrder::VEL)
-        {
-            const core::MultiVecDerivId vId(res1);
-            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-            {
-                if (!constraintCorrectionIsActive[i]) continue;
-                BaseConstraintCorrection* cc = l_constraintCorrections[i];
-                if (!cc->isActive()) continue;
-
-                {
-                    sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
-                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
-                }
-
-                {
-                    sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
-                    cc->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
-                }
-            }
-        }
-    }
-
-    msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
-
-    {
-        SCOPED_TIMER("Store Constraint Lambdas");
-
-        /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
-        /// In order to be sure that we are not accumulating things twice, we need to clear.
-        clearMultiVecId(getContext(), cParams, m_lambdaId);
-
-        /// Store lambda and accumulate.
-        ConstraintStoreLambdaVisitor v(cParams, &current_cp->f);
-        this->getContext()->executeVisitor(&v);
-    }
+    computeAndApplyMotionCorrection(cParams, res1, res2);
+    storeConstraintLambdas(cParams);
 
     return true;
 }
