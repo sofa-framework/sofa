@@ -204,8 +204,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
         auto* context = getContext();
 
-        // mechanical action executed from root node to propagate the constraints
-        MechanicalResetConstraintVisitor(cParams).execute(context);
+        resetConstraints(cParams);
+
         // calling buildConstraintMatrix
         MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
 

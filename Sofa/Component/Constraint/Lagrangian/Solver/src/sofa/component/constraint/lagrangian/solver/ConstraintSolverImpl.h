@@ -93,6 +93,9 @@ protected:
         core::behavior::BaseConstraintCorrection,
         BaseLink::FLAG_STOREPATH> l_constraintCorrections;
 
+    /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
+    void resetConstraints(const core::ConstraintParams* cParams);
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver
