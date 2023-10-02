@@ -31,20 +31,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fwd.h>
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 using sofa::core::VecId;
 
@@ -248,13 +239,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     }
 
     return true;
-}
-
-void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
-{
-    SCOPED_TIMER("Accumulate Matrix Deriv");
-    MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
-    accumulateMatrixDeriv.execute(getContext());
 }
 
 void LCPConstraintSolver::buildHierarchy()
@@ -628,7 +612,7 @@ void LCPConstraintSolver::buildSystem()
 
     resetConstraints(&cparams);
     buildConstraintMatrix(&cparams, _numConstraints);
-    accumulateMatrixDeriv(cparams);
+    accumulateMatrixDeriv(&cparams);
 
     const auto muValue = mu.getValue();
 

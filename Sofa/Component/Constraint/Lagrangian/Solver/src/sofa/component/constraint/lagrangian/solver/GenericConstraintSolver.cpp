@@ -37,15 +37,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
 
@@ -206,8 +197,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
         resetConstraints(cParams);
         buildConstraintMatrix(cParams, numConstraints);
-
-        MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
+        accumulateMatrixDeriv(cParams);
 
         // suppress the constraints that are on DOFS currently concerned by projective constraint
         core::MechanicalParams mparams = core::MechanicalParams(*cParams);

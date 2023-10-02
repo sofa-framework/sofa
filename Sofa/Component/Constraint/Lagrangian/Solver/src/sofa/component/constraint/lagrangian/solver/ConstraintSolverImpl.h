@@ -99,6 +99,9 @@ protected:
     /// Call the method buildConstraintMatrix on all the BaseConstraintSet
     void buildConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId);
 
+    /// Call the method applyJT on all the mappings
+    void accumulateMatrixDeriv(const core::ConstraintParams* cparams);
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

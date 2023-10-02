@@ -25,6 +25,7 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
 #include <sofa/simulation/events/SolveConstraintSystemEndEvent.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
@@ -127,6 +128,13 @@ void ConstraintSolverImpl::buildConstraintMatrix(const core::ConstraintParams* c
     SCOPED_TIMER("Build Constraint Matrix");
     simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(cparams, cparams->j(), constraintId );
     buildConstraintMatrix.execute(getContext());
+}
+
+void ConstraintSolverImpl::accumulateMatrixDeriv(const core::ConstraintParams* cparams)
+{
+    SCOPED_TIMER("Accumulate Matrix Deriv");
+    simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(cparams, cparams->j());
+    accumulateMatrixDeriv.execute(getContext());
 }
 
 
