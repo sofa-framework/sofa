@@ -109,16 +109,13 @@ void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 
 bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
-
     last_lcp = lcp;
     MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( getContext()); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
-    SCOPED_TIMER_VARNAME(resetContactForceTimer, "resetContactForce");
-
-    for (const auto cc : l_constraintCorrections)
+    SCOPED_TIMER("resetContactForce");
+    for (const auto& cc : l_constraintCorrections)
     {
         cc->resetContactForce();
     }

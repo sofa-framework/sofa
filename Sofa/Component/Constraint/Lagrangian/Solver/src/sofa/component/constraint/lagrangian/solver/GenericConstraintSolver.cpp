@@ -170,14 +170,11 @@ void GenericConstraintSolver::cleanup()
 
 bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    SCOPED_TIMER_VARNAME(vtimer, "PrepareStates");
-
     last_cp = current_cp;
 
     clearConstraintProblemLocks(); // NOTE: this assumes we solve only one constraint problem per step
 
     simulation::common::VectorOperations vop(cParams, this->getContext());
-
 
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
@@ -603,10 +600,7 @@ ConstraintProblem* GenericConstraintSolver::getConstraintProblem()
 
 void GenericConstraintSolver::clearConstraintProblemLocks()
 {
-    for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
-    {
-        m_cpIsLocked[i] = false;
-    }
+    std::fill(m_cpIsLocked.begin(), m_cpIsLocked.end(), false);
 }
 
 void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2)
