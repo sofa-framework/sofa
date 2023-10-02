@@ -123,7 +123,6 @@ private:
     void addComplianceInConstraintSpace(core::ConstraintParams cparams);
 
     /// for built lcp ///
-    void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
     LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
     sofa::linearalgebra::LPtrFullMatrix<SReal>  *_W;
@@ -143,10 +142,10 @@ private:
 
     /// common built-unbuilt
     sofa::linearalgebra::FullVector<SReal> *_dFree, *_result;
+    void buildSystem();
     ///
 
     /// for unbuilt lcp ///
-    void build_problem_info();
     int lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
     int nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
     int gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);

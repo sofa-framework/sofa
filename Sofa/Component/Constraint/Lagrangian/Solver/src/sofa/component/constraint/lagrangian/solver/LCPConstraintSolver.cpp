@@ -118,18 +118,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
 bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    if(build_lcp.getValue())
-    {
-        SCOPED_TIMER_VARNAME(buildTimer, "build_LCP");
-
-        build_LCP();
-    }
-    else
-    {
-        SCOPED_TIMER_VARNAME(buildTimer, "build_problem");
-
-        build_problem_info();
-    }
+    buildSystem();
     return true;
 }
 
@@ -220,7 +209,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             const SReal _tol = tol.getValue();
             const int _maxIt = maxIt.getValue();
 
-            build_LCP();
+            buildSystem();
 
             helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
             dmsg_info() <<"\n_result nlcp :"<<(*_result);
@@ -333,41 +322,6 @@ void LCPConstraintSolver::addComplianceInConstraintSpace(core::ConstraintParams 
     }
 
     dmsg_info() << "W=" << *_W ;
-}
-
-void LCPConstraintSolver::build_LCP()
-{
-    _numConstraints = 0;
-    core::ConstraintParams cparams;
-
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
-
-    resetConstraints(cparams);
-
-    buildConstraintMatrix(cparams);
-
-    accumulateMatrixDeriv(cparams);
-
-    const auto _mu = mu.getValue();
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = _mu;
-    lcp->clear(_numConstraints);
-
-    {
-        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
-    }
-
-    dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
-
-    addComplianceInConstraintSpace(cparams);
-
-    buildHierarchy();
-
-    getConstraintInfo(cparams);
 }
 
 void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_merge, int sizeCoarseSystem)
@@ -678,10 +632,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 }
 
 
-/// build_problem_info
-/// When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
-/// This function ask to the constraintCorrection classes to build this diagonal blocks
-void LCPConstraintSolver::build_problem_info()
+void LCPConstraintSolver::buildSystem()
 {
     core::ConstraintParams cparams;
 
@@ -691,9 +642,7 @@ void LCPConstraintSolver::build_problem_info()
     _numConstraints = 0;
 
     resetConstraints(cparams);
-
     buildConstraintMatrix(cparams);
-
     accumulateMatrixDeriv(cparams);
 
     const auto _mu = mu.getValue();
@@ -703,19 +652,27 @@ void LCPConstraintSolver::build_problem_info()
     lcp->mu = _mu;
     lcp->clear(_numConstraints);
 
-    // as _Wdiag is a sparse matrix resize do not allocate memory
-    _Wdiag.resize(_numConstraints,_numConstraints);
-
     {
-        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
+        SCOPED_TIMER("Get Constraint Value");
         MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
     }
 
     dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
 
+    if (build_lcp.getValue())
+    {
+        addComplianceInConstraintSpace(cparams);
+    }
+    else
+    {
+        // When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
+        _Wdiag.resize(_numConstraints,_numConstraints);
+    }
+
     buildHierarchy();
 
     getConstraintInfo(cparams);
+
 }
 
 void LCPConstraintSolver::computeInitialGuess()
