@@ -250,13 +250,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     return true;
 }
 
-void LCPConstraintSolver::buildConstraintMatrix(core::ConstraintParams cparams)
-{
-    SCOPED_TIMER("Build Constraint Matrix");
-    MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
-    buildConstraintMatrix.execute(getContext());
-}
-
 void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
 {
     SCOPED_TIMER("Accumulate Matrix Deriv");
@@ -634,7 +627,7 @@ void LCPConstraintSolver::buildSystem()
     _numConstraints = 0;
 
     resetConstraints(&cparams);
-    buildConstraintMatrix(cparams);
+    buildConstraintMatrix(&cparams, _numConstraints);
     accumulateMatrixDeriv(cparams);
 
     const auto muValue = mu.getValue();

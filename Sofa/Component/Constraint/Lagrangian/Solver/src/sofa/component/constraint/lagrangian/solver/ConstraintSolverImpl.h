@@ -96,6 +96,9 @@ protected:
     /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
     void resetConstraints(const core::ConstraintParams* cParams);
 
+    /// Call the method buildConstraintMatrix on all the BaseConstraintSet
+    void buildConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId);
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

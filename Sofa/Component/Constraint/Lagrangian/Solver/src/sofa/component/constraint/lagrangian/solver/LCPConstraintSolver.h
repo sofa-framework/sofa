@@ -109,8 +109,6 @@ private:
     unsigned int _numConstraints;
     SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER() DeprecatedAndRemoved _mu;
 
-    /// Call the method buildConstraintMatrix on all the BaseConstraintSet
-    void buildConstraintMatrix(core::ConstraintParams cparams);
     /// Call the method applyJT on all the mappings
     void accumulateMatrixDeriv(core::ConstraintParams cparams);
     /// Multigrid hierarchy is resized and cleared

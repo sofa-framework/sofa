@@ -205,9 +205,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         auto* context = getContext();
 
         resetConstraints(cParams);
-
-        // calling buildConstraintMatrix
-        MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
+        buildConstraintMatrix(cParams, numConstraints);
 
         MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
 

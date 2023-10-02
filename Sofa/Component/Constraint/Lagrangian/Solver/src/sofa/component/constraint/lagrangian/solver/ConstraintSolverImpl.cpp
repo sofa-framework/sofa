@@ -25,6 +25,7 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
 #include <sofa/simulation/events/SolveConstraintSystemEndEvent.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
 
@@ -119,6 +120,13 @@ void ConstraintSolverImpl::resetConstraints(const core::ConstraintParams* cParam
 {
     SCOPED_TIMER("Reset Constraint");
     simulation::mechanicalvisitor::MechanicalResetConstraintVisitor(cParams).execute(getContext());
+}
+
+void ConstraintSolverImpl::buildConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId)
+{
+    SCOPED_TIMER("Build Constraint Matrix");
+    simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(cparams, cparams->j(), constraintId );
+    buildConstraintMatrix.execute(getContext());
 }
 
 
