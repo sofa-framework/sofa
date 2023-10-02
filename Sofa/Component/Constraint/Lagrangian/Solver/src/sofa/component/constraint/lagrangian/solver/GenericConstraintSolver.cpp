@@ -381,41 +381,49 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
     dmsg_info() << " computeCompliance_done "  ;
 }
 
-void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
+void GenericConstraintSolver::rebuildSystem(const SReal massFactor, const SReal forceFactor)
 {
     for (const auto& cc : l_constraintCorrections)
     {
-        if (!cc->isActive()) continue;
-        cc->rebuildSystem(massFactor, forceFactor);
+        if (cc->isActive())
+        {
+            cc->rebuildSystem(massFactor, forceFactor);
+        }
     }
 }
 
 void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool printMatrix = true)
 {
     file.precision(9);
-    // affichage de la matrice du LCP
-    if (printMatrix) {
+
+    // print LCP matrix
+    if (printMatrix)
+    {
         file << msgendl << " W = [";
-        for(int compteur=0;compteur<dim;compteur++) {
-            for(int compteur2=0;compteur2<dim;compteur2++) {
-                file << "\t" << M[compteur][compteur2];
+        for (int row = 0; row < dim; row++)
+        {
+            for (int col = 0; col < dim; col++)
+            {
+                file << "\t" << M[row][col];
             }
             file << msgendl;
         }
         file << "      ];" << msgendl << msgendl;
     }
 
-    // affichage de q
+    // print q
     file << " delta = [";
-    for(int compteur=0;compteur<dim;compteur++) {
-        file << "\t" << q[compteur];
+    for (int i = 0; i < dim; i++)
+    {
+        file << "\t" << q[i];
     }
     file << "      ];" << msgendl << msgendl;
 
-    // affichage de f
+    // print f
     file << " lambda = [";
-    for(int compteur=0;compteur<dim;compteur++) {
-        file << "\t" << f[compteur];
+    for (int i = 0; i < dim; i++)
+    {
+        file << "\t" << f[i];
     }
     file << "      ];" << msgendl << msgendl;
 }
@@ -495,7 +503,6 @@ void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
         cc->computeResidual(eparam,&current_cp->f);
     }
 }
-
 
 sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintSolver::filteredConstraintCorrections() const
 {
