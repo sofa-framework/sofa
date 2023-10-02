@@ -88,7 +88,7 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
     auto pos     = this->getMState()->readPositions();
     auto restPos = this->getMState()->readRestPositions();
 
-    if (cParams->constOrder() == sofa::core::ConstraintParams::VEL)
+    if (cParams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL)
     {
         if (d_constraintRestPos.getValue()){
             computeViolation(resV, m_constraintIndex, vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)

@@ -142,7 +142,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 		mop.projectResponse(acc);
 
-		mop.solveConstraint(acc, core::ConstraintParams::ACC);
+		mop.solveConstraint(acc, core::ConstraintParams::ConstOrder::ACC);
 		
         VMultiOp ops;
         ops.resize(2);
@@ -158,7 +158,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		newp.clear();
 		mop.addMdx(newp,vel_1,1.0);
 
-		mop.solveConstraint(vel_1,core::ConstraintParams::VEL);
+		mop.solveConstraint(vel_1,core::ConstraintParams::ConstOrder::VEL);
 
 	} else {
 
@@ -270,7 +270,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		vop.v_multiop(opsfin);
 
 		sofa::helper::AdvancedTimer::stepBegin("CorrectV");
-		mop.solveConstraint(vel_1,core::ConstraintParams::VEL);
+		mop.solveConstraint(vel_1,core::ConstraintParams::ConstOrder::VEL);
 
 		// update position
 		VMultiOp opsx;
@@ -341,7 +341,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     sofa::helper::AdvancedTimer::stepEnd("CorrectV");
     {
         SCOPED_TIMER("CorrectX");
-        mop.solveConstraint(x_1,core::ConstraintParams::POS);
+        mop.solveConstraint(x_1,core::ConstraintParams::ConstOrder::POS);
     }
 
 	// update the previous momemtum as the current one for next step

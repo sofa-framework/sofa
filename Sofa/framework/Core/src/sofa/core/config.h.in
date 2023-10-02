@@ -53,3 +53,10 @@
     SOFA_ATTRIBUTE_DEPRECATED("v23.12 (PR#3861)", "v24.06", msg)
 
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() \
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "ConstOrder is now a scoped enumeration. It must be used to access the values.")
+#endif

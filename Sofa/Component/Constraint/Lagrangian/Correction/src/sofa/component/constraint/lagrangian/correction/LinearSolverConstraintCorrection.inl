@@ -174,13 +174,13 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 
     switch (cparams->constOrder())
     {
-    case core::ConstraintParams::POS_AND_VEL :
-    case core::ConstraintParams::POS :
+    case core::ConstraintParams::ConstOrder::POS_AND_VEL :
+    case core::ConstraintParams::ConstOrder::POS :
         factor = l_ODESolver.get()->getPositionIntegrationFactor();
         break;
 
-    case core::ConstraintParams::ACC :
-    case core::ConstraintParams::VEL :
+    case core::ConstraintParams::ConstOrder::ACC :
+    case core::ConstraintParams::ConstOrder::VEL :
         factor = l_ODESolver.get()->getVelocityIntegrationFactor();
         break;
 

@@ -515,7 +515,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     {
         SCOPED_TIMER("Compute And Apply Motion Correction");
 
-        if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
+        if (cParams->constOrder() == core::ConstraintParams::ConstOrder::POS_AND_VEL)
         {
             const core::MultiVecCoordId xId(res1);
             const core::MultiVecDerivId vId(res2);
@@ -536,7 +536,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
                 }
             }
         }
-        else if (cParams->constOrder() == core::ConstraintParams::POS)
+        else if (cParams->constOrder() == core::ConstraintParams::ConstOrder::POS)
         {
             const core::MultiVecCoordId xId(res1);
             for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
@@ -556,7 +556,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
                 }
             }
         }
-        else if (cParams->constOrder() == core::ConstraintParams::VEL)
+        else if (cParams->constOrder() == core::ConstraintParams::ConstOrder::VEL)
         {
             const core::MultiVecDerivId vId(res1);
             for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)

@@ -192,7 +192,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         if (solveConstraint)
         {
             SOFATIMER_NEXTSTEP("CorrectV");
-            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+            mop.solveConstraint(newVel,core::ConstraintParams::ConstOrder::VEL);
         }
         SOFATIMER_NEXTSTEP("UpdateX");
 
@@ -201,7 +201,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         if (solveConstraint)
         {
             SOFATIMER_NEXTSTEP("CorrectX");
-            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+            mop.solveConstraint(newPos,core::ConstraintParams::ConstOrder::POS);
         }
 #undef SOFATIMER_NEXTSTEP
         sofa::helper::AdvancedTimer::stepEnd  (prevStep);
@@ -218,7 +218,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         if (solveConstraint)
         {
             SOFATIMER_NEXTSTEP("CorrectV");
-            mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+            mop.solveConstraint(newVel,core::ConstraintParams::ConstOrder::VEL);
         }
         SOFATIMER_NEXTSTEP("UpdateX");
 
@@ -228,7 +228,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         if (solveConstraint)
         {
             SOFATIMER_NEXTSTEP("CorrectX");
-            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+            mop.solveConstraint(newPos,core::ConstraintParams::ConstOrder::POS);
         }
 #undef SOFATIMER_NEXTSTEP
         sofa::helper::AdvancedTimer::stepEnd  (prevStep);
@@ -266,11 +266,11 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         {
             {
                 SCOPED_TIMER_VARNAME(correctVTimer, "CorrectV");
-                mop.solveConstraint(newVel,core::ConstraintParams::VEL);
+                mop.solveConstraint(newVel,core::ConstraintParams::ConstOrder::VEL);
             }
             {
                 SCOPED_TIMER_VARNAME(correctXTimer, "CorrectX");
-                mop.solveConstraint(newPos,core::ConstraintParams::POS);
+                mop.solveConstraint(newPos,core::ConstraintParams::ConstOrder::POS);
             }
         }
     }

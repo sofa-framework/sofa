@@ -182,7 +182,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
 
     const VecDeriv& restVector = this->restVector.getValue();
 
-    if (cParams->constOrder() == ConstraintParams::VEL)
+    if (cParams->constOrder() == ConstraintParams::ConstOrder::VEL)
     {
         getVelocityViolation(v, d_x1, d_x2, d_v1, d_v2);
         return;

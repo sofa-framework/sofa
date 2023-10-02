@@ -33,18 +33,17 @@ ConstraintSolver::~ConstraintSolver() = default;
 
 void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
 {
-    const std::string className = "SolveConstraint: " + cParams->getName();
-    sofa::helper::ScopedAdvancedTimer solveConstraintTimer(className);
+    CONSTORDER_TIMER(SolveConstraint, solveConstraintTimer, cParams->constOrder())
 
     bool continueSolving = true;
     {
-        helper::ScopedAdvancedTimer timer(className + " - PrepareState");
+        CONSTORDER_TIMER(PrepareState, prepareStateTimer, cParams->constOrder())
         continueSolving = prepareStates(cParams, res1, res2);
     }
 
     if (continueSolving)
     {
-        helper::ScopedAdvancedTimer timer(className + " - BuildSystem");
+        CONSTORDER_TIMER(BuildSystem, buildSystemTimer, cParams->constOrder())
         continueSolving = buildSystem(cParams, res1, res2);
 
         postBuildSystem(cParams);
@@ -52,7 +51,7 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        helper::ScopedAdvancedTimer timer(className + " - SolveSystem");
+        CONSTORDER_TIMER(SolveSystem, solveSystemTimer, cParams->constOrder())
         continueSolving = solveSystem(cParams, res1, res2);
 
         postSolveSystem(cParams);
@@ -60,7 +59,7 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     if (continueSolving)
     {
-        helper::ScopedAdvancedTimer timer(className + " - ApplyCorrection");
+        CONSTORDER_TIMER(ApplyCorrection, applyCorrectionTimer, cParams->constOrder())
         applyCorrection(cParams, res1, res2);
     }
 }

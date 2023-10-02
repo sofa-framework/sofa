@@ -295,13 +295,13 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     SReal factor = 1.0;
     switch (cparams->constOrder())
     {
-    case core::ConstraintParams::POS_AND_VEL :
-    case core::ConstraintParams::POS :
+    case core::ConstraintParams::ConstOrder::POS_AND_VEL :
+    case core::ConstraintParams::ConstOrder::POS :
         factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
         break;
 
-    case core::ConstraintParams::ACC :
-    case core::ConstraintParams::VEL :
+    case core::ConstraintParams::ConstOrder::ACC :
+    case core::ConstraintParams::ConstOrder::VEL :
         factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
         break;
 

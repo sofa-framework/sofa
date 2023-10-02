@@ -35,13 +35,39 @@ class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 public:
 
     /// Description of the order of the constraint
-    enum ConstOrder
+    enum class ConstOrder
     {
         POS = 0,
         VEL,
         ACC,
         POS_AND_VEL
     };
+
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS = ConstOrder::POS;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto VEL = ConstOrder::VEL;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto ACC = ConstOrder::ACC;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS_AND_VEL = ConstOrder::POS_AND_VEL;
+
+    constexpr static std::string_view constOrderToString(ConstOrder order)
+    {
+        if (order == ConstOrder::POS)
+        {
+            return "POSITION";
+        }
+        if (order == ConstOrder::VEL)
+        {
+            return "VELOCITY";
+        }
+        if (order == ConstOrder::ACC)
+        {
+            return "ACCELERATION";
+        }
+        if (order == ConstOrder::POS_AND_VEL)
+        {
+            return "POSITION AND VELOCITY";
+        }
+        return {};
+    }
 
     /// @name Flags and parameters getters
     /// @{
@@ -55,27 +81,9 @@ public:
 
     /// @}
 
-    std::string getName() const
+    [[nodiscard]] std::string_view getName() const
     {
-        std::string result;
-        switch ( m_constOrder )
-        {
-        case POS :
-            result += "POSITION";
-            break;
-        case VEL :
-            result += "VELOCITY";
-            break;
-        case ACC :
-            result += "ACCELERATION";
-            break;
-        case POS_AND_VEL :
-            result += "POSITION AND VELOCITY";
-            break;
-        default :
-            assert(false);
-        }
-        return result;
+        return constOrderToString(m_constOrder);
     }
 
     /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
@@ -246,3 +254,25 @@ protected:
 };
 
 } // namespace sofa::core
+
+#define CONSTORDER_TIMER_STRINGIZE(x) #x
+
+/// Tracy only allows constant strings for naming a zone.
+/// The following macro is a trick to allow dynamic names based on a finite
+/// number of enumerations.
+#ifdef TRACY_ENABLE
+    #define CONSTORDER_TIMER(prefix, varname, constOrder) \
+        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataPos { CONSTORDER_TIMER_STRINGIZE(prefix ## : POSITION), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
+        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataVel { CONSTORDER_TIMER_STRINGIZE(prefix ## : VELOCITY), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
+        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataAcc { CONSTORDER_TIMER_STRINGIZE(prefix ## : ACCELERATION), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
+        static constexpr tracy::SourceLocationData sofaConstOrderSourceLocationDataPosAndVel { CONSTORDER_TIMER_STRINGIZE(prefix ## : POSITION AND VELOCITY), TracyFunction,  TracyFile, (uint32_t)TracyLine, 0 };\
+        const tracy::SourceLocationData* data { nullptr };\
+        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::POS) data = &sofaConstOrderSourceLocationDataPos;\
+        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::VEL) data = &sofaConstOrderSourceLocationDataVel;\
+        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::ACC) data = &sofaConstOrderSourceLocationDataAcc;\
+        if ((constOrder) == sofa::core::ConstraintParams::ConstOrder::POS_AND_VEL) data = &sofaConstOrderSourceLocationDataPosAndVel;\
+        tracy::ScopedZone varname( data, true );
+#else
+    #define CONSTORDER_TIMER(prefix, varname, constOrder) \
+        sofa::helper::ScopedAdvancedTimer varname(CONSTORDER_TIMER_STRINGIZE(prefix) + std::string(": ") + std::string(sofa::core::ConstraintParams::constOrderToString(constOrder)));
+#endif

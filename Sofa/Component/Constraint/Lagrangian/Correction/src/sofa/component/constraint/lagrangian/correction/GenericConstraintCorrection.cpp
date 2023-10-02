@@ -151,13 +151,13 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     switch (cparams->constOrder())
     {
-        case ConstraintParams::POS_AND_VEL :
-        case ConstraintParams::POS :
+        case ConstraintParams::ConstOrder::POS_AND_VEL :
+        case ConstraintParams::ConstOrder::POS :
             factor = l_ODESolver.get()->getPositionIntegrationFactor();
             break;
 
-        case ConstraintParams::ACC :
-        case ConstraintParams::VEL :
+        case ConstraintParams::ConstOrder::ACC :
+        case ConstraintParams::ConstOrder::VEL :
             factor = l_ODESolver.get()->getVelocityIntegrationFactor();
             break;
 
