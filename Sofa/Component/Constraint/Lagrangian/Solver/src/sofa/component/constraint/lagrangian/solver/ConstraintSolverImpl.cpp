@@ -137,5 +137,19 @@ void ConstraintSolverImpl::accumulateMatrixDeriv(const core::ConstraintParams* c
     accumulateMatrixDeriv.execute(getContext());
 }
 
+void ConstraintSolverImpl::accumulateConstraints(const core::ConstraintParams* cparams, unsigned int &constraintId)
+{
+    resetConstraints(cparams);
+    buildConstraintMatrix(cparams, constraintId);
+    accumulateMatrixDeriv(cparams);
+}
+
+void ConstraintSolverImpl::getConstraintViolation(
+    const core::ConstraintParams* cparams, sofa::linearalgebra::BaseVector* v)
+{
+    SCOPED_TIMER("Get Constraint Value");
+    MechanicalGetConstraintViolationVisitor(cparams, v).execute(getContext());
+}
+
 
 } //namespace sofa::component::constraint::lagrangian::solver

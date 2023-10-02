@@ -39,7 +39,7 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-class LCPConstraintProblem : public ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintProblem : public ConstraintProblem
 {
 public:
     SReal mu;
@@ -118,7 +118,7 @@ private:
 
     /// for built lcp ///
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
-    LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
+    LCPConstraintProblem *current_cp, *last_cp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
     sofa::linearalgebra::LPtrFullMatrix<SReal>  *_W;
 
     /// multi-grid approach ///

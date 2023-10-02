@@ -186,39 +186,32 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
     return true;
 }
 
-bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
+    SOFA_UNUSED(res1);
+    SOFA_UNUSED(res2);
+
     unsigned int numConstraints = 0;
 
     {
         SCOPED_TIMER("Accumulate Constraint");
 
-        auto* context = getContext();
-
-        resetConstraints(cParams);
-        buildConstraintMatrix(cParams, numConstraints);
-        accumulateMatrixDeriv(cParams);
+        accumulateConstraints(cParams, numConstraints);
+        sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
         // suppress the constraints that are on DOFS currently concerned by projective constraint
         core::MechanicalParams mparams = core::MechanicalParams(*cParams);
-        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(getContext());
     }
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     current_cp->clear(numConstraints);
 
-    {
-        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(getContext());
-    }
+    getConstraintViolation(cParams, &current_cp->dFree);
 
     {
-        SCOPED_TIMER_VARNAME(getConstraintResolutionsTimer, "Get Constraint Resolutions");
+        SCOPED_TIMER("Get Constraint Resolutions");
         MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(getContext());
     }
-
-    msg_info() << numConstraints << " constraints";
 
     // Resolution depending on the method selected
     switch ( d_resolutionMethod.getValue().getSelectedId() )

@@ -66,8 +66,8 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
     , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
-    , lcp(&lcp1)
-    , last_lcp(nullptr)
+    , current_cp(&lcp1)
+    , last_cp(nullptr)
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
@@ -93,7 +93,7 @@ void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 
 bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    last_lcp = lcp;
+    last_cp = current_cp;
     MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( getContext()); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
@@ -107,8 +107,11 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     return true;
 }
 
-bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2)
 {
+    SOFA_UNUSED(res1);
+    SOFA_UNUSED(res2);
+
     buildSystem();
     return true;
 }
@@ -123,23 +126,16 @@ void LCPConstraintSolver::buildSystem()
 
     _numConstraints = 0;
 
-    resetConstraints(&cparams);
-    buildConstraintMatrix(&cparams, _numConstraints);
-    accumulateMatrixDeriv(&cparams);
-
-    const auto muValue = mu.getValue();
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = muValue;
-    lcp->clear(_numConstraints);
-
     {
-        SCOPED_TIMER("Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
+        SCOPED_TIMER("Accumulate Constraint");
+        accumulateConstraints(&cparams, _numConstraints);
+        sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
     }
 
-    dmsg_info() << _numConstraints << " constraints, mu = " << muValue;
+    current_cp->mu = mu.getValue();
+    current_cp->clear(_numConstraints);
+
+    getConstraintViolation(&cparams, _dFree);
 
     if (build_lcp.getValue())
     {
@@ -172,7 +168,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
         if (_mu > 0.0)
         {
-            lcp->tolerance = _tol;
+            current_cp->tolerance = _tol;
 
             if (multi_grid.getValue())
             {
@@ -256,8 +252,8 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     if(d_computeConstraintForces.getValue())
     {
         sofa::helper::WriteOnlyAccessor<Data<type::vector<SReal>>> constraints = d_constraintForces;
-        constraints.resize(lcp->getDimension());
-        for(int i=0; i<lcp->getDimension(); i++)
+        constraints.resize(current_cp->getDimension());
+        for(int i=0; i<current_cp->getDimension(); i++)
         {
             constraints[i] = _result->ptr()[i];
         }
@@ -1187,25 +1183,25 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
 
 ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
 {
-    return last_lcp;
+    return last_cp;
 }
 
 void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
 {
-    if((lcp!=l1)&&(lcp!=l2)) // Le lcp courant n'est pas locké
+    if((current_cp!=l1)&&(current_cp!=l2)) // Le lcp courant n'est pas locké
         return;
 
     if((&lcp1!=l1)&&(&lcp1!=l2)) // lcp1 n'est pas locké
-        lcp = &lcp1;
+        current_cp = &lcp1;
     else if((&lcp2!=l1)&&(&lcp2!=l2)) // lcp2 n'est pas locké
-        lcp = &lcp2;
+        current_cp = &lcp2;
     else
-        lcp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
+        current_cp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
 
     // Mise �  jour de _W _dFree et _result
-    _W = &lcp->W;
-    _dFree = &lcp->dFree;
-    _result = &lcp->f;
+    _W = &current_cp->W;
+    _dFree = &current_cp->dFree;
+    _result = &current_cp->f;
 }
 
 

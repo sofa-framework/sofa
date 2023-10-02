@@ -102,6 +102,10 @@ protected:
     /// Call the method applyJT on all the mappings
     void accumulateMatrixDeriv(const core::ConstraintParams* cparams);
 
+    void accumulateConstraints(const core::ConstraintParams* cparams, unsigned int &constraintId);
+
+    void getConstraintViolation(const core::ConstraintParams* cparams, sofa::linearalgebra::BaseVector *v);
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver
