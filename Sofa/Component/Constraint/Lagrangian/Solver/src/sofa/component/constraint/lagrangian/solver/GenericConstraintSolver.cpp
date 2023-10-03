@@ -191,24 +191,19 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     SOFA_UNUSED(res1);
     SOFA_UNUSED(res2);
 
-    unsigned int numConstraints = 0;
+    const unsigned int numConstraints = buildConstraintMatrix(cParams);
+    sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
-    {
-        SCOPED_TIMER("Accumulate Constraint");
-
-        accumulateConstraints(cParams, numConstraints);
-        sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
-
-        // suppress the constraints that are on DOFS currently concerned by projective constraint
-        core::MechanicalParams mparams = core::MechanicalParams(*cParams);
-        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(getContext());
-    }
+    // suppress the constraints that are on DOFS currently concerned by projective constraint
+    applyProjectiveConstraintOnConstraintMatrix(cParams);
 
     current_cp->clear(numConstraints);
 
     getConstraintViolation(cParams, &current_cp->dFree);
 
     {
+        // creates constraint-specific objects used for the constraint resolution
+        // in a Gauss-Seidel algorithm
         SCOPED_TIMER("Get Constraint Resolutions");
         MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(getContext());
     }
@@ -335,8 +330,11 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
     simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler);
 
+    //Used to prevent simultaneous accesses to the main compliance matrix
     std::mutex mutex;
 
+    //Visits all constraint corrections to compute the compliance matrix projected
+    //in the constraint space.
     simulation::forEachRange(execution, *taskScheduler, l_constraintCorrections.begin(), l_constraintCorrections.end(),
         [&cParams, this, &multithreading, &mutex](const auto& range)
         {

@@ -27,6 +27,7 @@
 #include <sofa/simulation/events/SolveConstraintSystemEndEvent.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
 
@@ -123,25 +124,34 @@ void ConstraintSolverImpl::resetConstraints(const core::ConstraintParams* cParam
     simulation::mechanicalvisitor::MechanicalResetConstraintVisitor(cParams).execute(getContext());
 }
 
-void ConstraintSolverImpl::buildConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId)
+void ConstraintSolverImpl::buildLocalConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId)
 {
-    SCOPED_TIMER("Build Constraint Matrix");
+    SCOPED_TIMER("Build Local Constraint Matrix");
     simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(cparams, cparams->j(), constraintId );
     buildConstraintMatrix.execute(getContext());
 }
 
 void ConstraintSolverImpl::accumulateMatrixDeriv(const core::ConstraintParams* cparams)
 {
-    SCOPED_TIMER("Accumulate Matrix Deriv");
+    SCOPED_TIMER("Project Mapped Constraint Matrix");
     simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(cparams, cparams->j());
     accumulateMatrixDeriv.execute(getContext());
 }
 
-void ConstraintSolverImpl::accumulateConstraints(const core::ConstraintParams* cparams, unsigned int &constraintId)
+unsigned int ConstraintSolverImpl::buildConstraintMatrix(const core::ConstraintParams* cparams)
 {
+    SCOPED_TIMER("Build Constraint Matrix");
+    unsigned int constraintId {};
     resetConstraints(cparams);
-    buildConstraintMatrix(cparams, constraintId);
+    buildLocalConstraintMatrix(cparams, constraintId);
     accumulateMatrixDeriv(cparams);
+    return constraintId;
+}
+
+void ConstraintSolverImpl::applyProjectiveConstraintOnConstraintMatrix(const core::ConstraintParams* cparams)
+{
+    core::MechanicalParams mparams = core::MechanicalParams(*cparams);
+    simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(getContext());
 }
 
 void ConstraintSolverImpl::getConstraintViolation(

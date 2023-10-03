@@ -174,19 +174,29 @@ public:
 	/// Set smooth contribution factor (for smooth constraints resolution)
     ConstraintParams& setSmoothFactor(double v) { m_smoothFactor = v; return *this; }
 
+    /// Returns ids of the position vectors
     const ConstMultiVecCoordId& x() const { return m_x; }
+    /// Returns ids of the position vectors
     ConstMultiVecCoordId& x()       { return m_x; }
 
+    /// Returns ids of the velocity vectors
     const ConstMultiVecDerivId& v() const { return m_v; }
+    /// Returns ids of the velocity vectors
     ConstMultiVecDerivId& v()       { return m_v; }
 
+    /// Returns ids of the constraint jacobian matrices
     const MultiMatrixDerivId&  j() const { return m_j; }
+    /// Returns ids of the constraint jacobian matrices
     MultiMatrixDerivId& j()              { return m_j; }
 
+    /// Returns ids of the contraint correction vectors
     const MultiVecDerivId& dx() const { return m_dx;  }
+    /// Returns ids of the contraint correction vectors
     MultiVecDerivId&  dx()            { return m_dx;  }
 
+    /// Returns ids of the constraint lambda vectors
     const MultiVecDerivId& lambda() const { return m_lambda; }
+    /// Returns ids of the constraint lambda vectors
     MultiVecDerivId&  lambda()            { return m_lambda; }
 
     /// Set the IDs where to read the free position vector

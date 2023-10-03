@@ -93,16 +93,23 @@ protected:
         core::behavior::BaseConstraintCorrection,
         BaseLink::FLAG_STOREPATH> l_constraintCorrections;
 
-    /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
+    /// Calls the method resetConstraint on all the mechanical states and BaseConstraintSet
+    /// In the case of a MechanicalObject, it clears the constraint jacobian matrix
     void resetConstraints(const core::ConstraintParams* cParams);
 
     /// Call the method buildConstraintMatrix on all the BaseConstraintSet
-    void buildConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId);
+    void buildLocalConstraintMatrix(const core::ConstraintParams* cparams, unsigned int &constraintId);
 
-    /// Call the method applyJT on all the mappings
+    /// Calls the method applyJT on all the mappings to project the mapped
+    /// constraint matrices on the main constraint matrix
     void accumulateMatrixDeriv(const core::ConstraintParams* cparams);
 
-    void accumulateConstraints(const core::ConstraintParams* cparams, unsigned int &constraintId);
+    /// Reset and build the constraint matrix, including the projection from
+    /// the mapped DoFs
+    /// \return The number of constraints, i.e. the size of the constraint matrix
+    unsigned int buildConstraintMatrix(const core::ConstraintParams* cparams);
+
+    void applyProjectiveConstraintOnConstraintMatrix(const core::ConstraintParams* cparams);
 
     void getConstraintViolation(const core::ConstraintParams* cparams, sofa::linearalgebra::BaseVector *v);
 

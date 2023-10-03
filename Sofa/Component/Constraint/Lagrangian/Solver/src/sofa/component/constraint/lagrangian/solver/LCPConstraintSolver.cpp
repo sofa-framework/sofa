@@ -124,13 +124,8 @@ void LCPConstraintSolver::buildSystem()
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    _numConstraints = 0;
-
-    {
-        SCOPED_TIMER("Accumulate Constraint");
-        accumulateConstraints(&cparams, _numConstraints);
-        sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-    }
+    _numConstraints = buildConstraintMatrix(&cparams);
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     current_cp->mu = mu.getValue();
     current_cp->clear(_numConstraints);

@@ -51,8 +51,6 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void buildSystem_matrixFree(unsigned int numConstraints);
-    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
@@ -112,6 +110,11 @@ protected:
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
+
+    void buildSystem_matrixFree(unsigned int numConstraints);
+
+    // Explicitly compute the compliance matrix projected in the constraint space
+    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
 
 private:
 
