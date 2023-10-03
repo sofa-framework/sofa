@@ -520,7 +520,7 @@ void GenericConstraintSolver::applyMotionCorrection(
     }
 }
 
-void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, GenericConstraintSolver::MultiVecId res1, GenericConstraintSolver::MultiVecId res2) const
+void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, MultiVecId res1, MultiVecId res2) const
 {
     SCOPED_TIMER("Compute And Apply Motion Correction");
 
@@ -533,7 +533,7 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
     if (std::find(supportedCorrections.begin(), supportedCorrections.end(), cParams->constOrder()) != supportedCorrections.end())
     {
         const core::MultiVecCoordId xId(res1);
-        const core::MultiVecDerivId vId(res2);
+        const core::MultiVecDerivId vId(cParams->constOrder() == ConstraintParams::ConstOrder::VEL ? res1 : res2);
 
         for (const auto& constraintCorrection : filteredConstraintCorrections())
         {
