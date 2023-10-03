@@ -216,19 +216,15 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     // Resolution depending on the method selected
     switch ( d_resolutionMethod.getValue().getSelectedId() )
     {
-        // ProjectedGaussSeidel
-        case 0: {
+        case 0: // ProjectedGaussSeidel
+        case 2: // NonsmoothNonlinearConjugateGradient
+        {
             buildSystem_matrixAssembly(cParams);
             break;
         }
-        // UnbuiltGaussSeidel
-        case 1: {
+        case 1: // UnbuiltGaussSeidel
+        {
             buildSystem_matrixFree(numConstraints);
-            break;
-        }
-        // NonsmoothNonlinearConjugateGradient
-        case 2: {
-            buildSystem_matrixAssembly(cParams);
             break;
         }
         default:
