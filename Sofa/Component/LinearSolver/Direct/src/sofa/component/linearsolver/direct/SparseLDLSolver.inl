@@ -248,7 +248,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
     simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
         [&data, this, fact, &mutex, result, JlocalRowSize](const auto& range)
         {
-            sofa::type::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
+            std::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
             triplets.reserve(JlocalRowSize * (range.end - range.start));
 
             for (auto j = range.start; j != range.end; ++j)
