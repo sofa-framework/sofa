@@ -269,7 +269,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     SReal *d = _d.ptr();
 
-    int iter, nb;
+    unsigned int iter = 0, nb = 0;
 
     SReal error=0.0;
 
@@ -317,7 +317,11 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     tabErrors.resize(dimension);
 
-    for(iter=0; iter<maxIterations; iter++)
+    // temporary buffers
+    std::vector<SReal> errF;
+    std::vector<SReal> tempF;
+
+    for(iter=0; iter < static_cast<unsigned int>(maxIterations); iter++)
     {
         bool constraintsAreVerified = true;
         if(sor != 1.0)
@@ -334,7 +338,11 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            std::vector<SReal> errF(&force[j], &force[j+nb]);
+            if(nb > errF.size())
+            {
+                errF.resize(nb);
+            }
+            std::copy_n(&force[j], nb, errF.begin());
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
@@ -351,10 +359,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
             SReal contraintError = 0.0;
             if(nb > 1)
             {
-                for(int l=0; l<nb; l++)
+                for(unsigned int l=0; l<nb; l++)
                 {
                     SReal lineError = 0.0;
-                    for (int m=0; m<nb; m++)
+                    for (unsigned int m=0; m<nb; m++)
                     {
                         SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
                         lineError += dofError * dofError;
@@ -385,13 +393,17 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
             //5. the force is updated for the constraint corrections
             bool update = false;
-            for(int l=0; l<nb; l++)
+            for(unsigned int l=0; l<nb; l++)
                 update |= (force[j+l] || errF[l]);
 
             if(update)
             {
-                std::vector<SReal> tempF (&force[j], &force[j+nb]);
-                for(int l=0; l<nb; l++)
+                if (nb > tempF.size())
+                {
+                    tempF.resize(nb);
+                }
+                std::copy_n(&force[j], nb, tempF.begin());
+                for(unsigned int l=0; l<nb; l++)
                 {
                     force[j+l] -= errF[l]; // DForce
                 }
@@ -401,9 +413,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
                     if (el)
                         el->setConstraintDForce(force, j, j+nb-1, update);
                 }
-                std::copy(tempF.begin(), tempF.end(), &force[j]);
-            }
 
+                std::copy_n(tempF.begin(), nb, &force[j]);
+            }
             std::advance(it_c, nb);
         }
 
