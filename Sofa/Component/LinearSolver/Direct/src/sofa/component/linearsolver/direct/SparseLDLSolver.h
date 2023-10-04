@@ -80,6 +80,8 @@ protected :
     bool factorize(Matrix& M, InvertData * invertData);
 
     void showInvalidSystemMessage(const std::string& reason) const;
+
+    using Triplet = std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real>;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)

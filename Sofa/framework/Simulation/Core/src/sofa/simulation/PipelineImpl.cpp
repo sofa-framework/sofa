@@ -114,6 +114,7 @@ void PipelineImpl::computeCollisionDetection()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
+    SCOPED_TIMER("CollisionDetection");
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
     doCollisionDetection(collisionModels);
