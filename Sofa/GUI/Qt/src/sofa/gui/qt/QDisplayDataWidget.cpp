@@ -62,11 +62,17 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     const std::string& help = data_->getHelp().c_str();
     const std::string valuetype = data_->getValueTypeString();
     const std::string& ownerClass = data_->getOwner()->getClassName();
+    const std::string defaultValue = data_->getDefaultValueString();
     std::stringstream s;
 
     s << (!help.empty() ? help : "< No help found >")
       << "\nData type: " << valuetype
       << "\nOwner: " << (!ownerClass.empty() ? ownerClass : "< No owner found >");
+
+    if (!defaultValue.empty())
+    {
+        s << "\nDefault value: " << defaultValue;
+    }
 
     const std::string fullHelpText = s.str();
     setToolTip(fullHelpText.c_str());

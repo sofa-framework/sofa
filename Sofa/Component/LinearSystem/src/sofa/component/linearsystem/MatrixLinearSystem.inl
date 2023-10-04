@@ -78,25 +78,21 @@ void MatrixLinearSystem<TMatrix, TVector>::contribute(const core::MechanicalPara
     {
         if (Inherit1::template getContributionFactor<c>(mparams, contributor) != 0._sreal)
         {
-            auto& accumulators = getLocalMatrixMap<c>().accumulators[contributor];
-            // if (!accumulators.empty())
+            if constexpr (c == Contribution::STIFFNESS)
             {
-                if constexpr (c == Contribution::STIFFNESS)
-                {
-                    contributor->buildStiffnessMatrix(&m_stiffness[contributor]);
-                }
-                else if constexpr (c == Contribution::MASS)
-                {
-                    contributor->buildMassMatrix(&accumulators);
-                }
-                else if constexpr (c == Contribution::DAMPING)
-                {
-                    contributor->buildDampingMatrix(&m_damping[contributor]);
-                }
-                else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
-                {
-                    contributor->buildGeometricStiffnessMatrix(&m_geometricStiffness[contributor]);
-                }
+                contributor->buildStiffnessMatrix(&m_stiffness[contributor]);
+            }
+            else if constexpr (c == Contribution::MASS)
+            {
+                contributor->buildMassMatrix(m_mass[contributor]);
+            }
+            else if constexpr (c == Contribution::DAMPING)
+            {
+                contributor->buildDampingMatrix(&m_damping[contributor]);
+            }
+            else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
+            {
+                contributor->buildGeometricStiffnessMatrix(&m_geometricStiffness[contributor]);
             }
         }
     }
@@ -111,10 +107,10 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleSystem(const core::Mechanical
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer assembleSystemTimer("AssembleSystem");
+    SCOPED_TIMER_VARNAME(assembleSystemTimer, "AssembleSystem");
 
     {
-        sofa::helper::ScopedAdvancedTimer buildMatricesTimer("buildMatrices");
+        SCOPED_TIMER_VARNAME(buildMatricesTimer, "buildMatrices");
 
         if (d_assembleStiffness.getValue())
         {
@@ -495,7 +491,7 @@ MatrixLinearSystem<TMatrix, TVector>::getLocalMatrixMap() const
 template<class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(const core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer timer("InitializeSystem");
+    SCOPED_TIMER("InitializeSystem");
 
     m_needClearLocalMatrices.updateIfDirty();
     if (m_needClearLocalMatrices.getValue())
@@ -510,7 +506,7 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
     m_discarder.m_globalMatrix = this->getSystemMatrix();
 
     {
-        sofa::helper::ScopedAdvancedTimer resizeTimer("resizeSystem");
+        SCOPED_TIMER_VARNAME(resizeTimer, "resizeSystem");
         const auto rowSize = this->getSystemMatrix() ? this->getSystemMatrix()->rowSize() : 0;
         const auto colSize = this->getSystemMatrix() ? this->getSystemMatrix()->colSize() : 0;
         this->resizeSystem(totalSize);
@@ -520,12 +516,12 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
             "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
     }
     {
-        sofa::helper::ScopedAdvancedTimer clearSystemTimer("clearSystem");
+        SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
         this->clearSystem();
     }
 
     {
-        sofa::helper::ScopedAdvancedTimer localMatricesTimer("initializeLocalMatrices");
+        SCOPED_TIMER_VARNAME(localMatricesTimer, "initializeLocalMatrices");
 
         if (d_assembleMass.getValue())
         {
@@ -648,7 +644,9 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
 
             msg_info() << "No local matrix found: a new local matrix of type "
                 << mat->getClassName() << " (template " << mat->getTemplateName()
-                << ") is created and associated to " << component->getPathName();
+                << ") is created and associated to " << component->getPathName()
+                << " for a contribution on states " << mstate0->getPathName()
+                << " and " << mstate1->getPathName();
 
             auto insertResult = componentLocalMatrix.insert({pairs, mat});
             it = insertResult.first;
@@ -670,25 +668,26 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             }
             else if constexpr (c == Contribution::MASS)
             {
-                matrixMaps.accumulators[component].push_back(mat);
+                m_mass[component] = mat;
             }
+        }
 
-            if (mstates.size() == 1)
-            {
-                matrixMaps.localMatrix.insert({component, mat});
-            }
+        BaseAssemblingMatrixAccumulator<c>* localMatrix = it->second;
+        if (!localMatrix)
+        {
+            dmsg_fatal() << "Local matrix is invalid";
         }
 
         const auto matrixSize1 = mstate0->getMatrixSize();
         const auto matrixSize2 = mstate1->getMatrixSize();
         if (!isAnyMapped) // mapped components don't add their contributions directly into the global matrix
         {
-            it->second->setGlobalMatrix(this->getSystemMatrix());
+            localMatrix->setGlobalMatrix(this->getSystemMatrix());
 
             const auto position = this->m_mappingGraph.getPositionInGlobalMatrix(mstate0, mstate1);
-            it->second->setPositionInGlobalMatrix(position);
+            localMatrix->setPositionInGlobalMatrix(position);
         }
-        it->second->setMatrixSize({matrixSize1, matrixSize2});
+        localMatrix->setMatrixSize({matrixSize1, matrixSize2});
         if (strategy)
         {
             strategy->maxRowIndex = matrixSize1;
@@ -698,23 +697,60 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
 
 }
 
-/**
- * Generic function to create a local matrix and associate it to a component
- */
-template <class TLocalMatrix>
-TLocalMatrix* createLocalMatrixComponent(
-    typename TLocalMatrix::ComponentType* object, const SReal factor, bool printLog)
+template <class TMatrix, class TVector>
+void MatrixLinearSystem<TMatrix, TVector>::makeCreateDispatcher()
 {
-    static_assert(std::is_base_of_v<core::objectmodel::BaseObject, TLocalMatrix>, "Template argument must be a BaseObject");
-    const auto mat = sofa::core::objectmodel::New<TLocalMatrix>();
-    constexpr std::string_view contribution = core::matrixaccumulator::GetContributionName<TLocalMatrix::contribution>();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::STIFFNESS          >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::MASS               >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::DAMPING            >();
+    std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
+}
+
+template <class TMatrix, class TVector>
+template <Contribution c>
+std::unique_ptr<CreateMatrixDispatcher<c>> MatrixLinearSystem<TMatrix, TVector>
+::makeCreateDispatcher()
+{
+    struct MyCreateMatrixDispatcher : CreateMatrixDispatcher<c>
+    {
+        typename BaseAssemblingMatrixAccumulator<c>::SPtr
+        createLocalMappedMatrix() override
+        {
+            return sofa::core::objectmodel::New<AssemblingMappedMatrixAccumulator<c, Real>>();
+        }
+
+    protected:
+
+        typename BaseAssemblingMatrixAccumulator<c>::SPtr
+        createLocalMatrix() const override
+        {
+            return sofa::core::objectmodel::New<AssemblingMatrixAccumulator<c>>();
+        }
+
+        typename BaseAssemblingMatrixAccumulator<c>::SPtr
+        createLocalMatrixWithIndexChecking() const override
+        {
+            return sofa::core::objectmodel::New<AssemblingMatrixAccumulator<c, core::matrixaccumulator::RangeVerification>>();
+        }
+    };
+
+    return std::make_unique<MyCreateMatrixDispatcher>();
+}
+
+/**
+ * Generic function to configure a local matrix and associate it to a component
+ */
+template <core::matrixaccumulator::Contribution c>
+void configureCreatedMatrixComponent(typename BaseAssemblingMatrixAccumulator<c>::SPtr mat,
+    typename BaseAssemblingMatrixAccumulator<c>::ComponentType* object, const SReal factor, bool printLog)
+{
+    constexpr std::string_view contribution = core::matrixaccumulator::GetContributionName<c>();
     mat->setName(std::string(contribution) + "_matrix");
     mat->f_printLog.setValue(printLog);
     mat->setFactor(factor);
     mat->associateObject(object);
     mat->addTag(core::objectmodel::Tag(core::behavior::tagSetupByMatrixLinearSystem));
     object->addSlave(mat);
-    return mat.get();
 }
 
 template <class TMatrix, class TVector>
@@ -722,17 +758,25 @@ template <core::matrixaccumulator::Contribution c>
 BaseAssemblingMatrixAccumulator<c>* MatrixLinearSystem<TMatrix, TVector>::createLocalMatrixT(
     sofa::core::matrixaccumulator::get_component_type<c>* object, SReal factor)
 {
+    this->makeCreateDispatcher();
+    auto& dispatcher = std::get<std::unique_ptr<CreateMatrixDispatcher<c>>>(m_createDispatcher);
+    typename BaseAssemblingMatrixAccumulator<c>::SPtr localMatrix = dispatcher->createLocalMatrix(d_checkIndices.getValue());
+    configureCreatedMatrixComponent<c>(localMatrix, object, factor, !this->notMuted());
+
     if (d_checkIndices.getValue())
     {
-        auto mat = createLocalMatrixComponent<AssemblingMatrixAccumulator<c, core::matrixaccumulator::RangeVerification> >(object, factor, !this->notMuted());
-        const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
-        if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
+        if (auto concreteLocalMatrix
+            = dynamic_cast<AssemblingMatrixAccumulator<c, core::matrixaccumulator::RangeVerification>*>(localMatrix.get()))
         {
-            mat->indexVerificationStrategy = it->second;
+            const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
+            if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
+            {
+                concreteLocalMatrix->indexVerificationStrategy = it->second;
+            }
         }
-        return mat;
     }
-    return createLocalMatrixComponent<AssemblingMatrixAccumulator<c> >(object, factor, !this->notMuted());
+
+    return localMatrix.get();
 }
 
 template <class TMatrix, class TVector>
@@ -741,7 +785,11 @@ AssemblingMappedMatrixAccumulator<c, typename MatrixLinearSystem<TMatrix, TVecto
 MatrixLinearSystem<TMatrix, TVector>::createLocalMappedMatrixT(
     sofa::core::matrixaccumulator::get_component_type<c>* object, SReal factor)
 {
-    return createLocalMatrixComponent<AssemblingMappedMatrixAccumulator<c, Real> >(object, factor, !this->notMuted());
+    this->makeCreateDispatcher();
+    auto& dispatcher = std::get<std::unique_ptr<CreateMatrixDispatcher<c>>>(m_createDispatcher);
+    typename BaseAssemblingMatrixAccumulator<c>::SPtr m = dispatcher->createLocalMappedMatrix();
+    configureCreatedMatrixComponent<c>(m, object, factor, !this->notMuted());
+    return dynamic_cast<AssemblingMappedMatrixAccumulator<c, Real>*>(m.get());
 }
 
 template <class TMatrix, class TVector>
@@ -856,7 +904,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleMappedMatrices(const core::Me
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer buildMappedMatricesTimer("projectMappedMatrices");
+    SCOPED_TIMER_VARNAME(buildMappedMatricesTimer, "projectMappedMatrices");
     projectMappedMatrices(mparams);
 }
 
@@ -864,7 +912,7 @@ template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::applyProjectiveConstraints(const core::MechanicalParams* mparams)
 {
     SOFA_UNUSED(mparams);
-    sofa::helper::ScopedAdvancedTimer applyProjectiveConstraintTimer("applyProjectiveConstraint");
+    SCOPED_TIMER_VARNAME(applyProjectiveConstraintTimer, "applyProjectiveConstraint");
     for (auto* constraint : this->m_projectiveConstraints)
     {
         if (constraint)

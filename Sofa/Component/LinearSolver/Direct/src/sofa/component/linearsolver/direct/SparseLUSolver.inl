@@ -68,7 +68,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     const int n = invertData->A.n;
 
     {
-        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        SCOPED_TIMER_VARNAME(solveTimer, "solve");
         switch( d_typePermutation.getValue().getSelectedId() )
         {
             
@@ -151,7 +151,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
     {
-        sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
+        SCOPED_TIMER_VARNAME(factorizationTimer, "factorization");
         switch( d_typePermutation.getValue().getSelectedId() )
         {
             case 0://None->Identity

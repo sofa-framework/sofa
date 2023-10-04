@@ -29,6 +29,7 @@
 #include <sofa/component/linearsystem/MappingGraph.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
+#include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
 #include <optional>
 
 namespace sofa::component::linearsystem
@@ -99,6 +100,7 @@ protected:
     std::map<BaseForceField*, core::behavior::StiffnessMatrix> m_stiffness;
     std::map<BaseForceField*, core::behavior::DampingMatrix> m_damping;
     std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
+    std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
 
     /// List of shared local matrices under mappings
     sofa::type::vector< std::pair<
@@ -220,6 +222,22 @@ protected:
 
     /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
     std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs);
+
+    /// An object with factory methods to create local matrices
+    std::tuple<
+        std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>,
+        std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>,
+        std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>,
+        std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>
+    > m_createDispatcher;
+
+    /// Define the type of dispatcher, itself defining the type of local matrices
+    /// To override if matrix accumulation methods differs from this class.
+    virtual void makeCreateDispatcher();
+
+private:
+    template<Contribution c>
+    static std::unique_ptr<CreateMatrixDispatcher<c>> makeCreateDispatcher();
 };
 
 template<Contribution c, class Real>
@@ -229,10 +247,6 @@ struct LocalMatrixMaps
     using ComponentType = sofa::core::matrixaccumulator::get_component_type<c>;
     using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
-    /// List of local matrices that components will use to add their contributions
-    std::map< ComponentType*, ListMatrixType > accumulators;
-    /// The local matrix (value) that has been created and associated to a non-mapped component (key)
-    std::map< ComponentType*, BaseAssemblingMatrixAccumulator<c>* > localMatrix;
     /// The local matrix (value) that has been created and associated to a mapped component (key)
     std::map< ComponentType*, std::map<PairMechanicalStates, AssemblingMappedMatrixAccumulator<c, Real>*> > mappedLocalMatrix;
     /// A verification strategy allowing to verify that the matrix indices provided are valid
@@ -243,25 +257,14 @@ struct LocalMatrixMaps
 
     void clear()
     {
-        for (const auto [component, matrix] : localMatrix)
-        {
-            if (component)
-            {
-                component->removeSlave(matrix);
-            }
-        }
-
-        for (const auto& [component, matrixMap] : mappedLocalMatrix)
+        for (const auto& [component, matrixMap] : componentLocalMatrix)
         {
             for (const auto& [pair, matrix] : matrixMap)
             {
                 component->removeSlave(matrix);
-                matrix->reset();
             }
         }
 
-        accumulators.clear();
-        localMatrix.clear();
         mappedLocalMatrix.clear();
         indexVerificationStrategy.clear();
         componentLocalMatrix.clear();

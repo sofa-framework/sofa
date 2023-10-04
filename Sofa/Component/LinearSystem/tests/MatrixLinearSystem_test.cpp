@@ -115,6 +115,7 @@ TEST(LinearSystem, MatrixSystem_springForceField)
 
     //Create the Mechanical Object and define its positions
     auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    mstate->setName("mstate");
     root->addObject(mstate);
     mstate->resize(2);
     auto writeAccessor = mstate->writePositions();
