@@ -22,6 +22,8 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/detection/algorithm/IncrSAP.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -368,7 +370,7 @@ void IncrSAP::boxPrune(){
     const int axis1 = (1  << _cur_axis) & 3;
     const int axis2 = (1  << axis1) & 3;
 
-    sofa::helper::AdvancedTimer::stepBegin("Box Prune SAP intersection");
+    SCOPED_TIMER("Box Prune SAP intersection");
 
     std::deque<int> active_boxes; // active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                   // if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
@@ -393,8 +395,6 @@ void IncrSAP::boxPrune(){
             active_boxes.push_back(new_box);
         }
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Box Prune SAP intersection");
 }
 
 

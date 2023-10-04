@@ -65,8 +65,8 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     if (dt == 0)
         dt = node->getDt();
 
+    SCOPED_TIMER_VARNAME(animationStepTimer, "AnimationStep");
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -120,28 +120,26 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
         node->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    node->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
+        node->execute<UpdateMappingVisitor>(params);
+    }
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
         node->execute ( act );
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
     if (d_computeBoundingBox.getValue())
     {
-        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
+        SCOPED_TIMER("UpdateBBox");
         node->execute<UpdateBoundingBoxVisitor>(params);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif
-
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 } // namespace sofa::component::animationloop

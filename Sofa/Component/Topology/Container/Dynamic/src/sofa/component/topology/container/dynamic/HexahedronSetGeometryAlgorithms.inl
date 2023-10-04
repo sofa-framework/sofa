@@ -781,48 +781,6 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
     }
 }
 
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for(size_t i=0; i<numVertices; ++i)
-    {
-        const double x = (double) vect_c[i][0];
-        const double y = (double) vect_c[i][1];
-        const double z = (double) vect_c[i][2];
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Hexahedron>& hea = this->m_topology->getHexahedra();
-
-    myfile << hea.size() <<"\n";
-
-    for(size_t i=0; i<hea.size(); ++i)
-    {
-        myfile << i+1 << " 5 1 1 8 " << hea[i][4]+1 << " " << hea[i][5]+1 << " "
-                << hea[i][1]+1 << " " << hea[i][0]+1 << " "
-                << hea[i][7]+1 << " " << hea[i][6]+1 << " "
-                << hea[i][2]+1 << " " << hea[i][3]+1 << "\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
-}
 
 template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)

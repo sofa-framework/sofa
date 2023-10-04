@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -112,7 +112,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
             fileStream << "voxelSize: " << rtransform->getScale()[0] << " " << rtransform->getScale()[1]<< " " << rtransform->getScale()[2]<< std::endl;
             fileStream.close();
             std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-            cimg_library::CImg<unsigned char> ucimg = rimage->getCImg(exporter.time);
+            cimg_library::CImg<unsigned char> ucimg = rimage->getCImg(exporter.m_time);
             ucimg.save_raw(imgName.c_str());
         }
         else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
@@ -123,7 +123,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
         {
             float voxsize[3];
             for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
-            rimage->getCImg(exporter.time).save_analyze(fname.c_str(),voxsize);
+            rimage->getCImg(exporter.m_time).save_analyze(fname.c_str(),voxsize);
 
             //once CImg wrote the data, we complete them with a header containing spatial transformation
             typedef struct
@@ -196,11 +196,11 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
             float translation[3];
             for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
             for(unsigned int i=0; i<3; i++) translation[i]=(float)rtransform->getTranslation()[i];
-            save_inr(rimage->getCImg(exporter.time),NULL,fname.c_str(),voxsize,translation);
+            save_inr(rimage->getCImg(exporter.m_time),NULL,fname.c_str(),voxsize,translation);
         }
-        else rimage->getCImg(exporter.time).save(fname.c_str());
+        else rimage->getCImg(exporter.m_time).save(fname.c_str());
 
-        msg_info(&exporter) << "Saved image " << fname <<" ("<< rimage->getCImg(exporter.time).pixel_type() <<")" ;
+        msg_info(&exporter) << "Saved image " << fname <<" ("<< rimage->getCImg(exporter.m_time).pixel_type() <<")" ;
 
         return true;
     }
@@ -247,8 +247,8 @@ public:
         , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
         , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
         , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
-        , stepCounter(0)
-        , time(0)
+        , m_stepCounter(0)
+        , m_time(0)
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
@@ -261,12 +261,19 @@ public:
 
     ~ImageExporter() override {}
 
-    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
+    void cleanup() override
+    {
+        if (exportAtEnd.getValue())
+        {
+            write();
+        }
+    }
 
-    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 
+    unsigned int m_stepCounter;
+    unsigned int m_time;
 
     bool write()
     {
@@ -302,15 +309,15 @@ protected:
             t-=(Real)((int)((int)t/dimt)*dimt);
             t=(t-floor(t)>0.5)?ceil(t):floor(t); // nearest
             if(t<0) t=0.0; else if(t>=(Real)dimt) t=(Real)dimt-1.0; // clamp
-            this->time=(unsigned int)t;
+            this->m_time=(unsigned int)t;
 
             unsigned int maxStep = exportEveryNbSteps.getValue();
             if (maxStep == 0) return;
 
-            stepCounter++;
-            if(stepCounter >= maxStep)
+            m_stepCounter++;
+            if(m_stepCounter >= maxStep)
             {
-                stepCounter = 0;
+                m_stepCounter = 0;
                 write();
             }
         }
@@ -321,12 +328,14 @@ protected:
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
         }
+        else if ( simulation::SimulationInitDoneEvent::checkEventType(event))
+        {
+            if (exportAtBegin.getValue())
+            {
+                write();
+            }
+        }
     }
-
-    unsigned int stepCounter;
-    unsigned int time;
-
-
 };
 
 } // namespace misc

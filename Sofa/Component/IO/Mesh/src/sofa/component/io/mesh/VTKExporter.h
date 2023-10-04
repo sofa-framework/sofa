@@ -39,9 +39,9 @@ public:
     SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
 
 protected:
-    sofa::core::topology::BaseMeshTopology* topology;
-    sofa::core::behavior::BaseMechanicalState* mstate;
-    unsigned int stepCounter;
+    sofa::core::topology::BaseMeshTopology* m_topology;
+    sofa::core::behavior::BaseMechanicalState* m_mstate;
+    unsigned int m_stepCounter;
 
     std::ofstream* outfile;
 
@@ -84,8 +84,6 @@ protected:
 public:
     void init() override;
     void cleanup() override;
-    void bwdInit() override;
-
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 

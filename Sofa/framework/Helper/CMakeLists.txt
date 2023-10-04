@@ -198,6 +198,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
 
+if (SOFA_TRACY)
+    list(APPEND HEADER_FILES ${SRC_ROOT}/logging/TracyMessageHandler.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/logging/TracyMessageHandler.cpp)
+endif()
+
 sofa_find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Type REQUIRED)
 sofa_find_package(Sofa.Topology REQUIRED)

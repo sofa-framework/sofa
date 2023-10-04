@@ -81,7 +81,7 @@ namespace node
 
 void initRoot(Node* root)
 {
-    sofa::helper::ScopedAdvancedTimer timer("Simulation::init");
+    SCOPED_TIMER("Simulation::init");
     if (!root)
     {
         return;
@@ -207,7 +207,7 @@ void updateVisualContext(Node* root)
 
 void animate(Node* root, SReal dt)
 {
-    sofa::helper::ScopedAdvancedTimer timer("Simulation::animate");
+    SCOPED_TIMER("Simulation::animate");
 
     if (!root)
     {
@@ -229,7 +229,7 @@ void animate(Node* root, SReal dt)
 
 void updateVisual(Node* root)
 {
-    sofa::helper::ScopedAdvancedTimer timer("Simulation::updateVisual");
+    SCOPED_TIMER("Simulation::updateVisual");
 
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
@@ -338,7 +338,7 @@ void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
 
 void draw(sofa::core::visual::VisualParams* vparams, Node* root)
 {
-    sofa::helper::ScopedAdvancedTimer timer("Simulation::draw");
+    SCOPED_TIMER("Simulation::draw");
 
     for (const auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
@@ -412,7 +412,7 @@ void exportGraph(Node* root, const char* filename)
 
 void dumpState(Node* root, std::ofstream& out)
 {
-    sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
+    SCOPED_TIMER_VARNAME(dumpStateTimer, "dumpState");
 
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out << root->getTime() << " ";
