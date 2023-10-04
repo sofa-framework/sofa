@@ -126,17 +126,13 @@ GenericConstraintSolver::GenericConstraintSolver()
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
-{
-    if(d_multithreading.getValue())
-        simulation::MainTaskSchedulerFactory::createInRegistry()->stop();
-}
+{}
 
 void GenericConstraintSolver::init()
 {
     ConstraintSolverImpl::init();
 
     constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-    context = getContext();
 
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -174,7 +170,7 @@ void GenericConstraintSolver::cleanup()
 
 bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    sofa::helper::ScopedAdvancedTimer vtimer("PrepareStates");
+    SCOPED_TIMER_VARNAME(vtimer, "PrepareStates");
 
     last_cp = current_cp;
 
@@ -207,34 +203,38 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 {
     unsigned int numConstraints = 0;
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
-    // mechanical action executed from root node to propagate the constraints
-    MechanicalResetConstraintVisitor(cParams).execute(context);
-    // calling buildConstraintMatrix
-    MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
+    {
+        SCOPED_TIMER("Accumulate Constraint");
 
-    MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
+        auto* context = getContext();
 
-    // suppress the constraints that are on DOFS currently concerned by projective constraint
-    core::MechanicalParams mparams = core::MechanicalParams(*cParams);
-    MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+        // mechanical action executed from root node to propagate the constraints
+        MechanicalResetConstraintVisitor(cParams).execute(context);
+        // calling buildConstraintMatrix
+        MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
 
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
+        MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
+
+        // suppress the constraints that are on DOFS currently concerned by projective constraint
+        core::MechanicalParams mparams = core::MechanicalParams(*cParams);
+        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+    }
+
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     current_cp->clear(numConstraints);
 
     {
-        sofa::helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(context);
+        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
+        MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(getContext());
     }
 
     {
-        sofa::helper::ScopedAdvancedTimer getConstraintResolutionsTimer("Get Constraint Resolutions");
-        MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
+        SCOPED_TIMER_VARNAME(getConstraintResolutionsTimer, "Get Constraint Resolutions");
+        MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(getContext());
     }
 
-    msg_info() <<"GenericConstraintSolver: "<<numConstraints<<" constraints";
+    msg_info() << numConstraints << " constraints";
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
@@ -354,7 +354,7 @@ void GenericConstraintSolver::ComplianceWrapper::assembleMatrix() const
 
 void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintParams *cParams)
 {
-    sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
+    SCOPED_TIMER_VARNAME(getComplianceTimer, "Get Compliance");
     dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
 
     const bool multithreading = d_multithreading.getValue();
@@ -450,13 +450,13 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
                 msg_info() << tmp.str() ;
             }
-            sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("ConstraintsGaussSeidel");
+            SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ConstraintsGaussSeidel");
             current_cp->gaussSeidel(0, this);
             break;
         }
         // UnbuiltGaussSeidel
         case 1: {
-            sofa::helper::ScopedAdvancedTimer unbuiltGaussSeidelTimer("ConstraintsUnbuiltGaussSeidel");
+            SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "ConstraintsUnbuiltGaussSeidel");
             current_cp->unbuiltGaussSeidel(0, this);
             break;
         }
@@ -512,82 +512,85 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
     msg_info() << "KeepContactForces done" ;
 
-    AdvancedTimer::stepBegin("Compute And Apply Motion Correction");
-
-    if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
-        const core::MultiVecCoordId xId(res1);
-        const core::MultiVecDerivId vId(res2);
-        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
+        SCOPED_TIMER("Compute And Apply Motion Correction");
+
+        if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
         {
-            if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = l_constraintCorrections[i];
-            if (!cc->isActive()) continue;
-
-            sofa::helper::AdvancedTimer::stepBegin("ComputeCorrection on: " + cc->getName());
-            cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
-            sofa::helper::AdvancedTimer::stepEnd("ComputeCorrection on: " + cc->getName());
-
-            sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
-            cc->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
-            sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
-        }
-    }
-    else if (cParams->constOrder() == core::ConstraintParams::POS)
-    {
-        const core::MultiVecCoordId xId(res1);
-        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
-        {
-            if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = l_constraintCorrections[i];
-            if (!cc->isActive()) continue;
-
+            const core::MultiVecCoordId xId(res1);
+            const core::MultiVecDerivId vId(res2);
+            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
             {
-                sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
-                cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
-            }
+                if (!constraintCorrectionIsActive[i]) continue;
+                BaseConstraintCorrection* cc = l_constraintCorrections[i];
+                if (!cc->isActive()) continue;
 
-            {
-                sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
-                cc->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
+                {
+                    helper::ScopedAdvancedTimer computeCorrectonFromLambdaTimer("ComputeCorrection on: " + cc->getName());
+                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+                }
+
+                {
+                    helper::ScopedAdvancedTimer applyCorrectonFromLambdaTimer("ApplyCorrection on: " + cc->getName());
+                    cc->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
+                }
             }
         }
-    }
-    else if (cParams->constOrder() == core::ConstraintParams::VEL)
-    {
-        const core::MultiVecDerivId vId(res1);
-        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
+        else if (cParams->constOrder() == core::ConstraintParams::POS)
         {
-            if (!constraintCorrectionIsActive[i]) continue;
-            BaseConstraintCorrection* cc = l_constraintCorrections[i];
-            if (!cc->isActive()) continue;
-
+            const core::MultiVecCoordId xId(res1);
+            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
             {
-                sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
-                cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+                if (!constraintCorrectionIsActive[i]) continue;
+                BaseConstraintCorrection* cc = l_constraintCorrections[i];
+                if (!cc->isActive()) continue;
+
+                {
+                    sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
+                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+                }
+
+                {
+                    sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
+                    cc->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
+                }
             }
-
+        }
+        else if (cParams->constOrder() == core::ConstraintParams::VEL)
+        {
+            const core::MultiVecDerivId vId(res1);
+            for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
             {
-                sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
-                cc->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
+                if (!constraintCorrectionIsActive[i]) continue;
+                BaseConstraintCorrection* cc = l_constraintCorrections[i];
+                if (!cc->isActive()) continue;
+
+                {
+                    sofa::helper::ScopedAdvancedTimer computeCorrectionTimer("ComputeCorrection on: " + cc->getName());
+                    cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+                }
+
+                {
+                    sofa::helper::ScopedAdvancedTimer applyCorrectionTimer("ApplyCorrection on: " + cc->getName());
+                    cc->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
+                }
             }
         }
     }
-
-    AdvancedTimer::stepEnd("Compute And Apply Motion Correction");
 
     msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
-    AdvancedTimer::stepBegin("Store Constraint Lambdas");
+    {
+        SCOPED_TIMER("Store Constraint Lambdas");
 
-    /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
-    /// In order to be sure that we are not accumulating things twice, we need to clear.
-    clearMultiVecId(getContext(), cParams, m_lambdaId);
+        /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
+        /// In order to be sure that we are not accumulating things twice, we need to clear.
+        clearMultiVecId(getContext(), cParams, m_lambdaId);
 
-    /// Store lambda and accumulate.
-    ConstraintStoreLambdaVisitor v(cParams, &current_cp->f);
-    this->getContext()->executeVisitor(&v);
-    AdvancedTimer::stepEnd("Store Constraint Lambdas");
+        /// Store lambda and accumulate.
+        ConstraintStoreLambdaVisitor v(cParams, &current_cp->f);
+        this->getContext()->executeVisitor(&v);
+    }
 
     return true;
 }

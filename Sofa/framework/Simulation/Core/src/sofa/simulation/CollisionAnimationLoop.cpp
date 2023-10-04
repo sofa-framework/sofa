@@ -55,7 +55,7 @@ CollisionAnimationLoop::~CollisionAnimationLoop()
 
 void CollisionAnimationLoop::preCollisionComputation(const core::ExecParams *params)
 {
-    sofa::helper::ScopedAdvancedTimer timer("CollisionBeginEvent");
+    SCOPED_TIMER("CollisionBeginEvent");
     CollisionBeginEvent evBegin;
     PropagateEventVisitor eventPropagation( params, &evBegin);
     eventPropagation.execute(getContext());
@@ -63,7 +63,7 @@ void CollisionAnimationLoop::preCollisionComputation(const core::ExecParams *par
 
 void CollisionAnimationLoop::internalCollisionComputation(const core::ExecParams *params)
 {
-    sofa::helper::ScopedAdvancedTimer timer("CollisionVisitor");
+    SCOPED_TIMER("CollisionVisitor");
     CollisionVisitor act(params);
     act.setTags(this->getTags());
     act.execute(getContext());
@@ -71,7 +71,7 @@ void CollisionAnimationLoop::internalCollisionComputation(const core::ExecParams
 
 void CollisionAnimationLoop::postCollisionComputation(const core::ExecParams *params)
 {
-    sofa::helper::ScopedAdvancedTimer timer("CollisionEndEvent");
+    SCOPED_TIMER("CollisionEndEvent");
     CollisionEndEvent evEnd;
     PropagateEventVisitor eventPropagation( params, &evEnd);
     eventPropagation.execute(getContext());

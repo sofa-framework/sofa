@@ -111,6 +111,7 @@ public:
     {
         m_value = ValueType(init.value);
         m_hasDefaultValue = true;
+        m_defaultValue = init.value;
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
@@ -200,6 +201,7 @@ public:
     bool read( const std::string& s ) override;
     void printValue(std::ostream& out) const override;
     std::string getValueString() const override;
+    std::string getDefaultValueString() const override;
     std::string getValueTypeString() const override;
 
     void operator =( const T& value )
@@ -216,6 +218,7 @@ public:
 
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
+    T m_defaultValue;
 
     /// Value
     ValueType m_value;
@@ -259,13 +262,26 @@ void Data<T>::printValue( std::ostream& out) const
     out << getValue() << " ";
 }
 
-/// General case for printing default value
+/// General case for printing value
 template<class T>
 std::string Data<T>::getValueString() const
 {
     std::ostringstream out;
     out << getValue();
     return out.str();
+}
+
+/// General case for printing default value
+template<class T>
+std::string Data<T>::getDefaultValueString() const
+{
+    if (hasDefaultValue())
+    {
+        std::ostringstream out;
+        out << this->m_defaultValue;
+        return out.str();
+    }
+    return {};
 }
 
 template<class T>

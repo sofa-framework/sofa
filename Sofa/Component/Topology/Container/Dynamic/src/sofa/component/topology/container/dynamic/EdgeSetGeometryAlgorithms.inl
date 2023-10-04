@@ -402,45 +402,6 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
 }
 
 
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for (size_t i=0; i<numVertices; ++i)
-    {
-        Real x=0,y=0,z=0; DataTypes::get(x,y,z, vect_c[i]);
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Edge> &edge = this->m_topology->getEdges();
-
-    myfile << edge.size() <<"\n";
-
-    for (size_t i=0; i<edge.size(); ++i)
-    {
-        myfile << i+1 << " 1 1 1 2 " << edge[i][0]+1 << " " << edge[i][1]+1 <<"\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
-}
-
-
 template<class Vec>
 bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 {

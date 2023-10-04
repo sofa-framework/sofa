@@ -95,6 +95,10 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
+#ifdef TRACY_ENABLE
+#include <sofa/helper/logging/TracyMessageHandler.h>
+#endif
+
 #include <sofa/gui/common/ArgumentParser.h>
 
 
@@ -375,6 +379,9 @@ int main(int argc, char** argv)
         msg_warning("") << "Invalid argument '" << messageHandler << "' for '--formatting'";
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+#ifdef TRACY_ENABLE
+    MessageDispatcher::addHandler(&sofa::helper::logging::MainTracyMessageHandler::getInstance());
+#endif
 
     // Output FileRepositories
     msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();

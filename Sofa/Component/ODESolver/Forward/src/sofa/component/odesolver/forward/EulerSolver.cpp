@@ -55,7 +55,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
                                 sofa::core::MultiVecCoordId xResult,
                                 sofa::core::MultiVecDerivId vResult)
 {
-    sofa::helper::ScopedAdvancedTimer timer("EulerExplicitSolve");
+    SCOPED_TIMER("EulerExplicitSolve");
 
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
@@ -113,7 +113,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
                                       const sofa::core::behavior::MultiVecDeriv& acc,
                                       SReal dt) const
 {
-    sofa::helper::ScopedAdvancedTimer timer("updateState");
+    SCOPED_TIMER("updateState");
 
     // Initialize the set of multi-vectors computed by this solver
     // "xResult" could be "position()" or "freePosition()" depending on the
@@ -262,7 +262,7 @@ void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* 
 
 void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
-    sofa::helper::ScopedAdvancedTimer timer("addSeparateGravity");
+    SCOPED_TIMER("addSeparateGravity");
 
     /// Calls the "addGravityToV" method of every BaseMass objects found in the current
     /// context tree, if the BaseMass object has the m_separateGravity flag set to true.
@@ -272,7 +272,7 @@ void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::Mechanica
 
 void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
 {
-    sofa::helper::ScopedAdvancedTimer timer("ComputeForce");
+    SCOPED_TIMER("ComputeForce");
 
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
@@ -282,7 +282,7 @@ void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOpera
 
 void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
 {
-    sofa::helper::ScopedAdvancedTimer timer("AccFromF");
+    SCOPED_TIMER("AccFromF");
 
     // acc = M^-1 f
     // Since it requires the inverse of the mass matrix, this method is
@@ -294,7 +294,7 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::Mechanic
 
 void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
 {
-    sofa::helper::ScopedAdvancedTimer timer("projectResponse");
+    SCOPED_TIMER("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedConstraint. In this case,
@@ -304,7 +304,7 @@ void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOp
 
 void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
 {
-    sofa::helper::ScopedAdvancedTimer timer("solveConstraint");
+    SCOPED_TIMER("solveConstraint");
 
     // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
     mop->solveConstraint(acc, core::ConstraintParams::ACC);
@@ -312,7 +312,7 @@ void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalO
 
 void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix)
 {
-    sofa::helper::ScopedAdvancedTimer timer("MBKBuild");
+    SCOPED_TIMER("MBKBuild");
 
     // The MechanicalMatrix::M is a simple structure that stores three floats called factors: m, b and k.
     // In the case of MechanicalMatrix::M:
@@ -334,7 +334,7 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
 void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
                                       core::MultiVecDerivId solution, core::MultiVecDerivId rhs)
 {
-    sofa::helper::ScopedAdvancedTimer timer("MBKSolve");
+    SCOPED_TIMER("MBKSolve");
     matrix->solve(solution, rhs);
 }
 

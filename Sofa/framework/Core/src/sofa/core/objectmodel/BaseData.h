@@ -112,6 +112,9 @@ public:
     /// Get a string representation of the value held in this %Data.
     virtual std::string getValueString() const = 0;
 
+    /// Get a string representation of the default value held in this %Data.
+    virtual std::string getDefaultValueString() const = 0;
+
     /// Get the name of the type of the value held in this %Data.
     virtual std::string getValueTypeString() const = 0;
 

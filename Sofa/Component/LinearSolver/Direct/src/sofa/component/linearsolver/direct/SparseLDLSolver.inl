@@ -110,7 +110,7 @@ void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::object
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+    SCOPED_TIMER_VARNAME(solveTimer, "solve");
     Inherit::solve_cpu(z.ptr(), r.ptr(), (InvertData *) this->getMatrixInvertData(&M));
 }
 

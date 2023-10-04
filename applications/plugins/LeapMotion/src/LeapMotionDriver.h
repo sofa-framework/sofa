@@ -97,7 +97,6 @@ public:
     virtual ~LeapMotionDriver();
 
     void init();
-    void bwdInit();
     void reset();
     void reinit();
 
