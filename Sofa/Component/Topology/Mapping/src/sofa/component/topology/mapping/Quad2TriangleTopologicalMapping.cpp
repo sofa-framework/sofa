@@ -37,6 +37,8 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::topology::mapping
 {
@@ -62,8 +64,8 @@ int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
 {
-    m_inputType = TopologyElementType::QUAD;
-    m_outputType = TopologyElementType::TRIANGLE;
+    m_inputType = geometry::ElementType::QUAD;
+    m_outputType = geometry::ElementType::TRIANGLE;
 }
 
 
@@ -177,7 +179,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("Update Quad2TriangleTopologicalMapping");
+    SCOPED_TIMER("Update Quad2TriangleTopologicalMapping");
 
     TriangleSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
@@ -191,7 +193,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        helper::ScopedAdvancedTimer topoChangetimer(topoChangeType);
 
         switch( changeType )
         {
@@ -401,11 +403,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");
 }
 
 

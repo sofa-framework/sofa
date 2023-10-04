@@ -68,7 +68,7 @@ void DefaultCollisionGroupManager::changeInstance(Instance inst)
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::type::vector<Contact::SPtr>& contacts)
 {
-    sofa::helper::ScopedAdvancedTimer timer("CreateGroups");
+    SCOPED_TIMER("CreateGroups");
 
     int groupIndex = 1;
 

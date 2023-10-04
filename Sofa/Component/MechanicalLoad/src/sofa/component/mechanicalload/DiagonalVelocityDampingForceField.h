@@ -44,8 +44,11 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    /// air drag coefficient.
-    Data< VecDeriv > dampingCoefficients;
+    /// velocity damping coefficients (by cinematic dof)
+    Data< VecDeriv > d_dampingCoefficients;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
+    DeprecatedAndRemoved dampingCoefficients;
 
 protected:
 

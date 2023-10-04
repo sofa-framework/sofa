@@ -90,18 +90,19 @@ struct Edge
 
 
     /**
-    * @brief	Compute the barycentric coefficients of input point on Edge (n0, n1)
+    * @brief	Compute the barycentric coordinates of input point on Edge (n0, n1). It can be interpreted as masses placed at the Edge vertices such that the point is the center of mass of these masses.
+    * No check is done if point is on Edge. Method @sa isPointOnEdge can be used before to check that.
     * @tparam   Node iterable container
     * @tparam   T scalar
     * @param	point: position of the point to compute the coefficients
     * @param	n0,n1: nodes of the edge
-    * @return	sofa::type::Vec<2, T> barycentric coefficients
+    * @return	sofa::type::Vec<2, T> barycentric coefficients of each vertex of the Edge.
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-    static constexpr auto pointBaryCoefs(const Node& point, const Node& n0, const Node& n1)
+    static constexpr auto getBarycentricCoordinates(const Node& point, const Node& n0, const Node& n1)
     {
         sofa::type::Vec<2, T> baryCoefs;
         const T dist = (n1 - n0).norm();

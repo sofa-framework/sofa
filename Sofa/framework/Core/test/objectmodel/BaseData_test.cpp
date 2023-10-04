@@ -35,6 +35,7 @@ public:
     bool read(const std::string&)override {return true;}
     void printValue(std::ostream&) const override {return;}
     std::string getValueString() const override  {return "";}
+    std::string getDefaultValueString() const override { return ""; }
     std::string getValueTypeString() const override {return "";}
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override {return nullptr;}
     const void* getValueVoidPtr() const {return nullptr;}

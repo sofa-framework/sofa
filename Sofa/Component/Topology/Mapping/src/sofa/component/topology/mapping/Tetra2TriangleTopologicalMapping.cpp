@@ -36,6 +36,8 @@
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::topology::mapping
 {
@@ -60,8 +62,8 @@ Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
     , noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
     , m_outTopoModifier(nullptr)
 {
-    m_inputType = TopologyElementType::TETRAHEDRON;
-    m_outputType = TopologyElementType::TRIANGLE;
+    m_inputType = geometry::ElementType::TETRAHEDRON;
+    m_outputType = geometry::ElementType::TRIANGLE;
 }
 
 void Tetra2TriangleTopologicalMapping::init()
@@ -146,7 +148,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
+    SCOPED_TIMER("Update Tetra2TriangleTopologicalMapping");
 
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
@@ -157,7 +159,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        helper::ScopedAdvancedTimer topoChangetimer(topoChangeType);
 
         switch( changeType )
         {
@@ -468,11 +470,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }    
 
-    sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
 }
 
 

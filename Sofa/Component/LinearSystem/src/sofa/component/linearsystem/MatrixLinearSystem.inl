@@ -145,6 +145,7 @@ void MatrixLinearSystem<TMatrix, TVector>::contribute(
             if (Inherit1::template getContributionFactor<c>(mparams, component) != 0._sreal)
             {
                 component->buildGeometricStiffnessMatrix(&geometricStiffnessMatrix);
+
             }
         }
     }
@@ -159,10 +160,10 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleSystem(const core::Mechanical
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer assembleSystemTimer("AssembleSystem");
+    SCOPED_TIMER_VARNAME(assembleSystemTimer, "AssembleSystem");
 
     {
-        sofa::helper::ScopedAdvancedTimer buildMatricesTimer("buildMatrices");
+        SCOPED_TIMER_VARNAME(buildMatricesTimer, "buildMatrices");
 
         simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
         assert(taskScheduler);
@@ -663,7 +664,7 @@ MatrixLinearSystem<TMatrix, TVector>::getLocalMatrixMap() const
 template<class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(const core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer timer("InitializeSystem");
+    SCOPED_TIMER("InitializeSystem");
 
     m_needClearLocalMatrices.updateIfDirty();
     if (m_needClearLocalMatrices.getValue())
@@ -678,7 +679,7 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
     m_discarder.m_globalMatrix = this->getSystemMatrix();
 
     {
-        sofa::helper::ScopedAdvancedTimer resizeTimer("resizeSystem");
+        SCOPED_TIMER_VARNAME(resizeTimer, "resizeSystem");
         const auto rowSize = this->getSystemMatrix() ? this->getSystemMatrix()->rowSize() : 0;
         const auto colSize = this->getSystemMatrix() ? this->getSystemMatrix()->colSize() : 0;
         this->resizeSystem(totalSize);
@@ -688,12 +689,12 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
             "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
     }
     {
-        sofa::helper::ScopedAdvancedTimer clearSystemTimer("clearSystem");
+        SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
         this->clearSystem();
     }
 
     {
-        sofa::helper::ScopedAdvancedTimer localMatricesTimer("initializeLocalMatrices");
+        SCOPED_TIMER_VARNAME(localMatricesTimer, "initializeLocalMatrices");
 
         if (d_assembleMass.getValue())
         {
@@ -1077,7 +1078,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleMappedMatrices(const core::Me
         return;
     }
 
-    sofa::helper::ScopedAdvancedTimer buildMappedMatricesTimer("projectMappedMatrices");
+    SCOPED_TIMER_VARNAME(buildMappedMatricesTimer, "projectMappedMatrices");
     projectMappedMatrices(mparams);
 }
 
@@ -1085,7 +1086,7 @@ template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::applyProjectiveConstraints(const core::MechanicalParams* mparams)
 {
     SOFA_UNUSED(mparams);
-    sofa::helper::ScopedAdvancedTimer applyProjectiveConstraintTimer("applyProjectiveConstraint");
+    SCOPED_TIMER_VARNAME(applyProjectiveConstraintTimer, "applyProjectiveConstraint");
     for (auto* constraint : this->m_projectiveConstraints)
     {
         if (constraint)

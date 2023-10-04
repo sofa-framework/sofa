@@ -170,7 +170,6 @@ public:
 public:
 
     void init() override;
-    void bwdInit() override;
     void reinit() override;
     virtual void reinitBeam(Index i);
     void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;

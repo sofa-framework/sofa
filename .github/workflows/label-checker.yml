@@ -15,6 +15,7 @@ jobs:
   check_labels:
     name: Check labels
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
     steps:
       - name: Delay for 10 Seconds
         run: |

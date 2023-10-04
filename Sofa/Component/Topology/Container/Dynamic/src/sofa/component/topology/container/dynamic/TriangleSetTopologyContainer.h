@@ -255,7 +255,7 @@ public:
     void reOrientateTriangle(TriangleID id) override;
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyElementType getTopologyType() const override { return sofa::core::topology::TopologyElementType::TRIANGLE; }
+    sofa::geometry::ElementType getTopologyType() const override { return sofa::geometry::ElementType::TRIANGLE; }
     
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

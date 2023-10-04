@@ -64,7 +64,7 @@ public:
     void TearDown() override
     {
         if (m_simu != nullptr && m_root != nullptr) {
-            m_simu->unload(m_root);
+            sofa::simulation::node::unload(m_root);
         }
     }
 
@@ -292,7 +292,7 @@ void SofaCarving_test::ManagerInit()
     // init scene
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_MSG_NOEMIT(Warning);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
 }
 
 
@@ -349,7 +349,7 @@ void SofaCarving_test::ManagerInitWithLinks()
     // init scene
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_MSG_NOEMIT(Warning);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
 }
 
 
@@ -379,7 +379,7 @@ void SofaCarving_test::ManagerWrongInit()
 
     // init scene
     EXPECT_MSG_EMIT(Error);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
 }
 
 
@@ -391,7 +391,7 @@ void SofaCarving_test::ManagerSceneInit()
     // init scene
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_MSG_NOEMIT(Warning);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
     
     // get node of the mesh
     sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
@@ -417,7 +417,7 @@ void SofaCarving_test::doCarving()
     // init scene
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_MSG_NOEMIT(Warning);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
 
     // get node of the mesh
     sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
@@ -430,7 +430,7 @@ void SofaCarving_test::doCarving()
     // perform some steps
     for (unsigned int i = 0; i < 100; ++i)
     {
-        m_simu->animate(m_root.get());
+        sofa::simulation::node::animate(m_root.get(), 0.01);
     }
 
     // checking topo after carving
@@ -449,7 +449,7 @@ void SofaCarving_test::doCarvingWithPenetration()
     // init scene
     EXPECT_MSG_NOEMIT(Error);
     EXPECT_MSG_NOEMIT(Warning);
-    m_simu->init(m_root.get());
+    sofa::simulation::node::initRoot(m_root.get());
 
     // get node of the mesh
     sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
@@ -462,7 +462,7 @@ void SofaCarving_test::doCarvingWithPenetration()
     // perform some steps
     for (unsigned int i = 0; i < 100; ++i)
     {
-        m_simu->animate(m_root.get());
+        sofa::simulation::node::animate(m_root.get(), 0.01);
     }
 
     // checking topo after carving

@@ -46,7 +46,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vec
 {
     const int n = A.n;
 
-    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+    SCOPED_TIMER_VARNAME(solveTimer, "solve");
 
     switch( d_typePermutation.getValue().getSelectedId() )
     {
@@ -108,7 +108,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     tmp.resize(A.n);
 
     {
-        sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
+        SCOPED_TIMER_VARNAME(factorization_permTimer, "factorization_perm");
 
         notSameShape = compareMatrixShape( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
 

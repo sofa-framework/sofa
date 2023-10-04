@@ -26,6 +26,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 namespace sofa::component::odesolver::backward
@@ -121,20 +122,24 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
         MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
 
-		sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-		mop.computeForce(f);
-		sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
-
-		sofa::helper::AdvancedTimer::stepBegin("AccFromF");
-		f.peq(p,1.0/h); 
-
-		mop.accFromF(acc, f); // acc= 1/m (f(q(k)+p(k)/h))
-		if (rM>0) {
-			MultiVecDeriv oldVel(&vop, core::VecDerivId::velocity() );
-			// add rayleigh Mass damping if necessary
-			acc.peq(oldVel,-rM); // equivalent to adding damping force -rM* M*v(k) 
+		{
+		    SCOPED_TIMER("ComputeForce");
+		    mop.computeForce(f);
 		}
-		sofa::helper::AdvancedTimer::stepEnd("AccFromF");
+
+	    {
+		    SCOPED_TIMER("AccFromF");
+
+	        f.peq(p,1.0/h);
+
+		    mop.accFromF(acc, f); // acc= 1/m (f(q(k)+p(k)/h))
+		    if (rM>0) {
+		        MultiVecDeriv oldVel(&vop, core::VecDerivId::velocity() );
+		        // add rayleigh Mass damping if necessary
+		        acc.peq(oldVel,-rM); // equivalent to adding damping force -rM* M*v(k)
+		    }
+	    }
+
 		mop.projectResponse(acc);
 
 		mop.solveConstraint(acc, core::ConstraintParams::ACC);
@@ -187,10 +192,12 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			// where b = f(q(k,i-1)) -K(q(k,i-1)) res(i-1) +(2/h)p^(k)
 			// and matrix=-K+4/h^(2)M
 
-			sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-            mop.computeForce(f);
+			{
+			    SCOPED_TIMER("ComputeForce");
+			    mop.computeForce(f);
+			}
 
-			sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
+			sofa::helper::AdvancedTimer::stepBegin("ComputeRHTerm");
 
 			// we have b=f(q(k,i-1)+(2/h)p(k)
 			b.peq(f,1.0);
@@ -202,16 +209,21 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 
 			mop.projectResponse(b);
+		    sofa::helper::AdvancedTimer::stepEnd("ComputeRHTerm");
+
+		    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
+
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
-            core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-            matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h));
+		    {
+			    SCOPED_TIMER("MBKBuild");
+			    matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h));
+		    }
 
-			sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
-
-			// resolution of matrix*res=b
-			matrix.solve(res,b); //Call to ODE resolution.
-
-			sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
+            {
+			    SCOPED_TIMER("MBKSolve");
+                // resolution of matrix*res=b
+                matrix.solve(res, b); //Call to ODE resolution.
+            }
 
 			/// Updates of q(k,i) ///
 			VMultiOp ops;
@@ -257,9 +269,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		opsfin[0].second.push_back(std::make_pair(res.id(),2.0/h));
 		vop.v_multiop(opsfin);
 
-		sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
-
-        sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
+		sofa::helper::AdvancedTimer::stepBegin("CorrectV");
 		mop.solveConstraint(vel_1,core::ConstraintParams::VEL);
 
 		// update position
@@ -328,9 +338,11 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
         }
 	}
 
-    sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-    mop.solveConstraint(x_1,core::ConstraintParams::POS);
-    sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
+    sofa::helper::AdvancedTimer::stepEnd("CorrectV");
+    {
+        SCOPED_TIMER("CorrectX");
+        mop.solveConstraint(x_1,core::ConstraintParams::POS);
+    }
 
 	// update the previous momemtum as the current one for next step
     pPrevious.eq(newp);

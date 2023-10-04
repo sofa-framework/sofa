@@ -29,6 +29,7 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -67,7 +68,11 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintSolverImpl : pub
 public:
     SOFA_ABSTRACT_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver)
 
+    ConstraintSolverImpl();
     ~ConstraintSolverImpl() override;
+
+    void init() override;
+    void cleanup() override;
 
     virtual ConstraintProblem* getConstraintProblem() = 0;
 
@@ -75,10 +80,19 @@ public:
     /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
     virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
 
+    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+
 protected:
 
     void postBuildSystem(const core::ConstraintParams* cParams) override;
     void postSolveSystem(const core::ConstraintParams* cParams) override;
+
+    void clearConstraintCorrections();
+
+    MultiLink< ConstraintSolverImpl,
+        core::behavior::BaseConstraintCorrection,
+        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

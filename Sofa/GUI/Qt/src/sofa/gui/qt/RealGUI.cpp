@@ -55,6 +55,7 @@
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/SimulationLoop.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
@@ -1912,6 +1913,7 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    SIMULATION_LOOP_SCOPE
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
@@ -2126,7 +2128,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 {
     if ( !root ) return;
 
-    sofa::helper::ScopedAdvancedTimer exportOBJTimer("exportOBJ");
+    SCOPED_TIMER_VARNAME(exportOBJTimer, "exportOBJ");
 
     const std::string sceneFileName(this->windowFilePath ().toStdString());
     std::ostringstream ofilename;

@@ -42,7 +42,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
 {
     if (isAsyncFactorizationFinished() || !m_asyncResult.valid())
     {
-        sofa::helper::ScopedAdvancedTimer setSystemMBKMatrixTimer("setSystemMBKMatrix");
+        SCOPED_TIMER_VARNAME(setSystemMBKMatrixTimer, "setSystemMBKMatrix");
         Inherit1::setSystemMBKMatrix(mparams);
         m_hasUpdatedMatrix = true;
     }
@@ -51,7 +51,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 {
-    sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("AsyncSolve");
+    SCOPED_TIMER_VARNAME(invertDataCopyTimer, "AsyncSolve");
 
     if (newInvertDataReady)
     {

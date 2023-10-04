@@ -99,11 +99,10 @@ public:
 
     bool isPointInQuad(const QuadID ind_q, const sofa::type::Vec<3,Real>& p) const;
 
-    /** \brief Write the current mesh into a msh file
-    */
-    void writeMSHfile(const char *filename) const;
-
     void draw(const core::visual::VisualParams* vparams) override;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> showQuadIndices; ///< Debug : view Quad indices

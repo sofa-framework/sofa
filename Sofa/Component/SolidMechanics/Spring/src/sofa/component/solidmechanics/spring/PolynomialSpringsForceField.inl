@@ -28,6 +28,8 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -400,7 +402,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
 {
     msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
 
-    sofa::helper::AdvancedTimer::stepBegin("restShapeSpringAddKToMatrix");
+    SCOPED_TIMER("restShapeSpringAddKToMatrix");
 
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     unsigned int firstIndex = 0;
@@ -457,8 +459,6 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
             }
         }
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("restShapeSpringAddKToMatrix");
 }
 
 template <class DataTypes>

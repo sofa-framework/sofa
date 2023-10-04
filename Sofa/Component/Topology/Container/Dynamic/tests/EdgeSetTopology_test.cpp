@@ -89,7 +89,7 @@ private:
 
 bool EdgeSetTopology_test::loadTopologyContainer(const std::string& filename)
 {
-    m_scene = std::make_unique<fake_TopologyScene>(filename, sofa::core::topology::TopologyElementType::EDGE);
+    m_scene = std::make_unique<fake_TopologyScene>(filename, sofa::geometry::ElementType::EDGE);
 
     if (m_scene == nullptr) {
         msg_error("EdgeSetTopology_test") << "Fake Topology creation failed.";
@@ -338,8 +338,8 @@ bool EdgeSetTopology_test::checkEdgeDataGraph()
     auto& outputs = m_topoCon->d_edge.getOutputs();
     EXPECT_EQ(outputs.size(), 2);
 
-    auto edgeHandlers = m_topoCon->getTopologyHandlerList(sofa::core::topology::TopologyElementType::EDGE);
-    const auto vertexHandlers = m_topoCon->getTopologyHandlerList(sofa::core::topology::TopologyElementType::POINT);
+    auto edgeHandlers = m_topoCon->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    const auto vertexHandlers = m_topoCon->getTopologyHandlerList(sofa::geometry::ElementType::POINT);
     
     EXPECT_EQ(vertexHandlers.size(), 1);
     EXPECT_EQ(edgeHandlers.size(), 2);

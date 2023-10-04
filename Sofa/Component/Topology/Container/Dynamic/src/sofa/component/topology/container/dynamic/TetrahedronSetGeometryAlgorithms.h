@@ -121,9 +121,6 @@ public:
             sofa::type::vector<TetrahedronID> &indices) const;
     void getTetraInBall(const Coord& c, Real r,
             sofa::type::vector<TetrahedronID> &indices) const;
-    /** \brief Write the current mesh into a msh file
-    */
-    void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
     void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::type::Vec<3,Real>& planP0, const sofa::type::Vec<3,Real>& normal, sofa::type::vector< sofa::type::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
@@ -166,6 +163,9 @@ public:
     void subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
     void subDivideRestTetrahedronsWithPlane(sofa::type::vector<Coord>& intersectedPoints, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
     int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::type::vector<EdgeID>& intersectedEdgeID, sofa::type::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::type::vector<Tetra>& toBeAddedTetra);
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices

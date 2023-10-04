@@ -129,7 +129,7 @@ void DirectSAPNarrowPhase::endNarrowPhase()
 
 void DirectSAPNarrowPhase::checkNewCollisionModels()
 {
-    helper::ScopedAdvancedTimer scopeTimer("Direct SAP check new cm");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP check new cm");
     for (auto *cm : m_broadPhaseCollisionModels)
     {
         auto *last = cm->getLast();
@@ -190,7 +190,7 @@ int DirectSAPNarrowPhase::greatestVarianceAxis() const
 
 void DirectSAPNarrowPhase::updateBoxes()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP update boxes");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP update boxes");
     m_currentAxis = greatestVarianceAxis();
     for (auto& dsapBox : m_boxes)
     {
@@ -220,7 +220,7 @@ bool DirectSAPNarrowPhase::isSquaredDistanceLessThan(const DSAPBox &a, const DSA
 
 void DirectSAPNarrowPhase::cacheData()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP cache");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP cache");
 
     unsigned int i{ 0 };
     for (const auto& box : m_boxes)
@@ -241,13 +241,13 @@ void DirectSAPNarrowPhase::cacheData()
 
 void DirectSAPNarrowPhase::sortEndPoints()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP sort");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP sort");
     std::sort(m_sortedEndPoints.begin(), m_sortedEndPoints.end(), CompPEndPoint());
 }
 
 void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP intersection");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP intersection");
     int nbInvestigatedPairs{ 0 };
 
     std::list<int> activeBoxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,

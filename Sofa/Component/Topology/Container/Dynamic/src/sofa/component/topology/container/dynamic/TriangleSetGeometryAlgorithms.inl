@@ -2255,7 +2255,7 @@ template <typename DataTypes>
 bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
         const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
         TriangleID& ind_ta, TriangleID& ind_tb,// A verifier pourquoi la ref!
-        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
         sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const
 {
@@ -2293,7 +2293,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         // 1 - First point a (for the moment: always a point in a triangle)
         if (last_point != sofa::InvalidID)
         {
-            topoPath_list.push_back (core::topology::TopologyElementType::POINT);
+            topoPath_list.push_back (geometry::ElementType::POINT);
             indices_list.push_back (last_point);
             const typename DataTypes::VecCoord& realC =(this->object->read(core::ConstVecCoordId::position())->getValue());
             for (unsigned int i = 0; i<3; i++)
@@ -2302,7 +2302,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         else
         {
             auto coefs_a = computeTriangleBarycoefs (ind_ta, a);
-            topoPath_list.push_back (core::topology::TopologyElementType::TRIANGLE);
+            topoPath_list.push_back (geometry::ElementType::TRIANGLE);
             indices_list.push_back (ind_ta);
             for (unsigned int i = 0; i<3; i++)
                 baryCoords[i]=coefs_a[i];
@@ -2314,7 +2314,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         // 2 - All edges intersected (only edges for now)
         for (size_t i = 0; i< edges_list.size(); i++)
         {
-            topoPath_list.push_back (core::topology::TopologyElementType::EDGE);
+            topoPath_list.push_back (geometry::ElementType::EDGE);
             indices_list.push_back (edges_list[i]);
 
             baryCoords[0] = coordsEdge_list[i];
@@ -2330,7 +2330,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         for (unsigned int i = 0; i<3; i++)
             if (coefs_b[i] > 0.9999 )
             {
-                topoPath_list.push_back (core::topology::TopologyElementType::POINT);
+                topoPath_list.push_back (geometry::ElementType::POINT);
                 indices_list.push_back (this->m_topology->getTriangle (ind_tb)[i]);
                 isOnPoint = true;
                 break;
@@ -2338,7 +2338,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
         if (!isOnPoint)
         {
-            topoPath_list.push_back (core::topology::TopologyElementType::TRIANGLE);
+            topoPath_list.push_back (geometry::ElementType::TRIANGLE);
             indices_list.push_back (ind_tb);
         }
         for (unsigned int i = 0; i<3; i++)
@@ -2400,46 +2400,6 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
         }
     }
     return -1;
-}
-
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for (size_t i=0; i<numVertices; ++i)
-    {
-        Real x = (Real) vect_c[i][0];
-        Real y = (Real) vect_c[i][1];
-        Real z = (Real) vect_c[i][2];
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Triangle> &ta=this->m_topology->getTriangles();
-
-    myfile << ta.size() <<"\n";
-
-    for (size_t i=0; i<ta.size(); ++i)
-    {
-        myfile << i+1 << " 2 6 6 3 " << ta[i][0]+1 << " " << ta[i][1]+1 << " " << ta[i][2]+1 <<"\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
 }
 
 
@@ -2632,7 +2592,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, con
 {
     using namespace sofa::core::topology;
 
-    if (ancestorElem.type != core::topology::TopologyElementType::TRIANGLE)
+    if (ancestorElem.type != geometry::ElementType::TRIANGLE)
     {
         EdgeSetGeometryAlgorithms< DataTypes >::initPointAdded(index, ancestorElem, coordVecs, derivVecs);
     }
@@ -3305,7 +3265,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
 
 template<class DataTypes>
 int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+    sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
     sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
     sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath, Real epsilonSnapBorder)
@@ -3356,7 +3316,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         switch (topoPath_list[i])
         {
 
-        case core::topology::TopologyElementType::POINT:
+        case geometry::ElementType::POINT:
         {
             // qlq chose a faire?
             new_edge_points.push_back(indices_list[i]);
@@ -3397,10 +3357,10 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                         points2Snap[j].push_back(next_point - 1);
                         points2Snap[j].push_back(next_point);
 
-                        if (topoPath_list[i - 1] == core::topology::TopologyElementType::POINT) //second dof has to be moved, first acestor must be pa
+                        if (topoPath_list[i - 1] == geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
                             points2Snap[j][4] = indices_list[i - 1];
 
-                        if (topoPath_list[i + 1] == core::topology::TopologyElementType::POINT) //second dof has to be moved, first acestor must be pa
+                        if (topoPath_list[i + 1] == geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
                             points2Snap[j][5] = indices_list[i + 1];
 
                         break;
@@ -3409,7 +3369,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             break;
         }
 
-        case core::topology::TopologyElementType::EDGE:
+        case geometry::ElementType::EDGE:
         {
             Edge theEdge = m_container->getEdge(indices_list[i]);
             ancestors.push_back(theEdge[0]);
@@ -3418,14 +3378,14 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             baryCoefs.push_back(1.0 - coords_list[i][0]);
             baryCoefs.push_back(coords_list[i][0]);
 
-            srcElems.push_back(core::topology::PointAncestorElem(core::topology::TopologyElementType::EDGE, indices_list[i],
+            srcElems.push_back(core::topology::PointAncestorElem(geometry::ElementType::EDGE, indices_list[i],
                 core::topology::PointAncestorElem::LocalCoords(coords_list[i][0], 0, 0)));
 
             new_edge_points.push_back(next_point);
             ++next_point;
             break;
         }
-        case core::topology::TopologyElementType::TRIANGLE:
+        case geometry::ElementType::TRIANGLE:
         {
 
             Triangle theTriangle = m_container->getTriangle(indices_list[i]);
@@ -3438,7 +3398,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             baryCoefs.push_back(coords_list[i][1]);
             baryCoefs.push_back(coords_list[i][2]);
 
-            srcElems.push_back(core::topology::PointAncestorElem(core::topology::TopologyElementType::TRIANGLE, indices_list[i],
+            srcElems.push_back(core::topology::PointAncestorElem(geometry::ElementType::TRIANGLE, indices_list[i],
                 core::topology::PointAncestorElem::LocalCoords(coords_list[i][1], coords_list[i][2], 0)));
 
             new_edge_points.push_back(next_point);// hum...? pour les edges to split
@@ -3461,13 +3421,13 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
         switch (topoPath_list[i])
         {
-        case core::topology::TopologyElementType::POINT:
+        case geometry::ElementType::POINT:
         {
             PointID thePointFirst = firstObject;
 
             switch (topoPath_list[i + 1])
             {
-            case core::topology::TopologyElementType::POINT: // Triangle to create: 0 / Triangle to remove: 0
+            case geometry::ElementType::POINT: // Triangle to create: 0 / Triangle to remove: 0
             {
                 PointID thePointSecond = indices_list[i + 1];
                 sofa::type::vector<EdgeID> edgevertexshell = m_container->getEdgesAroundVertex(thePointSecond);
@@ -3491,7 +3451,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 break;
             }
-            case core::topology::TopologyElementType::EDGE: // Triangle to create: 2 / Triangle to remove: 1
+            case geometry::ElementType::EDGE: // Triangle to create: 2 / Triangle to remove: 1
             {
                 EdgeID edgeIDSecond = indices_list[i + 1];
                 TriangleID triId;
@@ -3539,7 +3499,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 break;
             }
-            case core::topology::TopologyElementType::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
+            case geometry::ElementType::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
             {
                 TriangleID triangleIDSecond = indices_list[i + 1];
                 Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
@@ -3571,7 +3531,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             break;
         }
 
-        case core::topology::TopologyElementType::EDGE:
+        case geometry::ElementType::EDGE:
         {
             PointID p1 = new_edge_points[i];
             EdgeID edgeIDFirst = firstObject;
@@ -3581,7 +3541,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             switch (topoPath_list[i + 1])
             {
 
-            case core::topology::TopologyElementType::POINT: // Triangle to create: 2 / Triangle to remove: 1
+            case geometry::ElementType::POINT: // Triangle to create: 2 / Triangle to remove: 1
             {
                 PointID thePointSecond = indices_list[i + 1];
 
@@ -3627,7 +3587,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 break;
             }
-            case core::topology::TopologyElementType::EDGE: // Triangle to create: 3 / Triangle to remove: 1
+            case geometry::ElementType::EDGE: // Triangle to create: 3 / Triangle to remove: 1
             {
                 PointID p2 = new_edge_points[i + 1];
                 EdgeID edgeIDSecond = indices_list[i + 1];
@@ -3707,7 +3667,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 removed_triangles.push_back(triId);
                 break;
             }
-            case core::topology::TopologyElementType::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
+            case geometry::ElementType::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
             {
                 PointID p2 = new_edge_points[i + 1];
                 TriangleID triangleIDSecond = indices_list[i + 1];
@@ -3756,7 +3716,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             }
             break;
         }
-        case core::topology::TopologyElementType::TRIANGLE:
+        case geometry::ElementType::TRIANGLE:
         {
             Triangle theTriangleFirst = m_container->getTriangle(firstObject);
             TriangleID triangleIDFirst = indices_list[i];
@@ -3765,7 +3725,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
             switch (topoPath_list[i + 1])
             {
-            case core::topology::TopologyElementType::POINT: // Triangle to create: 3 / Triangle to remove: 1
+            case geometry::ElementType::POINT: // Triangle to create: 3 / Triangle to remove: 1
             {
                 triangles_ancestors.resize(triangles_ancestors.size() + 3);
                 triangles_barycoefs.resize(triangles_barycoefs.size() + 3);
@@ -3787,7 +3747,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 break;
             }
-            case core::topology::TopologyElementType::EDGE: // Triangle to create: 4 / Triangle to remove: 1
+            case geometry::ElementType::EDGE: // Triangle to create: 4 / Triangle to remove: 1
             {
                 EdgeID edgeIDSecond = indices_list[i + 1];
 
@@ -3826,7 +3786,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 removed_triangles.push_back(triangleIDFirst);
                 break;
             }
-            case core::topology::TopologyElementType::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
+            case geometry::ElementType::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
             {
                 TriangleID triangleIDSecond = indices_list[i + 1];
 
@@ -4045,7 +4005,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             {
                 if (e[k] < newP0)
                 { // previous point
-                    src.pointSrcElems[k].type = core::topology::TopologyElementType::POINT;
+                    src.pointSrcElems[k].type = geometry::ElementType::POINT;
                     src.pointSrcElems[k].index = e[k];
                 }
                 else
@@ -4054,30 +4014,30 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 }
             }
             // Source element could be an edge if both points are from it or from its endpoints
-            if (src.pointSrcElems[0].type != core::topology::TopologyElementType::TRIANGLE
-                && src.pointSrcElems[1].type != core::topology::TopologyElementType::TRIANGLE
-                && (src.pointSrcElems[0].type == core::topology::TopologyElementType::EDGE
-                    || src.pointSrcElems[1].type == core::topology::TopologyElementType::EDGE)
-                && (src.pointSrcElems[0].type == core::topology::TopologyElementType::POINT
-                    || src.pointSrcElems[1].type == core::topology::TopologyElementType::POINT
+            if (src.pointSrcElems[0].type != geometry::ElementType::TRIANGLE
+                && src.pointSrcElems[1].type != geometry::ElementType::TRIANGLE
+                && (src.pointSrcElems[0].type == geometry::ElementType::EDGE
+                    || src.pointSrcElems[1].type == geometry::ElementType::EDGE)
+                && (src.pointSrcElems[0].type == geometry::ElementType::POINT
+                    || src.pointSrcElems[1].type == geometry::ElementType::POINT
                     || src.pointSrcElems[0].index == src.pointSrcElems[1].index))
             {
-                unsigned int src_eid = (src.pointSrcElems[0].type == core::topology::TopologyElementType::EDGE)
+                unsigned int src_eid = (src.pointSrcElems[0].type == geometry::ElementType::EDGE)
                     ? src.pointSrcElems[0].index : src.pointSrcElems[1].index;
                 Edge src_e = m_container->getEdge(src_eid);
-                if ((src.pointSrcElems[0].type != core::topology::TopologyElementType::POINT
+                if ((src.pointSrcElems[0].type != geometry::ElementType::POINT
                     || src.pointSrcElems[0].index == src_e[0]
                     || src.pointSrcElems[0].index == src_e[1])
-                    && (src.pointSrcElems[1].type != core::topology::TopologyElementType::POINT
+                    && (src.pointSrcElems[1].type != geometry::ElementType::POINT
                         || src.pointSrcElems[1].index == src_e[0]
                         || src.pointSrcElems[1].index == src_e[1]))
                 {
-                    src.srcElems.push_back(core::topology::TopologyElemID(core::topology::TopologyElementType::EDGE,
+                    src.srcElems.push_back(core::topology::TopologyElemID(geometry::ElementType::EDGE,
                         src_eid));
                 }
             }
             if (src.srcElems.empty()) // within the initial triangle by default
-                src.srcElems.push_back(core::topology::TopologyElemID(core::topology::TopologyElementType::TRIANGLE,
+                src.srcElems.push_back(core::topology::TopologyElemID(geometry::ElementType::TRIANGLE,
                     triangles_ancestors[ti][0]));
             edges_added.push_back(e);
             edges_src.push_back(src);
@@ -4154,7 +4114,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
     sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
     Real epsilonSnapPath)
@@ -4172,7 +4132,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             // New case to handle other topological object can be added.
             // Default: if object is a POINT , nothing has to be done.
 
-        case core::topology::TopologyElementType::EDGE:
+        case geometry::ElementType::EDGE:
         {
             PointID Vertex2Snap;
 
@@ -4199,7 +4159,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
             break;
         }
-        case core::topology::TopologyElementType::TRIANGLE:
+        case geometry::ElementType::TRIANGLE:
         {
             PointID Vertex2Snap;
             sofa::type::Vec<3, Real>& barycoord = coords_list[i];
@@ -4243,7 +4203,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
     {
         switch (topoPath_list[i])
         {
-        case core::topology::TopologyElementType::POINT:
+        case geometry::ElementType::POINT:
         {
             if (map_point2snap.find(indices_list[i]) != map_point2snap.end())
             {
@@ -4254,7 +4214,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             }
             break;
         }
-        case core::topology::TopologyElementType::EDGE:
+        case geometry::ElementType::EDGE:
         {
             Edge theEdge = m_container->getEdge(indices_list[i]);
             bool PointFind = false;
@@ -4280,7 +4240,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             }
             break;
         }
-        case core::topology::TopologyElementType::TRIANGLE:
+        case geometry::ElementType::TRIANGLE:
         {
             Triangle theTriangle = m_container->getTriangleArray()[indices_list[i]];
             bool PointFind = false;
@@ -4354,7 +4314,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         cpt++;
 
         // Change enum of the first object to snap to POINT, change id and label it as snaped
-        topoPath_list[((*it).second)[0]] = core::topology::TopologyElementType::POINT;
+        topoPath_list[((*it).second)[0]] = geometry::ElementType::POINT;
         indices_list[((*it).second)[0]] = (*it).first;
         coords_list[((*it).second)[0]][0] = -1.0;
 
@@ -4380,7 +4340,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+    sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
     sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
     sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
@@ -4404,7 +4364,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
     }
 
     // Test if point need to be snap on an edge
-    if (!snap_a  && topoPath_list[0] == core::topology::TopologyElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_a  && topoPath_list[0] == geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -4421,7 +4381,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                         if (coords_list[0][j] > 1 - epsilon)
                         {
                             thePoint = m_container->getTriangle(indices_list[0])[j];
-                            topoPath_list[0] = core::topology::TopologyElementType::POINT;
+                            topoPath_list[0] = geometry::ElementType::POINT;
                             indices_list[0] = thePoint;
                             find = true;
                             break;
@@ -4434,7 +4394,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     {
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[1] == core::topology::TopologyElementType::EDGE) // just remove or need to projection?
+                        if (topoPath_list[1] == geometry::ElementType::EDGE) // just remove or need to projection?
                         {
                             const sofa::type::vector<EdgeID>& shell = m_container->getEdgesAroundVertex(thePoint);
                             for (size_t k = 0; k < shell.size(); k++)
@@ -4449,7 +4409,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                                 }
                             }
                         }
-                        else if (topoPath_list[1] == core::topology::TopologyElementType::POINT)
+                        else if (topoPath_list[1] == geometry::ElementType::POINT)
                         {
                             if (indices_list[1] == thePoint)
                             {
@@ -4469,7 +4429,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
 
 
-                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::topology::TopologyElementType::EDGE)) // Only keep this one? or need to project?
+                if ((indices_list[1] == theEdge) && (topoPath_list[1] == geometry::ElementType::EDGE)) // Only keep this one? or need to project?
                 {
                     msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and is an Edge. Report this issue.";
                     topoPath_list.erase(topoPath_list.begin());
@@ -4486,7 +4446,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";
 
-                    topoPath_list[0] = core::topology::TopologyElementType::EDGE;
+                    topoPath_list[0] = geometry::ElementType::EDGE;
 
                     indices_list[0] = theEdge;
                     coords_list[0][0] = new_coord[1];  // not the same order as barycoef in the incision path
@@ -4505,7 +4465,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
     }
 
     // Same for last point
-    if (!snap_b  && topoPath_list.back() == core::topology::TopologyElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_b  && topoPath_list.back() == geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -4523,7 +4483,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                         if (coords_list.back()[j] > 1 - epsilon)
                         {
                             thePoint = m_container->getTriangle(indices_list.back())[j];
-                            topoPath_list.back() = core::topology::TopologyElementType::POINT;
+                            topoPath_list.back() = geometry::ElementType::POINT;
                             indices_list.back() = thePoint;
                             find = true;
                             break;
@@ -4537,7 +4497,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                         const size_t pos = topoPath_list.size() - 2;
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[pos] == core::topology::TopologyElementType::EDGE) // just remove or need to projection?
+                        if (topoPath_list[pos] == geometry::ElementType::EDGE) // just remove or need to projection?
                         {
                             const sofa::type::vector<EdgeID> &shell = m_container->getEdgesAroundVertex(thePoint);
                             for (size_t k = 0; k < shell.size(); k++)
@@ -4552,7 +4512,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                                 }
                             }
                         }
-                        else if (topoPath_list[pos] == core::topology::TopologyElementType::POINT)
+                        else if (topoPath_list[pos] == geometry::ElementType::POINT)
                         {
                             if (indices_list[pos] == thePoint)
                             {
@@ -4573,7 +4533,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
 
 
-                if ((indices_list[indices_list.size() - 2] == theEdge) && (topoPath_list[topoPath_list.size() - 2] == core::topology::TopologyElementType::EDGE)) // Only keep this one? or need to projection?
+                if ((indices_list[indices_list.size() - 2] == theEdge) && (topoPath_list[topoPath_list.size() - 2] == geometry::ElementType::EDGE)) // Only keep this one? or need to projection?
                 {
                     msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and topoPath_list[1] is an Edge. Report this issue.";
                     topoPath_list.pop_back();
@@ -4590,7 +4550,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";
 
-                    topoPath_list.back() = core::topology::TopologyElementType::EDGE;
+                    topoPath_list.back() = geometry::ElementType::EDGE;
                     indices_list.back() = theEdge;
                     coords_list.back()[0] = new_coord[1];
                     coords_list.back()[1] = new_coord[0];
