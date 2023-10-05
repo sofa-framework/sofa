@@ -34,6 +34,8 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <sofa/gui/batch/ProgressBar.h>
+
 
 namespace sofa::gui::batch
 {
@@ -74,8 +76,14 @@ int BatchGUI::mainLoop()
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
-        signed int i = 1; //one simulatin step is animated above  
-       
+        signed int i = 1; //one simulation step is animated above
+
+        std::unique_ptr<ProgressBar> progressBar;
+        if (!hideProgressBar)
+        {
+            progressBar = std::make_unique<ProgressBar>(nbIter);
+        }
+
         while (i <= nbIter || nbIter == -1)
         {
             if (i != nbIter)
@@ -105,9 +113,13 @@ int BatchGUI::mainLoop()
                 }
             }
 
+            if (progressBar)
+            {
+                progressBar->tick();
+            }
+
             i++;
         }
-        
     }
     return 0;
 }
@@ -186,7 +198,11 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
         "(only batch) Number of iterations of the simulation",
         BatchGUI::OnNbIterChange
     );
-    //Parses the string and passes it to setNumIterations as argument
+    argumentParser->addArgument(
+        cxxopts::value<bool>(hideProgressBar)->default_value("false"),
+        "hideProgressBar",
+        "if defined, hides the progress bar"
+    );
     return 0;
 }
 
