@@ -85,7 +85,7 @@ void ArgumentParser::parse()
         const auto temp = m_options.parse(copyArgc, copyArgv);
         vecArg = temp.arguments();
     }
-    catch (const cxxopts::OptionException& e)
+    catch (const cxxopts::exceptions::exception& e)
     {
         msg_error("ArgumentParser") << e.what();
         exit(EXIT_FAILURE);
