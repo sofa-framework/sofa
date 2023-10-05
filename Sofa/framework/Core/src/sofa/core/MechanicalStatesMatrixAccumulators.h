@@ -53,8 +53,6 @@ public:
 
     MechanicalStatesMatrixAccumulators() = default;
     virtual ~MechanicalStatesMatrixAccumulators() = default;
-    MechanicalStatesMatrixAccumulators(const MechanicalStatesMatrixAccumulators&) = delete;
-    void operator=(const MechanicalStatesMatrixAccumulators&) = delete;
 
 private:
 

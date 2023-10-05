@@ -80,6 +80,7 @@ public:
     Data< bool > d_applyProjectiveConstraints; ///< If true, projective constraints are applied on the global matrix
     Data< bool > d_applyMappedComponents; ///< If true, mapped components contribute to the global matrix
     Data< bool > d_checkIndices; ///< If true, indices are verified before being added in to the global matrix, favoring security over speed
+    Data< bool > d_parallelAssemblyIndependentMatrices; ///< If true, independent matrices (global matrix vs mapped matrices) are assembled in parallel
 
 protected:
 
@@ -102,6 +103,18 @@ protected:
     std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
     std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
 
+    struct IndependentContributors
+    {
+        std::map<BaseForceField*, core::behavior::StiffnessMatrix> m_stiffness;
+        std::map<BaseForceField*, core::behavior::DampingMatrix> m_damping;
+        std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
+        std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
+        int id {};
+    };
+
+    sofa::type::vector<IndependentContributors> m_independentContributors;
+
+
     /// List of shared local matrices under mappings
     sofa::type::vector< std::pair<
         PairMechanicalStates,
@@ -116,12 +129,17 @@ protected:
     template<Contribution c>
     void contribute(const core::MechanicalParams* mparams);
 
+    template<Contribution c>
+    void contribute(const core::MechanicalParams* mparams, IndependentContributors& contributors);
+
     void assembleSystem(const core::MechanicalParams* mparams) override;
 
     /**
      * Gather all components associated to the same mechanical state into groups
      */
     void makeLocalMatrixGroups(const core::MechanicalParams* mparams);
+
+    void makeIndependentLocalMatrixGroups();
 
     /**
      * Create the matrix accumulators and associate them to all components that have a contribution
