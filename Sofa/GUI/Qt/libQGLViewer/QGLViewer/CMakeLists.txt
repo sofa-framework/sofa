@@ -47,6 +47,12 @@ set(HEADER_FILES
     mouseGrabber.h
     quaternion.h
     vec.h
+    camera.h
+    frame.h
+    keyFrameInterpolator.h
+    manipulatedCameraFrame.h
+    manipulatedFrame.h
+    qglviewer.h
     )
 set(SOURCE_FILES
     VRender/BSPSortMethod.cpp
@@ -115,7 +121,7 @@ sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_INSTALL_DIR "extlibs/${PROJECT_NAME}/${PROJECT_NAME}"
+    INCLUDE_INSTALL_DIR "extlibs"
     )
 
 # Qt deployment
