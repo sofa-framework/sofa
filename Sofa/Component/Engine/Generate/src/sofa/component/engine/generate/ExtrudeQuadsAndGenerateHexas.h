@@ -78,7 +78,7 @@ public:
     Data< type::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas; ///< List of hexahedra generated during the extrusion
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types>;
  
 #endif

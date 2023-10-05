@@ -92,7 +92,7 @@ public:
 
 namespace sofa::core::collision
 {
-#if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
 extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::MinProximityIntersection>;
 #endif
 } // namespace sofa::core::collision

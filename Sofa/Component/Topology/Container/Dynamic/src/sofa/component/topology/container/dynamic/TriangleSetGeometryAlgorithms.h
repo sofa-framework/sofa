@@ -407,7 +407,7 @@ inline Real areaProduct(const type::Vec<2,Real>& a, const type::Vec<2,Real>& b )
 template< class Real>
 inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif

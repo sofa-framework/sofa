@@ -477,7 +477,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
 
 
-#if  !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+#if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;

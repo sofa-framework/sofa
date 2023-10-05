@@ -79,7 +79,7 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API HausdorffDistance<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API HausdorffDistance<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API HausdorffDistance<defaulttype::Vec3Types>;

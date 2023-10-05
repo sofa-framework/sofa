@@ -218,7 +218,7 @@ private:
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API Distances<defaulttype::Vec3Types>; 
 #endif
 

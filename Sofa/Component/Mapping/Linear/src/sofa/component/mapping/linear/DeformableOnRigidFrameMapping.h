@@ -173,7 +173,7 @@ protected:
     InRootCoord rootX;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 
 #endif

@@ -106,7 +106,7 @@ public:
     Data<double> _drawSize; ///< rendering size for box and topological elements
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ProximityROI<defaulttype::Vec3Types>;
  
 #endif

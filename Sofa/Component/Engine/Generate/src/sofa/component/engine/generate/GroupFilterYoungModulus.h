@@ -65,7 +65,7 @@ public:
     Data<type::vector<Real> > p_groupMod; ///< list of young modulus for each group
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GroupFilterYoungModulus<defaulttype::Vec3Types>;
  
 #endif

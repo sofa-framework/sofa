@@ -236,7 +236,7 @@ inline TTriangle<DataTypes>::TTriangle(ParentModel* model, Index index, helper::
     SOFA_UNUSED(x);
 }
 
-#if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
 extern template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TTriangle<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif

@@ -359,7 +359,7 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
     return dynamic_cast<const Data<T>*>(parent) != nullptr;
 }
 
-#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+#if !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 extern template class SOFA_CORE_API Data< std::string >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;

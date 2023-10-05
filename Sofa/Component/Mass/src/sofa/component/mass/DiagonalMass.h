@@ -383,7 +383,7 @@ type::Vec6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::Mec
 
 
 
-#if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+#if !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;

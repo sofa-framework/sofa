@@ -69,7 +69,7 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP)
+#if !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadBendingSprings<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadBendingSprings<defaulttype::Vec2Types>;
 

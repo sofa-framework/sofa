@@ -123,7 +123,7 @@ private:
     void findKeyTimes();
 };
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<defaulttype::Vec1Types>;

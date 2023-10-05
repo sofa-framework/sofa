@@ -98,7 +98,7 @@ template<>
 void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx);
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API TorsionForceField<Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API TorsionForceField<Rigid3Types>;
 

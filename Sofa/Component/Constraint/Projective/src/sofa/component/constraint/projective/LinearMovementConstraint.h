@@ -157,7 +157,7 @@ private:
 };
 
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec1Types>;

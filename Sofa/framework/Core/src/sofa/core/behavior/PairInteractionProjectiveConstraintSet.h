@@ -173,7 +173,7 @@ public:
     using Inherit2::getMechModel2;
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec1Types>;

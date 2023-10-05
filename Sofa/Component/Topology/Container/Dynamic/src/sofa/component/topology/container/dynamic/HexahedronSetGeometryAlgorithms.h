@@ -161,7 +161,7 @@ protected:
 	bool mustComputeBBox() const override;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif

@@ -132,7 +132,7 @@ protected:
     core::topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
 
 #endif

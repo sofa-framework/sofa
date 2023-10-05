@@ -149,11 +149,10 @@ public:
     Data<bool> d_doUpdate; ///< Update the computation (not only at the init)
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Vec6Types>; //Phuoc
- 
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Vec6Types>;
 #endif
 
 } //namespace sofa::component::engine::select

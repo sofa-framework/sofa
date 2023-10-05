@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
+#define SOFABOUNDARYCONDITION_AFFINEMOVEMENTCONSTRAINT_CPP
 
 #include <sofa/component/constraint/projective/config.h>
 #include <sofa/core/ObjectFactory.h>

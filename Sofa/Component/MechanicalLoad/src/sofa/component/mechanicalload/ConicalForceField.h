@@ -121,7 +121,7 @@ public:
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API ConicalForceField<defaulttype::Vec3Types>;
 
 #endif

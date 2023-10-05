@@ -64,7 +64,7 @@ public:
     Data<VecValue> f_output; ///< Output vector
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<int> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<bool> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2u> >;

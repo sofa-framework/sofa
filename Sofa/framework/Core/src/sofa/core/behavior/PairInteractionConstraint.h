@@ -167,7 +167,7 @@ protected:
                                const sofa::linearalgebra::BaseVector* lambda);
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec1Types>;

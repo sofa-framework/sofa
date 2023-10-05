@@ -113,7 +113,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachConstraint<defaulttype::Vec1Types>;

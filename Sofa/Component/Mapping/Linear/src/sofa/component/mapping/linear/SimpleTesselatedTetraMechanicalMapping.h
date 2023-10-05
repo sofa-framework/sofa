@@ -86,7 +86,7 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP)
 
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 

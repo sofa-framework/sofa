@@ -142,7 +142,7 @@ protected :
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the current topology
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3Types>;
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 

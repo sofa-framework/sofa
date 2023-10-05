@@ -148,7 +148,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API MeshSpringForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API MeshSpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API MeshSpringForceField<defaulttype::Vec1Types>;

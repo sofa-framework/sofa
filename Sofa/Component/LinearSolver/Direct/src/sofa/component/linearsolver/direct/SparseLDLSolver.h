@@ -82,7 +82,7 @@ protected :
     void showInvalidSystemMessage(const std::string& reason) const;
 };
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< sofa::linearalgebra::CompressedRowSparseMatrix< SReal>, sofa::linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< sofa::linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3,SReal> >, sofa::linearalgebra::FullVector<SReal> >;
 #endif

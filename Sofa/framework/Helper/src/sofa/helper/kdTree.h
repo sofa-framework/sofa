@@ -88,7 +88,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_HELPER_KDTREE_CPP)
+#if !defined(SOFA_HELPER_KDTREE_CPP)
 extern template class SOFA_HELPER_API kdTree<sofa::type::Vec<2, SReal>>;
 extern template class SOFA_HELPER_API kdTree<sofa::type::Vec<3, SReal>>;
 #endif

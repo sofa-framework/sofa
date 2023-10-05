@@ -133,7 +133,7 @@ protected:
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 #endif

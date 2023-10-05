@@ -81,7 +81,7 @@ public:
     void doUpdate() override;
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSubsetEngine<defaulttype::Vec3Types>;
  
 #endif

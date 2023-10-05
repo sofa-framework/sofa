@@ -105,7 +105,7 @@ private:
 
 };
 
-#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API SlidingConstraint< defaulttype::Vec3Types >;
 
 #endif

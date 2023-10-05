@@ -88,7 +88,7 @@ private:
 
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MeshBarycentricMapperEngine<defaulttype::Vec3Types>;
 
 #endif

@@ -171,7 +171,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<defaulttype::Rigid3Types>;
 #endif

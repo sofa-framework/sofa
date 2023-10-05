@@ -125,7 +125,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP)
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectDirectionConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectDirectionConstraint<defaulttype::Vec2Types>;
 

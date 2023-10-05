@@ -136,7 +136,7 @@ protected:
     std::mutex lockForce;
 };
 
-#if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
+#if !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
 extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 #endif
