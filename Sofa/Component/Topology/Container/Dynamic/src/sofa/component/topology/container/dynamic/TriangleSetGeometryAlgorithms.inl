@@ -4088,7 +4088,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 ancestors2Snap[i].push_back((PointID)points2Snap[i][6]);
             }
             else
-                coefs2Snap[i] = this->compute2PointsBarycoefs(SnapedCoord, firstAncestor, secondAncestor);
+                coefs2Snap[i] = this->computeEdgeBarycentricCoordinates(SnapedCoord, firstAncestor, secondAncestor);
         }
         m_modifier->movePointsProcess(id2Snap, ancestors2Snap, coefs2Snap);
     }
