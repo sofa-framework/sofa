@@ -251,7 +251,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
            });
     }
 
-    const auto nbTriplets = JlocalRowSize * JlocalRowSize / 2;
+    const auto nbTriplets = JlocalRowSize * (JlocalRowSize+1) / 2;
     std::vector<Triplet> tripletsBuffer(nbTriplets);
 
     SCOPED_TIMER("UpperSystem");
@@ -267,8 +267,8 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                 for (auto r = range.start; r != range.end; ++r)
                 {
                     //convert a triangular matrix (flat) index to row and column coordinates
-                    const int j = static_cast<int>(std::floor((-1 + std::sqrt(1 + 8 * r)) / 2));
-                    const int i = r - j * (j+1) / 2;
+                    sofa::Index i, j;
+                    linearalgebra::computeRowColumnCoordinateFromIndexInLowerTriangularMatrix(r, i, j);
 
                     auto& [row, col, value] = tripletsBuffer[r];
                     row = Jlocal2global[j];

@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/config.h>
 #include <cstring>
+#include <cmath>
 
 namespace sofa::linearalgebra
 {
@@ -94,6 +95,30 @@ void solveUpperUnitriangularSystemCSR(
         }
         solutionVector[i] = x_i;
     }
+}
+
+/// A lower triangular matrix can be stored as a linear array. This function
+/// converts the index in this linear array to 2d coordinates (row and column)
+/// of an element in the matrix.
+///
+/// Example of a 6x6 lower triangular matrix:
+/// [ 0               ]
+/// [ 1  2            ]
+/// [ 3  4  5         ]
+/// [ 6  7  8  9      ]
+/// [10 11 12 13 14   ]
+/// [15 16 17 18 19 20]
+///
+/// 0 => (0, 0)
+/// 7 => (3, 1)
+/// 18 => (5, 3)
+inline void computeRowColumnCoordinateFromIndexInLowerTriangularMatrix(
+    const sofa::Index flatIndex,
+    sofa::Index& row,
+    sofa::Index& col)
+{
+    row = std::floor(-0.5 + sqrt(0.25 + 2 * flatIndex));
+    col = flatIndex - row * (row + 1) / 2;
 }
 
 }
