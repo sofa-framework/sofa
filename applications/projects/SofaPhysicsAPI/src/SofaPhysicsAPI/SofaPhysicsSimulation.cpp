@@ -296,9 +296,9 @@ using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::LoggingMessageHandler;
 
 SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
-    : useGUI(useGUI_)
+    : m_msgIsActivated(false)
+    , useGUI(useGUI_)
     , GUIFramerate(GUIFramerate_)
-    , m_msgIsActivated(false)
 {
     sofa::helper::init();
     static bool first = true;
@@ -779,7 +779,7 @@ std::string SofaPhysicsSimulation::getMessage(int messageId, int& msgType)
 {
     const std::vector<sofa::helper::logging::Message>& msgs = m_msgHandler->getMessages();
 
-    if (messageId >= msgs.size()) {
+    if (messageId >= (int)msgs.size()) {
         msgType = -1;
         return "Error messageId out of bounds";
     }

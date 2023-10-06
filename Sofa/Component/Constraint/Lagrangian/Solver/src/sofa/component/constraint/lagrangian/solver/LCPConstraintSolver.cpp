@@ -118,7 +118,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
     SCOPED_TIMER_VARNAME(resetContactForceTimer, "resetContactForce");
 
-    for (const auto cc : l_constraintCorrections)
+    for (const auto& cc : l_constraintCorrections)
     {
         cc->resetContactForce();
     }
@@ -1129,7 +1129,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (const auto cc : l_constraintCorrections)
+        for (const auto& cc : l_constraintCorrections)
         {
             if(cc->hasConstraintNumber(c1))
             {
