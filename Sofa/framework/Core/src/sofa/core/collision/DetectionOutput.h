@@ -75,6 +75,8 @@ public:
     double value;
     /// If using a continuous collision detection, estimated of time of contact.
     double deltaT;
+    /// Barycentric coordinates of the intersection (only used in MinProximityIntersection and LocalMinDistance)
+    SReal barycentricCoords[2];
     DetectionOutput()
         : elem( (sofa::core::CollisionModel* )nullptr,
                 (sofa::core::CollisionModel* ) nullptr), id(0), value(0.0), deltaT(0.0)
