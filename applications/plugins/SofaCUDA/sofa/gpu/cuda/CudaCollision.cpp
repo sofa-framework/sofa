@@ -28,10 +28,7 @@
 #include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 
-#include <sofa/gui/component/performer/MouseInteractor.inl>
-#include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
-#include <sofa/gui/component/performer/AttachBodyPerformer.inl>
-#include <sofa/gui/component/performer/FixParticlePerformer.inl>
+
 
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
