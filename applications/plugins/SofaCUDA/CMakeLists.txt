@@ -334,6 +334,7 @@ sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
+    list(APPEND SOURCE_FILES sofa/gpu/gui/CudaMouseInteraction.cpp)
 endif()
 
 find_package(SofaDistanceGrid QUIET)
