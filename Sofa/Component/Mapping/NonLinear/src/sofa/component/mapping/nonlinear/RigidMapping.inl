@@ -124,6 +124,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , d_indexFromEnd(initData(&d_indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , d_rigidIndexPerPoint(initData(&d_rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , d_globalToLocalCoords(initData(&d_globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
+    , d_scale(initData(&d_scale, 1.0, "scale","Scale the output point's position with respect to their first position in the rigid frame"))
     , m_matrixJ()
     , m_updateJ(false)
 {
@@ -320,8 +321,8 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, 
     {
         sofa::Index rigidIndex = getRigidIndex(i);
 
-        m_rotatedPoints[i] = in[rigidIndex].rotate( Out::getCPos(pts[i]) );
-        out[i] = in[rigidIndex].mult( pts[i]) ;
+        m_rotatedPoints[i] = in[rigidIndex].rotate( Out::getCPos(pts[i] * d_scale.getValue()) );
+        out[i] = in[rigidIndex].mult( pts[i] * d_scale.getValue()) ;
     }
 }
 
