@@ -132,7 +132,7 @@ void CollisionPipeline::doCollisionReset()
 
 void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
-    ScopedAdvancedTimer docollisiontimer("doCollisionDetection");
+    SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
 
     msg_info_when(d_doPrintInfoMessage.getValue())
          << "doCollisionDetection, compute Bounding Trees" ;
@@ -142,7 +142,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
 
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        ScopedAdvancedTimer bboxtimer("ComputeBoundingTree");
+        SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printNode("ComputeBoundingTree");
@@ -203,7 +203,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
     simulation::Visitor::printNode("BroadPhase");
 #endif
     {
-        ScopedAdvancedTimer broadphase("BroadPhase");
+        SCOPED_TIMER_VARNAME(broadphase, "BroadPhase");
         intersectionMethod->beginBroadPhase();
         broadPhaseDetection->beginBroadPhase();
         broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
@@ -227,7 +227,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
     simulation::Visitor::printNode("NarrowPhase");
 #endif
     {
-        ScopedAdvancedTimer narrowphase("NarrowPhase");
+        SCOPED_TIMER_VARNAME(narrowphase, "NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
         const type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
@@ -291,7 +291,7 @@ void CollisionPipeline::doCollisionResponse()
 
     if (groupManager == nullptr)
     {
-        ScopedAdvancedTimer createResponseTimer("CreateMovingObjectsResponse");
+        SCOPED_TIMER_VARNAME(createResponseTimer, "CreateMovingObjectsResponse");
 
         msg_info_when(d_doPrintInfoMessage.getValue())
             << "Linking all contacts to Scene" ;
