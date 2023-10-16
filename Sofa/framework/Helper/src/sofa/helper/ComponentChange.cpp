@@ -470,7 +470,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "VoidMapping", Moved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
 
     // SofaConstraint was deprecated in #2635, #2790, #2796, #2813 and ...
-    { "MappingGeometricStiffnessForceField", Moved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
     { "BilateralInteractionConstraint", Moved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
     { "GenericConstraintCorrection", Moved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
     { "GenericConstraintSolver", Moved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Solver") },
@@ -487,7 +486,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "LocalMinDistance", Moved("v22.06", "SofaConstraint", "Sofa.Component.Collision.Detection.Intersection") },
 
     // SofaGeneralAnimationLoop was deprecated in #2635 and #2796
-    { "MechanicalMatrixMapper", Moved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
     { "MultiStepAnimationLoop", Moved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
     { "MultiTagAnimationLoop", Moved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
 
@@ -718,6 +716,10 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // SofaValidation was deprecated in #3039
     { "CompareState", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
     { "CompareTopology", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
+
+    // Removed in #4040, deprecated in #2777
+    { "MechanicalMatrixMapper", Removed("v23.06", "v23.12") },
+    { "MappingGeometricStiffnessForceField", Removed("v23.06", "v23.12") },
 };
 
 } // namespace sofa::helper::lifecycle
