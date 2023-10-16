@@ -107,8 +107,8 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops[1].second.push_back(std::make_pair(acc.id(),dt));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::ConstOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::ConstOrder::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
     }
 #endif
 

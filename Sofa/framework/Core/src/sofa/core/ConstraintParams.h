@@ -23,6 +23,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/ConstraintOrder.h>
 
 namespace sofa::core
 {
@@ -34,47 +35,17 @@ class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
 
-    /// Description of the order of the constraint
-    enum class ConstOrder
-    {
-        POS = 0,
-        VEL,
-        ACC,
-        POS_AND_VEL
-    };
-
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS = ConstOrder::POS;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto VEL = ConstOrder::VEL;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto ACC = ConstOrder::ACC;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS_AND_VEL = ConstOrder::POS_AND_VEL;
-
-    constexpr static std::string_view constOrderToString(ConstOrder order)
-    {
-        if (order == ConstOrder::POS)
-        {
-            return "POSITION";
-        }
-        if (order == ConstOrder::VEL)
-        {
-            return "VELOCITY";
-        }
-        if (order == ConstOrder::ACC)
-        {
-            return "ACCELERATION";
-        }
-        if (order == ConstOrder::POS_AND_VEL)
-        {
-            return "POSITION AND VELOCITY";
-        }
-        return {};
-    }
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
 
     /// @name Flags and parameters getters
     /// @{
 
-    ConstOrder constOrder() const { return m_constOrder; }
+    ConstraintOrder constOrder() const { return m_constOrder; }
 
-    ConstraintParams& setOrder(ConstOrder o) { m_constOrder = o;   return *this; }
+    ConstraintParams& setOrder(ConstraintOrder o) { m_constOrder = o;   return *this; }
 
 	/// Smooth contribution factor (for smooth constraints resolution)
     double smoothFactor() const { return m_smoothFactor; }
@@ -257,7 +228,7 @@ protected:
     MultiVecDerivId      m_lambda;
 
     /// Description of the order of the constraint
-    ConstOrder m_constOrder;
+    ConstraintOrder m_constOrder;
 
 	/// Smooth contribution factor (for smooth constraints resolution)
     double m_smoothFactor;

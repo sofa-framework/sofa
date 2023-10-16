@@ -160,8 +160,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
     vop.v_multiop(ops);
 
-    mop.solveConstraint(vResult,core::ConstraintParams::ConstOrder::VEL);
-    mop.solveConstraint(xResult,core::ConstraintParams::ConstOrder::POS);
+    mop.solveConstraint(vResult,core::ConstraintOrder::VEL);
+    mop.solveConstraint(xResult,core::ConstraintOrder::POS);
 
 #endif
 

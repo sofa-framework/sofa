@@ -97,7 +97,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
     mop.projectResponse(dx);                    // dx is projected to the constrained space
 
-    mop.solveConstraint(dx, core::ConstraintParams::ConstOrder::ACC);
+    mop.solveConstraint(dx, core::ConstraintOrder::ACC);
     // apply the solution
     if (r==0)
     {
@@ -123,8 +123,8 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::ConstOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::ConstOrder::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
     else
@@ -149,8 +149,8 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::ConstOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::ConstOrder::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
 

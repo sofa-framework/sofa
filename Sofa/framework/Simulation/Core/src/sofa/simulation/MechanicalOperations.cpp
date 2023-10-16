@@ -415,7 +415,7 @@ void MechanicalOperations::solveConstraint(SReal dt, MultiVecCoordId id, core::C
 }
 */
 
-void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams::ConstOrder order)
+void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintOrder order)
 {
     cparams.setOrder(order);
 

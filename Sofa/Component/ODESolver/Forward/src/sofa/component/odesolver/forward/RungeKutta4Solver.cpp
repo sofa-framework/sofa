@@ -182,8 +182,8 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(pos, core::ConstraintParams::ConstOrder::POS);
-        mop.solveConstraint(vel, core::ConstraintParams::ConstOrder::VEL);
+        mop.solveConstraint(pos, core::ConstraintOrder::POS);
+        mop.solveConstraint(vel, core::ConstraintOrder::VEL);
     }
 #endif
 }

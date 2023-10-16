@@ -500,15 +500,15 @@ void GenericConstraintSolver::applyMotionCorrection(
     const core::MultiVecDerivId vId,
     core::behavior::BaseConstraintCorrection* constraintCorrection) const
 {
-    if (cParams->constOrder() == ConstraintParams::ConstOrder::POS_AND_VEL)
+    if (cParams->constOrder() == sofa::core::ConstraintOrder::POS_AND_VEL)
     {
         constraintCorrection->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
     }
-    else if (cParams->constOrder() == ConstraintParams::ConstOrder::POS)
+    else if (cParams->constOrder() == sofa::core::ConstraintOrder::POS)
     {
         constraintCorrection->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
     }
-    else if (cParams->constOrder() == ConstraintParams::ConstOrder::VEL)
+    else if (cParams->constOrder() == sofa::core::ConstraintOrder::VEL)
     {
         constraintCorrection->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
     }
@@ -519,15 +519,15 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
     SCOPED_TIMER("Compute And Apply Motion Correction");
 
     static constexpr auto supportedCorrections = {
-        ConstraintParams::ConstOrder::POS_AND_VEL,
-        ConstraintParams::ConstOrder::POS,
-        ConstraintParams::ConstOrder::VEL
+        sofa::core::ConstraintOrder::POS_AND_VEL,
+        sofa::core::ConstraintOrder::POS,
+        sofa::core::ConstraintOrder::VEL
     };
 
     if (std::find(supportedCorrections.begin(), supportedCorrections.end(), cParams->constOrder()) != supportedCorrections.end())
     {
         const core::MultiVecCoordId xId(res1);
-        const core::MultiVecDerivId vId(cParams->constOrder() == ConstraintParams::ConstOrder::VEL ? res1 : res2);
+        const core::MultiVecDerivId vId(cParams->constOrder() == sofa::core::ConstraintOrder::VEL ? res1 : res2);
 
         for (const auto& constraintCorrection : filteredConstraintCorrections())
         {

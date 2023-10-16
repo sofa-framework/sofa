@@ -295,13 +295,13 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const co
 {
     switch (cparams->constOrder())
     {
-    case core::ConstraintParams::ConstOrder::POS_AND_VEL :
-    case core::ConstraintParams::ConstOrder::POS :
+    case core::ConstraintOrder::POS_AND_VEL :
+    case core::ConstraintOrder::POS :
         getPositionViolation(v);
         break;
 
-    case core::ConstraintParams::ConstOrder::ACC :
-    case core::ConstraintParams::ConstOrder::VEL :
+    case core::ConstraintOrder::ACC :
+    case core::ConstraintOrder::VEL :
         getVelocityViolation(v);
         break;
 
