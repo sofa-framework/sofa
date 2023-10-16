@@ -339,8 +339,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
 
-    m_Simulation = new sofa::simulation::graph::DAGSimulation();
-    sofa::simulation::setSimulation(m_Simulation);
+    assert(sofa::simulation::getSimulation());
 
     sofa::component::init(); // force dependency on Sofa.Component
 
@@ -396,12 +395,12 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     sofa::helper::BackTrace::autodump();
 
     sofa::helper::system::DataRepository.findFile(filename);
-    m_RootNode = m_Simulation->load(filename.c_str());
+    m_RootNode = sofa::simulation::node::load(filename.c_str());
     int result = API_SUCCESS;
     if (m_RootNode.get())
     {
         sceneFileName = filename;
-        m_Simulation->init(m_RootNode.get());
+        sofa::simulation::node::initRoot(m_RootNode.get());
         result = updateOutputMeshes();
 
         if ( useGUI ) {
@@ -425,7 +424,7 @@ int SofaPhysicsSimulation::unload()
 {
     if (m_RootNode.get())
     {
-        m_Simulation->unload(m_RootNode);
+        sofa::simulation::node::unload(m_RootNode);
     }
     else
     {
@@ -471,7 +470,7 @@ void SofaPhysicsSimulation::createScene()
         m_RootNode->setGravity({ 0,-9.8,0 });
         this->createScene_impl();
 
-        m_Simulation->init(m_RootNode.get());
+        sofa::simulation::node::initRoot(m_RootNode.get());
 
         updateOutputMeshes();
     }
@@ -604,7 +603,7 @@ void SofaPhysicsSimulation::reset()
 {
     if (getScene())
     {
-        getSimulation()->reset(getScene());
+        sofa::simulation::node::reset(getScene());
         this->update();
     }
 }
@@ -632,8 +631,8 @@ void SofaPhysicsSimulation::step()
     sofa::simulation::Node* groot = getScene();
     if (!groot) return;
     beginStep();
-    getSimulation()->animate(groot);
-    getSimulation()->updateVisual(groot);
+    sofa::simulation::node::animate(groot);
+    sofa::simulation::node::updateVisual(groot);
     if ( useGUI ) {
       sofa::gui::common::BaseGUI* gui = sofa::gui::common::GUIManager::getGUI();
       gui->stepMainLoop();
@@ -958,7 +957,7 @@ void SofaPhysicsSimulation::drawGL()
         if (!initTexturesDone)
         {
             std::cout << "INIT VISUAL" << std::endl;
-            getSimulation()->initTextures(groot);
+            sofa::simulation::node::initTextures(groot);
             bool setView = false;
             groot->get(currentCamera);
             if (!currentCamera)
@@ -1049,7 +1048,7 @@ void SofaPhysicsSimulation::drawGL()
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixd(lastModelviewMatrix);
 
-        getSimulation()->draw(vparams,groot);
+        sofa::simulation::node::draw(vparams,groot);
 
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);

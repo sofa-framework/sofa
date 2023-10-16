@@ -115,7 +115,6 @@ public:
 #endif
 protected:
 
-    sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
     /// Pointer to the LoggingMessageHandler
