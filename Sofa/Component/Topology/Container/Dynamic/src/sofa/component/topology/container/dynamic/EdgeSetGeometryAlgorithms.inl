@@ -507,7 +507,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     intersected = sofa::geometry::Edge::intersectionWithEdge(a0, a1, b0, b1, baryCoords);
 
     type::vector< Coord > ancestors = {edge1[0], edge1[1]};
-    type::vector< Real > coefs = {baryCoords[0], baryCoords[1]};
+    type::vector< Real > coefs = { static_cast<Real>(baryCoords[0]), static_cast<Real>(baryCoords[1])};
 
     return DataTypes::interpolate(ancestors, coefs);
 }
@@ -528,7 +528,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegme
     intersected = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
 
     type::vector< Coord > ancestors = {e0, e1};
-    type::vector< Real > coefs = {baryCoords[0], baryCoords[1]};
+    type::vector< Real > coefs = { static_cast<Real>(baryCoords[0]), static_cast<Real>(baryCoords[1]) };
 
     return DataTypes::interpolate(ancestors, coefs);
 }
