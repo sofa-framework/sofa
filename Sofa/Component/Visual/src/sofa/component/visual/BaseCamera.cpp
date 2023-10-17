@@ -36,7 +36,7 @@ using Mat4 = sofa::type::Mat4x4;
 using sofa::helper::isEqual;
 
 #include <cmath>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 using sofa::type::RGBAColor ;
 
@@ -782,13 +782,13 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
     computeZ();
 }
 
-void BaseCameraXMLExportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, const std::string& comment)
 {
-    TiXmlElement* node = new TiXmlElement( data.getName().c_str() );
+    tinyxml2::XMLElement* node = root->GetDocument()->NewElement( data.getName().c_str() );
     node->SetAttribute("value", data.getValueString().c_str() );
     if(!comment.empty())
     {
-        TiXmlComment* com = new TiXmlComment( comment.c_str() );
+        tinyxml2::XMLComment* com = root->GetDocument()->NewComment( comment.c_str() );
         root->LinkEndChild(com);
     }
     root->LinkEndChild(node);
@@ -796,11 +796,11 @@ void BaseCameraXMLExportSingleParameter(TiXmlElement* root, core::objectmodel::B
 
 bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
 {
-    TiXmlDocument doc;
-    TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLDeclaration* decl = doc.NewDeclaration();
     doc.LinkEndChild( decl );
 
-    TiXmlElement* root = new TiXmlElement( "Camera" );
+    tinyxml2::XMLElement* root = doc.NewElement( "Camera" );
     root->SetAttribute("version", "1.0" );
     doc.LinkEndChild( root );
 
@@ -816,14 +816,14 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
     return doc.SaveFile( viewFilename.c_str() );
 }
 
-bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
+bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
 {
     if(root)
     {
-        TiXmlNode* node = root->FirstChild( data.getName().c_str() );
+        tinyxml2::XMLNode* node = root->FirstChildElement( data.getName().c_str() );
         if(node)
         {
-            const TiXmlElement* element = node->ToElement();
+            const tinyxml2::XMLElement* element = node->ToElement();
             if(element)
             {
                 const char* attrValue;
@@ -862,16 +862,14 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     bool result = true;
 
     msg_info() << "Reading " << viewFilename << " for view parameters.";
-    TiXmlDocument doc(viewFilename.c_str());
-    if (!doc.LoadFile())
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(viewFilename.c_str()) != tinyxml2::XML_SUCCESS)
     {
         result = false;
     }
 
-    const TiXmlHandle hDoc(&doc);
-    TiXmlElement* root;
-
-    root = hDoc.FirstChildElement().ToElement();
+    tinyxml2::XMLHandle hDoc(&doc);
+    tinyxml2::XMLElement* root = hDoc.FirstChildElement().ToElement();
 
     if (!root)
         result = false;

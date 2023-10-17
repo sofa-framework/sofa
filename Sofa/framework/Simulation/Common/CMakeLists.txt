@@ -39,11 +39,11 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
-sofa_find_package(TinyXML REQUIRED)
+sofa_find_package(TinyXML2 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.Simulation.Core)
-target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml2::tinyxml2) # Private because not exported in API
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

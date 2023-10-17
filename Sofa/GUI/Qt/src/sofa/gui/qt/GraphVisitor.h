@@ -31,7 +31,7 @@
 #include <sofa/gui/qt/WindowVisitor.h>
 #include <sofa/gui/qt/PieWidget.h>
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 #include <tinystr.h>
 
 #include <iostream>
@@ -54,13 +54,13 @@ public:
     void setGraph(QTreeWidget* g) {graph = g;}
     void clear() {graph->clear();}
 
-    double getTotalTime(TiXmlNode* node) const;
-    inline double getTime(TiXmlAttribute* attribute) const;
+    double getTotalTime(tinyxml2::XMLNode* node) const;
+    inline double getTime(tinyxml2::XMLAttribute* attribute) const;
 
 protected:
-    void openTime           ( TiXmlNode* element, QTreeWidgetItem* item);
-    void openAttribute      ( TiXmlElement* element, QTreeWidgetItem* item);
-    QTreeWidgetItem* openNode( TiXmlNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove);
+    void openTime           ( tinyxml2::XMLNode* element, QTreeWidgetItem* item);
+    void openAttribute      ( tinyxml2::XMLElement* element, QTreeWidgetItem* item);
+    QTreeWidgetItem* openNode( tinyxml2::XMLNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove);
 
     QTreeWidget *graph;
     WindowVisitor *window;
