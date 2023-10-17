@@ -17,6 +17,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionModel.h
     ${SRC_ROOT}/ComponentLibrary.h
     ${SRC_ROOT}/ComponentNameHelper.h
+    ${SRC_ROOT}/ConstraintOrder.h
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h

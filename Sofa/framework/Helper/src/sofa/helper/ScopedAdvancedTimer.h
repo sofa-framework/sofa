@@ -68,6 +68,6 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
     #define SCOPED_TIMER(name) ZoneScopedN(name)
     #define SCOPED_TIMER_VARNAME(varname, name) ZoneNamedN(varname, name, true)
 #else
-    #define SCOPED_TIMER(name) sofa::helper::ScopedAdvancedTimer timer(name)
+    #define SCOPED_TIMER(name) sofa::helper::ScopedAdvancedTimer sofaScopedTimer(name)
     #define SCOPED_TIMER_VARNAME(varname, name) sofa::helper::ScopedAdvancedTimer varname(name)
 #endif

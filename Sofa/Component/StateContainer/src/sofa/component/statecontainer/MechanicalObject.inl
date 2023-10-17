@@ -2287,9 +2287,11 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
+    //reset the constraint jacobian matrix
     Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
     sofa::helper::getWriteOnlyAccessor(c_data)->clear();
 
+    //reset the mapping jacobian matrix
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
     sofa::helper::getWriteOnlyAccessor(m_data)->clear();
 }

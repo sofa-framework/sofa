@@ -171,7 +171,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     cparams.setV(freeVel);
     cparams.setDx(l_constraintSolver->getDx());
     cparams.setLambda(l_constraintSolver->getLambda());
-    cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintParams::VEL : core::ConstraintParams::POS_AND_VEL);
+    cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintOrder::VEL : core::ConstraintOrder::POS_AND_VEL);
 
     MultiVecDeriv dx(&vop, core::VecDerivId::dx());
     dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
@@ -258,7 +258,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         SCOPED_TIMER("ConstraintSolver");
 
-        if (cparams.constOrder() == core::ConstraintParams::VEL )
+        if (cparams.constOrder() == core::ConstraintOrder::VEL )
         {
             l_constraintSolver->solveConstraint(&cparams, vel);
             pos.eq(pos, vel, dt); //position += velocity * dt
@@ -391,8 +391,8 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
     mop->projectResponse(freeVel);
     mop->propagateDx(freeVel, true);
 
-    if (cparams.constOrder() == sofa::core::ConstraintParams::POS ||
-        cparams.constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
+    if (cparams.constOrder() == sofa::core::ConstraintOrder::POS ||
+        cparams.constOrder() == sofa::core::ConstraintOrder::POS_AND_VEL)
     {
         SCOPED_TIMER("freePosEqPosPlusFreeVelDt");
         MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);

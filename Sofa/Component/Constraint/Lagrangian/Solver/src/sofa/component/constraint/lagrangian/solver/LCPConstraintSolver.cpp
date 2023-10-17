@@ -31,20 +31,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fwd.h>
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 using sofa::core::VecId;
 
@@ -75,8 +66,8 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
     , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
-    , lcp(&lcp1)
-    , last_lcp(nullptr)
+    , current_cp(&lcp1)
+    , last_cp(nullptr)
     , _W(&lcp1.W)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
@@ -95,13 +86,6 @@ LCPConstraintSolver::~LCPConstraintSolver()
 {
 }
 
-void LCPConstraintSolver::init()
-{
-    ConstraintSolverImpl::init();
-
-    constraintCorrectionIsActive.resize(l_constraintCorrections.size());
-}
-
 void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 {
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
@@ -109,16 +93,13 @@ void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 
 bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
-
-    last_lcp = lcp;
+    last_cp = current_cp;
     MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( getContext()); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
-    SCOPED_TIMER_VARNAME(resetContactForceTimer, "resetContactForce");
-
-    for (const auto cc : l_constraintCorrections)
+    SCOPED_TIMER("resetContactForce");
+    for (const auto& cc : l_constraintCorrections)
     {
         cc->resetContactForce();
     }
@@ -126,28 +107,45 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     return true;
 }
 
-bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2)
 {
+    SOFA_UNUSED(res1);
+    SOFA_UNUSED(res2);
 
-    // Test if the nodes containing the constraint correction are active (not sleeping)
-    for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
+    buildSystem();
+    return true;
+}
+
+
+void LCPConstraintSolver::buildSystem()
+{
+    core::ConstraintParams cparams;
+
+    cparams.setX(core::ConstVecCoordId::freePosition());
+    cparams.setV(core::ConstVecDerivId::freeVelocity());
+
+    _numConstraints = buildConstraintMatrix(&cparams);
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
+
+    current_cp->mu = mu.getValue();
+    current_cp->clear(_numConstraints);
+
+    getConstraintViolation(&cparams, _dFree);
+
+    if (build_lcp.getValue())
     {
-        constraintCorrectionIsActive[i] = !l_constraintCorrections[i]->getContext()->isSleeping();
-    }
-
-    if(build_lcp.getValue())
-    {
-        SCOPED_TIMER_VARNAME(buildTimer, "build_LCP");
-
-        build_LCP();
+        addComplianceInConstraintSpace(cparams);
     }
     else
     {
-        SCOPED_TIMER_VARNAME(buildTimer, "build_problem");
-
-        build_problem_info();
+        // When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
+        _Wdiag.resize(_numConstraints,_numConstraints);
     }
-    return true;
+
+    buildHierarchy();
+
+    getConstraintInfo(cparams);
+
 }
 
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
@@ -165,7 +163,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
         if (_mu > 0.0)
         {
-            lcp->tolerance = _tol;
+            current_cp->tolerance = _tol;
 
             if (multi_grid.getValue())
             {
@@ -237,7 +235,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             const SReal _tol = tol.getValue();
             const int _maxIt = maxIt.getValue();
 
-            build_LCP();
+            buildSystem();
 
             helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
             dmsg_info() <<"\n_result nlcp :"<<(*_result);
@@ -249,8 +247,8 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     if(d_computeConstraintForces.getValue())
     {
         sofa::helper::WriteOnlyAccessor<Data<type::vector<SReal>>> constraints = d_constraintForces;
-        constraints.resize(lcp->getDimension());
-        for(int i=0; i<lcp->getDimension(); i++)
+        constraints.resize(current_cp->getDimension());
+        for(int i=0; i<current_cp->getDimension(); i++)
         {
             constraints[i] = _result->ptr()[i];
         }
@@ -262,46 +260,20 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     if (initial_guess.getValue())
-        keepContactForcesValue();
-
-    dmsg_info() << "keepContactForces done" ;
-
     {
-        SCOPED_TIMER("Apply Contact Force");
-        for (unsigned int i = 0; i < l_constraintCorrections.size(); i++)
+        keepContactForcesValue();
+    }
+
+    SCOPED_TIMER("Apply Contact Force");
+    for (const auto& l_constraintCorrection : l_constraintCorrections)
+    {
+        if (!l_constraintCorrection->getContext()->isSleeping())
         {
-            if (!constraintCorrectionIsActive[i]) continue;
-            core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
-            cc->applyContactForce(_result);
+            l_constraintCorrection->applyContactForce(_result);
         }
     }
 
-    dmsg_info() <<"applyContactForce in constraintCorrection done" ;
-
     return true;
-}
-
-void LCPConstraintSolver::resetConstraints(core::ConstraintParams cparams)
-{
-    SCOPED_TIMER_VARNAME(resetConstraintsTimer, "Reset Constraint");
-    MechanicalResetConstraintVisitor resetCtr(&cparams);
-    resetCtr.execute(getContext());
-}
-
-void LCPConstraintSolver::buildConstraintMatrix(core::ConstraintParams cparams)
-{
-    SCOPED_TIMER_VARNAME(buildConstraintMatrixTimer, "Build Constraint Matrix");
-
-    MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
-    buildConstraintMatrix.execute(getContext());
-}
-
-void LCPConstraintSolver::accumulateMatrixDeriv(core::ConstraintParams cparams)
-{
-    SCOPED_TIMER_VARNAME(accumulateMatrixDerivTimer, "Accumulate Matrix Deriv");
-
-    MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
-    accumulateMatrixDeriv.execute(getContext());
 }
 
 void LCPConstraintSolver::buildHierarchy()
@@ -336,7 +308,9 @@ void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
             MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(getContext());
         }
         if (initial_guess.getValue())
+        {
             computeInitialGuess();
+        }
     }
 }
 
@@ -344,50 +318,14 @@ void LCPConstraintSolver::addComplianceInConstraintSpace(core::ConstraintParams 
 {
     SCOPED_TIMER("Get Compliance");
 
-    dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
+    dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size() << " constraintCorrections" ;
 
-    for (unsigned int i=0; i<l_constraintCorrections.size(); i++)
+    for (const auto& cc : l_constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
         cc->addComplianceInConstraintSpace(&cparams, _W);
     }
 
     dmsg_info() << "W=" << *_W ;
-}
-
-void LCPConstraintSolver::build_LCP()
-{
-    _numConstraints = 0;
-    core::ConstraintParams cparams;
-
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
-
-    resetConstraints(cparams);
-
-    buildConstraintMatrix(cparams);
-
-    accumulateMatrixDeriv(cparams);
-
-    const auto _mu = mu.getValue();
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = _mu;
-    lcp->clear(_numConstraints);
-
-    {
-        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
-    }
-
-    dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
-
-    addComplianceInConstraintSpace(cparams);
-
-    buildHierarchy();
-
-    getConstraintInfo(cparams);
 }
 
 void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_merge, int sizeCoarseSystem)
@@ -695,47 +633,6 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         msg_info() << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
                 << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
     }
-}
-
-
-/// build_problem_info
-/// When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
-/// This function ask to the constraintCorrection classes to build this diagonal blocks
-void LCPConstraintSolver::build_problem_info()
-{
-    core::ConstraintParams cparams;
-
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
-
-    _numConstraints = 0;
-
-    resetConstraints(cparams);
-
-    buildConstraintMatrix(cparams);
-
-    accumulateMatrixDeriv(cparams);
-
-    const auto _mu = mu.getValue();
-
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
-
-    lcp->mu = _mu;
-    lcp->clear(_numConstraints);
-
-    // as _Wdiag is a sparse matrix resize do not allocate memory
-    _Wdiag.resize(_numConstraints,_numConstraints);
-
-    {
-        SCOPED_TIMER_VARNAME(getConstraintValueTimer, "Get Constraint Value");
-        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(getContext());
-    }
-
-    dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
-
-    buildHierarchy();
-
-    getConstraintInfo(cparams);
 }
 
 void LCPConstraintSolver::computeInitialGuess()
@@ -1281,25 +1178,25 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
 
 ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
 {
-    return last_lcp;
+    return last_cp;
 }
 
 void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
 {
-    if((lcp!=l1)&&(lcp!=l2)) // Le lcp courant n'est pas locké
+    if((current_cp!=l1)&&(current_cp!=l2)) // Le lcp courant n'est pas locké
         return;
 
     if((&lcp1!=l1)&&(&lcp1!=l2)) // lcp1 n'est pas locké
-        lcp = &lcp1;
+        current_cp = &lcp1;
     else if((&lcp2!=l1)&&(&lcp2!=l2)) // lcp2 n'est pas locké
-        lcp = &lcp2;
+        current_cp = &lcp2;
     else
-        lcp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
+        current_cp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
 
     // Mise �  jour de _W _dFree et _result
-    _W = &lcp->W;
-    _dFree = &lcp->dFree;
-    _result = &lcp->f;
+    _W = &current_cp->W;
+    _dFree = &current_cp->dFree;
+    _result = &current_cp->f;
 }
 
 
