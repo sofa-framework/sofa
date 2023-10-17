@@ -182,7 +182,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
     {
-        ScopedAdvancedTimer timer("MechanicalVInitVisitor");
+        SCOPED_TIMER("MechanicalVInitVisitor");
         MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(node);
         MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(node);
     }
@@ -201,7 +201,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 #endif
 
     {
-        ScopedAdvancedTimer timer("AnimateBeginEvent");
+        SCOPED_TIMER("AnimateBeginEvent");
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         node->execute ( act );
@@ -212,7 +212,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     dmsg_info() << "updatePos called" ;
 
     {
-        ScopedAdvancedTimer timer("UpdatePosition");
+        SCOPED_TIMER("UpdatePosition");
         BehaviorUpdatePositionVisitor beh(params, dt);
         node->execute(&beh);
     }
@@ -224,7 +224,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     dmsg_info() << "updateInternal called" ;
 
     {
-        ScopedAdvancedTimer timer("updateInternalData");
+        SCOPED_TIMER("updateInternalData");
         node->execute(&iud);
     }
 
@@ -239,14 +239,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // Mapping geometric stiffness coming from previous lambda.
     {
-        ScopedAdvancedTimer timer("lambdaMultInvDt");
+        SCOPED_TIMER("lambdaMultInvDt");
         MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
         lambdaMultInvDt.setMapped(true);
         node->executeVisitor(&lambdaMultInvDt);
     }
 
     {
-        ScopedAdvancedTimer timer("MechanicalComputeGeometricStiffness");
+        SCOPED_TIMER("MechanicalComputeGeometricStiffness");
         MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
         node->executeVisitor(&geometricStiffnessVisitor);
     }
@@ -256,7 +256,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // Solve constraints
     if (l_constraintSolver)
     {
-        ScopedAdvancedTimer timer("ConstraintSolver");
+        SCOPED_TIMER("ConstraintSolver");
 
         if (cparams.constOrder() == core::ConstraintParams::VEL )
         {
@@ -283,14 +283,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
-        ScopedAdvancedTimer timer("AnimateEndEvent");
+        SCOPED_TIMER("AnimateEndEvent");
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         node->execute ( act );
     }
 
     {
-        ScopedAdvancedTimer timer("UpdateMapping");
+        SCOPED_TIMER("UpdateMapping");
         //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
         node->execute<UpdateMappingVisitor>(params);
         {
@@ -302,7 +302,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     if (d_computeBoundingBox.getValue())
     {
-        ScopedAdvancedTimer timer("UpdateBBox");
+        SCOPED_TIMER("UpdateBBox");
         node->execute<UpdateBoundingBoxVisitor>(params);
     }
 
@@ -323,7 +323,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
 
     if (!d_parallelCollisionDetectionAndFreeMotion.getValue())
     {
-        ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
+        SCOPED_TIMER("FreeMotion+CollisionDetection");
 
         computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop);
 
@@ -334,7 +334,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
     }
     else
     {
-        ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
+        SCOPED_TIMER("FreeMotion+CollisionDetection");
 
         auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
         assert(taskScheduler != nullptr);
