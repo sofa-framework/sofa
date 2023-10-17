@@ -409,7 +409,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     }
     else
     {
-        m_RootNode = m_Simulation->createNewGraph("");
+        m_RootNode = sofa::simulation::getSimulation()->createNewGraph("");
         return API_SCENE_FAILED;
     }
     initTexturesDone = false;
