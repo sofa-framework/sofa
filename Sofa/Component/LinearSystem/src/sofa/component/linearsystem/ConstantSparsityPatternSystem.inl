@@ -263,7 +263,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 
     if (this->getSystemMatrix())
     {
-        if ((sofa::linearalgebra::CompressedRowSparseMatrixMechanical::Index)n != this->getSystemMatrix()->rowSize() || (sofa::linearalgebra::CompressedRowSparseMatrixMechanical::Index)n != this->getSystemMatrix()->colSize())
+        if ((Index)n != this->getSystemMatrix()->rowSize() || (Index)n != this->getSystemMatrix()->colSize())
         {
             this->getSystemMatrix()->resize(n, n);
         }
