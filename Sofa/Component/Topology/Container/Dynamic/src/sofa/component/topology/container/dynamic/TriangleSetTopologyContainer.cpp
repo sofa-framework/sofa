@@ -127,7 +127,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
     {
         if (m_triangle[i][0] >= getNbPoints() || m_triangle[i][1] >= getNbPoints() || m_triangle[i][2] >= getNbPoints())
         {
-            msg_warning() << "trianglesAroundVertex creation failed, Triangle buffer is not concistent with number of points: Triangle: " << m_triangle[i] << " for: " << getNbPoints() << " points.";
+            msg_warning() << "trianglesAroundVertex creation failed, Triangle buffer is not consistent with number of points, Triangle: " << m_triangle[i] << " for: " << getNbPoints() << " points.";
             continue;
         }
 
