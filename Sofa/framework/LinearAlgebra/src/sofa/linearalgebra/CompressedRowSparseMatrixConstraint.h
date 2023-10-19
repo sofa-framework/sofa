@@ -279,7 +279,7 @@ public:
 
         ColConstIterator begin() const
         {
-            if (m_internal == s_invalidIndex)
+            if (isInvalid())
             {
                 return ColConstIterator(m_internal, s_invalidIndex, m_matrix);
             }
@@ -289,7 +289,7 @@ public:
 
         ColConstIterator end() const
         {
-            if (m_internal == s_invalidIndex)
+            if (isInvalid())
             {
                 return ColConstIterator(m_internal, s_invalidIndex, m_matrix);
             }
