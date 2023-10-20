@@ -255,7 +255,7 @@ void BTDMatrix<N, T>::add(Index row, Index col,
         {
             for (sofa::Index j = 0; j < BSIZE; ++j)
             {
-                this->add(row + i, row + j, v(i, j));
+                this->add(row + i, col + j, v(i, j));
             }
         }
     }
