@@ -263,7 +263,8 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 
     if (this->getSystemMatrix())
     {
-        if ((Index)n != this->getSystemMatrix()->rowSize() || (Index)n != this->getSystemMatrix()->colSize())
+        Index nIndex = sofa::helper::narrow_cast<Index>(n);
+        if (nIndex != this->getSystemMatrix()->rowSize() || nIndex != this->getSystemMatrix()->colSize())
         {
             this->getSystemMatrix()->resize(n, n);
         }
