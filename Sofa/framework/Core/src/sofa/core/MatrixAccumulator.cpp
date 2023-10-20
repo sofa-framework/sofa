@@ -60,6 +60,18 @@ void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex co
     matAdd(row, col, value);
 }
 
+void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex col,
+    const sofa::type::Mat<6, 6, float>& value)
+{
+    matAdd(row, col, value);
+}
+
+void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex col,
+    const sofa::type::Mat<6, 6, double>& value)
+{
+    matAdd(row, col, value);
+}
+
 helper::logging::MessageDispatcher::LoggerStream matrixaccumulator::RangeVerification::
 logger() const
 {

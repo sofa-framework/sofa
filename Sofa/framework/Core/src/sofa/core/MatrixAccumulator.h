@@ -43,6 +43,8 @@ public:
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value);
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, float> & value);
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value);
+    virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, float> & value);
+    virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value);
 
     virtual void clear() {}
 
