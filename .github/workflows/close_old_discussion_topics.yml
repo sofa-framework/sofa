@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger remote action to close topics
-        uses: hugtalbot/close-old-discussion-topics@master
+        uses: hugtalbot/close-old-discussion-topics@v0.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           owner: sofa-framework
