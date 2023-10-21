@@ -155,7 +155,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     }
 
     // Start the advanced timer
-    ScopedAdvancedTimer timer ("StaticSolver::Solve");
+    SCOPED_TIMER("StaticSolver::Solve");
 
     // ###########################################################################
     // #                             First residual                              #
@@ -202,13 +202,13 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     while (! converged && n_it < max_number_of_newton_iterations)
     {
-        ScopedAdvancedTimer step_timer ("NewtonStep");
+        SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
         t = steady_clock::now();
 
         // Part I. Assemble the system matrix.
         MultiMatrix<MechanicalOperations> matrix(&mop);
         {
-            ScopedAdvancedTimer _t_("MBKBuild");
+            SCOPED_TIMER("MBKBuild");
             // 1. The MechanicalMatrix::K is a simple structure that stores three floats called factors: m, b and k.
             // 2. the * operator simply multiplies each of the three factors with a value. No matrix is built yet.
             // 3. The = operator first search for a linear solver in the current context. It then calls the
@@ -225,7 +225,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part II. Solve the unknown increment.
         {
-            ScopedAdvancedTimer _t_("MBKSolve");
+            SCOPED_TIMER("MBKSolve");
             // Calls methods "setSystemRHVector", "setSystemLHVector" and "solveSystem" of the LinearSolver component
             // for CG: calls iteratively addDForce, mapped:  [applyJ, addDForce, applyJt(vec)]+
             // for Direct: solves the system, everything's already assembled
@@ -234,13 +234,13 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part III. Propagate the solution increment and update geometry.
         {
-            ScopedAdvancedTimer _t_("PropagateDx");
+            SCOPED_TIMER("PropagateDx");
             // Updating the geometry
             x.peq(dx); // x := x + dx
 
             // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
             // todo(jnbrunet): Shouldn't this be done AFTER the position propagation of the mapped nodes?
-            mop.solveConstraint(x, sofa::core::ConstraintParams::POS);
+            mop.solveConstraint(x, sofa::core::ConstraintOrder::POS);
 
             // Propagate positions to mapped mechanical objects, for example, identity mappings, barycentric mappings, ...
             // This will call the methods apply and applyJ on every mechanical mappings.
@@ -263,7 +263,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part IV. Update the force vector.
         {
-            ScopedAdvancedTimer _t_("UpdateForce");
+            SCOPED_TIMER("UpdateForce");
 
             mop.computeForce(force);
             mop.projectResponse(force);
@@ -271,7 +271,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part V. Compute the updated norms.
         {
-            ScopedAdvancedTimer _t_("ComputeNorms");
+            SCOPED_TIMER("ComputeNorms");
 
             // Residual norm
             R_squared_norm = force.dot(force);

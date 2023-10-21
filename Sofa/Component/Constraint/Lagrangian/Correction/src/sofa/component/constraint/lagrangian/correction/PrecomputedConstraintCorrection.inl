@@ -420,12 +420,12 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
     switch (cparams->constOrder())
     {
-    case core::ConstraintParams::POS_AND_VEL :
-    case core::ConstraintParams::POS :
+    case core::ConstraintOrder::POS_AND_VEL :
+    case core::ConstraintOrder::POS :
         break;
 
-    case core::ConstraintParams::ACC :
-    case core::ConstraintParams::VEL :
+    case core::ConstraintOrder::ACC :
+    case core::ConstraintOrder::VEL :
         factor = 1.0 / this->getContext()->getDt(); // @TODO : Consistency between ODESolver & Compliance and/or Admittance computation
         break;
 

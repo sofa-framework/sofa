@@ -400,7 +400,7 @@ void MechanicalOperations::solveConstraint(SReal dt, MultiVecDerivId id, core::C
 {
   core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
-  assert( order == core::ConstraintParams::VEL || order == core::ConstraintParams::ACC);
+  assert( order == core::ConstraintParams::ConstOrder::VEL || order == core::ConstraintParams::ConstOrder::ACC);
   cparams.setV( id);
   solveConstraint(&cparams    // PARAMS FIRST //, id);
 }
@@ -409,13 +409,13 @@ void MechanicalOperations::solveConstraint(SReal dt, MultiVecCoordId id, core::C
 {
   core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
-  assert( order == core::ConstraintParams::POS);
+  assert( order == core::ConstraintParams::ConstOrder::POS);
   cparams.setX( id);
   solveConstraint(&cparams    // PARAMS FIRST //, id);
 }
 */
 
-void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams::ConstOrder order)
+void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintOrder order)
 {
     cparams.setOrder(order);
 

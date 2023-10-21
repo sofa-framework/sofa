@@ -19,52 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
-#include <sofa/core/ConstraintParams.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-namespace sofa::simulation::mechanicalvisitor
+#pragma once
+
+namespace sofa::core
 {
 
-MechanicalIntegrateConstraintsVisitor::MechanicalIntegrateConstraintsVisitor(
-        const core::ConstraintParams* cparams,
-        double pf, double vf,
-        sofa::core::ConstMultiVecDerivId correction,
-        sofa::core::MultiVecDerivId dx,
-        sofa::core::MultiVecCoordId x,
-        sofa::core::MultiVecDerivId v)
-    :BaseMechanicalVisitor(cparams)
-    ,cparams(cparams)
-    ,positionFactor(pf)
-    ,velocityFactor(vf)
-    ,correctionId(correction)
-    ,dxId(dx)
-    ,xId(x)
-    ,vId(v)
-    ,offset(0)
-{}
-
-MechanicalIntegrateConstraintsVisitor::Result MechanicalIntegrateConstraintsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
+/// Description of the order of the constraint
+enum class ConstraintOrder
 {
-    if (positionFactor != 0)
+    POS = 0,
+    VEL,
+    ACC,
+    POS_AND_VEL
+};
+
+constexpr static std::string_view constOrderToString(ConstraintOrder order)
+{
+    if (order == sofa::core::ConstraintOrder::POS)
     {
-        //x = x_free + correction * positionFactor;
-        ms->vOp(params, xId.getId(ms), cparams->x().getId(ms), correctionId.getId(ms), positionFactor);
+        return "POSITION";
     }
-
-    if (velocityFactor != 0)
+    if (order == sofa::core::ConstraintOrder::VEL)
     {
-        //v = v_free + correction * velocityFactor;
-        ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
+        return "VELOCITY";
     }
-
-    const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintOrder::VEL ? velocityFactor : positionFactor;
-
-    //dx *= correctionFactor;
-    ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
-
-    return RESULT_CONTINUE;
+    if (order == sofa::core::ConstraintOrder::ACC)
+    {
+        return "ACCELERATION";
+    }
+    if (order == sofa::core::ConstraintOrder::POS_AND_VEL)
+    {
+        return "POSITION AND VELOCITY";
+    }
+    return {};
 }
 
-} // namespace sofa::simulation::mechanicalvisitor
-
+}
