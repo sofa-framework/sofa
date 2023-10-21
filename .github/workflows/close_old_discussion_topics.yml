@@ -10,7 +10,7 @@ on:
       - unlabeled
 
 jobs:
-  check_title:
+  close_old_discussion_topics:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger remote action to close topics
