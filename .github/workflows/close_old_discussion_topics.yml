@@ -1,0 +1,22 @@
+name: Close Old Discussion Topics
+on:
+  schedule:
+    # Schedule this action to run periodically (e.g., daily)
+    - cron: "0 0 * * 1" # Run every week on Monday at midnight
+  workflow_dispatch:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+
+jobs:
+  check_title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger remote action to close topics
+        uses: hugtalbot/close-old-discussion-topics@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          owner: sofa-framework
+          repository: sofa
+        uses: ./
