@@ -1,4 +1,3 @@
----
 name: Label Checker
 on:
   pull_request:
