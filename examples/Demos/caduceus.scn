@@ -21,6 +21,7 @@
         <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
+        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
     </Node>
     
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
