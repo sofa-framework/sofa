@@ -263,7 +263,8 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 
     if (this->getSystemMatrix())
     {
-        if (n != this->getSystemMatrix()->rowSize() || n != this->getSystemMatrix()->colSize())
+        Index nIndex = sofa::helper::narrow_cast<Index>(n);
+        if (nIndex != this->getSystemMatrix()->rowSize() || nIndex != this->getSystemMatrix()->colSize())
         {
             this->getSystemMatrix()->resize(n, n);
         }
@@ -336,12 +337,6 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::preAssembleSystem(const co
 
     if (isConstantSparsityPatternUsedYet())
     {
-        // this->getSystemMatrix()->compressed = true;
-        for (const auto& mat : this->m_localMappedMatrices)
-        {
-            // mat.second->compressed = true;
-        }
-
         reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::STIFFNESS>());
         reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::MASS>());
         reinitLocalMatrices(this->template getLocalMatrixMap<Contribution::DAMPING>());

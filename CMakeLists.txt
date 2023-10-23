@@ -256,11 +256,12 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
+    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"

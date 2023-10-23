@@ -135,10 +135,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newPos = pos + newVel * dt
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::VEL);
+        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
 
         newPos.eq(pos, newVel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::POS);
+        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
     }
     else
     {
@@ -146,10 +146,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newVel = vel + acc * dt
 
         newPos.eq(pos, vel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::POS);
+        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::VEL);
+        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
     }
 #else // single-operation optimization
     {
@@ -204,8 +204,8 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         vop->v_multiop(ops);
 
         // Calls "solveConstraint" on every ConstraintSolver objects found in the current context tree.
-        mop->solveConstraint(newVel,core::ConstraintParams::VEL);
-        mop->solveConstraint(newPos,core::ConstraintParams::POS);
+        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
 #endif
 }
@@ -307,7 +307,7 @@ void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalO
     SCOPED_TIMER("solveConstraint");
 
     // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
-    mop->solveConstraint(acc, core::ConstraintParams::ACC);
+    mop->solveConstraint(acc, core::ConstraintOrder::ACC);
 }
 
 void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix)

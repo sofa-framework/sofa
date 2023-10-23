@@ -111,7 +111,7 @@ public:
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
 **/
-    void solveConstraint(sofa::core::MultiVecId id, core::ConstraintParams::ConstOrder order);
+    void solveConstraint(sofa::core::MultiVecId id, core::ConstraintOrder order);
 
 
 

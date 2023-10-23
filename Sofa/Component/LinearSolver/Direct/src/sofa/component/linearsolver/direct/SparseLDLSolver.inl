@@ -223,58 +223,75 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this](const auto& range)
-        {
-            for (auto i = range.start; i != range.end; ++i)
+    {
+        SCOPED_TIMER("LowerSystem");
+        simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+            [&data, this](const auto& range)
             {
-                Real* line = JLinv[i];
-                sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
-            }
-        });
-
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this](const auto& range)
-        {
-            for (auto i = range.start; i != range.end; ++i)
-            {
-                Real* lineD = JLinv[i];
-                Real* lineM = JLinvDinv[i];
-                sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(data->n, lineD, lineM, data->invD.data());
-            }
-        });
-
-    std::mutex mutex;
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this, fact, &mutex, result, JlocalRowSize](const auto& range)
-        {
-            std::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
-            triplets.reserve(JlocalRowSize * (range.end - range.start));
-
-            for (auto j = range.start; j != range.end; ++j)
-            {
-                Real* lineJ = JLinvDinv[j];
-                sofa::SignedIndex globalRowJ = Jlocal2global[j];
-                for (unsigned i = j; i < JlocalRowSize; ++i)
+                SCOPED_TIMER("Lower");
+                for (auto i = range.start; i != range.end; ++i)
                 {
+                    Real* line = JLinv[i];
+                    sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
+                }
+            });
+    }
+
+    {
+        SCOPED_TIMER("Diagonal");
+        simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+           [&data, this](const auto& range)
+           {
+               for (auto i = range.start; i != range.end; ++i)
+               {
+                   Real* lineD = JLinv[i];
+                   Real* lineM = JLinvDinv[i];
+                   sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(data->n, lineD, lineM, data->invD.data());
+               }
+           });
+    }
+
+    const auto nbTriplets = JlocalRowSize * (JlocalRowSize+1) / 2;
+    std::vector<Triplet> tripletsBuffer(nbTriplets);
+
+    SCOPED_TIMER("UpperSystem");
+    std::mutex mutex;
+
+    // Distribution of the tasks according to the number of triplets, i.e. the
+    // number of elements in a triangular matrix
+    simulation::forEachRange(execution, *taskScheduler, 0u, nbTriplets,
+        [&data, this, fact, &mutex, result, &tripletsBuffer](const auto& range)
+        {
+            {
+                SCOPED_TIMER("UpperRange");
+                for (auto r = range.start; r != range.end; ++r)
+                {
+                    //convert a triangular matrix (flat) index to row and column coordinates
+                    sofa::Index i, j;
+                    linearalgebra::computeRowColumnCoordinateFromIndexInLowerTriangularMatrix(r, i, j);
+
+                    auto& [row, col, value] = tripletsBuffer[r];
+                    row = Jlocal2global[j];
+                    col = Jlocal2global[i];
+
                     Real* lineI = JLinv[i];
-                    int globalRowI = Jlocal2global[i];
+                    Real* lineJ = JLinvDinv[j];
 
-                    Real acc = 0;
-                    for (unsigned k = 0; k < (unsigned)data->n; k++)
+                    value = 0;
+                    for (int k = 0; k < data->n; ++k)
                     {
-                        acc += lineJ[k] * lineI[k];
+                        value += lineJ[k] * lineI[k];
                     }
-                    acc *= fact;
-
-                    triplets.emplace_back(globalRowJ, globalRowI, acc);
+                    value *= fact;
                 }
             }
 
             std::lock_guard guard(mutex);
 
-            for (const auto& [row, col, value] : triplets)
+            SCOPED_TIMER("Assembling");
+            for (auto r = range.start; r != range.end; ++r)
             {
+                const auto& [row, col, value] = tripletsBuffer[r];
                 result->add(row, col, value);
                 if (row != col)
                 {

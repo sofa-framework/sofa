@@ -138,11 +138,11 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    solveConstraint(dt,xResult,core::ConstraintParams::POS);
+    solveConstraint(dt,xResult,core::ConstraintParams::ConstOrder::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
-    solveConstraint(dt,vResult,core::ConstraintParams::VEL);
+    solveConstraint(dt,vResult,core::ConstraintParams::ConstOrder::VEL);
 
 #else // single-operation optimization
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -160,8 +160,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
     vop.v_multiop(ops);
 
-    mop.solveConstraint(vResult,core::ConstraintParams::VEL);
-    mop.solveConstraint(xResult,core::ConstraintParams::POS);
+    mop.solveConstraint(vResult,core::ConstraintOrder::VEL);
+    mop.solveConstraint(xResult,core::ConstraintOrder::POS);
 
 #endif
 

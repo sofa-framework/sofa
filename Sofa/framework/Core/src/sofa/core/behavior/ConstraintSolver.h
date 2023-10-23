@@ -120,6 +120,12 @@ protected:
 
     virtual void postBuildSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
     virtual void postSolveSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
+
+    bool prepareStatesTask(const ConstraintParams*, MultiVecId res1, MultiVecId res2);
+    bool buildSystemTask(const ConstraintParams *, MultiVecId res1, MultiVecId res2);
+    bool solveSystemTask(const ConstraintParams *, MultiVecId res1, MultiVecId res2);
+    bool applyCorrectionTask(const ConstraintParams *, MultiVecId res1, MultiVecId res2);
+
 };
 
 } // namespace sofa::core::behavior

@@ -125,4 +125,27 @@ TEST(TriangularSystemSolver, upper3x3)
     EXPECT_FLOATINGPOINT_EQ(solution[0], static_cast<SReal>(38))
 }
 
+TEST(TriangularSystemSolver, computeLowerTriangularMatrixCoordinates)
+{
+    for (sofa::Index matrixSize = 2; matrixSize < 50; ++matrixSize)
+    {
+        const auto nbElementsInATriangularMatrix = matrixSize * (matrixSize+1) / 2;
+
+        sofa::Index nbCoordinates {};
+        for (sofa::Index row = 0; row < matrixSize; ++row)
+        {
+            for (sofa::Index col = 0; col <= row; ++col)
+            {
+                sofa::Index r, c;
+                linearalgebra::computeRowColumnCoordinateFromIndexInLowerTriangularMatrix(nbCoordinates, r, c);
+                EXPECT_EQ(r, row) << "index " << nbCoordinates << ", matrix size " << matrixSize;
+                EXPECT_EQ(c, col) << "index " << nbCoordinates << ", matrix size " << matrixSize;
+                ++nbCoordinates;
+            }
+        }
+
+        EXPECT_EQ(nbCoordinates, nbElementsInATriangularMatrix);
+    }
+}
+
 }
