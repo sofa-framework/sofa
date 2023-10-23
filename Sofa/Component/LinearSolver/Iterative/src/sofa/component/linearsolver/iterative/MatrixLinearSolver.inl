@@ -374,12 +374,12 @@ void MatrixLinearSolver<Matrix,Vector>::invertSystem()
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact)
+bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* /*M*/, ResMatrixType* result, const JMatrixType* J, const SReal fact)
 {
-    for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+    for (typename JMatrixType::Index row = 0; row < J->rowSize(); ++row)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
+        for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
             getSystemRHVector()->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
         }
@@ -388,21 +388,17 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         solveSystem();
 
         // STEP 3 : project the result using matrix J
-        if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
+        if constexpr (std::is_same_v<JMatrixType, linearalgebra::SparseMatrix<Real>>)
         {
-            const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-            for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
+            for (const auto& [row2, line] : *J)
             {
-                auto row2 = jit->first;
-                double acc = 0.0;
-                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                Real acc = 0;
+                for (const auto& [col2, val2] : line)
                 {
-                    auto col2 = i2->first;
-                    double val2 = i2->second;
                     acc += val2 * getSystemLHVector()->element(col2);
                 }
                 acc *= fact;
-                result->add(row2,row,acc);
+                result->add(row2, row, acc);
             }
         }
         else
