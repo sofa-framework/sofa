@@ -106,32 +106,50 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
     }
 };
 
+template <sofa::Size L, sofa::Size C, class real>
+void matrixAdd(BaseMatrix* self, const Index row, const Index col, const sofa::type::Mat<L, C, real>& M)
+{
+    for (unsigned int r = 0; r < L; ++r)
+    {
+        for (unsigned int c = 0; c < C; ++c)
+        {
+            self->add(row + r, col + c, M[r][c]);
+        }
+    }
+}
+
 ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index row, Index col, const type::Mat3x3d & _M) {
-    for (unsigned i=0;i<3;i++)
-        for (unsigned j=0;j<3;j++)
-            add(row + i, col + j, _M[i][j]);
+void BaseMatrix::add(const Index row, const Index col, const type::Mat3x3d & _M)
+{
+    matrixAdd(this, row, col, _M);
 }
 
 ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index row, Index col, const type::Mat3x3f & _M) {
-    for (unsigned i=0;i<3;i++)
-        for (unsigned j=0;j<3;j++)
-            add(row + i, col + j, _M[i][j]);
+void BaseMatrix::add(const Index row, const Index col, const type::Mat3x3f & _M)
+{
+    matrixAdd(this, row, col, _M);
 }
 
 ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index row, Index col, const type::Mat2x2d & _M) {
-    for (unsigned i=0;i<2;i++)
-        for (unsigned j=0;j<2;j++)
-            add(row + i, col + j, _M[i][j]);
+void BaseMatrix::add(const Index row, const Index col, const type::Mat2x2d & _M)
+{
+    matrixAdd(this, row, col, _M);
 }
 
 ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index row, Index col, const type::Mat2x2f & _M) {
-    for (unsigned i=0;i<2;i++)
-        for (unsigned j=0;j<2;j++)
-            add(row + i, col + j, _M[i][j]);
+void BaseMatrix::add(const Index row, const Index col, const type::Mat2x2f & _M)
+{
+    matrixAdd(this, row, col, _M);
+}
+
+void BaseMatrix::add(const Index row, const Index col, const type::Mat6x6d& _M)
+{
+    matrixAdd(this, row, col, _M);
+}
+
+void BaseMatrix::add(const Index row, const Index col, const type::Mat6x6f& _M)
+{
+    matrixAdd(this, row, col, _M);
 }
 
 
