@@ -99,6 +99,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     msg_info() <<" propagate DXn performed - collision called" ;
 
     SCOPED_TIMER("resetContactForce");
+  
     for (const auto& cc : l_constraintCorrections)
     {
         cc->resetContactForce();
@@ -1026,7 +1027,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (const auto cc : l_constraintCorrections)
+        for (const auto& cc : l_constraintCorrections)
         {
             if(cc->hasConstraintNumber(c1))
             {

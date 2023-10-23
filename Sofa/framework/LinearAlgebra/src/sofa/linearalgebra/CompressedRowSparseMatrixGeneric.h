@@ -1448,7 +1448,7 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( Index xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
+        for( Size xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
         {
             unsigned mr = 0; // block row index in m
 
