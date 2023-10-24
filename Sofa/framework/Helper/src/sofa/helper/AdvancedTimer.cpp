@@ -24,7 +24,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/type/vector.h>
-#include <json.h>
+#include <nlohmann/json.hpp>
 
 #include <iomanip>
 #include <cmath>
@@ -37,7 +37,7 @@
 
 #define DEFAULT_INTERVAL 100
 
-using json = sofa::helper::json;
+using json = nlohmann::json;
 
 
 namespace sofa::helper
