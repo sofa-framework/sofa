@@ -49,7 +49,33 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     , linearSystem()
     , currentMFactor(), currentBFactor(), currentKFactor()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
+    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
+        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
+                                  "where M is the matrix of the linear system and J is any "
+                                  "matrix with compatible dimensions"))
 {
+    this->addUpdateCallback("parallelInverseProduct", {&d_parallelInverseProduct},
+    [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        if (d_parallelInverseProduct.getValue())
+        {
+            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+            assert(taskScheduler);
+
+            if (taskScheduler->getThreadCount() < 1)
+            {
+                taskScheduler->init(0);
+                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+            else
+            {
+                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+        }
+        return this->d_componentState.getValue();
+    },
+    {});
 }
 
 template<class Matrix, class Vector>
@@ -61,6 +87,8 @@ void MatrixLinearSolver<Matrix,Vector>::init()
     Inherit1::init();
 
     checkLinearSystem();
+
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
 }
 
 template <class Matrix, class Vector>
@@ -374,8 +402,87 @@ void MatrixLinearSolver<Matrix,Vector>::invertSystem()
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* /*M*/, ResMatrixType* result, const JMatrixType* J, const SReal fact)
+bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixType* result, const JMatrixType* J, const SReal fact)
 {
+    if (!this->isComponentStateValid())
+    {
+        return true;
+    }
+
+    if (!d_parallelInverseProduct.getValue())
+    {
+        return singleThreadAddJMInvJtLocal(M, result, J, fact);
+    }
+
+    static_assert(std::is_same_v<JMatrixType, linearalgebra::SparseMatrix<Real>>, "This function supposes a SparseMatrix");
+
+    auto* systemMatrix = getSystemMatrix();
+    if (!systemMatrix)
+    {
+        msg_error() << "System matrix is not setup properly";
+        return false;
+    }
+
+    if (linearSystem.needInvert)
+    {
+        this->invert(*systemMatrix);
+        linearSystem.needInvert = false;
+    }
+
+    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler);
+
+    sofa::type::vector<Vector> rhsVector(J->rowSize());
+    sofa::type::vector<Vector> lhsVector(J->rowSize());
+    sofa::type::vector<Vector> columnResult(J->rowSize());
+
+    std::mutex mutex;
+
+    simulation::parallelForEach(*taskScheduler, 0, J->rowSize(),
+        [&](const typename JMatrixType::Index row)
+        {
+            rhsVector[row].resize(J->colSize());
+            lhsVector[row].resize(J->colSize());
+            columnResult[row].resize(J->colSize());
+
+            // STEP 1 : put each line of matrix Jt in the right hand term of the system
+            for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
+            {
+                rhsVector[row].set(i, J->element(row, i));
+            }
+
+            // STEP 2 : solve the system :
+            this->solve(*systemMatrix, lhsVector[row], rhsVector[row]);
+
+            // STEP 3 : project the result using matrix J
+            for (const auto& [row2, line] : *J)
+            {
+                Real acc = 0;
+                for (const auto& [col2, val2] : line)
+                {
+                    acc += val2 * lhsVector[row].element(col2);
+                }
+                acc *= fact;
+                columnResult[row][row2] += acc;
+            }
+
+            // STEP 4 : assembly of the result
+            std::lock_guard lock(mutex);
+
+            for (const auto& [row2, line] : *J)
+            {
+                result->add(row2, row, columnResult[row][row2]);
+            }
+        }
+    );
+
+    return true;
+}
+
+template<class Matrix, class Vector>
+bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, ResMatrixType* result, const JMatrixType* J, const SReal fact)
+{
+    SOFA_UNUSED(M);
     static_assert(std::is_same_v<JMatrixType, linearalgebra::SparseMatrix<Real>>, "This function supposes a SparseMatrix");
 
     auto* systemMatrix = getSystemMatrix();
