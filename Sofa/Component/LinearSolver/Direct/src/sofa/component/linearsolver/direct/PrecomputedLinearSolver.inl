@@ -30,6 +30,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
 #include <sofa/component/linearsolver/direct/EigenSimplicialLLT.h>
+#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>

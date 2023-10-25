@@ -40,6 +40,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/linearsolver/direct/EigenSimplicialLLT.h>
+#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
 
 #include <sofa/simulation/Node.h>
 
