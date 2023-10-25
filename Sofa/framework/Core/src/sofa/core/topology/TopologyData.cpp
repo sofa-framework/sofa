@@ -26,7 +26,7 @@
 
 namespace sofa::core::topology
 {
-    
+
 template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 
 } //namespace sofa::core::topology
