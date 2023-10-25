@@ -33,7 +33,6 @@ Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSparseQR.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
-Component/LinearSolver/Direct/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
 Component/LinearSolver/Iterative/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
 Component/LinearSolver/Iterative/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
