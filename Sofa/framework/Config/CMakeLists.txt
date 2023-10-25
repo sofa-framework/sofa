@@ -242,7 +242,7 @@ if(SOFA_OPENMP)
 endif()
 
 ## Tracy
-option(SOFA_TRACY "Compile SOFA with the Tracy profiler client")
+option(SOFA_TRACY "Compile SOFA with the Tracy profiler client" OFF)
 if (SOFA_TRACY)
     set(SOFA_TRACY_VERSION v0.9.1)
     include(FetchContent)
@@ -257,6 +257,12 @@ if (SOFA_TRACY)
     FetchContent_MakeAvailable (tracy)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient )
     message(STATUS "SOFA is compiled with the Tracy profiler client. Use the Tracy server ${SOFA_TRACY_VERSION}.")
+endif()
+
+
+option(SOFA_SCOPED_ADVANCED_TIMER "Compile SOFA with the scoped advanced timer" ON)
+if(SOFA_SCOPED_ADVANCED_TIMER)
+    set(ENABLE_SCOPED_ADVANCED_TIMER 1)
 endif()
 
 # An important C++11 feature may be not enabled due to
