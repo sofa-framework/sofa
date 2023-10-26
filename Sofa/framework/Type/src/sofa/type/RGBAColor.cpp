@@ -29,6 +29,7 @@ using namespace sofa::type::pairwise;
 
 namespace // anonymous
 {
+
     template<class T>
     T rclamp(const T& value, const T& low, const T& high)
     {
@@ -93,10 +94,10 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
 
 void RGBAColor::set(const float r, const float g, const float b, const float a)
 {
-    this->elems[0] = r;
-    this->elems[1] = g;
-    this->elems[2] = b;
-    this->elems[3] = a;
+    this->m_components[0] = r;
+    this->m_components[1] = g;
+    this->m_components[2] = b;
+    this->m_components[3] = a;
 }
 
 
@@ -117,13 +118,13 @@ RGBAColor RGBAColor::fromFloat(const float r, const float g, const float b, cons
 }
 
 
-RGBAColor RGBAColor::fromVec4(const fixed_array<float, 4>& color)
+RGBAColor RGBAColor::fromStdArray(const std::array<float, 4>& color)
 {
     return RGBAColor(color) ;
 }
 
 
-RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
+RGBAColor RGBAColor::fromStdArray(const std::array<double, 4>& color)
 {
     return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
@@ -157,6 +158,17 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
     }
 
     return rgba;
+}
+
+// compat
+RGBAColor RGBAColor::fromVec4(const type::fixed_array<float, 4>& color)
+{
+    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
+}
+
+RGBAColor RGBAColor::fromVec4(const type::fixed_array<double, 4>& color)
+{
+    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
 
 
@@ -263,8 +275,11 @@ SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& t 
 /// @brief enlight a color by a given factor.
 RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 {
-    RGBAColor c = in + ( (RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
-    c.a()=1.0;
+    auto cc = RGBAColor::white() - RGBAColor::clamp(in, 0.0f, 1.0f);
+
+    RGBAColor c = in + ( cc * rclamp(float(factor), 0.0f, 1.0f));
+
+    c.a() = 1.0;
     return c ;
 }
 

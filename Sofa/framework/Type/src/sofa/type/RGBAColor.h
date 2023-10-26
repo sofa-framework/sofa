@@ -22,33 +22,60 @@
 #pragma once
 #include <sofa/type/config.h>
 
-#include <sofa/type/fixed_array.h>
-
 #include <ostream>
 #include <istream>
 #include <string>
 #include <cmath>
+#include <array>
+#include <algorithm>
+
+#include <sofa/type/fixed_array.h>
 
 namespace sofa::type
 {
-
-using sofa::type::fixed_array ;
-
 
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
 
 /**
  *  \brief encode a 4 RGBA component color
  */
-class SOFA_TYPE_API RGBAColor : public fixed_array<float, 4>
+class SOFA_TYPE_API RGBAColor
 {
-public:
-    static RGBAColor fromString(const std::string& str) ;
-    static RGBAColor fromFloat(float r, float g, float b, float a) ;
-    static RGBAColor fromVec4(const fixed_array<float, 4>& color) ;
-    static RGBAColor fromVec4(const fixed_array<double, 4>& color) ;
+private:
+    static constexpr std::size_t NumberOfComponents = 4;
 
-    static RGBAColor fromHSVA(float h, float s, float v, float a) ;
+    using ComponentArray = std::array<float, NumberOfComponents>;
+
+    ComponentArray m_components;
+
+public:
+    constexpr RGBAColor()
+        : m_components{ 1.f, 1.f, 1.f, 1.f } {}
+
+    constexpr RGBAColor(const std::array<float, NumberOfComponents>& c)
+        : m_components(c) {}
+
+    constexpr RGBAColor(float r, float g, float b, float a)
+        : m_components{ r, g, b, a } {}
+
+    // compat
+    [[deprecated]]
+    constexpr RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
+        : m_components{ c[0], c[1], c[2], c[3] } {}
+
+    [[deprecated]] 
+    static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
+    [[deprecated]] 
+    static RGBAColor fromVec4(const type::fixed_array<double, 4>& color);
+    [[deprecated]]
+    operator type::fixed_array<float, 4>() const { return type::fixed_array<float, 4>{m_components[0], m_components[1], m_components[2], m_components[3]}; }
+
+
+    static RGBAColor fromString(const std::string& str);
+    static RGBAColor fromFloat(float r, float g, float b, float a);
+    static RGBAColor fromStdArray(const std::array<float, 4>& color);
+    static RGBAColor fromStdArray(const std::array<double, 4>& color);
+    static RGBAColor fromHSVA(float h, float s, float v, float a);
 
     static bool read(const std::string& str, RGBAColor& color) ;
 
@@ -67,33 +94,56 @@ public:
     /// @brief enlight a color by a given factor.
     static RGBAColor lighten(const RGBAColor& in, const SReal factor);
 
-    constexpr float& r(){ return this->elems[0] ; }
-    constexpr float& g(){ return this->elems[1] ; }
-    constexpr float& b(){ return this->elems[2] ; }
-    constexpr float& a(){ return this->elems[3] ; }
-    constexpr const float& r() const { return this->elems[0] ; }
-    constexpr const float& g() const { return this->elems[1] ; }
-    constexpr const float& b() const { return this->elems[2] ; }
-    constexpr const float& a() const { return this->elems[3] ; }
+    constexpr float& r(){ return this->m_components[0] ; }
+    constexpr float& g(){ return this->m_components[1] ; }
+    constexpr float& b(){ return this->m_components[2] ; }
+    constexpr float& a(){ return this->m_components[3] ; }
+    constexpr const float& r() const { return this->m_components[0] ; }
+    constexpr const float& g() const { return this->m_components[1] ; }
+    constexpr const float& b() const { return this->m_components[2] ; }
+    constexpr const float& a() const { return this->m_components[3] ; }
 
-    constexpr void r(const float r){ this->elems[0]=r; }
-    constexpr void g(const float g){ this->elems[1]=g; }
-    constexpr void b(const float b){ this->elems[2]=b; }
-    constexpr void a(const float a){ this->elems[3]=a; }
+    constexpr void r(const float r){ this->m_components[0]=r; }
+    constexpr void g(const float g){ this->m_components[1]=g; }
+    constexpr void b(const float b){ this->m_components[2]=b; }
+    constexpr void a(const float a){ this->m_components[3]=a; }
+
+    // operator[]
+    constexpr float& operator[](std::size_t i)
+    {
+#ifndef NDEBUG
+        assert(i < N && "index in RGBAColor must be smaller than 4");
+#endif
+        return m_components[i];
+    }
+    constexpr const float& operator[](std::size_t i) const
+    {
+#ifndef NDEBUG
+        assert(i < N && "index in RGBAColor must be smaller than 4");
+#endif
+        return m_components[i];
+    }
 
     void set(float r, float g, float b, float a) ;
 
-    bool operator==(const fixed_array<float,4>& b) const
+    bool operator==(const RGBAColor& b) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return false;
+            if ( fabs( this->m_components[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
-    bool operator!=(const fixed_array<float,4>& b) const
+    bool operator!=(const RGBAColor& b) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
+            if ( fabs( this->m_components[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
+        return false;
+    }
+
+    bool operator<(const RGBAColor& b) const
+    {
+        for (int i = 0; i < 4; i++)
+            if (this->m_components[i] < b[i]) return true;
         return false;
     }
 
@@ -102,23 +152,85 @@ public:
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
-    constexpr RGBAColor() : fixed_array<float, 4>(1.f, 1.f, 1.f, 1.f) {}
-    constexpr RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c) {}
-    constexpr RGBAColor(float r, float g, float b, float a) : fixed_array<float, 4>(r, g, b, a) {}
+    // direct access to data
+    constexpr const float* data() const noexcept
+    {
+        return m_components.data();
+    }
 
+    /// direct access to array
+    constexpr const ComponentArray& array() const noexcept
+    {
+        return m_components;
+    }
+
+    /// direct access to array
+    constexpr ComponentArray& array() noexcept
+    {
+        return m_components;
+    }
+
+    static constexpr RGBAColor clamp(const RGBAColor& color, float min, float max)
+    {
+        RGBAColor result{};
+
+        for(std::size_t i = 0 ; i < NumberOfComponents; ++i)
+        {
+            result[i] = std::clamp(color[i], min, max);
+        }
+        return result;
+    }
+
+    constexpr ComponentArray::iterator begin() noexcept
+    {
+        return m_components.begin();
+    }
+    constexpr ComponentArray::const_iterator begin() const noexcept
+    {
+        return m_components.begin();
+    }
+
+    constexpr ComponentArray::iterator end() noexcept
+    {
+        return m_components.end();
+    }
+    constexpr ComponentArray::const_iterator end() const noexcept
+    {
+        return m_components.end();
+    }
 };
 
-inline constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_red       {1.0f,0.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_green     {0.0f,1.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_blue      {0.0f,0.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_cyan      {0.0f,1.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_magenta   {1.0f,0.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_yellow    {1.0f,1.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_gray      {0.5f,0.5f,0.5f,1.0f};
-inline constexpr RGBAColor g_darkgray  {0.25f,0.25f,0.25f,1.0f};
-inline constexpr RGBAColor g_lightgray {0.75f,0.75f,0.75f,1.0f};
+constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
+{
+    RGBAColor result{};
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+        result[i] = l[i] - r[i];
+    }
+    return result;
+}
+
+constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
+{
+    RGBAColor result{};
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+        result[i] = l[i] + r[i];
+    }
+    return result;
+}
+
+constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
+constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
+constexpr RGBAColor g_red       {1.0f,0.0f,0.0f,1.0f};
+constexpr RGBAColor g_green     {0.0f,1.0f,0.0f,1.0f};
+constexpr RGBAColor g_blue      {0.0f,0.0f,1.0f,1.0f};
+constexpr RGBAColor g_cyan      {0.0f,1.0f,1.0f,1.0f};
+constexpr RGBAColor g_magenta   {1.0f,0.0f,1.0f,1.0f};
+constexpr RGBAColor g_yellow    {1.0f,1.0f,0.0f,1.0f};
+constexpr RGBAColor g_gray      {0.5f,0.5f,0.5f,1.0f};
+constexpr RGBAColor g_darkgray  {0.25f,0.25f,0.25f,1.0f};
+constexpr RGBAColor g_lightgray {0.75f,0.75f,0.75f,1.0f};
 
 constexpr const RGBAColor& RGBAColor::white()    { return g_white;     }
 constexpr const RGBAColor& RGBAColor::black()    { return g_black;     }

@@ -94,10 +94,15 @@ void QRGBAColorPicker::updateRGBAColor()
     redrawColorButton();
 }
 
+void QRGBAColorPicker::setColor(const type::RGBAColor& color)
+{
+    setColor(Vec4f{ color[0], color[1] , color[2] ,color[3] });
+}
+
 void QRGBAColorPicker::setColor(const Vec4f& color)
 {
     typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
+    constexpr uchar max = std::numeric_limits<uchar>::max();
     const uchar r = uchar(  max * color[0] );
     const uchar g = uchar(  max * color[1] );
     const uchar b = uchar(  max * color[2] );

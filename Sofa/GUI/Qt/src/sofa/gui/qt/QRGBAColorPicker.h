@@ -58,7 +58,9 @@ signals:
 
 public:
     QRGBAColorPicker(QWidget* parent);
-    void setColor( const Vec4f& color );
+    void setColor(const type::RGBAColor& color);
+
+    [[deprecated]] void setColor( const Vec4f& color );
     Vec4f getColor() const;
 
 protected:
