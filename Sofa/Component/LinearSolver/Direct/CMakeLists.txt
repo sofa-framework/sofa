@@ -70,7 +70,7 @@ sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for Mat
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative)
-target_link_libraries(${PROJECT_NAME} PUBLIC Metis::Metis csparse)
+target_link_libraries(${PROJECT_NAME} PUBLIC metis::metis csparse)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
