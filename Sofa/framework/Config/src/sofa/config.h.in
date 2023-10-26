@@ -40,7 +40,7 @@
 #cmakedefine SOFA_WITH_DOUBLE
 
 #cmakedefine SOFA_WITH_DEVTOOLS
-#cmakedefine ENABLE_SCOPED_ADVANCED_TIMER
+#cmakedefine SOFA_ENABLE_SCOPED_ADVANCED_TIMER
 
 #ifdef WIN32
 #define UNICODE

@@ -67,12 +67,12 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
     #include <tracy/Tracy.hpp>
     #define SCOPED_TIMER_TR(name) ZoneScopedN(name)
     #define SCOPED_TIMER_VARNAME_TR(varname, name) ZoneNamedN(varname##_tr, name, true)
-#elif
+#else
     #define SCOPED_TIMER_TR(name)
     #define SCOPED_TIMER_VARNAME_TR(varname, name)
 #endif
 
-#ifdef ENABLE_SCOPED_ADVANCED_TIMER
+#ifdef SOFA_ENABLE_SCOPED_ADVANCED_TIMER
     #define SCOPED_TIMER_AD(name) sofa::helper::ScopedAdvancedTimer sofaScopedTimer(name)
     #define SCOPED_TIMER_VARNAME_AD(varname, name) sofa::helper::ScopedAdvancedTimer varname##_ad(name)
 #else

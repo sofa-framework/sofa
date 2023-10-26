@@ -260,9 +260,9 @@ if (SOFA_TRACY)
 endif()
 
 
-option(SOFA_SCOPED_ADVANCED_TIMER "Compile SOFA with the scoped advanced timer" ON)
-if(SOFA_SCOPED_ADVANCED_TIMER)
-    set(ENABLE_SCOPED_ADVANCED_TIMER 1)
+option(SOFA_ENABLE_BUILTIN_TIMER "Enable the builtin timers" ON)
+if(SOFA_ENABLE_BUILTIN_TIMER)
+    set(SOFA_ENABLE_SCOPED_ADVANCED_TIMER 1)
 endif()
 
 # An important C++11 feature may be not enabled due to
