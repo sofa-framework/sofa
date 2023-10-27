@@ -107,7 +107,7 @@ BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vec3& origi
     BodyPicked result;
 
     result.dist =  0;
-    sofa::type::Vec4f color;
+    type::RGBAColor color;
     const int x = mousePosition.x;
     const int y = mousePosition.screenHeight - mousePosition.y;
     TriangleCollisionModel<defaulttype::Vec3Types>* tmodel;
@@ -116,10 +116,10 @@ BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vec3& origi
     if(renderCallback)
     {
         renderCallback->render(ColourPickingVisitor::ENCODE_COLLISIONELEMENT );
-        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
+        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType, &color[0]);
         decodeCollisionElement(color,result);
         renderCallback->render(ColourPickingVisitor::ENCODE_RELATIVEPOSITION );
-        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
+        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType, &color[0]);
         if( ( tmodel = dynamic_cast<TriangleCollisionModel<defaulttype::Vec3Types>*>(result.body) ) != nullptr )
         {
             decodePosition(result,color,tmodel,result.indexCollisionElement);

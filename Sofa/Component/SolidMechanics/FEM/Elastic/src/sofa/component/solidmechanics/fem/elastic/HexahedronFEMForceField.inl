@@ -325,7 +325,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice, double stiffnessFactor) const
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::Vec<8, Coord> &nodes, const sofa::Index elementIndice, double stiffnessFactor) const
 {
     const bool verbose = elementIndice==0;
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
