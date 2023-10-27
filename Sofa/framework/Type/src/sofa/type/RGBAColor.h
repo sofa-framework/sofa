@@ -198,6 +198,10 @@ public:
     {
         return m_components.end();
     }
+
+    static constexpr std::size_t static_size = NumberOfComponents;
+    static constexpr std::size_t size() { return static_size; }
+    using value_type = float;
 };
 
 constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
