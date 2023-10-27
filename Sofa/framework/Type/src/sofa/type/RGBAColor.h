@@ -59,17 +59,14 @@ public:
         : m_components{ r, g, b, a } {}
 
     // compat
-    [[deprecated]]
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     constexpr RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
         : m_components{ c[0], c[1], c[2], c[3] } {}
 
-    [[deprecated]] 
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
-    [[deprecated]] 
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<double, 4>& color);
-    [[deprecated]]
-    operator type::fixed_array<float, 4>() const { return type::fixed_array<float, 4>{m_components[0], m_components[1], m_components[2], m_components[3]}; }
-
 
     static RGBAColor fromString(const std::string& str);
     static RGBAColor fromFloat(float r, float g, float b, float a);

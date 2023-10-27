@@ -160,7 +160,6 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
     return rgba;
 }
 
-// compat
 RGBAColor RGBAColor::fromVec4(const type::fixed_array<float, 4>& color)
 {
     return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
@@ -170,7 +169,6 @@ RGBAColor RGBAColor::fromVec4(const type::fixed_array<double, 4>& color)
 {
     return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
-
 
 /// This function remove the leading space in the stream.
 static std::istream& trimInitialSpaces(std::istream& in)
@@ -275,9 +273,7 @@ SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& t 
 /// @brief enlight a color by a given factor.
 RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 {
-    auto cc = RGBAColor::white() - RGBAColor::clamp(in, 0.0f, 1.0f);
-
-    RGBAColor c = in + ( cc * rclamp(float(factor), 0.0f, 1.0f));
+    RGBAColor c = in + ( (RGBAColor::white() - RGBAColor::clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
 
     c.a() = 1.0;
     return c ;
