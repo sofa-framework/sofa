@@ -42,7 +42,7 @@ namespace sofa::type
 class SOFA_TYPE_API RGBAColor
 {
 private:
-    static constexpr std::size_t NumberOfComponents = 4;
+    static constexpr sofa::Size NumberOfComponents = 4;
 
     using ComponentArray = std::array<float, NumberOfComponents>;
 
@@ -171,7 +171,7 @@ public:
     {
         RGBAColor result{};
 
-        for(std::size_t i = 0 ; i < NumberOfComponents; ++i)
+        for(sofa::Size i = 0 ; i < NumberOfComponents; ++i)
         {
             result[i] = std::clamp(color[i], min, max);
         }
@@ -196,15 +196,15 @@ public:
         return m_components.end();
     }
 
-    static constexpr std::size_t static_size = NumberOfComponents;
-    static constexpr std::size_t size() { return static_size; }
+    static constexpr sofa::Size static_size = NumberOfComponents;
+    static constexpr sofa::Size size() { return static_size; }
     using value_type = float;
 };
 
 constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (std::size_t i = 0; i < 4; ++i)
+    for (sofa::Size i = 0; i < 4; ++i)
     {
         result[i] = l[i] - r[i];
     }
@@ -214,7 +214,7 @@ constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (std::size_t i = 0; i < 4; ++i)
+    for (sofa::Size i = 0; i < 4; ++i)
     {
         result[i] = l[i] + r[i];
     }
