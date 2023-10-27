@@ -39,7 +39,6 @@ set(SOURCE_FILES
     ${SOFAGLSRC_ROOT}/Capture.cpp
     ${SOFAGLSRC_ROOT}/Texture.cpp
     ${SOFAGLSRC_ROOT}/VideoRecorderFFMPEG.cpp
-    ${SOFAGLSRC_ROOT}/Color.cpp
     ${SOFAGLSRC_ROOT}/gl.cpp
     ${SOFAGLSRC_ROOT}/TransformationGL.cpp
     ${SOFAGLSRC_ROOT}/DrawToolGL.cpp
