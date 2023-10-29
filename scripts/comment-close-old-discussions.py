@@ -7,8 +7,9 @@
 
 
 #TEST steps:
+# - add cron & dispatch trigger, remove trigger on label changes (yml)
 # - test with only one entry (break)
-# - remove break, activate cron and remove trigger on label changes (yml)
+# - remove break
 # - after 1st of December 2023, remove the temporary layer
 
 import os
@@ -263,6 +264,15 @@ if(len(to_be_closed_discussion_id)!=len(to_be_closed_discussion_author)):
   print('Error: size of both vectors number/author for discussions to be closed is different')
   exit(1)
 
+print("** Output lists **")
+print("******************")
+print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number)
+print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id)
+print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author)
+print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number)
+print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id)
+print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author)
+print("******************")
 
 #==========================================================
 # WARNING step
@@ -292,7 +302,7 @@ else:
     temporary_case = True
 
 if temporary_case:
-  print(str(date_end_temporary_message-date_today)+" days to go before end of temporary message")
+  print(str(date_end_temporary_message-date_today[:-9])+" days to go before end of temporary message")
 # --------------------------------
 
 for index, discussion_id in enumerate(to_be_closed_discussion_id):
