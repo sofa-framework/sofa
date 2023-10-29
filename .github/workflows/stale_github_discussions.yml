@@ -1,4 +1,4 @@
-name: Close Old Discussion Topics
+name: Stale GitHub Discussions
 
 on:
   workflow_dispatch:
