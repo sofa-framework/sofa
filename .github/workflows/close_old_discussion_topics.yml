@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: '3.10' # Use the desired Python version
 
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+        working-directory: ${{ github.workspace }}
+
       - name: Run script comment-close-old-discussions.py
         run: |
           python scripts/comment-close-old-discussions.py
