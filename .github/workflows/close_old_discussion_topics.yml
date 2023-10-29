@@ -1,8 +1,8 @@
 name: Close Old Discussion Topics
 
 on:
-  schedule:
-    - cron: '0 6 * * 1' # Every Monday at 6:00 AM UTC (8:00 AM CET)
+  # schedule:
+  #  - cron: '0 6 * * 1' # Every Monday at 6:00 AM UTC (8:00 AM CET)
   pull_request:
     types:
       - labeled

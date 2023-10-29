@@ -7,10 +7,8 @@
 
 
 #TEST steps:
-# - check outputs
-# - remove commented actions
 # - test with only one entry (break)
-# - remove break
+# - remove break, activate cron and remove trigger on label changes (yml)
 # - after 1st of December 2023, remove the temporary layer
 
 import os
@@ -272,12 +270,12 @@ for index, discussion_id in enumerate(to_be_warned_discussion_id):
   print("to_be_warned_discussion_number[index] = "+str(to_be_warned_discussion_number[index]))
   print("to_be_warned_discussion_author[index] = "+str(to_be_warned_discussion_author[index]))
   print("discussion_id = "+str(discussion_id))
-  # # Warning comment
-  # data = client.execute(
-  #           query = make_github_warning_comment( discussion_id, to_be_warned_discussion_author[index] ),
-  #           headers = {"Authorization": "Bearer {}".format(github_token)},
-  #       )
-  # print(data)
+  # Warning comment
+  data = client.execute(
+            query = make_github_warning_comment( discussion_id, to_be_warned_discussion_author[index] ),
+            headers = {"Authorization": "Bearer {}".format(github_token)},
+        )
+  print(data)
   break# ------- TO REMOVE !!!!
 
 
@@ -301,28 +299,28 @@ for index, discussion_id in enumerate(to_be_closed_discussion_id):
   print("to_be_closed_discussion_number[index] = "+str(to_be_closed_discussion_number[index]))
   print("to_be_closed_discussion_author[index] = "+str(to_be_closed_discussion_author[index]))
   print("discussion_id = "+str(discussion_id))
-  # # ------- TO REMOVE !!!! ---------
-  # if temporary_case:
-  #   # Closing comment
-  #   data = client.execute(
-  #            query = temporary_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
-  #            headers = {"Authorization": "Bearer {}".format(github_token)},
-  #        )
-  #   print(data) 
-  # else:
-  # # --------------------------------
-  #   # Closing comment
-  #   data = client.execute(
-  #            query = make_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
-  #            headers = {"Authorization": "Bearer {}".format(github_token)},
-  #        )
-  #   print(data)
-  #   # Close discussion
-  #   data = client.execute(
-  #            query = close_github_discussion( discussion_id ),
-  #            headers = {"Authorization": "Bearer {}".format(github_token)},
-  #        )
-  #   print(data)
+  # ------- TO REMOVE !!!! ---------
+  if temporary_case:
+    # Closing comment
+    data = client.execute(
+             query = temporary_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
+             headers = {"Authorization": "Bearer {}".format(github_token)},
+         )
+    print(data)
+  else:
+  # --------------------------------
+    # Closing comment
+    data = client.execute(
+             query = make_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
+             headers = {"Authorization": "Bearer {}".format(github_token)},
+         )
+    print(data)
+    # Close discussion
+    data = client.execute(
+             query = close_github_discussion( discussion_id ),
+             headers = {"Authorization": "Bearer {}".format(github_token)},
+         )
+    print(data)
   break# ------- TO REMOVE !!!!
 
 #==========================================================
