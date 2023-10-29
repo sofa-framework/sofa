@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install python-graphql-client
+          pip install python-dateutil
         working-directory: ${{ github.workspace }}
 
       - name: Run script comment-close-old-discussions.py
