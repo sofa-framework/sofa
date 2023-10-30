@@ -52,7 +52,7 @@ public:
     constexpr RGBAColor()
         : m_components{ 1.f, 1.f, 1.f, 1.f } {}
 
-    constexpr RGBAColor(const std::array<float, NumberOfComponents>& c)
+    constexpr explicit RGBAColor(const std::array<float, NumberOfComponents>& c)
         : m_components(c) {}
 
     constexpr RGBAColor(float r, float g, float b, float a)
@@ -60,7 +60,7 @@ public:
 
     // compat
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    constexpr RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
+    constexpr explicit RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
         : m_components{ c[0], c[1], c[2], c[3] } {}
 
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
@@ -115,9 +115,7 @@ public:
     }
     constexpr const float& operator[](std::size_t i) const
     {
-#ifndef NDEBUG
         assert(i < N && "index in RGBAColor must be smaller than 4");
-#endif
         return m_components[i];
     }
 
@@ -204,7 +202,7 @@ public:
 constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (sofa::Size i = 0; i < 4; ++i)
+    for (sofa::Size i = 0; i < NumberOfComponents; ++i)
     {
         result[i] = l[i] - r[i];
     }
@@ -214,7 +212,7 @@ constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (sofa::Size i = 0; i < 4; ++i)
+    for (sofa::Size i = 0; i < NumberOfComponents; ++i)
     {
         result[i] = l[i] + r[i];
     }
