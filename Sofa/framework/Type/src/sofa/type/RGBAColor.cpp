@@ -91,6 +91,11 @@ RGBAColor::RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
 {
 }
 
+RGBAColor::RGBAColor(const type::Vec4f& c)
+    : m_components{ c[0], c[1], c[2], c[3] }
+{
+}
+
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     std::stringstream s(str);

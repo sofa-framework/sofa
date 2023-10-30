@@ -630,6 +630,23 @@ public:
         return elems.end();
     }
 
+    constexpr reference front()
+    {
+        return elems[0];
+    }
+    constexpr const_reference front() const
+    {
+        return elems[0];
+    }
+    constexpr reference back()
+    {
+        return elems[N - 1];
+    }
+    constexpr const_reference back() const
+    {
+        return elems[N - 1];
+    }
+
     /// @}
 };
 
