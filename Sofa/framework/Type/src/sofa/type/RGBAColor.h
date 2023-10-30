@@ -65,6 +65,10 @@ public:
     static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<double, 4>& color);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4f& color);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4d& color);
 
     static RGBAColor fromString(const std::string& str);
     static RGBAColor fromFloat(float r, float g, float b, float a);
