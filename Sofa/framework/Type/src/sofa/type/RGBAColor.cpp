@@ -24,7 +24,9 @@
 #include <sstream>
 #include <locale>
 
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/fixed_array_algorithms.h>
+
 using namespace sofa::type::pairwise;
 
 namespace // anonymous
@@ -80,6 +82,12 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
     /// we need to reset the failbit because it is set by the get function
     /// on the last character.
     in.clear(in.rdstate() & ~std::ios_base::failbit) ;
+}
+
+
+RGBAColor::RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
+    : m_components{ c[0], c[1], c[2], c[3] }
+{
 }
 
 bool RGBAColor::read(const std::string& str, RGBAColor& color)

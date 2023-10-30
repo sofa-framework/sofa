@@ -442,7 +442,7 @@ void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, 
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size, const type::RGBAColor &color)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size, color.array(), color.array(), color.array());
+    gl::Axis::draw(position, orientation, size, color, color, color);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

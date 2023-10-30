@@ -22,14 +22,15 @@
 #pragma once
 #include <sofa/type/config.h>
 
+#include <sofa/type/fwd.h>
+
 #include <ostream>
 #include <istream>
 #include <string>
 #include <cmath>
 #include <array>
 #include <algorithm>
-
-#include <sofa/type/fixed_array.h>
+#include <cassert>
 
 namespace sofa::type
 {
@@ -41,14 +42,10 @@ namespace sofa::type
  */
 class SOFA_TYPE_API RGBAColor
 {
-private:
+public:
     static constexpr sofa::Size NumberOfComponents = 4;
-
     using ComponentArray = std::array<float, NumberOfComponents>;
 
-    ComponentArray m_components;
-
-public:
     constexpr RGBAColor()
         : m_components{ 1.f, 1.f, 1.f, 1.f } {}
 
@@ -60,8 +57,7 @@ public:
 
     // compat
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    constexpr explicit RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
-        : m_components{ c[0], c[1], c[2], c[3] } {}
+    RGBAColor(const type::fixed_array<float, NumberOfComponents>& c);
 
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
@@ -108,14 +104,12 @@ public:
     // operator[]
     constexpr float& operator[](std::size_t i)
     {
-#ifndef NDEBUG
-        assert(i < N && "index in RGBAColor must be smaller than 4");
-#endif
+        assert(i < NumberOfComponents && "index in RGBAColor must be smaller than 4");
         return m_components[i];
     }
     constexpr const float& operator[](std::size_t i) const
     {
-        assert(i < N && "index in RGBAColor must be smaller than 4");
+        assert(i < NumberOfComponents && "index in RGBAColor must be smaller than 4");
         return m_components[i];
     }
 
@@ -197,12 +191,15 @@ public:
     static constexpr sofa::Size static_size = NumberOfComponents;
     static constexpr sofa::Size size() { return static_size; }
     using value_type = float;
+
+private:
+    ComponentArray m_components;
 };
 
 constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (sofa::Size i = 0; i < NumberOfComponents; ++i)
+    for (sofa::Size i = 0; i < RGBAColor::NumberOfComponents; ++i)
     {
         result[i] = l[i] - r[i];
     }
@@ -212,7 +209,7 @@ constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
 {
     RGBAColor result{};
-    for (sofa::Size i = 0; i < NumberOfComponents; ++i)
+    for (sofa::Size i = 0; i < RGBAColor::NumberOfComponents; ++i)
     {
         result[i] = l[i] + r[i];
     }
