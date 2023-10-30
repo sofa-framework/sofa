@@ -34,8 +34,9 @@ else()
   )
   endif()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Metis REQUIRED_VARS Metis_LIBRARY Metis_INCLUDE_DIR HANDLE_COMPONENTS)
+  if(Metis_INCLUDE_DIR AND Metis_LIBRARY)
+    set(Metis_FOUND TRUE)
+  endif()
 
   if(Metis_FOUND)
     set(Metis_LIBRARIES ${Metis_LIBRARY})
