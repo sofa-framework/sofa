@@ -59,7 +59,7 @@ set(SOURCE_FILES
 add_subdirectory(extlibs/csparse)
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE VALUE TRUE)
 
-sofa_find_package(Metis REQUIRED) # Unix users can have an installed version of metis
+sofa_find_package(Metis REQUIRED)
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
 
 # make sure you have threads for AsyncSparseLDLSolver
