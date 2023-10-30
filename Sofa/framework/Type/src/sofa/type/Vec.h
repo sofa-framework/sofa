@@ -63,12 +63,12 @@ public:
     using ArrayType = std::array<ValueType, N>;
     ArrayType elems{};
 
-    typedef sofa::Size       Size;
-    typedef ValueType        value_type;
-    typedef ValueType*       iterator;
-    typedef const ValueType* const_iterator;
-    typedef ValueType&       reference;
-    typedef const ValueType& const_reference;
+    typedef sofa::Size                          Size;
+    typedef ValueType                           value_type;
+    typedef typename ArrayType::iterator        iterator;
+    typedef typename ArrayType::const_iterator  const_iterator;
+    typedef typename ArrayType::reference       reference;
+    typedef typename ArrayType::const_reference const_reference;
     typedef sofa::Size       size_type;
     typedef std::ptrdiff_t   difference_type;
 
