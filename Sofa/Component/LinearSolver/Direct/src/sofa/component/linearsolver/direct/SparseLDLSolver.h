@@ -64,8 +64,6 @@ public :
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
-    Data<bool> d_parallelInverseProduct;
-
     MatrixInvertData * createInvertData() override {
         return new InvertData();
     }
