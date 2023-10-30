@@ -61,7 +61,7 @@ class Vec
 
 public:
     using ArrayType = std::array<ValueType, N>;
-    ArrayType elems;
+    ArrayType elems{};
 
     typedef sofa::Size       Size;
     typedef ValueType        value_type;
@@ -547,7 +547,7 @@ public:
 
     /// return true if norm()==1
     bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
-    { 
+    {
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }
 
@@ -644,6 +644,15 @@ public:
     constexpr VecNoInit() noexcept
         : Vec<N,real>(NOINIT)
     {}
+
+    constexpr VecNoInit(const Vec<N,real>& v) noexcept
+        : Vec<N,real>(v)
+    {}
+
+    constexpr VecNoInit(Vec<N,real>&& v) noexcept
+        : Vec<N,real>(v)
+    {}
+
     using Vec<N,real>::Vec;
 
     using Vec<N,real>::operator=; // make every = from Vec available

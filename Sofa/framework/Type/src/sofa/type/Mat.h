@@ -203,20 +203,20 @@ public:
     }
 
     /// Assignment from another matrix
-    template<typename real2> 
+    template<typename real2>
     constexpr void operator=(const Mat<L,C,real2>& m) noexcept
     {
         std::copy(m.begin(), m.begin()+L, this->begin());
     }
 
     /// Assignment from a matrix of different size.
-    template<Size L2, Size C2> 
+    template<Size L2, Size C2>
     constexpr void operator=(const Mat<L2,C2,real>& m) noexcept
     {
         std::copy(m.begin(), m.begin()+(L>L2?L2:L), this->begin());
     }
 
-    template<Size L2, Size C2> 
+    template<Size L2, Size C2>
     constexpr void getsub(Size L0, Size C0, Mat<L2,C2,real>& m) const noexcept
     {
         for (Size i=0; i<L2; i++)
@@ -224,7 +224,7 @@ public:
                 m[i][j] = this->elems[i+L0][j+C0];
     }
 
-    template<Size L2, Size C2> 
+    template<Size L2, Size C2>
     constexpr void setsub(Size L0, Size C0, const Mat<L2,C2,real>& m) noexcept
     {
         for (Size i=0; i<L2; i++)
@@ -232,7 +232,7 @@ public:
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
-    template<Size L2> 
+    template<Size L2>
     constexpr void setsub(Size L0, Size C0, const Vec<L2,real>& v) noexcept
     {
         assert( C0<C );
@@ -808,7 +808,7 @@ class MatNoInit : public Mat<L,C,real>
 {
 public:
     constexpr MatNoInit() noexcept
-        : Mat<L,C,real>(NOINIT) 
+        : Mat<L,C,real>(NOINIT)
     {
     }
 
@@ -819,7 +819,7 @@ public:
     }
 
     /// Assignment from another matrix
-    template<sofa::Size L2, sofa::Size C2, typename real2> 
+    template<sofa::Size L2, sofa::Size C2, typename real2>
     constexpr void operator=(const Mat<L2,C2,real2>& m) noexcept
     {
         this->Mat<L,C,real>::operator=(m);
@@ -895,7 +895,7 @@ template<sofa::Size N, class real>
 constexpr real trace(const Mat<N,N,real>& m) noexcept
 {
     real t = m[0][0];
-    for(sofa::Size i=1 ; i<N ; ++i ) 
+    for(sofa::Size i=1 ; i<N ; ++i )
         t += m[i][i];
     return t;
 }
@@ -905,7 +905,7 @@ template<sofa::Size N, class real>
 constexpr Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
     Vec<N,real> v(NOINIT);
-    for(sofa::Size i=0 ; i<N ; ++i ) 
+    for(sofa::Size i=0 ; i<N ; ++i )
         v[i] = m[i][i];
     return v;
 }
