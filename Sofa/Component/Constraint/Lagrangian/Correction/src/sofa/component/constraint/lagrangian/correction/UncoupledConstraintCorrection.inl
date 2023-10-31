@@ -110,6 +110,31 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , l_topology(initLink("topology", "link to the topology container"))
     , m_pOdeSolver(nullptr)
 {
+    // Check defaultCompliance and entries of the compliance vector are not zero
+    core::objectmodel::Base::addUpdateCallback("checkNonZeroComplianceInput", {&defaultCompliance, &compliance}, [this](const core::DataTracker& t)
+    {
+        if(t.hasChanged(defaultCompliance))
+        {
+            if(defaultCompliance.getValue() == 0.0)
+            {
+                msg_error() << "Zero defaultCompliance is set: this will cause the constraint resolution to diverge";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        else
+        {
+            const VecReal& comp = compliance.getValue();
+            if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))
+            {
+                msg_error() << "One of the entry of the compliance vector is empty";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+
+    }, {}
+    );
 }
 
 template<class DataTypes>
@@ -205,6 +230,8 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class DataTypes>
@@ -216,6 +243,9 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
+    if(!this->isComponentStateValid())
+        return;
+    
     helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& constraints = constraintsData.wref();
 
@@ -286,6 +316,9 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::linearalgebra::BaseMatrix *W)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
     VecReal comp = compliance.getValue();
     Real comp0 = defaultCompliance.getValue();
@@ -402,6 +435,9 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
     const unsigned int s = this->mstate->getSize(); // comp.size();
@@ -438,6 +474,9 @@ void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const cor
 {
     SOFA_UNUSED(cparams);
 
+    if(!this->isComponentStateValid())
+        return;
+
     auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
     const Data<VecDeriv>& f_d = *f[this->getMState()].read();
     computeDx(f_d, writeDx.wref());
@@ -447,6 +486,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data<VecDeriv>& dx_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
 
     auto dx         = sofa::helper::getWriteAccessor(dx_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
@@ -479,6 +520,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv >& dx_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     auto dx = sofa::helper::getWriteAccessor(dx_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
 
@@ -504,6 +548,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data<VecDeriv>& dv_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     auto dx = sofa::helper::getWriteAccessor(dv_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
 
@@ -529,6 +576,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
@@ -656,6 +706,9 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
 /// in the Vec1Types and Vec3Types case, compliance is a vector of size mstate->getSize()
 /// constraint_force contains the force applied on dof involved with the contact
 /// TODO : compute a constraint_disp that is updated each time a new force is provided !
+
+    if(!this->isComponentStateValid())
+        return;
 
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
