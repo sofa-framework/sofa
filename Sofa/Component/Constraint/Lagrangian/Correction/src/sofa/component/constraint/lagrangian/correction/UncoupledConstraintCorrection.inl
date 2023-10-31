@@ -29,6 +29,30 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ConstraintParams.h>
 
+namespace // anonymous
+{
+    // Boiler-plate code to test if a type implements a method
+    // explanation https://stackoverflow.com/a/30848101
+
+    template <typename...>
+    using void_t = void;
+
+    // Primary template handles all types not supporting the operation.
+    template <typename, template <typename> class, typename = void_t<>>
+    struct detect : std::false_type {};
+
+    // Specialization recognizes/validates only types supporting the archetype.
+    template <typename T, template <typename> class Op>
+    struct detect<T, Op, void_t<Op<T>>> : std::true_type {};
+
+    // Actual test if DataType::Coord implements getOrientation() (hence is a RigidType)
+    template <typename T>
+    using isRigid_t = decltype(std::declval<typename T::Coord>().getOrientation());
+
+    template <typename T>
+    using isRigidType = detect<T, isRigid_t>;
+} // anonymous
+
 namespace sofa::component::constraint::lagrangian::correction
 {
 
@@ -124,11 +148,15 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
         }
         else
         {
-            const VecReal& comp = compliance.getValue();
-            if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))
+            // Test only if non-rigid body
+            // due to inertia matrix, some values in the rigid case might be zero
+            if constexpr (!isRigidType<DataTypes>())
             {
-                msg_error() << "One of the entry of the compliance vector is empty";
-                return sofa::core::objectmodel::ComponentState::Invalid;
+                const VecReal &comp = compliance.getValue();
+                if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; })) {
+                    msg_error() << "One of the entry of the compliance vector is empty";
+                    return sofa::core::objectmodel::ComponentState::Invalid;
+                }
             }
             return sofa::core::objectmodel::ComponentState::Valid;
         }
@@ -245,7 +273,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 {
     if(!this->isComponentStateValid())
         return;
-    
+
     helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& constraints = constraintsData.wref();
 
