@@ -115,6 +115,15 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
     doCheckLinearSystem<linearsystem::MatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
 }
 
+template<>
+bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(
+    GraphScatteredMatrix* M,
+    MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::ResMatrixType* result, const
+    MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::JMatrixType* J, const SReal fact)
+{
+    return singleThreadAddJMInvJtLocal(M, result, J, fact);
+}
+
 // Force template instantiation
 using namespace sofa::linearalgebra;
 

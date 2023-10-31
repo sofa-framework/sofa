@@ -41,34 +41,7 @@ namespace sofa::component::linearsolver::direct
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
     : numStep(0)
-    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
-        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
-                                  "where M is the matrix of the linear system and J is any "
-                                  "matrix with compatible dimensions"))
-{
-    this->addUpdateCallback("parallelODESolving", {&d_parallelInverseProduct},
-    [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
-    {
-        SOFA_UNUSED(tracker);
-        if (d_parallelInverseProduct.getValue())
-        {
-            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-            assert(taskScheduler);
-
-            if (taskScheduler->getThreadCount() < 1)
-            {
-                taskScheduler->init(0);
-                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-            else
-            {
-                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-        }
-        return this->d_componentState.getValue();
-    },
-    {});
-}
+{}
 
 template <class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
@@ -198,7 +171,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
     const unsigned int JlocalRowSize = (unsigned int)Jlocal2global.size();
 
-    const simulation::ForEachExecutionPolicy execution = d_parallelInverseProduct.getValue() ?
+    const simulation::ForEachExecutionPolicy execution = this->d_parallelInverseProduct.getValue() ?
         simulation::ForEachExecutionPolicy::PARALLEL :
         simulation::ForEachExecutionPolicy::SEQUENTIAL;
 
