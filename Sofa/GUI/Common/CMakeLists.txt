@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.GUI.Common LANGUAGES CXX)
 
 find_package(cxxopts 3.1)
-if(NOT cxxopts_FOUND)
+if(NOT cxxopts_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
   include(FetchContent)
   FetchContent_Declare(cxxopts
           GIT_REPOSITORY https://github.com/jarro2783/cxxopts

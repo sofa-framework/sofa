@@ -34,6 +34,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTOR
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
+# Option to allow some dependencies such as cxxopts to be fetched by cmake if
+# the package is not found
+option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow some dependencies to be fetched is the package is not found by cmake" ON)
+
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
