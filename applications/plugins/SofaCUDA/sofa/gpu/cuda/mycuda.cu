@@ -254,7 +254,7 @@ int mycudaInit(int device)
     }
 
 
-#ifdef SOFA_GPU_CUBLAS
+#if defined(SOFA_GPU_CUBLAS) && !defined(SOFA_GPU_CUBLAS_V2)
     cublasInit();
 #endif
     return 1;
