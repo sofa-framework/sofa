@@ -767,7 +767,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
         nodes[w] = p[elem[w]];
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = nodes[w];
 
@@ -869,7 +869,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
     computeRotationLarge( _rotations[i], horizontal,vertical);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    type::Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = _rotations[i] * nodes[w];
 
@@ -1063,7 +1063,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     computeRotationPolar( _rotations[i], nodes );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    type::Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int j=0; j<8; ++j)
         deformed[j] = _rotations[i] * nodes[j];
 

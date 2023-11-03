@@ -93,14 +93,8 @@ public:
         return *this;
     }
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    vector(InputIterator first, InputIterator last): std::vector<T,Alloc>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     vector(typename vector<T>::const_iterator first, typename vector<T>::const_iterator last): std::vector<T>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
     /// Read/write random access
     reference operator[](Size n)

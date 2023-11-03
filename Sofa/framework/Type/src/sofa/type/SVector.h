@@ -72,15 +72,8 @@ public:
         return *this;
     }
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    SVector(InputIterator first, InputIterator last): Inherit(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): Inherit(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 
     std::ostream& write ( std::ostream& os ) const
     {

@@ -97,9 +97,13 @@ typedef Mat<3,4,double> Mat3x4d;
 typedef Mat<4,4,float> Mat4x4f;
 typedef Mat<4,4,double> Mat4x4d;
 
+typedef Mat<6, 6, float> Mat6x6f;
+typedef Mat<6, 6, double> Mat6x6d;
+
 typedef Mat<2,2,SReal> Mat2x2;
 typedef Mat<3,3,SReal> Mat3x3;
 typedef Mat<4,4,SReal> Mat4x4;
+typedef Mat<6,6,SReal> Mat6x6;
 
 typedef Mat<2,2,SReal> Matrix2;
 typedef Mat<3,3,SReal> Matrix3;
