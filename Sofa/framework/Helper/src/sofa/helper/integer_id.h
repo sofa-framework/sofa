@@ -251,14 +251,8 @@ public:
     /// Constructor
     vector_id(const std::vector<T>& x): Inherit(x) {}
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    vector_id(InputIterator first, InputIterator last): Inherit(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     vector_id(const_iterator first, const_iterator last): Inherit(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
     /// Read/write random access, with explicit Index
     reference at(Index n)
