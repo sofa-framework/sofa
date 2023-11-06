@@ -29,6 +29,10 @@ else()
 
   if(TinyXML2_INCLUDE_DIR AND TinyXML2_LIBRARY)
     set(TinyXML2_FOUND TRUE)
+  else()
+    if(TinyXML2_FIND_REQUIRED)
+      message(FATAL_ERROR "Cannot find TinyXML2")
+    endif()
   endif()
 
   if(TinyXML2_FOUND)
