@@ -158,20 +158,11 @@ public:
     {
     }
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    map_ptr_stable_compare(InputIterator first, InputIterator last)
-    :Inherit(first,last, key_compare(new stable_id_map_type()))
-    ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
-    {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     map_ptr_stable_compare(const_iterator first, const_iterator last)
     :Inherit(first,last, key_compare(new stable_id_map_type()) ) 
     ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
     {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 private:
     /// smart ptr for memory ownership

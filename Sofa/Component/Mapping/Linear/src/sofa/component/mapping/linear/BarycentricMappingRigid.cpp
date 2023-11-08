@@ -86,7 +86,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                     const int j = *iter;
                     if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
-                        sofa::type::Vec3 coefs;
+                        sofa::type::fixed_array<SReal, 3> coefs;
                         defaulttype::Vec3Types::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
                         pos[1] = mapData[j].baryCoords[1];
