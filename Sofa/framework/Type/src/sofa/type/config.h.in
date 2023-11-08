@@ -47,6 +47,6 @@
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY() \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06", "v23.12", \
+        "v23.12", "v24.06", \
         "RGBAColor does not inherit anymore from sofa::type::fixed_array. Use respective functions accordingly.")
 #endif
