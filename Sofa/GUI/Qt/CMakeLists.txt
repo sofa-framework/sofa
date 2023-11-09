@@ -74,7 +74,7 @@ if(Sofa.GL_FOUND)
     option(SOFA_GUI_QT_ENABLE_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
 
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
-        find_package(QGLViewer QUIET)
+        find_package(QGLViewer)
         if(NOT QGLViewer_FOUND)
             add_subdirectory(libQGLViewer/QGLViewer)
         endif()
