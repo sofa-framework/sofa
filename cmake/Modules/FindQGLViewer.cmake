@@ -15,7 +15,7 @@ endif()
 
 if(NOT QGLViewer_LIBRARY)
 find_library(QGLViewer_LIBRARY
-  NAMES QGLViewer
+  NAMES QGLViewer QGLViewer-qt5
   PATH_SUFFIXES lib
 )
 endif()
