@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include <sofa/type/fixed_array_algorithms.h>
+
 namespace sofa::type
 {
 
@@ -191,6 +193,7 @@ public:
     static constexpr sofa::Size static_size = NumberOfComponents;
     static constexpr sofa::Size size() { return static_size; }
     using value_type = float;
+    using size_type = sofa::Size;
 
 private:
     ComponentArray m_components;
@@ -198,22 +201,12 @@ private:
 
 constexpr RGBAColor operator-(const RGBAColor& l, const RGBAColor& r)
 {
-    RGBAColor result{};
-    for (sofa::Size i = 0; i < RGBAColor::NumberOfComponents; ++i)
-    {
-        result[i] = l[i] - r[i];
-    }
-    return result;
+    return sofa::type::pairwise::operator-(l, r);
 }
 
 constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
 {
-    RGBAColor result{};
-    for (sofa::Size i = 0; i < RGBAColor::NumberOfComponents; ++i)
-    {
-        result[i] = l[i] + r[i];
-    }
-    return result;
+    return sofa::type::pairwise::operator+(l, r);
 }
 
 constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
