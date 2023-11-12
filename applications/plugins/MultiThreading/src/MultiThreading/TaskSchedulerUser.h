@@ -32,7 +32,7 @@ namespace multithreading
 class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::core::Base
 {
 public:
-    sofa::Data<int> d_nbThreads;
+    sofa::Data<unsigned int> d_nbThreads;
     sofa::Data<std::string> d_taskSchedulerType;
 
 protected:

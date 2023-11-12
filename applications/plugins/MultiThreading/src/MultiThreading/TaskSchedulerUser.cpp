@@ -48,7 +48,7 @@ void TaskSchedulerUser::initTaskScheduler()
         {
             const auto nbCPUCores = static_cast<int>(sofa::simulation::TaskScheduler::GetHardwareThreadsCount());
             nbThreads.wref() = nbCPUCores - nbThreads;
-            nbThreads.wref() = std::max(0, nbThreads.ref());
+            nbThreads.wref() = std::max(0u, nbThreads.ref());
         }
 
         m_taskScheduler->init(nbThreads);
