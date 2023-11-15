@@ -19,16 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_LINEARALGEBRA_FULLVECTOR_DEFINITION
-#include <sofa/linearalgebra/FullVector.inl>
+#define SOFA_CORE_TOPOLOGY_TOPOLOGYDATA_DEFINITION
 
-namespace sofa::linearalgebra
+#include <sofa/core/topology/TopologyData.inl>
+
+
+namespace sofa::core::topology
 {
+    
+template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 
-std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return readFromStream(out, v); }
-std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
-
-template class SOFA_LINEARALGEBRA_API FullVector<float>;
-template class SOFA_LINEARALGEBRA_API FullVector<double>;
-
-} /// namespace sofa::linearalgebra
+} //namespace sofa::core::topology
