@@ -35,6 +35,16 @@ void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPi
 void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const type::RGBAColor& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
 
+// compat
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f& colour, sofa::gui::component::performer::BodyPicked& body );
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+        const unsigned int index);
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+        const unsigned int index);
+
 
 /* Launches the drawColourPicking() method of each CollisionModel */
 class SOFA_GUI_COMMON_API ColourPickingVisitor : public simulation::Visitor
