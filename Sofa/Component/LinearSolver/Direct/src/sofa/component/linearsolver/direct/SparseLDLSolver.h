@@ -68,8 +68,6 @@ public :
         return new InvertData();
     }
 
-    Data<bool> d_parallelInverseProduct;
-
 protected :
     SparseLDLSolver();
 
