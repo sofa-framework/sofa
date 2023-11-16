@@ -50,7 +50,9 @@ public:
     using Index = sofa::Index;
 
     Data<Deriv> pressure; ///< pressure is a vector with specified direction
-  	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
+
+    SOFA_ATTRIBUTE_DISABLED__TRIANGLE_NON_CONSTANT_FORCEFIELD(cauchyStress)
+    Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
 
     Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
 
@@ -60,6 +62,8 @@ public:
     Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
+
+    SOFA_ATTRIBUTE_DISABLED__TRIANGLE_NON_CONSTANT_FORCEFIELD(p_seConstantForce)
     Data<bool> p_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
 
     /// Link to be set to the topology container in the component graph.
@@ -121,6 +125,7 @@ public:
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     void draw(const core::visual::VisualParams* vparams) override;

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/topology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
@@ -54,7 +55,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
 
     this->core::behavior::ForceField<DataTypes>::init();
-	
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -81,60 +82,49 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     }
 
     trianglePressureMap.createTopologyHandler(m_topology);
-	
+
     initTriangleInformation();
-		
+
+    if(p_useConstantForce.m_isSet() || p_useConstantForce.getValue() == false)
+    {
+        msg_deprecated() << "Non constant pressure force field has been removed.";
+    }
 }
 
 template <class DataTypes>
-void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParams*  /*mparams*/, DataVecDeriv& d_f, const DataVecCoord&  d_x , const DataVecDeriv& /* d_v */)
+void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParams*  /*mparams*/, DataVecDeriv& d_f, const DataVecCoord&  /*d_x*/ , const DataVecDeriv& /*d_v*/)
 {
+    if (!p_useConstantForce.getValue())
+    {
+        msg_deprecated() << "Non constant force field has been deprecated because of an invalid computation. Please contact sofa-dev to request for integration of a valid version.";
+        return;
+    }
 
-    VecDeriv& f = *d_f.beginEdit();
-
+    auto f =sofa::helper::getWriteAccessor(d_f);
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
 
-	if (p_useConstantForce.getValue()) {
-		const sofa::type::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
-
-
-		for (unsigned int i=0; i<my_map.size(); ++i)
-		{
-			const auto force=my_subset[i].force/3;
-			f[m_topology->getTriangle(my_map[i])[0]]+=force;
-			f[m_topology->getTriangle(my_map[i])[1]]+=force;
-			f[m_topology->getTriangle(my_map[i])[2]]+=force;
-
-		}
-	} else {
-        typedef core::topology::BaseMeshTopology::Triangle Triangle;
-		const sofa::type::vector<Triangle> &ta = m_topology->getTriangles();
-		const  VecDeriv p = d_x.getValue();
-		MatSym3 cauchy=cauchyStress.getValue();
-		Deriv areaVector;
-
-		for (unsigned int i=0; i<my_map.size(); ++i)
-		{
-			const Triangle &t=ta[my_map[i]];
-			areaVector=cross(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])/6.0f;
-			const auto force=cauchy*areaVector;
-			for (size_t j=0;j<3;++j) {
-				f[t[j]]+=force;
-			}
-		}
-
-	}
-    d_f.endEdit();
+    const sofa::type::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
+    for (unsigned int i=0; i<my_map.size(); ++i)
+    {
+        const auto force=my_subset[i].force/3;
+        f[m_topology->getTriangle(my_map[i])[0]]+=force;
+        f[m_topology->getTriangle(my_map[i])[1]]+=force;
+        f[m_topology->getTriangle(my_map[i])[2]]+=force;
+    }
 }
 
 
 template<class DataTypes>
-void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  /*d_df*/ , const DataVecDeriv&  /*d_dx*/ )
+void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* /* mparams */, DataVecDeriv&  /*d_df*/ , const DataVecDeriv&  /*d_dx*/ )
 {
-	mparams->kFactor();
-	return;
-}
+    if (!p_useConstantForce.getValue())
+    {
+        msg_error() << "Implementation for non constant pressure is missing, please contact sofa dev if you see this message";
+        return;
+    }
 
+    return;
+}
 
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
@@ -192,7 +182,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    auto my_subset = sofa::helper::getWriteAccessor(trianglePressureMap);
     type::vector<Index> inputTriangles;
 
     for (size_t n=0; n<m_topology->getNbTriangles(); ++n)
@@ -206,7 +196,6 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
             inputTriangles.push_back(n);
         }
     }
-    trianglePressureMap.endEdit();
     trianglePressureMap.setMap2Elements(inputTriangles);
 
     return;
@@ -216,19 +205,17 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
 template <class DataTypes>
 void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 {
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    auto my_subset = sofa::helper::getWriteAccessor(trianglePressureMap);
+
     type::vector<Index> _triangleList = triangleList.getValue();
 
     trianglePressureMap.setMap2Elements(_triangleList);
-
     for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
         TrianglePressureInformation t;
         t.area = 0;
         my_subset.push_back(t);
     }
-
-    trianglePressureMap.endEdit();
 
     return;
 }
@@ -279,6 +266,19 @@ template <class DataTypes>
 void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
+}
+
+template <class DataTypes>
+void TrianglePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* /*matrix*/)
+{
+    if (!p_useConstantForce.getValue())
+    {
+        msg_error() << "The non constant version of this force field is missing the derivative computation";
+        return;
+    }
+
+    // force does not depend on the position, so the derivative with respect
+    // to position is null => stiffness matrix is null
 }
 
 template<class DataTypes>

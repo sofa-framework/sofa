@@ -182,6 +182,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     SReal getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const override;
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

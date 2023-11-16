@@ -230,6 +230,11 @@ class DeprecatedAndRemoved {};
         "v22.12 (PR#3304)", "v23.06", \
         "Calling ReadX with SingleLink's argument will be removed." msg)
 
+#define SOFA_ATTRIBUTE_DISABLED__TRIANGLE_NON_CONSTANT_FORCEFIELD(type) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v23.12 (PR#)", "v24.12", \
+        "This type member " sofa_tostring(type) " is now deprecated for removal. Please contact sofa-dev if you need it.")
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
