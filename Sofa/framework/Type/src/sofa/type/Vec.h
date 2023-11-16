@@ -593,16 +593,12 @@ public:
     // operator[]
     constexpr reference operator[](size_type i)
     {
-#ifndef NDEBUG
         assert(i < N && "index in Vec must be smaller than size");
-#endif
         return elems[i];
     }
     constexpr const_reference operator[](size_type i) const
     {
-#ifndef NDEBUG
         assert(i < N && "index in Vec must be smaller than size");
-#endif
         return elems[i];
     }
 
