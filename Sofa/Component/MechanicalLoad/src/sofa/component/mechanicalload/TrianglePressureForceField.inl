@@ -85,7 +85,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 
     initTriangleInformation();
 
-    if(p_useConstantForce.m_isSet() || p_useConstantForce.getValue() == false)
+    if(p_useConstantForce.isSet() || p_useConstantForce.getValue() == false)
     {
         msg_deprecated() << "Non constant pressure force field has been removed.";
     }
