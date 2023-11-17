@@ -545,6 +545,52 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     }
 }
 
+
+template <class DataTypes>
+void AttachConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    if (f_twoWay.getValue())
+        return;
+
+    reinitIfChanged();
+
+    static constexpr unsigned int N = Deriv::size();
+    const SetIndexArray& indices = f_indices2.getValue();
+    const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
+    const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
+    unsigned int i = 0;
+    const bool clamp = f_clamp.getValue();
+    
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
+    {
+        if (!clamp && i < activeFlags.size() && !activeFlags[i])
+            continue;
+
+        auto index = (*it);
+        msg_info() << "AttachConstraint: apply in matrix column/row " << index;
+
+        if (NCLast != NC && (i >= activeFlags.size() || !activeFlags[i + 1]))
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c = 0; c < NCLast; ++c)
+            {
+                matrix->discardRowCol(N * index + c, N * index + c);
+            }
+        }
+        else
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c = 0; c < NC; ++c)
+            {
+                matrix->discardRowCol(N * index + c, N * index + c);
+            }
+        }
+
+        ++i;
+    }
+}
+
+
 template<class DataTypes>
 const typename DataTypes::Real AttachConstraint<DataTypes>::getConstraintFactor(const int index) {
     return d_constraintFactor.getValue().size() ? d_constraintFactor.getValue()[index] : 1;
