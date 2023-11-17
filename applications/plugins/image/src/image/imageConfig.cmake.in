@@ -1,0 +1,41 @@
+# CMake package configuration file for the image plugin
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+set(IMAGE_HAVE_SOFA_GL @IMAGE_HAVE_SOFA_GL@)
+set(IMAGE_HAVE_SOFA_GUI_QT @IMAGE_HAVE_SOFA_GUI_QT@)
+set(IMAGE_HAVE_SOFAPYTHON @IMAGE_HAVE_SOFAPYTHON@)
+set(IMAGE_HAVE_MULTITHREADING @IMAGE_HAVE_MULTITHREADING@)
+set(IMAGE_HAVE_ZLIB @IMAGE_HAVE_ZLIB@)
+set(IMAGE_HAVE_FREENECT @IMAGE_HAVE_FREENECT@)
+
+find_package(Sofa.Core QUIET REQUIRED)
+find_package(Sofa.Component.Visual QUIET REQUIRED)
+find_package(CImgPlugin QUIET REQUIRED)
+
+
+if(IMAGE_HAVE_SOFA_GL)
+    find_package(Sofa.GL QUIET REQUIRED)
+endif()
+if(IMAGE_HAVE_SOFAGUIQT)
+    find_package(Sofa.GUI.Qt QUIET REQUIRED)
+endif()
+if(IMAGE_HAVE_SOFAPYTHON)
+    find_package(SofaPython QUIET REQUIRED)
+endif()
+if(IMAGE_HAVE_MULTITHREADING)
+    find_package(MultiThreading QUIET REQUIRED)
+endif()
+if(IMAGE_HAVE_ZLIB)
+    find_package(ZLIB QUIET REQUIRED)
+endif()
+if(IMAGE_HAVE_FREENECT)
+    find_package(Freenect QUIET REQUIRED)
+endif()
+
+if(NOT TARGET image)
+	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")
+endif()
+
+check_required_components(image)

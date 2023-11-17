@@ -29,9 +29,9 @@
 /// So in you code you need to replace
 /// #include <CImg/CImg.h>
 /// with
-/// #include <CImgPlugin/SOFACImg.h> to avoid crash.
+/// #include <cimg/SOFACImg.h> to avoid crash.
 
-#include <CImgPlugin/CImgPlugin.h>
+#include <cimg/SOFACImg.h>
 #include <iostream>
 #include <fstream>
 #include <cstdio>

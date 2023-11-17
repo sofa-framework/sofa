@@ -10,6 +10,7 @@ set(SOURCE_FILES
     TestImageEngine.cpp
     DataImage_test.cpp
     ImageEngine_test.cpp
+    ImageCImg_test.cpp
 )
 find_package(CImgPlugin REQUIRED)
 
