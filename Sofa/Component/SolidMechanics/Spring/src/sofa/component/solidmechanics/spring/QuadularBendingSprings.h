@@ -85,8 +85,8 @@ protected:
 
         sofa::type::fixed_array<Spring, 2> springs;
 
-        SReal  ks;      /// spring stiffness (initialized to the default value)
-        SReal  kd;      /// damping factor (initialized to the default value)
+        SReal  ks {};      /// spring stiffness
+        SReal  kd {};      /// damping factor
 
         bool is_activated;
 
@@ -114,8 +114,6 @@ protected:
         }
     };
 
-
-
 public:
     /// Searches quad topology and creates the bending springs
     void init() override;
@@ -126,19 +124,6 @@ public:
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const override;
-
-
-    struct Force
-    {
-        Deriv force;
-        Real forceIntensity;
-        Real inverseLength;
-    };
-    Force computeForce(const VecDeriv& v, const EdgeInformation& einfo, const typename EdgeInformation::Spring& spring, Coord direction, Real distance);
-    Mat computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const Force& force);
-    void computeSpringForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v,
-                          EdgeInformation& einfo,
-                          typename EdgeInformation::Spring& spring);
 
     virtual SReal getKs() const { return f_ks.getValue();}
     virtual SReal getKd() const { return f_kd.getValue();}
@@ -152,10 +137,7 @@ public:
         f_kd.setValue((SReal)kd);
     }
 
-    // -- VisualModel interface
     void draw(const core::visual::VisualParams* vparams) override;
-    void initTextures() { }
-    void update() { }
 
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
@@ -197,6 +179,19 @@ public:
 
 protected:
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+
+    struct ForceOutput
+    {
+        Deriv force;
+        Real forceIntensity;
+        Real inverseLength;
+    };
+
+    ForceOutput computeForce(const VecDeriv& v, const EdgeInformation& einfo, const typename EdgeInformation::Spring& spring, Coord direction, Real distance);
+    Mat computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const ForceOutput& force);
+    void computeSpringForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v,
+                          EdgeInformation& einfo,
+                          typename EdgeInformation::Spring& spring);
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

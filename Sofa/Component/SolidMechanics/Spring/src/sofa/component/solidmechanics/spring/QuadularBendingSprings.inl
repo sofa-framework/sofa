@@ -448,9 +448,9 @@ auto QuadularBendingSprings<DataTypes>::computeForce(
     const VecDeriv& v,
     const EdgeInformation& einfo, const typename EdgeInformation::Spring& spring,
     Coord direction,
-    Real distance) -> Force
+    Real distance) -> ForceOutput
 {
-    Force force;
+    ForceOutput force;
 
     force.inverseLength = 1 / distance;
     direction *= force.inverseLength;
@@ -466,7 +466,7 @@ auto QuadularBendingSprings<DataTypes>::computeForce(
 }
 
 template <class DataTypes>
-auto QuadularBendingSprings<DataTypes>::computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const Force& force)
+auto QuadularBendingSprings<DataTypes>::computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const ForceOutput& force)
 -> Mat
 {
     const Real tgt = force.forceIntensity * force.inverseLength;
@@ -490,7 +490,7 @@ void QuadularBendingSprings<DataTypes>::computeSpringForce(VecDeriv& f, const Ve
 
     if (distance > 1.0e-4)
     {
-        const Force force = computeForce(v, einfo, spring, difference, distance);
+        const ForceOutput force = computeForce(v, einfo, spring, difference, distance);
 
         f[e0] += force.force;
         f[e1] -= force.force;
