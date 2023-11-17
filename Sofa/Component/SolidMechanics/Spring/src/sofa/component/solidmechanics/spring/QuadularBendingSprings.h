@@ -75,12 +75,12 @@ protected:
     class EdgeInformation
     {
     public:
-        Mat DfDx; /// the edge stiffness matrix
 
         struct Spring
         {
             sofa::topology::Edge edge;
             Real restLength;
+            Mat DfDx; /// the edge stiffness matrix
         };
 
         sofa::type::fixed_array<Spring, 2> springs;
@@ -138,7 +138,7 @@ public:
     Mat computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const Force& force);
     void computeSpringForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v,
                           EdgeInformation& einfo,
-                          const typename EdgeInformation::Spring& spring);
+                          typename EdgeInformation::Spring& spring);
 
     virtual SReal getKs() const { return f_ks.getValue();}
     virtual SReal getKd() const { return f_kd.getValue();}

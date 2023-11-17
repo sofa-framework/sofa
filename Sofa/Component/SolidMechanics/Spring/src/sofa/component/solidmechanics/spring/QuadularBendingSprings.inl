@@ -40,14 +40,10 @@ template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
         const sofa::type::vector<Index> &, const sofa::type::vector<SReal> &)
 {
-    unsigned int u,v;
     /// set to zero the edge stiffness matrix
-    for (u=0; u<N; ++u)
+    for (auto& s : ei.springs)
     {
-        for (v=0; v<N; ++v)
-        {
-            ei.DfDx[u][v]=0;
-        }
+        s.DfDx.clear();
     }
 
     ei.is_activated=false;
@@ -84,17 +80,13 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
             EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
             if(!(ei.is_initialized))
             {
-
                 unsigned int edgeIndex = te2[j];
                 ei.is_activated=true;
 
                 /// set to zero the edge stiffness matrix
-                for (u=0; u<N; ++u)
+                for (auto& s : ei.springs)
                 {
-                    for (v=0; v<N; ++v)
-                    {
-                        ei.DfDx[u][v]=0;
-                    }
+                    s.DfDx.clear();
                 }
 
                 const auto& shell = this->m_topology->getQuadsAroundEdge(edgeIndex);
@@ -488,7 +480,7 @@ auto QuadularBendingSprings<DataTypes>::computeLocalJacobian(EdgeInformation& ei
 
 template <class DataTypes>
 void QuadularBendingSprings<DataTypes>::computeSpringForce(VecDeriv& f, const VecCoord& x,
-    const VecDeriv& v, EdgeInformation& einfo, const typename EdgeInformation::Spring& spring)
+    const VecDeriv& v, EdgeInformation& einfo, typename EdgeInformation::Spring& spring)
 {
     const auto e0 = spring.edge[0];
     const auto e1 = spring.edge[1];
@@ -505,12 +497,8 @@ void QuadularBendingSprings<DataTypes>::computeSpringForce(VecDeriv& f, const Ve
 
         updateMatrix = true;
 
-        einfo.DfDx += computeLocalJacobian(einfo, difference / distance, force);
+        spring.DfDx += computeLocalJacobian(einfo, difference / distance, force);
     }
-    // else // null length, no force and no stiffness
-    // {
-    //     einfo.DfDx.clear();
-    // }
 }
 
 template<class DataTypes>
@@ -530,9 +518,9 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     {
         if (einfo.is_activated)
         {
-            einfo.DfDx.clear();
-            for (const auto& s : einfo.springs)
+            for (auto& s : einfo.springs)
             {
+                s.DfDx.clear();
                 computeSpringForce(f.wref(), x, v, einfo, s);
             }
         }
@@ -559,7 +547,7 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
                 const auto e0 = s.edge[0];
                 const auto e1 = s.edge[1];
                 const Coord ddx = dx[e1] - dx[e0];
-                const Deriv dforce = einfo.DfDx * (ddx * kFactor);
+                const Deriv dforce = s.DfDx * (ddx * kFactor);
 
                 df[e0] += dforce;
                 df[e1] -= dforce;
@@ -579,18 +567,22 @@ void QuadularBendingSprings<DataTypes>::buildStiffnessMatrix(
 
     const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
-    for (sofa::Index i = 0; i < m_topology->getNbEdges(); i++)
+    for (const auto& einfo : edgeInf)
     {
-        const EdgeInformation& einfo = edgeInf[i];
         if (einfo.is_activated) // edge not in middle of 2 triangles
         {
-            const sofa::Index a1 = Deriv::total_size * einfo.springs[0].edge[0];
-            const sofa::Index b1 = Deriv::total_size * einfo.springs[0].edge[1];
-            const sofa::Index a2 = Deriv::total_size * einfo.springs[1].edge[0];
-            const sofa::Index b2 = Deriv::total_size * einfo.springs[1].edge[1];
+            for (const auto& s : einfo.springs)
+            {
+                const sofa::Index a = Deriv::total_size * s.edge[0];
+                const sofa::Index b = Deriv::total_size * s.edge[1];
 
-            const Mat& dfdxLocal = einfo.DfDx;
+                const auto& dfdxLocal = s.DfDx;
 
+                dfdx(a, a) += -dfdxLocal;
+                dfdx(a, b) +=  dfdxLocal;
+                dfdx(b, a) +=  dfdxLocal;
+                dfdx(b, b) += -dfdxLocal;
+            }
         }
     }
 }
