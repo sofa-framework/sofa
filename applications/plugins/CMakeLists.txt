@@ -7,11 +7,14 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_add_subdirectory(plugin SofaTest SofaTest)
 endif()
 
+if(PLUGIN_CIMGPLUGIN)
+    message(WARNING "CImgPlugin has been merged into image. You may want to enable image plugin if you need to use cimg.")
+endif()
+
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 
 sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL)
 
-sofa_add_subdirectory(plugin CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid)
@@ -19,7 +22,7 @@ sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on Sof
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
-sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
+sofa_add_subdirectory(plugin image image) # Depends on DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
 sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL)
