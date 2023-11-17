@@ -207,9 +207,9 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(image_test)
 endif()
 
-# if(Sofa.GUI.Qt_FOUND)
-#     add_subdirectory(image_gui)
-# endif()
+if(Sofa.GUI.Qt_FOUND)
+    add_subdirectory(src/image/image_gui)
+endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(
