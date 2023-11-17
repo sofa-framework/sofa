@@ -105,14 +105,11 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
 
                     if(shell[0] == quadAdded[i])
                     {
-
                         te1 = this->m_topology->getEdgesInQuad(shell[1]);
                         t1 = this->m_topology->getQuad(shell[1]);
-
                     }
                     else   // shell[1] == quadAdded[i]
                     {
-
                         te1 = this->m_topology->getEdgesInQuad(shell[0]);
                         t1 = this->m_topology->getQuad(shell[0]);
                     }
@@ -120,32 +117,27 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
                     const int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
                     const int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
 
-                    ei.m1 = t1[i1]; // i1
-                    ei.m2 = t2[(i2+3)%4]; // i2
+                    ei.springs[0].edge[0] = t1[i1]; // i1
+                    ei.springs[0].edge[1] = t2[(i2+3)%4]; // i2
 
-                    ei.m3 = t1[(i1+3)%4]; // (i1+3)%4
-                    ei.m4 = t2[i2]; // (i2+3)%4
+                    ei.springs[1].edge[0] = t1[(i1+3)%4]; // (i1+3)%4
+                    ei.springs[1].edge[1] = t2[i2]; // (i2+3)%4
 
                     //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
                     ei.ks=m_ks; //(fftest->ks).getValue();
                     ei.kd=m_kd; //(fftest->kd).getValue();
 
-                    Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
-                    Real d1 = u1.norm();
-                    ei.restlength1=(SReal) d1;
-
-                    Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
-                    Real d2 = u2.norm();
-                    ei.restlength2=(SReal) d2;
+                    for (auto& s : ei.springs)
+                    {
+                        const Coord diff = restPosition[s.edge[0]] - restPosition[s.edge[1]];
+                        s.restLength = diff.norm();
+                    }
 
                     ei.is_activated=true;
-
                 }
                 else
                 {
-
                     ei.is_activated=false;
-
                 }
 
                 ei.is_initialized = true;
@@ -225,23 +217,21 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
                     const int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
                     const int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
 
-                    ei.m1 = t1[i1];
-                    ei.m2 = t2[(i2+3)%4];
+                    ei.springs[0].edge[0] = t1[i1];
+                    ei.springs[0].edge[1] = t2[(i2+3)%4];
 
-                    ei.m3 = t1[(i1+3)%4];
-                    ei.m4 = t2[i2];
+                    ei.springs[1].edge[0] = t1[(i1+3)%4];
+                    ei.springs[1].edge[1] = t2[i2];
 
                     //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
                     ei.ks=m_ks; //(fftest->ks).getValue();
                     ei.kd=m_kd; //(fftest->kd).getValue();
 
-                    Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
-                    Real d1 = u1.norm();
-                    ei.restlength1=(SReal) d1;
-
-                    Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
-                    Real d2 = u2.norm();
-                    ei.restlength2=(SReal) d2;
+                    for (auto& s : ei.springs)
+                    {
+                        const Coord u = restPosition[s.edge[0]] - restPosition[s.edge[1]];
+                        s.restLength = u.norm();
+                    }
 
                     ei.is_activated=true;
 
@@ -270,10 +260,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
-    const bool debug_mode = false;
-
     unsigned int last = this->m_topology->getNbPoints() -1;
-    unsigned int i,j;
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
 
@@ -284,7 +271,7 @@ void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::
         lastIndexVec.push_back(last - i_init);
     }
 
-    for ( i = 0; i < tab.size(); ++i)
+    for ( unsigned int i = 0; i < tab.size(); ++i)
     {
         unsigned int i_next = i;
         bool is_reached = false;
@@ -303,82 +290,30 @@ void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::
         }
 
         const auto &shell= this->m_topology->getQuadsAroundVertex(lastIndexVec[i]);
-        for (j=0; j<shell.size(); ++j)
+        for (unsigned int j = 0; j < shell.size(); ++j)
         {
 
             Quad tj = this->m_topology->getQuad(shell[j]);
 
             const unsigned int vertexIndex = this->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
 
-            EdgesInQuad tej = this->m_topology->getEdgesInQuad(shell[j]);
+            const EdgesInQuad& tej = this->m_topology->getEdgesInQuad(shell[j]);
 
             for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
             {
-
                 unsigned int ind_j = tej[j_edge%4];
 
-                if (edgeInf[ind_j].m1 == (int) last)
+                for (auto& s : edgeInf[ind_j].springs)
                 {
-                    edgeInf[ind_j].m1=(int) tab[i];
-                }
-                else
-                {
-                    if (edgeInf[ind_j].m2 == (int) last)
+                    for (auto& e : s.edge)
                     {
-                        edgeInf[ind_j].m2=(int) tab[i];
+                        if (e == last)
+                        {
+                            e = tab[i];
+                        }
                     }
                 }
 
-                if (edgeInf[ind_j].m3 == (int) last)
-                {
-                    edgeInf[ind_j].m3=(int) tab[i];
-                }
-                else
-                {
-                    if (edgeInf[ind_j].m4 == (int) last)
-                    {
-                        edgeInf[ind_j].m4=(int) tab[i];
-                    }
-                }
-
-            }
-        }
-
-        if(debug_mode)
-        {
-            for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
-            {
-
-                //bool is_forgotten = false;
-                if (edgeInf[j_loc].m1 == (int) last)
-                {
-                    edgeInf[j_loc].m1 =(int) tab[i];
-                    //is_forgotten=true;
-                }
-                else
-                {
-                    if (edgeInf[j_loc].m2 ==(int) last)
-                    {
-                        edgeInf[j_loc].m2 =(int) tab[i];
-                        //is_forgotten=true;
-                    }
-
-                }
-
-                if (edgeInf[j_loc].m3 == (int) last)
-                {
-                    edgeInf[j_loc].m3 =(int) tab[i];
-                    //is_forgotten=true;
-                }
-                else
-                {
-                    if (edgeInf[j_loc].m4 ==(int) last)
-                    {
-                        edgeInf[j_loc].m4 =(int) tab[i];
-                        //is_forgotten=true;
-                    }
-
-                }
             }
         }
 
@@ -391,15 +326,17 @@ void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type::vector<Index> &tab)
 {
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
-    for (unsigned  int i = 0; i < this->m_topology->getNbEdges(); ++i)
+    for (auto& edgeInf : sofa::helper::getWriteOnlyAccessor(edgeInfo))
     {
-        if(edgeInf[i].is_activated)
+        if (edgeInf.is_activated)
         {
-            edgeInf[i].m1  = tab[edgeInf[i].m1];
-            edgeInf[i].m2  = tab[edgeInf[i].m2];
-            edgeInf[i].m3  = tab[edgeInf[i].m3];
-            edgeInf[i].m4  = tab[edgeInf[i].m4];
+            for (auto& s : edgeInf.springs)
+            {
+                for (auto& e : s.edge)
+                {
+                    e = tab[e];
+                }
+            }
         }
     }
 }
@@ -514,172 +451,148 @@ SReal QuadularBendingSprings<DataTypes>::getPotentialEnergy(const core::Mechanic
     return 0;
 }
 
+template <class DataTypes>
+auto QuadularBendingSprings<DataTypes>::computeForce(
+    const VecDeriv& v,
+    const EdgeInformation& einfo, const typename EdgeInformation::Spring& spring,
+    Coord direction,
+    Real distance) -> Force
+{
+    Force force;
+
+    force.inverseLength = 1 / distance;
+    direction *= force.inverseLength;
+    const Real elongation = distance - spring.restLength;
+    m_potentialEnergy += elongation * elongation * einfo.ks / 2;
+
+    const Deriv relativeVelocity = v[spring.edge[1]] - v[spring.edge[0]];
+    const Real elongationVelocity = sofa::type::dot(direction, relativeVelocity);
+    force.forceIntensity = einfo.ks * elongation + einfo.kd * elongationVelocity;
+    force.force = direction * force.forceIntensity;
+
+    return force;
+}
+
+template <class DataTypes>
+auto QuadularBendingSprings<DataTypes>::computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const Force& force)
+-> Mat
+{
+    const Real tgt = force.forceIntensity * force.inverseLength;
+    Mat jacobian = (einfo.ks - tgt) * sofa::type::dyad(direction, direction);
+    for (int j = 0; j < N; ++j)
+    {
+        jacobian[j][j] += tgt;
+    }
+    return jacobian;
+}
+
+template <class DataTypes>
+void QuadularBendingSprings<DataTypes>::computeSpringForce(VecDeriv& f, const VecCoord& x,
+    const VecDeriv& v, EdgeInformation& einfo, const typename EdgeInformation::Spring& spring)
+{
+    const auto e0 = spring.edge[0];
+    const auto e1 = spring.edge[1];
+
+    const Coord difference = x[e1] - x[e0];
+    const Real distance = difference.norm();
+
+    if (distance > 1.0e-4)
+    {
+        const Force force = computeForce(v, einfo, spring, difference, distance);
+
+        f[e0] += force.force;
+        f[e1] -= force.force;
+
+        updateMatrix = true;
+
+        einfo.DfDx += computeLocalJacobian(einfo, difference / distance, force);
+    }
+    // else // null length, no force and no stiffness
+    // {
+    //     einfo.DfDx.clear();
+    // }
+}
+
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
-    VecDeriv& f = *d_f.beginEdit();
+    auto f = sofa::helper::getWriteAccessor(d_f);
+
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    const size_t nbEdges=m_topology->getNbEdges();
+    auto edgeInf = sofa::helper::getWriteAccessor(edgeInfo);
 
-    EdgeInformation *einfo;
-
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-    //const type::vector<Spring>& m_springs= this->springs.getValue();
-    //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
 
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for (auto& einfo : edgeInf)
     {
-        einfo=&edgeInf[i];
-
-        if(einfo->is_activated)
+        if (einfo.is_activated)
         {
-            //this->addSpringForce(m_potentialEnergy,f,x,v, i, einfo->spring);
-
-            int a1 = einfo->m1;
-            int b1 = einfo->m2;
-            int a2 = einfo->m3;
-            int b2 = einfo->m4;
-            Coord u1 = x[b1]-x[a1];
-            Real d1 = u1.norm();
-            Coord u2 = x[b2]-x[a2];
-            Real d2 = u2.norm();
-            if( d1>1.0e-4 )
+            einfo.DfDx.clear();
+            for (const auto& s : einfo.springs)
             {
-                Real inverseLength = 1.0f/d1;
-                u1 *= inverseLength;
-                Real elongation = (Real)(d1 - einfo->restlength1);
-                m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-
-                Deriv relativeVelocity = v[b1]-v[a1];
-                Real elongationVelocity = dot(u1,relativeVelocity);
-                Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
-                Deriv force = u1*forceIntensity;
-                f[a1]+=force;
-                f[b1]-=force;
-
-                updateMatrix=true;
-
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                Real tgt = forceIntensity * inverseLength;
-                for( int j=0; j<N; ++j )
-                {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = ((Real)einfo->ks-tgt) * u1[j] * u1[k];
-                    }
-                    m[j][j] += tgt;
-                }
+                computeSpringForce(f.wref(), x, v, einfo, s);
             }
-            else // null length, no force and no stiffness
-            {
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                for( int j=0; j<N; ++j )
-                {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = 0;
-                    }
-                }
-            }
-
-            if( d2>1.0e-4 )
-            {
-                Real inverseLength = 1.0f/d2;
-                u2 *= inverseLength;
-                Real elongation = (Real)(d2 - einfo->restlength2);
-                m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-
-                Deriv relativeVelocity = v[b2]-v[a2];
-                Real elongationVelocity = dot(u2,relativeVelocity);
-                Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
-                Deriv force = u2*forceIntensity;
-                f[a2]+=force;
-                f[b2]-=force;
-
-                updateMatrix=true;
-
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                Real tgt = forceIntensity * inverseLength;
-                for( int j=0; j<N; ++j )
-                {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = ((Real)einfo->ks-tgt) * u2[j] * u2[k];
-                    }
-                    m[j][j] += tgt;
-                }
-            }
-            else // null length, no force and no stiffness
-            {
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                for( int j=0; j<N; ++j )
-                {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = 0;
-                    }
-                }
-            }
-
         }
     }
-
-    edgeInfo.endEdit();
-    d_f.endEdit();
-
-    //for (unsigned int i=0; i<springs.size(); i++)
-    //{
-    //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
-    //}
 }
 
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
+    auto df = sofa::helper::getWriteAccessor(d_df);
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    const size_t nbEdges=m_topology->getNbEdges();
-
-    const EdgeInformation *einfo;
 
     const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
-    //const type::vector<Spring>& springs = this->springs.getValue();
 
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for (const auto& einfo : edgeInf)
     {
-        einfo=&edgeInf[i];
-
-        if(einfo->is_activated)
+        if (einfo.is_activated)
         {
-            //this->addSpringDForce(df,dx, i, einfo->spring);
+            for (const auto& s : einfo.springs)
+            {
+                const auto e0 = s.edge[0];
+                const auto e1 = s.edge[1];
+                const Coord ddx = dx[e1] - dx[e0];
+                const Deriv dforce = einfo.DfDx * (ddx * kFactor);
 
-            const int a1 = einfo->m1;
-            const int b1 = einfo->m2;
-            const Coord d1 = dx[b1]-dx[a1];
-            const int a2 = einfo->m3;
-            const int b2 = einfo->m4;
-            const Coord d2 = dx[b2]-dx[a2];
-            const Deriv dforce1 = (einfo->DfDx*d1) * kFactor;
-            const Deriv dforce2 = (einfo->DfDx*d2) * kFactor;
-            df[a1]+=dforce1;
-            df[b1]-=dforce1;
-            df[a2]+=dforce2;
-            df[b2]-=dforce2;
+                df[e0] += dforce;
+                df[e1] -= dforce;
+            }
 
-            updateMatrix=false;
+            updateMatrix = false;
         }
     }
-    d_df.endEdit();
+}
 
+template <class DataTypes>
+void QuadularBendingSprings<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+
+    for (sofa::Index i = 0; i < m_topology->getNbEdges(); i++)
+    {
+        const EdgeInformation& einfo = edgeInf[i];
+        if (einfo.is_activated) // edge not in middle of 2 triangles
+        {
+            const sofa::Index a1 = Deriv::total_size * einfo.springs[0].edge[0];
+            const sofa::Index b1 = Deriv::total_size * einfo.springs[0].edge[1];
+            const sofa::Index a2 = Deriv::total_size * einfo.springs[1].edge[0];
+            const sofa::Index b2 = Deriv::total_size * einfo.springs[1].edge[1];
+
+            const Mat& dfdxLocal = einfo.DfDx;
+
+        }
+    }
 }
 
 template <class DataTypes>
@@ -715,44 +628,21 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     {
         if(edgeInf[i].is_activated)
         {
-            const bool external=true;
-            Real d1 = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
-            if (external)
+            for (const auto& s : edgeInf[i].springs)
             {
-                if (d1<edgeInf[i].restlength2*0.9999)
+                const Real d1 = (x[s.edge[1]] - x[s.edge[0]]).norm();
+                if (d1 < s.restLength * 0.9999)
+                {
                     colors.push_back(red_color);
+                }
                 else
+                {
                     colors.push_back(green_color);
-            }
-            else
-            {
-                if (d1<edgeInf[i].restlength1*0.9999)
-                    colors.push_back(color1);
-                else
-                    colors.push_back(color2);
-            }
+                }
 
-            vertices.push_back( x[edgeInf[i].m1] );
-            vertices.push_back( x[edgeInf[i].m2] );
-
-            Real d2 = (x[edgeInf[i].m4]-x[edgeInf[i].m3]).norm();
-            if (external)
-            {
-                if (d2<edgeInf[i].restlength2*0.9999)
-                    colors.push_back(red_color);
-                else
-                    colors.push_back(green_color);
+                vertices.push_back( x[s.edge[0]] );
+                vertices.push_back( x[s.edge[1]] );
             }
-            else
-            {
-                if (d2<edgeInf[i].restlength2*0.9999)
-                    colors.push_back(color1);
-                else
-                    colors.push_back(color2);
-            }
-
-            vertices.push_back( x[edgeInf[i].m3] );
-            vertices.push_back( x[edgeInf[i].m4] );
         }
     }
     vparams->drawTool()->drawLines(vertices, 1, colors);
@@ -768,8 +658,6 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
             vertices.push_back(x[m_topology->getQuad(i)[j]]);
     }
     vparams->drawTool()->drawQuads(vertices, sofa::type::RGBAColor::red());
-
-
 }
 
 
