@@ -196,6 +196,9 @@ sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
     WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
+## runSofa application option
+option(SOFA_APPLICATION_RUNSOFA "Build runSofa application." ON)
+
 ## Plugins
 add_subdirectory(applications/plugins)
 

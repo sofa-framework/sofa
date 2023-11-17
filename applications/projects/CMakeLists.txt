@@ -10,7 +10,10 @@ sofa_add_subdirectory(application GenerateRigid GenerateRigid)
 sofa_add_subdirectory(application SofaPhysicsAPI SofaPhysicsAPI)
 sofa_add_subdirectory(application SofaGuiGlut SofaGuiGlut OFF)
 
-sofa_add_subdirectory(application runSofa runSofa ON)
+if(SOFA_APPLICATION_RUNSOFA)
+  sofa_add_subdirectory(application runSofa runSofa ON)
+endif()
+
 sofa_add_subdirectory(application sofaOPENCL sofaOPENCL OFF)
 
 sofa_add_subdirectory(directory Regression Regression EXTERNAL)
