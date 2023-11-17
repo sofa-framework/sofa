@@ -62,7 +62,7 @@ void FixParticlePerformer<DataTypes>::start()
 
 
     //Fix all the points
-    typename sofa::component::constraint::projective::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedConstraint<DataTypes> >();
+    typename sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes> >();
     fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 

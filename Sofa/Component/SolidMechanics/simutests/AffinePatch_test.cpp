@@ -30,7 +30,7 @@
 #include <sofa/simulation/Node.h>
 
 // Including constraint, force and mass
-#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
@@ -61,7 +61,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef constraint::projective::AffineMovementProjectiveConstraint<DataTypes> AffineMovementProjectiveConstraint;
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
     typedef typename component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes> TetraForceField;

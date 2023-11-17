@@ -51,7 +51,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef sofa::component::solidmechanics::spring::LinearSpring<Real> Spring;
     typedef sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes> SpringObjectType;
-    typedef sofa::component::constraint::projective::FixedConstraint<DataTypes> FixObjectType;
+    typedef sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes> FixObjectType;
 
     SuturePointPerformer(BaseMouseInteractor *i);
     ~SuturePointPerformer();
