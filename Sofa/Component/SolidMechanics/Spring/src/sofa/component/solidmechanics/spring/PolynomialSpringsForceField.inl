@@ -60,7 +60,6 @@ PolynomialSpringsForceField<DataTypes>::PolynomialSpringsForceField(MechanicalSt
 {
 }
 
-
 template<class DataTypes>
 void PolynomialSpringsForceField<DataTypes>::bwdInit()
 {
@@ -394,8 +393,6 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 
 }
 
-
-
 template<class DataTypes>
 void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,
                                                           const sofa::core::behavior::MultiMatrixAccessor* matrix )
@@ -455,6 +452,74 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
                     mref12.matrix->add(mref12.offRow + m_dimension * firstIndex + i, mref12.offCol + m_dimension * secondIndex + j, stiffnessDeriv);
                     mref21.matrix->add(mref21.offRow + m_dimension * secondIndex + i, mref21.offCol + m_dimension * firstIndex + j, stiffnessDeriv);
                     mref22.matrix->add(mref22.offset + m_dimension * secondIndex + i, mref22.offset + m_dimension * secondIndex + j, -stiffnessDeriv);
+                }
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void PolynomialSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SCOPED_TIMER("restShapeSpringBuildStiffnessMatrix");
+
+    unsigned int firstIndex = 0;
+    unsigned int secondIndex = 0;
+
+    if (this->mstate1 == this->mstate2)
+    {
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate1.get())
+                .withRespectToPositionsIn(this->mstate1.get());
+
+        for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)
+        {
+            firstIndex = m_firstObjectIndices[index];
+            secondIndex = m_secondObjectIndices[index];
+            const JacobianMatrix& jacobMatrix = m_differential[index];
+
+            for(unsigned int i = 0; i < m_dimension; i++)
+            {
+                for (unsigned int j = 0; j < m_dimension; j++)
+                {
+                    Real stiffnessDeriv = jacobMatrix[i][j];
+                    dfdx(m_dimension * firstIndex + i, m_dimension * firstIndex + j) += - stiffnessDeriv;
+                    dfdx(m_dimension * firstIndex + i, m_dimension * secondIndex + j) += stiffnessDeriv;
+                    dfdx(m_dimension * secondIndex + i, m_dimension * firstIndex + j) += stiffnessDeriv;
+                    dfdx(m_dimension * secondIndex + i, m_dimension * secondIndex + j) += - stiffnessDeriv;
+                }
+            }
+        }
+    }
+    else
+    {
+        auto* m1 = this->mstate1.get();
+        auto* m2 = this->mstate2.get();
+
+        auto df1_dx1 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m1);
+        auto df1_dx2 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m2);
+        auto df2_dx1 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m1);
+        auto df2_dx2 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m2);
+
+        df1_dx1.checkValidity(this);
+        df1_dx2.checkValidity(this);
+        df2_dx1.checkValidity(this);
+        df2_dx2.checkValidity(this);
+
+        for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)
+        {
+            firstIndex = m_firstObjectIndices[index];
+            secondIndex = m_secondObjectIndices[index];
+            const JacobianMatrix& jacobMatrix = m_differential[index];
+
+            for(unsigned int i = 0; i < m_dimension; i++)
+            {
+                for (unsigned int j = 0; j < m_dimension; j++)
+                {
+                    Real stiffnessDeriv = jacobMatrix[i][j];
+                    df1_dx1(m_dimension * firstIndex + i, m_dimension * firstIndex + j) += -stiffnessDeriv;
+                    df1_dx2(m_dimension * firstIndex + i, m_dimension * secondIndex + j) +=  stiffnessDeriv;
+                    df2_dx1(m_dimension * secondIndex + i, m_dimension * firstIndex + j) +=  stiffnessDeriv;
+                    df2_dx2(m_dimension * secondIndex + i, m_dimension * secondIndex + j) += -stiffnessDeriv;
                 }
             }
         }
