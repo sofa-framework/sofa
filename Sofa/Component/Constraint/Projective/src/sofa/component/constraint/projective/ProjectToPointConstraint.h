@@ -75,7 +75,7 @@ protected:
     virtual ~ProjectToPointConstraint();
 
 public:
-    SetIndex f_indices;    ///< the indices of the points to project to the target
+    SetIndex d_indices;    ///< the indices of the points to project to the target
     Data<Coord> f_point;    ///< the target of the projection
     Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
     Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
@@ -104,6 +104,8 @@ public:
 
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     /** Project the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
