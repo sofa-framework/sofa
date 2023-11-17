@@ -23,7 +23,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/logging/Messaging.h>
 
-#include <CImgPlugin/SOFACImg.h>
+#include <cimg/SOFACImg.h>
 
 #if IMAGE_HAVE_SOFAPYTHON
     #include <SofaPython/PythonFactory.h>
