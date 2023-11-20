@@ -108,7 +108,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
         indices.clear();
         indices.push_back(1);
         std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
-        projection->f_indices.setValue(indices);
+        projection->d_indices.setValue(indices);
 
         /// Init
         sofa::simulation::node::initRoot(root.get());
@@ -121,7 +121,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
         indices.clear();
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
-         projection->f_indices.setValue(indices);
+         projection->d_indices.setValue(indices);
 
          /// Init
          sofa::simulation::node::initRoot(root.get());
