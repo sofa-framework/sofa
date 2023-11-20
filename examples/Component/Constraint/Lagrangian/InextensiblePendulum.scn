@@ -35,7 +35,7 @@
 
     <TransformEngine name="translate" input_position="@loader.position" translation="0 0 -2" />
     <EulerImplicitSolver />
-    <EigenSimplicialLLT />
+    <EigenSimplicialLLT template="CompressedRowSparseMatrixMat3x3"/>
     <GenericConstraintCorrection />
     <!-- resolution = number of particles (including the fixed one) -->
     <!-- scale = total length of the pendulum -->
