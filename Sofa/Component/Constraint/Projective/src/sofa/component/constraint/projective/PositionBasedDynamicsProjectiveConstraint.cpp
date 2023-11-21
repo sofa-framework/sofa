@@ -42,7 +42,7 @@ int PositionBasedDynamicsProjectiveConstraintClass = core::RegisterObject("Posit
         .add< PositionBasedDynamicsProjectiveConstraint<Vec1Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Vec6Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Rigid3Types> >()
-//.add< PositionBasedDynamicsProjectiveConstraint<Rigid2Types> >()
+        .addAlias("PositionBasedDynamicsConstraint")
 
         ;
 

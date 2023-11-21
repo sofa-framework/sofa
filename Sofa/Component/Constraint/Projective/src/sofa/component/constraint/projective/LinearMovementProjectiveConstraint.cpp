@@ -47,7 +47,9 @@ int LinearMovementProjectiveConstraintClass = core::RegisterObject("translate gi
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec2Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
-        .add< LinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >();
+        .add< LinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
+        .addAlias("LinearMovementConstraint")
+    ;
 
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementProjectiveConstraint<defaulttype::Vec3Types>;

@@ -37,7 +37,7 @@ int ProjectToPointProjectiveConstraintClass = core::RegisterObject("Project part
         .add< ProjectToPointProjectiveConstraint<Vec2Types> >()
         .add< ProjectToPointProjectiveConstraint<Vec1Types> >()
         .add< ProjectToPointProjectiveConstraint<Vec6Types> >()
-
+        .addAlias("ProjectToPointConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointProjectiveConstraint<Vec3Types>;

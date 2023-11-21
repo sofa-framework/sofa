@@ -35,7 +35,7 @@ using namespace sofa::helper;
 int ProjectDirectionProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
         .add< ProjectDirectionProjectiveConstraint<Vec3Types> >()
         .add< ProjectDirectionProjectiveConstraint<Vec2Types> >()
-
+        .addAlias("ProjectDirectionConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectDirectionProjectiveConstraint<Vec3Types>;

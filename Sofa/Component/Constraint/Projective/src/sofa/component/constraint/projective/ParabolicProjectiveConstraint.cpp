@@ -30,7 +30,9 @@ namespace sofa::component::constraint::projective
 
 int ParabolicProjectiveConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
         .add< ParabolicProjectiveConstraint<defaulttype::Vec3Types> >()
-        .add< ParabolicProjectiveConstraint<defaulttype::Rigid3Types> >();
+        .add< ParabolicProjectiveConstraint<defaulttype::Rigid3Types> >()
+        .addAlias("ParabolicConstraint")
+    ;
 
 template class ParabolicProjectiveConstraint<defaulttype::Rigid3Types>;
 template class ParabolicProjectiveConstraint<defaulttype::Vec3Types>;

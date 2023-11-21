@@ -38,6 +38,7 @@ int PartialFixedProjectiveConstraintClass = core::RegisterObject("Attach given p
         .add< PartialFixedProjectiveConstraint<Vec6Types> >()
         .add< PartialFixedProjectiveConstraint<Rigid3Types> >()
         .add< PartialFixedProjectiveConstraint<Rigid2Types> >()
+        .addAlias("PartialFixedConstraint")
 
         ;
 

@@ -35,6 +35,7 @@ int PartialLinearMovementProjectiveConstraintClass = core::RegisterObject("trans
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
+        .addAlias("PartialLinearMovementConstraint")
 
         ;
 

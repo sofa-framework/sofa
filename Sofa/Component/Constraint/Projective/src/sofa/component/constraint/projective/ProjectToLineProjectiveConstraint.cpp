@@ -33,7 +33,7 @@ using namespace sofa::helper;
 int ProjectToLineProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
         .add< ProjectToLineProjectiveConstraint<Vec3Types> >()
         .add< ProjectToLineProjectiveConstraint<Vec2Types> >()
-
+        .addAlias("ProjectToLineConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToLineProjectiveConstraint<Vec3Types>;
