@@ -108,4 +108,5 @@ CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #undef CudaFixedProjectiveConstraint_DeclMethods
 
+
 } // namespace sofa::component::constraint::projective
