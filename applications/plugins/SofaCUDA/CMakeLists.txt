@@ -319,6 +319,7 @@ sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
 sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
+sofa_find_package(Sofa.GUI.Component REQUIRED)
 
 sofa_find_package(VolumetricRendering QUIET)
 if(VolumetricRendering_FOUND)
@@ -490,6 +491,7 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Engine.Select
     Sofa.Component.Engine.Transform
     Sofa.Component.MechanicalLoad
+    Sofa.GUI.Component
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
