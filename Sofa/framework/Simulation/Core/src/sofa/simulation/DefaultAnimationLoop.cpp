@@ -292,14 +292,11 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
     behaviorUpdatePosition(params, dt);
     updateInternalData(params);
 
-    resetConstraint(params);
-
     collisionDetection(params);
 
     beginIntegration(params, dt);
     {
         const core::ConstraintParams cparams;
-        buildConstraintMatrix(cparams);
         accumulateMatrixDeriv(cparams);
 
         solve(params, dt);
