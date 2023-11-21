@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h>
 
-SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h")

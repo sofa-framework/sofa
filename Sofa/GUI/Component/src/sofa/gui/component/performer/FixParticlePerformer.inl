@@ -22,7 +22,7 @@
 
 #include <sofa/gui/component/performer/FixParticlePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>

@@ -31,7 +31,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/mechanicalload/TrianglePressureForceField.h>
-#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
 namespace sofa {
@@ -41,7 +41,7 @@ template<class T>
 struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
-    typename component::constraint::projective::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::constraint::projective::AffineMovementProjectiveConstraint<T>::SPtr affineConstraint;
     typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 

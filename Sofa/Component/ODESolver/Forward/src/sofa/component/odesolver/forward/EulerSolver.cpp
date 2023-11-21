@@ -297,7 +297,7 @@ void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOp
     SCOPED_TIMER("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
-    // current context tree. An example of such constraint set is the FixedConstraint. In this case,
+    // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
     mop->projectResponse(vecId);
 }
@@ -326,7 +326,7 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
     //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
     //       the "addMBKToMatrix" method is called on each BaseForceField objects and the "applyConstraint" method
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
-    //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
+    //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
     (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
 }

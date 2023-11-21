@@ -172,10 +172,10 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     type::Vec3d point1;
     type::Vec3d point2;
 
-    using sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint;
+    using sofa::component::constraint::lagrangian::model::BilateralInteractionLagrangianConstraint;
 
-    m_constraint = sofa::core::objectmodel::New<BilateralInteractionConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
-    BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
+    m_constraint = sofa::core::objectmodel::New<BilateralInteractionLagrangianConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
+    BilateralInteractionLagrangianConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
     bconstraint->setName("Constraint-Mouse-Contact");
 
     type::Vec3d normal = point1-point2;

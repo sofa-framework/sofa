@@ -22,8 +22,8 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
-#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionLagrangianConstraint.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/type/Vec.h>
 namespace sofa::component::constraint::lagrangian::model
