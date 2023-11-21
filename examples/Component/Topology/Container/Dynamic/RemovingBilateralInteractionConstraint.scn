@@ -3,7 +3,7 @@
     <Node name="requiredPlugins">
         <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
-        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralInteractionConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralInteractionLagrangianConstraint] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI NearestPointROI] -->
@@ -69,7 +69,7 @@
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
         </Node>
 
-        <BilateralInteractionConstraint template="Vec3" object1="@M1" object2="@M2" 
+        <BilateralInteractionLagrangianConstraint template="Vec3" object1="@M1" object2="@M2"
             topology1="@M1/topo" topology2="@M2/topo"
             first_point="144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159" 
             second_point="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />

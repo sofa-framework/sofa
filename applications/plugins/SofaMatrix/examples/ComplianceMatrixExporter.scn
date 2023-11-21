@@ -1,7 +1,7 @@
 <Node   name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformLagrangianConstraint] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [TransformEngine] -->
@@ -35,7 +35,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <DistanceMapping  name="distanceMapping" />
-        <UniformConstraint template="Vec1d" iterative="false" />
+        <UniformLagrangianConstraint template="Vec1d" iterative="false" />
     </Node>
 
 </Node>

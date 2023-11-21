@@ -6,7 +6,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [SlidingConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [SlidingLagrangianConstraint] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -53,7 +53,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <SlidingConstraint name="constraint1" object1="@SlidingPoint/points" object2="@CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
+    <SlidingLagrangianConstraint name="constraint1" object1="@SlidingPoint/points" object2="@CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
     <Node name="Line">
         <MechanicalObject name="points" template="Vec3" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
     </Node>
@@ -81,5 +81,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <SlidingConstraint name="constraint2" object1="@CUBE_2/Constraints/points" object2="@Line/points" sliding_point="0" axis_1="0" axis_2="1" />
+    <SlidingLagrangianConstraint name="constraint2" object1="@CUBE_2/Constraints/points" object2="@Line/points" sliding_point="0" axis_1="0" axis_2="1" />
 </Node>

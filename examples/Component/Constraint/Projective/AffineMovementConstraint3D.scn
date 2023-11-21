@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.05"  >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [AffineMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [AffineMovementProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI PairBoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -21,7 +21,7 @@
         <TetrahedronFEMForceField template="Vec3" name="forcefield" youngModulus="200" poissonRatio="0.4" method="polar" />
         <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
         <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-        <AffineMovementConstraint name="bilinearConstraint" template="Vec3" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0.1 0.1" rotation="[1 0 0,0 1 0,1 0 1]"/>
+        <AffineMovementProjectiveConstraint name="bilinearConstraint" template="Vec3" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0.1 0.1" rotation="[1 0 0,0 1 0,1 0 1]"/>
 
     </Node>
 </Node>

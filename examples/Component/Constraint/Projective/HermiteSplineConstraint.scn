@@ -1,5 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" bbox="-1 -1 -1 1 1 1">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [HermiteSplineConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [HermiteSplineProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -41,7 +41,7 @@
             <Data value="1" />
         </Attribute>
     </MechanicalObject>
-    <HermiteSplineConstraint template="Vec3">
+    <HermiteSplineProjectiveConstraint template="Vec3">
         <Attribute type="name">
             <Data value="thierry" />
         </Attribute>
@@ -72,7 +72,7 @@
         <Attribute type="SX1">
             <Data value="0 2" />
         </Attribute>
-    </HermiteSplineConstraint>
+    </HermiteSplineProjectiveConstraint>
     <UniformMass >
         <Attribute type="name">
             <Data value="particleMass" />
