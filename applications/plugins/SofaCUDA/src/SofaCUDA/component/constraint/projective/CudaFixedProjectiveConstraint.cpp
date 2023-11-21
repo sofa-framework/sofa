@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/constraint/projective/CudaFixedConstraint.inl>
+#include <SofaCUDA/component/constraint/projective/CudaFixedProjectiveConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -29,17 +29,17 @@
 namespace sofa::component::constraint::projective
 {
 
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec1fTypes>;
 
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API FixedProjectiveConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace sofa::component::constraint::projective
@@ -47,17 +47,17 @@ template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
 namespace sofa::gpu::cuda
 {
 
-int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::constraint::projective::FixedConstraint<CudaVec1fTypes> >()
-        .add< component::constraint::projective::FixedConstraint<CudaVec3fTypes> >()
-        .add< component::constraint::projective::FixedConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::projective::FixedConstraint<CudaVec6fTypes> >()
-        .add< component::constraint::projective::FixedConstraint<CudaRigid3fTypes> >()
+int FixedProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec1fTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec3fTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec3f1Types> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec6fTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::constraint::projective::FixedConstraint<CudaVec3dTypes> >()
-        .add< component::constraint::projective::FixedConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::projective::FixedConstraint<CudaVec6dTypes> >()
-        .add< component::constraint::projective::FixedConstraint<CudaRigid3dTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec3dTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec3d1Types> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaVec6dTypes> >()
+        .add< component::constraint::projective::FixedProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

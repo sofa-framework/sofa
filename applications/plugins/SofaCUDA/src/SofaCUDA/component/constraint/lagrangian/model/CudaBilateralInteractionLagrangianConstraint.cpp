@@ -20,38 +20,34 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/constraint/projective/CudaLinearMovementConstraint.inl>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.inl>
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 
-namespace sofa::core::behavior
+namespace sofa::component::constraint::lagrangian::model
 {
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
+
+template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3f1Types>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
-#endif
-} // namespace sofa::core::behavior
+template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} //namespace sofa::component::constraint::lagrangian::model
 
 namespace sofa::gpu::cuda
 {
 
+using namespace sofa::component::constraint::lagrangian::model;
 
-int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaVec6fTypes> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaRigid3fTypes> >()
+int BilateralInteractionLagrangianConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    .add< BilateralInteractionLagrangianConstraint<CudaVec3fTypes> >()
+    .add< BilateralInteractionLagrangianConstraint<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaVec6dTypes> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaRigid3dTypes> >()
+    .add< BilateralInteractionLagrangianConstraint<CudaVec3dTypes> >()
+    .add< BilateralInteractionLagrangianConstraint<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
+    ;
 } // namespace sofa::gpu::cuda

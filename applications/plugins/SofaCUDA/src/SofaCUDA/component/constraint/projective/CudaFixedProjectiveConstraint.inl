@@ -21,31 +21,31 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaCUDA/component/constraint/projective/CudaFixedConstraint.h>
-#include <sofa/component/constraint/projective/FixedConstraint.inl>
+#include <SofaCUDA/component/constraint/projective/CudaFixedProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.inl>
 
 namespace sofa::gpu::cuda
 {
 
 extern "C"
 {
-    void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCuda1f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-    void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-    void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-    void FixedConstraintCudaRigid3f_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCudaRigid3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCuda1f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCudaRigid3f_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCudaRigid3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCuda3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-    void FixedConstraintCuda3d1_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-    void FixedConstraintCudaRigid3d_projectResponseContiguous(unsigned int size, void* dx);
-    void FixedConstraintCudaRigid3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCuda3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCuda3d1_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
+    void FixedProjectiveConstraintCudaRigid3d_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedProjectiveConstraintCudaRigid3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -58,7 +58,7 @@ namespace sofa::component::constraint::projective
 using namespace gpu::cuda;
 
 template<class TCoord, class TDeriv, class TReal>
-void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
     Data& data = *m->data;
     data.minIndex = sofa::InvalidID;
@@ -77,11 +77,11 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
-            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
+            msg_info("CudaFixedProjectiveConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
         }
         else
         {
-            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
+            msg_info("CudaFixedProjectiveConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
@@ -92,17 +92,17 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, Index index)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
-    //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
+    //std::cout << "CudaFixedProjectiveConstraint::addConstraint("<<index<<")\n";
     m->d_indices.beginEdit()->push_back(index);
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
         if (data.minIndex == sofa::InvalidID)
         {
-            //std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: single index "<<index<<"\n";
             data.minIndex = index;
             data.maxIndex = index;
         }
@@ -113,12 +113,12 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         else if (data.minIndex == index + 1)
         {
             data.minIndex = index;
-            //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: new min index "<<index<<"\n";
         }
         else if (data.maxIndex == sofa::InvalidID || data.maxIndex == index - 1)
         {
             data.maxIndex = index;
-            //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: new max index "<<index<<"\n";
         }
         else
         {
@@ -128,18 +128,18 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
             data.cudaIndices.push_back(index);
             data.minIndex = sofa::InvalidID;
             data.maxIndex = sofa::InvalidID;
-            msg_info("CudaFixedConstraint") << "new indices array size " << data.cudaIndices.size() << "\n";
+            msg_info("CudaFixedProjectiveConstraint") << "new indices array size " << data.cudaIndices.size() << "\n";
         }
     }
     else
     {
         data.cudaIndices.push_back(index);
-        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
+        //std::cout << "CudaFixedProjectiveConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
     }
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, Index index)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     removeValue(*m->d_indices.beginEdit(),index);
@@ -188,7 +188,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 }
 
 template<int N, class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
 {
     Data& data = *m->data;
     data.minIndex = sofa::InvalidID;
@@ -207,11 +207,11 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
-            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
+            msg_info("CudaFixedProjectiveConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
         }
         else
         {
-            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
+            msg_info("CudaFixedProjectiveConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
@@ -222,17 +222,17 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
 }
 
 template<int N, class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, Index index)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
-    //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
+    //std::cout << "CudaFixedProjectiveConstraint::addConstraint("<<index<<")\n";
     m->d_indices.beginEdit()->push_back(index);
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
         if (data.minIndex == sofa::InvalidID)
         {
-            //std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: single index "<<index<<"\n";
             data.minIndex = index;
             data.maxIndex = index;
         }
@@ -243,12 +243,12 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
         else if (data.minIndex == index+1)
         {
             data.minIndex = index;
-            //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: new min index "<<index<<"\n";
         }
         else if (data.maxIndex == sofa::InvalidID || data.maxIndex == index-1)
         {
             data.maxIndex = index;
-            //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
+            //std::cout << "CudaFixedProjectiveConstraint: new max index "<<index<<"\n";
         }
         else
         {
@@ -258,18 +258,18 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
             data.cudaIndices.push_back(index);
             data.minIndex = sofa::InvalidID;
             data.maxIndex = sofa::InvalidID;
-            msg_info("CudaFixedConstraint") << "new indices array size "<<data.cudaIndices.size()<<"\n";
+            msg_info("CudaFixedProjectiveConstraint") << "new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else
     {
         data.cudaIndices.push_back(index);
-        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
+        //std::cout << "CudaFixedProjectiveConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
     }
 }
 
 template<int N, class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, Index index)
+void FixedProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     removeValue(*m->d_indices.beginEdit(),index);
@@ -320,53 +320,53 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
 
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     const Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda1f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
+        FixedProjectiveConstraintCuda1f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-        FixedConstraintCuda1f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+data.minIndex);
+        FixedProjectiveConstraintCuda1f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+data.minIndex);
     else
-        FixedConstraintCuda1f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCuda1f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     const Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));        
+        FixedProjectiveConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));        
     else if (data.minIndex != sofa::InvalidID)
-        FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex - data.minIndex + 1, ((float*)dx.deviceWrite()) + 3 * data.minIndex);
+        FixedProjectiveConstraintCuda3f_projectResponseContiguous(data.maxIndex - data.minIndex + 1, ((float*)dx.deviceWrite()) + 3 * data.minIndex);
     else
-        FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
     const Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda3f1_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
+        FixedProjectiveConstraintCuda3f1_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex != sofa::InvalidID)
-        FixedConstraintCuda3f1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+4*data.minIndex);
+        FixedProjectiveConstraintCuda3f1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+4*data.minIndex);
     else
-        FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     const Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCudaRigid3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
+        FixedProjectiveConstraintCudaRigid3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex != sofa::InvalidID)
-        FixedConstraintCudaRigid3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+6*data.minIndex);
+        FixedProjectiveConstraintCudaRigid3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+6*data.minIndex);
     else
-        FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 
@@ -375,7 +375,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
 
 // // Handle topological changes
 // template <>
-// void FixedConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange() {
+// void FixedProjectiveConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange() {
 // // 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
 // // 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 // //
@@ -384,70 +384,70 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
 // }
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedProjectiveConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-        FixedConstraintCuda3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+3*data.minIndex);
+        FixedProjectiveConstraintCuda3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+3*data.minIndex);
     else
-        FixedConstraintCuda3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCuda3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedProjectiveConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-        FixedConstraintCuda3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+4*data.minIndex);
+        FixedProjectiveConstraintCuda3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+4*data.minIndex);
     else
-        FixedConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
-void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
+void FixedProjectiveConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedProjectiveConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-        FixedConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
+        FixedProjectiveConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
     else
-        FixedConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+        FixedProjectiveConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
-#define CudaFixedConstraint_ImplMethods(T) \
-    template<> void FixedConstraint< T >::init() \
+#define CudaFixedProjectiveConstraint_ImplMethods(T) \
+    template<> void FixedProjectiveConstraint< T >::init() \
     { data->init(this); } \
-    template<> void FixedConstraint< T >::addConstraint(Index index) \
+    template<> void FixedProjectiveConstraint< T >::addConstraint(Index index) \
     { data->addConstraint(this, index); } \
-    template<> void FixedConstraint< T >::removeConstraint(Index index) \
+    template<> void FixedProjectiveConstraint< T >::removeConstraint(Index index) \
     { data->removeConstraint(this, index); } \
-    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_resData) \
+    template<> void FixedProjectiveConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_resData) \
     {  \
 		VecDeriv &resData = *d_resData.beginEdit(); \
 		data->projectResponse(this, resData);  \
 		d_resData.endEdit(); \
 	}
 
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3fTypes);
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3f1Types);
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3fTypes);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaVec3fTypes);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaVec3f1Types);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaRigid3fTypes);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3dTypes);
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3d1Types);
-CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3dTypes);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaVec3dTypes);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaVec3d1Types);
+CudaFixedProjectiveConstraint_ImplMethods(gpu::cuda::CudaRigid3dTypes);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#undef CudaFixedConstraint_ImplMethods
+#undef CudaFixedProjectiveConstraint_ImplMethods
 
 } // namespace sofa::component::constraint::projective

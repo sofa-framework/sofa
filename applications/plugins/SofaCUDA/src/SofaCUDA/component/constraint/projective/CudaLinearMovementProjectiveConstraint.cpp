@@ -20,32 +20,37 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/constraint/projective/LinearVelocityConstraint.inl>
-
+#include <SofaCUDA/component/constraint/projective/CudaLinearMovementProjectiveConstraint.inl>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::constraint::projective
+namespace sofa::core::behavior
 {
-template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
 
-}// namespace sofa::component::constraint::projective
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
+    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
+#endif
+} // namespace sofa::core::behavior
 
 namespace sofa::gpu::cuda
 {
 
-int LinearVelocityConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6fTypes> >()
-        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3fTypes> >()
+
+int LinearMovementProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3fTypes> >()
+// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3f1Types> >()
+        .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec6fTypes> >()
+        .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6dTypes> >()
-        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3dTypes> >()
+// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3dTypes> >()
+// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3d1Types> >()
+        .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec6dTypes> >()
+        .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

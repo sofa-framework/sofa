@@ -20,34 +20,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/component/constraint/projective/LinearVelocityProjectiveConstraint.inl>
+
+
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.inl>
-#include <sofa/core/behavior/PairInteractionConstraint.inl>
 
-namespace sofa::component::constraint::lagrangian::model
+namespace sofa::component::constraint::projective
 {
-
-template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3f1Types>;
-
+template class SOFA_GPU_CUDA_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} //namespace sofa::component::constraint::lagrangian::model
+}// namespace sofa::component::constraint::projective
 
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::component::constraint::lagrangian::model;
-
-int BilateralInteractionConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< BilateralInteractionConstraint<CudaVec3fTypes> >()
-    .add< BilateralInteractionConstraint<CudaVec3f1Types> >()
+int LinearVelocityProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6fTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< BilateralInteractionConstraint<CudaVec3dTypes> >()
-    .add< BilateralInteractionConstraint<CudaVec3d1Types> >()
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-    ;
+        ;
+
 } // namespace sofa::gpu::cuda

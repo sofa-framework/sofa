@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/constraint/projective/FixedTranslationConstraint.inl>
+#include <sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.inl>
 
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -32,15 +32,15 @@ namespace sofa::component::constraint::projective
 {
 
 template<>
-void FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams);
+void FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams);
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template<>
-void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams);
+void FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
 template <>
-void component::constraint::projective::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
+void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #if SOFACUDA_HAVE_SOFA_GL == 1
     const SetIndexArray & indices = f_indices.getValue();
@@ -71,7 +71,7 @@ void component::constraint::projective::FixedTranslationConstraint<gpu::cuda::Cu
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template <>
-void component::constraint::projective::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
+void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -100,11 +100,11 @@ void component::constraint::projective::FixedTranslationConstraint<gpu::cuda::Cu
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
-template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API FixedTranslationProjectiveConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API FixedTranslationProjectiveConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace sofa::component::constraint::projective
@@ -113,16 +113,16 @@ namespace sofa::gpu::cuda
 {
 
 
-int FixedTranslationConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::projective::FixedTranslationConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::projective::FixedTranslationConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::projective::FixedTranslationConstraint<CudaVec6fTypes> >()
-        .add< component::constraint::projective::FixedTranslationConstraint<CudaRigid3fTypes> >()
+int FixedTranslationProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3fTypes> >()
+// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3f1Types> >()
+        .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec6fTypes> >()
+        .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::projective::FixedTranslationConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::projective::FixedTranslationConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::projective::FixedTranslationConstraint<CudaVec6dTypes> >()
-        .add< component::constraint::projective::FixedTranslationConstraint<CudaRigid3dTypes> >()
+// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3dTypes> >()
+// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3d1Types> >()
+        .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec6dTypes> >()
+        .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

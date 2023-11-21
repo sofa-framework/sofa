@@ -22,19 +22,19 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
 namespace sofa::component::constraint::projective
 {
 
 template<class TCoord, class TDeriv, class TReal>
-class FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
+class FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
     using Index = sofa::Index;
-    typedef FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
+    typedef FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
     typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
-    typedef FixedConstraint<DataTypes> Main;
+    typedef FixedProjectiveConstraint<DataTypes> Main;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -58,13 +58,13 @@ public:
 };
 
 template <int N, class real>
-class FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real > >
+class FixedProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real > >
 {
 public:
     using Index = sofa::Index;
-    typedef FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
+    typedef FixedProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
     typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
-    typedef FixedConstraint<DataTypes> Main;
+    typedef FixedProjectiveConstraint<DataTypes> Main;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -88,24 +88,24 @@ public:
 };
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
-#define CudaFixedConstraint_DeclMethods(T) \
-    template<> void FixedConstraint< T >::init(); \
-    template<> void FixedConstraint< T >::addConstraint(Index index); \
-    template<> void FixedConstraint< T >::removeConstraint(Index index); \
-    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+#define CudaFixedProjectiveConstraint_DeclMethods(T) \
+    template<> void FixedProjectiveConstraint< T >::init(); \
+    template<> void FixedProjectiveConstraint< T >::addConstraint(Index index); \
+    template<> void FixedProjectiveConstraint< T >::removeConstraint(Index index); \
+    template<> void FixedProjectiveConstraint< T >::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
 
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3fTypes);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaRigid3fTypes);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3dTypes);
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3d1Types);
-CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaVec3dTypes);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaVec3d1Types);
+CudaFixedProjectiveConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#undef CudaFixedConstraint_DeclMethods
+#undef CudaFixedProjectiveConstraint_DeclMethods
 
 } // namespace sofa::component::constraint::projective
