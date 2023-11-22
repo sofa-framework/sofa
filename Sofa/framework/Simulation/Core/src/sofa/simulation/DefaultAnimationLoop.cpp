@@ -170,14 +170,6 @@ void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* pa
     m_node->execute(act);
 }
 
-void DefaultAnimationLoop::resetConstraint(const core::ExecParams* params) const
-{
-    SCOPED_TIMER("resetConstraint");
-    const sofa::core::ConstraintParams cparams(*params);
-    sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor resetConstraint(&cparams);
-    m_node->execute(&resetConstraint);
-}
-
 void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
 {
     propagateIntegrateBeginEvent(params);
@@ -193,14 +185,6 @@ void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* 
     IntegrateBeginEvent evBegin;
     PropagateEventVisitor eventPropagation( params, &evBegin);
     eventPropagation.execute(m_node);
-}
-
-void DefaultAnimationLoop::buildConstraintMatrix(core::ConstraintParams cparams) const
-{
-    SCOPED_TIMER("buildConstraintMatrix");
-    unsigned int constraintId = 0;
-    mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
-    buildConstraintMatrix.execute(m_node);
 }
 
 void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cparams) const
