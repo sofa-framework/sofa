@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLUSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSparseLU] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
@@ -21,7 +21,7 @@
 
     <Node name="Object2">
         <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/>
-        <SparseLUSolver name="LULinearSolver" template="CompressedRowSparseMatrixMat3x3d"/>
+        <EigenSparseLU name="LULinearSolver" template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject name="object2MO" template="Rigid3d" position="0.5 0.5 0 0.2705980500730985 0.2705980500730985 0 0.9238795325112867" showObject="true"/>
         <RestShapeSpringsForceField stiffness="11" angularStiffness="12"
                                     external_rest_shape="@../Object1/object1MO"
