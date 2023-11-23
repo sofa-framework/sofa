@@ -51,6 +51,7 @@ sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL)
 sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
 sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL)
+sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL)
 
 
 sofa_add_subdirectory(plugin PSL PSL EXTERNAL)
