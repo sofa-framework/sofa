@@ -988,7 +988,8 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
         }
 
         const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
-        const MappingJacobians<JacobianMatrixType> J1 = pair[0] == pair[1] ? J0 : computeJacobiansFrom(pair[1], mparams, crs);
+        const MappingJacobians<JacobianMatrixType> J1 =
+                            (pair[0] == pair[1]) ? J0 : computeJacobiansFrom(pair[1], mparams, crs);
 
         const sofa::type::fixed_array<MappingJacobians<JacobianMatrixType>, 2> mappingMatricesMap { J0, J1 };
 
