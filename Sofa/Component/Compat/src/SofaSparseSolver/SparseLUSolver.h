@@ -23,4 +23,6 @@
 
 #include <sofa/component/linearsolver/direct/SparseLUSolver.h>
 
-SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLUSolver.h")
+SOFA_PRAGMA_ERROR( \
+    "This header has been DISABLED since v23.12. " \
+    "To fix this error you must use the CSparseSolvers plugins. " )
