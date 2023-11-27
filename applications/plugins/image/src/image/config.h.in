@@ -25,7 +25,6 @@
 #include <sofa/config.h>
 
 #cmakedefine01 IMAGE_HAVE_SOFAGUIQT
-#cmakedefine01 IMAGE_HAVE_CIMGPLUGIN
 #cmakedefine01 IMAGE_HAVE_NEWMAT
 #cmakedefine01 IMAGE_HAVE_SOFAPYTHON
 #cmakedefine01 IMAGE_HAVE_MULTITHREADING

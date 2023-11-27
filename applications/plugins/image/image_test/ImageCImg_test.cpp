@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CImgPlugin/ImageCImg.h>
+#include <cimg/ImageCImg.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
@@ -44,11 +44,11 @@ protected:
 
     void SetUp() override
     {
-        sofa::helper::system::DataRepository.addFirstPath(CIMGPLUGIN_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.addFirstPath(IMAGETEST_RESOURCES_DIR);
     }
     void TearDown() override
     {
-        sofa::helper::system::DataRepository.removePath(CIMGPLUGIN_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.removePath(IMAGETEST_RESOURCES_DIR);
     }
 
     bool checkExtension(const std::string& ext)

@@ -19,17 +19,17 @@ namespace io
 {
 
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
-#if CIMGPLUGIN_HAVE_PNG
+#if IMAGE_HAVE_PNG
     "png",
-#endif // CIMGPLUGIN_HAVE_PNG
-#if CIMGPLUGIN_HAVE_JPEG
+#endif // IMAGE_HAVE_PNG
+#if IMAGE_HAVE_JPEG
     "jpg",
     "jpeg",
-#endif // CIMGPLUGIN_HAVE_JPEG
-#if CIMGPLUGIN_HAVE_TIFF
+#endif // IMAGE_HAVE_JPEG
+#if IMAGE_HAVE_TIFF
     "tif",
     "tiff",
-#endif // CIMGPLUGIN_HAVE_TIFF
+#endif // IMAGE_HAVE_TIFF
     "bmp"
 };
 

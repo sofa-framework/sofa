@@ -259,22 +259,22 @@ TEST_F(ImageEngine_test , testImageViewer )
 
 ////////////////////////////////////
 
-#include "../DepthMapToMeshEngine.h"
-#include "../ImageAccumulator.h"
-#include "../ImageDataDisplay.h"
-#include "../ImageFilter.h"
-#include "../ImageOperation.h"
-#include "../ImageSampler.h"
-#include "../ImageToRigidMassEngine.h"
-#include "../ImageTransformEngine.h"
-#include "../ImageTransform.h"
-#include "../ImageValuesFromPositions.h"
-#include "../MarchingCubesEngine.h"
-#include "../MergeImages.h"
-#include "../MeshToImageEngine.h"
+#include <image/DepthMapToMeshEngine.h>
+#include <image/ImageAccumulator.h>
+#include <image/ImageDataDisplay.h>
+#include <image/ImageFilter.h>
+#include <image/ImageOperation.h>
+#include <image/ImageSampler.h>
+#include <image/ImageToRigidMassEngine.h>
+#include <image/ImageTransformEngine.h>
+#include <image/ImageTransform.h>
+#include <image/ImageValuesFromPositions.h>
+#include <image/MarchingCubesEngine.h>
+#include <image/MergeImages.h>
+#include <image/MeshToImageEngine.h>
 #include "TestImageEngine.h"
-#include "../TransferFunction.h"
-#include "../VoronoiToMeshEngine.h"
+#include <image/TransferFunction.h>
+#include <image/VoronoiToMeshEngine.h>
 
 
 namespace sofa {
