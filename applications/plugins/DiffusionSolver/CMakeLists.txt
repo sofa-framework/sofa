@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(DiffusionSolver VERSION 0.1)
 
-find_package(CImgPlugin REQUIRED)
+find_package(image REQUIRED)
 
 set(HEADER_FILES
     config.h
@@ -35,7 +35,7 @@ if("${CMAKE_BUILD_TYPE}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$") # no need f
 endif()
 
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DIFFUSIONSOLVER")
-target_link_libraries(${PROJECT_NAME} CImgPlugin)
+target_link_libraries(${PROJECT_NAME} image)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
