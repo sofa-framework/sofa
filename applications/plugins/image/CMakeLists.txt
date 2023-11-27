@@ -99,6 +99,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/image/initImage.cpp
+    src/cimg/ImageCImg.cpp
 )
 
 if(NOT PLUGIN_IMAGE_COMPILE_SET STREQUAL "none")
@@ -125,7 +126,6 @@ if(NOT PLUGIN_IMAGE_COMPILE_SET STREQUAL "none")
         src/image/VoronoiToMeshEngine.cpp
         src/image/DepthMapToMeshEngine.cpp
         src/image/ImageViewer.cpp
-        src/cimg/ImageCImg.cpp
     )
 endif()
 

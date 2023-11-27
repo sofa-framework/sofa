@@ -1,0 +1,9 @@
+# CMake package configuration file for the plugin '@PROJECT_NAME@'
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+message(WARNING "CImgPlugin has been merged in the image plugin. If you need cimg feature, please use the image plugin instead.")
+find_package(image QUIET REQUIRED)
+
+check_required_components(@PROJECT_NAME@)

@@ -1,11 +1,12 @@
 #ifndef SOFA_HELPER_IO_IMAGECIMG_H
 #define SOFA_HELPER_IO_IMAGECIMG_H
 
+#include <image/config.h>
+
 #include <memory>
 #include <string>
 #include <vector>
 #include <sofa/helper/io/Image.h>
-#include <CImgPlugin/CImgPlugin.h>
 
 namespace sofa
 {
@@ -16,7 +17,7 @@ namespace helper
 namespace io
 {
 
-class SOFA_CIMGPLUGIN_API ImageCImgCreators
+class SOFA_IMAGE_API ImageCImgCreators
 {
 
     std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator>> creators;
@@ -27,7 +28,7 @@ public:
 
 };
 
-class SOFA_CIMGPLUGIN_API ImageCImg : public Image
+class SOFA_IMAGE_API ImageCImg : public Image
 {
 public:
     ImageCImg (){}

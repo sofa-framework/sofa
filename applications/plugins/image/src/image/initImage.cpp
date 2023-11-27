@@ -24,6 +24,7 @@
 #include <sofa/helper/logging/Messaging.h>
 
 #include <cimg/SOFACImg.h>
+#include <cimg/ImageCImg.h>
 
 #if IMAGE_HAVE_SOFAPYTHON
     #include <SofaPython/PythonFactory.h>
@@ -67,6 +68,8 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        sofa::helper::io::ImageCImg::setCimgCreators();
+        
         first = false;
 
 #if IMAGE_HAVE_SOFAPYTHON
