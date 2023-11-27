@@ -32,7 +32,7 @@
 #define cimg_use_opencv
 #endif
 
-#include <CImgPlugin/SOFACImg.h>
+#include <cimg/SOFACImg.h>
 
 #include "VectorVis.h"
 

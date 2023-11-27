@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <CImgPlugin/SOFACImg.h>
+#include <cimg/SOFACImg.h>
 
 // datatypes
 #include <sofa/type/fixed_array.h>
