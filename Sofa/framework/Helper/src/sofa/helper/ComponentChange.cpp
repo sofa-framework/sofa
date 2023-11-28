@@ -412,9 +412,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // SofaSparseSolver was deprecated in #2717
     { "FillReducingOrdering", Moved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
     { "PrecomputedLinearSolver", Moved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
-    { "SparseCholeskySolver", Moved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
     { "SparseLDLSolver", Moved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
-    { "SparseLUSolver", Moved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
 
     // SofaDenseSolver was deprecated in #2717
     { "SVDLinearSolver", Moved("v22.06", "SofaDenseSolver", "Sofa.Component.LinearSolver.Direct") },
@@ -720,6 +718,10 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // Removed in #4040, deprecated in #2777
     { "MechanicalMatrixMapper", Removed("v23.06", "v23.12") },
     { "MappingGeometricStiffnessForceField", Removed("v23.06", "v23.12") },
+
+    // Moved to CSparseSolvers
+    { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
 };
 
 } // namespace sofa::helper::lifecycle
