@@ -128,7 +128,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
             // Test only if non-rigid body
             // due to inertia matrix, some values in the rigid case might be zero
             if constexpr (!sofa::type::isRigidType<DataTypes>())
-            {g
+            {
                 const VecReal &comp = compliance.getValue();
                 if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))
                 {
