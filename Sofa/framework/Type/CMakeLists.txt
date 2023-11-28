@@ -60,6 +60,7 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/vector_Integral.cpp
     ${SOFATYPESRC_ROOT}/vector_String.cpp
     ${SOFATYPESRC_ROOT}/SVector.cpp
+    ${SOFATYPESRC_ROOT}/isRigidType.h
 )
 
 sofa_find_package(Sofa.Config REQUIRED)
