@@ -121,8 +121,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveC
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveConstraint<defaulttype::Rigid2Types>;
 #endif
 
-template<class T>
-using AttachConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "AttachConstraint has been renamed to AttachProjectiveConstraint") = AttachProjectiveConstraint<T>;
-
-
 } // namespace sofa::component::constraint::projective

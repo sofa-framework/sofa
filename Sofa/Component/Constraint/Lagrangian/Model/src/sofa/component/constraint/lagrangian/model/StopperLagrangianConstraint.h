@@ -124,8 +124,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperLagr
 
 #endif
 
-template<class T>
-using StopperConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "StopperConstraint has been renamed to StopperLagrangianConstraint") = StopperLagrangianConstraint<T>;
-
-
 } //namespace sofa::component::constraint::lagrangian::model

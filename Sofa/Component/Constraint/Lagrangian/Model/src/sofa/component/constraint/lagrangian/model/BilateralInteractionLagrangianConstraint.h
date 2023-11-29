@@ -192,7 +192,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralIn
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionLagrangianConstraint< Rigid3Types >;
 #endif
 
-template<class T>
-using BilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "BilateralInteractionConstraint has been renamed to BilateralInteractionLagrangianConstraint") = BilateralInteractionLagrangianConstraint<T>;
-
 } // namespace sofa::component::constraint::lagrangian::model

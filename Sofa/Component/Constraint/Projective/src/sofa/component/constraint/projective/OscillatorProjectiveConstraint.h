@@ -109,7 +109,4 @@ extern template class OscillatorProjectiveConstraint<defaulttype::Rigid3Types>;
 extern template class OscillatorProjectiveConstraint<defaulttype::Vec3Types>;
 #endif
 
-template<class T>
-using OscillatorConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "OscillatorConstraint has been renamed to OscillatorProjectiveConstraint") = OscillatorProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective

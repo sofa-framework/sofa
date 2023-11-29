@@ -24,3 +24,9 @@
 #include <sofa/component/constraint/projective/FixedRotationProjectiveConstraint.h>
 
 SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/FixedRotationProjectiveConstraint.h")
+
+namespace sofa::component::constraint::projective
+{
+template <class T>
+using FixedRotationConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "FixedRotationConstraint has been renamed to FixedRotationProjectiveConstraint") = FixedRotationProjectiveConstraint<T>;
+}

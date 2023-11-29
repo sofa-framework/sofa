@@ -24,3 +24,9 @@
 #include <sofa/component/constraint/projective/DirectionProjectiveConstraint.h>
 
 SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/DirectionProjectiveConstraint.h")
+
+namespace sofa::component::constraint::projective
+{
+template <class T>
+using ProjectDirectionConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectDirectionConstraint has been renamed to DirectionProjectiveConstraint") = DirectionProjectiveConstraint<T>;
+}

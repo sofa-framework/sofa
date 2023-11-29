@@ -74,8 +74,5 @@ protected:
     extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UniformLagrangianConstraint<sofa::defaulttype::Vec1Types>;
 #endif
 
-template<class T>
-using UniformConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "UniformConstraint has been renamed to UniformLagrangianConstraint") = UniformLagrangianConstraint<T>;
-
 
 } // namespace sofa::component::constraint::lagrangian::model

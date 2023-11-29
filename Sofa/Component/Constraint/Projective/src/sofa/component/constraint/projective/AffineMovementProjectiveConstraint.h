@@ -162,8 +162,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementPro
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementProjectiveConstraint<defaulttype::Rigid3Types>;
 #endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENTPROJECTIVECONSTRAINT_CPP
 
-template<class T>
-using AffineMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "AffineMovementConstraint has been renamed to AffineMovementProjectiveConstraint") = AffineMovementProjectiveConstraint<T>;
-
-
 } // namespace sofa::component::constraint::projective

@@ -165,7 +165,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementPro
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementProjectiveConstraint<defaulttype::Rigid3Types>;
 #endif
 
-template<class T>
-using LinearMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "LinearMovementConstraint has been renamed to LinearMovementProjectiveConstraint") = LinearMovementProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective

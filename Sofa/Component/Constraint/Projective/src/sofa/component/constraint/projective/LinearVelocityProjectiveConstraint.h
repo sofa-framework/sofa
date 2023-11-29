@@ -132,7 +132,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityPro
 
 #endif
 
-template<class T>
-using LinearVelocityConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "LinearVelocityConstraint has been renamed to LinearVelocityProjectiveConstraint") = LinearVelocityProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective

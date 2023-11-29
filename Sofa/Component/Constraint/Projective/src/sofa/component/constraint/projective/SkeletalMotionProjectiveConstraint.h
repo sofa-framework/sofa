@@ -243,8 +243,5 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API SkeletalMotionPro
 
 #endif
 
-template<class T>
-using SkeletalMotionConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "SkeletalMotionConstraint has been renamed to SkeletalMotionProjectiveConstraint") = SkeletalMotionProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective
 

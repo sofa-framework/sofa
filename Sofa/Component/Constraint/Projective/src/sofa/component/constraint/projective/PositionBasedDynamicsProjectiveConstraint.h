@@ -108,10 +108,7 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDyna
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<defaulttype::Vec6Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<defaulttype::Rigid3Types>;
 //extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<defaulttype::Rigid2Types>;
-
 #endif
 
-template<class T>
-using PositionBasedDynamicsConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "PositionBasedDynamicsConstraint has been renamed to PositionBasedDynamicsProjectiveConstraint") = PositionBasedDynamicsProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

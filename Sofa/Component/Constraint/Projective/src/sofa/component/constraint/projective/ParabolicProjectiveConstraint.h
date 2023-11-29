@@ -121,10 +121,6 @@ protected:
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICPROJECTIVECONSTRAINT_CPP)
 extern template class ParabolicProjectiveConstraint<defaulttype::Rigid3Types>;
 extern template class ParabolicProjectiveConstraint<defaulttype::Vec3Types>;
-
 #endif
-
-template<class T>
-using ParabolicConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ParabolicConstraint has been renamed to ParabolicProjectiveConstraint") = ParabolicProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

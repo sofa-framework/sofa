@@ -74,11 +74,6 @@ protected :
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONPROJECTIVECONSTRAINT_CPP)
 extern template class FixedRotationProjectiveConstraint<defaulttype::Rigid3Types>;
-
 #endif
-
-template<class T>
-using FixedRotationConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "FixedRotationConstraint has been renamed to FixedRotationProjectiveConstraint") = FixedRotationProjectiveConstraint<T>;
-
 
 } // namespace sofa::component::constraint::projective

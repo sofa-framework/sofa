@@ -173,7 +173,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMove
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementProjectiveConstraint<defaulttype::Rigid3Types>;
 #endif
 
-template<class T>
-using PartialLinearMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "PartialLinearMovementConstraint has been renamed to PartialLinearMovementProjectiveConstraint") = PartialLinearMovementProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective

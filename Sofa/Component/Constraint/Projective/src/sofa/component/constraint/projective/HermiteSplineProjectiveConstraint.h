@@ -131,7 +131,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineProj
 
 #endif
 
-template<class T>
-using HermiteSplineConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "HermiteSplineConstraint has been renamed to HermiteSplineProjectiveConstraint") = HermiteSplineProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective

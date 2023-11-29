@@ -133,8 +133,5 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PlaneProjectiveCo
 
 #endif
 
-template<class T>
-using ProjectToPlaneConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToPlaneConstraint has been renamed to PlaneProjectiveConstraint") = PlaneProjectiveConstraint<T>;
-
 } // namespace sofa::component::constraint::projective
 

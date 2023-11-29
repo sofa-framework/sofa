@@ -130,11 +130,6 @@ protected:
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneProjectiveConstraint<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneProjectiveConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneProjectiveConstraint<defaulttype::Vec6Types>;
-
 #endif
-
-template<class T>
-using FixedPlaneConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "FixedPlaneConstraint has been renamed to FixedPlaneProjectiveConstraint") = FixedPlaneProjectiveConstraint<T>;
-
 
 } // namespace sofa::component::constraint::projective

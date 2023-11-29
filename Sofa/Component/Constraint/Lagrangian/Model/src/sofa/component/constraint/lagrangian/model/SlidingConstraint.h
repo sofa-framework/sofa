@@ -24,3 +24,9 @@
 #include <sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h>
 
 SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h")
+
+namespace sofa::component::constraint::lagrangian::model
+{
+template<class T>
+using SlidingConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "SlidingConstraint has been renamed to SlidingLagrangianConstraint") = SlidingLagrangianConstraint<T>;
+}

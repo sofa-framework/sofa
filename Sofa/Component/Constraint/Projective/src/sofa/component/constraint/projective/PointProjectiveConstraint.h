@@ -125,9 +125,6 @@ extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveCo
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<defaulttype::Vec6Types>;
-
 #endif
-template<class T>
-using ProjectToPointConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToPointConstraint has been renamed to PointProjectiveConstraint") = PointProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

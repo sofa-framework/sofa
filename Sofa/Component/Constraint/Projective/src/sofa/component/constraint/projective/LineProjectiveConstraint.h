@@ -132,10 +132,6 @@ protected :
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LineProjectiveConstraint_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<defaulttype::Vec2Types>;
-
 #endif
-
-template<class T>
-using ProjectToLineConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToLineConstraint has been renamed to LineProjectiveConstraint") = LineProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

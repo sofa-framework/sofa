@@ -24,3 +24,9 @@
 #include <sofa/component/constraint/projective/PatchTestMovementProjectiveConstraint.h>
 
 SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/PatchTestMovementProjectiveConstraint.h")
+
+namespace sofa::component::constraint::projective
+{
+template <class T>
+using PatchTestMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "PatchTestMovementConstraint has been renamed to PatchTestMovementProjectiveConstraint") = PatchTestMovementProjectiveConstraint<T>;
+}
