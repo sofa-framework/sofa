@@ -111,6 +111,20 @@ public:
     }
 };
 
+class SOFA_HELPER_API Renamed : public ComponentChange
+{
+public:
+    Renamed(const std::string& sinceVersion, const std::string& untilVersion,  const std::string& newName)
+    {
+        std::stringstream output;
+        output << "This component has been RENAMED to " << newName  << " since SOFA " << sinceVersion
+            << ", and this alias will be removed in SOFA " << untilVersion << "."
+            << " To continue using this component after SOFA "<< untilVersion <<" you will need to update your scene ";
+        m_message = output.str();
+        m_changeVersion = untilVersion;
+    }
+};
+
 extern SOFA_HELPER_API const std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
 extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
 

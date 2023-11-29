@@ -722,6 +722,35 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
     { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+
+    // Change Constraint naming #4302
+    {"AffineMovementConstraint", Renamed("v24.06","v25.06","AffineMovementProjectiveConstraint")},
+    {"AttachConstraint", Renamed("v24.06","v25.06","AttachProjectiveConstraint")},
+    {"FixedConstraint", Renamed("v24.06","v25.06","FixedProjectiveConstraint")},
+    {"FixedPlaneConstraint", Renamed("v24.06","v25.06","FixedPlaneProjectiveConstraint")},
+    {"FixedRotationConstraint", Renamed("v24.06","v25.06","FixedRotationProjectiveConstraint")},
+    {"FixedTranslationConstraint", Renamed("v24.06","v25.06","FixedTranslationProjectiveConstraint")},
+    {"HermiteSplineConstraint", Renamed("v24.06","v25.06","HermiteSplineProjectiveConstraint")},
+    {"LinearMovementConstraint", Renamed("v24.06","v25.06","LinearMovementProjectiveConstraint")},
+    {"LinearVelocityConstraint", Renamed("v24.06","v25.06","LinearVelocityProjectiveConstraint")},
+    {"OscillatorConstraint", Renamed("v24.06","v25.06","OscillatorProjectiveConstraint")},
+    {"ParabolicConstraint", Renamed("v24.06","v25.06","ParabolicProjectiveConstraint")},
+    {"PartialFixedConstraint", Renamed("v24.06","v25.06","PartialFixedProjectiveConstraint")},
+    {"PartialLinearMovementConstraint", Renamed("v24.06","v25.06","PartialLinearMovementProjectiveConstraint")},
+    {"PatchTestMovementConstraint", Renamed("v24.06","v25.06","PatchTestMovementProjectiveConstraint")},
+    {"PositionBasedDynamicsConstraint", Renamed("v24.06","v25.06","PositionBasedDynamicsProjectiveConstraint")},
+    {"SkeletalMotionConstraint", Renamed("v24.06","v25.06","SkeletalMotionProjectiveConstraint")},
+    {"ProjectToLineConstraint", Renamed("v24.06","v25.06","LineProjectiveConstraint")},
+    {"ProjectToPlaneConstraint", Renamed("v24.06","v25.06","PlaneProjectiveConstraint")},
+    {"ProjectToPointConstraint", Renamed("v24.06","v25.06","PointProjectiveConstraint")},
+    {"ProjectDirectionConstraint", Renamed("v24.06","v25.06","DirectionProjectiveConstraint")},
+    {"BilateralInteractionConstraint", Renamed("v24.06","v25.06","BilateralInteractionLagrangianConstraint")},
+    {"SlidingConstraint", Renamed("v24.06","v25.06","SlidingLagrangianConstraint")},
+    {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
+    {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
+    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralInteractionLagrangianConstraint")}
+    
+    
 };
 
 } // namespace sofa::helper::lifecycle
