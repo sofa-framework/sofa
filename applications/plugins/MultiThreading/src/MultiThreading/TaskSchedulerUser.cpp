@@ -48,7 +48,7 @@ void TaskSchedulerUser::initTaskScheduler()
         {
             const auto nbCPUCores = static_cast<int>(sofa::simulation::TaskScheduler::GetHardwareThreadsCount());
             nbThreads.wref() = nbCPUCores - nbThreads;
-            nbThreads.wref() = std::max(0u, nbThreads.ref());
+            nbThreads.wref() = std::max(0, nbThreads.ref());
         }
 
         m_taskScheduler->init(nbThreads);
@@ -65,7 +65,7 @@ void TaskSchedulerUser::reinitTaskScheduler()
     if (m_taskScheduler)
     {
         const auto nbThreads = d_nbThreads.getValue();
-        if ( nbThreads != m_taskScheduler->getThreadCount() )
+        if ( nbThreads != static_cast<int>(m_taskScheduler->getThreadCount()) )
         {
             m_taskScheduler->init(nbThreads);
             sofa::simulation::initThreadLocalData();
