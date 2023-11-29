@@ -85,7 +85,7 @@ __global__ void SubsetContactMapperCuda3f_setPoints1_kernel(unsigned int nbPoint
     GPUContact c = contacts[curTestEntry.firstIndex + threadIdx.x];
     if (threadIdx.x < curTestEntry.curSize)
     {
-        map[curTestEntry.newIndex + threadIdx.x] = umul24(curTestEntry.elem1,nbPointsPerElem) + c.p1;
+        map[curTestEntry.newIndex + threadIdx.x] = curTestEntry.elem1 * nbPointsPerElem + c.p1;
     }
 }
 
