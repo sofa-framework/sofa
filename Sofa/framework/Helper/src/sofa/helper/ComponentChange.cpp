@@ -749,8 +749,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralInteractionLagrangianConstraint")}
-    
-    
+
 };
 
 } // namespace sofa::helper::lifecycle
