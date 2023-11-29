@@ -23,10 +23,10 @@
 
 #include <sofa/component/constraint/projective/AttachProjectiveConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/AttachProjectiveConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/AttachProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
 template <class T>
-using AttachConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "AttachConstraint has been renamed to AttachProjectiveConstraint") = AttachProjectiveConstraint<T>;
+using AttachConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "AttachConstraint has been renamed to AttachProjectiveConstraint") = AttachProjectiveConstraint<T>;
 }

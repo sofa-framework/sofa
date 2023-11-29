@@ -23,10 +23,10 @@
 
 #include <sofa/component/constraint/projective/OscillatorProjectiveConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
 template <class T>
-using OscillatorConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "OscillatorConstraint has been renamed to OscillatorProjectiveConstraint") = OscillatorProjectiveConstraint<T>;
+using OscillatorConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "OscillatorConstraint has been renamed to OscillatorProjectiveConstraint") = OscillatorProjectiveConstraint<T>;
 }

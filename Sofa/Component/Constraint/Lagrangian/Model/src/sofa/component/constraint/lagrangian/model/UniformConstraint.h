@@ -23,10 +23,10 @@
 
 #include <sofa/component/constraint/lagrangian/model/UniformLagrangianConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/lagrangian/model/UniformLagrangianConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/UniformLagrangianConstraint.h")
 
 namespace sofa::component::constraint::lagrangian::model
 {
 template<class T>
-using UniformConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "UniformConstraint has been renamed to UniformLagrangianConstraint") = UniformLagrangianConstraint<T>;
+using UniformConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "UniformConstraint has been renamed to UniformLagrangianConstraint") = UniformLagrangianConstraint<T>;
 }

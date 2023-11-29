@@ -23,4 +23,4 @@
 
 #include <sofa/component/constraint/projective/OscillatorProjectiveConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.inl")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.inl")

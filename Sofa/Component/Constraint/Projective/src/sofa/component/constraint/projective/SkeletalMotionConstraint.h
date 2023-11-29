@@ -23,10 +23,10 @@
 
 #include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
 template <class T>
-using SkeletalMotionConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "SkeletalMotionConstraint has been renamed to SkeletalMotionProjectiveConstraint") = SkeletalMotionProjectiveConstraint<T>;
+using SkeletalMotionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "SkeletalMotionConstraint has been renamed to SkeletalMotionProjectiveConstraint") = SkeletalMotionProjectiveConstraint<T>;
 }
