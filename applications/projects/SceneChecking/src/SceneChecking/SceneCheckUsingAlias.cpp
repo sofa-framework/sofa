@@ -91,7 +91,7 @@ void SceneCheckUsingAlias::doPrintSummary()
             auto searchAlias = uncreatableComponents.find(unique_alias);
             if( searchAlias != uncreatableComponents.end() )
             {
-                usingAliasesWarning << " This alias will be REMOVED at the SOFA release " << searchAlias->second.getVersion() << ", please update your scenes.";
+                usingAliasesWarning << " " << searchAlias->second.getMessage();
             }
 
             if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;
