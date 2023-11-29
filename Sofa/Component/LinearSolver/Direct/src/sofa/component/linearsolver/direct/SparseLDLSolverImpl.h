@@ -26,7 +26,6 @@
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <csparse.h>
 #include <sofa/linearalgebra/DiagonalSystemSolver.h>
 #include <sofa/linearalgebra/TriangularSystemSolver.h>
 
