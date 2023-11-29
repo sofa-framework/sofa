@@ -126,6 +126,7 @@ public:
 };
 
 extern SOFA_HELPER_API const std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
+extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > movedComponents;
 extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
 
 } // namespace sofa::helper::lifecycle
