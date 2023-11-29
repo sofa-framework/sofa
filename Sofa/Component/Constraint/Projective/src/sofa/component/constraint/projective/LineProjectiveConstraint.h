@@ -40,7 +40,7 @@ namespace sofa::component::constraint::projective
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class ProjectToLineProjectiveConstraintInternalData
+class LineProjectiveConstraintInternalData
 {
 
 };
@@ -50,10 +50,10 @@ class ProjectToLineProjectiveConstraintInternalData
   @todo Optimized versions for lines parallel to the main directions
 */
 template <class DataTypes>
-class ProjectToLineProjectiveConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class LineProjectiveConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProjectToLineProjectiveConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LineProjectiveConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -77,9 +77,9 @@ public:
 
 
 protected:
-    ProjectToLineProjectiveConstraint();
+    LineProjectiveConstraint();
 
-    virtual ~ProjectToLineProjectiveConstraint();
+    virtual ~LineProjectiveConstraint();
 
 public:
     IndexSubsetData f_indices;  ///< the particles to project
@@ -88,11 +88,11 @@ public:
     Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<ProjectToLineProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<LineProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    ProjectToLineProjectiveConstraintInternalData<DataTypes>* data;
-    friend class ProjectToLineProjectiveConstraintInternalData<DataTypes>;
+    LineProjectiveConstraintInternalData<DataTypes>* data;
+    friend class LineProjectiveConstraintInternalData<DataTypes>;
 
 
 public:
@@ -129,13 +129,13 @@ protected :
 };
 
 
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineProjectiveConstraint_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToLineProjectiveConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToLineProjectiveConstraint<defaulttype::Vec2Types>;
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LineProjectiveConstraint_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<defaulttype::Vec2Types>;
 
 #endif
 
 template<class T>
-using ProjectToLineConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToLineConstraint has been renamed to ProjectToLineProjectiveConstraint") = ProjectToLineProjectiveConstraint<T>;
+using ProjectToLineConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToLineConstraint has been renamed to LineProjectiveConstraint") = LineProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

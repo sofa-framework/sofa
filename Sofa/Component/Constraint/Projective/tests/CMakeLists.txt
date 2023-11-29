@@ -7,10 +7,10 @@ set(SOURCE_FILES
     FixedProjectiveConstraint_test.cpp
     FixedPlaneProjectiveConstraint_test.cpp
     PartialFixedProjectiveConstraint_test.cpp
-    ProjectDirectionProjectiveConstraint_test.cpp
-    ProjectToLineProjectiveConstraint_test.cpp
-    ProjectToPlaneProjectiveConstraint_test.cpp
-    ProjectToPointProjectiveConstraint_test.cpp
+    DirectionProjectiveConstraint_test.cpp
+    LineProjectiveConstraint_test.cpp
+    PlaneProjectiveConstraint_test.cpp
+    PointProjectiveConstraint_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

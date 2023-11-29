@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionProjectiveConstraint_CPP
-#include <sofa/component/constraint/projective/ProjectDirectionProjectiveConstraint.inl>
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_DirectionProjectiveConstraint_CPP
+#include <sofa/component/constraint/projective/DirectionProjectiveConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/Node.h>
@@ -32,14 +32,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-int ProjectDirectionProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-        .add< ProjectDirectionProjectiveConstraint<Vec3Types> >()
-        .add< ProjectDirectionProjectiveConstraint<Vec2Types> >()
+int DirectionProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+        .add< DirectionProjectiveConstraint<Vec3Types> >()
+        .add< DirectionProjectiveConstraint<Vec2Types> >()
         .addAlias("ProjectDirectionConstraint")
         ;
 
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectDirectionProjectiveConstraint<Vec3Types>;
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectDirectionProjectiveConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<Vec2Types>;
 
 
 } // namespace sofa::component::constraint::projective

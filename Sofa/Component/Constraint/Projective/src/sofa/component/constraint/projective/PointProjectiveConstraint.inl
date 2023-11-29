@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/constraint/projective/ProjectToPointProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/PointProjectiveConstraint.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
@@ -35,14 +35,14 @@ namespace sofa::component::constraint::projective
 {
 
 template <class DataTypes>
-ProjectToPointProjectiveConstraint<DataTypes>::ProjectToPointProjectiveConstraint()
+PointProjectiveConstraint<DataTypes>::PointProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
     , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new ProjectToPointProjectiveConstraintInternalData<DataTypes>())    
+    , data(new PointProjectiveConstraintInternalData<DataTypes>())    
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -50,27 +50,27 @@ ProjectToPointProjectiveConstraint<DataTypes>::ProjectToPointProjectiveConstrain
 
 
 template <class DataTypes>
-ProjectToPointProjectiveConstraint<DataTypes>::~ProjectToPointProjectiveConstraint()
+PointProjectiveConstraint<DataTypes>::~PointProjectiveConstraint()
 {
     delete data;
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::clearConstraints()
+void PointProjectiveConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::addConstraint(Index index)
+void PointProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::removeConstraint(Index index)
+void PointProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
     sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -80,7 +80,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::removeConstraint(Index index
 
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::init()
+void PointProjectiveConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -121,7 +121,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void  ProjectToPointProjectiveConstraint<DataTypes>::reinit()
+void  PointProjectiveConstraint<DataTypes>::reinit()
 {
 
     // get the indices sorted
@@ -130,7 +130,7 @@ void  ProjectToPointProjectiveConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void PointProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -142,7 +142,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void PointProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
 
@@ -169,7 +169,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::projectResponse(const core::
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
+void PointProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     SOFA_UNUSED(mparams);
 
@@ -193,13 +193,13 @@ void ProjectToPointProjectiveConstraint<DataTypes>::projectJacobianMatrix(const 
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams , DataVecDeriv& vData)
+void PointProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams , DataVecDeriv& vData)
 {
     projectResponse(mparams, vData);
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
+void PointProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
     SOFA_UNUSED(mparams);
 
@@ -226,7 +226,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::projectPosition(const core::
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
@@ -247,7 +247,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -269,7 +269,7 @@ void ProjectToPointProjectiveConstraint<DataTypes>::applyConstraint(const core::
 
 
 template <class DataTypes>
-void ProjectToPointProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void PointProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;

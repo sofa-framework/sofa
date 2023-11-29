@@ -20,32 +20,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/testing/BaseSimulationTest.h>
-using sofa::testing::BaseSimulationTest; 
+using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
-#include <sofa/component/constraint/projective/ProjectToPointProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa {
-namespace {
-
 using namespace component;
 using namespace defaulttype;
-using sofa::core::objectmodel::New;
 
 
-/**  Test suite for ProjectToPointProjectiveConstraint.
+
+/**  Test suite for LineProjectiveConstraint.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
+struct LineProjectiveConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -54,18 +52,19 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef constraint::projective::ProjectToPointProjectiveConstraint<DataTypes> ProjectToPointProjectiveConstraint;
-    typedef typename ProjectToPointProjectiveConstraint::SetIndexArray Indices;
+    typedef constraint::projective::LineProjectiveConstraint<DataTypes> LineProjectiveConstraint;
+    typedef typename LineProjectiveConstraint::Indices Indices;
     typedef component::topology::container::dynamic::PointSetTopologyContainer PointSetTopologyContainer;
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-    unsigned numNodes;                          ///< number of particles used for the test
-    Indices indices;                            ///< indices of the nodes to project
-    CPos targetPoint;                           ///< target point to project to
-    typename ProjectToPointProjectiveConstraint::SPtr projection;
+    unsigned numNodes;                         ///< number of particles used for the test
+    Indices indices;                           ///< indices of the nodes to project
+    CPos origin;                               ///< origin of the plane to project to
+    CPos direction;                            ///< direction of the line to project to
+    typename LineProjectiveConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
@@ -77,14 +76,13 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        const PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSetTopologyContainer>();
         root->addObject(topology);
 
-        dofs = New<MechanicalObject>();
+        dofs = core::objectmodel::New<MechanicalObject>();
         root->addObject(dofs);
 
-        // Project to point constraint
-        projection = New<ProjectToPointProjectiveConstraint>();
+        projection = core::objectmodel::New<LineProjectiveConstraint>();
         root->addObject(projection);
 
         /// Set the values
@@ -92,8 +90,10 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
         dofs->resize(numNodes);
 
 
-        targetPoint = CPos(1,0,2);
-        projection->f_point.setValue(targetPoint);
+        origin = CPos(0,0,0);
+        projection->f_origin.setValue(origin);
+        direction = CPos(1,1,1);
+        projection->f_direction.setValue(direction);
 
     }
 
@@ -102,6 +102,7 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
       */
     ///@{
     /** Constrain one particle, and not the last one.
+    Detects bugs like not setting the projection matrix entries beyond the last constrained particle
     */
     void init_oneConstrainedParticle()
     {
@@ -133,11 +134,9 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
     {
        VecCoord xprev(numNodes);
        typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
-       for (unsigned i=0; i<numNodes; i++)
-       {
+       for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
-
        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
        bool succeed=true;
@@ -146,8 +145,8 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
        {
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (x[i]-targetPoint);
-              Real scal = diffPoints.norm(); // should be null
+              CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
+              Real scal = crossprod*crossprod; // null if x is on the line
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -158,7 +157,6 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
            {
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
-
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
@@ -176,7 +174,6 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
-
        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
 
        bool succeed=true;
@@ -185,8 +182,8 @@ struct ProjectToPointProjectiveConstraint_test : public BaseSimulationTest, Nume
        {
           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (v[i]-Deriv());
-              Real scal = diffPoints.norm(); // should be null
+              CPos crossprod = v[i].cross(direction); // should be parallel
+              Real scal = crossprod.norm(); // null if v is ok
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -224,9 +221,9 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(ProjectToPointProjectiveConstraint_test, DataTypes);
+TYPED_TEST_SUITE(LineProjectiveConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( ProjectToPointProjectiveConstraint_test , oneConstrainedParticle )
+TYPED_TEST( LineProjectiveConstraint_test , oneConstrainedParticle )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
@@ -234,7 +231,7 @@ TYPED_TEST( ProjectToPointProjectiveConstraint_test , oneConstrainedParticle )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 // next test case
-TYPED_TEST( ProjectToPointProjectiveConstraint_test , allParticlesConstrained )
+TYPED_TEST( LineProjectiveConstraint_test , allParticlesConstrained )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
@@ -242,6 +239,6 @@ TYPED_TEST( ProjectToPointProjectiveConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-} // namespace
+
 } // namespace sofa
 

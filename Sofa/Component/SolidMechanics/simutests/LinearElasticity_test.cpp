@@ -41,7 +41,7 @@
 #include <sofa/component/odesolver/backward/StaticSolver.h>
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
-#include <sofa/component/constraint/projective/ProjectToLineProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
@@ -158,9 +158,9 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
             modeling::addNew<typename component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
-    // ProjectToLineProjectiveConstraint
-    typename component::constraint::projective::ProjectToLineProjectiveConstraint<DataTypes>::SPtr ptlc=
-            modeling::addNew<typename component::constraint::projective::ProjectToLineProjectiveConstraint<DataTypes> >(root);
+    // LineProjectiveConstraint
+    typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
+            modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::type::vector<sofa::Index> vArray;

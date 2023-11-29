@@ -19,9 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineProjectiveConstraint_CPP
-#include <sofa/component/constraint/projective/ProjectToLineProjectiveConstraint.inl>
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointProjectiveConstraint_CPP
+#include <sofa/component/constraint/projective/PointProjectiveConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -30,13 +32,17 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-int ProjectToLineProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-        .add< ProjectToLineProjectiveConstraint<Vec3Types> >()
-        .add< ProjectToLineProjectiveConstraint<Vec2Types> >()
-        .addAlias("ProjectToLineConstraint")
+int PointProjectiveConstraintClass = core::RegisterObject("Project particles to a point")
+        .add< PointProjectiveConstraint<Vec3Types> >()
+        .add< PointProjectiveConstraint<Vec2Types> >()
+        .add< PointProjectiveConstraint<Vec1Types> >()
+        .add< PointProjectiveConstraint<Vec6Types> >()
+        .addAlias("ProjectToPointConstraint")
         ;
 
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToLineProjectiveConstraint<Vec3Types>;
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToLineProjectiveConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec6Types>;
 
 } // namespace sofa::component::constraint::projective

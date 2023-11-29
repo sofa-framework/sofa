@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/projective/ProjectToPlaneProjectiveConstraint.inl>
+#include <sofa/component/constraint/projective/PlaneProjectiveConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/ProjectToPlaneProjectiveConstraint.inl")
+SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "sofa/component/constraint/projective/PlaneProjectiveConstraint.inl")

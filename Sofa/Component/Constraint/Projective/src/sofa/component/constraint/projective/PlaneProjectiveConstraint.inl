@@ -22,25 +22,25 @@
 #pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/constraint/projective/ProjectDirectionProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/PlaneProjectiveConstraint.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/type/vector_algorithm.h>
 
-
 namespace sofa::component::constraint::projective
 {
 
 template <class DataTypes>
-ProjectDirectionProjectiveConstraint<DataTypes>::ProjectDirectionProjectiveConstraint()
+PlaneProjectiveConstraint<DataTypes>::PlaneProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
+    , f_origin( initData(&f_origin,CPos(),"origin","A point in the plane"))
+    , f_normal( initData(&f_normal,CPos(),"normal","Normal vector to the plane"))
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new ProjectDirectionProjectiveConstraintInternalData<DataTypes>())    
+    , data(new PlaneProjectiveConstraintInternalData<DataTypes>())    
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -48,27 +48,27 @@ ProjectDirectionProjectiveConstraint<DataTypes>::ProjectDirectionProjectiveConst
 
 
 template <class DataTypes>
-ProjectDirectionProjectiveConstraint<DataTypes>::~ProjectDirectionProjectiveConstraint()
+PlaneProjectiveConstraint<DataTypes>::~PlaneProjectiveConstraint()
 {
     delete data;
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::clearConstraints()
+void PlaneProjectiveConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::addConstraint(Index index)
+void PlaneProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::removeConstraint(Index index)
+void PlaneProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
     sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -78,7 +78,7 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::removeConstraint(Index ind
 
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::init()
+void PlaneProjectiveConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -88,11 +88,10 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-
     if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-        
+
         // Initialize topological changes support
         f_indices.createTopologyHandler(_topology);
     }
@@ -115,24 +114,33 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::init()
     }
 
     reinit();
+
 }
 
 template <class DataTypes>
-void  ProjectDirectionProjectiveConstraint<DataTypes>::reinit()
+void  PlaneProjectiveConstraint<DataTypes>::reinit()
 {
+
     // normalize the normal vector
-    CPos n = f_direction.getValue();
+    CPos n = f_normal.getValue();
     if( n.norm()==0 )
         n[1]=0;
     else n *= 1/n.norm();
-    f_direction.setValue(n);
+    f_normal.setValue(n);
 
-    // create the matrix blocks corresponding to the projection to the line: nn^t or to the identity
+    // create the matrix blocks corresponding to the projection to the plane: I-nn^t or to the identity
     Block bProjection;
     for(unsigned i=0; i<bsize; i++)
         for(unsigned j=0; j<bsize; j++)
         {
-            bProjection[i][j] = n[i]*n[j];
+            if(i==j)
+            {
+                bProjection[i][j] = 1 - n[i]*n[j];
+            }
+            else
+            {
+                bProjection[i][j] =    - n[i]*n[j];
+            }
         }
 
     // get the indices sorted
@@ -145,34 +153,26 @@ void  ProjectDirectionProjectiveConstraint<DataTypes>::reinit()
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
     // fill the jacobian in ascending order
+    unsigned i=0;
     Indices::const_iterator it = tmp.begin();
-    unsigned i = 0;
-    while( i < numBlocks )
+    while( i<numBlocks )
     {
-        if( it != tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
+        if(  it!=tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
-            jacobian.insertBackBlock(i,i,bProjection);
+            jacobian.insertBackBlock(i,i,bProjection); // only one block to create
             ++it;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
-            jacobian.insertBackBlock(i,i,Block::Identity());
+            jacobian.insertBackBlock(i,i,Block::Identity()); // only one block to create
         }
         i++;
     }
     jacobian.compress();
-
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const Indices &indices = f_indices.getValue();
-    for (const auto id : indices)
-    {
-        m_origin.push_back(DataTypes::getCPos(x[id]));
-    }
-
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void PlaneProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
@@ -183,7 +183,7 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::projectMatrix( sofa::linea
 
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void PlaneProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
 
@@ -192,53 +192,51 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::projectResponse(const core
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
+void PlaneProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
     msg_error() << "projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented";
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
+void PlaneProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     projectResponse(mparams,vData);
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
+void PlaneProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
 {
     VecCoord& x = *xData.beginEdit();
 
-    const CPos& n = f_direction.getValue();
+    const CPos& n = f_normal.getValue();
+    const CPos& o = f_origin.getValue();
 
     const Indices& indices = f_indices.getValue();
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        // replace the point with its projection to the line
-
+        // replace the point with its projection to the plane
+//        x[indices[i]] -= n * ((x[indices[i]]-o)*n);
         const CPos xi = DataTypes::getCPos( x[indices[i]] );
-        DataTypes::setCPos( x[indices[i]], m_origin[i] + n * ((xi-m_origin[i])*n) );
+        DataTypes::setCPos( x[indices[i]], xi - n * ((xi-o)*n) );
     }
 
     xData.endEdit();
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void PlaneProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "applyConstraint is not implemented";
+    msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void PlaneProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    dmsg_error() << "ProjectDirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented";
+    msg_error() << "PlaneProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
-
-
-
 template <class DataTypes>
-void ProjectDirectionProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void PlaneProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
@@ -263,6 +261,7 @@ void ProjectDirectionProjectiveConstraint<DataTypes>::draw(const core::visual::V
     {
         std::vector< sofa::type::Vec3 > points;
         sofa::type::Vec3 point;
+
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);

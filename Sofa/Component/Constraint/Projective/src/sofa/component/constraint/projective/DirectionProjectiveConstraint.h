@@ -29,8 +29,11 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
+//#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
 
 namespace sofa::component::constraint::projective
@@ -38,20 +41,18 @@ namespace sofa::component::constraint::projective
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class ProjectToPointProjectiveConstraintInternalData
+class DirectionProjectiveConstraintInternalData
 {
 
 };
 
-/** Attach given particles to their initial positions.
- * Contrary to FixedConstraint, this one stops the particles even if they have a non-null initial velocity.
- * @sa FixedConstraint
+/** Project particles to an affine straight line going through the particle original position.
 */
 template <class DataTypes>
-class ProjectToPointProjectiveConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class DirectionProjectiveConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProjectToPointProjectiveConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DirectionProjectiveConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -59,33 +60,39 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::CPos CPos;
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef type::vector<Index> SetIndexArray;
-    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
-
+    typedef type::vector<Index> Indices;
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+    typedef sofa::core::topology::TopologySubsetIndices IndexSubsetData;
+    typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
+    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
+    enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
+
 
 protected:
-    ProjectToPointProjectiveConstraint();
+    DirectionProjectiveConstraint();
 
-    virtual ~ProjectToPointProjectiveConstraint();
+    virtual ~DirectionProjectiveConstraint();
 
 public:
-    SetIndex f_indices;    ///< the indices of the points to project to the target
-    Data<Coord> f_point;    ///< the target of the projection
-    Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
-    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    IndexSubsetData f_indices;  ///< the particles to project
+    Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
+    Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<ProjectToPointProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<DirectionProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    ProjectToPointProjectiveConstraintInternalData<DataTypes>* data;
-    friend class ProjectToPointProjectiveConstraintInternalData<DataTypes>;
+    DirectionProjectiveConstraintInternalData<DataTypes>* data;
+    friend class DirectionProjectiveConstraintInternalData<DataTypes>;
+
+    type::vector<CPos> m_origin;
 
 
 public:
@@ -105,29 +112,26 @@ public:
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    /** Project the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
-      */
+    /// Project the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
     void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
-
 protected :
 
+    SparseMatrix jacobian; ///< projection matrix in local state
+    SparseMatrix J;        ///< auxiliary variable
 };
 
 
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointProjectiveConstraint_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointProjectiveConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointProjectiveConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointProjectiveConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPointProjectiveConstraint<defaulttype::Vec6Types>;
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_DirectionProjectiveConstraint_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<defaulttype::Vec2Types>;
 
 #endif
+
 template<class T>
-using ProjectToPointConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectToPointConstraint has been renamed to ProjectToPointProjectiveConstraint") = ProjectToPointProjectiveConstraint<T>;
+using ProjectDirectionConstraint SOFA_ATTRIBUTE_DEPRECATED("v23.12 ", "v24.12", "ProjectDirectionConstraint has been renamed to DirectionProjectiveConstraint") = DirectionProjectiveConstraint<T>;
 
 } // namespace sofa::component::constraint::projective

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneProjectiveConstraint_CPP
-#include <sofa/component/constraint/projective/ProjectToPlaneProjectiveConstraint.inl>
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PlaneProjectiveConstraint_CPP
+#include <sofa/component/constraint/projective/PlaneProjectiveConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::constraint::projective
@@ -30,14 +30,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-int ProjectToPlaneProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-        .add< ProjectToPlaneProjectiveConstraint<Vec3Types> >()
-        .add< ProjectToPlaneProjectiveConstraint<Vec2Types> >()
+int PlaneProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+        .add< PlaneProjectiveConstraint<Vec3Types> >()
+        .add< PlaneProjectiveConstraint<Vec2Types> >()
         .addAlias("ProjectToPlaneConstraint")
         ;
 
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneProjectiveConstraint<Vec3Types>;
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneProjectiveConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PlaneProjectiveConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PlaneProjectiveConstraint<Vec2Types>;
 
 } // namespace sofa::component::constraint::projective
 

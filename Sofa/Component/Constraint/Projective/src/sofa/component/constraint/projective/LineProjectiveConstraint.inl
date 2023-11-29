@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/constraint/projective/ProjectToLineProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
@@ -33,14 +33,14 @@ namespace sofa::component::constraint::projective
 {
 
 template <class DataTypes>
-ProjectToLineProjectiveConstraint<DataTypes>::ProjectToLineProjectiveConstraint()
+LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_origin( initData(&f_origin,CPos(),"origin","A point in the line"))
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new ProjectToLineProjectiveConstraintInternalData<DataTypes>())    
+    , data(new LineProjectiveConstraintInternalData<DataTypes>())    
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -48,27 +48,27 @@ ProjectToLineProjectiveConstraint<DataTypes>::ProjectToLineProjectiveConstraint(
 
 
 template <class DataTypes>
-ProjectToLineProjectiveConstraint<DataTypes>::~ProjectToLineProjectiveConstraint()
+LineProjectiveConstraint<DataTypes>::~LineProjectiveConstraint()
 {
     delete data;
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::clearConstraints()
+void LineProjectiveConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::addConstraint(Index index)
+void LineProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::removeConstraint(Index index)
+void LineProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
     sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -78,7 +78,7 @@ void ProjectToLineProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::init()
+void LineProjectiveConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -117,13 +117,13 @@ void ProjectToLineProjectiveConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void  ProjectToLineProjectiveConstraint<DataTypes>::reinit()
+void  LineProjectiveConstraint<DataTypes>::reinit()
 {
     updateJacobian();
 }
 
 template <class DataTypes>
-void  ProjectToLineProjectiveConstraint<DataTypes>::updateJacobian()
+void  LineProjectiveConstraint<DataTypes>::updateJacobian()
 {
     // normalize the normal vector
     CPos n = f_direction.getValue();
@@ -169,7 +169,7 @@ void  ProjectToLineProjectiveConstraint<DataTypes>::updateJacobian()
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void LineProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
@@ -180,7 +180,7 @@ void ProjectToLineProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearal
 
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void LineProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     
@@ -196,19 +196,19 @@ void ProjectToLineProjectiveConstraint<DataTypes>::projectResponse(const core::M
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
+void LineProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
     msg_error() << "projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented";
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
+void LineProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     projectResponse(mparams,vData);
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
+void LineProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
 {
     VecCoord& x = *xData.beginEdit();
 
@@ -229,22 +229,22 @@ void ProjectToLineProjectiveConstraint<DataTypes>::projectPosition(const core::M
 
 // Matrix Integration interface
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void LineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void LineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToLineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
+    msg_error() << "LineProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 
 
 
 template <class DataTypes>
-void ProjectToLineProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void LineProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;

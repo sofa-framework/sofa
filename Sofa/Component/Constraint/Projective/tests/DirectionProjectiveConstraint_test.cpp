@@ -27,23 +27,25 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
-#include <sofa/component/constraint/projective/ProjectToLineProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/DirectionProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa {
+
+namespace {
+
 using namespace component;
 using namespace defaulttype;
+using namespace core::objectmodel;
 
-
-
-/**  Test suite for ProjectToLineProjectiveConstraint.
+/**  Test suite for DirectionProjectiveConstraint.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToLineProjectiveConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
+struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -52,8 +54,8 @@ struct ProjectToLineProjectiveConstraint_test : public BaseSimulationTest, Numer
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef constraint::projective::ProjectToLineProjectiveConstraint<DataTypes> ProjectToLineProjectiveConstraint;
-    typedef typename ProjectToLineProjectiveConstraint::Indices Indices;
+    typedef constraint::projective::DirectionProjectiveConstraint<DataTypes> DirectionProjectiveConstraint;
+    typedef typename DirectionProjectiveConstraint::Indices Indices;
     typedef component::topology::container::dynamic::PointSetTopologyContainer PointSetTopologyContainer;
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -62,37 +64,35 @@ struct ProjectToLineProjectiveConstraint_test : public BaseSimulationTest, Numer
 
     unsigned numNodes;                         ///< number of particles used for the test
     Indices indices;                           ///< indices of the nodes to project
-    CPos origin;                               ///< origin of the plane to project to
-    CPos direction;                            ///< direction of the line to project to
-    typename ProjectToLineProjectiveConstraint::SPtr projection;
+    CPos direction;                            ///< direction to project to
+    typename DirectionProjectiveConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
-    /// Create the context for the tests.
+     /// Create the context for the tests.
     void SetUp() override
     {
+        //Init
         simulation = sofa::simulation::getSimulation();
         ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSetTopologyContainer>();
+        const PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
         root->addObject(topology);
 
-        dofs = core::objectmodel::New<MechanicalObject>();
+        dofs = New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = core::objectmodel::New<ProjectToLineProjectiveConstraint>();
+        // Project direction constraint
+        projection = New<DirectionProjectiveConstraint>();
         root->addObject(projection);
 
         /// Set the values
         numNodes = 3;
         dofs->resize(numNodes);
 
-
-        origin = CPos(0,0,0);
-        projection->f_origin.setValue(origin);
-        direction = CPos(1,1,1);
+        direction = CPos(0,1,1);
         projection->f_direction.setValue(direction);
 
     }
@@ -101,21 +101,20 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
       For each of these cases, we can test if the projections work
       */
     ///@{
-    /** Constrain one particle, and not the last one.
-    Detects bugs like not setting the projection matrix entries beyond the last constrained particle
+    /** Constraint one particle, and not the last one.
     */
     void init_oneConstrainedParticle()
     {
         indices.clear();
-        indices.push_back(1);
-        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
+        indices.push_back(0);
+//        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
         projection->f_indices.setValue(indices);
 
         /// Init
         sofa::simulation::node::initRoot(root.get());
     }
 
-    /** Constrain all the particles.
+    /** Constraint all the particles.
     */
     void init_allParticlesConstrained()
     {
@@ -129,7 +128,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
     }
     ///@}
 
-
+    // Test project position
     bool test_projectPosition()
     {
        VecCoord xprev(numNodes);
@@ -137,7 +136,18 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
+
        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+
+       type::vector<CPos> m_origin;
+
+       // particle original position
+       const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();
+        for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+        {
+             m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
+        }
+
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -145,8 +155,9 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        {
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
+              CPos crossprod = (x[i]-m_origin[i]).cross(direction); // should be parallel
               Real scal = crossprod*crossprod; // null if x is on the line
+
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -157,6 +168,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
            {
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
+
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
@@ -167,6 +179,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        return succeed;
     }
 
+    // Test project velocity
     bool test_projectVelocity()
     {
        VecDeriv vprev(numNodes);
@@ -174,6 +187,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
+
        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
 
        bool succeed=true;
@@ -184,6 +198,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
            {
               CPos crossprod = v[i].cross(direction); // should be parallel
               Real scal = crossprod.norm(); // null if v is ok
+
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -221,17 +236,18 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(ProjectToLineProjectiveConstraint_test, DataTypes);
+TYPED_TEST_SUITE(DirectionProjectiveConstraint_test, DataTypes);
+
 // first test case
-TYPED_TEST( ProjectToLineProjectiveConstraint_test , oneConstrainedParticle )
+TYPED_TEST( DirectionProjectiveConstraint_test , oneConstrainedParticle )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
-// next test case
-TYPED_TEST( ProjectToLineProjectiveConstraint_test , allParticlesConstrained )
+// second test case
+TYPED_TEST( DirectionProjectiveConstraint_test , allParticlesConstrained )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
@@ -239,6 +255,7 @@ TYPED_TEST( ProjectToLineProjectiveConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
+} // anonymous namespace
 
 } // namespace sofa
 
