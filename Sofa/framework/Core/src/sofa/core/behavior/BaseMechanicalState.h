@@ -27,6 +27,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/linearalgebra/fwd.h> /// For BaseMatrix
+#include <sofa/core/behavior/VMultiOpEntry.h>
 
 namespace sofa::core::behavior
 {
@@ -130,25 +131,7 @@ public:
                      ConstVecId b = ConstVecId::null(),
                      SReal f = 1.0 ) = 0;
 
-    /// Data structure describing a set of linear operation on vectors
-    /// \see vMultiOp
-    class VMultiOpEntry : public std::pair< MultiVecId, type::vector< std::pair< ConstMultiVecId, SReal > > >
-    {
-    public:
-        typedef std::pair< ConstMultiVecId, SReal > Fact;
-        typedef type::vector< Fact > VecFact;
-        typedef std::pair< MultiVecId, VecFact > Inherit;
-        VMultiOpEntry() : Inherit(MultiVecId::null(), VecFact()) {}
-        VMultiOpEntry(MultiVecId v) : Inherit(v, VecFact()) {}
-        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, SReal af = 1.0) : Inherit(v, VecFact())
-        { this->second.push_back(Fact(a, af)); }
-        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, ConstMultiVecId b, SReal bf = 1.0) : Inherit(v, VecFact())
-        { this->second.push_back(Fact(a,1.0));  this->second.push_back(Fact(b, bf)); }
-        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, SReal af, ConstMultiVecId b, SReal bf = 1.0) : Inherit(v, VecFact())
-        { this->second.push_back(Fact(a, af));  this->second.push_back(Fact(b, bf)); }
-    };
-
-    typedef type::vector< VMultiOpEntry > VMultiOp;
+    using VMultiOp = sofa::core::behavior::VMultiOp;
 
     /// \brief Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
     ///

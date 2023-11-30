@@ -43,8 +43,8 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
 {
     for (const auto& op : ops)
     {
-        VecId r = op.first.getId(this);
-        const type::vector< std::pair< ConstMultiVecId, SReal > >& operands = op.second;
+        VecId r = op.getOutput().getId(this);
+        const auto& operands = op.getLinearCombination();
         const size_t nop = operands.size();
         if (nop==0)
         {
@@ -52,27 +52,27 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
         }
         else if (nop==1)
         {
-            if (operands[0].second == 1.0)
-                vOp( params, r, operands[0].first.getId(this));
+            if (operands[0].factor == 1._sreal)
+                vOp( params, r, operands[0].id.getId(this));
             else
-                vOp( params, r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+                vOp( params, r, ConstVecId::null(), operands[0].id.getId(this), operands[0].factor);
         }
         else
         {
             size_t i;
-            if (operands[0].second == 1.0)
+            if (operands[0].factor == 1._sreal)
             {
-                vOp( params, r, operands[0].first.getId(this), operands[1].first.getId(this), operands[1].second);
+                vOp( params, r, operands[0].id.getId(this), operands[1].id.getId(this), operands[1].factor);
                 i = 2;
             }
             else
             {
-                vOp( params, r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+                vOp( params, r, ConstVecId::null(), operands[0].id.getId(this), operands[0].factor);
                 i = 1;
             }
             for (; i<nop; ++i)
             {
-                vOp(params, r, r, operands[i].first.getId(this), operands[i].second);
+                vOp(params, r, r, operands[i].id.getId(this), operands[i].factor);
             }
         }
     }
