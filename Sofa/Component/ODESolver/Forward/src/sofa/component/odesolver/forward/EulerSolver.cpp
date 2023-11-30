@@ -135,10 +135,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newPos = pos + newVel * dt
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
+        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
 
         newPos.eq(pos, newVel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
+        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
     else
     {
@@ -146,10 +146,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newVel = vel + acc * dt
 
         newPos.eq(pos, vel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
+        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
+        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
     }
 #else // single-operation optimization
     {
