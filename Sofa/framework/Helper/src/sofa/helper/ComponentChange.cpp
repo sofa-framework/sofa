@@ -614,12 +614,10 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "CompareState", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
     { "CompareTopology", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
 
-    // Removed in #4040, deprecated in #2777
-    { "MechanicalMatrixMapper", Removed("v23.06", "v23.12") },
-    { "MappingGeometricStiffnessForceField", Removed("v23.06", "v23.12") },
 
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+
     { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") }
 
 };
@@ -727,6 +725,9 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"TriangleModel", Removed("v19.12", "v20.06")},
     {"TTriangleModel", Removed("v19.12", "v20.06")},
 
+    // Removed in #4040, deprecated in #2777
+    { "MechanicalMatrixMapper", Removed("v23.06", "v23.12") },
+    { "MappingGeometricStiffnessForceField", Removed("v23.06", "v23.12") },
 
     // Change Constraint naming #4302
     {"AffineMovementConstraint", Renamed("v24.06","v25.06","AffineMovementProjectiveConstraint")},
@@ -754,7 +755,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralInteractionLagrangianConstraint")}
-    
     
 };
 
