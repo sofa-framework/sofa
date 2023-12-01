@@ -11,6 +11,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/AnimateVisitor.h
     ${SRC_ROOT}/BaseMechanicalVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
+    ${SRC_ROOT}/CactusStackStorage.h
     ${SRC_ROOT}/CleanupVisitor.h
     ${SRC_ROOT}/CollisionAnimationLoop.h
     ${SRC_ROOT}/CollisionBeginEvent.h
@@ -29,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/InitVisitor.h
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
+    ${SRC_ROOT}/LocalStorage.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -149,6 +151,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AnimateVisitor.cpp
     ${SRC_ROOT}/BaseMechanicalVisitor.cpp
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.cpp
+    ${SRC_ROOT}/CactusStackStorage.cpp
     ${SRC_ROOT}/CleanupVisitor.cpp
     ${SRC_ROOT}/CollisionAnimationLoop.cpp
     ${SRC_ROOT}/CollisionBeginEvent.cpp
