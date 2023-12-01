@@ -186,7 +186,7 @@ void GraphVisitor::openTime      ( tinyxml2::XMLNode* node, QTreeWidgetItem* ite
     addTime(item,  s.str());
 }
 
-double GraphVisitor::getTime(tinyxml2::XMLAttribute* attribute) const
+double GraphVisitor::getTime(const tinyxml2::XMLAttribute* attribute) const
 {
     static double conversion=1.0/(double)CTime::getTicksPerSec();
     std::string valueOfAttribute(attribute->Value());
@@ -205,7 +205,7 @@ double GraphVisitor::getTotalTime(tinyxml2::XMLNode* node) const
             const tinyxml2::XMLAttribute* attribute=child->ToElement()->FirstAttribute();
             double total=getTime(attribute);
             std::ostringstream out; out << total;
-            attribute->SetValue(out.str().c_str());
+            child->ToElement()->SetAttribute(attribute->Name(),out.str().c_str());
             return total;
         }
     }

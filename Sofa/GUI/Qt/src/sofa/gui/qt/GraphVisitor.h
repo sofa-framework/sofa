@@ -32,7 +32,7 @@
 #include <sofa/gui/qt/PieWidget.h>
 
 #include <tinyxml2.h>
-#include <tinystr.h>
+//#include <tinystr.h>
 
 #include <iostream>
 #include <set>
@@ -55,7 +55,7 @@ public:
     void clear() {graph->clear();}
 
     double getTotalTime(tinyxml2::XMLNode* node) const;
-    inline double getTime(tinyxml2::XMLAttribute* attribute) const;
+    inline double getTime(const tinyxml2::XMLAttribute* attribute) const;
 
 protected:
     void openTime           ( tinyxml2::XMLNode* element, QTreeWidgetItem* item);
