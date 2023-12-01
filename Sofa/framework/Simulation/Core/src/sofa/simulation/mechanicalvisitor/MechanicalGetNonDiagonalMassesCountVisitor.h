@@ -30,10 +30,11 @@ namespace sofa::simulation::mechanicalvisitor
 class SOFA_SIMULATION_CORE_API MechanicalGetNonDiagonalMassesCountVisitor : public MechanicalVisitor
 {
 public:
+    SReal* m_nbNonDiagonalMassesPtr {nullptr};
+
     MechanicalGetNonDiagonalMassesCountVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
-            : MechanicalVisitor(mparams)
+        : MechanicalVisitor(mparams), m_nbNonDiagonalMassesPtr(result)
     {
-        rootData = result;
     }
 
     Result fwdMass(VisitorContext* ctx, sofa::core::behavior::BaseMass* mass) override;
@@ -46,7 +47,6 @@ public:
     {
         return true;
     }
-
 };
 
 }
