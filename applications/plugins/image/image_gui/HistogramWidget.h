@@ -86,7 +86,7 @@ public:
         label3=new QLabel(parent);
 
         QHBoxLayout *layout = new QHBoxLayout(parent);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(label1);
         layout->addStretch();
         layout->addWidget(label2);
@@ -268,7 +268,7 @@ public:
         label->setNum(0);
 
         QHBoxLayout *layout = new QHBoxLayout(this);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(10);
         layout->addWidget(labelName);
         layout->addWidget(slider);
