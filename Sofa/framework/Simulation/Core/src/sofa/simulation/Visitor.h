@@ -37,6 +37,8 @@
 namespace sofa::simulation
 {
 
+class LocalStorage;
+
 /// Base class for visitors propagated recursively through the scenegraph
 class SOFA_SIMULATION_CORE_API Visitor
 {
@@ -155,6 +157,16 @@ public:
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
+
+    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    /// This version is offered a LocalStorage to store temporary data
+    SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
+    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*) { return processNodeTopDown(node); }
+
+    /// Callback method called after child node have been processed and before going back to the parent node.
+    /// This version is offered a LocalStorage to store temporary data
+    SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
+    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
 
     typedef sofa::core::objectmodel::Tag Tag;
     typedef sofa::core::objectmodel::TagSet TagSet;

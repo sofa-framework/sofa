@@ -23,6 +23,7 @@
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/LocalStorage.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
@@ -195,6 +196,63 @@ Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* 
 {
     return fwdConstraintSet(ctx->node, c);
 }
+
+
+Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
+{
+    if (root == nullptr)
+    {
+        root = node;
+    }
+
+    VisitorContext ctx;
+    ctx.root = root;
+    ctx.node = node;
+    ctx.nodeData = rootData;
+
+    const bool writeData = writeNodeData();
+    if (writeData)
+    {
+        // create temporary accumulation buffer for parallel reductions (dot products)
+        if (node != root)
+        {
+            const SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
+            ctx.nodeData = new SReal(0.0);
+            setNodeData(node, ctx.nodeData, parentData);
+            stack->push(ctx.nodeData);
+        }
+    }
+
+    return processNodeTopDown(node, &ctx);
+}
+
+
+void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalStorage* stack)
+{
+    VisitorContext ctx;
+    ctx.root = root;
+    ctx.node = node;
+    ctx.nodeData = rootData;
+    SReal* parentData = rootData;
+
+    const bool writeData = writeNodeData();
+
+    if (writeData)
+    {
+        // use temporary accumulation buffer for parallel reductions (dot products)
+        if (node != root)
+        {
+            ctx.nodeData = (SReal*)stack->pop();
+            parentData = stack->empty() ? rootData : (SReal*)stack->top();
+        }
+    }
+
+    processNodeBottomUp(node, &ctx);
+
+    if (writeData && parentData != ctx.nodeData)
+        addNodeData(node, parentData, ctx.nodeData);
+}
+
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 
