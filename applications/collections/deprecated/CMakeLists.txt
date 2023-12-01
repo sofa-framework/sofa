@@ -1,7 +1,6 @@
 # meta-modules (SofaKernel)
 
 sofa_add_subdirectory(collection SofaFramework SofaFramework ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(collection SofaSimulation SofaSimulation ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection SofaBase SofaBase ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 

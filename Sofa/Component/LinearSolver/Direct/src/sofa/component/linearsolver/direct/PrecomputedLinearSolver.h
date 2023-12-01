@@ -92,9 +92,7 @@ public:
     void invert(TMatrix& M) override;
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void loadMatrix(TMatrix& M);
-#if SOFASPARSESOLVER_HAVE_CSPARSE
-    void loadMatrixWithCSparse(TMatrix& M);
-#endif
+    void loadMatrixWithCholeskyDecomposition(TMatrix& M);
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
     /// Returns the sofa template name. By default the name of the c++ class signature is exposed...

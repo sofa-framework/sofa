@@ -20,10 +20,10 @@ sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid)
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
-sofa_add_subdirectory(plugin MultiThreading MultiThreading)
+sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
 sofa_add_subdirectory(plugin image image) # Depends on DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # empty, just redirect to the image plugin
-sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
+sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on image
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
 sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL)
@@ -55,6 +55,7 @@ sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL)
 sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
 sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL)
+sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL)
 
 
 sofa_add_subdirectory(plugin PSL PSL EXTERNAL)
