@@ -58,15 +58,15 @@ void DefaultCollisionGroupManager_test::onSetUp()
             + "/DefaultCollisionGroupManager_singleObject_test.scn";
 
     // Init simulation
-    sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-    root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+    simulation = sofa::simulation::getSimulation();
+    root = sofa::simulation::node::load(sceneFilename.c_str());
 }
 
 void DefaultCollisionGroupManager_test::onTearDown()
 {
     if (root != nullptr)
     {
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::node::unload(root);
     }
 }
 
@@ -75,7 +75,7 @@ bool DefaultCollisionGroupManager_test::combineSingleObject()
     EXPECT_TRUE(root != nullptr);
     EXPECT_TRUE(sofa::simulation::getSimulation() != nullptr);
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     // run 200 time steps
     // objectives:
@@ -83,7 +83,7 @@ bool DefaultCollisionGroupManager_test::combineSingleObject()
     // 2) Collision prevents the cube to fall through the floor
     for (unsigned int i = 0; i < 200; ++i)
     {
-        sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+        sofa::simulation::node::animate(root.get(), 0.01);
     }
 
     auto* baseObject = root->getTreeNode("Cube1")->getObject("mechanicalObject");

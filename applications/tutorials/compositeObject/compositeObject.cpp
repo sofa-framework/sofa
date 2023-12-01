@@ -256,13 +256,11 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;
     sofa::gui::common::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     //=================================================
     sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0 );
     //=================================================
 
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     sofa::gui::common::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
@@ -271,7 +269,7 @@ int main(int argc, char** argv)
     if (int err = sofa::gui::common::GUIManager::MainLoop(groot))
         return err;
 
-    sofa::simulation::getSimulation()->unload(groot);
+    sofa::simulation::node::unload(groot);
     sofa::gui::common::GUIManager::closeGUI();
 
     sofa::simulation::graph::cleanup();
