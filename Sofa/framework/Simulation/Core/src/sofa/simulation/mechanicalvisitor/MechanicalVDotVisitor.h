@@ -32,7 +32,7 @@ class SOFA_SIMULATION_CORE_API MechanicalVDotVisitor : public BaseMechanicalVisi
 public:
     sofa::core::ConstMultiVecId a;
     sofa::core::ConstMultiVecId b;
-    SReal* m_total { nullptr };
+    SReal* const m_total { nullptr };
 
     MechanicalVDotVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, SReal* t)
             : BaseMechanicalVisitor(params) , a(a), b(b), m_total(t)
