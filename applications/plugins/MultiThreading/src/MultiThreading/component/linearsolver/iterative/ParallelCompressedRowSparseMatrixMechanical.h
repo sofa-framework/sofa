@@ -125,7 +125,7 @@ public:
                     // transfer a chunk of large vector to a local block-sized vector
                     sofa::type::Vec<NC, Real> v;
                     //Index jN = colsIndex[xj] * NC;    // scalar column index
-                    for (Index bj = 0; bj < NC; ++bj)
+                    for (sofa::Index bj = 0; bj < NC; ++bj)
                     {
                         v[bj] = vget(vec, m_crs.colsIndex[xj], NC, bj);
                     }
@@ -133,9 +133,9 @@ public:
                     // multiply the block with the local vector
                     const typename Base::Block& b = m_crs.colsValue[xj];
                     // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                    for (Index bi = 0; bi < NL; ++bi)
+                    for (sofa::Index bi = 0; bi < NL; ++bi)
                     {
-                        for (Index bj = 0; bj < NC; ++bj)
+                        for (sofa::Index bj = 0; bj < NC; ++bj)
                         {
                             r[bi] += Base::traits::v(b, bi, bj) * v[bj];
                         }
@@ -144,7 +144,7 @@ public:
 
                 // transfer the local result  to the large result vector
                 //Index iN = rowIndex[xi] * NL;                      // scalar row index
-                for (Index bi = 0; bi < NL; ++bi)
+                for (sofa::Index bi = 0; bi < NL; ++bi)
                 {
                     vset(res, m_crs.rowIndex[xi], NL, bi, r[bi]);
                 }

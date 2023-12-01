@@ -71,6 +71,7 @@ DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _m_node)
     : Inherit()
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel"))
 {
+    SOFA_UNUSED(_m_node);
     this->addUpdateCallback("parallelODESolving", {&d_parallelODESolving},
     [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
     {
