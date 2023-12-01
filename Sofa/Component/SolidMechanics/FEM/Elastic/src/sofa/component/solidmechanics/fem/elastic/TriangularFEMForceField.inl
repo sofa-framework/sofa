@@ -215,7 +215,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index& a, Index& b, In
     }
     else
     {
-        VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        const VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
         tinfo->rotation = tinfo->initialTransformation;
         if (a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size())
         {
