@@ -35,6 +35,12 @@ struct ScaledMultiVecId
 
     explicit ScaledMultiVecId(TMultiVecId<vtype, vaccess> _id, SReal _factor = 1._sreal)
         : id{_id}, factor(_factor) {}
+
+    SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_ID()
+    DeprecatedAndRemoved first;
+
+    SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_FACTOR()
+    DeprecatedAndRemoved second;
 };
 
 using ScaledConstMultiVecId = ScaledMultiVecId<V_ALL, V_READ>;
@@ -89,6 +95,12 @@ public:
 
     Output& getOutput() { return m_output; }
     LinearCombinationConstMultiVecId& getLinearCombination() { return m_linearCombination; }
+
+    SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_OUTPUT()
+    DeprecatedAndRemoved first;
+
+    SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_LIST()
+    DeprecatedAndRemoved second;
 
 private:
     Output m_output;
