@@ -80,14 +80,14 @@ public:
     using Output = MultiVecId;
     using LinearCombinationConstMultiVecId = LinearCombinationMultiVecId<V_ALL, V_READ>; //corresponds to ConstMultiVecId
 
-    explicit VMultiOpEntry(const Output& id = MultiVecId::null(),
+    explicit VMultiOpEntry(const Output& outputId = MultiVecId::null(),
                            LinearCombinationConstMultiVecId linearCombination = {})
-        : m_output(id)
+        : m_output(outputId)
         , m_linearCombination(std::move(linearCombination))
     {}
 
-    VMultiOpEntry(const Output& id, ScaledConstMultiVecId scaledId)
-        : VMultiOpEntry(id, LinearCombinationConstMultiVecId{std::move(scaledId)})
+    VMultiOpEntry(const Output& outputId, ScaledConstMultiVecId scaledId)
+        : VMultiOpEntry(outputId, LinearCombinationConstMultiVecId{std::move(scaledId)})
     {}
 
     [[nodiscard]] const Output& getOutput() const { return m_output; }
