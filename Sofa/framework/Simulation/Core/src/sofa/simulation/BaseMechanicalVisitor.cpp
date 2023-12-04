@@ -201,14 +201,14 @@ Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
 {
     SOFA_UNUSED(stack);
-    processNodeTopDown(node);
+    return processNodeTopDown(node);
 }
 
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalStorage* stack)
 {
     SOFA_UNUSED(stack);
-    processNodeBottomUp(node);
+    return processNodeBottomUp(node);
 }
 
 
@@ -365,25 +365,6 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseO
 //    return dynamic_cast<const sofa::core::ConstraintParams*>(params);
 //}
 
-
-/// Return true if this visitor need to read the node-specific data if given
-bool BaseMechanicalVisitor::readNodeData() const
-{ return false; }
-
-/// Return true if this visitor need to write to the node-specific data if given
-bool BaseMechanicalVisitor::writeNodeData() const
-{ return false; }
-
-void BaseMechanicalVisitor::setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData)
-{
-    *nodeData = (parentData == nullptr) ? 0.0 : *parentData;
-}
-
-void BaseMechanicalVisitor::addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData)
-{
-    if (parentData)
-        *parentData += *nodeData;
-}
 
 /// Return a class name for this visitor
 /// Only used for debugging / profiling purposes
