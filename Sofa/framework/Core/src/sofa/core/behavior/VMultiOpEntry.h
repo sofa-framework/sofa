@@ -103,7 +103,10 @@ public:
     DeprecatedAndRemoved second;
 
 private:
+    /// The linear combination will be written in this MultiVecId
     Output m_output;
+
+    /// Definition of the operation to perform as a linear combination
     LinearCombinationConstMultiVecId m_linearCombination;
 };
 
