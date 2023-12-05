@@ -608,20 +608,20 @@ public:
         return elems.data();
     }
 
-    constexpr typename ArrayType::iterator begin() noexcept
+    constexpr iterator begin() noexcept
     {
         return elems.begin();
     }
-    constexpr typename ArrayType::const_iterator begin() const noexcept
+    constexpr const_iterator begin() const noexcept
     {
         return elems.begin();
     }
 
-    constexpr typename ArrayType::iterator end() noexcept
+    constexpr iterator end() noexcept
     {
         return elems.end();
     }
-    constexpr typename ArrayType::const_iterator end() const noexcept
+    constexpr const_iterator end() const noexcept
     {
         return elems.end();
     }
