@@ -26,6 +26,7 @@
 
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/fixed_array_algorithms.h>
+#include <sofa/type/Vec.h>
 
 using namespace sofa::type::pairwise;
 
@@ -174,6 +175,16 @@ RGBAColor RGBAColor::fromVec4(const type::fixed_array<float, 4>& color)
 }
 
 RGBAColor RGBAColor::fromVec4(const type::fixed_array<double, 4>& color)
+{
+    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
+}
+
+RGBAColor RGBAColor::fromVec4(const type::Vec4f& color)
+{
+    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
+}
+
+RGBAColor RGBAColor::fromVec4(const type::Vec4d& color)
 {
     return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }

@@ -65,6 +65,10 @@ public:
     static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<double, 4>& color);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4f& color);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4d& color);
 
     static RGBAColor fromString(const std::string& str);
     static RGBAColor fromFloat(float r, float g, float b, float a);
@@ -208,6 +212,17 @@ constexpr RGBAColor operator+(const RGBAColor& l, const RGBAColor& r)
 {
     return sofa::type::pairwise::operator+(l, r);
 }
+
+constexpr RGBAColor operator/(const RGBAColor& l, const float div)
+{
+    RGBAColor result{};
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+        result[i] = l[i] / div;
+    }
+    return result;
+}
+
 
 constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
 constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
