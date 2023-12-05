@@ -19,10 +19,11 @@ set(SOURCE_FILES
 )
 
 set(README_FILES
+    README.md
     PluginHaption.txt
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HAPTIONPLUGIN")
 target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Haptics
