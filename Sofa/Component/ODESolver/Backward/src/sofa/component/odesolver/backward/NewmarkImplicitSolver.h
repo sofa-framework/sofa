@@ -56,12 +56,12 @@ protected:
 
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
-    Data<double> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
-    Data<double> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
-    Data<double> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
+    Data<SReal> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)
 
-    Data<double> d_gamma; ///< Newmark scheme gamma coefficient
-    Data<double> d_beta; ///< Newmark scheme beta coefficient
+    Data<SReal> d_gamma; ///< Newmark scheme gamma coefficient
+    Data<SReal> d_beta; ///< Newmark scheme beta coefficient
 
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 

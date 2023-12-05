@@ -70,10 +70,10 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 
     const SReal h = dt;
-    const double gamma = d_gamma.getValue();
-    const double beta = d_beta.getValue();
-    const double rM = d_rayleighMass.getValue();
-    const double rK = d_rayleighStiffness.getValue();
+    const SReal gamma = d_gamma.getValue();
+    const SReal beta = d_beta.getValue();
+    const SReal rM = d_rayleighMass.getValue();
+    const SReal rK = d_rayleighStiffness.getValue();
 
     // 1. Initialize a_t and to store it as a vecId to be used in the resolution of this solver (using as well old xand v)
     // Once we have a_{t+dt} we can update the new x and v.
