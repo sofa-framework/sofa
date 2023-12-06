@@ -461,8 +461,6 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
 template<class DataTypes>
 void PolynomialSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    SCOPED_TIMER("restShapeSpringBuildStiffnessMatrix");
-
     unsigned int firstIndex = 0;
     unsigned int secondIndex = 0;
 
