@@ -64,7 +64,7 @@ QRGBAColorPicker::QRGBAColorPicker(QWidget* parent) : QWidget(parent)
 Vec4f QRGBAColorPicker::getColor() const
 {
     typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
+    constexpr uchar max = std::numeric_limits<uchar>::max();
     Vec4f color;
     float r = _r->text().toFloat();
     float g = _g->text().toFloat();
@@ -94,14 +94,14 @@ void QRGBAColorPicker::updateRGBAColor()
     redrawColorButton();
 }
 
-void QRGBAColorPicker::setColor(const Vec4f& color)
+void QRGBAColorPicker::setColor(const type::RGBAColor& color)
 {
     typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
-    const uchar r = uchar(  max * color[0] );
-    const uchar g = uchar(  max * color[1] );
-    const uchar b = uchar(  max * color[2] );
-    const uchar a = uchar(  max * color[3] );
+    constexpr uchar max = std::numeric_limits<uchar>::max();
+    const uchar r = uchar(max * color[0]);
+    const uchar g = uchar(max * color[1]);
+    const uchar b = uchar(max * color[2]);
+    const uchar a = uchar(max * color[3]);
     QString str;
     str.setNum(r);
     _r->setText(str);
@@ -111,9 +111,14 @@ void QRGBAColorPicker::setColor(const Vec4f& color)
     _b->setText(str);
     str.setNum(a);
     _a->setText(str);
-    _rgba = qRgba(r,g,b,a);
+    _rgba = qRgba(r, g, b, a);
 
     redrawColorButton();
+}
+
+void QRGBAColorPicker::setColor(const Vec4f& color)
+{
+    setColor(type::RGBAColor{color[0], color[1] , color[2] ,color[3]});
 }
 
 void QRGBAColorPicker::redrawColorButton()

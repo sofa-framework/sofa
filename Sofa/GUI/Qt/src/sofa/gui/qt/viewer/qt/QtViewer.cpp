@@ -599,7 +599,7 @@ void QtViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            gl::Axis::draw(sofa::type::Vec3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
