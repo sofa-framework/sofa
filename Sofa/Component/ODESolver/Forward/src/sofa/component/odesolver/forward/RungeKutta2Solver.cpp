@@ -91,9 +91,9 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     // Use the derivative at newX, newV to update the state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos2.eq(pos,newV,dt);
-    solveConstraint(dt,pos2,core::ConstraintParams::ConstOrder::POS);
+    mop.solveConstraint(pos2,core::ConstraintOrder::POS);
     vel2.eq(vel,acc,dt);
-    solveConstraint(dt,vel2,core::ConstraintParams::ConstOrder::VEL);
+    mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
