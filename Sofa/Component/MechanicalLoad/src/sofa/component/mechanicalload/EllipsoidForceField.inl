@@ -57,7 +57,7 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 EllipsoidForceField<DataTypes>::EllipsoidForceField()
-    : d_contacts(initData(&d_contacts,"contacts", "Contacts"))
+    : d_contacts(initData(&d_contacts,"contacts", "Vector of contacts"))
     , d_center(initData(&d_center, "center", "ellipsoid center"))
     , d_vradius(initData(&d_vradius, "vradius", "ellipsoid radius"))
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
@@ -69,12 +69,6 @@ EllipsoidForceField<DataTypes>::EllipsoidForceField()
 template <class DataTypes>
 EllipsoidForceField<DataTypes>::~EllipsoidForceField()
 {
-    d_contacts.~Data();
-    d_center.~Data();
-    d_vradius.~Data();
-    d_stiffness.~Data();
-    d_damping.~Data();
-    d_color.~Data();
 }
 
 template<class DataTypes>
@@ -115,7 +109,7 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     {
         Coord dp = p1[i] - center;
         Real norm2 = 0;
-        for (int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*inv_r2[j];
+        for (unsigned int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*inv_r2[j];
         //Real d = (norm2-1)*s2;
         if ((norm2-1)*stiffness<0)
         {

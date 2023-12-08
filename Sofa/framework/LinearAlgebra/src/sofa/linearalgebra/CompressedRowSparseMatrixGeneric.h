@@ -263,7 +263,7 @@ public :
     /// Returns the range of indices from the column indices corresponding to the id-th row
     Range getRowRange(Index id) const
     {
-        if (id + 1 >= rowBegin.size())
+        if (id + 1 >= static_cast<Index>(rowBegin.size()))
         {
             return Range(s_invalidIndex, s_invalidIndex);
         }
