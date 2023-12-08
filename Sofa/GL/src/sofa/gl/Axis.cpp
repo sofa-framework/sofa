@@ -130,7 +130,7 @@ void Axis::initDraw()
     glEndList();
 }
 
-void Axis::draw( const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
+void Axis::draw( const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ )
 {
     initDraw();
 
@@ -263,42 +263,42 @@ Axis::AxisSPtr Axis::get(const type::Vec3& len)
     return a;
 }
 
-void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ )
 {
     const auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+void Axis::draw(const double *mat, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const auto a = get(len);
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+void Axis::draw(const double *mat, SReal len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const auto a = get(type::Vec3(len,len,len));
     a->update(mat);
@@ -387,6 +387,41 @@ void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r1, co
     }
     glEnd();
 
+}
+
+void Axis::draw(const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const double* mat, const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(mat, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
+}
+
+void Axis::draw(const double* mat, SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
+{
+    draw(mat, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
 }
 
 } // namespace sofa::gl

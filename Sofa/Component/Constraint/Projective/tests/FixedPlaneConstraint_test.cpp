@@ -67,7 +67,7 @@ struct FixedPlaneConstraint_test : public BaseSimulationTest
 
         /// Scene initialization
         sofa::simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
 
