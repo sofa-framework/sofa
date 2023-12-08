@@ -81,10 +81,7 @@ public:
     static constexpr Size spatial_dimensions = N;
 
     /// Default constructor: sets all values to 0.
-    constexpr Vec()
-    {
-        this->clear();
-    }
+    constexpr Vec() = default;
 
     /// Fast constructor: no initialization
     explicit constexpr Vec(NoInit)
