@@ -29,7 +29,6 @@ if (NOT Qt5Core_FOUND)
         find_package(Qt6 COMPONENTS Core CoreTools REQUIRED QUIET)
         if (Qt6Core_FOUND)
             qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-            message(FATAL_ERROR "Image_gui is not compatible with Qt6 yet.") # to remove once image_gui has been updated
         endif()
         # else() should never happened as it would already break in Sofa.GUI.Qt
     endif()
