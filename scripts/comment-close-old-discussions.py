@@ -95,8 +95,9 @@ def computeListOfDiscussionToProcess():
           # Detect the last comment
           lastCommentId = len(discussion["comments"]["nodes"]) - 1
 
-          # Pass to the next discussion item, if no comment in the discussion
-          if(lastCommentId < 0):
+          # Pass to the next discussion item if :
+          # no comment in the discussion OR discussion is answered OR closed
+          if(lastCommentId < 0 or discussion["closed"] == True or discussion["isAnswered"] == True ):
             continue
 
           lastReplyOnLastComment = len(discussion["comments"]["nodes"][lastCommentId]["replies"]["nodes"]) - 1
@@ -145,6 +146,8 @@ def make_query_discussions(owner, name, after_cursor=None):
             nodes {
               id
               number
+              isAnswered
+              closed
               authorAssociation
               author {
                 login
@@ -262,9 +265,13 @@ if(len(to_be_closed_discussion_id)!=len(to_be_closed_discussion_author)):
 
 print("** Output lists **")
 print("******************")
+print("Nb discussions to be WARNED = "+str(len(to_be_warned_discussion_number)))
+print("Nb discussions to be CLOSED = "+str(len(to_be_closed_discussion_number)))
+print("******************")
 print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number))
 print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id))
 print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author))
+print("******************")
 print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number))
 print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id))
 print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author))
