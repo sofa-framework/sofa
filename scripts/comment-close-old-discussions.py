@@ -265,16 +265,18 @@ if(len(to_be_closed_discussion_id)!=len(to_be_closed_discussion_author)):
 
 print("** Output lists **")
 print("******************")
-print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number)
-print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id)
-print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author)
-print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number)
-print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id)
-print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author)
+print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number))
+print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id))
+print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author))
+print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number))
+print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id))
+print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author))
+print("******************")
 print("******************")
 
 #==========================================================
 # WARNING step
+print("** WARNING step **")
 for index, discussion_id in enumerate(to_be_warned_discussion_id):
   print("to_be_warned_discussion_number[index] = "+str(to_be_warned_discussion_number[index]))
   print("to_be_warned_discussion_author[index] = "+str(to_be_warned_discussion_author[index]))
@@ -287,9 +289,13 @@ for index, discussion_id in enumerate(to_be_warned_discussion_id):
   print(data)
   break# ------- TO REMOVE !!!!
 
+print("******************")
+print("******************")
 
 #==========================================================
 # CLOSING step
+print("** CLOSING step **")
+
 # ------- TO REMOVE !!!! ---------
 date_today = date.today()
 date_end_temporary_message = date.fromisoformat('2024-01-01')
@@ -301,7 +307,8 @@ else:
     temporary_case = True
 
 if temporary_case:
-  print(str(date_end_temporary_message-date_today[:-9])+" days to go before end of temporary message")
+  remaining_time = date_end_temporary_message-date_today
+  print(str(remaining_time)[:-9]+" days to go before end of temporary message")
 # --------------------------------
 
 for index, discussion_id in enumerate(to_be_closed_discussion_id):
