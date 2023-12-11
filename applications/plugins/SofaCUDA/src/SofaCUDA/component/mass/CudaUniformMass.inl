@@ -241,7 +241,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::draw(const core::visual::VisualPa
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
     }
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
@@ -409,7 +409,7 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes>::draw(const core::visual::VisualPa
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
     }
 }
 

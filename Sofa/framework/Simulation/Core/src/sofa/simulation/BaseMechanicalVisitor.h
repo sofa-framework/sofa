@@ -79,7 +79,8 @@ public:
 
     /// Parallel version of processNodeTopDown.
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    Result processNodeTopDown(simulation::Node* node, LocalStorage* stack) override;
+    SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
+    Result processNodeTopDown(simulation::Node * node, LocalStorage * stack) override;
 
     /// Process the OdeSolver
     virtual Result fwdOdeSolver(simulation::Node* /*node*/, sofa::core::behavior::OdeSolver* /*solver*/);
@@ -169,7 +170,8 @@ public:
 
     /// Parallel version of processNodeBottomUp.
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack) override;
+    SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
+    void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage * stack) override;
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
     virtual void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/);

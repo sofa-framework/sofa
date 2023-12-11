@@ -609,7 +609,7 @@ void QtGLViewer::DisplayOBJs()
                                                   , this->camera()->orientation()[1]
                                                   , this->camera()->orientation()[2]
                                                   , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::type::Vec3(30.0_sreal,30.0_sreal,0.0_sreal),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0_sreal,30.0_sreal,0.0_sreal),sofaQuat.inverse(), 25.0, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
 
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
