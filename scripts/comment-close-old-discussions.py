@@ -7,9 +7,6 @@
 
 
 #TEST steps:
-# - add cron & dispatch trigger, remove trigger on label changes (yml)
-# - test with only one entry (break)
-# - remove break
 # - after 1st of December 2023, remove the temporary layer
 
 import os
@@ -287,7 +284,6 @@ for index, discussion_id in enumerate(to_be_warned_discussion_id):
             headers = {"Authorization": "Bearer {}".format(github_token)},
         )
   print(data)
-  break# ------- TO REMOVE !!!!
 
 print("******************")
 print("******************")
@@ -337,6 +333,5 @@ for index, discussion_id in enumerate(to_be_closed_discussion_id):
              headers = {"Authorization": "Bearer {}".format(github_token)},
          )
     print(data)
-  break# ------- TO REMOVE !!!!
 
 #==========================================================
