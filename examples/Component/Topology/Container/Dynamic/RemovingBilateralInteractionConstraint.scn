@@ -5,7 +5,7 @@
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI NearestPointROI] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
         <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [SubsetMultiMapping] -->
@@ -49,7 +49,7 @@
             <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             
             <BoxROI box="-0.1 -0.1 -0.1 3.1 3.1 0.1" name="box"/>
-            <FixedConstraint indices="@box.indices"/>
+            <FixedProjectiveConstraint indices="@box.indices"/>
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
             
             <TopologicalChangeProcessor listening="1" filename="RemovingConstraint.txt" />

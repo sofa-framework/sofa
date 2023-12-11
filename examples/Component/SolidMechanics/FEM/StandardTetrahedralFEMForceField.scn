@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" ?>
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -27,7 +27,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.45" method="large" />
 
         <BoxROI drawBoxes="0" box="0 0 0 1 1 0.05" name="box"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         <Visual3DText text="Corrotational" position="1 0 -0.5" scale="0.2" />
     </Node>
 
@@ -50,7 +50,7 @@
         </Node>
 
         <BoxROI drawBoxes="1" box="2 0 0 3 1 0.05" name="box"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         <Visual3DText text="ArrudaBoyce" position="3 0 -0.5" scale="0.2" />
     </Node>
 
@@ -73,7 +73,7 @@
         </Node>
 
         <BoxROI drawBoxes="1" box="4 0 0 5 1 0.05" name="box"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         <Visual3DText text="StVenantKirchhoff" position="5 0 -0.5" scale="0.2" />
     </Node>
 
@@ -97,7 +97,7 @@
         </Node>
 
         <BoxROI drawBoxes="1" box="6 0 0 7 1 0.05" name="box"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         <Visual3DText text="NeoHookean" position="7 0 -0.5" scale="0.2" />
     </Node>
 
@@ -121,7 +121,7 @@
         </Node>
 
         <BoxROI drawBoxes="1" box="8 0 0 9 1 0.05" name="box"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         <Visual3DText text="MooneyRivlin" position="9 0 -0.5" scale="0.2" />
     </Node>
 </Node>

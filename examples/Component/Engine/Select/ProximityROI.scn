@@ -35,7 +35,7 @@
         <DiagonalMass massDensity="5" />
         
         <ProximityROI name="fixedROI"  centers="0 0 1 0 0 0 0 0 0.5"  radii="0.1 0.2"  N="40" drawSphere="1"  drawPoints="1" />
-		<FixedConstraint indices="@fixedROI.indices" />
+		<FixedProjectiveConstraint indices="@fixedROI.indices" />
 
         <Node name="doNothing">
             <ProximityROI name="p1" centers="0 0 1"  radii="0.1 0.2 0.3"  N="40" />

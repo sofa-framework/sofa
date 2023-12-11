@@ -24,7 +24,7 @@
 
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>

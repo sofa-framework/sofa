@@ -50,7 +50,7 @@
             <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
             <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
             <TriangleCollisionModel template="Vec3" name="default7" />
-            <FixedConstraint template="Vec3" name="default6" indices="0 1" />
+            <FixedProjectiveConstraint template="Vec3" name="default6" indices="0 1" />
             <Node >
               <OglModel name="Visual" color="red" />
               <IdentityMapping input="@.." output="@Visual" />

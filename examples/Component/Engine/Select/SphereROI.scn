@@ -34,7 +34,7 @@
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <SphereROI centers="0 0 0" radii="0.2" drawSphere="1" position="@Volume.rest_position" computeTriangles="0" computeTetrahedra="0" computeEdges="0" name="FixedROI" />
         <DiagonalMass massDensity="5" />
-        <FixedConstraint indices="@FixedROI.indices" />
+        <FixedProjectiveConstraint indices="@FixedROI.indices" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="20" poissonRatio="0.4" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" src="@../loader" tags=" " />

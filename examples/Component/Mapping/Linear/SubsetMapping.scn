@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping SubsetMapping] -->
@@ -41,7 +41,7 @@
 		/>
 		<!--<TetrahedronFEMForceField name="FEM" youngModulus="1e3" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>-->
 		<BoxROI name="box_roi" box="-0.06 -0.001 -0.06 0.06 0.001 0.06   -0.052 -0.001 -0.06 -0.048 0.011 0.06    0.048 -0.001 -0.06 0.052 0.011 0.06" />
-		<FixedConstraint indices="@box_roi.indices" />
+		<FixedProjectiveConstraint indices="@box_roi.indices" />
 
 		<Node name="subCube1">
 			<MechanicalObject template="Vec3"/>

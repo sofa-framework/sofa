@@ -33,7 +33,7 @@
             
             <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
             <UniformMass  />
-            <FixedConstraint indices="0"/>
+            <FixedProjectiveConstraint indices="0"/>
             
             <Node name="rigidmapped points">
                     <MechanicalObject position="@/split.position1"/>
