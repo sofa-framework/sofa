@@ -87,7 +87,7 @@ public:
         QObject::connect(slider,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged()));
 
         QHBoxLayout *layout = new QHBoxLayout(this);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(10);
         //layout->add(toggle);
         layout->addWidget(slider);

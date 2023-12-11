@@ -306,6 +306,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
+    ${SRC_ROOT}/topology/TopologyData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp

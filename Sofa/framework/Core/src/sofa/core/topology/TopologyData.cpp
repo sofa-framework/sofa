@@ -19,26 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP
-#include <sofa/component/linearsolver/direct/SparseCholeskySolver.inl>
-#include <sofa/core/ObjectFactory.h>
+#define SOFA_CORE_TOPOLOGY_TOPOLOGYDATA_DEFINITION
 
-namespace sofa::component::linearsolver::direct
+#include <sofa/core/topology/TopologyData.inl>
+
+
+namespace sofa::core::topology
 {
 
-using namespace sofa::linearalgebra;
+template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 
-#ifdef SOFA_FLOAT
-SOFA_PRAGMA_WARNING("SparseCholeskySolver does not support float as scalar.")
-#else // SOFA_DOUBLE
-int SparseCholeskySolverClass =
-    core::RegisterObject(
-        "Direct linear solver based on Sparse Cholesky factorization, implemented with the "
-        "CSPARSE library")
-        .add<SparseCholeskySolver<CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >();
-
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API
-    SparseCholeskySolver<CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
-#endif // SOFA_FLOAT
-
-} // namespace sofa::component::linearsolver::direct
+} //namespace sofa::core::topology

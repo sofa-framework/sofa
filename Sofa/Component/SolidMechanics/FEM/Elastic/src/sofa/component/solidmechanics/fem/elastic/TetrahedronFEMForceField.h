@@ -224,7 +224,7 @@ public:
     Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
     Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
-    Data<type::vector<type::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
+    Data<type::vector<type::RGBAColor> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
 
     Real m_minVonMisesPerNode;
     Real m_maxVonMisesPerNode;

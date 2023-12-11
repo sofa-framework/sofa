@@ -244,7 +244,6 @@ int main(int argc, char** argv)
     sofa::gui::common::GUIManager::Init(argv[0]);
 
     auto simulation = sofa::simpleapi::createSimulation();
-    sofa::simulation::setSimulation( simulation.get() );
 
     // The graph root node
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
@@ -255,7 +254,7 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
 
     //=======================================

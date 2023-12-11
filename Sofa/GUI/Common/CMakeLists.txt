@@ -1,24 +1,29 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.GUI.Common LANGUAGES CXX)
 
-find_package(cxxopts 3.1)
+find_package(cxxopts 3.1 QUIET)
 if(NOT cxxopts_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
-  include(FetchContent)
-  FetchContent_Declare(cxxopts
-          GIT_REPOSITORY https://github.com/jarro2783/cxxopts
-          GIT_TAG        v3.1.1
-  )
+    message("Sofa.GUI.Common: DEPENDENCY cxxopt NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching cxxopt...")
 
-  FetchContent_GetProperties(cxxopts)
-  if(NOT cxxopts_POPULATED)
-      FetchContent_Populate(cxxopts)
+    include(FetchContent)
+    FetchContent_Declare(cxxopts
+            GIT_REPOSITORY https://github.com/jarro2783/cxxopts
+            GIT_TAG        v3.1.1
+    )
 
-      set(CXXOPTS_BUILD_EXAMPLES OFF CACHE INTERNAL "")
-      set(CXXOPTS_BUILD_TESTS OFF CACHE INTERNAL "")
-      set(CXXOPTS_ENABLE_INSTALL ON CACHE INTERNAL "")
+    FetchContent_GetProperties(cxxopts)
+    if(NOT cxxopts_POPULATED)
+        FetchContent_Populate(cxxopts)
 
-      add_subdirectory(${cxxopts_SOURCE_DIR} ${cxxopts_BINARY_DIR})
-  endif()
+        set(CXXOPTS_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+        set(CXXOPTS_BUILD_TESTS OFF CACHE INTERNAL "")
+        set(CXXOPTS_ENABLE_INSTALL ON CACHE INTERNAL "")
+        message("Sofa.GUI.Common: adding subdirectory ${cxxopts_SOURCE_DIR}")
+
+        add_subdirectory(${cxxopts_SOURCE_DIR} ${cxxopts_BINARY_DIR})
+    endif()
+elseif (NOT cxxopts_FOUND)
+    message(FATAL_ERROR "Sofa.GUI.Common: DEPENDENCY cxxopt NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install libcxxopts-dev (version>=3.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 set(SOFAGUICOMMON_ROOT src/sofa/gui/common)

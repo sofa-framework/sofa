@@ -252,7 +252,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color = std::isnan(triData[i])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(triData[i]));
+                    : eval(triData[i]);
                 color[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
@@ -272,15 +272,15 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color0 = std::isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointTriData[i*3]));
+                    : eval(pointTriData[i*3]);
                 color0[3] = transparency;
                 RGBAColor color1 = std::isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
+                        : eval(pointTriData[i*3+1]);
                 color1[3] = transparency;
                 RGBAColor color2 = std::isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
+                    : eval(pointTriData[i*3+2]);
                 color2[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
 
@@ -308,7 +308,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color = std::isnan(quadData[i])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(quadData[i]));
+                    : eval(quadData[i]);
                 color[3] = transparency;
                 const Quad& t = m_topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
@@ -326,18 +326,18 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color0 = std::isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
+                    : eval(pointQuadData[i*4]);
                 RGBAColor color1 = std::isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
+                        : eval(pointQuadData[i*4+1]);
                 color1[3] = transparency;
                 RGBAColor color2 = std::isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
+                    : eval(pointQuadData[i*4+2]);
                 color2[3] = transparency;
                 RGBAColor color3 = std::isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
+                    : eval(pointQuadData[i*4+3]);
                 color1[3] = transparency;
                 const Quad& q = m_topology->getQuad(i);
 
@@ -370,7 +370,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
         {
             RGBAColor color = std::isnan(ptData[i])
                 ? f_colorNaN.getValue()
-                : RGBAColor::fromVec4(eval(ptData[i]));
+                : eval(ptData[i]);
             color[3] = transparency;
             vparams->drawTool()->drawPoint(x[i], color);
         }
@@ -388,7 +388,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             for (int j=0; j<3; j++) {
                 color[j] = std::isnan(ptData[t[j]])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(ptData[t[j]]));
+                        : eval(ptData[t[j]]);
                 color[j][3] = transparency;
             }
             glNormal3fv(m_normals[t[0]].ptr());
@@ -416,7 +416,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 color[j] = std::isnan(ptData[q[j]])
                 ? f_colorNaN.getValue()
-                : RGBAColor::fromVec4(eval(ptData[q[j]]));
+                : eval(ptData[q[j]]);
                 color[j][3] = transparency;
             }
 

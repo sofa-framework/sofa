@@ -134,12 +134,16 @@ void Color_Test::checkCreateFromDouble()
 
     const Vec4d tt(2,3,4,5) ;
     EXPECT_EQ( RGBAColor::fromVec4(tt), RGBAColor(2,3,4,5)) ;
+
+    const std::array<double, 4> stdarrtt{ 2, 3, 4, 5 };
+    EXPECT_EQ(RGBAColor::fromStdArray(stdarrtt), RGBAColor(2, 3, 4, 5));
 }
 
 
 void Color_Test::checkConstructors()
 {
-    EXPECT_EQ( RGBAColor(sofa::type::Vec<4,float>(1,2,3,4)), RGBAColor(1,2,3,4) ) ;
+    EXPECT_EQ(RGBAColor(std::array<float, 4>{1, 2, 3, 4}), RGBAColor(1, 2, 3, 4));
+    EXPECT_EQ( RGBAColor(sofa::type::Vec<4, float>(1, 2, 3, 4)), RGBAColor(1, 2, 3, 4));
 }
 
 
