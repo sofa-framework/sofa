@@ -35,10 +35,10 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 template<class DataTypes>
-class UnilateralInteractionLagrangianConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
+class UnilateralLagrangianConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(UnilateralLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -121,8 +121,8 @@ protected:
      }
 
 
-    UnilateralInteractionLagrangianConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
-    virtual ~UnilateralInteractionLagrangianConstraint();
+    UnilateralLagrangianConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
+    virtual ~UnilateralLagrangianConstraint();
 
 public:
     void setCustomTolerance(SReal tol) { customTolerance = tol; }
@@ -150,8 +150,8 @@ public:
 };
 
 
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONLAGRANGIANCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralInteractionLagrangianConstraint<defaulttype::Vec3Types>;
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<defaulttype::Vec3Types>;
 #endif
 
 

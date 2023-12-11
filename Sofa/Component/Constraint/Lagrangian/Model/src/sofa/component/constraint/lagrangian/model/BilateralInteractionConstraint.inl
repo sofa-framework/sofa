@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.inl")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.inl")

@@ -155,7 +155,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
 
     ### Constraints  
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralInteractionLagrangianConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralLagrangianConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationProjectiveConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cpp

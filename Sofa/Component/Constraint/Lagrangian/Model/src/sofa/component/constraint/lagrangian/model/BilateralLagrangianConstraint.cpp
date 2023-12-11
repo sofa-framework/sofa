@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONLAGRANGIANCONSTRAINT_CPP
+#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALLAGRANGIANCONSTRAINT_CPP
 
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -33,37 +33,37 @@ class RigidImpl {};
 
 
 template<>
-class BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>
+class BilateralLagrangianConstraintSpecialization<RigidImpl>
 {
 public:
 
     template<class T>
-    static void bwdInit(BilateralInteractionLagrangianConstraint<T>& self) {
+    static void bwdInit(BilateralLagrangianConstraint<T>& self) {
         if (!self.keepOrientDiff.getValue())
             return;
 
-        helper::WriteAccessor<Data<typename BilateralInteractionLagrangianConstraint<T>::VecDeriv > > wrest = self.restVector;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::VecDeriv > > wrest = self.restVector;
 
         if (wrest.size() > 0) {
-            msg_warning("BilateralInteractionLagrangianConstraintSpecialization") << "keepOrientationDifference is activated, rest_vector will be ignored! " ;
+            msg_warning("BilateralLagrangianConstraintSpecialization") << "keepOrientationDifference is activated, rest_vector will be ignored! " ;
             wrest.resize(0);
         }
 
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         const unsigned minp = std::min(m1Indices.size(),m2Indices.size());
 
-        const typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
-        const typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
+        const typename BilateralLagrangianConstraint<T>::DataVecCoord &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
+        const typename BilateralLagrangianConstraint<T>::DataVecCoord &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
 
-        const typename BilateralInteractionLagrangianConstraint<T>::VecCoord &x1 = d_x1.getValue();
-        const typename BilateralInteractionLagrangianConstraint<T>::VecCoord &x2 = d_x2.getValue();
+        const typename BilateralLagrangianConstraint<T>::VecCoord &x1 = d_x1.getValue();
+        const typename BilateralLagrangianConstraint<T>::VecCoord &x2 = d_x2.getValue();
 
         for (unsigned pid=0; pid<minp; pid++)
         {
-            const typename BilateralInteractionLagrangianConstraint<T>::Coord P = x1[m1Indices[pid]];
-            const typename BilateralInteractionLagrangianConstraint<T>::Coord Q = x2[m2Indices[pid]];
+            const typename BilateralLagrangianConstraint<T>::Coord P = x1[m1Indices[pid]];
+            const typename BilateralLagrangianConstraint<T>::Coord Q = x2[m2Indices[pid]];
 
             type::Quat<SReal> qP, qQ, dQP;
             qP = P.getOrientation();
@@ -73,7 +73,7 @@ public:
             dQP = qP.quatDiff(qQ, qP);
             dQP.normalize();
 
-            typename BilateralInteractionLagrangianConstraint<T>::Coord df;
+            typename BilateralLagrangianConstraint<T>::Coord df;
             df.getCenter() = Q.getCenter() - P.getCenter();
             df.getOrientation() = dQP;
             self.initialDifference.push_back(df);
@@ -83,7 +83,7 @@ public:
 
 
     template<class T>
-    static void getConstraintResolution(BilateralInteractionLagrangianConstraint<T>& self,
+    static void getConstraintResolution(BilateralLagrangianConstraint<T>& self,
                                         const ConstraintParams* cParams,
                                         std::vector<ConstraintResolution*>& resTab,
                                         unsigned int& offset, double tolerance)
@@ -104,26 +104,26 @@ public:
 
 
     template <class T>
-    static void buildConstraintMatrix(BilateralInteractionLagrangianConstraint<T>& self,
+    static void buildConstraintMatrix(BilateralLagrangianConstraint<T>& self,
                                       const ConstraintParams* cParams,
-                                      typename BilateralInteractionLagrangianConstraint<T>::DataMatrixDeriv &c1_d,
-                                      typename BilateralInteractionLagrangianConstraint<T>::DataMatrixDeriv &c2_d,
+                                      typename BilateralLagrangianConstraint<T>::DataMatrixDeriv &c1_d,
+                                      typename BilateralLagrangianConstraint<T>::DataMatrixDeriv &c2_d,
                                       unsigned int &constraintId,
-                                      const typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &/*x1*/,
-                                      const typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &/*x2*/)
+                                      const typename BilateralLagrangianConstraint<T>::DataVecCoord &/*x1*/,
+                                      const typename BilateralLagrangianConstraint<T>::DataVecCoord &/*x2*/)
     {
         SOFA_UNUSED(cParams) ;
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
         self.cid.resize(minp);
 
-        typename BilateralInteractionLagrangianConstraint<T>::MatrixDeriv &c1 = *c1_d.beginEdit();
-        typename BilateralInteractionLagrangianConstraint<T>::MatrixDeriv &c2 = *c2_d.beginEdit();
+        typename BilateralLagrangianConstraint<T>::MatrixDeriv &c1 = *c1_d.beginEdit();
+        typename BilateralLagrangianConstraint<T>::MatrixDeriv &c2 = *c2_d.beginEdit();
 
-        const Vec<3, typename BilateralInteractionLagrangianConstraint<T>::Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-        const Vec<3, typename BilateralInteractionLagrangianConstraint<T>::Real> vZero(0,0,0);
+        const Vec<3, typename BilateralLagrangianConstraint<T>::Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+        const Vec<3, typename BilateralLagrangianConstraint<T>::Real> vZero(0,0,0);
 
         for (unsigned pid=0; pid<minp; pid++)
         {
@@ -134,42 +134,42 @@ public:
             constraintId += 6;
 
             //Apply constraint for position
-            typename BilateralInteractionLagrangianConstraint<T>::MatrixDerivRowIterator c1_it = c1.writeLine(self.cid[pid]);
-            c1_it.addCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(-cx, vZero));
+            typename BilateralLagrangianConstraint<T>::MatrixDerivRowIterator c1_it = c1.writeLine(self.cid[pid]);
+            c1_it.addCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(-cx, vZero));
 
-            typename BilateralInteractionLagrangianConstraint<T>::MatrixDerivRowIterator c2_it = c2.writeLine(self.cid[pid]);
-            c2_it.addCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(cx, vZero));
+            typename BilateralLagrangianConstraint<T>::MatrixDerivRowIterator c2_it = c2.writeLine(self.cid[pid]);
+            c2_it.addCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(cx, vZero));
 
             c1_it = c1.writeLine(self.cid[pid] + 1);
-            c1_it.setCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(-cy, vZero));
+            c1_it.setCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(-cy, vZero));
 
             c2_it = c2.writeLine(self.cid[pid] + 1);
-            c2_it.setCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(cy, vZero));
+            c2_it.setCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(cy, vZero));
 
             c1_it = c1.writeLine(self.cid[pid] + 2);
-            c1_it.setCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(-cz, vZero));
+            c1_it.setCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(-cz, vZero));
 
             c2_it = c2.writeLine(self.cid[pid] + 2);
-            c2_it.setCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(cz, vZero));
+            c2_it.setCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(cz, vZero));
 
             //Apply constraint for orientation
             c1_it = c1.writeLine(self.cid[pid] + 3);
-            c1_it.setCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, -cx));
+            c1_it.setCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(vZero, -cx));
 
             c2_it = c2.writeLine(self.cid[pid] + 3);
-            c2_it.setCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, cx));
+            c2_it.setCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(vZero, cx));
 
             c1_it = c1.writeLine(self.cid[pid] + 4);
-            c1_it.setCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, -cy));
+            c1_it.setCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(vZero, -cy));
 
             c2_it = c2.writeLine(self.cid[pid] + 4);
-            c2_it.setCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, cy));
+            c2_it.setCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(vZero, cy));
 
             c1_it = c1.writeLine(self.cid[pid] + 5);
-            c1_it.setCol(tm1, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, -cz));
+            c1_it.setCol(tm1, typename BilateralLagrangianConstraint<T>::Deriv(vZero, -cz));
 
             c2_it = c2.writeLine(self.cid[pid] + 5);
-            c2_it.setCol(tm2, typename BilateralInteractionLagrangianConstraint<T>::Deriv(vZero, cz));
+            c2_it.setCol(tm2, typename BilateralLagrangianConstraint<T>::Deriv(vZero, cz));
         }
 
         c1_d.endEdit();
@@ -178,34 +178,34 @@ public:
 
 
     template <class T>
-    static void getConstraintViolation(BilateralInteractionLagrangianConstraint<T>& self,
+    static void getConstraintViolation(BilateralLagrangianConstraint<T>& self,
                                 const ConstraintParams* /*cParams*/,
                                 BaseVector *v,
-                                const  typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &d_x1,
-                                const  typename BilateralInteractionLagrangianConstraint<T>::DataVecCoord &d_x2,
-                                const  typename BilateralInteractionLagrangianConstraint<T>::DataVecDeriv &/*v1*/,
-                                const  typename BilateralInteractionLagrangianConstraint<T>::DataVecDeriv &/*v2*/)
+                                const  typename BilateralLagrangianConstraint<T>::DataVecCoord &d_x1,
+                                const  typename BilateralLagrangianConstraint<T>::DataVecCoord &d_x2,
+                                const  typename BilateralLagrangianConstraint<T>::DataVecDeriv &/*v1*/,
+                                const  typename BilateralLagrangianConstraint<T>::DataVecDeriv &/*v2*/)
     {
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         unsigned min = std::min(m1Indices.size(), m2Indices.size());
-        const  typename BilateralInteractionLagrangianConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
+        const  typename BilateralLagrangianConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
         self.dfree.resize(min);
 
-        const  typename BilateralInteractionLagrangianConstraint<T>::VecCoord &x1 = d_x1.getValue();
-        const  typename BilateralInteractionLagrangianConstraint<T>::VecCoord &x2 = d_x2.getValue();
+        const  typename BilateralLagrangianConstraint<T>::VecCoord &x1 = d_x1.getValue();
+        const  typename BilateralLagrangianConstraint<T>::VecCoord &x2 = d_x2.getValue();
 
         for (unsigned pid=0; pid<min; pid++)
         {
-            //typename BilateralInteractionLagrangianConstraint<T>::Coord dof1 = x1[m1Indices[pid]];
-            //typename BilateralInteractionLagrangianConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
-            typename BilateralInteractionLagrangianConstraint<T>::Coord dof1;
+            //typename BilateralLagrangianConstraint<T>::Coord dof1 = x1[m1Indices[pid]];
+            //typename BilateralLagrangianConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
+            typename BilateralLagrangianConstraint<T>::Coord dof1;
 
              if (self.keepOrientDiff.getValue()) {
-                 const typename BilateralInteractionLagrangianConstraint<T>::Coord dof1c = x1[m1Indices[pid]];
+                 const typename BilateralLagrangianConstraint<T>::Coord dof1c = x1[m1Indices[pid]];
 
-                 typename BilateralInteractionLagrangianConstraint<T>::Coord corr=self.initialDifference[pid];
+                 typename BilateralLagrangianConstraint<T>::Coord corr=self.initialDifference[pid];
                  type::Quat<SReal> df = corr.getOrientation();
                  type::Quat<SReal> o1 = dof1c.getOrientation();
                  type::Quat<SReal> ro1 = o1 * df;
@@ -215,7 +215,7 @@ public:
              } else
                  dof1 = x1[m1Indices[pid]];
 
-            const typename BilateralInteractionLagrangianConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
+            const typename BilateralLagrangianConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
 
             getVCenter(self.dfree[pid]) = dof2.getCenter() - dof1.getCenter();
             getVOrientation(self.dfree[pid]) =  dof1.rotate(self.q.angularDisplacement(dof2.getOrientation() ,
@@ -229,14 +229,14 @@ public:
     }
 
 
-    template <class T, typename MyClass = BilateralInteractionLagrangianConstraint<T> >
-    static void addContact(BilateralInteractionLagrangianConstraint<T>& self, typename MyClass::Deriv /*norm*/,
+    template <class T, typename MyClass = BilateralLagrangianConstraint<T> >
+    static void addContact(BilateralLagrangianConstraint<T>& self, typename MyClass::Deriv /*norm*/,
                            typename MyClass::Coord P, typename MyClass::Coord Q,
                            typename MyClass::Real /*contactDistance*/, int m1, int m2,
                            typename MyClass::Coord /*Pfree*/, typename MyClass::Coord /*Qfree*/, long /*id*/, typename MyClass::PersistentID /*localid*/)
     {
-        helper::WriteAccessor<Data<typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices > > wm1 = self.m1;
-        helper::WriteAccessor<Data<typename BilateralInteractionLagrangianConstraint<T>::SubsetIndices > > wm2 = self.m2;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm1 = self.m1;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm2 = self.m2;
         helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.restVector;
         wm1.push_back(m1);
         wm2.push_back(m2);
@@ -251,52 +251,52 @@ public:
 
 
 template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::init(){
+void BilateralLagrangianConstraint<Rigid3Types>::init(){
     unspecializedInit() ;
 }
 
 template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::bwdInit() {
-    BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>::bwdInit(*this);
+void BilateralLagrangianConstraint<Rigid3Types>::bwdInit() {
+    BilateralLagrangianConstraintSpecialization<RigidImpl>::bwdInit(*this);
 }
 
 template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::getConstraintResolution(const ConstraintParams* cParams,
+void BilateralLagrangianConstraint<Rigid3Types>::getConstraintResolution(const ConstraintParams* cParams,
                                                                            std::vector<ConstraintResolution*>& resTab,
                                                                            unsigned int& offset)
 {
-    BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>::getConstraintResolution(*this,
+    BilateralLagrangianConstraintSpecialization<RigidImpl>::getConstraintResolution(*this,
                                                                                      cParams, resTab, offset,
                                                                                      d_numericalTolerance.getValue()) ;
 }
 
 template <> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams* cParams,
+void BilateralLagrangianConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                                          DataMatrixDeriv &c1_d,
                                                                          DataMatrixDeriv &c2_d,
                                                                          unsigned int &constraintId,
                                                                          const DataVecCoord &x1, const DataVecCoord &x2)
 {
-    BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>::buildConstraintMatrix(*this,
+    BilateralLagrangianConstraintSpecialization<RigidImpl>::buildConstraintMatrix(*this,
                                                                                    cParams, c1_d, c2_d, constraintId,
                                                                                    x1, x2) ;
 }
 
 
 template <> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams* cParams,
+void BilateralLagrangianConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams* cParams,
                                                                           BaseVector *v,
                                                                           const DataVecCoord &d_x1, const DataVecCoord &d_x2,
                                                                           const DataVecDeriv &v1, const DataVecDeriv &v2)
 {
-    BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>::getConstraintViolation(*this,
+    BilateralLagrangianConstraintSpecialization<RigidImpl>::getConstraintViolation(*this,
                                                                                     cParams, v, d_x1, d_x2,
                                                                                     v1, v2) ;
 }
 
 
 template <> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<Rigid3Types>::getVelocityViolation(BaseVector * /*v*/,
+void BilateralLagrangianConstraint<Rigid3Types>::getVelocityViolation(BaseVector * /*v*/,
                                                                         const DataVecCoord &/*x1*/,
                                                                         const DataVecCoord &/*x2*/,
                                                                         const DataVecDeriv &/*v1*/,
@@ -306,25 +306,25 @@ void BilateralInteractionLagrangianConstraint<Rigid3Types>::getVelocityViolation
 }
 
 template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionLagrangianConstraint<defaulttype::Rigid3Types>::addContact(Deriv norm,
+void BilateralLagrangianConstraint<defaulttype::Rigid3Types>::addContact(Deriv norm,
                                                                            Coord P, Coord Q, Real contactDistance,
                                                                            int m1, int m2,
                                                                            Coord Pfree, Coord Qfree,
                                                                            long id, PersistentID localid)
 {
-    BilateralInteractionLagrangianConstraintSpecialization<RigidImpl>::addContact(*this,
+    BilateralLagrangianConstraintSpecialization<RigidImpl>::addContact(*this,
                                                                         norm, P, Q, contactDistance, m1, m2, Pfree, Qfree,
                                                                         id, localid) ;
 }
 
 
 
-int BilateralInteractionLagrangianConstraintClass = core::RegisterObject("BilateralInteractionLagrangianConstraint defining an holonomic equality constraint (attachment)")
-        .add< BilateralInteractionLagrangianConstraint<Vec3Types> >()
-        .add< BilateralInteractionLagrangianConstraint<Rigid3Types> >()
+int BilateralLagrangianConstraintClass = core::RegisterObject("BilateralLagrangianConstraint defining an holonomic equality constraint (attachment)")
+        .add< BilateralLagrangianConstraint<Vec3Types> >()
+        .add< BilateralLagrangianConstraint<Rigid3Types> >()
         ;
 
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionLagrangianConstraint<Vec3Types>;
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionLagrangianConstraint<Rigid3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint<Rigid3Types>;
 
 } //namespace sofa::component::constraint::lagrangian::model

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONLAGRANGIANCONSTRAINT_CPP
-#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionLagrangianConstraint.inl>
+#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -31,13 +31,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 //TODO(dmarchal) What does this TODO mean ?
-int UnilateralInteractionLagrangianConstraintClass = core::RegisterObject("TODO-UnilateralInteractionLagrangianConstraint")
-        .add< UnilateralInteractionLagrangianConstraint<Vec3Types> >()
+int UnilateralLagrangianConstraintClass = core::RegisterObject("TODO-UnilateralLagrangianConstraint")
+        .add< UnilateralLagrangianConstraint<Vec3Types> >()
 
         ;
 
 
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralInteractionLagrangianConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
 
 
 

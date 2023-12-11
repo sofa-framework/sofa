@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
@@ -39,7 +39,7 @@ using sofa::helper::WriteAccessor ;
 using sofa::type::Vec;
 
 template<class DataTypes>
-BilateralInteractionLagrangianConstraint<DataTypes>::BilateralInteractionLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
+BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
     , m1(initData(&m1, "first_point","index of the constraint on the first model"))
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
@@ -55,19 +55,19 @@ BilateralInteractionLagrangianConstraint<DataTypes>::BilateralInteractionLagrang
 }
 
 template<class DataTypes>
-BilateralInteractionLagrangianConstraint<DataTypes>::BilateralInteractionLagrangianConstraint(MechanicalState* object)
-    : BilateralInteractionLagrangianConstraint(object, object)
+BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(MechanicalState* object)
+    : BilateralLagrangianConstraint(object, object)
 {
 }
 
 template<class DataTypes>
-BilateralInteractionLagrangianConstraint<DataTypes>::BilateralInteractionLagrangianConstraint()
-    : BilateralInteractionLagrangianConstraint(nullptr, nullptr)
+BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint()
+    : BilateralLagrangianConstraint(nullptr, nullptr)
 {
 }
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::unspecializedInit()
+void BilateralLagrangianConstraint<DataTypes>::unspecializedInit()
 {
     /// Do general check of validity for inputs
     Inherit1::init();
@@ -80,7 +80,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::unspecializedInit()
 }
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::init()
+void BilateralLagrangianConstraint<DataTypes>::init()
 {
     unspecializedInit();
 
@@ -108,14 +108,14 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::reinit()
+void BilateralLagrangianConstraint<DataTypes>::reinit()
 {
     prevForces.clear();
 }
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
                                                                       , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     if (!d_activate.getValue())
@@ -168,7 +168,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::buildConstraintMatrix(
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+void BilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
                                                                        BaseVector *v,
                                                                        const DataVecCoord &d_x1, const DataVecCoord &d_x2
                                                                        , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
@@ -208,7 +208,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::getConstraintViolation
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::getVelocityViolation(BaseVector *v,
+void BilateralLagrangianConstraint<DataTypes>::getVelocityViolation(BaseVector *v,
                                                                      const DataVecCoord &d_x1,
                                                                      const DataVecCoord &d_x2,
                                                                      const DataVecDeriv &d_v1,
@@ -251,7 +251,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::getVelocityViolation(B
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
+void BilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
                                                                         std::vector<ConstraintResolution*>& resTab,
                                                                         unsigned int& offset)
 {
@@ -267,7 +267,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::getConstraintResolutio
 }
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q,
+void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q,
                                                            Real /*contactDistance*/, int m1, int m2,
                                                            Coord /*Pfree*/, Coord /*Qfree*/,
                                                            long /*id*/, PersistentID /*localid*/)
@@ -282,7 +282,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv /*nor
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv norm, Coord P, Coord Q, Real
+void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Coord P, Coord Q, Real
                                                            contactDistance, int m1, int m2,
                                                            long id, PersistentID localid)
 {
@@ -293,7 +293,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv norm,
 }
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv norm, Real contactDistance,
+void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Real contactDistance,
                                                            int m1, int m2, long id, PersistentID localid)
 {
     addContact(norm,
@@ -307,7 +307,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::addContact(Deriv norm,
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::removeContact(int objectId, SubsetIndices indices)
+void BilateralLagrangianConstraint<DataTypes>::removeContact(int objectId, SubsetIndices indices)
 {
     WriteAccessor<Data <SubsetIndices > > m1Indices = this->m1;
     WriteAccessor<Data <SubsetIndices > > m2Indices = this->m2;
@@ -340,7 +340,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::removeContact(int obje
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::clear(int reserve)
+void BilateralLagrangianConstraint<DataTypes>::clear(int reserve)
 {
     WriteAccessor<Data <SubsetIndices > > wm1 = this->m1;
     WriteAccessor<Data <SubsetIndices > > wm2 = this->m2;
@@ -358,7 +358,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::clear(int reserve)
 
 
 template<class DataTypes>
-Index BilateralInteractionLagrangianConstraint<DataTypes>::indexOfElemConstraint(const SubsetIndices& cIndices, Index Id)
+Index BilateralLagrangianConstraint<DataTypes>::indexOfElemConstraint(const SubsetIndices& cIndices, Index Id)
 {
     const auto it = std::find(cIndices.begin(), cIndices.end(), Id);
 
@@ -370,7 +370,7 @@ Index BilateralInteractionLagrangianConstraint<DataTypes>::indexOfElemConstraint
 
 
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void BilateralLagrangianConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
@@ -402,7 +402,7 @@ void BilateralInteractionLagrangianConstraint<DataTypes>::draw(const core::visua
 //design for a component. Interaction should be defered to an independent Component implemented in the SofaInteraction
 //a second possibility is to implement this behavir using script.
 template<class DataTypes>
-void BilateralInteractionLagrangianConstraint<DataTypes>::handleEvent(Event *event)
+void BilateralLagrangianConstraint<DataTypes>::handleEvent(Event *event)
 {
     if (KeypressedEvent::checkEventType(event))
     {

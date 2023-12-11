@@ -56,19 +56,19 @@ using sofa::defaulttype::Vec3Types ;
 
 
 template<class T>
-class BilateralInteractionLagrangianConstraintSpecialization {};
+class BilateralLagrangianConstraintSpecialization {};
 
 
 template<class DataTypes>
-class BilateralInteractionLagrangianConstraint : public PairInteractionConstraint<DataTypes>
+class BilateralLagrangianConstraint : public PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionLagrangianConstraint,DataTypes),
+    SOFA_CLASS(SOFA_TEMPLATE(BilateralLagrangianConstraint,DataTypes),
                SOFA_TEMPLATE(PairInteractionConstraint,DataTypes));
 
-    /// That any templates variation of BilateralInteractionLagrangianConstraintSpecialization are friend.
+    /// That any templates variation of BilateralLagrangianConstraintSpecialization are friend.
     template<typename>
-    friend class BilateralInteractionLagrangianConstraintSpecialization ;
+    friend class BilateralLagrangianConstraintSpecialization ;
 
     typedef PairInteractionConstraint<DataTypes> Inherit;
 
@@ -106,8 +106,8 @@ protected:
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 
-    SingleLink<BilateralInteractionLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
-    SingleLink<BilateralInteractionLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
+    SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
+    SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
 
     std::vector<Vec3d> prevForces;
 
@@ -121,11 +121,11 @@ protected:
     sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "v22.12", "v23.06", "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
 
 
-    BilateralInteractionLagrangianConstraint(MechanicalState* object1, MechanicalState* object2) ;
-    BilateralInteractionLagrangianConstraint(MechanicalState* object) ;
-    BilateralInteractionLagrangianConstraint();
+    BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2) ;
+    BilateralLagrangianConstraint(MechanicalState* object) ;
+    BilateralLagrangianConstraint();
 
-    virtual ~BilateralInteractionLagrangianConstraint(){}
+    virtual ~BilateralLagrangianConstraint(){}
 public:
     void init() override;
 
@@ -187,9 +187,9 @@ private:
 };
 
 
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONLAGRANGIANCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionLagrangianConstraint< Vec3Types >;
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionLagrangianConstraint< Rigid3Types >;
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALLAGRANGIANCONSTRAINT_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint< Vec3Types >;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint< Rigid3Types >;
 #endif
 
 } // namespace sofa::component::constraint::lagrangian::model

@@ -2,7 +2,7 @@
     <Node name="requiredPlugins">
         <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
-        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralInteractionLagrangianConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
         <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI NearestPointROI] -->
@@ -58,8 +58,8 @@
         <NearestPointROI template="Vec3" name="np1" object1="@./M1/mo" object2="@./M2/mo" radius="0.1"/>
         <NearestPointROI template="Vec3" name="np2" object1="@./M2/mo" object2="@./M3/mo" radius="0.1"/>
 
-        <BilateralInteractionLagrangianConstraint template="Vec3" object1="@M1" object2="@M2" first_point="@np1.indices1" second_point="@np1.indices2" />
-        <BilateralInteractionLagrangianConstraint template="Vec3" object1="@M2" object2="@M3" first_point="@np2.indices1" second_point="@np2.indices2" />
+        <BilateralLagrangianConstraint template="Vec3" object1="@M1" object2="@M2" first_point="@np1.indices1" second_point="@np1.indices2" />
+        <BilateralLagrangianConstraint template="Vec3" object1="@M2" object2="@M3" first_point="@np2.indices1" second_point="@np2.indices2" />
     </Node>
 
     <!--

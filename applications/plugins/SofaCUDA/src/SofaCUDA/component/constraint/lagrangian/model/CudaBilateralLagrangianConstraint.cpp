@@ -21,18 +21,18 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.inl>
 #include <sofa/core/behavior/PairInteractionConstraint.inl>
 
 namespace sofa::component::constraint::lagrangian::model
 {
 
-template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BilateralLagrangianConstraint<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BilateralLagrangianConstraint<gpu::cuda::CudaVec3f1Types>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API BilateralInteractionLagrangianConstraint<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API BilateralLagrangianConstraint<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BilateralLagrangianConstraint<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } //namespace sofa::component::constraint::lagrangian::model
@@ -42,12 +42,12 @@ namespace sofa::gpu::cuda
 
 using namespace sofa::component::constraint::lagrangian::model;
 
-int BilateralInteractionLagrangianConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< BilateralInteractionLagrangianConstraint<CudaVec3fTypes> >()
-    .add< BilateralInteractionLagrangianConstraint<CudaVec3f1Types> >()
+int BilateralLagrangianConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    .add< BilateralLagrangianConstraint<CudaVec3fTypes> >()
+    .add< BilateralLagrangianConstraint<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< BilateralInteractionLagrangianConstraint<CudaVec3dTypes> >()
-    .add< BilateralInteractionLagrangianConstraint<CudaVec3d1Types> >()
+    .add< BilateralLagrangianConstraint<CudaVec3dTypes> >()
+    .add< BilateralLagrangianConstraint<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
     ;
 } // namespace sofa::gpu::cuda

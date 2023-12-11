@@ -744,11 +744,11 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"ProjectToPlaneConstraint", Renamed("v24.06","v25.06","PlaneProjectiveConstraint")},
     {"ProjectToPointConstraint", Renamed("v24.06","v25.06","PointProjectiveConstraint")},
     {"ProjectDirectionConstraint", Renamed("v24.06","v25.06","DirectionProjectiveConstraint")},
-    {"BilateralInteractionConstraint", Renamed("v24.06","v25.06","BilateralInteractionLagrangianConstraint")},
+    {"BilateralInteractionConstraint", Renamed("v24.06","v25.06","BilateralLagrangianConstraint")},
     {"SlidingConstraint", Renamed("v24.06","v25.06","SlidingLagrangianConstraint")},
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
-    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralInteractionLagrangianConstraint")}
+    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")}
 
 };
 

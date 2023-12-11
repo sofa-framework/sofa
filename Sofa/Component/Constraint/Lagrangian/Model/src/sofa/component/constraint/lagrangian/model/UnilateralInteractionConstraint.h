@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/UnilateralInteractionLagrangianConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h")
 
 namespace sofa::component::constraint::lagrangian::model
 {
 template<class T>
-using UnilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "UnilateralInteractionConstraint has been renamed to UnilateralInteractionLagrangianConstraint") = UnilateralInteractionLagrangianConstraint<T>;
+using UnilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "UnilateralInteractionConstraint has been renamed to UnilateralLagrangianConstraint") = UnilateralLagrangianConstraint<T>;
 }

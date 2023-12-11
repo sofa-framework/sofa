@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionLagrangianConstraint.h")
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h")
 
 namespace sofa::component::constraint::lagrangian::model
 {
 template<class T>
-using BilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "BilateralInteractionConstraint has been renamed to BilateralInteractionLagrangianConstraint") = BilateralInteractionLagrangianConstraint<T>;
+using BilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "BilateralInteractionConstraint has been renamed to BilateralLagrangianConstraint") = BilateralLagrangianConstraint<T>;
 }

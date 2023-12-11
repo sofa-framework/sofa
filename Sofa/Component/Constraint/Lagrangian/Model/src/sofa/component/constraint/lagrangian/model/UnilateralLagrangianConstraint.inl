@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
@@ -30,7 +30,7 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 template<class DataTypes>
-UnilateralInteractionLagrangianConstraint<DataTypes>::UnilateralInteractionLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
+UnilateralLagrangianConstraint<DataTypes>::UnilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
     , epsilon(Real(0.001))
     , yetIntegrated(false)
@@ -40,14 +40,14 @@ UnilateralInteractionLagrangianConstraint<DataTypes>::UnilateralInteractionLagra
 }
 
 template<class DataTypes>
-UnilateralInteractionLagrangianConstraint<DataTypes>::~UnilateralInteractionLagrangianConstraint()
+UnilateralLagrangianConstraint<DataTypes>::~UnilateralLagrangianConstraint()
 {
     if(contactsStatus)
         delete[] contactsStatus;
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::clear(int reserve)
+void UnilateralLagrangianConstraint<DataTypes>::clear(int reserve)
 {
     contacts.clear();
     if (reserve)
@@ -55,7 +55,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::clear(int reserve)
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm, P, Q, contactDistance, m1, m2,
             this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
@@ -64,7 +64,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, 
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm,
             this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
@@ -76,7 +76,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, 
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
 {
     contacts.resize(contacts.size() + 1);
     Contact &c = contacts.back();
@@ -98,7 +98,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::addContact(SReal mu, 
 
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams *, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
+void UnilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams *, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
         , const DataVecCoord &, const DataVecCoord &)
 {
     assert(this->mstate1);
@@ -177,7 +177,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::buildConstraintMatrix
 
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
+void UnilateralLagrangianConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
 {
     const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
     const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
@@ -257,7 +257,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::getPositionViolation(
 
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::getVelocityViolation(linearalgebra::BaseVector *v)
+void UnilateralLagrangianConstraint<DataTypes>::getVelocityViolation(linearalgebra::BaseVector *v)
 {
     auto P = this->getMState2()->readPositions();
     auto Q = this->getMState1()->readPositions();
@@ -290,7 +290,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::getVelocityViolation(
 
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *cparams, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+void UnilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *cparams, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
     switch (cparams->constOrder())
@@ -306,17 +306,17 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintViolatio
         break;
 
     default :
-        msg_error() << "UnilateralInteractionLagrangianConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
+        msg_error() << "UnilateralLagrangianConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
         break;
     }
 }
 
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintInfo(const core::ConstraintParams*, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
+void UnilateralLagrangianConstraint<DataTypes>::getConstraintInfo(const core::ConstraintParams*, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
 {
     if (contacts.empty()) return;
-    const bool friction = (contacts[0].mu > 0.0); /// @todo: can there be both friction-less and friction contacts in the same UnilateralInteractionLagrangianConstraint ???
+    const bool friction = (contacts[0].mu > 0.0); /// @todo: can there be both friction-less and friction contacts in the same UnilateralLagrangianConstraint ???
     ConstraintBlockInfo info;
     info.parent = this;
     info.const0 = contacts[0].id;
@@ -345,7 +345,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintInfo(con
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void UnilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     if(contactsStatus)
     {
@@ -377,7 +377,7 @@ void UnilateralInteractionLagrangianConstraint<DataTypes>::getConstraintResoluti
 }
 
 template<class DataTypes>
-bool UnilateralInteractionLagrangianConstraint<DataTypes>::isActive() const
+bool UnilateralLagrangianConstraint<DataTypes>::isActive() const
 {
     for(unsigned int i = 0; i < contacts.size(); i++)
         if(contacts[i].dfree < 0)
@@ -387,7 +387,7 @@ bool UnilateralInteractionLagrangianConstraint<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void UnilateralInteractionLagrangianConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void UnilateralLagrangianConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
