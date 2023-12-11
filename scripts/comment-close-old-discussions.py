@@ -292,7 +292,7 @@ for index, discussion_id in enumerate(to_be_warned_discussion_id):
 # CLOSING step
 # ------- TO REMOVE !!!! ---------
 date_today = date.today()
-date_end_temporary_message = date.fromisoformat('2023-12-01')
+date_end_temporary_message = date.fromisoformat('2024-01-01')
 temporary_case = False
 
 if date_today > date_end_temporary_message:
