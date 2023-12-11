@@ -25,8 +25,7 @@ github_token = os.environ['GITHUB_TOKEN']
 
 
 # List of the repository to scan
-repos=[['sofa-framework','sofa']]#,['sofa-framework','sofapython3']]
-# additional repos : ,['sofa-framework','beamadapter'],['SofaDefrost','SoftRobots'],['mimesis-team','caribou']
+repos=[['sofa-framework','sofa']]
 
 
 # Format the reference date (with which the last reply will be compared)
