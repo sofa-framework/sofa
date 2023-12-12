@@ -29,15 +29,15 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/core/behavior/BaseController.h>
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaHaptics/MechanicalStateForceFeedback.h>
-#include <SofaHaptics/NullForceFeedbackT.h>
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
+#include <sofa/component/haptics/NullForceFeedbackT.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <cstring>
@@ -66,14 +66,14 @@ using core::objectmodel::Data;
 typedef struct
 {
     simulation::Node *node;
-    sofa::component::visualmodel::OglModel *visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , Vec3fTypes  > *mapping;
+    sofa::gl::component::rendering3d::OglModel *visu;
+    sofa::component::mapping::nonlinear::RigidMapping< Rigid3dTypes , Vec3fTypes  > *mapping;
 } VisualComponent;
 
 typedef struct
 {
     VirtContext m_virtContext;
-    MechanicalStateForceFeedback<Rigid3dTypes>* forceFeedback;
+    haptics::MechanicalStateForceFeedback<Rigid3dTypes>* forceFeedback;
     float scale;
     float torqueScale;
     float forceScale;
@@ -98,19 +98,19 @@ public:
     HaptionDriver();
     virtual ~HaptionDriver();
 
-    virtual void init();
-    virtual void reinit();
-    virtual void bwdInit();
-    virtual void reset();
-    virtual void handleEvent(core::objectmodel::Event *);
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
-    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    void init() override;
+    void reinit() override;
+    void bwdInit() override;
+    void reset() override;
+    void handleEvent(core::objectmodel::Event *) override;
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override;
     void onAnimateBeginEvent();
     int initDevice(char* ip);
     void closeDevice();
     static void haptic_callback(VirtContext, void *);
 
-    void setForceFeedback(MechanicalStateForceFeedback<Rigid3dTypes>* ff);
+    void setForceFeedback(haptics::MechanicalStateForceFeedback<Rigid3dTypes>* ff);
 
 private:
 
@@ -121,12 +121,12 @@ private:
     float m_forceFactor;
     float haptic_time_step;
     int connection_device;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *rigidDOF;
+    sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *rigidDOF;
     bool initCallback;
     simulation::Node *nodeHaptionVisual;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *visualHaptionDOF;
+    sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *visualHaptionDOF;
     simulation::Node *nodeAxesVisual;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *visualAxesDOF;
+    sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *visualAxesDOF;
     VisualComponent visualNode[5];
 
     float oldScale;
