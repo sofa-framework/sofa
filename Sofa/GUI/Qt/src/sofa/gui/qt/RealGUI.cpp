@@ -324,7 +324,6 @@ RealGUI::RealGUI ( const char* viewername)
       m_sofaWindowDataGraph(nullptr),
       #endif
       simulationGraph(nullptr),
-      m_createViewersOpt(true),
       m_isEmbeddedViewer(true),
       m_dumpState(false),
       m_dumpStateStream(nullptr),
@@ -433,8 +432,8 @@ RealGUI::RealGUI ( const char* viewername)
     informationOnPickCallBack = InformationOnPickCallBack(this);
 
     viewerMap.clear();
-    if (m_createViewersOpt)
-        createViewer(viewername, true);
+
+    createViewer(viewername, true);
 
     currentTabChanged ( tabs->currentIndex() );
 

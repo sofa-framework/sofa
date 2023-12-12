@@ -152,7 +152,6 @@ public:
 
 protected:
     /// create a viewer by default, otherwise you have to manage your own viewer
-    bool m_createViewersOpt;
     bool m_isEmbeddedViewer;
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
