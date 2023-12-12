@@ -60,6 +60,8 @@ public:
     // compat
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     RGBAColor(const type::fixed_array<float, NumberOfComponents>& c);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    RGBAColor(const type::Vec4f& c);
 
     SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
     static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
