@@ -75,14 +75,12 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 opVresize(result, rowSize);
             }
         }
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
-             rowRange.first != rowRange.second;
-             ++rowRange.first)
+        for (auto [rowIt, rowEnd] = mat->bRowsRange(); rowIt != rowEnd; ++rowIt)
         {
-            std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-            if (colRange.first != colRange.second) // diagonal block exists
+            auto [colBegin, colEnd] = rowIt.range();
+            if (colBegin != colEnd) // diagonal block exists
             {
-                BlockConstAccessor block = colRange.first.bloc();
+                BlockConstAccessor block = colBegin.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
                 const Index i = block.getRow() * NL;
                 const Index j = block.getCol() * NC;
@@ -210,11 +208,9 @@ struct BaseMatrixLinearOpMV_BlockSparse
         {
             opVresize(result, (transpose ? colSize : rowSize));
         }
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
-             rowRange.first != rowRange.second;
-             ++rowRange.first)
+        for (auto [rowIt, rowEnd] = mat->bRowsRange(); rowIt != rowEnd; ++rowIt)
         {
-            const Index i = rowRange.first.row() * NL;
+            const Index i = rowIt.row() * NL;
             if constexpr (!transpose)
             {
                 for (int bi = 0; bi < NL; ++bi)
@@ -225,11 +221,9 @@ struct BaseMatrixLinearOpMV_BlockSparse
                 for (int bi = 0; bi < NL; ++bi)
                     vtmpi[bi] = (Real)opVget(v, i+bi);
             }
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-                    colRange.first != colRange.second;
-                    ++colRange.first)
+            for (auto [colIt, colEnd] = rowIt.range(); colIt != colEnd; ++colIt)
             {
-                BlockConstAccessor block = colRange.first.bloc();
+                BlockConstAccessor block = colIt.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
                 const Index j = block.getCol() * NC;
                 if constexpr (!transpose)
@@ -542,18 +536,14 @@ struct BaseMatrixLinearOpAM_BlockSparse
     {
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
-                rowRange.first != rowRange.second;
-                ++rowRange.first)
+        for (auto [rowIt, rowEnd] = m1->bRowsRange(); rowIt != rowEnd; ++rowIt)
         {
-            const Index i = rowRange.first.row() * NL;
+            const Index i = rowIt.row() * NL;
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-                    colRange.first != colRange.second;
-                    ++colRange.first)
+            for (auto [colIt, colEnd] = rowIt.range(); colIt != colEnd; ++colIt)
             {
 
-                BlockConstAccessor block = colRange.first.bloc();
+                BlockConstAccessor block = colIt.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
                 const Index j = block.getCol() * NC;
 
@@ -588,18 +578,13 @@ struct BaseMatrixLinearOpAMS_BlockSparse
     {
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
-                rowRange.first != rowRange.second;
-                ++rowRange.first)
+        for (auto [rowIt, rowEnd] = m1->bRowsRange(); rowIt != rowEnd; ++rowIt)
         {
-            const Index i = rowRange.first.row() * NL;
+            const Index i = rowIt.row() * NL;
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-                    colRange.first != colRange.second;
-                    ++colRange.first)
+            for (auto [colIt, colEnd] = rowIt.range(); colIt != colEnd; ++colIt)
             {
-
-                BlockConstAccessor block = colRange.first.bloc();
+                BlockConstAccessor block = colIt.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
                 const Index j = block.getCol() * NC;
                 if constexpr (!transpose)
@@ -632,18 +617,13 @@ struct BaseMatrixLinearOpAM1_BlockSparse
     {
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
-                rowRange.first != rowRange.second;
-                ++rowRange.first)
+        for (auto [rowIt, rowEnd] = m1->bRowsRange(); rowIt != rowEnd; ++rowIt)
         {
-            const Index i = rowRange.first.row();
+            const Index i = rowIt.row();
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-                    colRange.first != colRange.second;
-                    ++colRange.first)
+            for (auto [colIt, colEnd] = rowIt.range(); colIt != colEnd; ++colIt)
             {
-
-                BlockConstAccessor block = colRange.first.bloc();
+                BlockConstAccessor block = colIt.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(&buffer);
                 const Index j = block.getCol();
 
