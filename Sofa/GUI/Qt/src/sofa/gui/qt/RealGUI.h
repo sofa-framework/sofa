@@ -161,7 +161,7 @@ protected:
     int m_animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
     bool m_fullScreen;
-    common::BaseViewer* m_viewer;
+    sofa::gui::qt::viewer::SofaViewer* m_viewer;
     // Clock before the last simulation step (or zero if the
     // simulation hasn't run yet).
     clock_t m_clockBeforeLastStep;

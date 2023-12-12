@@ -1138,12 +1138,23 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
 void RealGUI::registerViewer(BaseViewer* _viewer)
 {
     // Change our viewer
-    const BaseViewer* old = m_viewer;
-    m_viewer = _viewer;
-    if(m_viewer != nullptr)
-        delete old;
-    else
+    if(_viewer == nullptr)
+    {
         msg_error("RealGUI")<<"when registerViewer, the viewer is nullptr";
+        return;
+    }
+
+    sofa::gui::qt::viewer::SofaViewer* tmpViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(_viewer);
+    if(tmpViewer != nullptr)
+    {
+        const sofa::gui::qt::viewer::SofaViewer* old = m_viewer;
+        m_viewer = tmpViewer;
+        delete old;
+    }
+    else
+    {
+        msg_error("RealGUI")<<"when registerViewer, the viewer can't be cast as sofa::gui::qt::viewer::SofaViewer*";
+    }
 }
 
 //------------------------------------
@@ -1157,7 +1168,7 @@ BaseViewer* RealGUI::getViewer()
 
 sofa::gui::qt::viewer::SofaViewer* RealGUI::getSofaViewer()
 {
-    return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(m_viewer);
+    return m_viewer;
 }
 
 //------------------------------------
@@ -1321,8 +1332,6 @@ void RealGUI::eventNewTime()
 
 void RealGUI::keyPressEvent ( QKeyEvent * e )
 {
-    sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(getViewer());
-
     if (e->modifiers()) return;
 
     // ignore if there are modifiers (i.e. CTRL of SHIFT)
@@ -1370,8 +1379,8 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
-        if (sofaViewer)
-            sofaViewer->keyPressEvent(e);
+        if (m_viewer)
+            m_viewer->keyPressEvent(e);
         break;
     }
     }
