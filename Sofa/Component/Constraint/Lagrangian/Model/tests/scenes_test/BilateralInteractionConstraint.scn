@@ -1,4 +1,4 @@
-<!-- BilateralInteractionConstraint example -->
+<!-- BilateralInteractionLagrangianConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
