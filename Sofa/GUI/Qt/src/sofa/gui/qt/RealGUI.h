@@ -151,8 +151,6 @@ public:
     QSofaListView* simulationGraph;
 
 protected:
-    /// create a viewer by default, otherwise you have to manage your own viewer
-    bool m_isEmbeddedViewer;
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
     std::ostringstream m_dumpVisitorStream;
@@ -253,9 +251,6 @@ public:
     /// TODO: Find a better way to do this
     sofa::gui::qt::viewer::SofaViewer* getSofaViewer();
 
-    /// Our viewer is a QObject SofaViewer
-    bool isEmbeddedViewer();
-
     virtual void removeViewer();
 
     void dragEnterEvent( QDragEnterEvent* event) override;
@@ -275,12 +270,6 @@ protected:
 
     /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
     void initViewer(common::BaseViewer* _viewer) override;
-
-    /// Our viewer is a QObject SofaViewer
-    void isEmbeddedViewer(bool _onOff)
-    {
-        m_isEmbeddedViewer = _onOff;
-    }
 
     virtual int exitApplication(unsigned int _retcode = 0)
     {

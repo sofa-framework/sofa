@@ -324,7 +324,6 @@ RealGUI::RealGUI ( const char* viewername)
       m_sofaWindowDataGraph(nullptr),
       #endif
       simulationGraph(nullptr),
-      m_isEmbeddedViewer(true),
       m_dumpState(false),
       m_dumpStateStream(nullptr),
       m_exportGnuplot(false),
@@ -643,8 +642,7 @@ void RealGUI::emitIdle()
         groot->propagateEvent(core::execparams::defaultInstance(), &hb);
     }
 
-    if(isEmbeddedViewer())
-        getSofaViewer()->getQWidget()->update();
+    getSofaViewer()->getQWidget()->update();
 }
 
 /// This open popup the file selection windows.
@@ -773,12 +771,9 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         getViewer()->resetView();
         createDisplayFlags( root );
 
-        if( isEmbeddedViewer() )
-        {
-            getSofaViewer()->getQWidget()->setFocus();
-            getSofaViewer()->getQWidget()->show();
-            getSofaViewer()->getQWidget()->update();
-        }
+        getSofaViewer()->getQWidget()->setFocus();
+        getSofaViewer()->getQWidget()->show();
+        getSofaViewer()->getQWidget()->update();
 
         resetScene();
     }
@@ -950,27 +945,19 @@ void RealGUI::showWindowDataGraph()
 
 void RealGUI::setViewerResolution ( int w, int h )
 {
-    if( isEmbeddedViewer() )
-    {
-        const QSize winSize = size();
-        const QSize viewSize = ( getViewer() ) ? getSofaViewer()->getQWidget()->size() : QSize(0,0);
+    const QSize winSize = size();
+    const QSize viewSize = ( getViewer() ) ? getSofaViewer()->getQWidget()->size() : QSize(0,0);
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
-        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 #else
-        const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();// QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();// QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
 #endif
-        QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
-        if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
-        if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
+    QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+    if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
+    if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
 
-        this->resize(newWinSize);
-    }
-    else
-    {
-        getViewer()->setSizeW(w);
-        getViewer()->setSizeH(h);
-    }
+    this->resize(newWinSize);
 }
 
 //------------------------------------
@@ -979,49 +966,42 @@ void RealGUI::setFullScreen (bool enable)
 {
     if (enable == m_fullScreen) return;
 
-    if( isEmbeddedViewer() )
+    if (enable)
     {
-        if (enable)
-        {
-            optionTabs->hide();
-        }
-        else if (m_fullScreen)
-        {
-            optionTabs->show();
-        }
+        optionTabs->hide();
+    }
+    else if (m_fullScreen)
+    {
+        optionTabs->show();
+    }
 
-        if (enable)
-        {
-            std::cout << "Set Full Screen Mode" << std::endl;
-            showFullScreen();
-            m_fullScreen = true;
+    if (enable)
+    {
+        std::cout << "Set Full Screen Mode" << std::endl;
+        showFullScreen();
+        m_fullScreen = true;
 
-            dockWidget->setFloating(true);
-            dockWidget->setVisible(false);
-        }
-        else
-        {
-            std::cout << "Set Windowed Mode" << std::endl;
-            showNormal();
-            m_fullScreen = false;
-            dockWidget->setVisible(true);
-            dockWidget->setFloating(false);
-        }
-
-        if (enable)
-        {
-            menuBar()->hide();
-            statusBar()->hide();
-        }
-        else
-        {
-            menuBar()->show();
-            statusBar()->show();
-        }
+        dockWidget->setFloating(true);
+        dockWidget->setVisible(false);
     }
     else
     {
-        getViewer()->setFullScreen(enable);
+        std::cout << "Set Windowed Mode" << std::endl;
+        showNormal();
+        m_fullScreen = false;
+        dockWidget->setVisible(true);
+        dockWidget->setFloating(false);
+    }
+
+    if (enable)
+    {
+        menuBar()->hide();
+        statusBar()->hide();
+    }
+    else
+    {
+        menuBar()->show();
+        statusBar()->show();
     }
 }
 
@@ -1171,12 +1151,6 @@ sofa::gui::qt::viewer::SofaViewer* RealGUI::getSofaViewer()
     return m_viewer;
 }
 
-//------------------------------------
-
-bool RealGUI::isEmbeddedViewer()
-{
-    return m_isEmbeddedViewer;
-}
 
 //------------------------------------
 
@@ -1184,10 +1158,7 @@ void RealGUI::removeViewer()
 {
     if(m_viewer != nullptr)
     {
-        if(isEmbeddedViewer())
-        {
-            getSofaViewer()->removeViewerTab(tabs);
-        }
+        getSofaViewer()->removeViewerTab(tabs);
         delete m_viewer;
         m_viewer = nullptr;
     }
@@ -1432,12 +1403,10 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(_viewer);
     if( sofaViewer == nullptr )
     {
-        isEmbeddedViewer(false);
         std::cout<<"initViewer: The viewer isn't embedded in the GUI"<<std::endl;
     }
     else
     {
-        isEmbeddedViewer(true);
         this->mainWidgetLayout->addWidget(sofaViewer->getQWidget());
 
         sofaViewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
@@ -1730,8 +1699,8 @@ void RealGUI::newRootNode(sofa::simulation::Node* root, const char* path)
         getViewer()->setScene(root , path);
         getViewer()->load();
         getViewer()->resetView();
-        if(isEmbeddedViewer())
-            getSofaViewer()->getQWidget()->update();
+
+        getSofaViewer()->getQWidget()->update();
         statWidget->CreateStats(root);
     }
 }
@@ -2015,16 +1984,14 @@ void RealGUI::screenshot()
 void RealGUI::showhideElements()
 {
     displayFlag->updateDataValue();
-    if(isEmbeddedViewer())
-        getSofaViewer()->getQWidget()->update();
+    getSofaViewer()->getQWidget()->update();
 }
 
 //------------------------------------
 
 void RealGUI::update()
 {
-    if(isEmbeddedViewer())
-        getSofaViewer()->getQWidget()->update();
+    getSofaViewer()->getQWidget()->update();
     statWidget->CreateStats(currentSimulation());
 }
 
@@ -2034,8 +2001,8 @@ void RealGUI::updateBackgroundColour()
 {
     if(getViewer())
         getViewer()->setBackgroundColour(background[0]->text().toFloat(),background[1]->text().toFloat(),background[2]->text().toFloat());
-    if(isEmbeddedViewer())
-        getSofaViewer()->getQWidget()->update();
+
+    getSofaViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2044,8 +2011,8 @@ void RealGUI::updateBackgroundImage()
 {
     if(getViewer())
         getViewer()->setBackgroundImage( backgroundImage->text().toStdString() );
-    if(isEmbeddedViewer())
-        getSofaViewer()->getQWidget()->update();
+
+    getSofaViewer()->getQWidget()->update();
 }
 
 //------------------------------------
