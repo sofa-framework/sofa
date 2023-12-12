@@ -61,11 +61,11 @@ QRGBAColorPicker::QRGBAColorPicker(QWidget* parent) : QWidget(parent)
     connect( _colorButton, SIGNAL( clicked() ), this, SLOT( raiseQColorDialog() ) );
 }
 
-Vec4f QRGBAColorPicker::getColor() const
+type::RGBAColor QRGBAColorPicker::getColor() const
 {
     typedef unsigned char uchar;
     constexpr uchar max = std::numeric_limits<uchar>::max();
-    Vec4f color;
+    type::RGBAColor color;
     float r = _r->text().toFloat();
     float g = _g->text().toFloat();
     float b = _b->text().toFloat();

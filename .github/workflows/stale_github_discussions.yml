@@ -1,0 +1,32 @@
+name: Stale GitHub Discussions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday at 6:00 AM UTC (8:00 AM CET)
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10' # Use the desired Python version
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+        working-directory: ${{ github.workspace }}
+
+      - name: Run script comment-close-old-discussions.py
+        run: |
+          python scripts/comment-close-old-discussions.py
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
