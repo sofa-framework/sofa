@@ -69,6 +69,7 @@ TEST(NodeIterator, oneElementInRoot)
         std::size_t counter {};
         for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
+            SOFA_UNUSED(state);
             ++counter;
         }
 
@@ -92,6 +93,7 @@ TEST(NodeIterator, oneElementInRootAndOneElementInAChild)
         std::size_t counter {};
         for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
+            SOFA_UNUSED(state);
             ++counter;
         }
 
@@ -128,14 +130,11 @@ TEST(NodeIterator, oneElementInRootAndOneElementInEachChild)
         std::size_t counter {};
         for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
+            SOFA_UNUSED(state);
             ++counter;
         }
 
         EXPECT_EQ(counter, 4);
-    }
-
-    for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
-    {
     }
 }
 

@@ -56,6 +56,7 @@ std::conditional_t<trait::is_single_v<ObjectType>,
 >&
 getLocalObjects(sofa::simulation::Node& node)
 {
+    SOFA_UNUSED(node);
     static_assert(false, "Object type is not known");
     return {};
 }
