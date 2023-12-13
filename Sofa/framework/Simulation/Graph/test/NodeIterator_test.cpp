@@ -247,4 +247,58 @@ TEST(NodeIterator, diamond)
     }
 }
 
+TEST(NodeIterator, preOrderTraversal)
+{
+    const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
+    const auto dofsRoot = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    root->addObject(dofsRoot);
+
+    const DAGNode::SPtr childA = core::objectmodel::New<DAGNode>("A");
+    root->addChild(childA);
+    const auto dofsA = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childA->addObject(dofsA);
+
+    const DAGNode::SPtr childB = core::objectmodel::New<DAGNode>("B");
+    root->addChild(childB);
+    const auto dofsB = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childB->addObject(dofsB);
+
+    const DAGNode::SPtr childC = core::objectmodel::New<DAGNode>("C");
+    childA->addChild(childC);
+    const auto dofsC = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childC->addObject(dofsC);
+
+    const DAGNode::SPtr childD = core::objectmodel::New<DAGNode>("D");
+    childA->addChild(childD);
+    const auto dofsD = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childD->addObject(dofsD);
+
+    const DAGNode::SPtr childE = core::objectmodel::New<DAGNode>("E");
+    childD->addChild(childE);
+    const auto dofsE = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childE->addObject(dofsE);
+
+    const DAGNode::SPtr childF = core::objectmodel::New<DAGNode>("F");
+    childD->addChild(childF);
+    const auto dofsF = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    childF->addObject(dofsF);
+
+    sofa::type::vector<const sofa::core::behavior::BaseMechanicalState*> visitedStates;
+    for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+    {
+        visitedStates.push_back(state);
+    }
+
+    const sofa::type::vector<const sofa::core::behavior::BaseMechanicalState*> expectedOrder{
+        dofsRoot.get(),
+        dofsA.get(),
+        dofsC.get(),
+        dofsD.get(),
+        dofsE.get(),
+        dofsF.get(),
+        dofsB.get()
+    };
+    EXPECT_EQ(visitedStates, expectedOrder);
+}
+
 }

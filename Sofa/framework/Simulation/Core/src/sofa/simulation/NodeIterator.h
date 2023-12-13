@@ -98,7 +98,7 @@ GETLOCALOBJECTS(sofa::core::collision::Pipeline, collisionPipeline)
 #undef GETLOCALOBJECTS
 
 /**
- * @brief Iterator for traversing nodes in a scene graph containing objects of a specific type.
+ * @brief Iterator for preorder traversing nodes in a scene graph containing objects of a specific type.
  *
  * This iterator is designed to be used with the `SceneGraphObjectTraversal` class to iterate through nodes
  * in a scene graph that contain objects of a specified type (`ObjectType`).
@@ -133,9 +133,9 @@ private:
         auto* current = m_stack.top();
         m_stack.pop();
 
-        for (auto& node : current->child)
+        for (auto it = current->child.rbegin(); it != current->child.rend(); ++it)
         {
-            m_stack.push(node.get());
+            m_stack.push(it->get());
         }
 
         if (auto& objects = getLocalObjects<ObjectType>(*current); !objects.empty())
