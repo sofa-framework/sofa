@@ -48,6 +48,11 @@ TEST(NodeIterator, constructor)
         const simulation::NodeIterator<core::objectmodel::BaseObject> begin(root.get());
         EXPECT_EQ(begin.ptr(), nullptr);
     }
+
+    {
+        const simulation::NodeIterator<core::behavior::BaseMass> begin(root.get());
+        EXPECT_EQ(begin.ptr(), nullptr);
+    }
 }
 
 TEST(NodeIterator, oneElementInRoot)
@@ -56,6 +61,72 @@ TEST(NodeIterator, oneElementInRoot)
 
     const auto dofs = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
     root->addObject(dofs);
+
+    {
+        simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(root.get());
+        EXPECT_EQ(begin.ptr(), dofs.get());
+
+        begin++;
+        EXPECT_EQ(begin.ptr(), nullptr);
+    }
+
+    {
+        std::size_t counter {};
+        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        {
+            SOFA_UNUSED(state);
+            ++counter;
+        }
+
+        EXPECT_EQ(counter, 1);
+    }
+}
+
+TEST(NodeIterator, zeroElementInRootOneInChild)
+{
+    const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
+
+    const DAGNode::SPtr child = core::objectmodel::New<DAGNode>("child");
+    root->addChild(child);
+
+    const auto dofs = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    child->addObject(dofs);
+
+    {
+        simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(root.get());
+        EXPECT_EQ(begin.ptr(), dofs.get());
+
+        begin++;
+        EXPECT_EQ(begin.ptr(), nullptr);
+    }
+
+    {
+        std::size_t counter {};
+        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        {
+            SOFA_UNUSED(state);
+            ++counter;
+        }
+
+        EXPECT_EQ(counter, 1);
+    }
+}
+
+TEST(NodeIterator, zeroElementInRootOneInChild2)
+{
+    const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
+
+    const DAGNode::SPtr child = core::objectmodel::New<DAGNode>("child");
+    root->addChild(child);
+
+    const DAGNode::SPtr child2 = core::objectmodel::New<DAGNode>("child");
+    child->addChild(child2);
+
+    const DAGNode::SPtr child3 = core::objectmodel::New<DAGNode>("child");
+    child->addChild(child3);
+
+    const auto dofs = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    child3->addObject(dofs);
 
     {
         simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(root.get());
@@ -135,6 +206,44 @@ TEST(NodeIterator, oneElementInRootAndOneElementInEachChild)
         }
 
         EXPECT_EQ(counter, 4);
+    }
+}
+
+TEST(NodeIterator, diamond)
+{
+    const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
+
+    const auto dofs = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+
+    const DAGNode::SPtr childA = core::objectmodel::New<DAGNode>("A");
+    root->addChild(childA);
+
+    const DAGNode::SPtr childB = core::objectmodel::New<DAGNode>("B");
+    root->addChild(childB);
+
+    const DAGNode::SPtr childC = core::objectmodel::New<DAGNode>("C");
+    childB->addChild(childC);
+    childA->addChild(childC);
+
+    childC->addObject(dofs);
+
+    {
+        simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(root.get());
+        EXPECT_EQ(begin.ptr(), dofs.get());
+
+        begin++;
+        EXPECT_EQ(begin.ptr(), nullptr);
+    }
+
+    {
+        std::size_t counter {};
+        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        {
+            SOFA_UNUSED(state);
+            ++counter;
+        }
+
+        EXPECT_EQ(counter, 1);
     }
 }
 
