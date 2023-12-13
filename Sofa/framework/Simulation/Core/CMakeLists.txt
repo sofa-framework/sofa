@@ -81,6 +81,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneCheck.h
     ${SRC_ROOT}/SceneCheckRegistry.h
     ${SRC_ROOT}/SceneCheckMainRegistry.h
+    ${SRC_ROOT}/SceneGraphObjectTraversal.h
     ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -177,6 +178,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalVisitor.cpp
     ${SRC_ROOT}/MutationListener.cpp
     ${SRC_ROOT}/Node.cpp
+    ${SRC_ROOT}/NodeIterator.cpp
     ${SRC_ROOT}/ParallelVisitorScheduler.cpp
     ${SRC_ROOT}/PauseEvent.cpp
     ${SRC_ROOT}/PipelineImpl.cpp
@@ -188,6 +190,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/SceneLoaderFactory.cpp
     ${SRC_ROOT}/SceneCheck.cpp
     ${SRC_ROOT}/SceneCheckRegistry.cpp
+    ${SRC_ROOT}/SceneGraphObjectTraversal.cpp
     ${SRC_ROOT}/SceneCheckMainRegistry.cpp
     ${SRC_ROOT}/Simulation.cpp
     ${SRC_ROOT}/SolveVisitor.cpp

@@ -172,8 +172,8 @@ public:
         }
     }
 
-    ObjectType* operator*() { return *m_currentDataIterator; }
-    const ObjectType* operator*() const { return *m_currentDataIterator; }
+    ObjectType* operator*() { return ptr(); }
+    const ObjectType* operator*() const { return ptr(); }
 
     [[nodiscard]] ObjectType* ptr() const
     {
@@ -191,7 +191,14 @@ public:
         }
         else
         {
-            return m_currentDataIterator->get();
+            if constexpr (trait::is_strong_v<ObjectType>)
+            {
+                return m_currentDataIterator->get();
+            }
+            else
+            {
+                return *m_currentDataIterator;
+            }
         }
     }
 
@@ -225,29 +232,34 @@ public:
     }
 };
 
-template<class ObjectType>
-struct SceneGraphObjectTraversal
-{
-    using iterator = NodeIterator<ObjectType>;
+#if !defined(SOFA_SIMULATION_NODEITERATOR_CPP)
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::objectmodel::BaseObject>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::BehaviorModel>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::BaseMapping>;
 
-    explicit SceneGraphObjectTraversal(sofa::simulation::Node* root)
-        : m_root{root}
-    {}
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::OdeSolver>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::ConstraintSolver>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseLinearSolver>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::topology::BaseTopologyObject>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseForceField>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseInteractionForceField>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseProjectiveConstraintSet>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseConstraintSet>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::objectmodel::ContextObject>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::objectmodel::ConfigurationSetting>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::visual::Shader>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::visual::VisualModel>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::visual::VisualManager>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::CollisionModel>;
 
-    SceneGraphObjectTraversal() = delete;
-
-    iterator begin() const
-    {
-        return iterator{m_root};
-    }
-
-    iterator end() const
-    {
-        return iterator{nullptr};
-    }
-
-private:
-    sofa::simulation::Node* m_root { nullptr };
-};
-
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseAnimationLoop>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::visual::VisualLoop>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::topology::Topology>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::topology::BaseMeshTopology>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::BaseState>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseMechanicalState>;
+// extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::BaseMapping>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::behavior::BaseMass>;
+extern template class SOFA_SIMULATION_CORE_API NodeIterator<sofa::core::collision::Pipeline>;
+#endif
 }

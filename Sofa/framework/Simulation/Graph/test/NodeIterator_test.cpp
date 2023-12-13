@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <variant>
-#include <sofa/simulation/NodeIterator.h>
+#include <sofa/simulation/SceneGraphObjectTraversal.h>
 #include <gtest/gtest.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGNode.h>
