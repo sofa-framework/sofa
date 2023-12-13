@@ -76,7 +76,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
-    SReal nbNonDiagonalMasses = 0;
+    sofa::Size nbNonDiagonalMasses = 0;
     MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
