@@ -15,6 +15,7 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
+# add FindCImg.cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 sofa_find_package(CImg REQUIRED)
 
