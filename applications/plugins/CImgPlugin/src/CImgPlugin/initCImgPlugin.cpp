@@ -18,7 +18,7 @@
 /// and export it.
 namespace cimg_library::cimg
 {
-    SOFA_CIMGPLUGIN_API Mutex_static& Mutex_attr() { static Mutex_static val; return val; }
+    Mutex_static& Mutex_attr() { static Mutex_static val; return val; }
 }
 
 

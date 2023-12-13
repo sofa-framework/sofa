@@ -75,6 +75,10 @@ if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ${DEP_TARGETS})
 endif()
 
+if(MSVC)
+    target_link_options(${PROJECT_NAME} PRIVATE "/DEF:${CMAKE_CURRENT_SOURCE_DIR}/exports.def")
+endif()
+
 ## Install rules for the library; CMake package configurations files
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
