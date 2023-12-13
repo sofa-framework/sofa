@@ -139,6 +139,7 @@ class NodeIterator
         {
             for (auto& node : current->child)
             {
+                SOFA_UNUSED(node);
                 findFirstObject();
             }
         }
@@ -179,7 +180,7 @@ public:
     ObjectType* operator*() { return *m_currentDataIterator; }
     const ObjectType* operator*() const { return *m_currentDataIterator; }
 
-    [[nodiscard]] ObjectType* const ptr() const
+    [[nodiscard]] ObjectType* ptr() const
     {
         if (m_rootNode == nullptr)
         {
