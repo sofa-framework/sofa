@@ -17,7 +17,27 @@ sofa_find_package(Sofa.DefaultType REQUIRED)
 
 # add FindCImg.cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
-sofa_find_package(CImg REQUIRED)
+sofa_find_package(CImg QUIET)
+
+if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching CImg...")
+
+    include(FetchContent)
+    FetchContent_Declare(CImg
+            GIT_REPOSITORY https://github.com/GreycLab/CImg
+            GIT_TAG        v.3.3.2
+    )
+
+    FetchContent_GetProperties(CImg)
+    if(NOT CImg_POPULATED)
+        FetchContent_Populate(CImg)
+
+        set(CIMG_H_DIR ${cimg_SOURCE_DIR})
+        sofa_find_package(CImg REQUIRED)
+    endif()
+elseif (NOT CImg_FOUND)
+    message(FATAL_ERROR "CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install cimg-dev, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
 
 # OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
 # it will allow to use those instead of those present in XCode's frameworks
