@@ -12,10 +12,10 @@ set(SOURCE_FILES
     src/CImgPlugin/initCImgPlugin.cpp
     )
 
-add_subdirectory(extlibs/CImg)
-
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 sofa_find_package(CImg REQUIRED)
 
 # OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
@@ -67,7 +67,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType )
+target_link_libraries(${PROJECT_NAME} INTERFACE CImg)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEP_TARGETS})
 
 if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
@@ -78,7 +79,7 @@ endif()
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    TARGETS ${PROJECT_NAME} CImg AUTO_SET_TARGET_PROPERTIES 
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "CImgPlugin"
     RELOCATABLE "plugins"
