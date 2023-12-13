@@ -26,10 +26,19 @@
 namespace sofa::simulation
 {
 
+/**
+ * @brief Represents a traversal of a scene graph for a specific object type.
+ *
+ * This class provides a convenient way to traverse a scene graph for objects of a specific type.
+ * It uses an iterator, `NodeIterator`, to iterate through the nodes containing objects of the specified type.
+ *
+ * @tparam ObjectType The type of objects to traverse in the scene graph.
+ */
 template<class ObjectType>
 struct SceneGraphObjectTraversal
 {
     using iterator = NodeIterator<ObjectType>;
+    using value_type = ObjectType*;
 
     explicit SceneGraphObjectTraversal(sofa::simulation::Node* root)
         : m_root{root}
@@ -37,12 +46,12 @@ struct SceneGraphObjectTraversal
 
     SceneGraphObjectTraversal() = delete;
 
-    iterator begin() const
+    [[nodiscard]] iterator begin() const
     {
         return iterator{m_root};
     }
 
-    iterator end() const
+    [[nodiscard]] iterator end() const
     {
         return iterator{nullptr};
     }

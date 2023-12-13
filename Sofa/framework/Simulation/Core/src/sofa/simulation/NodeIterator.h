@@ -97,15 +97,27 @@ GETLOCALOBJECTS(sofa::core::collision::Pipeline, collisionPipeline)
 
 #undef GETLOCALOBJECTS
 
+/**
+ * @brief Iterator for traversing nodes in a scene graph containing objects of a specific type.
+ *
+ * This iterator is designed to be used with the `SceneGraphObjectTraversal` class to iterate through nodes
+ * in a scene graph that contain objects of a specified type (`ObjectType`).
+ *
+ * @tparam ObjectType The type of objects to traverse in the scene graph.
+ */
 template<class ObjectType>
 class NodeIterator
 {
+public:
     using container = std::conditional_t<trait::is_single_v<ObjectType>,
                                          NodeSingle<ObjectType>,
                                          NodeSequence<ObjectType, trait::is_strong_v<ObjectType>>>;
+    using value_type = ObjectType*;
 
     using data_iterator = typename container::iterator;
     using const_data_iterator = typename container::iterator;
+
+private:
 
     sofa::simulation::Node* m_rootNode { nullptr };
     std::stack<sofa::simulation::Node*> m_stack;
@@ -114,6 +126,8 @@ class NodeIterator
     data_iterator m_currentDataEndIterator;
     bool m_isNull { false };
 
+    /// Recursive function traversing the graph, searching for an object of
+    /// type ObjectType
     void findFirstObject()
     {
         auto* current = m_stack.top();
@@ -172,10 +186,10 @@ public:
         }
     }
 
-    ObjectType* operator*() { return ptr(); }
-    const ObjectType* operator*() const { return ptr(); }
+    value_type operator*() { return ptr(); }
+    value_type operator*() const { return ptr(); }
 
-    [[nodiscard]] ObjectType* ptr() const
+    [[nodiscard]] value_type ptr() const
     {
         if (m_rootNode == nullptr)
         {
@@ -208,7 +222,6 @@ public:
         NodeIterator it = *this;
         increment();
         return it;
-
     }
 
     /// pre-increment
