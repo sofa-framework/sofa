@@ -16,7 +16,10 @@ sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
 # add FindCImg.cmake
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake ${CMAKE_BINARY_DIR}/lib/cmake/FindCImg.cmake COPYONLY)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
+
 sofa_find_package(CImg QUIET)
 
 if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
@@ -108,6 +111,12 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "CImgPlugin"
     RELOCATABLE "plugins"
+    )
+
+install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake"
+    DESTINATION lib/cmake/Modules
+    COMPONENT headers
     )
 
 # Tests
