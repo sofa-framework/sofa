@@ -426,7 +426,6 @@ macro(sofa_auto_set_target_compile_definitions)
 
             target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
-    
         target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD_${sofa_target_name_upper}")
     endforeach()
 endmacro()
@@ -480,7 +479,10 @@ macro(sofa_auto_set_target_include_directories)
                 set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_SOURCE_DIR}")
             endif()
         endif()
-        get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+
+        if(NOT IS_INTERFACE_LIBRARY)
+            get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+        endif()
 
         if(NOT "\$<BUILD_INTERFACE:${include_source_root}>" IN_LIST target_include_dirs)
             target_include_directories(${target} ${TARGET_VISIBILITY} "$<BUILD_INTERFACE:${include_source_root}>")
