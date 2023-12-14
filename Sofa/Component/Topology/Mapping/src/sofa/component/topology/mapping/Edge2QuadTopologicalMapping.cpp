@@ -63,6 +63,8 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_focalAxis( initData(&d_focalAxis, Vec3(0_sreal, 0_sreal, 1_sreal), "focalAxis", "In case of ellipses"))
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , l_toQuadContainer(initLink("toQuadContainer", "Output container storing Quads"))
+    , l_toQuadModifier(initLink("toQuadModifier", "Output modifier handling Quads"))
 {
     m_inputType = geometry::ElementType::EDGE;
     m_outputType = geometry::ElementType::QUAD;
@@ -83,6 +85,7 @@ void Edge2QuadTopologicalMapping::init()
         msg_error() << "Radius is zero or negative";
         return;
     }
+
     if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<SReal>::min())
     {
         msg_warning() << "Focal Radius is zero or negative";
@@ -120,11 +123,35 @@ void Edge2QuadTopologicalMapping::init()
         {
             msg_info() << "Edge2QuadTopologicalMapping - to = quad";
 
-            container::dynamic::QuadSetTopologyModifier *to_modifier;
-            toModel->getContext()->get(to_modifier);
+            if (l_toQuadContainer.empty())
+            {
+                msg_info() << "Quad container \'" << l_toQuadContainer.getName() << "\' has not been set. A quad container found in the current context will be used, if it exists.";
 
-            container::dynamic::QuadSetTopologyContainer *to_container;
-            toModel->getContext()->get(to_container);
+                container::dynamic::QuadSetTopologyContainer* to_container;
+                toModel->getContext()->get(to_container);
+                l_toQuadContainer.set(to_container);
+            }
+
+            if (!l_toQuadContainer.get())
+            {
+                msg_error() << "The necessary quad container has not been set (or could not be found).";
+                return;
+            }
+
+            if (l_toQuadModifier.empty())
+            {
+                msg_info() << "Quad modifier \'" << l_toQuadModifier.getName() << "\' has not been set. A quad modifier found in the current context will be used, if it exists.";
+
+                container::dynamic::QuadSetTopologyModifier* to_modifier;
+                toModel->getContext()->get(to_modifier);
+                l_toQuadModifier.set(to_modifier);
+            }
+
+            if (!l_toQuadModifier.get())
+            {
+                msg_error() << "The necessary quad modifier has not been set (or could not be found).";
+                return;
+            }
 
             const sofa::type::vector<Edge>& edgeArray = fromModel->getEdges();
             
@@ -152,7 +179,7 @@ void Edge2QuadTopologicalMapping::init()
                 to_mstate->resize(fromModel->getNbPoints() * N);
             }
 
-            to_container->clear();
+            l_toQuadContainer->clear();
 
             toModel->setNbPoints(fromModel->getNbPoints() * N);
 
@@ -253,9 +280,9 @@ void Edge2QuadTopologicalMapping::init()
                         const Index q3 = p0*N+((j+1)%N);
 
                         if(d_flipNormals.getValue())
-                            to_modifier->addQuadProcess(Quad(q0, q3, q2, q1));
+                            l_toQuadModifier->addQuadProcess(Quad(q0, q3, q2, q1));
                         else
-                            to_modifier->addQuadProcess(Quad(q0, q1, q2, q3));
+                            l_toQuadModifier->addQuadProcess(Quad(q0, q1, q2, q3));
                         Loc2GlobVec.push_back(i);
                         out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
@@ -265,10 +292,10 @@ void Edge2QuadTopologicalMapping::init()
 
             }
 
-            to_modifier->addQuads(quads_to_create);
+            l_toQuadModifier->addQuads(quads_to_create);
 
             // Need to fully init the target topology
-            to_modifier->init();
+            l_toQuadModifier->init();
 
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
@@ -299,10 +326,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
     if (fromModel)
     {
-
-        container::dynamic::QuadSetTopologyModifier *to_modifier;
-        toModel->getContext()->get(to_modifier);
-
         if (toModel)
         {
 
@@ -319,7 +342,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_modifier->notifyEndingEvent();
+                    l_toQuadModifier->notifyEndingEvent();
                     break;
                 }
 
@@ -373,7 +396,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             In2OutMap[k]=out_info;
                         }
 
-                        to_modifier->addQuads(quads_to_create);
+                        l_toQuadModifier->addQuads(quads_to_create);
                     }
                     break;
                 }
@@ -484,7 +507,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     quads_to_remove.push_back(ind_list[j]);
                                 }
 
-                                to_modifier->removeQuads(quads_to_remove, true, true);
+                                l_toQuadModifier->removeQuads(quads_to_remove, true, true);
 
                             }
                             else
@@ -520,7 +543,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     sofa::type::vector<Index>& tab_indices = indices;
                     sofa::type::vector<Index>& inv_tab_indices = inv_indices;
 
-                    to_modifier->renumberPoints(tab_indices, inv_tab_indices, true);
+                    l_toQuadModifier->renumberPoints(tab_indices, inv_tab_indices, true);
                     break;
                 }
 
@@ -554,7 +577,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                         }
                     }
 
-                    to_modifier->addPoints(to_nVertices, to_ancestorsList, to_coefs, true);
+                    l_toQuadModifier->addPoints(to_nVertices, to_ancestorsList, to_coefs, true);
                     break;
                 }
 
