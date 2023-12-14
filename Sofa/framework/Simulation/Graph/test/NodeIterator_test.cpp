@@ -72,7 +72,7 @@ TEST(NodeIterator, oneElementInRoot)
 
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
@@ -102,7 +102,7 @@ TEST(NodeIterator, zeroElementInRootOneInChild)
 
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
@@ -138,7 +138,7 @@ TEST(NodeIterator, zeroElementInRootOneInChild2)
 
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
@@ -162,7 +162,7 @@ TEST(NodeIterator, oneElementInRootAndOneElementInAChild)
     child->addObject(dofsChild);
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
@@ -199,13 +199,28 @@ TEST(NodeIterator, oneElementInRootAndOneElementInEachChild)
 
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
         }
 
         EXPECT_EQ(counter, 4);
+    }
+
+    {
+        const auto graphTraversal = sofa::simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get());
+        {
+            const std::size_t nbStates = std::count_if(graphTraversal.begin(), graphTraversal.end(),
+               [](const auto& state){ return true;});
+
+            EXPECT_EQ(nbStates, 4);
+        }
+
+        {
+            const auto nbStates = std::distance(graphTraversal.begin(), graphTraversal.end());
+            EXPECT_EQ(nbStates, 4);
+        }
     }
 }
 
@@ -237,7 +252,7 @@ TEST(NodeIterator, diamond)
 
     {
         std::size_t counter {};
-        for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+        for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
         {
             SOFA_UNUSED(state);
             ++counter;
@@ -284,9 +299,9 @@ TEST(NodeIterator, preOrderTraversal)
     childF->addObject(dofsF);
 
     sofa::type::vector<const sofa::core::behavior::BaseMechanicalState*> visitedStates;
-    for (const auto* state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
+    for (const auto& state : simulation::SceneGraphObjectTraversal<sofa::core::behavior::BaseMechanicalState>(root.get()))
     {
-        visitedStates.push_back(state);
+        visitedStates.push_back(&state);
     }
 
     const sofa::type::vector<const sofa::core::behavior::BaseMechanicalState*> expectedOrder{
@@ -299,6 +314,53 @@ TEST(NodeIterator, preOrderTraversal)
         dofsB.get()
     };
     EXPECT_EQ(visitedStates, expectedOrder);
+}
+
+TEST(NodeIterator, CopyConstructible)
+{
+    {
+        const simulation::NodeIterator<core::objectmodel::BaseObject> begin(nullptr);
+        EXPECT_EQ(begin.ptr(), nullptr);
+
+        const auto copy { begin };
+        EXPECT_EQ(copy.ptr(), nullptr);
+    }
+
+    {
+        const simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(nullptr);
+        EXPECT_EQ(begin.ptr(), nullptr);
+
+        const auto copy { begin };
+        EXPECT_EQ(copy.ptr(), nullptr);
+    }
+
+    const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
+    {
+        const simulation::NodeIterator<core::objectmodel::BaseObject> begin(root.get());
+        EXPECT_EQ(begin.ptr(), nullptr);
+
+        const auto copy { begin };
+        EXPECT_EQ(copy.ptr(), nullptr);
+    }
+
+    {
+        const simulation::NodeIterator<core::behavior::BaseMass> begin(root.get());
+        EXPECT_EQ(begin.ptr(), nullptr);
+
+        const auto copy { begin };
+        EXPECT_EQ(copy.ptr(), nullptr);
+    }
+
+    const auto dofs = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    root->addObject(dofs);
+
+    {
+        simulation::NodeIterator<sofa::core::behavior::BaseMechanicalState> begin(root.get());
+        EXPECT_EQ(begin.ptr(), dofs.get());
+
+        const auto copy { begin };
+        EXPECT_EQ(copy.ptr(), dofs.get());
+    }
 }
 
 }

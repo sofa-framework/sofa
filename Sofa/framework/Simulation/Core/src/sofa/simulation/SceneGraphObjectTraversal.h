@@ -56,6 +56,11 @@ struct SceneGraphObjectTraversal
         return iterator{nullptr};
     }
 
+    [[nodiscard]] typename iterator::difference_type size() const
+    {
+        return std::distance(begin(), end());
+    }
+
 private:
     sofa::simulation::Node* m_root { nullptr };
 };

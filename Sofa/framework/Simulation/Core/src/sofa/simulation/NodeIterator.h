@@ -112,7 +112,11 @@ public:
     using container = std::conditional_t<trait::is_single_v<ObjectType>,
                                          NodeSingle<ObjectType>,
                                          NodeSequence<ObjectType, trait::is_strong_v<ObjectType>>>;
-    using value_type = ObjectType*;
+    using value_type = ObjectType;
+    using difference_type = std::size_t;
+    using reference = ObjectType&;
+    using pointer = ObjectType*;
+    using iterator_category = std::input_iterator_tag;
 
     using data_iterator = typename container::iterator;
     using const_data_iterator = typename container::iterator;
@@ -186,10 +190,9 @@ public:
         }
     }
 
-    value_type operator*() { return ptr(); }
-    value_type operator*() const { return ptr(); }
+    reference operator*() const { return *ptr(); }
 
-    [[nodiscard]] value_type ptr() const
+    [[nodiscard]] pointer ptr() const
     {
         if (m_rootNode == nullptr)
         {
@@ -199,20 +202,13 @@ public:
         {
             return nullptr;
         }
-        if constexpr (trait::is_single_v<ObjectType>)
+        if constexpr (trait::is_strong_v<ObjectType>)
         {
-            return *m_currentDataIterator;
+            return m_currentDataIterator->get();
         }
         else
         {
-            if constexpr (trait::is_strong_v<ObjectType>)
-            {
-                return m_currentDataIterator->get();
-            }
-            else
-            {
-                return *m_currentDataIterator;
-            }
+            return *m_currentDataIterator;
         }
     }
 
