@@ -33,8 +33,6 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/behavior/MechanicalState.h>
-
 #include <cmath>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -112,8 +110,8 @@ void Edge2QuadTopologicalMapping::init()
 
     
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
-    const core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
-    core::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
+    const core::State<Rigid3Types>* from_mstate = dynamic_cast<core::State<Rigid3Types>*>(fromModel->getContext()->getState());
+    core::State<Vec3Types>* to_mstate = dynamic_cast<core::State<Vec3Types>*>(toModel->getContext()->getState());
 
     if (fromModel)
     {
@@ -299,8 +297,8 @@ void Edge2QuadTopologicalMapping::init()
     }
     else
     {
-        // Check type Rigid3 of input mechanical object (required)
-        msg_error() << "Mechanical object associated with the input is not of type Rigid. Edge2QuadTopologicalMapping only supports Rigid3Types to Vec3Types";
+        // Check type Rigid3 of input state object (required)
+        msg_error() << "State object associated with the input is not of type Rigid. Edge2QuadTopologicalMapping only supports Rigid3Types to Vec3Types";
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
