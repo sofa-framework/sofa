@@ -36,17 +36,13 @@
         
         
         <Node name="VisuBeam" activated="true">
-			<MechanicalObject template="Vec3" name="SurfDof" />
+			<OglModel template="Vec3" name="SurfDof" color="0.7 0.7 0.7" />
 			<QuadSetTopologyContainer  name="Container" />
 			<QuadSetTopologyModifier   name="Modifier" />
             <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3" drawQuads="1"/>
 			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="2" input="@../MeshLines" output="@Container" flipNormals="true"/>
             <TubularMapping nbPointsOnEachCircle="10" radius="2" input="@../BeamDof" output="@SurfDof" />
             
-			<Node name="VisuOgl" activated="true">
-				<OglModel name="Visual" color="0.7 0.7 0.7" />
-				<IdentityMapping input="@../SurfDof" output="@Visual"/>
-			</Node>
 		</Node>
 	</Node>  
 </Node>
