@@ -496,17 +496,17 @@ sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintS
 
 void GenericConstraintSolver::applyMotionCorrection(
     const core::ConstraintParams* cParams,
-    const core::MultiVecCoordId xId,
+    const std::unique_ptr<core::MultiVecCoordId>& xId,
     const core::MultiVecDerivId vId,
     core::behavior::BaseConstraintCorrection* constraintCorrection) const
 {
     if (cParams->constOrder() == sofa::core::ConstraintOrder::POS_AND_VEL)
     {
-        constraintCorrection->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
+        constraintCorrection->applyMotionCorrection(cParams, *xId, vId, cParams->dx(), this->getDx() );
     }
     else if (cParams->constOrder() == sofa::core::ConstraintOrder::POS)
     {
-        constraintCorrection->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
+        constraintCorrection->applyPositionCorrection(cParams, *xId, cParams->dx(), this->getDx());
     }
     else if (cParams->constOrder() == sofa::core::ConstraintOrder::VEL)
     {
@@ -526,7 +526,11 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
 
     if (std::find(supportedCorrections.begin(), supportedCorrections.end(), cParams->constOrder()) != supportedCorrections.end())
     {
-        const core::MultiVecCoordId xId(res1);
+        std::unique_ptr<core::MultiVecCoordId> xId;
+        if (cParams->constOrder() != sofa::core::ConstraintOrder::VEL)
+        {
+            xId = std::make_unique<core::MultiVecCoordId>(res1);
+        }
         const core::MultiVecDerivId vId(cParams->constOrder() == sofa::core::ConstraintOrder::VEL ? res1 : res2);
 
         for (const auto& constraintCorrection : filteredConstraintCorrections())
