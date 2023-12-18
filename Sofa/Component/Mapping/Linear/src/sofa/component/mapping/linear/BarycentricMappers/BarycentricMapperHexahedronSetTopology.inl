@@ -50,15 +50,14 @@ template <class In, class Out>
 typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
 BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
-    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
-    vectorData.resize ( d_map.getValue().size() +1 );
-    MappingData& data = *vectorData.rbegin();
-    d_map.endEdit();
+    auto vectorData = sofa::helper::getWriteAccessor(d_map);
+    MappingData data;
     data.in_index = cubeIndex;
-    data.baryCoords[0] = ( Real ) baryCoords[0];
-    data.baryCoords[1] = ( Real ) baryCoords[1];
-    data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)d_map.getValue().size()-1;
+    data.baryCoords[0] = static_cast<Real>(baryCoords[0]);
+    data.baryCoords[1] = static_cast<Real>(baryCoords[1]);
+    data.baryCoords[2] = static_cast<Real>(baryCoords[2]);
+    vectorData->emplace_back(data);
+    return static_cast<Index>(vectorData.size() - 1u);
 }
 
 
@@ -66,16 +65,16 @@ template <class In, class Out>
 typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
 BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const Index pointIndex, const Index cubeIndex, const SReal* baryCoords )
 {
-    if ( pointIndex >= d_map.getValue().size() )
+    auto vectorData = sofa::helper::getWriteAccessor(d_map);
+
+    if ( pointIndex >= vectorData.size() )
         return sofa::InvalidID;
 
-    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     MappingData& data = vectorData[pointIndex];
     data.in_index = cubeIndex;
-    data.baryCoords[0] = ( Real ) baryCoords[0];
-    data.baryCoords[1] = ( Real ) baryCoords[1];
-    data.baryCoords[2] = ( Real ) baryCoords[2];
-    d_map.endEdit();
+    data.baryCoords[0] = static_cast<Real>(baryCoords[0]);
+    data.baryCoords[1] = static_cast<Real>(baryCoords[1]);
+    data.baryCoords[2] = static_cast<Real>(baryCoords[2]);
 
     if(cubeIndex == sofa::InvalidID)
         m_invalidIndex.insert(pointIndex);

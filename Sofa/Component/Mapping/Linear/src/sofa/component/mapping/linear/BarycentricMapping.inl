@@ -307,12 +307,11 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mpara
 {
     SOFA_UNUSED(mparams);
 
-    typename Out::VecDeriv* out = _out.beginEdit();
     if (d_mapper != nullptr)
     {
-        d_mapper->applyJ(*out, in.getValue());
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(_out);
+        d_mapper->applyJ(outWriteAccessor.wref(), in.getValue());
     }
-    _out.endEdit();
 }
 
 
@@ -323,8 +322,8 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 
     if (d_mapper != nullptr)
     {
-        d_mapper->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(out);
+        d_mapper->applyJT(outWriteAccessor.wref(), in.getValue());
     }
 }
 
@@ -376,8 +375,8 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 
     if (d_mapper!=nullptr )
     {
-        d_mapper->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(out);
+        d_mapper->applyJT(outWriteAccessor.wref(), in.getValue());
     }
 }
 
