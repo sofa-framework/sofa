@@ -48,7 +48,6 @@ int LinearMovementProjectiveConstraintClass = core::RegisterObject("translate gi
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("LinearMovementConstraint")
     ;
 
 

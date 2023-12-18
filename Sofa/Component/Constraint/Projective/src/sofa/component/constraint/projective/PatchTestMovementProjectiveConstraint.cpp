@@ -32,7 +32,6 @@ namespace sofa::component::constraint::projective
 int PatchTestMovementProjectiveConstraintClass = core::RegisterObject("bilinear constraint")
         .add< PatchTestMovementProjectiveConstraint<defaulttype::Vec3Types> >()
         .add< PatchTestMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("PatchTestMovementConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PatchTestMovementProjectiveConstraint<defaulttype::Vec3Types>;

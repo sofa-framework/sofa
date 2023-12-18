@@ -34,7 +34,6 @@ namespace sofa::component::constraint::projective
 int AffineMovementProjectiveConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
         .add< AffineMovementProjectiveConstraint<defaulttype::Vec3Types> >()
         .add< AffineMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("AffineMovementConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementProjectiveConstraint<defaulttype::Vec3Types>;

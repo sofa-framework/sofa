@@ -30,7 +30,6 @@ namespace sofa::component::constraint::projective
 //declaration of the class, for the factory
 int SkeletalMotionProjectiveConstraintClass = core::RegisterObject("animate a skeleton")
         .add< SkeletalMotionProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("SkeletalMotionConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API SkeletalMotionProjectiveConstraint<defaulttype::Rigid3Types>;

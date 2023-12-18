@@ -33,7 +33,6 @@ using namespace sofa::defaulttype;
 
 int FixedRotationProjectiveConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
         .add< FixedRotationProjectiveConstraint<Rigid3Types> >()
-        .addAlias("FixedRotationConstraint")
 
         ;
 

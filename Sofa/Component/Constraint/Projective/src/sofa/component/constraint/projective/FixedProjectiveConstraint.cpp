@@ -39,7 +39,6 @@ int FixedProjectiveConstraintClass = core::RegisterObject("Attach given particle
         .add< FixedProjectiveConstraint<Vec6Types> >()
         .add< FixedProjectiveConstraint<Rigid3Types> >()
         .add< FixedProjectiveConstraint<Rigid2Types> >()
-        .addAlias("FixedConstraint")
         ;
 
 

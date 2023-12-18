@@ -42,8 +42,6 @@ int PositionBasedDynamicsProjectiveConstraintClass = core::RegisterObject("Posit
         .add< PositionBasedDynamicsProjectiveConstraint<Vec1Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Vec6Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Rigid3Types> >()
-        .addAlias("PositionBasedDynamicsConstraint")
-
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Vec3Types>;

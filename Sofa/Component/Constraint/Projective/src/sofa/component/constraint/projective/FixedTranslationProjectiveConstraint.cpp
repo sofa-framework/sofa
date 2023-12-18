@@ -35,7 +35,6 @@ int FixedTranslationProjectiveConstraintClass = core::RegisterObject("Attach giv
         .add< FixedTranslationProjectiveConstraint<Rigid3Types> >()
         .add< FixedTranslationProjectiveConstraint<Rigid2Types> >()
         .add< FixedTranslationProjectiveConstraint<Vec6Types> >()
-        .addAlias("FixedTranslationConstraint")
     ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationProjectiveConstraint<Rigid3Types>;

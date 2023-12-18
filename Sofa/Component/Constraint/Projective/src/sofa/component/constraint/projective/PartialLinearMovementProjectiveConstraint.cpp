@@ -35,8 +35,6 @@ int PartialLinearMovementProjectiveConstraintClass = core::RegisterObject("trans
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("PartialLinearMovementConstraint")
-
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementProjectiveConstraint<defaulttype::Vec3Types>;

@@ -31,7 +31,6 @@ namespace sofa::component::constraint::projective
 int HermiteSplineProjectiveConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
         .add< HermiteSplineProjectiveConstraint<defaulttype::Vec3Types> >()
         .add< HermiteSplineProjectiveConstraint<defaulttype::Rigid3Types> >()
-        .addAlias("HermiteSplineConstraint")
         ;
 
 template <>

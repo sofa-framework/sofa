@@ -38,7 +38,6 @@ int LinearVelocityProjectiveConstraintClass = core::RegisterObject("apply veloci
         .add< LinearVelocityProjectiveConstraint<Vec1Types> >()
         .add< LinearVelocityProjectiveConstraint<Vec6Types> >()
         .add< LinearVelocityProjectiveConstraint<Rigid3Types> >()
-        .addAlias("LinearVelocityConstraint")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityProjectiveConstraint<Vec3Types>;
