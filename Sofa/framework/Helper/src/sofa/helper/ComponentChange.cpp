@@ -727,7 +727,10 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     {"TriangleModel", Removed("v19.12", "v20.06")},
     {"TTriangleModel", Removed("v19.12", "v20.06")},
 
+};
 
+
+const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     // Change Constraint naming #4302
     {"AffineMovementConstraint", Renamed("v24.06","v25.06","AffineMovementProjectiveConstraint")},
     {"AttachConstraint", Renamed("v24.06","v25.06","AttachProjectiveConstraint")},
