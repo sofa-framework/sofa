@@ -22,14 +22,11 @@
 #pragma once
 
 #include <sofa/component/topology/mapping/config.h>
-#include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <map>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/State.h>
 
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
 
 namespace sofa::component::topology::container::dynamic
@@ -54,10 +51,7 @@ class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Edge2QuadTopologicalMapping : public s
 {
 public:
     SOFA_CLASS(Edge2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
-
-    using RigidCoord = sofa::core::State<defaulttype::Rigid3Types>::Coord;
-    using Vec3Coord = sofa::core::State<defaulttype::Vec3Types>::Coord;
-    
+        
     using Index = sofa::core::topology::BaseMeshTopology::Index;
     using Edge = sofa::core::topology::BaseMeshTopology::Edge;
     using Quad = sofa::core::topology::BaseMeshTopology::Quad;

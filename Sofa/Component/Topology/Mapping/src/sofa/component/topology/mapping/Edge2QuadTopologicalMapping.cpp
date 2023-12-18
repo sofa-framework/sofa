@@ -20,22 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/mapping/Edge2QuadTopologicalMapping.h>
-#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/TopologyChange.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
-
-#include <sofa/core/topology/TopologyChange.h>
-
-#include <sofa/type/Vec.h>
-#include <map>
-#include <sofa/defaulttype/VecTypes.h>
-
-#include <cmath>
-
-#include <sofa/defaulttype/RigidTypes.h>
 
 
 namespace sofa::component::topology::mapping
