@@ -28,9 +28,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gl/GLSLShader.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <sofa/type/BoundingBox.h>
-#include <SofaOpenglVisual/OglAttribute.inl>
+#include <sofa/gl/component/shader/OglAttribute.inl>
 
 namespace sofa::component::visualmodel
 {
@@ -74,8 +73,8 @@ void OglVolumetricModel::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloatVector4Variable, sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloatVector4Variable, sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -96,7 +95,7 @@ void OglVolumetricModel::init()
     if (!m_mappingTableValues)
     {
         msg_info() << "No MappingTable found, instanciating one";
-        m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_mappingTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
 
@@ -118,7 +117,7 @@ void OglVolumetricModel::init()
     {
         msg_info() << "No RunSelectTable found, instanciating one";
 
-        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
         m_runSelectTableValues->setID("RunSelectTable");
 
@@ -185,8 +184,8 @@ void OglVolumetricModel::initVisual()
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
     //Check attributes
-    sofa::type::vector<sofa::component::visual::OglFloat4Attribute::SPtr > listVec4Attributes;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloat4Attribute, sofa::type::vector<sofa::component::visual::OglFloat4Attribute::SPtr> >
+    sofa::type::vector<sofa::gl::component::shader::OglFloat4Attribute::SPtr > listVec4Attributes;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloat4Attribute, sofa::type::vector<sofa::gl::component::shader::OglFloat4Attribute::SPtr> >
         (&listVec4Attributes, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i < listVec4Attributes.size(); i++)
     {
@@ -201,7 +200,7 @@ void OglVolumetricModel::initVisual()
     if (!m_vertexColors)
     {
         msg_error() << "No attributes called a_vertexColor found, instanciating one with a default color";
-        m_vertexColors = sofa::core::objectmodel::New<sofa::component::visual::OglFloat4Attribute>();
+        m_vertexColors = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloat4Attribute>();
         m_vertexColors->setName("a_vertexColor");
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
@@ -399,7 +398,6 @@ void OglVolumetricModel::handleTopologyChange()
 
 void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    using sofa::component::topology::TetrahedronSetTopologyContainer;
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);

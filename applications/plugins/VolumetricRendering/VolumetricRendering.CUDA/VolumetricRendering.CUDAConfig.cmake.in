@@ -1,0 +1,14 @@
+# CMake package configuration file for the VolumetricRendering.CUDA library
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(VolumetricRendering QUIET REQUIRED)
+find_package(SofaCUDA QUIET REQUIRED)
+
+
+if(NOT TARGET VolumetricRendering.CUDA)
+    include("${CMAKE_CURRENT_LIST_DIR}/VolumetricRendering.CUDATargets.cmake")
+endif()
+
+check_required_components(VolumetricRendering.CUDA)

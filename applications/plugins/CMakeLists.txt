@@ -60,12 +60,14 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
 
+sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
+
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
     sofa_add_subdirectory(plugin SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
-    sofa_add_subdirectory(plugin VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
+    add_subdirectory(VolumetricRendering)
 else()
     message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
 endif()
 
-sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
+
