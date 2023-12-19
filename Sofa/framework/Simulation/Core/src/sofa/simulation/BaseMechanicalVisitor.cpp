@@ -200,57 +200,15 @@ Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* 
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
 {
-    if (root == nullptr)
-    {
-        root = node;
-    }
-
-    VisitorContext ctx;
-    ctx.root = root;
-    ctx.node = node;
-    ctx.nodeData = rootData;
-
-    const bool writeData = writeNodeData();
-    if (writeData)
-    {
-        // create temporary accumulation buffer for parallel reductions (dot products)
-        if (node != root)
-        {
-            const SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
-            ctx.nodeData = new SReal(0.0);
-            setNodeData(node, ctx.nodeData, parentData);
-            stack->push(ctx.nodeData);
-        }
-    }
-
-    return processNodeTopDown(node, &ctx);
+    SOFA_UNUSED(stack);
+    processNodeTopDown(node);
 }
 
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalStorage* stack)
 {
-    VisitorContext ctx;
-    ctx.root = root;
-    ctx.node = node;
-    ctx.nodeData = rootData;
-    SReal* parentData = rootData;
-
-    const bool writeData = writeNodeData();
-
-    if (writeData)
-    {
-        // use temporary accumulation buffer for parallel reductions (dot products)
-        if (node != root)
-        {
-            ctx.nodeData = (SReal*)stack->pop();
-            parentData = stack->empty() ? rootData : (SReal*)stack->top();
-        }
-    }
-
-    processNodeBottomUp(node, &ctx);
-
-    if (writeData && parentData != ctx.nodeData)
-        addNodeData(node, parentData, ctx.nodeData);
+    SOFA_UNUSED(stack);
+    processNodeBottomUp(node);
 }
 
 
