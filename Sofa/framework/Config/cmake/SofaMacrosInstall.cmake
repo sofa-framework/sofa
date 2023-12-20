@@ -257,12 +257,20 @@ function(sofa_get_target_dependencies OUTPUT_LIST TARGET)
     if(aliased_target)
         set(TARGET ${aliased_target})
     endif()
+
+    get_target_property(target_type ${TARGET} TYPE)
+    if (${target_type} STREQUAL "INTERFACE_LIBRARY")
+        set(IS_INTERFACE_LIBRARY 1)
+    endif()
+
     list(APPEND VISITED_TARGETS ${TARGET})
     get_target_property(IMPORTED ${TARGET} IMPORTED)
     if(IMPORTED)
         get_target_property(LIBS ${TARGET} INTERFACE_LINK_LIBRARIES)
     else()
-        get_target_property(LIBS ${TARGET} LINK_LIBRARIES)
+        if(NOT IS_INTERFACE_LIBRARY)
+            get_target_property(LIBS ${TARGET} LINK_LIBRARIES)
+        endif()
     endif()
     set(LIB_TARGETS "")
     foreach(LIB ${LIBS})
@@ -338,26 +346,35 @@ macro(sofa_auto_set_target_version)
             set(target ${aliased_target})
         endif()
 
+        # test if it is an interface (i.e header-only library)
+        get_target_property(target_type ${target} TYPE)
+        if (${target_type} STREQUAL "INTERFACE_LIBRARY")
+            set(IS_INTERFACE_LIBRARY 1)
+        endif()
+
         string(TOUPPER "${target}" sofa_target_name_upper)
         # C Preprocessor definitions do not handle dot character, so it is replaced with an underscore
         string(REPLACE "." "_" sofa_target_name_upper "${sofa_target_name_upper}")
         set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
 
-        # Set target properties
-        if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is inside a package
-            set_target_properties(${target} PROPERTIES FOLDER ${ARG_PACKAGE_NAME}) # IDE folder
+        if(NOT IS_INTERFACE_LIBRARY) # this test should not be necessary for cmake >3.24
+            # Set target properties
+            if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}" ) # Target is inside a package
+                set_target_properties(${target} PROPERTIES FOLDER ${ARG_PACKAGE_NAME}) # IDE folder
+            endif()
+            set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
+
+            set(version "")
+            if(${target}_VERSION VERSION_GREATER "0.0")
+                set(version ${${target}_VERSION})
+            elseif(ARG_PACKAGE_VERSION VERSION_GREATER "0.0")
+                set(version ${ARG_PACKAGE_VERSION})
+            elseif(Sofa_VERSION VERSION_GREATER "0.0")
+                # Default to Sofa_VERSION for all SOFA modules
+                set(version ${Sofa_VERSION})
+            endif()
+            set_target_properties(${target} PROPERTIES VERSION "${version}")
         endif()
-        set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
-        set(version "")
-        if(${target}_VERSION VERSION_GREATER "0.0")
-            set(version ${${target}_VERSION})
-        elseif(ARG_PACKAGE_VERSION VERSION_GREATER "0.0")
-            set(version ${ARG_PACKAGE_VERSION})
-        elseif(Sofa_VERSION VERSION_GREATER "0.0")
-            # Default to Sofa_VERSION for all SOFA modules
-            set(version ${Sofa_VERSION})
-        endif()
-        set_target_properties(${target} PROPERTIES VERSION "${version}")
         set(${sofa_target_name_upper}_VERSION "${version}")
         set(PROJECT_VERSION "${version}") # warning: dangerous to touch this variable?
     endforeach()
@@ -384,6 +401,15 @@ macro(sofa_auto_set_target_compile_definitions)
             set(target ${aliased_target})
         endif()
 
+        # test if it is an interface (i.e header-only library)
+        get_target_property(target_type ${target} TYPE)
+        if (${target_type} STREQUAL "INTERFACE_LIBRARY")
+            set(IS_INTERFACE_LIBRARY 1)
+            set(TARGET_VISIBILITY INTERFACE)
+        else()
+            set(TARGET_VISIBILITY PRIVATE)
+        endif()
+
         string(TOUPPER "${target}" sofa_target_name_upper)
         # C Preprocessor definitions do not handle dot character, so it is replaced with an underscore
         string(REPLACE "." "_" sofa_target_name_upper "${sofa_target_name_upper}")
@@ -397,9 +423,10 @@ macro(sofa_auto_set_target_compile_definitions)
             string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
             string(REPLACE "." "_" sofa_target_oldname_upper "${sofa_target_oldname_upper}")
-            target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
+
+            target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
-        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_target_name_upper}")
+        target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD_${sofa_target_name_upper}")
     endforeach()
 endmacro()
 
@@ -424,12 +451,23 @@ macro(sofa_auto_set_target_include_directories)
             set(target ${aliased_target})
         endif()
 
-        get_target_property(target_sources ${target} SOURCES)
-        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
-        if(NOT target_sources)
-            # target has no header
-            # setting include directories is not needed
-            continue()
+        # test if it is an interface (i.e header-only library)
+        get_target_property(target_type ${target} TYPE)
+        if (${target_type} STREQUAL "INTERFACE_LIBRARY")
+            set(IS_INTERFACE_LIBRARY 1)
+            set(TARGET_VISIBILITY INTERFACE)
+        else()
+            set(TARGET_VISIBILITY PUBLIC)
+        endif()
+
+        if(NOT IS_INTERFACE_LIBRARY)
+            get_target_property(target_sources ${target} SOURCES)
+            list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
+            if(NOT target_sources)
+                # target has no header
+                # setting include directories is not needed
+                continue()
+            endif()
         endif()
 
         # Set target include directories (if not already set manually)
@@ -441,26 +479,29 @@ macro(sofa_auto_set_target_include_directories)
                 set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_SOURCE_DIR}")
             endif()
         endif()
-        get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+
+        if(NOT IS_INTERFACE_LIBRARY)
+            get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
+        endif()
 
         if(NOT "\$<BUILD_INTERFACE:${include_source_root}>" IN_LIST target_include_dirs)
-            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${include_source_root}>")
+            target_include_directories(${target} ${TARGET_VISIBILITY} "$<BUILD_INTERFACE:${include_source_root}>")
         endif()
         if(NOT "\$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME}>" IN_LIST target_include_dirs)
-            target_include_directories(${target} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME}>")
+            target_include_directories(${target} ${TARGET_VISIBILITY} "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME}>")
         endif()
 
         if(ARG_RELOCATABLE)
             if(NOT "\$<INSTALL_INTERFACE:include>" IN_LIST target_include_dirs)
-                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include>")
+                target_include_directories(${target} ${TARGET_VISIBILITY} "$<INSTALL_INTERFACE:include>")
             endif()
         elseif("${ARG_INCLUDE_INSTALL_DIR}" MATCHES "^${ARG_PACKAGE_NAME}")
             if(NOT "\$<INSTALL_INTERFACE:include/${ARG_PACKAGE_NAME}>" IN_LIST target_include_dirs)
-                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${ARG_PACKAGE_NAME}>")
+                target_include_directories(${target} ${TARGET_VISIBILITY} "$<INSTALL_INTERFACE:include/${ARG_PACKAGE_NAME}>")
             endif()
         else()
             if(NOT "\$<INSTALL_INTERFACE:include/${ARG_INCLUDE_INSTALL_DIR}>" IN_LIST target_include_dirs)
-                target_include_directories(${target} PUBLIC "$<INSTALL_INTERFACE:include/${ARG_INCLUDE_INSTALL_DIR}>")
+                target_include_directories(${target} ${TARGET_VISIBILITY} "$<INSTALL_INTERFACE:include/${ARG_INCLUDE_INSTALL_DIR}>")
             endif()
         endif()
         #get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
@@ -483,6 +524,16 @@ macro(sofa_auto_set_target_rpath)
     endforeach()
 
     foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
+        # test if it is an interface (i.e header-only library)
+        get_target_property(target_type ${target} TYPE)
+        if (${target_type} STREQUAL "INTERFACE_LIBRARY")
+            set(IS_INTERFACE_LIBRARY 1)
+        endif()
+
+        if(IS_INTERFACE_LIBRARY)
+            continue()
+        endif()
+
         sofa_get_target_dependencies(target_deps ${target})
         get_target_property(target_rpath ${target} "INSTALL_RPATH")
         foreach(dep ${target_deps})
