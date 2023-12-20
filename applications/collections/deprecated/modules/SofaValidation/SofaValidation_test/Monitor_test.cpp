@@ -147,7 +147,7 @@ struct Monitor_test : public BaseSimulationTest
         // make a few steps before checkinf if values are correctly updated in
         // Monitor
         for (int i = 0; i < 10; ++i)
-            simulation::getSimulation()->animate(root.get(), 1.0);
+            simulation::node::animate(root.get(), 1.0);
 
         monitor->testModif(mo.get());
 

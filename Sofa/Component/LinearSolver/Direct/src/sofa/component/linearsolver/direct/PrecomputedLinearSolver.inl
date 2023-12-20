@@ -29,6 +29,8 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
+#include <sofa/component/linearsolver/direct/EigenSimplicialLLT.h>
+#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
@@ -36,10 +38,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
-
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
-#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
-#endif
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
@@ -89,13 +87,8 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
-        loadMatrixWithCSparse(M);
+        loadMatrixWithCholeskyDecomposition(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
-#else
-        SOFA_UNUSED(M);
-        msg_error()<< "CSPARSE support is required to invert the matrix";
-#endif
     }
 
     for (unsigned int j=0; j<systemSize; j++)
@@ -107,9 +100,8 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     }
 }
 
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCholeskyDecomposition(TMatrix& M)
 {
     using namespace sofa::linearalgebra;
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
@@ -123,7 +115,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
     b.resize(systemSize);
-    SparseCholeskySolver<CompressedRowSparseMatrix<SReal>, FullVector<SReal> > solver;
+    EigenSimplicialLLT<SReal> solver;
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -156,7 +148,6 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     msg_info() << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
 
 }
-#endif // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}

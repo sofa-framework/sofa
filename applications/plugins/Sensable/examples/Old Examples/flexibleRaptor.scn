@@ -25,7 +25,7 @@
 		<PrecomputedConstraintCorrection recompute="true"/>
 		<DiagonalMass massDensity="1" name="computed using mass density" />
             	<HexahedronFEMForceField name="FEM" youngModulus="1000000" poissonRatio="0.45" method="large" />
-		<FixedConstraint  name="FixedConstraint" indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137" />
+		<FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137" />
 		<Node name="VisualModel" >
 			<MeshOBJLoader name="meshLoader_2" filename="mesh/raptor_35kp.obj" handleSeams="1" />
 			<OglModel name="RaptorVisualModel" src="@meshLoader_2" color="white"/> 

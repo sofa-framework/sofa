@@ -283,27 +283,27 @@ public:
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
+        addEqual(MatrixExpr { MatrixNegative< Expr2 >(m) } );
     }
 
     MatrixExpr< MatrixTranspose< DiagonalMatrix<T> > > t() const
     {
-        return MatrixExpr< MatrixTranspose< DiagonalMatrix<T> > >(MatrixTranspose< DiagonalMatrix<T> >(*this));
+        return MatrixExpr { MatrixTranspose< DiagonalMatrix<T> >(*this) };
     }
 
     MatrixExpr< MatrixInverse< DiagonalMatrix<T> > > i() const
     {
-        return MatrixExpr< MatrixInverse< DiagonalMatrix<T> > >(MatrixInverse< DiagonalMatrix<T> >(*this));
+        return MatrixExpr { MatrixInverse< DiagonalMatrix<T> >(*this) };
     }
 
     MatrixExpr< MatrixNegative< DiagonalMatrix<T> > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< DiagonalMatrix<T> > >(MatrixNegative< DiagonalMatrix<T> >(*this));
+        return MatrixExpr { MatrixNegative< DiagonalMatrix<T> >(*this) };
     }
 
     MatrixExpr< MatrixScale< DiagonalMatrix<T>, double > > operator*(const double& r) const
     {
-        return MatrixExpr< MatrixScale< DiagonalMatrix<T>, double > >(MatrixScale< DiagonalMatrix<T>, double >(*this, r));
+        return MatrixExpr { MatrixScale< DiagonalMatrix<T>, double >(*this, r) };
     }
 
     friend std::ostream& operator << (std::ostream& out, const DiagonalMatrix<T>& v )

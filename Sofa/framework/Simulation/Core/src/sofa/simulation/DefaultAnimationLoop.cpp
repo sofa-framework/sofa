@@ -71,6 +71,7 @@ DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _m_node)
     : Inherit()
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel"))
 {
+    SOFA_UNUSED(_m_node);
     this->addUpdateCallback("parallelODESolving", {&d_parallelODESolving},
     [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
     {
@@ -170,14 +171,6 @@ void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* pa
     m_node->execute(act);
 }
 
-void DefaultAnimationLoop::resetConstraint(const core::ExecParams* params) const
-{
-    SCOPED_TIMER("resetConstraint");
-    const sofa::core::ConstraintParams cparams(*params);
-    sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor resetConstraint(&cparams);
-    m_node->execute(&resetConstraint);
-}
-
 void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
 {
     propagateIntegrateBeginEvent(params);
@@ -193,14 +186,6 @@ void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* 
     IntegrateBeginEvent evBegin;
     PropagateEventVisitor eventPropagation( params, &evBegin);
     eventPropagation.execute(m_node);
-}
-
-void DefaultAnimationLoop::buildConstraintMatrix(core::ConstraintParams cparams) const
-{
-    SCOPED_TIMER("buildConstraintMatrix");
-    unsigned int constraintId = 0;
-    mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
-    buildConstraintMatrix.execute(m_node);
 }
 
 void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cparams) const
@@ -292,14 +277,11 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
     behaviorUpdatePosition(params, dt);
     updateInternalData(params);
 
-    resetConstraint(params);
-
     collisionDetection(params);
 
     beginIntegration(params, dt);
     {
         const core::ConstraintParams cparams;
-        buildConstraintMatrix(cparams);
         accumulateMatrixDeriv(cparams);
 
         solve(params, dt);

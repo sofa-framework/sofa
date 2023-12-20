@@ -293,6 +293,10 @@ public:
 
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
 
+    ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
+    ///< matrix of the linear system and J is any matrix with compatible dimensions
+    Data<bool> d_parallelInverseProduct;
+
 public:
 
     MatrixInvertData * getMatrixInvertData(linearalgebra::BaseMatrix * m);
@@ -372,6 +376,8 @@ protected:
     LinearSystemData linearSystem;
 
     SReal currentMFactor, currentBFactor, currentKFactor;
+
+    bool singleThreadAddJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
 
 protected:
     SingleLink<

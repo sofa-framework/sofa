@@ -66,11 +66,10 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
         Mfiltered.compress();
     }
 
-    if (!m_map)
-    {
-        m_map = std::make_unique<EigenSparseMatrixMap>(Mfiltered.rows(), Mfiltered.cols(), Mfiltered.getColsValue().size(),
-            (typename EigenSparseMatrixMap::StorageIndex*)Mfiltered.rowBegin.data(), (typename EigenSparseMatrixMap::StorageIndex*)Mfiltered.colsIndex.data(), Mfiltered.colsValue.data());
-    }
+    m_map = std::make_unique<EigenSparseMatrixMap>(Mfiltered.rows(), Mfiltered.cols(), Mfiltered.getColsValue().size(),
+                                                   (typename EigenSparseMatrixMap::StorageIndex*)Mfiltered.rowBegin.data(),
+                                                   (typename EigenSparseMatrixMap::StorageIndex*)Mfiltered.colsIndex.data(),
+                                                   Mfiltered.colsValue.data());
 
     const bool analyzePattern = (MfilteredrowBegin != Mfiltered.rowBegin) || (MfilteredcolsIndex != Mfiltered.colsIndex);
 

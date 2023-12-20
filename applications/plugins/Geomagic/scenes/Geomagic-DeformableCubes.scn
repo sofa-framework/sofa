@@ -8,7 +8,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.Haptics"/> <!-- Needed to use components [LCPForceFeedback] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -50,7 +50,7 @@
         <MechanicalObject src="@../grid" name="Volume1" />
         
         <BoxROI name="boxRoi1" box="-7 -10 6 3 -9 10" drawBoxes="1"/>
-        <FixedConstraint indices="@boxRoi1.indices" />
+        <FixedProjectiveConstraint indices="@boxRoi1.indices" />
         
         <TetrahedronSetTopologyContainer name="Tetra_topo1" />
         <TetrahedronSetTopologyModifier />
@@ -86,7 +86,7 @@
         <MechanicalObject src="@../grid" name="Volume2" translation="0 0 4"/>
         
         <BoxROI name="boxRoi2" box="-7 -10 10 3 -9 14" drawBoxes="1"/>
-        <FixedConstraint indices="@boxRoi2.indices" />
+        <FixedProjectiveConstraint indices="@boxRoi2.indices" />
         
         <TetrahedronSetTopologyContainer name="Tetra_topo2" />
         <TetrahedronSetTopologyModifier />

@@ -248,3 +248,70 @@ TEST(CompressedRowSparseMatrix, copyNonZeros)
 
     EXPECT_EQ(numberNonZeroValues1, numberNonZeroValues3);
 }
+
+TEST(CompressedRowSparseMatrix, copyNonZerosFromBlocks)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+
+    for (unsigned int r = 0; r < A.rowSize(); ++r)
+    {
+        for (unsigned int c = 0; c < A.rowSize(); ++c)
+        {
+            EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal);
+        }
+    }
+}
+
+TEST(CompressedRowSparseMatrix, emptyMatrixGetRowRange)
+{
+    EXPECT_EQ(sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex, std::numeric_limits<sofa::SignedIndex>::lowest());
+
+    const sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal> A;
+
+    const auto range = A.getRowRange(0);
+    EXPECT_EQ(range.first, sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex);
+    EXPECT_EQ(range.second, sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex);
+}
+
+TEST(CompressedRowSparseMatrixConstraint, emptyMatrixGetRowRange)
+{
+    EXPECT_EQ(sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex, std::numeric_limits<sofa::SignedIndex>::lowest());
+
+    const sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal> A;
+
+    const auto begin = A.begin();
+    EXPECT_EQ(begin.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+
+    const auto end = A.end();
+    EXPECT_EQ(end.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+
+    EXPECT_EQ(begin, end);
+
+    const auto checkIterator = [](const auto& iterator)
+    {
+        const auto itBegin = iterator.begin();
+        const auto itEnd = iterator.end();
+
+        EXPECT_EQ(itBegin.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+        EXPECT_EQ(itEnd.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+        EXPECT_EQ(itBegin, itEnd);
+    };
+
+    checkIterator(begin);
+    checkIterator(end);
+}

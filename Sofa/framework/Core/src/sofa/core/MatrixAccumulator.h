@@ -43,6 +43,8 @@ public:
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value);
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, float> & value);
     virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value);
+    virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, float> & value);
+    virtual void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value);
 
     virtual void clear() {}
 
@@ -123,82 +125,44 @@ public:
     [[maybe_unused]]
     std::shared_ptr<TStrategy> indexVerificationStrategy;
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const float value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
     }
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, double value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
     }
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, float>& value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<2, 2, float>& value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
     }
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
     }
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, float>& value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<3, 3, float>& value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
     }
 
-    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override final
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override final
     {
-        if constexpr (TStrategy::verify_index::value)
-        {
-            if (indexVerificationStrategy)
-            {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
-            }
-        }
-        add(matrixaccumulator::no_check, row, col, value);
+        indexCheckedAdd(row, col, value);
+    }
+
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<6, 6, float>& value) override final
+    {
+        indexCheckedAdd(row, col, value);
+    }
+
+    void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value) override final
+    {
+        indexCheckedAdd(row, col, value);
     }
 
 protected:
@@ -229,6 +193,29 @@ protected:
     virtual void add(const matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value)
     {
         TBaseMatrixAccumulator::add(row, col, value);
+    }
+
+    virtual void add(const matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, float>& value)
+    {
+        TBaseMatrixAccumulator::add(row, col, value);
+    }
+    virtual void add(const matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value)
+    {
+        TBaseMatrixAccumulator::add(row, col, value);
+    }
+
+    template <typename T>
+    void indexCheckedAdd(sofa::SignedIndex row, sofa::SignedIndex col, const T& value)
+    {
+        if constexpr (TStrategy::verify_index::value)
+        {
+            if (indexVerificationStrategy)
+            {
+                indexVerificationStrategy->checkRowIndex(row);
+                indexVerificationStrategy->checkColIndex(col);
+            }
+        }
+        add(matrixaccumulator::no_check, row, col, value);
     }
 };
 

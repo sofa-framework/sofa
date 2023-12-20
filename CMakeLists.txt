@@ -34,6 +34,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTOR
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
+# Option to allow some dependencies such as cxxopts to be fetched by cmake if
+# the package is not found
+option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
+  List of dependencies that can be fetched: cxxopts" ON)
+
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
@@ -256,11 +261,12 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
+    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"

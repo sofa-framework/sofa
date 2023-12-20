@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -32,7 +32,7 @@
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject src="@loader" name="DOF" template="Vec3" translation="10 0 15" rotation="0 90 90" scale="10" />
-        <FixedConstraint name="Fixed dof" template="Vec3" indices="0 1" />
+        <FixedProjectiveConstraint name="Fixed dof" template="Vec3" indices="0 1" />
         <UniformMass name="Mass" template="Vec3" vertexMass="0.1" />
         <TriangleSetTopologyContainer src="@loader" name="Topology Container" />
         <TriangleSetTopologyModifier name="Topology Modifier" />
@@ -51,7 +51,7 @@
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="10 0 5" rotation="0 90 90" scale="10" />
-        <FixedConstraint name="Fixed dof" template="Vec3" indices="0 1" />
+        <FixedProjectiveConstraint name="Fixed dof" template="Vec3" indices="0 1" />
         <UniformMass name="Mass" template="Vec3" vertexMass="0.1" />
         <MeshTopology src="@loader" name="Static Mesh" />
         <MeshSpringForceField name="Springs" template="Vec3" stiffness="300" damping="1" />
@@ -67,7 +67,7 @@
 	    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
 	    <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject name="DOFs" template="Vec3" translation="0 0 -4" />
-        <FixedConstraint name="Fixed dof" template="Vec3" indices="0 870" />
+        <FixedProjectiveConstraint name="Fixed dof" template="Vec3" indices="0 870" />
         <UniformMass name="Mass" template="Vec3" vertexMass="0.1" />
         <RegularGridTopology name="default38" n="30 1 30" min="0 0 -20" max="10 0 -30" p0="0 0 -1" />
         <RegularGridSpringForceField template="Vec3" stiffness="300" damping="1"/>

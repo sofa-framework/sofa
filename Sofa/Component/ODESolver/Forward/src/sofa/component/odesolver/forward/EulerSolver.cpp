@@ -76,7 +76,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
-    SReal nbNonDiagonalMasses = 0;
+    sofa::Size nbNonDiagonalMasses = 0;
     MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
@@ -135,10 +135,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newPos = pos + newVel * dt
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
+        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
 
         newPos.eq(pos, newVel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
+        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
     else
     {
@@ -146,10 +146,10 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         //newVel = vel + acc * dt
 
         newPos.eq(pos, vel, dt);
-        mop->solveConstraint(newPos, core::ConstraintParams::ConstOrder::POS);
+        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel, core::ConstraintParams::ConstOrder::VEL);
+        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
     }
 #else // single-operation optimization
     {
@@ -297,7 +297,7 @@ void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOp
     SCOPED_TIMER("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
-    // current context tree. An example of such constraint set is the FixedConstraint. In this case,
+    // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
     mop->projectResponse(vecId);
 }
@@ -326,7 +326,7 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
     //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
     //       the "addMBKToMatrix" method is called on each BaseForceField objects and the "applyConstraint" method
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
-    //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
+    //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
     (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
 }

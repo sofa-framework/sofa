@@ -76,6 +76,8 @@ protected:
     void add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value) override;
     void add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, float>& value) override;
     void add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override;
+    void add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, float>& value) override;
+    void add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value) override;
 };
 
 
@@ -103,6 +105,20 @@ void AssemblingMatrixAccumulator<c, TStrategy>::add(const core::matrixaccumulato
 }
 template<sofa::core::matrixaccumulator::Contribution c, class TStrategy>
 void AssemblingMatrixAccumulator<c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value)
+{
+    m_globalMatrix->add(row + m_cachedPositionInGlobalMatrix[0],
+                              col + m_cachedPositionInGlobalMatrix[1],
+                              value * static_cast<double>(m_cachedFactor));
+}
+template<sofa::core::matrixaccumulator::Contribution c, class TStrategy>
+void AssemblingMatrixAccumulator<c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<6, 6, float>& value)
+{
+    m_globalMatrix->add(row + m_cachedPositionInGlobalMatrix[0],
+                              col + m_cachedPositionInGlobalMatrix[1],
+                              value * static_cast<float>(m_cachedFactor));
+}
+template<sofa::core::matrixaccumulator::Contribution c, class TStrategy>
+void AssemblingMatrixAccumulator<c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, const sofa::SignedIndex row, const sofa::SignedIndex col, const sofa::type::Mat<6, 6, double>& value)
 {
     m_globalMatrix->add(row + m_cachedPositionInGlobalMatrix[0],
                               col + m_cachedPositionInGlobalMatrix[1],

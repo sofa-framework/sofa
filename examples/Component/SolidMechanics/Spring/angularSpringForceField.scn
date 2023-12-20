@@ -2,7 +2,7 @@
 <Node dt="0.02" gravity="9 0 0" name="root">
 	<RequiredPlugin name="ArticulatedSystemPlugin"/> <!-- Needed to use components [ArticulatedHierarchyContainer ArticulatedSystemMapping Articulation ArticulationCenter] -->
 	<RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
-	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PartialFixedConstraint] -->
+	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PartialFixedProjectiveConstraint] -->
 	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 	<RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BeamLinearMapping] -->
 	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -21,7 +21,7 @@
         <MechanicalObject name="Articulations" position="0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0" template="Vec1" />
 		<Node name="TranslPoint">
             <MechanicalObject name="DOF" position="0.0 0 0  0 0 0 1" showObject="true" template="Rigid3" />    
-            <PartialFixedConstraint fixedDirections="1 1 1 1 1 1" indices="0" name="fixOrigin" template="Rigid3" />
+            <PartialFixedProjectiveConstraint fixedDirections="1 1 1 1 1 1" indices="0" name="fixOrigin" template="Rigid3" />
         </Node>
 	    <Node name="Mechanics">
 	        <MechanicalObject name="DOFs"  template="Rigid3" position="0.0 0 0  0 0 0 1  

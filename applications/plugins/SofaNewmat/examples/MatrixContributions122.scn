@@ -7,7 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -35,7 +35,7 @@
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />
-            <FixedConstraint indices="0 3 7 4" name="fixedHexa" />
+            <FixedProjectiveConstraint indices="0 3 7 4" name="fixedHexa" />
             <HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3" method="large" />
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.8" tetrahedra="0 1 2 3" />
@@ -52,7 +52,7 @@
         </Node>
         <Node name="Point">
             <MechanicalObject name="MS2" position="2.5 -3 0.2" />
-            <FixedConstraint indices="0" name="fixedB" />
+            <FixedProjectiveConstraint indices="0" name="fixedB" />
         </Node>
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 16 0.6 2" object1="@HexahedraA/MappedTetrahedronA" object2="@Point" />
     </Node>
@@ -66,7 +66,7 @@
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />
-            <FixedConstraint indices="0 3 7 4" name="fixedHexa" />
+            <FixedProjectiveConstraint indices="0 3 7 4" name="fixedHexa" />
             <HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3" method="large" drawing="0" />
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.8" tetrahedra="0 1 2 3" />
@@ -83,7 +83,7 @@
         </Node>
         <Node name="Point">
             <MechanicalObject name="MS2" position="2.5 -3 0.2" />
-            <FixedConstraint indices="0" name="fixedB" />
+            <FixedProjectiveConstraint indices="0" name="fixedB" />
         </Node>
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 16 0.6 2" object1="@HexahedraA/MappedTetrahedronA" object2="@Point" />
     </Node>

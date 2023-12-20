@@ -74,6 +74,7 @@ public:
     using VecIndex = typename linearalgebra::CRSBlockTraits<Block>::VecIndex;
     using VecFlag  = typename linearalgebra::CRSBlockTraits<Block>::VecFlag;
     using Index    = typename VecIndex::value_type;
+    static constexpr Index s_invalidIndex = std::is_signed_v<Index> ? std::numeric_limits<Index>::lowest() : std::numeric_limits<Index>::max();
 
     typedef typename CRSMatrix::Block Data;
     typedef typename CRSMatrix::Range Range;
@@ -159,6 +160,11 @@ public:
         const Index getInternal() const
         {
             return m_internal;
+        }
+
+        bool isInvalid() const
+        {
+            return m_internal == CompressedRowSparseMatrixConstraint::s_invalidIndex;
         }
 
         void operator++() // prefix
@@ -266,14 +272,27 @@ public:
             return m_internal;
         }
 
+        bool isInvalid() const
+        {
+            return m_internal == CompressedRowSparseMatrixConstraint::s_invalidIndex;
+        }
+
         ColConstIterator begin() const
         {
+            if (isInvalid())
+            {
+                return ColConstIterator(m_internal, s_invalidIndex, m_matrix);
+            }
             Range r = m_matrix->getRowRange(m_internal);
             return ColConstIterator(m_internal, r.begin(), m_matrix);
         }
 
         ColConstIterator end() const
         {
+            if (isInvalid())
+            {
+                return ColConstIterator(m_internal, s_invalidIndex, m_matrix);
+            }
             Range r = m_matrix->getRowRange(m_internal);
             return ColConstIterator(m_internal, r.end(), m_matrix);
         }
@@ -376,14 +395,16 @@ public:
     RowConstIterator begin() const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, 0);
+        return RowConstIterator(this,
+            this->rowIndex.empty() ? s_invalidIndex : 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
     RowConstIterator end() const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, Index(this->rowIndex.size()));
+        return RowConstIterator(this,
+            this->rowIndex.empty() ? s_invalidIndex : Index(this->rowIndex.size()));
     }
 
     /// Get the iterator corresponding to the beginning of the rows of blocks

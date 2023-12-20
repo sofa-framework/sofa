@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.05"  >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint ProjectDirectionConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint DirectionProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [GridMeshCreator] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -28,7 +28,7 @@
         <TriangularFEMForceField template="Vec3" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="20" />
         <BoxConstraint box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1"  />
         <BoxROI box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1" name="ProjectDirection"/>
-        <ProjectDirectionConstraint direction="0.5 0.5 0" indices="@[-1].indices" drawSize="0.03" />
+        <DirectionProjectiveConstraint direction="0.5 0.5 0" indices="@[-1].indices" drawSize="0.03" />
         <Node 	name="Boundary Edges"  >
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />

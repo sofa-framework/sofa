@@ -3,7 +3,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -15,7 +15,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint IdentityMapping MechanicalObject MeshSpringForceField UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject MeshSpringForceField UniformMass] -->
 
     <VisualStyle displayFlags="showBehaviorModels" />
     
@@ -43,7 +43,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
 		        
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />        
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         
         <UniformMass totalMass="100" />
         <MeshSpringForceField name="Springs" tetrasStiffness="1200" tetrasDamping="0" template="CudaVec3f"/>
@@ -62,7 +62,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
 		        
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />        
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         
         <UniformMass totalMass="100" />
         

@@ -7,7 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader SphereLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
@@ -38,7 +38,7 @@
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-      <FixedConstraint  name="FixedConstraint" indices="39" />
+      <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="39" />
 	  <UncoupledConstraintCorrection name="liver1_ConstraintCorrection"/>	
       <Node name="Visu1" tags="Visual" gravity="0 -9.81 0">
         <MeshOBJLoader name="meshLoader_1" filename="mesh/liver-smooth.obj"  translation="10 0 0" handleSeams="1" />
@@ -71,7 +71,7 @@
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-      <FixedConstraint  name="FixedConstraint" indices="64" />
+      <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="64" />
 	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
       <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
         <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="-10 0 0" handleSeams="1" />
@@ -104,7 +104,7 @@
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-      <FixedConstraint  name="FixedConstraint" indices="72" />
+      <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="72" />
 	  <UncoupledConstraintCorrection name="liver3_ConstraintCorrection"/>
       <Node name="Visu3" tags="Visual" gravity="0 -9.81 0">
         <MeshOBJLoader name="meshLoader_4" filename="mesh/liver-smooth.obj" translation="10 10 0" handleSeams="1" />
@@ -138,7 +138,7 @@
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-      <FixedConstraint  name="FixedConstraint" indices="96" />
+      <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="96" />
 	  <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/>
       <Node name="Visu4" tags="Visual" gravity="0 -9.81 0">
         <MeshOBJLoader name="meshLoader_3" filename="mesh/liver-smooth.obj" translation="-10 10 0" handleSeams="1" />
@@ -179,7 +179,7 @@
       <!-- <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" /> -->
       <!-- <DiagonalMass  name="computed using mass density" massDensity="1" /> -->
       <!-- <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" /> -->
-      <!-- <FixedConstraint  name="FixedConstraint" indices="96" /> -->
+      <!-- <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="96" /> -->
 	    <!-- <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/> -->
       <Node name="ResultVisu" tags="Visual" gravity="0 -9.81 0">
         <MeshOBJLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" translation="0 0 0" handleSeams="1" />

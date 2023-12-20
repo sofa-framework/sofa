@@ -174,136 +174,136 @@ void ColorMap::reinit()
         const float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(hsv2rgb(Color3(i*step, 1.0f, 1.0f)), 1.0f));
+            entries.push_back(type::RGBAColor::fromHSVA(i*step, 1.0f, 1.0f, 1.0f));
         }
     } else if (scheme == "Blue to Red") {
         // List the colors
         const float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(hsv2rgb(Color3(2.0f/3.0f - i*step, 1.0f, 1.0f)), 1.0f));
+            entries.push_back(type::RGBAColor::fromHSVA(2.0f/3.0f - i*step, 1.0f, 1.0f, 1.0f));
         }
     } else if (scheme == "Yellow to Cyan") {
         // List the colors
         const float step = (0.5f - 1.0f/6.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(hsv2rgb(Color3(1.0f/6.0f + i*step, 1.0f, 1.0f)), 1.0f));
+            entries.push_back(type::RGBAColor::fromHSVA(1.0f/6.0f + i*step, 1.0f, 1.0f, 1.0f));
         }
     } else if (scheme == "Cyan to Yellow") {
         // List the colors
         const float step = (0.5f - 1.0f/6.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(hsv2rgb(Color3(0.5f-i*step, 1.0f, 1.0f)), 1.0f));
+            entries.push_back(type::RGBAColor::fromHSVA(0.5f-i*step, 1.0f, 1.0f, 1.0f));
         }
     } else if (scheme == "Red to Yellow") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(1.0f, i*step, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f, i*step, 0.0f, 1.0f));
         }
     } else if (scheme == "Yellow to Red") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(1.0f, 1.0f-i*step, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f, 1.0f-i*step, 0.0f, 1.0f));
         }
     } else if (scheme == "Yellow to Green") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(1.0f-i*step, 1.0f, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f-i*step, 1.0f, 0.0f, 1.0f));
         }
     } else if (scheme == "Green to Yellow") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(i*step, 1.0f, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(i*step, 1.0f, 0.0f, 1.0f));
         }
     } else if (scheme == "Green to Cyan") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(0.0f, 1.0f, i*step, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 1.0f, i*step, 1.0f));
         }
     } else if (scheme == "Cyan to Green") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(0.0f, 1.0f, 1.0f-i*step, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 1.0f, 1.0f-i*step, 1.0f));
         }
     } else if (scheme == "Cyan to Blue") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(0.0f, 1.0f-i*step, 1.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 1.0f-i*step, 1.0f, 1.0f));
         }
     } else if (scheme == "Blue to Cyan") {
         const float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(0.0f, i*step, 1.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, i*step, 1.0f, 1.0f));
         }
     } else if (scheme == "Red") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(0.3f + i*step, 0.0f, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.3f + i*step, 0.0f, 0.0f, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(1.0f, i*step, i*step, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f, i*step, i*step, 1.0f));
         }
     } else if (scheme == "RedInv") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(1.0f, 0.7f-i*step, 0.7f-i*step, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f, 0.7f-i*step, 0.7f-i*step, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(1.0f-i*step, 0.0f, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(1.0f-i*step, 0.0f, 0.0f, 1.0f));
         }
     } else if (scheme == "Green") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(0.0f, 0.3f + i*step, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 0.3f + i*step, 0.0f, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(i*step, 1.0f, i*step, 1.0f));
+            entries.push_back(type::RGBAColor(i*step, 1.0f, i*step, 1.0f));
         }
     } else if (scheme == "GreenInv") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(0.7f-i*step, 1.0f, 0.7f-i*step, 1.0f));
+            entries.push_back(type::RGBAColor(0.7f-i*step, 1.0f, 0.7f-i*step, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(0.0f, 1.0f - i*step, 0.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 1.0f - i*step, 0.0f, 1.0f));
         }
     } else if (scheme == "Blue") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(0.0f, 0.0f, 0.3f + i*step, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 0.0f, 0.3f + i*step, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(i*step, i*step, 1.0f, 1.0f));
+            entries.push_back(type::RGBAColor(i*step, i*step, 1.0f, 1.0f));
         }
     } else if (scheme == "BlueInv") {
         const float step = 1.4f/(nColors);
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(0.7f-i*step, 0.7f-i*step, 1.0f, 1.0f));
+            entries.push_back(type::RGBAColor(0.7f-i*step, 0.7f-i*step, 1.0f, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(0.0f, 0.0f, 1.0f - i*step, 1.0f));
+            entries.push_back(type::RGBAColor(0.0f, 0.0f, 1.0f - i*step, 1.0f));
         }
     } else {
         // HSV is the default
@@ -315,7 +315,7 @@ void ColorMap::reinit()
         const float step = 1.0f/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.emplace_back(hsv2rgb(Color3(i*step,1.f,1.f)), 1.0f);
+            entries.emplace_back(type::RGBAColor::fromHSVA(i*step,1.f,1.f, 1.0f));
         }
     }
 }
@@ -326,9 +326,9 @@ void ColorMap::reinit()
 // h,s,v ∈ [0,1]
 // r,g,b ∈ [0,1]
 // Ref: Alvy Ray Smith, Color Gamut Transform Pairs, SIGGRAPH '78
-ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
+type::Vec3f ColorMap::hsv2rgb(const type::Vec3f&hsv)
 {
-    Color3 rgb(0.0f, 0.0f, 0.0f);
+    /*Color3 rgb(0.0f, 0.0f, 0.0f);
 
     float i, f;
     f = modff(hsv[0] * 6.0f, &i);
@@ -346,7 +346,10 @@ ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
         case 5: rgb = Color3(hsv[2],      x,      y); break;
     }
 
-    return rgb;
+    return rgb;*/
+    auto rgba = type::RGBAColor::fromHSVA( hsv[0], hsv[1],hsv[2], 1.0f );
+
+    return { rgba[0], rgba[1], rgba[2] };
 }
 
 

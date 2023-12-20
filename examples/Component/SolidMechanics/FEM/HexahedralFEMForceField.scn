@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -31,7 +31,7 @@
         <include href="Objects/HexahedronSetTopology.xml" src="@loader" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <DiagonalMass massDensity="0.2" />
-        <FixedConstraint indices="12 15 28 31" />
+        <FixedProjectiveConstraint indices="12 15 28 31" />
         <Node name="Q">
             <include href="Objects/QuadSetTopology.xml" src="@../loader" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
