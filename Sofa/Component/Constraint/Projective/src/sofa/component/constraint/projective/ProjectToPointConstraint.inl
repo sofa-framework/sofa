@@ -37,15 +37,15 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , d_indices( initData(&d_indices,"indices","Indices of the points to project") )
+    , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
     , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToPointConstraintInternalData<DataTypes>())    
 {
-    d_indices.beginEdit()->push_back(0);
-    d_indices.endEdit();
+    f_indices.beginEdit()->push_back(0);
+    f_indices.endEdit();
 }
 
 
@@ -58,22 +58,22 @@ ProjectToPointConstraint<DataTypes>::~ProjectToPointConstraint()
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::clearConstraints()
 {
-    d_indices.beginEdit()->clear();
-    d_indices.endEdit();
+    f_indices.beginEdit()->clear();
+    f_indices.endEdit();
 }
 
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::addConstraint(Index index)
 {
-    d_indices.beginEdit()->push_back(index);
-    d_indices.endEdit();
+    f_indices.beginEdit()->push_back(index);
+    f_indices.endEdit();
 }
 
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::type::removeValue(*d_indices.beginEdit(),index);
-    d_indices.endEdit();
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
+    f_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -95,14 +95,14 @@ void ProjectToPointConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        d_indices.createTopologyHandler(_topology);
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
-    const SetIndexArray & indices = d_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue();
 
     std::stringstream sstream;
     const Index maxIndex=this->mstate->getSize();
@@ -125,7 +125,7 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
 {
 
     // get the indices sorted
-    SetIndexArray tmp = d_indices.getValue();
+    SetIndexArray tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
 }
 
@@ -135,7 +135,7 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Ba
     const unsigned blockSize = DataTypes::deriv_total_size;
 
     // clears the rows and columns associated with fixed particles
-    for (const auto id : d_indices.getValue())
+    for (const auto id : f_indices.getValue())
     {
         M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
     }
@@ -147,7 +147,7 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataVecDeriv> res ( resData );
-    const SetIndexArray & indices = d_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue();
     if( f_fixAll.getValue() )
     {
         // fix everything
@@ -182,7 +182,7 @@ void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
     }
     else
     {
-        const SetIndexArray& indices = d_indices.getValue();
+        const SetIndexArray& indices = f_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin();
                     it != indices.end();
                     ++it)
@@ -204,7 +204,7 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataVecCoord> res ( xData );
-    const SetIndexArray & indices = d_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue();
     if( f_fixAll.getValue() )
     {
         // fix everything
@@ -232,7 +232,7 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(const core::Mechanical
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
     {
         const unsigned int N = Deriv::size();
-        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & indices = f_indices.getValue();
 
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -256,7 +256,7 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(const core::Mechanical
         const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
-        const SetIndexArray & indices = d_indices.getValue();
+        const SetIndexArray & indices = f_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned int c=0; c<N; ++c)
@@ -270,7 +270,7 @@ template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
-    const SetIndexArray& indices = d_indices.getValue();
+    const SetIndexArray& indices = f_indices.getValue();
 
     for (const auto index : indices)
     {
@@ -289,7 +289,7 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const SetIndexArray & indices = d_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

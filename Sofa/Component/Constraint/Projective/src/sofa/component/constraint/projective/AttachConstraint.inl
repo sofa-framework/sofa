@@ -567,7 +567,6 @@ void AttachConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDiri
             continue;
 
         auto index = (*it);
-        msg_info() << "AttachConstraint: apply in matrix column/row " << index;
 
         if (NCLast != NC && (i >= activeFlags.size() || !activeFlags[i + 1]))
         {

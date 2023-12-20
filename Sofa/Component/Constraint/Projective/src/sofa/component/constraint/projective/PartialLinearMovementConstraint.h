@@ -75,7 +75,7 @@ protected:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    SetIndex d_indices;
+    SetIndex m_indices;
     /// the key frames when the motion is defined by the user
     core::objectmodel::Data<type::vector<Real> > m_keyTimes;
     /// the motions corresponding to the key frames
