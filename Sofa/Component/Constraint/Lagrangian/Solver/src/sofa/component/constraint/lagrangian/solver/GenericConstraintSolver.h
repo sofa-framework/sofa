@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <optional>
 #include <sofa/component/constraint/lagrangian/solver/config.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
 
