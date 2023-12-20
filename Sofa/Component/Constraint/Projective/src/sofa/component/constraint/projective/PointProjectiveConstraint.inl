@@ -265,7 +265,20 @@ void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanica
     }
 }
 
+template <class DataTypes>
+void PointProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+    const SetIndexArray& indices = f_indices.getValue();
 
+    for (const auto index : indices)
+    {
+        for (unsigned int c = 0; c < N; ++c)
+        {
+            matrix->discardRowCol(N * index + c, N * index + c);
+        }
+    }
+}
 
 
 template <class DataTypes>

@@ -93,6 +93,7 @@ public:
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     virtual void reinitIfChanged();
 
