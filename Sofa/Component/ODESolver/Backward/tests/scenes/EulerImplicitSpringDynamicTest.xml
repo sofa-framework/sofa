@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root"  gravity="0 -10 0"  dt="0.1"  time="0"  animate="0"  >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -14,7 +14,7 @@
 
     <Node name="fixedPointNode"  >
         <MechanicalObject template="Vec3d" name="fixedPoint"  position="0 2 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />
-        <FixedConstraint template="Vec3d" name="fixedConstraint"  indices="0" />
+        <FixedProjectiveConstraint template="Vec3d" name="FixedProjectiveConstraint"  indices="0" />
     </Node>
 
     <Node name="MassNode"  >

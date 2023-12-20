@@ -128,7 +128,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         msg_info() << "Creating StickContactConstraint bilateral constraints";
         MechanicalState1* mstate1 = mapper1.createMapping(mapper::GenerateStringID::generate().c_str());
         MechanicalState2* mstate2 = mapper2.createMapping(mapper::GenerateStringID::generate().c_str());
-        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::BilateralInteractionConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
+        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::BilateralLagrangianConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
         m_constraint->setName( getName() );
     }
 

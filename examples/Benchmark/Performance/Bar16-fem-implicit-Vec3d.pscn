@@ -2,7 +2,7 @@
 
 <Node name="root" dt="0.04">
 <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings showForceFields" />
-<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
 <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
 <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
@@ -27,7 +27,7 @@
 		/> -->
 <?php echo '<RegularGridTopology
 			nx="16" ny="16" nz="'.(5*$size+1).'" xmin="0" xmax="3" ymin="0" ymax="3" zmin="0" zmax="'.$size.'" />'."\n"; ?>
-		<FixedConstraint indices="0-255" />
+		<FixedProjectiveConstraint indices="0-255" />
 		<TetrahedronFEMForceField name="FEM" youngModulus="24000" poissonRatio="0.3" method="large" />
 	</Node>
 </Node>

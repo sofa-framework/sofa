@@ -29,7 +29,9 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalVDotVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
-    *ctx->nodeData += mm->vDot(this->params, a.getId(mm),b.getId(mm) );
+    if(m_total)
+        *m_total += mm->vDot(this->params, a.getId(mm),b.getId(mm) );
+
     return RESULT_CONTINUE;
 }
 

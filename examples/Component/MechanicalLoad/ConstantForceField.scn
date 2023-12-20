@@ -22,7 +22,7 @@
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
         <UniformMass vertexMass="0.1" />
         <MeshTopology triangles="0 1 2  0 2 3" />
-        <!--		<FixedConstraint indices="2 3"/>-->
+        <!--		<FixedProjectiveConstraint indices="2 3"/>-->
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
         <ConstantForceField indices="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" showArrowSize="0.5" printLog="1"/>
         <Node name="Visu">

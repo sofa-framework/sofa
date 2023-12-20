@@ -20,61 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/projective/config.h>
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/type/Quat.h>
+#include <sofa/component/constraint/projective/FixedRotationProjectiveConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/FixedRotationProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
-
-/**
- * Prevents rotation around X or Y or Z axis
- */
-template <class DataTypes>
-class FixedRotationConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedRotationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
-
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
-    typedef Data<VecCoord> DataVecCoord;
-    typedef Data<VecDeriv> DataVecDeriv;
-    typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef type::Vec<3,Real> Vec3;
-
-
-protected:
-    FixedRotationConstraint();
-    ~FixedRotationConstraint() override;
-public:
-    void init() override;
-
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-
-protected :
-    Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
-    Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
-    Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
-    type::vector<type::Quat<SReal>> previousOrientation;
-};
-
-
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
-extern template class FixedRotationConstraint<defaulttype::Rigid3Types>;
-
-#endif
-
-} // namespace sofa::component::constraint::projective
+template <class T>
+using FixedRotationConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "FixedRotationConstraint has been renamed to FixedRotationProjectiveConstraint") = FixedRotationProjectiveConstraint<T>;
+}

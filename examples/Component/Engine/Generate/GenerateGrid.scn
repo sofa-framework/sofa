@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1" showBoundingTree="0" gravity="0 0 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint FixedPlaneConstraint ProjectToLineConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedPlaneProjectiveConstraint LineProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [GenerateGrid] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -21,10 +21,10 @@
         <MechanicalObject name="dofs" showObject="1"/>
         <MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
         <BoxROI box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" name="fixedPoint"  />
-        <FixedConstraint indices="@fixedPoint.indices" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.01" dmax="0.01"  />
+        <FixedProjectiveConstraint indices="@fixedPoint.indices" />
+        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.01" dmax="0.01"  />
         <BoxROI box="-5.2 -5.2 7.49 5.2 5.2 7.51" drawBoxes="1" name="pressurePlane"  />
-        <ProjectToLineConstraint direction="1 0 0" origin="0 0 0" indices="4"  />
+        <LineProjectiveConstraint direction="1 0 0" origin="0 0 0" indices="4"  />
         <TrianglePressureForceField  showForces="1"  triangleList="@pressurePlane.triangleIndices" pressure="0.00 0 -0.04" />
         <FastTetrahedralCorotationalForceField poissonRatio="0.45" youngModulus="1" method="polar" /> 
     </Node>
@@ -36,10 +36,10 @@
         <MechanicalObject name="dofs" translation="5 0 0" showObject="1"/>
         <MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
         <BoxROI box="-4.99 -0.01 -0.01 5.01 0.01 0.01" drawBoxes="1" name="fixedPointHexa"  />
-        <FixedConstraint indices="@fixedPointHexa.indices" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.01" dmax="0.01"  />
+        <FixedProjectiveConstraint indices="@fixedPointHexa.indices" />
+        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.01" dmax="0.01"  />
         <BoxROI box="-0.2 -5.2 7.49 10.2 5.2 7.51" drawBoxes="1" name="pressurePlaneQuad"  />
-        <ProjectToLineConstraint direction="1 0 0" origin="0 0 0" indices="4"  />
+        <LineProjectiveConstraint direction="1 0 0" origin="0 0 0" indices="4"  />
         <QuadPressureForceField  showForces="1"  quadList="@pressurePlaneQuad.quadIndices" pressure="0.00 0 -0.04" />
         <HexahedronFEMForceField poissonRatio="0.45" youngModulus="1" method="polar" /> 
     </Node>
