@@ -248,3 +248,10 @@ SOFA_ATTRIBUTE_DEPRECATED( \
 #define SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE() \
     SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "LocalStorage feature was seemingly not used so it has been deprecated.")
 #endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_NODEDATA()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_NODEDATA() \
+SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "rootdata/nodedata feature was never really used so it has been deprecated. All the related functions/members/variables won't do anything.")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
