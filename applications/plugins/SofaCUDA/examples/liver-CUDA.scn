@@ -8,7 +8,7 @@
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping DiagonalMass FixedConstraint MechanicalObject SphereCollisionModel TetrahedronFEMForceField TetrahedronSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping DiagonalMass FixedProjectiveConstraint MechanicalObject SphereCollisionModel TetrahedronFEMForceField TetrahedronSetGeometryAlgorithms] -->
 	
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
@@ -31,7 +31,7 @@
         <DiagonalMass template="CudaVec3f,CudaVec3f" name="DiagonalMass" massDensity="1" />
         <TetrahedronFEMForceField template="CudaVec3f" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
                 
-        <FixedConstraint name="FixedConstraint" template="CudaVec3f" topology="@topo" indices="3 39 64" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" template="CudaVec3f" topology="@topo" indices="3 39 64" />
         
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <OglModel  name="VisualModel" src="@../../LiverSurface" />

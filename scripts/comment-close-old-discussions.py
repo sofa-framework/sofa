@@ -7,9 +7,6 @@
 
 
 #TEST steps:
-# - add cron & dispatch trigger, remove trigger on label changes (yml)
-# - test with only one entry (break)
-# - remove break
 # - after 1st of December 2023, remove the temporary layer
 
 import os
@@ -98,8 +95,9 @@ def computeListOfDiscussionToProcess():
           # Detect the last comment
           lastCommentId = len(discussion["comments"]["nodes"]) - 1
 
-          # Pass to the next discussion item, if no comment in the discussion
-          if(lastCommentId < 0):
+          # Pass to the next discussion item if :
+          # no comment in the discussion OR discussion is answered OR closed
+          if(lastCommentId < 0 or discussion["closed"] == True or discussion["isAnswered"] == True ):
             continue
 
           lastReplyOnLastComment = len(discussion["comments"]["nodes"][lastCommentId]["replies"]["nodes"]) - 1
@@ -148,6 +146,8 @@ def make_query_discussions(owner, name, after_cursor=None):
             nodes {
               id
               number
+              isAnswered
+              closed
               authorAssociation
               author {
                 login
@@ -265,16 +265,22 @@ if(len(to_be_closed_discussion_id)!=len(to_be_closed_discussion_author)):
 
 print("** Output lists **")
 print("******************")
-print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number)
-print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id)
-print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author)
-print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number)
-print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id)
-print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author)
+print("Nb discussions to be WARNED = "+str(len(to_be_warned_discussion_number)))
+print("Nb discussions to be CLOSED = "+str(len(to_be_closed_discussion_number)))
+print("******************")
+print("to_be_warned_discussion_number = "+str(to_be_warned_discussion_number))
+print("to_be_warned_discussion_id = "+str(to_be_warned_discussion_id))
+print("to_be_warned_discussion_author = "+str(to_be_warned_discussion_author))
+print("******************")
+print("to_be_closed_discussion_number = "+str(to_be_closed_discussion_number))
+print("to_be_closed_discussion_id = "+str(to_be_closed_discussion_id))
+print("to_be_closed_discussion_author = "+str(to_be_closed_discussion_author))
+print("******************")
 print("******************")
 
 #==========================================================
 # WARNING step
+print("** WARNING step **")
 for index, discussion_id in enumerate(to_be_warned_discussion_id):
   print("to_be_warned_discussion_number[index] = "+str(to_be_warned_discussion_number[index]))
   print("to_be_warned_discussion_author[index] = "+str(to_be_warned_discussion_author[index]))
@@ -285,11 +291,14 @@ for index, discussion_id in enumerate(to_be_warned_discussion_id):
             headers = {"Authorization": "Bearer {}".format(github_token)},
         )
   print(data)
-  break# ------- TO REMOVE !!!!
 
+print("******************")
+print("******************")
 
 #==========================================================
 # CLOSING step
+print("** CLOSING step **")
+
 # ------- TO REMOVE !!!! ---------
 date_today = date.today()
 date_end_temporary_message = date.fromisoformat('2024-01-01')
@@ -301,7 +310,8 @@ else:
     temporary_case = True
 
 if temporary_case:
-  print(str(date_end_temporary_message-date_today[:-9])+" days to go before end of temporary message")
+  remaining_time = date_end_temporary_message-date_today
+  print(str(remaining_time)[:-9]+" days to go before end of temporary message")
 # --------------------------------
 
 for index, discussion_id in enumerate(to_be_closed_discussion_id):
@@ -330,6 +340,5 @@ for index, discussion_id in enumerate(to_be_closed_discussion_id):
              headers = {"Authorization": "Bearer {}".format(github_token)},
          )
     print(data)
-  break# ------- TO REMOVE !!!!
 
 #==========================================================

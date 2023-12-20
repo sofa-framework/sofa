@@ -2,7 +2,7 @@
 <!-- MeshSplittingEngine Example -->
 
 <Node name="root" dt="0.1">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI MeshSplittingEngine] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -33,7 +33,7 @@
             
             <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
             <UniformMass  />
-            <FixedConstraint indices="0"/>
+            <FixedProjectiveConstraint indices="0"/>
             
             <Node name="rigidmapped points">
                     <MechanicalObject position="@/split.position1"/>

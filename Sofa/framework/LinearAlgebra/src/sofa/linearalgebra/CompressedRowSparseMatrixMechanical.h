@@ -1311,7 +1311,7 @@ public:
     template<class TBlock2, class TPolicy2>
     void operator-=(const CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2>& m)
     {
-        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> > >(MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> >(m)), true);
+        equal(MatrixExpr { MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> >(m) }, true);
     }
 
     template<class Expr2>
@@ -1329,23 +1329,23 @@ public:
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
+        addEqual(MatrixExpr{ MatrixNegative< Expr2 >(m) } );
     }
 
     MatrixExpr< MatrixTranspose< Matrix > > t() const
     {
-        return MatrixExpr< MatrixTranspose< Matrix > >(MatrixTranspose< Matrix >(*this));
+        return MatrixExpr{ MatrixTranspose< Matrix >{*this} };
     }
 
 
     MatrixExpr< MatrixNegative< Matrix > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< Matrix > >(MatrixNegative< Matrix >(*this));
+        return MatrixExpr{ MatrixNegative< Matrix >(*this) };
     }
 
     MatrixExpr< MatrixScale< Matrix, double > > operator*(const double& r) const
     {
-        return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
+        return MatrixExpr{ MatrixScale< Matrix, double >(*this, r) };
     }
 
 

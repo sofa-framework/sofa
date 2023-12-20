@@ -3,7 +3,7 @@
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 0">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
@@ -40,7 +40,7 @@
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="small" />
         
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
-        <FixedConstraint template="Vec3" indices="@box_roi.indices" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
     </Node>
     
     <Node name="BeamFEM_LARGE">
@@ -59,7 +59,7 @@
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="large" />
         
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
-        <FixedConstraint template="Vec3" indices="@box_roi.indices" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
     </Node>
     
     <Node name="BeamFEM_POLAR">
@@ -78,7 +78,7 @@
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="polar" />
         
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
-        <FixedConstraint template="Vec3" indices="@box_roi.indices" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
     </Node>
     
     

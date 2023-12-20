@@ -149,6 +149,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    //Check if object has been renamed
+
+    using sofa::helper::lifecycle::renamedComponents;
+    auto renamedComponent = renamedComponents.find(classname);
+    if( renamedComponent != renamedComponents.end() )
+    {
+        classname = renamedComponent->second.getNewName();
+    }
+
+
     // In order to get the errors from the creators only, we save the current errors at this point
     // and we clear them. Once we extracted the errors from the creators, we put push them back.
     std::map<std::string, std::vector<std::string>> creators_errors; // (template_name, errors)
@@ -206,13 +216,19 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
+        using sofa::helper::lifecycle::movedComponents;
         if(it == registry.end())
         {
             arg->logError("The object '" + classname + "' is not in the factory.");
             auto uuncreatableComponent = uncreatableComponents.find(classname);
+            auto movedComponent = movedComponents.find(classname);
             if( uuncreatableComponent != uncreatableComponents.end() )
             {
                 arg->logError( uuncreatableComponent->second.getMessage() );
+            }
+            else if (movedComponent != movedComponents.end())
+            {
+                arg->logError( movedComponent->second.getMessage() );
             }
             else
             {

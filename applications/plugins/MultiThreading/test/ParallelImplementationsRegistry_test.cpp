@@ -36,8 +36,8 @@ TEST(ParallelImplementationsRegistry, existInObjectFactory)
         ASSERT_FALSE(seq.empty());
         ASSERT_FALSE(par.empty());
 
-        EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(seq));
-        EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(par));
+        EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(seq)) << seq;
+        EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(par)) << par;
     }
 }
 }

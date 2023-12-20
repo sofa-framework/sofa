@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9.81" dt="0.01">
 
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -20,7 +20,7 @@
     <Node name="FirstObject" gravity="0 -9.81 0">
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" />
-        <FixedConstraint template="Vec3" name="Fix Particles" indices="0" />
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particles" indices="0" />
         <StiffSpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
     </Node>
     <Node name="SecondObject" gravity="0 -9.81 0">

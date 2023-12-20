@@ -59,7 +59,7 @@ def createScene(root):
     TT.addObject('TetrahedronSetGeometryAlgorithms', template="Vec3d", name="GeomAlgo")
     
     TT.addObject('DiagonalMass', massDensity=0.5)
-    TT.addObject('FixedConstraint', indices=[1, 3, 50])
+    TT.addObject('FixedProjectiveConstraint', indices=[1, 3, 50])
     TT.addObject('TetrahedralCorotationalFEMForceField', name="CFEM", youngModulus=160, poissonRatio=0.3, method="large")
 
     # Add corresponding surface topology

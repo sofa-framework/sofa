@@ -1,5 +1,5 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -22,14 +22,14 @@
             <MechanicalObject />
             <UniformMass vertexMass="1"/>
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="-3" xmax="0" ymin="0" ymax="3" zmin="0" zmax="9" />
-            <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+            <FixedProjectiveConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
         </Node>
         <Node name="N2">
             <MechanicalObject />
             <UniformMass vertexMass="1"/>
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="0" xmax="3" ymin="0" ymax="3" zmin="0" zmax="9" />
-            <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+            <FixedProjectiveConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
         </Node>
     </Node>

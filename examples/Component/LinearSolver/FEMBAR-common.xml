@@ -1,7 +1,7 @@
 <!-- A prefab declaring a beam, to be used in all examples matching FEMBAR-*.scn -->
 <Node name="Group">
     <Node name="plugins">
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SVDLinearSolver] -->
         <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
         <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -25,5 +25,5 @@
     <UniformMass name="mass" totalMass="320" />
     <RegularGridTopology name="grid" nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
     <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
-    <FixedConstraint indices="@box.indices" />
+    <FixedProjectiveConstraint indices="@box.indices" />
 </Node>

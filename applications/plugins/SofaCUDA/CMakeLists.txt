@@ -88,10 +88,10 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.h
 
     ### Constraints
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.h
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.inl
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.h
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.inl
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.inl
   
@@ -155,11 +155,11 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
 
     ### Constraints  
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralInteractionConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralLagrangianConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityProjectiveConstraint.cpp
 
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaBoxROI.cpp
@@ -214,8 +214,8 @@ set(CUDA_SOURCES
     ### Collisions
     
     ### Constraints
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.cu
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cu
     
     
 )

@@ -14,7 +14,7 @@ class MultiMapping(Sofa.PythonScriptController):
 		rigidNode = self.rootNode.createChild('rigid')
 		rigidNode.createObject('MechanicalObject', template='Rigid', name='dofs', position="0 0 0 0 0 0 1", showObject='1', showObjectScale='0.8')
 		rigidNode.createObject('UniformMass', template='Rigid', totalMass="1")
-		rigidNode.createObject('PartialFixedConstraint',indices="0",fixedDirections="1 1 1 0 0 0")
+		rigidNode.createObject('PartialFixedProjectiveConstraint',indices="0",fixedDirections="1 1 1 0 0 0")
 
 		rigidCollisionNode = rigidNode.createChild('rigid')
 		rigidCollisionNode.createObject('MeshOBJLoader', filename="mesh/cube.obj", name="loader")

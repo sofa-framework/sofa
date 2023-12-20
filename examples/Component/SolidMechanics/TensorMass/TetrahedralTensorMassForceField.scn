@@ -1,6 +1,6 @@
 <Node name="root">
     <Node name="plugins">
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
         <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -26,7 +26,7 @@
     <UniformMass name="mass" totalMass="320" />
     <RegularGridTopology name="grid" nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
     <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
-    <FixedConstraint indices="@box.indices" />
+    <FixedProjectiveConstraint indices="@box.indices" />
 
     <TetrahedronSetTopologyContainer name="Tetra_topo"/>
     <TetrahedronSetTopologyModifier name="Modifier" />
