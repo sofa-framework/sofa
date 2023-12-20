@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <VolumetricRendering/initVolumetricRendering.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <VolumetricRendering/config.h>
-
-namespace sofa::component
+namespace volumetricrendering
 {
 
 //Here are just several convenient functions to help user to know what contains the plugin
@@ -36,6 +36,11 @@ extern "C" {
     SOFA_VOLUMETRICRENDERING_API const char* getModuleComponentList();
 }
 
+void init()
+{
+    initExternalModule();
+}
+
 void initExternalModule()
 {
     static bool first = true;
@@ -47,12 +52,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "VolumetricRendering";
+    return volumetricrendering::MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "0.1";
+    return volumetricrendering::MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -68,9 +73,9 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "OglTetrahedralModel";
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(volumetricrendering::MODULE_NAME);
+    return classes.c_str();
 }
 
 
-} // namespace sofa::component
-
+} // namespace volumetricrendering
