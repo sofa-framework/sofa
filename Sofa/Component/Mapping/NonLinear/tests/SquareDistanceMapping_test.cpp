@@ -168,7 +168,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
                 {{"position", "@../loader.position"}, {"edges", "@../loader.edges"}, {"name", "topology"}});
             simpleapi::createObject(node, "MechanicalObject", {{"name", "defoDOF"}, {"template", "Vec3"}});
             simpleapi::createObject(node, "EdgeSetGeometryAlgorithms");
-            simpleapi::createObject(node, "FixedConstraint", {{"indices", "0"}});
+            simpleapi::createObject(node, "FixedProjectiveConstraint", {{"indices", "0"}});
             simpleapi::createObject(node, "DiagonalMass", {{"totalMass", "1e-2"}});
         }
 

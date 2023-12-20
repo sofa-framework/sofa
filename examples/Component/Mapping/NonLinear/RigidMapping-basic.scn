@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="Root" gravity="0 0 0" time="0" animate="0" bbox="-1 -1 -1 1 1 1">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PartialFixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PartialFixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -15,7 +15,7 @@
         <StaticSolver name="ODE solver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid3" />
-        <PartialFixedConstraint fixedDirections="1 1 1 0 0 0" />
+        <PartialFixedProjectiveConstraint fixedDirections="1 1 1 0 0 0" />
         <UniformMass template="Rigid3" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Vec3" name="endpoint coordinates" position="1 -0.0 0"  />

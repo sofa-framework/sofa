@@ -286,7 +286,7 @@ public:
 
         createObject(FEMNode, "BoxROI", {
             {"name","ROI1"}, {"box","-1 -1 0 10 1 50"} });
-        createObject(FEMNode, "FixedConstraint", { {"mstate", "@dof"},
+        createObject(FEMNode, "FixedProjectiveConstraint", { {"mstate", "@dof"},
             {"name","fixC"}, {"indices","@ROI1.indices"} });
 
         createObject(FEMNode, "DiagonalMass", {

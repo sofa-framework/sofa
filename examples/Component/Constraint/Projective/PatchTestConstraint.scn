@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.05"  >
-  <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PatchTestMovementConstraint] -->
+  <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PatchTestMovementProjectiveConstraint] -->
   <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI PairBoxROI] -->
   <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
   <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -21,7 +21,7 @@
     <MeshSpringForceField name="forcefield" linesStiffness="10" />
     <BoxROI name="Box" box="-0.1 -0.1 0  1.1 1.1 0"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 0  1.1 1.1 0" includedBox="0.1 0.1 0 0.9 0.9 0"/>
-    <PatchTestMovementConstraint name="patchTestConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI"
+    <PatchTestMovementProjectiveConstraint name="patchTestConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI"
         cornerMovements=" -0.3 -0.1 0
                            0.1 -0.3 0
                            1.1  0.1 0

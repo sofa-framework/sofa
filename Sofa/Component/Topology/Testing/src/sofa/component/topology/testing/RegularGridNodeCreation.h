@@ -40,7 +40,7 @@ template<class T>
 struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
-    typename component::constraint::projective::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::constraint::projective::AffineMovementProjectiveConstraint<T>::SPtr affineConstraint;
     typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 
@@ -66,7 +66,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     typedef component::topology::container::grid::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
     typedef typename sofa::component::engine::select::PairBoxROI<DataTypes> PairBoxRoi;
-    typedef typename component::constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef typename component::constraint::projective::AffineMovementProjectiveConstraint<DataTypes> AffineMovementProjectiveConstraint;
     typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
@@ -114,7 +114,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     pairBoxRoi->includedBox.setValue(includedBox);
 
     //Affine constraint
-    patchStruct.affineConstraint  = modeling::addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
+    patchStruct.affineConstraint  = modeling::addNew<AffineMovementProjectiveConstraint>(SquareNode,"affineConstraint");
     modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
     modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
 

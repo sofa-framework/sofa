@@ -9,7 +9,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [DiagonalMass FixedConstraint IdentityMapping MechanicalObject TriangleCollisionModel TriangleSetGeometryAlgorithms TriangularFEMForceFieldOptim] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [DiagonalMass FixedProjectiveConstraint IdentityMapping MechanicalObject TriangleCollisionModel TriangleSetGeometryAlgorithms TriangularFEMForceFieldOptim] -->
 	
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <CollisionPipeline verbose="0" />
@@ -29,7 +29,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="CudaVec3f" name="GeomAlgo" />	    
         <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
-        <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
+        <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
         <TriangleCollisionModel />

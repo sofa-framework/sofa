@@ -69,7 +69,7 @@
         <!-- <MechanicalObject name="DOFs" /> -->
 		<UniformMass totalMass="1"/>
 		<BoxROI name="ROI" box="-0.2 -0.2 -0.01 0.2 0.2 0.11" />
-        <FixedConstraint indices="@ROI.indices" />
+        <FixedProjectiveConstraint indices="@ROI.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" localStiffnessFactor="1 1 1 0.8 0.8 0.6 0.4 0.4 0.4 1 1 0.05 0.05" />
 
 		<Node name="Collision">

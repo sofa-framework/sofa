@@ -1,6 +1,6 @@
 <!-- Mechanical TriangularFEMForceFieldOptim Example -->
 <Node name="root" dt="0.05" gravity="0 10 10" showBoundingTree="0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -26,7 +26,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <DiagonalMass massDensity="0.005" />
-        <FixedConstraint indices="0 1 2" />
+        <FixedProjectiveConstraint indices="0 1 2" />
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" printLog="1"/>
         <Node name="VisuA">
             <OglModel name="Visual" color="yellow" />
@@ -42,7 +42,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <DiagonalMass massDensity="0.005" />
-        <FixedConstraint indices="0 1 2" />
+        <FixedProjectiveConstraint indices="0 1 2" />
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" printLog="1"/>
         <Node name="VisuA">
             <OglModel name="Visual" color="yellow" />

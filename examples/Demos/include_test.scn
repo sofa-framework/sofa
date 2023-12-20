@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root">
-  <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+  <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
   <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
   <include href="caduceus.scn" name="_Merge_" />
   <include href="include_test.xml" />

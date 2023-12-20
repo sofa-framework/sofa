@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI ValuesFromPositions] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -31,7 +31,7 @@
         <UniformMass name="default25" vertexMass="0.25" />
         <TetrahedronFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" computeGlobalMatrix="0" />
         <BoxROI template="Vec3" name="box_roi" box="-11 -11 -11 11 -9 11" indices="0" drawSize="0" />
-        <FixedConstraint template="Vec3" name="default27" indices="@box_roi.indices" drawSize="0" />
+        <FixedProjectiveConstraint template="Vec3" name="default27" indices="@box_roi.indices" drawSize="0" />
         <Node name="Tetra" gravity="0 -9.81 0">
             <TetrahedronSetTopologyContainer name="Container" />
             <TetrahedronSetTopologyModifier name="Modifier" />

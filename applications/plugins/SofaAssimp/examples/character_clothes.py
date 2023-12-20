@@ -65,7 +65,7 @@ def createBox(parent):
 
     parent.createObject('MechanicalObject', template='Rigid', name='model', position='0 100.0 0 0 0 0 1')
     parent.createObject('UniformMass')
-    parent.createObject('FixedConstraint', indices='0')
+    parent.createObject('FixedProjectiveConstraint', indices='0')
     
     collisionNode = parent.createChild('collision')
     collisionNode.createObject('MeshOBJLoader', name='loader', filename=mesh_path + 'cube.obj')

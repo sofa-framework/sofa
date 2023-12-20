@@ -24,7 +24,7 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
@@ -58,7 +58,7 @@ protected:
     mapper::ContactMapper<CollisionModel1,DataTypes1> mapper1;
     mapper::ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraint::lagrangian::model::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
+    constraint::lagrangian::model::BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
