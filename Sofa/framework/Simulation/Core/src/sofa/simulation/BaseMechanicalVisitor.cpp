@@ -200,57 +200,15 @@ Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* 
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
 {
-    if (root == nullptr)
-    {
-        root = node;
-    }
-
-    VisitorContext ctx;
-    ctx.root = root;
-    ctx.node = node;
-    ctx.nodeData = rootData;
-
-    const bool writeData = writeNodeData();
-    if (writeData)
-    {
-        // create temporary accumulation buffer for parallel reductions (dot products)
-        if (node != root)
-        {
-            const SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
-            ctx.nodeData = new SReal(0.0);
-            setNodeData(node, ctx.nodeData, parentData);
-            stack->push(ctx.nodeData);
-        }
-    }
-
-    return processNodeTopDown(node, &ctx);
+    SOFA_UNUSED(stack);
+    return processNodeTopDown(node);
 }
 
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalStorage* stack)
 {
-    VisitorContext ctx;
-    ctx.root = root;
-    ctx.node = node;
-    ctx.nodeData = rootData;
-    SReal* parentData = rootData;
-
-    const bool writeData = writeNodeData();
-
-    if (writeData)
-    {
-        // use temporary accumulation buffer for parallel reductions (dot products)
-        if (node != root)
-        {
-            ctx.nodeData = (SReal*)stack->pop();
-            parentData = stack->empty() ? rootData : (SReal*)stack->top();
-        }
-    }
-
-    processNodeBottomUp(node, &ctx);
-
-    if (writeData && parentData != ctx.nodeData)
-        addNodeData(node, parentData, ctx.nodeData);
+    SOFA_UNUSED(stack);
+    return processNodeBottomUp(node);
 }
 
 
@@ -407,25 +365,6 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseO
 //    return dynamic_cast<const sofa::core::ConstraintParams*>(params);
 //}
 
-
-/// Return true if this visitor need to read the node-specific data if given
-bool BaseMechanicalVisitor::readNodeData() const
-{ return false; }
-
-/// Return true if this visitor need to write to the node-specific data if given
-bool BaseMechanicalVisitor::writeNodeData() const
-{ return false; }
-
-void BaseMechanicalVisitor::setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData)
-{
-    *nodeData = (parentData == nullptr) ? 0.0 : *parentData;
-}
-
-void BaseMechanicalVisitor::addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData)
-{
-    if (parentData)
-        *parentData += *nodeData;
-}
 
 /// Return a class name for this visitor
 /// Only used for debugging / profiling purposes
