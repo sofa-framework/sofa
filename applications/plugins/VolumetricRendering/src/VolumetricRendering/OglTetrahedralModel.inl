@@ -286,7 +286,15 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
 
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    int gltype = GL_FLOAT;
+
+    if constexpr (std::is_same_v<typename Coord::value_type, double>)
+    {
+        gltype = GL_DOUBLE;
+    }
+
+    glVertexPointer(3, gltype, 0, nullptr);
+
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
     glEnableClientState(GL_VERTEX_ARRAY);

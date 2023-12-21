@@ -94,8 +94,8 @@ private:
 
     sofa::type::vector<Tetrahedron> m_hexaToTetrahedra;
 
-    sofa::type::vector<Coord> m_tetraBarycenters;
-    sofa::type::vector<Coord> m_hexaBarycenters;
+    sofa::type::vector<type::Vec3f> m_tetraBarycenters;
+    sofa::type::vector<type::Vec3f> m_hexaBarycenters;
 
 public:
     void init() override;
