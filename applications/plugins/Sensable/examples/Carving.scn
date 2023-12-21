@@ -21,8 +21,8 @@
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.5" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedConstraint indices="0" />
+        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedProjectiveConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />

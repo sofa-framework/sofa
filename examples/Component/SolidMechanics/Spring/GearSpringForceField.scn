@@ -1,6 +1,6 @@
 <Node name="root" gravity="0 0 0" dt="0.01" time="0">
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -19,7 +19,7 @@
     <CGLinearSolver name="linear solver" iterations="50" tolerance="1e-009" threshold="1e-009" />
     <MechanicalObject template="Rigid3" name="DOFs" rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1" position="-1.161 0 1.706 0 0.194787 0 0.980846 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;-6.7 4 1.706 0 0 0.707107 0.707107 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;1.790 0 -5.503 0 0.229019 0 0.973422&#x09;&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;-6.7 5.2 -3.5 0 0 0.707107 0.707107&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;0 0 0 0 0 0 1" restScale="1" />
     <UniformMass name="mass" vertexMass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor="2" />
-    <FixedConstraint template="Rigid3" name="fixOrigin" indices="4" />
+    <FixedProjectiveConstraint template="Rigid3" name="fixOrigin" indices="4" />
     <!--  	SELF SUPPORT 	 -->
     <!--
 		<GearSpringForceField template="Rigid3" name="gear1"  showFactorSize='5' spring="BEGIN_SPRING  0 0 2 2 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO 2 END_SPRING" />

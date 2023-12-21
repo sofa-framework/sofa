@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node dt="0.02"  >
-	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 	<RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->  
 	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
 	<RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->  
@@ -22,7 +22,7 @@
 		<MechanicalObject showIndices="1"  showIndicesScale="0.0004" />
 		<HexahedronFEMForceField  poissonRatio="0"  youngModulus="1000" />
 		<BoxROI box="0 0.75 0 1 1 1"  position="@[-2].rest_position"   />
-		<FixedConstraint indices="@[-1].indices" />
+		<FixedProjectiveConstraint indices="@[-1].indices" />
 		<ConstantForceField indices="0 1 4 5"  totalForce="0 -1000 0" />
 		<UniformMass  />
 	</Node>

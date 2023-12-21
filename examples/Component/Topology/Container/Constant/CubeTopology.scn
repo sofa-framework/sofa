@@ -2,7 +2,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -31,7 +31,7 @@
             <include href="Objects/TriangleSetTopology.xml" src="@../cubeTopo"/>
             <Quad2TriangleTopologicalMapping input="@../cubeTopo" output="@Container"/>
             <MechanicalObject name="dofs" printLog="1" position="@../cubeTopo.position"/>
-            <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+            <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
             <TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
             <UniformMass vertexMass="0.1" />

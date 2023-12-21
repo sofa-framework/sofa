@@ -1,5 +1,5 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [VisualModelOBJExporter] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -18,7 +18,7 @@
         <MechanicalObject template="Vec3d" />
         <UniformMass totalMass="100" />
         <RegularGridTopology nx="4" ny="4" nz="40" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
-        <FixedConstraint template="Vec3d" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+        <FixedProjectiveConstraint template="Vec3d" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
         <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
         <Node name="Visual">
             <OglModel name="visual" />

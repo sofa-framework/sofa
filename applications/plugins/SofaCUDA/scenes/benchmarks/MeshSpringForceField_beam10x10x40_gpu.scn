@@ -10,7 +10,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint IdentityMapping MechanicalObject MeshSpringForceField UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject MeshSpringForceField UniformMass] -->
 
     <VisualStyle displayFlags="showBehaviorModels" />
     
@@ -39,7 +39,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
 		        
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />        
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         
         <UniformMass totalMass="100" />
         <MeshSpringForceField name="Springs" tetrasStiffness="1200" tetrasDamping="0" template="CudaVec3f"/>

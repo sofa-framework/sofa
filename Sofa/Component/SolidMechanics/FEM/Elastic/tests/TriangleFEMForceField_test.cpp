@@ -213,7 +213,7 @@ public:
 
         createObject(FEMNode, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
-        createObject(FEMNode, "FixedConstraint", {
+        createObject(FEMNode, "FixedProjectiveConstraint", {
             {"name","fix"}, {"indices", str(type::Vec2(0, fixP))} });
     }
 

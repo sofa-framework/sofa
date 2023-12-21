@@ -131,7 +131,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
                     0.1     // damping ratio
                     );
 
-        simpleapi::createObject(string, "FixedConstraint", {
+        simpleapi::createObject(string, "FixedProjectiveConstraint", {
             { "indices", "0"}
         });
 
