@@ -375,6 +375,7 @@ macro(sofa_auto_set_target_version)
             endif()
             set_target_properties(${target} PROPERTIES VERSION "${version}")
         endif()
+
         set(${sofa_target_name_upper}_VERSION "${version}")
         set(PROJECT_VERSION "${version}") # warning: dangerous to touch this variable?
     endforeach()

@@ -85,7 +85,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::Image<T>>
             {
                 Coord Tp = inT->toImage(pos[i]);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max());
+                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval);
             }
         }
             break;

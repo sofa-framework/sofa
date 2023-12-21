@@ -163,7 +163,7 @@ public:
             .draw_rectangle(i,cmax,0,i,this->cimg.height(),this->cimg.depth(),col+i,opacity);
 
         const unsigned char currentcol[]= {200,100,0};
-        for(unsigned int i=0; i<3; i++) this->cimg.draw_line(i,cpos,0,i,cpos,this->cimg.depth(),currentcol+i);
+        for(unsigned int i=0; i<3; i++) this->cimg.draw_line(i,cpos,i,cpos,currentcol+i);
 
     }
 
