@@ -1,3 +1,5 @@
+#version 140
+
 uniform float u_enableLight;
 
 //GLSL >= 130

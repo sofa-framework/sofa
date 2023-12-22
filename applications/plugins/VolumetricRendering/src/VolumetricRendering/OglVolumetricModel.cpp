@@ -155,7 +155,6 @@ void OglVolumetricModel::init()
     if (b_useTopology)
         computeMeshFromTopology();
 
-    updateVisual();
 
 }
 
@@ -220,7 +219,6 @@ void OglVolumetricModel::initVisual()
     getContext()->addObject(m_vertexColors);
     m_vertexColors->init();
     m_vertexColors->initVisual();
-
 
 }
 
@@ -357,27 +355,38 @@ void OglVolumetricModel::computeBarycenters()
     if (!b_tboCreated)
     {
         //Texture buffer objects
-
-        glGenBuffers(1, &m_tetraBarycentersTbo);
-        glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
-        glBufferData(GL_TEXTURE_BUFFER, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]), GL_DYNAMIC_COPY);
-        glGenTextures(1, &m_tetraBarycentersTboTexture);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        glGenBuffers(1, &m_hexaBarycentersTbo);
-        glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
-        glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
-        glGenTextures(1, &m_hexaBarycentersTboTexture);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        b_tboCreated = true;
+        if (m_tetraBarycenters.size() > 0)
+        {
+            glGenBuffers(1, &m_tetraBarycentersTbo);
+            glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+            glBufferData(GL_TEXTURE_BUFFER, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]), GL_DYNAMIC_COPY);
+            glGenTextures(1, &m_tetraBarycentersTboTexture);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+            b_tboCreated = true;
+        }
+        if (m_hexaBarycenters.size() > 0)
+        {
+            glGenBuffers(1, &m_hexaBarycentersTbo);
+            glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+            glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
+            glGenTextures(1, &m_hexaBarycentersTboTexture);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+            b_tboCreated = true;
+        }
     }
 
-    glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
-    glBufferSubData(GL_TEXTURE_BUFFER, 0, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]));
-    glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
-    glBufferSubData(GL_TEXTURE_BUFFER, 0, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]));
-    glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    if (m_tetraBarycenters.size() > 0)
+    {
+        glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+        glBufferSubData(GL_TEXTURE_BUFFER, 0, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]));
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    }
+    if (m_hexaBarycenters.size() > 0)
+    {
+        glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+        glBufferSubData(GL_TEXTURE_BUFFER, 0, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]));
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    }
 }
 
 void OglVolumetricModel::handleTopologyChange()
@@ -439,6 +448,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     const type::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
     const type::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
     //glEnable(GL_CLIP_DISTANCE0);
+
 
     if (tetrahedra.size() > 0)
     {
