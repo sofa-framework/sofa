@@ -31,6 +31,13 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
+
+namespace sofa::component::topology::container::dynamic
+{
+    class QuadSetTopologyContainer;
+    class QuadSetTopologyModifier;
+}
+
 namespace sofa::component::topology::mapping
 {
 
@@ -94,6 +101,9 @@ public:
 
     Data<VecIndex> d_edgeList; ///< list of input edges for the topological mapping: by default, all considered
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
+
+    SingleLink<Edge2QuadTopologicalMapping, topology::container::dynamic::QuadSetTopologyContainer, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toQuadContainer; ///< Output container storing Quads
+    SingleLink<Edge2QuadTopologicalMapping, topology::container::dynamic::QuadSetTopologyModifier, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toQuadModifier; ///< Output modifier handling Quads
 };
 
 } //namespace sofa::component::topology::mapping
