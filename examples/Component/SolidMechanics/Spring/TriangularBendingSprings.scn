@@ -1,7 +1,7 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -90 10">
     <Node name="plugins">
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [AsyncSparseLDLSolver] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [ShewchukPCGLinearSolver] -->
@@ -26,7 +26,7 @@
         <MechanicalObject src="@loader" scale="10" />
         <TriangleSetTopologyContainer name="Container" triangles="@loader.triangles"/>
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
         <Node >

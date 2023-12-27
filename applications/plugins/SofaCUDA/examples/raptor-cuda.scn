@@ -6,7 +6,7 @@
 	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
 	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-	<RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
+	<RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
 	
 	<Node name="M1">
 		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
@@ -28,7 +28,7 @@
 		<TetrahedronFEMForceField name="FEM" youngModulus="@ind_box1.outputValues" poissonRatio="0.4" listening="true" />
 
 		<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
-		<FixedConstraint indices="@box3.indices" />	  
+		<FixedProjectiveConstraint indices="@box3.indices" />
 
 		<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
                 <ConstantForceField indices="@boxF.indices" force="7.5 -6.63 -15" showArrowSize="0.1" />

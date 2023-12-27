@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" gravity="0 10 0">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
@@ -30,7 +30,7 @@
         
         <MechanicalObject name="TriangularFEMForceField_dof" />
         <DiagonalMass totalMass="1.0" />
-        <FixedConstraint indices="0 39" />
+        <FixedProjectiveConstraint indices="0 39" />
 
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
@@ -59,7 +59,7 @@
         
         <MechanicalObject name="TriangularFEMForceFieldOptim_dof" />
         <DiagonalMass totalMass="1.0" />
-        <FixedConstraint indices="0 39" />
+        <FixedProjectiveConstraint indices="0 39" />
 
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
@@ -88,7 +88,7 @@
         
         <MechanicalObject name="TriangleFEMForceField_dof" />
         <DiagonalMass totalMass="1.0" />
-        <FixedConstraint indices="0 39" />
+        <FixedProjectiveConstraint indices="0 39" />
 
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />

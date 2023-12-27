@@ -2,7 +2,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint FixedRotationConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedRotationProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -23,8 +23,8 @@
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-12" threshold="1e-09" />
         <Node name="Rotation around Z axis not authorized" gravity="0 -9.81 0">
             <MechanicalObject template="Rigid3" name="default0" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1" />
-            <FixedConstraint template="Rigid3" name="default1" indices="0" />
-            <FixedRotationConstraint template="Rigid3" name="default2" FixedXRotation="0" FixedYRotation="0" FixedZRotation="1" />
+            <FixedProjectiveConstraint template="Rigid3" name="default1" indices="0" />
+            <FixedRotationProjectiveConstraint template="Rigid3" name="default2" FixedXRotation="0" FixedYRotation="0" FixedZRotation="1" />
             <UniformMass name="default3" showAxisSizeFactor="1" />
             <Node name="spring" gravity="0 -9.81 0">
                 <MechanicalObject template="Rigid3" name="default4" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
@@ -35,7 +35,7 @@
         </Node>
         <Node name="Rotation around Z axis is free" gravity="0 -9.81 0">
             <MechanicalObject template="Rigid3" name="default6" translation="0 0 0" rotation="0 0 0" restScale="1" position="3 0 0 0 0 0 1 4 0 0 0 0 0 1" />
-            <FixedConstraint template="Rigid3" name="default7" indices="0" />
+            <FixedProjectiveConstraint template="Rigid3" name="default7" indices="0" />
             <UniformMass name="default54" showAxisSizeFactor="1" />
             <Node name="spring" gravity="0 -9.81 0">
                 <MechanicalObject template="Rigid3" name="default9" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />

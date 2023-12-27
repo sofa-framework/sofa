@@ -45,11 +45,6 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalGetNonDiagonalMassesCountVisitor";}
-
-    bool writeNodeData() const override
-    {
-        return true;
-    }
 };
 
 }

@@ -120,7 +120,7 @@ protected:
                                     core::MultiVecDerivId acc,
                                     core::ConstMultiVecDerivId f);
 
-    /// Apply projective constraints, such as FixedConstraint
+    /// Apply projective constraints, such as FixedProjectiveConstraint
     static void projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId);
 
     static void solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc);

@@ -39,9 +39,9 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
-#include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
-#include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
@@ -136,13 +136,13 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
     boxRoi1->d_alignedBoxes.setValue(vecBox);
     boxRoi1->d_strict.setValue(false);
-    // FixedConstraint
-    typename component::constraint::projective::FixedConstraint<DataTypes>::SPtr fc=
-        modeling::addNew<typename component::constraint::projective::FixedConstraint<DataTypes> >(root);
+    // FixedProjectiveConstraint
+    typename component::constraint::projective::FixedProjectiveConstraint<DataTypes>::SPtr fc=
+        modeling::addNew<typename component::constraint::projective::FixedProjectiveConstraint<DataTypes> >(root);
     sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
-    // FixedPlaneConstraint
-    typename component::constraint::projective::FixedPlaneConstraint<DataTypes>::SPtr fpc=
-            modeling::addNew<typename component::constraint::projective::FixedPlaneConstraint<DataTypes> >(root);
+    // FixedPlaneProjectiveConstraint
+    typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes>::SPtr fpc=
+            modeling::addNew<typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes> >(root);
     fpc->d_dmin= -0.01;
     fpc->d_dmax= 0.01;
     fpc->d_direction=Coord(0,0,1);
@@ -158,9 +158,9 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
             modeling::addNew<typename component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
-    // ProjectToLineConstraint
-    typename component::constraint::projective::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
-            modeling::addNew<typename component::constraint::projective::ProjectToLineConstraint<DataTypes> >(root);
+    // LineProjectiveConstraint
+    typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
+            modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::type::vector<sofa::Index> vArray;

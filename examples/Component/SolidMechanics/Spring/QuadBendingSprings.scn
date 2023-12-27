@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -27,7 +27,7 @@
         <UniformMass totalMass="100" />
         <MeshSpringForceField name="Springs" stiffness="1000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
-        <FixedConstraint name="FixedConstraint" indices="0 19" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0 19" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
             <IdentityMapping input="@.." output="@Visual" />

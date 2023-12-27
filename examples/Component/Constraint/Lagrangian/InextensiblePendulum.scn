@@ -5,9 +5,9 @@
 <Node name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01">
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformLagrangianConstraint] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [TransformEngine] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [StringMeshCreator] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLLT] -->
@@ -42,13 +42,13 @@
     <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@loader.edges" />
     <MechanicalObject name="defoDOF" template="Vec3"  />
     <EdgeSetGeometryAlgorithms drawEdges="true" />
-    <FixedConstraint indices="0" />
+    <FixedProjectiveConstraint indices="0" />
     <!-- 1 g for the total mass of the wire -->
     <DiagonalMass  name="mass" totalMass="1e-3"/>
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1"  name="extensionsDOF" />
         <DistanceMapping  name="distanceMapping" topology="@../topology"/>
-        <UniformConstraint template="Vec1" iterative="false" />
+        <UniformLagrangianConstraint template="Vec1" iterative="false" />
     </Node>
 
     <Node name="visual">

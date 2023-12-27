@@ -3,7 +3,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [CenterOfMassMapping SkinningMapping] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
@@ -32,7 +32,7 @@
 						       free_velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
 						       rest_position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" />
         <UniformMass template="Rigid3" name="mass" vertexMass="1 1 [1 0 0,0 1 0,0 0 1]" />
-        <FixedConstraint template="Rigid3" name="fixOrigin" indices="0" />
+        <FixedProjectiveConstraint template="Rigid3" name="fixOrigin" indices="0" />
         <Node name="segmentsNode" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
             <MechanicalObject template="Rigid3" name="attaches" position="0 0 0 0.707914 0 0 0.707914 0 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 8 0 0 0.707914 0 0 0.707914"
 							       velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"

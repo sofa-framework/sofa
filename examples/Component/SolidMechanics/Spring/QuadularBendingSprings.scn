@@ -1,6 +1,6 @@
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
     <Node name="plugins">
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
         <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -27,7 +27,7 @@
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" topology="@Container" draw="true"/>
         <DiagonalMass massDensity="1.5" />
         <BoxROI box="-0.0001 -0.0001 -0.0001 0.0001 0.0001 0.0001  0.999 -0.0001 -0.0001 1.0001 0.0001 0.0001" name="box"/>
-        <FixedConstraint indices="@box.indices" />
+        <FixedProjectiveConstraint indices="@box.indices" />
         <Node name="Surf">
             <TriangleSetTopologyContainer name="Container"/>
             <TriangleSetTopologyModifier name="Modifier" />

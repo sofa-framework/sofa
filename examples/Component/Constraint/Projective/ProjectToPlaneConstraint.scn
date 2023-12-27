@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.05"  >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint ProjectToPlaneConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint PlaneProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -34,7 +34,7 @@
         <UniformMass totalMass="1" />
         <BoxConstraint box="-0.05 -0.05 -0.05    0.05 0.05 0.05" drawBoxes="0"  />
         <BoxROI box="-0.05 -0.05 -0.05    0.05 1.05 1.05" drawBoxes="1" name="ProjectToPlane"/>
-        <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" drawSize="0.03" />
+        <PlaneProjectiveConstraint normal="1 0 0" indices="@[-1].indices" drawSize="0.03" />
         <Node 	name="Boundary Edges"  >
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />

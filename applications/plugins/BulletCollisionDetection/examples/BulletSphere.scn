@@ -6,7 +6,7 @@
 		<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
 		<RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
 		<RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-		<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+		<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 		<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 		<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
 		<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -34,7 +34,7 @@
 				<MechanicalObject template="Vec3d" name="fix"  position="0 0 0 3 3 0 6 7 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
 				<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
 				<TBulletSphereModel template="Vec3d" name="tBulletTriangleModel2"  proximity="0"  margin="0.04" />
-				<FixedConstraint template="Vec3d" name="fixedConstraint0"  indices="0 1 2" />
+				<FixedProjectiveConstraint template="Vec3d" name="fixedProjectiveConstraint0"  indices="0 1 2" />
 			</Node>
 		</Node>
 	</Node>

@@ -1,5 +1,5 @@
 <Node name="root" dt="0.00001" gravity="0 0 0" >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader] -->
@@ -35,8 +35,8 @@
         <TetrahedronDiffusionFEMForceField template="Vec1" name="DiffusionForceField" topology="@../topo" constantDiffusionCoefficient="1500" printLog="0" drawConduc="0" tagMechanics="mechanics" tags="heat"/>
         <MeshMatrixMass name="Mass" template="Vec1,Vec3" lumping="0" massDensity="1.0" printLog="0" tags="heat" topology="@../topo" geometryState="@../raptorDOFs"/>
 
-        <LinearMovementConstraint template="Vec1" keyTimes="0 0.005 0.006" movements="0 0 1" indices="@../box-cold.indices" />
-        <LinearMovementConstraint template="Vec1" keyTimes="0.001 0.002 0.004 0.005 0.006" movements="0 1 0.5 1 0" indices="@../box-hot.indices" />
+        <LinearMovementProjectiveConstraint template="Vec1" keyTimes="0 0.005 0.006" movements="0 0 1" indices="@../box-cold.indices" />
+        <LinearMovementProjectiveConstraint template="Vec1" keyTimes="0.001 0.002 0.004 0.005 0.006" movements="0 1 0.5 1 0" indices="@../box-hot.indices" />
 
         <Node name="Visu">
             <TextureInterpolation template="Vec1" name="EngineInterpolation"  input_states="@../gridTemperature.position"  input_coordinates="@../../raptorDOFs.position"  min_value="0.0"  max_value="1.0"  manual_scale="1"  drawPotentiels="0"  showIndicesScale="5e-05" />

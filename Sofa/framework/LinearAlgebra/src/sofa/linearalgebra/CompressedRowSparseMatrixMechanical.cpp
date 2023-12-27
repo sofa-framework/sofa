@@ -64,263 +64,97 @@ void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >::add(Index row
 }
 
 
-template <> template <>
-void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+template<class RealDest, class RealSrc>
+void filterValuesImpl(
+    CompressedRowSparseMatrixMechanical<RealDest>& dest,
+    CompressedRowSparseMatrixMechanical<type::Mat<3, 3, RealSrc> >& src,
+    typename CompressedRowSparseMatrixMechanical<RealDest>::filter_fn* filter,
+    const RealDest ref, const bool keepEmptyRows)
 {
-    M.compress();
-    nRow = M.rowSize();
-    nCol = M.colSize();
-    nBlockRow = M.rowSize();
-    nBlockCol = M.colSize();
-    rowIndex.clear();
-    rowBegin.clear();
-    colsIndex.clear();
-    colsValue.clear();
-    btemp.clear();
-    skipCompressZero = true;
-    rowIndex.reserve(M.rowIndex.size() * 3);
-    rowBegin.reserve(M.rowBegin.size() * 3);
-    colsIndex.reserve(M.colsIndex.size() * 9);
-    colsValue.reserve(M.colsValue.size() * 9);
+    src.compress();
+    dest.nRow = src.rowSize();
+    dest.nCol = src.colSize();
+    dest.nBlockRow = src.rowSize();
+    dest.nBlockCol = src.colSize();
+    dest.rowIndex.clear();
+    dest.rowBegin.clear();
+    dest.colsIndex.clear();
+    dest.colsValue.clear();
+    dest.btemp.clear();
+    dest.skipCompressZero = true;
+    dest.rowIndex.reserve(src.rowIndex.size() * 3);
+    dest.rowBegin.reserve(src.rowBegin.size() * 3);
+    dest.colsIndex.reserve(src.colsIndex.size() * 9);
+    dest.colsValue.reserve(src.colsValue.size() * 9);
 
     Index vid = 0;
-    for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    for (std::size_t rowId = 0; rowId < src.rowIndex.size(); ++rowId)
     {
-        const Index i = M.rowIndex[rowId] * 3;
+        const Index i = src.rowIndex[rowId] * 3;
 
-        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
+        typename CompressedRowSparseMatrixMechanical<RealDest>::Range rowRange(src.rowBegin[rowId], src.rowBegin[rowId + 1]);
 
         for (Index lb = 0; lb < 3; lb++)
         {
-            rowIndex.push_back(i + lb);
-            rowBegin.push_back(vid);
+            dest.rowIndex.push_back(i + lb);
+            dest.rowBegin.push_back(vid);
 
             for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
             {
-                const Index j = M.colsIndex[xj] * 3;
-                type::Mat<3, 3, double> b = M.colsValue[xj];
+                const Index j = src.colsIndex[xj] * 3;
+                type::Mat<3, 3, RealDest> b = src.colsValue[xj];
                 if ((*filter)(i + lb, j + 0, b[lb][0], ref))
                 {
-                    colsIndex.push_back(j + 0);
-                    colsValue.push_back(b[lb][0]);
+                    dest.colsIndex.push_back(j + 0);
+                    dest.colsValue.push_back(b[lb][0]);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 1, b[lb][1], ref))
                 {
-                    colsIndex.push_back(j + 1);
-                    colsValue.push_back(b[lb][1]);
+                    dest.colsIndex.push_back(j + 1);
+                    dest.colsValue.push_back(b[lb][1]);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 2, b[lb][2], ref))
                 {
-                    colsIndex.push_back(j + 2);
-                    colsValue.push_back(b[lb][2]);
+                    dest.colsIndex.push_back(j + 2);
+                    dest.colsValue.push_back(b[lb][2]);
                     ++vid;
                 }
             }
 
-            if (!keepEmptyRows && rowBegin.back() == vid)   // row was empty
+            if (!keepEmptyRows && dest.rowBegin.back() == vid)   // row was empty
             {
-                rowIndex.pop_back();
-                rowBegin.pop_back();
+                dest.rowIndex.pop_back();
+                dest.rowBegin.pop_back();
             }
         }
     }
-    rowBegin.push_back(vid); // end of last row
+    dest.rowBegin.push_back(vid); // end of last row
+}
+
+template <> template <>
+void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+{
+    filterValuesImpl(*this, M, filter, ref, keepEmptyRows);
 }
 
 template <> template <>
 void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
-    M.compress();
-    nRow = M.rowSize();
-    nCol = M.colSize();
-    nBlockRow = M.rowSize();
-    nBlockCol = M.colSize();
-    rowIndex.clear();
-    rowBegin.clear();
-    colsIndex.clear();
-    colsValue.clear();
-    skipCompressZero = true;
-    btemp.clear();
-    rowIndex.reserve(M.rowIndex.size() * 3);
-    rowBegin.reserve(M.rowBegin.size() * 3);
-    colsIndex.reserve(M.colsIndex.size() * 9);
-    colsValue.reserve(M.colsValue.size() * 9);
-
-    Index vid = 0;
-    for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
-    {
-        const Index i = M.rowIndex[rowId] * 3;
-
-        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
-
-        for (Index lb = 0; lb < 3; lb++)
-        {
-            rowIndex.push_back(i + lb);
-            rowBegin.push_back(vid);
-
-            for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
-            {
-                const Index j = M.colsIndex[xj] * 3;
-                type::Mat<3, 3, double> b = M.colsValue[xj];
-                if ((*filter)(i + lb, j + 0, b[lb][0], ref))
-                {
-                    colsIndex.push_back(j + 0);
-                    colsValue.push_back(b[lb][0]);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 1, b[lb][1], ref))
-                {
-                    colsIndex.push_back(j + 1);
-                    colsValue.push_back(b[lb][1]);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 2, b[lb][2], ref))
-                {
-                    colsIndex.push_back(j + 2);
-                    colsValue.push_back(b[lb][2]);
-                    ++vid;
-                }
-            }
-
-            if (!keepEmptyRows && rowBegin.back() == vid)   // row was empty
-            {
-                rowIndex.pop_back();
-                rowBegin.pop_back();
-            }
-        }
-    }
-    rowBegin.push_back(vid); // end of last row
+    filterValuesImpl(*this, M, filter, ref, keepEmptyRows);
 }
 
 template <> template <>
 void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
-    M.compress();
-    nRow = M.rowSize();
-    nCol = M.colSize();
-    nBlockRow = M.rowSize();
-    nBlockCol = M.colSize();
-    rowIndex.clear();
-    rowBegin.clear();
-    colsIndex.clear();
-    colsValue.clear();
-    skipCompressZero = true;
-    btemp.clear();
-    rowIndex.reserve(M.rowIndex.size() * 3);
-    rowBegin.reserve(M.rowBegin.size() * 3);
-    colsIndex.reserve(M.colsIndex.size() * 9);
-    colsValue.reserve(M.colsValue.size() * 9);
-
-    Index vid = 0;
-    for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
-    {
-        const Index i = M.rowIndex[rowId] * 3;
-
-        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
-
-        for (Index lb = 0; lb < 3; lb++)
-        {
-            rowIndex.push_back(i + lb);
-            rowBegin.push_back(vid);
-
-            for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
-            {
-                const Index j = M.colsIndex[xj] * 3;
-                type::Mat<3, 3, float> b = M.colsValue[xj];
-                if ((*filter)(i + lb, j + 0, b[lb][0], ref))
-                {
-                    colsIndex.push_back(j + 0);
-                    colsValue.push_back(b[lb][0]);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 1, b[lb][1], ref))
-                {
-                    colsIndex.push_back(j + 1);
-                    colsValue.push_back(b[lb][1]);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 2, b[lb][2], ref))
-                {
-                    colsIndex.push_back(j + 2);
-                    colsValue.push_back(b[lb][2]);
-                    ++vid;
-                }
-            }
-
-            if (!keepEmptyRows && rowBegin.back() == vid)   // row was empty
-            {
-                rowIndex.pop_back();
-                rowBegin.pop_back();
-            }
-        }
-    }
-    rowBegin.push_back(vid); // end of last row
+    filterValuesImpl(*this, M, filter, ref, keepEmptyRows);
 }
 
 template <> template <>
 void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
-    M.compress();
-    nRow = M.rowSize();
-    nCol = M.colSize();
-    nBlockRow = 1;
-    nBlockCol = 1;
-    rowIndex.clear();
-    rowBegin.clear();
-    colsIndex.clear();
-    colsValue.clear();
-    skipCompressZero = true;
-    btemp.clear();
-    rowIndex.reserve(M.rowIndex.size() * 3);
-    rowBegin.reserve(M.rowBegin.size() * 3);
-    colsIndex.reserve(M.colsIndex.size() * 9);
-    colsValue.reserve(M.colsValue.size() * 9);
-
-    Index vid = 0;
-    for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
-    {
-        const Index i = M.rowIndex[rowId] * 3;
-
-        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
-
-        for (Index lb = 0; lb < 3; lb++)
-        {
-            rowIndex.push_back(i + lb);
-            rowBegin.push_back(vid);
-
-            for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
-            {
-                const Index j = M.colsIndex[xj] * 3;
-                type::Mat<3, 3, float> b = M.colsValue[xj];
-                if ((*filter)(i + lb, j + 0, b[lb][0], ref))
-                {
-                    colsIndex.push_back(j + 0);
-                    colsValue.push_back(b[lb][0]);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 1, b[lb][1], ref))
-                {
-                    colsIndex.push_back(j + 1);
-                    ++vid;
-                }
-                if ((*filter)(i + lb, j + 2, b[lb][2], ref))
-                {
-                    colsIndex.push_back(j + 2);
-                    colsValue.push_back(b[lb][2]);
-                    ++vid;
-                }
-            }
-
-            if (!keepEmptyRows && rowBegin.back() == vid)   // row was empty
-            {
-                rowIndex.pop_back();
-                rowBegin.pop_back();
-            }
-        }
-    }
-    rowBegin.push_back(vid); // end of last row
+    filterValuesImpl(*this, M, filter, ref, keepEmptyRows);
 }
 
 using namespace sofa::type;
