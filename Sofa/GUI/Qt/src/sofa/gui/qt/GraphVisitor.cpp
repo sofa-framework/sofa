@@ -40,13 +40,13 @@ bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;}
 bool GraphVisitor::load(std::string &file)
 {
     //Open it using TinyXML
-    TiXmlDocument doc;
+    tinyxml2::XMLDocument doc;
     doc.Parse(file.c_str());
 
     //std::cerr << "GRAPH:"<< std::endl << file << std::endl;
 
-    TiXmlHandle hDoc(&doc);
-    TiXmlNode* pElem;
+    tinyxml2::XMLHandle hDoc(&doc);
+    tinyxml2::XMLNode* pElem;
     //Getting the root of the file
     pElem=hDoc.FirstChildElement().ToElement();
 
@@ -94,10 +94,10 @@ bool GraphVisitor::load(std::string &file)
 }
 
 
-void GraphVisitor::openAttribute      ( TiXmlElement* element, QTreeWidgetItem* item)
+void GraphVisitor::openAttribute      ( tinyxml2::XMLElement* element, QTreeWidgetItem* item)
 {
     if (!element) return;
-    TiXmlAttribute* attribute=element->FirstAttribute();
+    const tinyxml2::XMLAttribute* attribute=element->FirstAttribute();
     while (attribute)
     {
         std::string nameOfAttribute(attribute->Name());
@@ -110,11 +110,11 @@ void GraphVisitor::openAttribute      ( TiXmlElement* element, QTreeWidgetItem* 
 
 
 
-void GraphVisitor::openTime      ( TiXmlNode* node, QTreeWidgetItem* item)
+void GraphVisitor::openTime      ( tinyxml2::XMLNode* node, QTreeWidgetItem* item)
 {
-    TiXmlElement* element=node->ToElement();
+    tinyxml2::XMLElement* element=node->ToElement();
     if (!element) return;
-    TiXmlAttribute* attribute=element->FirstAttribute();
+    const tinyxml2::XMLAttribute* attribute=element->FirstAttribute();
     double timeSec= getTime(attribute);
     double time = 100.0*timeSec/totalTime;
     std::ostringstream s;
@@ -123,13 +123,13 @@ void GraphVisitor::openTime      ( TiXmlNode* node, QTreeWidgetItem* item)
 
     s << time << "%";
 
-    TiXmlNode* parent = node->Parent();
+    tinyxml2::XMLNode* parent = node->Parent();
     if (parent)
     {
         std::string nodeType = parent->Value();
         if (nodeType == "Component")
         {
-            TiXmlAttribute* attribute=parent->ToElement()->FirstAttribute();
+            const tinyxml2::XMLAttribute* attribute=parent->ToElement()->FirstAttribute();
             std::string componentName, componentType, componentPtr;
             while (attribute)
             {
@@ -186,7 +186,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, QTreeWidgetItem* item)
     addTime(item,  s.str());
 }
 
-double GraphVisitor::getTime(TiXmlAttribute* attribute) const
+double GraphVisitor::getTime(const tinyxml2::XMLAttribute* attribute) const
 {
     static double conversion=1.0/(double)CTime::getTicksPerSec();
     std::string valueOfAttribute(attribute->Value());
@@ -194,25 +194,25 @@ double GraphVisitor::getTime(TiXmlAttribute* attribute) const
     return result;
 }
 
-double GraphVisitor::getTotalTime(TiXmlNode* node) const
+double GraphVisitor::getTotalTime(tinyxml2::XMLNode* node) const
 {
 
-    for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
+    for ( tinyxml2::XMLNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
     {
         std::string nameOfNode=child->Value();
         if (nameOfNode == "TotalTime")
         {
-            TiXmlAttribute* attribute=child->ToElement()->FirstAttribute();
+            const tinyxml2::XMLAttribute* attribute=child->ToElement()->FirstAttribute();
             double total=getTime(attribute);
             std::ostringstream out; out << total;
-            attribute->SetValue(out.str().c_str());
+            child->ToElement()->SetAttribute(attribute->Name(),out.str().c_str());
             return total;
         }
     }
     return 1;
 }
 
-QTreeWidgetItem* GraphVisitor::openNode( TiXmlNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove)
+QTreeWidgetItem* GraphVisitor::openNode( tinyxml2::XMLNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove)
 {
     if (!node) return NULL;
 
@@ -224,10 +224,10 @@ QTreeWidgetItem* GraphVisitor::openNode( TiXmlNode* node, QTreeWidgetItem* paren
     // -- Jeremie A. 02/07/2011
     //int typeOfNode=node->Type();
     QTreeWidgetItem *graphNode=NULL;
-    if (node->ToDocument())   // case TiXmlNode::DOCUMENT:
+    if (node->ToDocument())   // case tinyxml2::XMLNode::DOCUMENT:
     {
     }
-    else if (node->ToElement())     // case TiXmlNode::ELEMENT:
+    else if (node->ToElement())     // case tinyxml2::XMLNode::ELEMENT:
     {
         if (nameOfNode == "Time")
         {
@@ -239,14 +239,14 @@ QTreeWidgetItem* GraphVisitor::openNode( TiXmlNode* node, QTreeWidgetItem* paren
             openAttribute( node->ToElement(), graphNode);
         }
     }
-    else if (node->ToComment())     // case TiXmlNode::COMMENT:
+    else if (node->ToComment())     // case tinyxml2::XMLNode::COMMENT:
     {
         graphNode = addComment(parent, elementAbove, nameOfNode);
     }
-    else if (node->ToText())     // case TiXmlNode::TEXT:
+    else if (node->ToText())     // case tinyxml2::XMLNode::TEXT:
     {
     }
-    else if (node->ToDeclaration())     // case TiXmlNode::DECLARATION:
+    else if (node->ToDeclaration())     // case tinyxml2::XMLNode::DECLARATION:
     {
     }
     else     // default:
@@ -256,7 +256,7 @@ QTreeWidgetItem* GraphVisitor::openNode( TiXmlNode* node, QTreeWidgetItem* paren
     QTreeWidgetItem *element=NULL;
     timeComponentsBelow.push_back(0);
 
-    for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
+    for ( tinyxml2::XMLNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
     {
         element = openNode( child, graphNode, element);
     }

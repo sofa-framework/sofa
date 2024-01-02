@@ -22,7 +22,7 @@
 #ifndef SOFA_XMLCONVERT_XMLVISITOR
 #define SOFA_XMLCONVERT_XMLVISITOR
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 #include <map>
 #include <vector>
 #include <sofa/core/visual/DisplayFlags.h>
@@ -32,36 +32,36 @@ namespace sofa
 namespace xml
 {
 
-class DiscoverNodes : public TiXmlVisitor
+class DiscoverNodes : public tinyxml2::XMLVisitor
 {
 public:
 
-    virtual bool VisitEnter( const TiXmlElement&, const TiXmlAttribute* );
+    virtual bool VisitEnter( const tinyxml2::XMLElement&, const tinyxml2::XMLAttribute* );
 
-    TiXmlElement* rootNode()
+    tinyxml2::XMLElement* rootNode()
     {
         if( nodes.empty() ) return NULL;
         else return nodes[0];
     }
 
-    std::vector<TiXmlElement* > leaves;
-    std::vector<TiXmlElement* > nodes;
+    std::vector<tinyxml2::XMLElement* > leaves;
+    std::vector<tinyxml2::XMLElement* > nodes;
 
 };
 
-class DiscoverDisplayFlagsVisitor : public TiXmlVisitor
+class DiscoverDisplayFlagsVisitor : public tinyxml2::XMLVisitor
 {
 public:
 
-    virtual bool VisitEnter( const TiXmlElement&, const TiXmlAttribute* );
+    virtual bool VisitEnter( const tinyxml2::XMLElement&, const tinyxml2::XMLAttribute* );
     ~DiscoverDisplayFlagsVisitor();
-    std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*> map_displayFlags;
+    std::map<const tinyxml2::XMLElement*,sofa::core::visual::DisplayFlags*> map_displayFlags;
 
 };
 
-void createVisualStyleVisitor(TiXmlElement* leaf, const std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*>& map_displayFlags);
+void createVisualStyleVisitor(tinyxml2::XMLElement* leaf, const std::map<const tinyxml2::XMLElement*,sofa::core::visual::DisplayFlags*>& map_displayFlags);
 
-void removeShowAttributes(TiXmlElement* node);
+void removeShowAttributes(tinyxml2::XMLElement* node);
 
 void convert_false_to_neutral(sofa::core::visual::DisplayFlags& flags);
 

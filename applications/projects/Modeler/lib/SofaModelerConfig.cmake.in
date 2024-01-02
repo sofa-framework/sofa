@@ -3,7 +3,7 @@
 @PACKAGE_INIT@
 
 find_package(SofaGeneral QUIET REQUIRED)
-find_package(TinyXML REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
