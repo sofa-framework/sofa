@@ -127,8 +127,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
         // Update of the compliance data
         else
         {
-            // Test only if non-rigid body
-            // due to inertia matrix, some values in the rigid case might be zero
+            // Case: soft body
             if constexpr (!sofa::type::isRigidType<DataTypes>())
             {
                 const VecReal &comp = compliance.getValue();
@@ -138,11 +137,12 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
                     return sofa::core::objectmodel::ComponentState::Invalid;
                 }
             }
-            // Rigid case
+            // Case: rigid body
             else
             {
                 const VecReal &comp = compliance.getValue();
                 sofa::Size compSize = comp.size();
+
                 if (compSize % 7 != 0)
                 {
                     msg_error() << "Compliance vector should be a multiple of 7 in rigid case (1 for translation dofs, and 6 for the rotation matrix)";
@@ -181,7 +181,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
-    if( !defaultCompliance.isSet() && !compliance.isSet() )
+    if (!defaultCompliance.isSet() && !compliance.isSet())
     {
         msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
     }
