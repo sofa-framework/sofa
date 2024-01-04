@@ -2,11 +2,13 @@
 
 <br/>
 
-[![Documentation](https://img.shields.io/badge/doc-on_website-green.svg)](https://www.sofa-framework.org/community/doc/)
-[![Support](https://img.shields.io/badge/support-on_GitHub_Discussions-blue.svg)](https://github.com/sofa-framework/sofa/discussions)
-[![Gitter](https://img.shields.io/badge/chat-on_Gitter-ff69b4.svg)](https://gitter.im/sofa-framework/sofa)
-[![Contact](https://img.shields.io/badge/contact-on_website-orange.svg)](https://www.sofa-framework.org/consortium/contact/)  
+[![Documentation](https://img.shields.io/badge/doc-on_website-brightgreen.svg)](https://www.sofa-framework.org/community/doc/)
+[![Support](https://img.shields.io/badge/support-on_GitHub_Discussions-orange.svg)](https://github.com/sofa-framework/sofa/discussions)
+[![Gitter](https://img.shields.io/badge/chat-on_Gitter-darkred.svg)](https://gitter.im/sofa-framework/sofa)
 
+<a href="https://twitter.com/intent/follow?original_referer=https%3A%2F%2Fpublish.twitter.com%2F%3FbuttonType%3DFollowButton%26query%3Dhttps%253A%252F%252Ftwitter.com%252FSofaFramework%26widget%3DButton&ref_src=twsrc%5Etfw&region=follow_link&screen_name=SofaFramework&tw_p=followbutton"><img src="https://img.shields.io/twitter/follow/SofaFramework?label=Follow%20%40SofaFramework&style=social"></a>
+[![Contact](https://img.shields.io/badge/contact-on_website-brightgreen.svg)](https://www.sofa-framework.org/consortium/contact/)
+[![we're hiring](https://img.shields.io/badge/we're%20hiring!-join%20us-orange)](https://www.sofa-framework.org/about/jobs/)
 
 ## What is SOFA
 
