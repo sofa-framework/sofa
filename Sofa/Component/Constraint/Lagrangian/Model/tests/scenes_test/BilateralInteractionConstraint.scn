@@ -1,4 +1,4 @@
-<!-- BilateralInteractionConstraint example -->
+<!-- BilateralInteractionLagrangianConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
@@ -33,5 +33,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
 </Node>

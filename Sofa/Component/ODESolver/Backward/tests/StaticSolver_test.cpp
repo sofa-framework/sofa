@@ -71,7 +71,7 @@ public:
         });
 
         createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}});
-        createObject(root, "FixedConstraint", {{"indices", "@top_roi.indices"}});
+        createObject(root, "FixedProjectiveConstraint", {{"indices", "@top_roi.indices"}});
 
         createObject(root, "BoxROI", {{"name", "base_roi"}, {"box", "-7.5 -7.5 79.9 7.5 7.5 80.1"}});
         createObject(root, "SurfacePressureForceField", {{"pressure", "100"}, {"mainDirection", "0 -1 0"}, {"triangleIndices", "@base_roi.trianglesInROI"}});

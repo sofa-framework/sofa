@@ -1,5 +1,5 @@
 <Node name="root" dt="0.04">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -27,7 +27,7 @@
 	<TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" />
 
 	<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
-	<FixedConstraint indices="@box3.indices" />	  
+	<FixedProjectiveConstraint indices="@box3.indices" />
 	<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  showPlane="1" showPlaneSize="20" />
 
 	<Node name="Surf">

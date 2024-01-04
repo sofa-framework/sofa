@@ -29,10 +29,20 @@
 namespace sofa::gui::common
 {
 
-void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f colour, sofa::gui::component::performer::BodyPicked& body );
-void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_GUI_COMMON_API decodeCollisionElement( const type::RGBAColor& colour, sofa::gui::component::performer::BodyPicked& body );
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const type::RGBAColor& colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
-void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const type::RGBAColor& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+        const unsigned int index);
+
+// compat
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f& colour, sofa::gui::component::performer::BodyPicked& body );
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+        const unsigned int index);
+SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
 
 

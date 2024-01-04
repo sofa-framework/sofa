@@ -122,7 +122,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         
         if (edge[0] >= unsigned(nbPoints) || edge[1] >= unsigned(nbPoints))
         {
-            msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not concistent with number of points: Edge: " << edge << " for: " << nbPoints << " points.";
+            msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not consistent with number of points, Edge: " << edge << " for: " << nbPoints << " points.";
             continue;
         }
 

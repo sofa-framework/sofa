@@ -32,7 +32,7 @@
         <TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt" />
         <!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
         <UniformMass totalMass="1" />
-        <!--		<FixedConstraint" indices="12 15 28 31" />     -->
+        <!--		<FixedProjectiveConstraint" indices="12 15 28 31" />     -->
         <Node name="Q">
             <QuadSetTopologyContainer name="Quad_topo" listening="1" />
             <QuadSetTopologyModifier name="Modifier" />

@@ -125,6 +125,13 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
     m_trianglesAroundVertex.resize(getNbPoints());
     for (size_t i = 0; i < m_triangle.size(); ++i)
     {
+        if (m_triangle[i][0] >= getNbPoints() || m_triangle[i][1] >= getNbPoints() || m_triangle[i][2] >= getNbPoints())
+        {
+            msg_warning() << "trianglesAroundVertex creation failed, Triangle buffer is not consistent with number of points, Triangle: " << m_triangle[i] << " for: " << getNbPoints() << " points.";
+            continue;
+        }
+
+
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<3; ++j)
             m_trianglesAroundVertex[ m_triangle[i][j]  ].push_back( (TriangleID)i );

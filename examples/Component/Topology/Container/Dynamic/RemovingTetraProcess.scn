@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Automatic Tetrahedron removing with Tetra2Triangle mapping example: Element removed are define in: ./RemovingTetra2TriangleProcess.txt -->
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 -9 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -27,7 +27,7 @@
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
         <DiagonalMass massDensity="1.0" />
-        <FixedConstraint name="fix" indices="7 8 14 15" />
+        <FixedProjectiveConstraint name="fix" indices="7 8 14 15" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
 
         <Node name="Visu">

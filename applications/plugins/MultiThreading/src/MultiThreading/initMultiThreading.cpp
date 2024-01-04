@@ -22,6 +22,9 @@
 #include <MultiThreading/config.h>
 #include <MultiThreading/initMultiThreading.h>
 
+#include <sofa/component/linearsolver/iterative/init.h>
+
+
 namespace multithreading
 {
 
@@ -39,6 +42,7 @@ void init()
     static bool first = true;
     if (first)
     {
+        sofa::component::linearsolver::iterative::init();
         first = false;
     }
 }

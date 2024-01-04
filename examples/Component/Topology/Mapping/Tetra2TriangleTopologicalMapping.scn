@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint FixedPlaneConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedPlaneProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -33,8 +33,8 @@
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" tags=" " />
         <DiagonalMass massDensity="0.5" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedConstraint indices="0" />
+        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedProjectiveConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />

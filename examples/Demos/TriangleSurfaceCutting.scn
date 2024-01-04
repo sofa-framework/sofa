@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -33,7 +33,7 @@
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <MechanicalObject name="Mo"/>
         <DiagonalMass massDensity="0.08" />
-        <FixedConstraint indices="617 618 57 1301 1302 49" />
+        <FixedProjectiveConstraint indices="617 618 57 1301 1302 49" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <TriangleCollisionModel />

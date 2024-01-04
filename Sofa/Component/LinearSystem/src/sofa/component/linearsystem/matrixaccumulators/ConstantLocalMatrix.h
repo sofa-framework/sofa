@@ -52,6 +52,8 @@ protected:
 template <class TMatrix, core::matrixaccumulator::Contribution c>
 void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, float value)
 {
+    SOFA_UNUSED(row);
+    SOFA_UNUSED(col);
     static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
         += this->m_cachedFactor * value;
 }
@@ -59,6 +61,8 @@ void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_chec
 template <class TMatrix, core::matrixaccumulator::Contribution c>
 void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value)
 {
+    SOFA_UNUSED(row);
+    SOFA_UNUSED(col);
     static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
         += this->m_cachedFactor * value;
 }

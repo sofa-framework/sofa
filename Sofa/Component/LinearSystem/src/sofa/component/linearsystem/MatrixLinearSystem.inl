@@ -988,7 +988,8 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
         }
 
         const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
-        const MappingJacobians<JacobianMatrixType> J1 = computeJacobiansFrom(pair[1], mparams, crs);
+        const MappingJacobians<JacobianMatrixType> J1 =
+                            (pair[0] == pair[1]) ? J0 : computeJacobiansFrom(pair[1], mparams, crs);
 
         const sofa::type::fixed_array<MappingJacobians<JacobianMatrixType>, 2> mappingMatricesMap { J0, J1 };
 
@@ -1039,6 +1040,10 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
 
     auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
 
+    // optimisation to build only the relevent entries of the jacobian matrices
+    // The relevent entries are the ones that have a influence on the result
+    // of the product J^T * K * J.
+    // J does not need to be fully computed if K is sparse.
     {
         const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
 
@@ -1049,12 +1054,17 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
     }
 
+    // apply the mappings from the bottom to the top, so it builds the jacobian
+    // matrices, transforming the space from the input DoFs to the space of the
+    // top most DoFs
     const auto parentMappings = getMappingGraph().getBottomUpMappingsFrom(mstate);
     for (auto* mapping : parentMappings)
     {
         mapping->applyJT(&cparams, mappingJacobianId, mappingJacobianId);
     }
 
+    // copy the jacobian matrix stored in the mechanical states into a local
+    // matrix data structure
     const auto inputs = m_mappingGraph.getTopMostMechanicalStates(mstate);
     for (auto* input : inputs)
     {
@@ -1062,7 +1072,7 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         jacobians.addJacobianToTopMostParent(J, input);
         J->resize(mstate->getMatrixSize(), input->getMatrixSize());
         unsigned int offset {};
-        input->copyToBaseMatrix(J.get(), sofa::core::MatrixDerivId::mappingJacobian(), offset);
+        input->copyToBaseMatrix(J.get(), mappingJacobianId, offset);
         J->fullRows();
     }
 
