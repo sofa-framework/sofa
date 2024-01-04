@@ -114,6 +114,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     // Check defaultCompliance and entries of the compliance vector are not zero
     core::objectmodel::Base::addUpdateCallback("checkNonZeroComplianceInput", {&defaultCompliance, &compliance}, [this](const core::DataTracker& t)
     {
+        // Update of the defaultCompliance data
         if(t.hasChanged(defaultCompliance))
         {
             if(defaultCompliance.getValue() == 0.0)
@@ -123,6 +124,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
             }
             return sofa::core::objectmodel::ComponentState::Valid;
         }
+        // Update of the compliance data
         else
         {
             // Test only if non-rigid body
@@ -132,8 +134,33 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
                 const VecReal &comp = compliance.getValue();
                 if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))
                 {
-                    msg_error() << "One of the entry of the compliance vector is empty";
+                    msg_error() << "Zero values set in the compliance vector: this will cause the constraint resolution to diverge";
                     return sofa::core::objectmodel::ComponentState::Invalid;
+                }
+            }
+            // Rigid case
+            else
+            {
+                const VecReal &comp = compliance.getValue();
+                sofa::Size compSize = comp.size();
+                if (compSize % 7 != 0)
+                {
+                    msg_error() << "Compliance vector should be a multiple of 7 in rigid case (1 for translation dofs, and 6 for the rotation matrix)";
+                    return sofa::core::objectmodel::ComponentState::Invalid;
+                }
+
+                for(auto i = 0; i < comp.size() ; i += 7)
+                {
+                    if(comp[i] == 0.)
+                    {
+                        msg_error() << "Zero compliance set on translation dofs: this will cause the constraint resolution to diverge (compliance[" << i << "])";
+                        return sofa::core::objectmodel::ComponentState::Invalid;
+                    }
+                    if(comp[i+1] == 0. || comp[i+4] == 0. || comp[i+6] == 0.)
+                    {
+                        msg_error() << "Zero compliance set on rotation dofs (matrix diagonal): this will cause the constraint resolution to diverge (compliance[" << i << "])";
+                        return sofa::core::objectmodel::ComponentState::Invalid;
+                    }
                 }
             }
             return sofa::core::objectmodel::ComponentState::Valid;
