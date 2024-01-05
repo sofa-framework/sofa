@@ -18,9 +18,7 @@
 /// and export it.
 namespace cimg_library::cimg
 {
-    extern "C" {
-        SOFA_CIMGPLUGIN_API Mutex_info& Mutex_attr() { static Mutex_info val; return val; }
-    }
+    Mutex_static& Mutex_attr() { static Mutex_static val; return val; }
 }
 
 
@@ -29,7 +27,7 @@ namespace sofa::component
 
 
 extern "C" {
-    cimg_library::cimg::Mutex_info& tmp = cimg_library::cimg::Mutex_attr() ;
+    cimg_library::cimg::Mutex_static& tmp = cimg_library::cimg::Mutex_attr() ;
 
     SOFA_CIMGPLUGIN_API void initExternalModule();
     SOFA_CIMGPLUGIN_API const char* getModuleName();

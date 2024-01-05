@@ -52,7 +52,11 @@
 
 #undef cimg_main
 #define cimg_module
+#if __has_include(<CImg.h>)
+#include <CImg.h>
+#elif __has_include(<CImg/CImg.h>)
 #include <CImg/CImg.h>
+#endif
 #undef cimg_module
 #undef cimg_main
 

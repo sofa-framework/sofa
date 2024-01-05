@@ -36,6 +36,7 @@ BaseMapping::BaseMapping()
     , f_mapMatrices(initData(&f_mapMatrices, false, "mapMatrices", "Are matrix explicit mapped?"))
 {
     this->addAlias(&f_mapForces, "isMechanical");
+    this->addAlias(&f_mapConstraints, "isMechanical");
     this->addAlias(&f_mapMasses, "isMechanical");
 }
 

@@ -457,6 +457,25 @@ void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const
     }
 }
 
+
+template <class DataTypes>
+void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+    const SetIndexArray& indices = m_indices.getValue();
+    const VecBool& movedDirection = movedDirections.getValue();
+
+    for (const auto index : indices)
+    {
+        for (unsigned int c = 0; c < N; ++c)
+        {
+            if (movedDirection[c]) {
+                matrix->discardRowCol(N * index + c, N * index + c);
+            }
+        }
+    }
+}
+
 //display the path the constrained dofs will go through
 template <class DataTypes>
 void PartialLinearMovementProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)

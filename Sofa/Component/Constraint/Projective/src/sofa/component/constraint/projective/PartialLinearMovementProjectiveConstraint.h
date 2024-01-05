@@ -139,6 +139,7 @@ public:
 
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void draw(const core::visual::VisualParams*) override;
 
