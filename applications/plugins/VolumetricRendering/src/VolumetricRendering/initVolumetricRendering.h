@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,24 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VOLUMETRICRENDERING_CONFIG_H
-#define VOLUMETRICRENDERING_CONFIG_H
+#pragma once
 
-#include <sofa/config.h>
-
-#define VOLUMETRICRENDERING_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_VOLUMETRICRENDERING
-#  define SOFA_TARGET VolumetricRendering
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <VolumetricRendering/config.h>
 
 namespace volumetricrendering
 {
-    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+SOFA_VOLUMETRICRENDERING_API void init();
 }
-
-#endif
