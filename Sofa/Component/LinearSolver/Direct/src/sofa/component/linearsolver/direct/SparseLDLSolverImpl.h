@@ -165,7 +165,7 @@ public :
 protected :
 
     Data<bool> d_precomputeSymbolicDecomposition; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
-    core::objectmodel::lifecycle::DeprecatedData d_applyPermutation;
+    core::objectmodel::lifecycle::DeprecatedData d_applyPermutation{this, "v24.06", "v24.12", "applyPermutation", "Use the Data 'ordering'"};
     Data<sofa::helper::OptionsGroup> d_orderingMethod; ///< Ordering method
     Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
@@ -173,7 +173,6 @@ protected :
 
     SparseLDLSolverImpl() : Inherit()
     , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
-    , d_applyPermutation(this, "v24.06", "v24.12", "applyPermutation", "Use the Data 'ordering'")
     , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup{"Natural" /*, "AMD"*/, "COLAMD", "Metis"}, "ordering", "Ordering method"))
     , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
     {
