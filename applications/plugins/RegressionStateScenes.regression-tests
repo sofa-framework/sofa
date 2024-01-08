@@ -3,7 +3,7 @@
 # USE UNDERSCORES ("_") INSTEAD.
 
 ### References relative path ###
-../projects/Regression/references/application/plugins
+../projects/Regression/references/applications/plugins
 
 ### Sph Plugin ###
 SofaSphFluid/examples/SPHFluidForceField.scn 100 1e-4 1 1
