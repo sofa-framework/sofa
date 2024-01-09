@@ -64,11 +64,12 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixMapped(c
                 if (it != this->m_localMappedMatrices.end())
                 {
                     const auto id = std::distance(this->m_localMappedMatrices.begin(), it);
+                    mat->pairInsertionOrderList = insertionOrderList;
                     const auto& mapping = m_constantCRSMappingMappedMatrices[id];
-                    mat->insertionOrderList.reserve(insertionOrderList.size());
+                    mat->compressedInsertionOrderList.reserve(insertionOrderList.size());
                     for (const auto& [row, col] : insertionOrderList)
                     {
-                        mat->insertionOrderList.push_back(mapping.at(row + col * sharedMatrix->rows()));
+                        mat->compressedInsertionOrderList.push_back(mapping.at(row + col * sharedMatrix->rows()));
                     }
                 }
                 else
@@ -132,14 +133,21 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatricesNonMap
                 mat->setGlobalMatrix(this->getSystemMatrix());
                 mat->setPositionInGlobalMatrix(localMatrix->getPositionInGlobalMatrix());
 
-                mat->insertionOrderList.reserve(insertionOrderList.size());
+                mat->compressedInsertionOrderList.reserve(insertionOrderList.size());
+                mat->pairInsertionOrderList.reserve(insertionOrderList.size());
+
+                const auto& posInGlobalMatrix = mat->getPositionInGlobalMatrix();
+
                 for (const auto& [row, col] : insertionOrderList)
                 {
+                    // row and col are in global coordinates but the local coordinates will be checked
+                    mat->pairInsertionOrderList.push_back({row - posInGlobalMatrix[0], col - posInGlobalMatrix[1]});
+
                     const auto flatIndex = row + col * this->getSystemMatrix()->rows();
                     const auto it = m_constantCRSMapping->find(flatIndex);
                     if (it != m_constantCRSMapping->end())
                     {
-                        mat->insertionOrderList.push_back(it->second);
+                        mat->compressedInsertionOrderList.push_back(it->second);
                     }
                     else
                     {
@@ -225,14 +233,20 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::applyProjectiveConstraints
         m_constantCRSMapping = std::make_unique<ConstantCRSMapping>();
 
         // build the hash table from the compressed matrix
-        buildHashTable(M, *m_constantCRSMapping);
-
-        m_constantCRSMappingMappedMatrices.resize(this->m_localMappedMatrices.size());
-        std::size_t i {};
-        for (const auto& mat : this->m_localMappedMatrices)
         {
-            mat.second->fullRows();
-            buildHashTable(*mat.second, m_constantCRSMappingMappedMatrices[i++]);
+            SCOPED_TIMER("buildHashTableMainMatrix");
+            buildHashTable(M, *m_constantCRSMapping);
+        }
+
+        {
+            SCOPED_TIMER("buildHashTableMappedMatrices");
+            m_constantCRSMappingMappedMatrices.resize(this->m_localMappedMatrices.size());
+            std::size_t i {};
+            for (const auto& mat : this->m_localMappedMatrices)
+            {
+                mat.second->fullRows();
+                buildHashTable(*mat.second, m_constantCRSMappingMappedMatrices[i++]);
+            }
         }
 
         //replace the local matrix components by new ones that use the hash table
