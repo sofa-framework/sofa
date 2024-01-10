@@ -2,6 +2,9 @@
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
+### References relative path ###
+../applications/projects/Regression/references/examples
+
 ### Topology scenes ###
 Component/Topology/Mapping/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
 
