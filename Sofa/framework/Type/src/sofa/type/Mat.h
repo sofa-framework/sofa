@@ -57,26 +57,38 @@ constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,rea
 
 
 template <sofa::Size L, sofa::Size C, class real>
-class Mat : public fixed_array<VecNoInit<C,real>, L>
+class Mat
 {
 public:
-
     static constexpr sofa::Size N = L * C;
 
-    typedef typename fixed_array<real, N>::size_type Size;
+    typedef VecNoInit<C, real> LineNoInit;
+    using ArrayLineType = std::array<LineNoInit, L>;
 
     typedef real Real;
     typedef Vec<C,real> Line;
-    typedef VecNoInit<C,real> LineNoInit;
     typedef Vec<L,real> Col;
+    typedef sofa::Size Size;
 
     static constexpr Size nbLines = L;
     static constexpr Size nbCols  = C;
 
-    constexpr Mat() noexcept
-    {
-        clear();
-    }
+    typedef sofa::Size                              size_type;
+    typedef Line                                    value_type;
+    typedef typename ArrayLineType::iterator        iterator;
+    typedef typename ArrayLineType::const_iterator  const_iterator;
+    typedef typename ArrayLineType::reference       reference;
+    typedef typename ArrayLineType::const_reference const_reference;
+    typedef std::ptrdiff_t   difference_type;
+
+    static constexpr sofa::Size static_size = L;
+    static constexpr sofa::Size total_size = L;
+    
+    static constexpr sofa::Size size() { return static_size; }
+
+    ArrayLineType elems{};
+
+    constexpr Mat() noexcept = default;
 
     explicit constexpr Mat(NoInit) noexcept
     {
@@ -138,7 +150,7 @@ public:
         typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
     >
     constexpr Mat(ArgsT&&... r) noexcept
-        : sofa::type::fixed_array<LineNoInit, L>(std::forward<ArgsT>(r)...)
+        : elems{ std::forward<ArgsT>(r)... }
     {}
 
     /// Constructor from an element
@@ -794,6 +806,48 @@ public:
         for(Size l=0; l<L; l++)
             for(Size c=l+1; c<C; c++)
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
+    }
+
+
+    // direct access to data
+    constexpr const real* data() const noexcept
+    {
+        return elems.data();
+    }
+
+    constexpr typename ArrayLineType::iterator begin() noexcept
+    {
+        return elems.begin();
+    }
+    constexpr typename ArrayLineType::const_iterator begin() const noexcept
+    {
+        return elems.begin();
+    }
+
+    constexpr typename ArrayLineType::iterator end() noexcept
+    {
+        return elems.end();
+    }
+    constexpr typename ArrayLineType::const_iterator end() const noexcept
+    {
+        return elems.end();
+    }
+
+    constexpr reference front()
+    {
+        return elems[0];
+    }
+    constexpr const_reference front() const
+    {
+        return elems[0];
+    }
+    constexpr reference back()
+    {
+        return elems[N - 1];
+    }
+    constexpr const_reference back() const
+    {
+        return elems[N - 1];
     }
 
 };

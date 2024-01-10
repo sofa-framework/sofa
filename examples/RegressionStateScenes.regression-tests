@@ -8,6 +8,9 @@
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
+### References relative path ###
+../applications/projects/Regression/references/examples
+
 ### Demo scenes ###
 Demos/TriangleSurfaceCutting.scn 100 1e-4 1 1
 Demos/chainAll.scn 100 1e-2 1 1
