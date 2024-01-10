@@ -158,7 +158,9 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
                     }
                     // Check if the translational compliance and the diagonal values of the rotation compliance matrix are non zero
                     // In Rigid case, the inertia matrix generates this 3x3 rotation compliance matrix 
-                    // In the compliance vector comp, SOFA stores the translational compliance (comp[0])+ the triangular part of the rotation compliance matrix: r[0,0]=comp[1],r[0,1],r[0,2],r[1,1]=comp[4],r[1,2],r[2,2]=comp[6]
+                    // In the compliance vector comp, SOFA stores:
+                    //   - the translational compliance (comp[0])
+                    //   - the triangular part of the rotation compliance matrix: r[0,0]=comp[1],r[0,1],r[0,2],r[1,1]=comp[4],r[1,2],r[2,2]=comp[6]
                     if(comp[i+1] == 0. || comp[i+4] == 0. || comp[i+6] == 0.)
                     {
                         msg_error() << "Zero compliance set on rotation dofs (matrix diagonal): this will cause the constraint resolution to diverge (compliance[" << i << "])";
