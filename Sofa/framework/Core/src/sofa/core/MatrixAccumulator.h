@@ -75,44 +75,54 @@ struct SOFA_CORE_API IndexVerificationStrategy
 {
     virtual ~IndexVerificationStrategy() = default;
     using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
 
-    virtual void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) = 0;
+    virtual bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) = 0;
 };
 
 struct SOFA_CORE_API IndividualIndexVerificationStrategy : virtual IndexVerificationStrategy
 {
-    void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
     {
-        checkRowIndex(row);
-        checkColIndex(col);
+        const auto bRow = checkRowIndex(row);
+        const auto bCol = checkColIndex(col);
+        return bRow && bCol;
     }
 
 protected:
-    virtual void checkRowIndex(sofa::SignedIndex row) {}
-    virtual void checkColIndex(sofa::SignedIndex col) {}
+    virtual bool checkRowIndex(sofa::SignedIndex row) = 0;
+    virtual bool checkColIndex(sofa::SignedIndex col) = 0;
 };
 
+
+/**
+ * \brief The concatenation of multiple index verification strategies
+ * \tparam Strategies A list of strategy types deriving from @IndexVerificationStrategy
+ */
 template<class... Strategies>
 struct CompositeIndexVerificationStrategy : Strategies...
 {
     using verify_index = std::bool_constant<std::disjunction_v<typename Strategies::verify_index...>>;
+    using skip_insertion_if_error = std::bool_constant<std::disjunction_v<typename Strategies::skip_insertion_if_error...>>;
 
-    void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
     {
-        (Strategies::checkRowColIndices(row, col), ...);
+        return (Strategies::checkRowColIndices(row, col) && ...);
     }
 };
 
 struct SOFA_CORE_API NoIndexVerification : virtual IndexVerificationStrategy
 {
     using verify_index = std::false_type;
+    using skip_insertion_if_error = std::false_type;
 private:
-    void checkRowColIndices(sofa::SignedIndex /* row */, sofa::SignedIndex /* col */) override {}
+    bool checkRowColIndices(sofa::SignedIndex /* row */, sofa::SignedIndex /* col */) override { return true; }
 };
 
 struct SOFA_CORE_API RangeVerification : virtual IndividualIndexVerificationStrategy
 {
     using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
 
     sofa::SignedIndex minRowIndex { 0 };
     sofa::SignedIndex maxRowIndex { std::numeric_limits<sofa::SignedIndex>::max() };
@@ -125,8 +135,8 @@ struct SOFA_CORE_API RangeVerification : virtual IndividualIndexVerificationStra
     [[nodiscard]]
     helper::logging::MessageDispatcher::LoggerStream logger() const;
 
-    void checkRowIndex(sofa::SignedIndex row) override;
-    void checkColIndex(sofa::SignedIndex col) override;
+    bool checkRowIndex(sofa::SignedIndex row) override;
+    bool checkColIndex(sofa::SignedIndex col) override;
 };
 
 }
@@ -233,10 +243,21 @@ protected:
         {
             if (indexVerificationStrategy)
             {
-                indexVerificationStrategy->checkRowColIndices(row, col);
+                const bool success = indexVerificationStrategy->checkRowColIndices(row, col);
+                if (!TStrategy::skip_insertion_if_error::value || success)
+                {
+                    add(matrixaccumulator::no_check, row, col, value);
+                }
+            }
+            else
+            {
+                add(matrixaccumulator::no_check, row, col, value);
             }
         }
-        add(matrixaccumulator::no_check, row, col, value);
+        else
+        {
+            add(matrixaccumulator::no_check, row, col, value);
+        }
     }
 };
 

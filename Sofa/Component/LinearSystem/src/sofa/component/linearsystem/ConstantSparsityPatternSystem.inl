@@ -31,6 +31,9 @@ namespace sofa::component::linearsystem
 /// Check that the incoming rows and columns are expected by the constant sparsity pattern
 struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVerificationStrategy
 {
+    using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
+
     sofa::core::objectmodel::BaseObject* m_messageComponent { nullptr };
 
     [[nodiscard]]
@@ -49,7 +52,7 @@ struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVer
 
     std::size_t* currentId { nullptr };
 
-    void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
     {
         if (currentId)
         {
@@ -63,7 +66,8 @@ struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVer
                     logger() << "According to the constant sparsity pattern, the "
                             "expected row and column are [" << expectedRow << ", " <<
                             expectedCol << "], but " << "[" << row << ", " << col <<
-                            "] was received. Insertion is ignored.";
+                            "] was received.";
+                    return false;
                 }
             }
             else
@@ -72,8 +76,10 @@ struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVer
                         "The constant sparsity pattern did not expect more"
                         " incoming matrix values at this stage (current id = "
                         << *currentId << ", insertion list size = " << pairInsertionOrderList.size() << ")";
+                return false;
             }
         }
+        return true;
     }
 };
 
