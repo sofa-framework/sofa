@@ -249,6 +249,34 @@ TEST(CompressedRowSparseMatrix, copyNonZeros)
     EXPECT_EQ(numberNonZeroValues1, numberNonZeroValues3);
 }
 
+TEST(CompressedRowSparseMatrix, copyNonZerosFromBlocks)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+
+    for (unsigned int r = 0; r < A.rowSize(); ++r)
+    {
+        for (unsigned int c = 0; c < A.rowSize(); ++c)
+        {
+            EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal);
+        }
+    }
+}
+
 TEST(CompressedRowSparseMatrix, emptyMatrixGetRowRange)
 {
     EXPECT_EQ(sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex, std::numeric_limits<sofa::SignedIndex>::lowest());

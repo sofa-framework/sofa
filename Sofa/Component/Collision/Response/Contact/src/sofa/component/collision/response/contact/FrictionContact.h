@@ -26,7 +26,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
@@ -60,7 +60,7 @@ protected:
     mapper::ContactMapper<CollisionModel1,DataTypes1> mapper1;
     mapper::ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraint::lagrangian::model::UnilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
+    constraint::lagrangian::model::UnilateralLagrangianConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu; ///< friction coefficient (0 for frictionless contacts)

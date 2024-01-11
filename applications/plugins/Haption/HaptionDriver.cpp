@@ -43,11 +43,11 @@ void HaptionDriver::haptic_callback(VirtContext, void *param)
     virtGetAvatarPosition(data->m_virtContext, position);
 
     SolidTypes<double>::Transform sofaWorld_H_Tool(
-        Vec3d(data->scale*position[0],data->scale*position[1],data->scale*position[2]),
-        Quat(position[3],position[4],position[5],position[6]));
+        type::Vec3d(data->scale*position[0],data->scale*position[1],data->scale*position[2]),
+        type::Quat(position[3],position[4],position[5],position[6]));
 
-    SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
-    SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
+    SolidTypes<double>::SpatialVector Twist_tool_inWorld(type::Vec3d(0.0,0.0,0.0), type::Vec3d(0.0,0.0,0.0));
+    SolidTypes<double>::SpatialVector Wrench_tool_inWorld(type::Vec3d(0.0,0.0,0.0), type::Vec3d(0.0,0.0,0.0));
 
     if(data->forceFeedback != NULL)
     {
@@ -169,7 +169,7 @@ void HaptionDriver::init()
             visuActif=true;
         }
 
-        visualHaptionDOF = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
+        visualHaptionDOF = new sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
         nodeHaptionVisual->addObject(visualHaptionDOF);
         visualHaptionDOF->name.setValue("rigidDOF");
 
@@ -186,7 +186,7 @@ void HaptionDriver::init()
         //context->addChild(nodeAxesVisual);
         //nodeAxesVisual->updateContext();
 
-        visualAxesDOF = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
+        visualAxesDOF = new sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
         nodeAxesVisual->addObject(visualAxesDOF);
         visualAxesDOF->name.setValue("rigidDOF");
 
@@ -212,7 +212,7 @@ void HaptionDriver::init()
             visualNode[i].mapping = NULL;
             if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
             {
-                visualNode[i].visu = new sofa::component::visualmodel::OglModel();
+                visualNode[i].visu = new sofa::gl::component::rendering3d::OglModel();
                 visualNode[i].node->addObject(visualNode[i].visu);
                 visualNode[i].visu->name.setValue("VisualParticles");
                 if(i==0)
@@ -238,9 +238,9 @@ void HaptionDriver::init()
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
                 if(i<2)
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualHaptionDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::nonlinear::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualHaptionDOF,visualNode[i].visu);
                 else
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualAxesDOF,visualNode[i].visu);
+                    visualNode[i].mapping = new sofa::component::mapping::nonlinear::RigidMapping< Rigid3dTypes, Vec3fTypes >(visualAxesDOF,visualNode[i].visu);
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
@@ -294,7 +294,7 @@ void HaptionDriver::bwdInit()
 
     simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext());
 
-    rigidDOF = context->get<sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> > ();
+    rigidDOF = context->get<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes> > ();
 
 
     if (rigidDOF==NULL)
@@ -303,7 +303,7 @@ void HaptionDriver::bwdInit()
     }
 
     //search force feedback
-    MechanicalStateForceFeedback<Rigid3dTypes>* ff = context->getTreeObject<MechanicalStateForceFeedback<Rigid3dTypes>>();
+    haptics::MechanicalStateForceFeedback<Rigid3dTypes>* ff = context->getTreeObject<haptics::MechanicalStateForceFeedback<Rigid3dTypes>>();
 
     if(ff)
     {
@@ -312,7 +312,7 @@ void HaptionDriver::bwdInit()
     }
 }
 
-void HaptionDriver::setForceFeedback(MechanicalStateForceFeedback<Rigid3dTypes>* ff)
+void HaptionDriver::setForceFeedback(haptics::MechanicalStateForceFeedback<Rigid3dTypes>* ff)
 {
     if(myData.forceFeedback == ff)
     {
@@ -451,7 +451,7 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
             if(modX || modY || modZ)
             {
                 VecCoord& posB =(*posBase.beginEdit());
-                posB[0].getCenter()+=posB[0].getOrientation().rotate(Vec3d(-(int)modX,-(int)modY,-(int)modZ));
+                posB[0].getCenter()+=posB[0].getOrientation().rotate(type::Vec3d(-(int)modX,-(int)modY,-(int)modZ));
                 posBase.endEdit();
             }
             else
@@ -466,7 +466,7 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
             if(modX || modY || modZ)
             {
                 VecCoord& posB =(*posBase.beginEdit());
-                posB[0].getCenter()+=posB[0].getOrientation().rotate(Vec3d((int)modX,(int)modY,(int)modZ));
+                posB[0].getCenter()+=posB[0].getOrientation().rotate(type::Vec3d((int)modX,(int)modY,(int)modZ));
                 posBase.endEdit();
             }
             else
@@ -478,14 +478,14 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
+            sofa::type::Quat<double> quarter_transform(type::Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
+            sofa::type::Quat<double> quarter_transform(type::Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
@@ -558,8 +558,8 @@ void HaptionDriver::onAnimateBeginEvent()
         virtGetAvatarPosition(myData.m_virtContext, position);
 
         VecCoord& posR = (*rigidDOF->x0.beginEdit());
-        posR[0].getCenter() = Vec3d(scale.getValue()*position[0],scale.getValue()*position[1],scale.getValue()*position[2]);
-        posR[0].getOrientation() = Quat(position[3],position[4],position[5],position[6]);
+        posR[0].getCenter() = type::Vec3d(scale.getValue()*position[0],scale.getValue()*position[1],scale.getValue()*position[2]);
+        posR[0].getOrientation() = type::Quat(position[3],position[4],position[5],position[6]);
         rigidDOF->x0.endEdit();
 
         //button_state
@@ -571,8 +571,8 @@ void HaptionDriver::onAnimateBeginEvent()
         if(visuActif)
         {
             VecCoord& posH = (*visualHaptionDOF->x.beginEdit());
-            posH[1].getCenter() = Vec3d(scale.getValue()*position[0],scale.getValue()*position[1],scale.getValue()*position[2]);
-            posH[1].getOrientation() = Quat(position[3],position[4],position[5],position[6]);
+            posH[1].getCenter() = type::Vec3d(scale.getValue()*position[0],scale.getValue()*position[1],scale.getValue()*position[2]);
+            posH[1].getOrientation() = type::Quat(position[3],position[4],position[5],position[6]);
             visualHaptionDOF->x.endEdit();
         }
 

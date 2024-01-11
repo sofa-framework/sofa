@@ -44,9 +44,9 @@ public:
 
     /**
      * @brief load the given plugin
-     * @param pluginName name of the plugin
+     * @param plugins names of the plugins
      */
-    void loadPlugins( std::vector<std::string> pluginName );
+    void loadPlugins( const std::vector<std::string>& plugins );
     /**
      * @brief Load a scene file. The previous scene graph, if any, is deleted.
      * @param fileName Scene file to load
@@ -110,7 +110,6 @@ public:
 protected:
     simulation::Node::SPtr _groot; ///< root of the scene
     simulation::Node* _iroot; ///< root of the interactors, child of _groot
-    simulation::Simulation* sofaSimulation;
 
 };
 

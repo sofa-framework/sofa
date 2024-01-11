@@ -154,17 +154,19 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgeb
 
     std::mutex mutex;
 
+    static constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+    static constexpr auto N = Element::size();
+    using Block = sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Mat<S, S, double>, 4>, 4>;
+
     sofa::simulation::parallelForEachRange(*m_taskScheduler, indexedElements.begin(), indexedElements.end(),
         [&indexedElements, m, &Rot, this, &offset, mat, &mutex, kFactor](const auto& range)
         {
-            constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
-            constexpr auto N = Element::size();
+
 
             StiffnessMatrix JKJt,tmp;
 
             auto elementId = std::distance(indexedElements.begin(), range.start);
 
-            using Block = sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Mat<S, S, double>, 4>, 4>;
             sofa::type::vector<Block> blocks;
             blocks.reserve(std::distance(range.start, range.end));
 

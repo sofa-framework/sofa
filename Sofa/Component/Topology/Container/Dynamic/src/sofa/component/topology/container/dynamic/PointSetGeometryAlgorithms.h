@@ -24,9 +24,11 @@
 
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/State.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -84,8 +86,8 @@ public:
 
     const Coord& getPointRestPosition(const PointID pointId) const;
 
-    /** \brief Returns the object where the mechanical DOFs are stored */
-    sofa::core::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
+    /** \brief Returns the object where the DOFs are stored */
+    sofa::core::State<DataTypes> *getDOF() const { return object;	}
 
     //float PointIndicesScale;
     float getIndicesScale() const;
@@ -93,16 +95,16 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+        if (context->getState() && dynamic_cast<sofa::core::State<DataTypes>*>(context->getState()) == nullptr)
         {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+            arg->logError(std::string("No state with the datatype '") + DataTypes::Name() +
                           "' found in the context node.");
             return false;
         }
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /** \brief Called by the MechanicalObject state change callback to initialize added
+    /** \brief Called by the state change callback to initialize added
      * points according to the topology (topology element & local coordinates) 
      */
     void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< core::topology::PointAncestorElem > &ancestorElems
@@ -114,7 +116,7 @@ public:
 
 protected:
     /** the object where the mechanical DOFs are stored */
-    sofa::core::behavior::MechanicalState<DataTypes> *object;
+    sofa::core::State<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
     Data<float> d_showIndicesScale; ///< Debug : scale for view topology indices
     Data<bool> d_showPointIndices; ///< Debug : view Point indices

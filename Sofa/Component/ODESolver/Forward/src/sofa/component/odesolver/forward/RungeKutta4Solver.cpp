@@ -160,9 +160,9 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     pos2.peq(k3v,stepBy3);
     vel2.peq(k3a,stepBy3);
     pos2.peq(k4v,stepBy6);
-    solveConstraint(dt, pos2, core::ConstraintParams::ConstOrder::POS);
+    mop.solveConstraint(pos2, core::ConstraintOrder::POS);
     vel2.peq(k4a,stepBy6);
-    solveConstraint(dt, vel2, core::ConstraintParams::ConstOrder::VEL);
+    mop.solveConstraint(vel2, core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;

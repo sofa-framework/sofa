@@ -54,7 +54,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
     void TearDown()
     {
         if (root!=NULL)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
     // Test link
@@ -130,7 +130,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         TestImageEngine::SPtr imageEngine;
 
         // Create a scene
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");
@@ -156,12 +156,12 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         sofa::modeling::setDataLink(&imageEngine->outputImage,&imageEngine2->inputImage);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         //  do several steps of animation
         for(int l=0;l<2;++l)
         {
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(),0.5);
         }
 
         // Check if pointers of images that should be shared are equal
@@ -190,7 +190,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         ImageViewer::SPtr imageViewer;
 
         // Create a scene
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");
@@ -221,12 +221,12 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         //sofa::modeling::setDataLink(&imageContainer->image,&imageViewer->image);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         //  do several steps of animation
         for(int l=0;l<2;++l)
         {
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(),0.5);
         }
 
 

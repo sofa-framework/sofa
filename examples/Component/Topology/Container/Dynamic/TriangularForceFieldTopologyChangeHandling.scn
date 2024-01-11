@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -34,7 +34,7 @@
         <MechanicalObject name="TriangularBendingSprings" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel />
@@ -54,7 +54,7 @@
         <MechanicalObject name="TriangularBiquadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleCollisionModel />
 
@@ -74,7 +74,7 @@
         <MechanicalObject name="TriangularQuadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleCollisionModel />
 
@@ -92,7 +92,7 @@
         <MechanicalObject name="TriangularFEM" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel />
@@ -111,7 +111,7 @@
         <MechanicalObject name="TriangularTensorMass_nothandled" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleCollisionModel />
 
@@ -130,7 +130,7 @@
         <MechanicalObject name="TrianglePressureForceField" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
-        <FixedConstraint indices="0 1" />
+        <FixedProjectiveConstraint indices="0 1" />
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
         <TriangleCollisionModel />
 

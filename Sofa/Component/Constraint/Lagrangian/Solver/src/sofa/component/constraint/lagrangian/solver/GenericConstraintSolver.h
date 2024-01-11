@@ -141,8 +141,7 @@ private:
     void computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, GenericConstraintSolver::MultiVecId res1, GenericConstraintSolver::MultiVecId res2) const;
     void applyMotionCorrection(
         const core::ConstraintParams* cParams,
-        const core::MultiVecCoordId xId,
-        const core::MultiVecDerivId vId,
+        MultiVecId res1, MultiVecId res2,
         core::behavior::BaseConstraintCorrection* constraintCorrection) const;
     void storeConstraintLambdas(const core::ConstraintParams* cParams);
 

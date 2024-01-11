@@ -20,94 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/PairInteractionConstraint.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <iostream>
+#include <sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h")
 
 namespace sofa::component::constraint::lagrangian::model
 {
-
-using sofa::core::ConstraintParams;
-
-template<class DataTypes>
-class SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
-
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
-
-    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
-    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
-    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
-
-protected:
-
-    Data<int> d_m1; ///< index of the spliding point on the first model
-    Data<int> d_m2a; ///< index of one end of the sliding axis
-    Data<int> d_m2b; ///< index of the other end of the sliding axis
-    Data<Deriv> d_force; ///< interaction force
-
-    Real m_dist;	// constraint violation
-    Real m_thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
-    unsigned int m_cid;
-
-
-    SlidingConstraint();
-    SlidingConstraint(MechanicalState* object);
-    SlidingConstraint(MechanicalState* object1, MechanicalState* object2);
-
-    virtual ~SlidingConstraint(){}
-
-
-
-    virtual type::vector<std::string> getSlidingIdentifiers() { return {}; }
-
-    virtual type::vector<std::string> getPairInteractionIdentifiers() override final
-    {
-        type::vector<std::string> ids = getSlidingIdentifiers();
-        ids.push_back("Sliding");
-        return ids;
-    }
-
-
-public:
-    void init() override;
-
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
-            , const DataVecCoord &x1, const DataVecCoord &x2) override;
-
-    void getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-            , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
-
-    void getConstraintResolution(const core::ConstraintParams*,
-                                         std::vector<core::behavior::ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
-    void storeLambda(const ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-private:
-    // storage of force
-    Deriv  m_dirAxe, m_dirProj, m_dirOrtho;
-
-
-
-};
-
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API SlidingConstraint< defaulttype::Vec3Types >;
-
-#endif
-
-} //namespace sofa::component::constraint::lagrangian::model
+template<class T>
+using SlidingConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "SlidingConstraint has been renamed to SlidingLagrangianConstraint") = SlidingLagrangianConstraint<T>;
+}

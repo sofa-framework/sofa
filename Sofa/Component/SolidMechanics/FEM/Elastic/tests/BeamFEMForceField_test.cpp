@@ -96,7 +96,7 @@ public:
 
         createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
         createObject(m_root, "UniformMass", { {"name","mass"}, {"totalMass","1.0"} });
-        createObject(m_root, "FixedConstraint", { {"name","fix"}, {"indices","0"} });
+        createObject(m_root, "FixedProjectiveConstraint", { {"name","fix"}, {"indices","0"} });
 
         /// Init simulation
         sofa::simulation::node::initRoot(m_root.get());

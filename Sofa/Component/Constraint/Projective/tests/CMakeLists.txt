@@ -3,14 +3,14 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Component.Constraint.Projective_test)
 
 set(SOURCE_FILES
-    AffineMovementConstraint_test.cpp
-    FixedConstraint_test.cpp
-    FixedPlaneConstraint_test.cpp
-    PartialFixedConstraint_test.cpp
-    ProjectDirectionConstraint_test.cpp
-    ProjectToLineConstraint_test.cpp
-    ProjectToPlaneConstraint_test.cpp
-    ProjectToPointConstraint_test.cpp
+    AffineMovementProjectiveConstraint_test.cpp
+    FixedProjectiveConstraint_test.cpp
+    FixedPlaneProjectiveConstraint_test.cpp
+    PartialFixedProjectiveConstraint_test.cpp
+    DirectionProjectiveConstraint_test.cpp
+    LineProjectiveConstraint_test.cpp
+    PlaneProjectiveConstraint_test.cpp
+    PointProjectiveConstraint_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

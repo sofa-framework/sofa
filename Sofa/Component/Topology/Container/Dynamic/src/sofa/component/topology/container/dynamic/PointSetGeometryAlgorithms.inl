@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
@@ -48,9 +47,9 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     this->d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
         const sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
-        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::State< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
     } else {
-        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::State< DataTypes > >();
     }
     core::topology::GeometryAlgorithms::init();
 
@@ -72,7 +71,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
 
     if(this->object ==nullptr)
     {
-        msg_error() << "Unable to get a valid mechanical object from the context";
+        msg_error() << "Unable to get a valid state from the context";
         return;
     }
     this->d_componentState.setValue(ComponentState::Valid);

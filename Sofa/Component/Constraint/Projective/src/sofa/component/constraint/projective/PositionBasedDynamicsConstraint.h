@@ -20,95 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/projective/config.h>
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BaseVector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/type/vector.h>
-#include <set>
+#include <sofa/component/constraint/projective/PositionBasedDynamicsProjectiveConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/PositionBasedDynamicsProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class PositionBasedDynamicsConstraintInternalData
-{
-};
-
-/** Position-based dynamics as described in [Muller06]:
-input: target positions X
-output : x(t) <- x(t) + stiffness.( X - x(t) )
-		 v(t) <- [ x(t) - x(t-1) ] / dt = v(t) + stiffness.( X - x(t) ) /dt
-
-*/
-
-template <class DataTypes>
-class PositionBasedDynamicsConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(PositionBasedDynamicsConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
-
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-    typedef Data<VecCoord> DataVecCoord;
-    typedef Data<VecDeriv> DataVecDeriv;
-    typedef Data<MatrixDeriv> DataMatrixDeriv;
-
-protected:
-    PositionBasedDynamicsConstraintInternalData<DataTypes> data;
-    friend class PositionBasedDynamicsConstraintInternalData<DataTypes>;
-
-public:
-    Data< Real > stiffness; ///< Blending between current pos and target pos.
-    Data< VecCoord > position; ///< Target positions.
-
-    Data < VecDeriv > velocity; ///< Velocities.
-    Data < VecCoord > old_position; ///< Old positions.
-
-    PositionBasedDynamicsConstraint();
-
-    virtual ~PositionBasedDynamicsConstraint();
-
-    // -- Constraint interface
-    void init() override;
-    void reset() override;
-
-    void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    // Handle topological changes
-    void handleTopologyChange() override;
-
-protected :
-
-
-
-};
-
-
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Rigid3Types>;
-//extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsConstraint<defaulttype::Rigid2Types>;
-
-#endif
-
-} // namespace sofa::component::constraint::projective
+template <class T>
+using PositionBasedDynamicsConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "PositionBasedDynamicsConstraint has been renamed to PositionBasedDynamicsProjectiveConstraint") = PositionBasedDynamicsProjectiveConstraint<T>;
+}

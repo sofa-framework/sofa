@@ -59,13 +59,13 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::ini
 
     if (!nodes)
     {
-        serr << "No mecha." << sendl;
+        msg_error() << "No mecha.";
         return;
     }
 
     if (!topo)
     {
-        serr << "No topo." << sendl;
+        msg_error() << "No topo.";
         return;
     }
 

@@ -50,7 +50,7 @@ inline simulation::Node::SPtr createMassSpringSystem(
         { "velocity", vFixedPoint},
     });
 
-    simpleapi::createObject(fixedPointNode, "FixedConstraint", {
+    simpleapi::createObject(fixedPointNode, "FixedProjectiveConstraint", {
         { "name","fixed"},
         { "indices", "0"},
     });

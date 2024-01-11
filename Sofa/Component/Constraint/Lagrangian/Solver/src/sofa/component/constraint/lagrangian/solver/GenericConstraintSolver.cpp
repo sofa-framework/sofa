@@ -496,21 +496,20 @@ sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintS
 
 void GenericConstraintSolver::applyMotionCorrection(
     const core::ConstraintParams* cParams,
-    const core::MultiVecCoordId xId,
-    const core::MultiVecDerivId vId,
+    MultiVecId res1, MultiVecId res2,
     core::behavior::BaseConstraintCorrection* constraintCorrection) const
 {
     if (cParams->constOrder() == sofa::core::ConstraintOrder::POS_AND_VEL)
     {
-        constraintCorrection->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
+        constraintCorrection->applyMotionCorrection(cParams, core::MultiVecCoordId{res1}, core::MultiVecDerivId{res2}, cParams->dx(), this->getDx() );
     }
     else if (cParams->constOrder() == sofa::core::ConstraintOrder::POS)
     {
-        constraintCorrection->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
+        constraintCorrection->applyPositionCorrection(cParams, core::MultiVecCoordId{res1}, cParams->dx(), this->getDx());
     }
     else if (cParams->constOrder() == sofa::core::ConstraintOrder::VEL)
     {
-        constraintCorrection->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
+        constraintCorrection->applyVelocityCorrection(cParams, core::MultiVecDerivId{res1}, cParams->dx(), this->getDx() );
     }
 }
 
@@ -526,9 +525,6 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
 
     if (std::find(supportedCorrections.begin(), supportedCorrections.end(), cParams->constOrder()) != supportedCorrections.end())
     {
-        const core::MultiVecCoordId xId(res1);
-        const core::MultiVecDerivId vId(cParams->constOrder() == sofa::core::ConstraintOrder::VEL ? res1 : res2);
-
         for (const auto& constraintCorrection : filteredConstraintCorrections())
         {
             {
@@ -537,7 +533,7 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
             }
 
             SCOPED_TIMER("ApplyCorrection");
-            applyMotionCorrection(cParams, xId, vId, constraintCorrection);
+            applyMotionCorrection(cParams, res1, res2, constraintCorrection);
         }
     }
 }
