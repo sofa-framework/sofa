@@ -76,19 +76,41 @@ struct SOFA_CORE_API IndexVerificationStrategy
     virtual ~IndexVerificationStrategy() = default;
     using verify_index = std::true_type;
 
-    virtual void checkRowIndex(sofa::SignedIndex row) = 0;
-    virtual void checkColIndex(sofa::SignedIndex col) = 0;
+    virtual void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) = 0;
 };
 
-struct SOFA_CORE_API NoIndexVerification : IndexVerificationStrategy
+struct SOFA_CORE_API IndividualIndexVerificationStrategy : virtual IndexVerificationStrategy
+{
+    void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    {
+        checkRowIndex(row);
+        checkColIndex(col);
+    }
+
+protected:
+    virtual void checkRowIndex(sofa::SignedIndex row) {}
+    virtual void checkColIndex(sofa::SignedIndex col) {}
+};
+
+template<class... Strategies>
+struct CompositeIndexVerificationStrategy : Strategies...
+{
+    using verify_index = std::bool_constant<std::disjunction_v<typename Strategies::verify_index...>>;
+
+    void checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    {
+        (Strategies::checkRowColIndices(row, col), ...);
+    }
+};
+
+struct SOFA_CORE_API NoIndexVerification : virtual IndexVerificationStrategy
 {
     using verify_index = std::false_type;
 private:
-    void checkRowIndex(sofa::SignedIndex /* row */) override {}
-    void checkColIndex(sofa::SignedIndex /* col */) override {}
+    void checkRowColIndices(sofa::SignedIndex /* row */, sofa::SignedIndex /* col */) override {}
 };
 
-struct SOFA_CORE_API RangeVerification : IndexVerificationStrategy
+struct SOFA_CORE_API RangeVerification : virtual IndividualIndexVerificationStrategy
 {
     using verify_index = std::true_type;
 
@@ -211,8 +233,7 @@ protected:
         {
             if (indexVerificationStrategy)
             {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
+                indexVerificationStrategy->checkRowColIndices(row, col);
             }
         }
         add(matrixaccumulator::no_check, row, col, value);

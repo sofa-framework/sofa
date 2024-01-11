@@ -22,7 +22,7 @@
 
     <Node name="beams">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="true"/>
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="true" checkIndices="false"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixd" linearSystem="@A"/>
 
         <Node name="object_a">

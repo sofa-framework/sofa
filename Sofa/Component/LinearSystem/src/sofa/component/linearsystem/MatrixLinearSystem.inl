@@ -784,8 +784,7 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
     auto& strategy = matrixMaps.indexVerificationStrategy[component];
     if (d_checkIndices.getValue() && !strategy)
     {
-        strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
-        strategy->m_messageComponent = component;
+        strategy = makeIndexVerificationStrategy(component);
     }
 
 
@@ -862,10 +861,10 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             localMatrix->setPositionInGlobalMatrix(position);
         }
         localMatrix->setMatrixSize({matrixSize1, matrixSize2});
-        if (strategy)
+        if (auto* rangeStrategy = dynamic_cast<sofa::core::matrixaccumulator::RangeVerification*>(strategy.get()))
         {
-            strategy->maxRowIndex = matrixSize1;
-            strategy->maxColIndex = matrixSize2 - 1;
+            rangeStrategy->maxRowIndex = matrixSize1;
+            rangeStrategy->maxColIndex = matrixSize2 - 1;
         }
     }
 
@@ -878,6 +877,15 @@ void MatrixLinearSystem<TMatrix, TVector>::makeCreateDispatcher()
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::MASS               >();
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::DAMPING            >();
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
+}
+
+template <class TMatrix, class TVector>
+std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy> MatrixLinearSystem<TMatrix, TVector>::
+makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component)
+{
+    auto strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
+    strategy->m_messageComponent = component;
+    return strategy;
 }
 
 template <class TMatrix, class TVector>
@@ -940,7 +948,7 @@ BaseAssemblingMatrixAccumulator<c>* MatrixLinearSystem<TMatrix, TVector>::create
     if (d_checkIndices.getValue())
     {
         if (auto concreteLocalMatrix
-            = dynamic_cast<AssemblingMatrixAccumulator<c, core::matrixaccumulator::RangeVerification>*>(localMatrix.get()))
+            = dynamic_cast<AssemblingMatrixAccumulator<c, core::matrixaccumulator::IndexVerificationStrategy>*>(localMatrix.get()))
         {
             const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
             if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
