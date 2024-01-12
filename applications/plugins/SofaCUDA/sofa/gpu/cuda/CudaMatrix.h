@@ -365,7 +365,7 @@ public:
     void operator= ( const CudaMatrix<T,MemoryManager >& m ) {
         if (&m == this) return;
 
-        std::cerr << "operator= is not handeled, you have to copy data manually" << std::endl;
+        msg_error() << "operator= is not handeled, you have to copy data manually";
 //        sizeX = m.sizeX;
 //        sizeY = m.sizeY;
 
@@ -480,7 +480,7 @@ protected:
         DEBUG_OUT_M(SPACEN << "copyToHost" << std::endl);
 
 //#ifndef NDEBUG
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+        msg_info_when(mycudaVerboseLevel>=LOG_TRACE, "SofaCUDA") << "CUDA: GPU->CPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B";
 //#endif
         DEBUG_OUT_M(SPACEN << "copyToHost host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyDeviceToHost2D ( hostPointer, pitch_host, devicePointer, pitch_device, sizeX*sizeof(T), sizeY);
@@ -498,7 +498,7 @@ protected:
 
 
 //#ifndef NDEBUG
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+        msg_info_when(mycudaVerboseLevel>=LOG_TRACE, "SofaCUDA") << "CUDA: CPU->GPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B";
 //#endif
         DEBUG_OUT_M(SPACEN << "copyToDevice device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyHostToDevice2D ( devicePointer, pitch_device, hostPointer, pitch_host,  sizeX*sizeof(T), sizeY);

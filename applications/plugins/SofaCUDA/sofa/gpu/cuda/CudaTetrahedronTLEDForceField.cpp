@@ -270,13 +270,13 @@ void CudaTetrahedronTLEDForceField::reinit()
         nbVertex = nelems.rbegin()->first + 1;
     }
 
-    std::cout << "CudaTetrahedronTLEDForceField: " << nbElems << " elements, " << nbVertex << " nodes, max " << nbElementPerVertex << " elements per node" << std::endl;
+    msg_info() << "CudaTetrahedronTLEDForceField: " << nbElems << " elements, " << nbVertex << " nodes, max " << nbElementPerVertex << " elements per node";
 
 
     /**
      * Precomputations
      */
-    std::cout << "CudaTetrahedronTLEDForceField: precomputations..." << std::endl;
+    msg_info() << "CudaTetrahedronTLEDForceField: precomputations...";
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     nelems.clear();
