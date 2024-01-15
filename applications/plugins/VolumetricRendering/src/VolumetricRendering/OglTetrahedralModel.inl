@@ -178,6 +178,13 @@ void OglTetrahedralModel<DataTypes>::initVisual()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVisual()
 {
+    // Workaround if updateVisual() is called without an opengl context
+    const auto* vparams = core::visual::VisualParams::defaultInstance();
+    if (!vparams->isSupported(core::visual::API_OpenGL))
+    {
+        return;
+    }
+
     if ((modified && !m_positions.getValue().empty())
         || useTopology)
     {

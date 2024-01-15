@@ -224,6 +224,13 @@ void OglVolumetricModel::initVisual()
 
 void OglVolumetricModel::updateVisual()
 {
+    // Workaround if updateVisual() is called without an opengl context
+    const auto* vparams = core::visual::VisualParams::defaultInstance();
+    if (!vparams->isSupported(core::visual::API_OpenGL))
+    {
+        return;
+    }
+
     if (b_modified || d_tetrahedra.isDirty() || d_hexahedra.isDirty() || m_positions.isDirty())
     {
         //if(b_useTopology)
