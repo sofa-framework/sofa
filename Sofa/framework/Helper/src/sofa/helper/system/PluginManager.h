@@ -148,14 +148,7 @@ namespace
     {
         typedef typename LibraryEntry::FuncPtr FuncPtr;
         entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
-        if (entry.func == 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return entry.func != 0;
     }
 }
 
