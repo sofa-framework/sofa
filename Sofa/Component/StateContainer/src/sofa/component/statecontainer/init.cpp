@@ -56,6 +56,8 @@ void init()
     static bool first = true;
     if (first)
     {
+        // keep the former behavior of implicitely register object when the lib is dynamically loaded
+        registerObjects(sofa::core::ObjectFactory::getInstance());
         first = false;
     }
 }
