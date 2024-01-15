@@ -40,6 +40,7 @@ using sofa::component::io::mesh::BaseVTKReader ;
 #define checkError(A) if (!A) { return false; }
 #define checkErrorPtr(A) if (!A) { return nullptr; }
 #define checkErrorMsg(A, B) if (!A) { msg_error() << B << "\n" ; return false; }
+#define checkErrorMsgAuto(A) if(A != tinyxml2::XML_SUCCESS) { msg_error() << "TinyXML error message : " << tinyxml2::XMLDocument::ErrorIDToName(A) << "\n" ; return false; }
 
 namespace sofa::component::io::mesh
 {
@@ -950,9 +951,9 @@ bool LegacyVTKReader::readFile(const char* filename)
 
 bool XMLVTKReader::readFile(const char* filename)
 {
-    tinyxml2::XMLDocument v stastkDoc;
+    tinyxml2::XMLDocument vtkDoc;
     //quick check
-    checkErrorMsg(vtkDoc.LoadFile(filename) != tinyxml2::XML_SUCCESS, "Unknown error while loading VTK Xml doc");
+    checkErrorMsgAuto(vtkDoc.LoadFile(filename))
 
     tinyxml2::XMLHandle hVTKDoc(&vtkDoc);
     tinyxml2::XMLElement* pElem;
