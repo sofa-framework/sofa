@@ -950,7 +950,7 @@ bool LegacyVTKReader::readFile(const char* filename)
 
 bool XMLVTKReader::readFile(const char* filename)
 {
-    tinyxml2::XMLDocument vtkDoc;
+    tinyxml2::XMLDocument v stastkDoc;
     //quick check
     checkErrorMsg(vtkDoc.LoadFile(filename) != tinyxml2::XML_SUCCESS, "Unknown error while loading VTK Xml doc");
 
