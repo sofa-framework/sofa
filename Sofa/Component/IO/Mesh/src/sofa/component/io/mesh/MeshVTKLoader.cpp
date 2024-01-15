@@ -951,7 +951,7 @@ bool LegacyVTKReader::readFile(const char* filename)
 
 bool XMLVTKReader::readFile(const char* filename)
 {
-    tinyxml2::XMLDocument vtkDoc;
+    tinyxml2::XMLDocument vtkDoc(true,tinyxml2::COLLAPSE_WHITESPACE);
     //quick check
     checkErrorMsgAuto(vtkDoc.LoadFile(filename))
 
