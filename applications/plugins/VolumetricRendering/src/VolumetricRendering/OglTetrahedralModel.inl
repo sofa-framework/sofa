@@ -178,6 +178,13 @@ void OglTetrahedralModel<DataTypes>::initVisual()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVisual()
 {
+    // Workaround if updateVisual() is called without an opengl context
+    const auto* vparams = core::visual::VisualParams::defaultInstance();
+    if (!vparams->isSupported(core::visual::API_OpenGL))
+    {
+        return;
+    }
+
     if ((modified && !m_positions.getValue().empty())
         || useTopology)
     {
@@ -320,24 +327,21 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params, bool /* onlyVisible */)
 {
-    if (m_topology)
+    const type::vector<Coord>& position = m_positions.getValue();
+
+    if (m_topology && position.size() > 0)
     {
-        const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
-        core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-        Coord v;
-        const type::vector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
-        const SReal min_real = std::numeric_limits<SReal>::min();
+        const SReal min_real = std::numeric_limits<SReal>::lowest();
 
         SReal maxBBox[3] = { min_real,min_real,min_real };
         SReal minBBox[3] = { max_real,max_real,max_real };
 
-        for (it = vec.begin(); it != vec.end(); it++)
+        for(const auto& tetra : m_topology->getTetrahedra())
         {
             for (unsigned int i = 0; i< 4; i++)
             {
-                v = position[(*it)[i]];
-                //v = x[(*it)[i]];
+                const auto& v = position[tetra[i]];
 
                 if (minBBox[0] > v[0]) minBBox[0] = v[0];
                 if (minBBox[1] > v[1]) minBBox[1] = v[1];
