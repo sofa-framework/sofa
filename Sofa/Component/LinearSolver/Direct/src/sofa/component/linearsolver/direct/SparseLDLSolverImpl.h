@@ -265,7 +265,21 @@ protected :
 
             if (orderingMethod == "Metis")
             {
-                computeOrdering(Eigen::MetisOrdering<int>());
+                // This could be the way to call Metis using the Eigen API, but
+                // it triggers failing unit tests compared to the other method
+                // computeOrdering(Eigen::MetisOrdering<int>());
+
+                type::vector<int> xadj,adj,t_xadj,t_adj;
+                csrToAdj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
+
+                /*
+                int numflag = 0, options = 0;
+                The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
+                 We give NULL and NULL to use the default option (see doc of metis for details) !
+                 If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
+                 In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+                */
+                METIS_NodeND(&n , xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
             }
             else if (orderingMethod == "COLAMD")
             {
