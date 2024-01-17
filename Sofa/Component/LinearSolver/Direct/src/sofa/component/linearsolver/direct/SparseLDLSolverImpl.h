@@ -173,7 +173,7 @@ protected :
 
     SparseLDLSolverImpl() : Inherit()
     , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
-    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup{"Natural" /*, "AMD"*/, "COLAMD", "Metis"}, "ordering", "Ordering method"))
+    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup{"Natural", "AMD", "COLAMD", "Metis"}, "ordering", "Ordering method"))
     , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
     {
         sofa::helper::getWriteAccessor(d_orderingMethod)->setSelectedItem(s_defaultOrderingMethod);
@@ -249,8 +249,10 @@ protected :
             {
                 using PermutationType = typename decltype(ordering)::PermutationType;
                 PermutationType permutation;
-                const auto map = Eigen::Map<const Eigen::SparseMatrix<Real, Eigen::RowMajor> >( n, n, nnz, M_colptr, M_rowind, M_values);
-                ordering.template operator()<const Eigen::SparseMatrix<Real, Eigen::RowMajor>>(map, permutation);
+                using EigenSparseMatrix = Eigen::SparseMatrix<Real, Eigen::ColMajor>;
+                using EigenSparseMatrixMap = Eigen::Map<const EigenSparseMatrix>;
+                const auto map = EigenSparseMatrixMap( n, n, nnz, M_colptr, M_rowind, M_values);
+                ordering.template operator()<const EigenSparseMatrix>(map, permutation);
 
                 const PermutationType inv = permutation.inverse();
 
@@ -269,10 +271,10 @@ protected :
             {
                 computeOrdering(Eigen::COLAMDOrdering<int>());
             }
-            // else if (orderingMethod == "AMD")
-            // {
-            //     computeOrdering(Eigen::AMDOrdering<int>());
-            // }
+            else if (orderingMethod == "AMD")
+            {
+                computeOrdering(Eigen::AMDOrdering<int>());
+            }
             else
             {
                 msg_error() << "Ordering method '" << orderingMethod << "' not supported: fallback to natural order";
