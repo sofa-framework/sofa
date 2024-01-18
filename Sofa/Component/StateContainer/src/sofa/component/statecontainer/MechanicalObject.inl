@@ -40,6 +40,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
+
 
 namespace
 {
@@ -854,18 +856,24 @@ void MechanicalObject<DataTypes>::copyToBaseMatrix(linearalgebra::BaseMatrix* de
     if (const auto* matrixData = this->read(src))
     {
         const MatrixDeriv& matrix = matrixData->getValue();
-
-        for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != matrix.end(); ++rowIt)
+        if (auto* crs = dynamic_cast<linearalgebra::CompressedRowSparseMatrixMechanical<Real, sofa::linearalgebra::CRSMechanicalPolicy>*>(dest))
         {
-            const int cid = rowIt.index();
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+            crs->copyNonZeros(matrix);
+        }
+        else
+        {
+            for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != matrix.end(); ++rowIt)
             {
-                const unsigned int dof = colIt.index();
-                const Deriv n = colIt.val();
-
-                for (unsigned int r = 0; r < Deriv::size(); ++r)
+                const int cid = rowIt.index();
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
                 {
-                    dest->add(cid, offset + dof * Deriv::size() + r, n[r]);
+                    const unsigned int dof = colIt.index();
+                    const Deriv n = colIt.val();
+
+                    for (unsigned int r = 0; r < Deriv::size(); ++r)
+                    {
+                        dest->add(cid, offset + dof * Deriv::size() + r, n[r]);
+                    }
                 }
             }
         }

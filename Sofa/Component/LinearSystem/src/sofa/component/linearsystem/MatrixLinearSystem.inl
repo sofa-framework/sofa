@@ -1036,9 +1036,10 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         return jacobians;
     }
 
-    MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
-
     auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
+
+    // this clears the matrix identified by mappingJacobian() among others
+    MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
 
     // optimisation to build only the relevent entries of the jacobian matrices
     // The relevent entries are the ones that have a influence on the result
