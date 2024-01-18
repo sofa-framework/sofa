@@ -856,12 +856,17 @@ void MechanicalObject<DataTypes>::copyToBaseMatrix(linearalgebra::BaseMatrix* de
     if (const auto* matrixData = this->read(src))
     {
         const MatrixDeriv& matrix = matrixData->getValue();
+
         if (auto* crs = dynamic_cast<linearalgebra::CompressedRowSparseMatrixMechanical<Real, sofa::linearalgebra::CRSMechanicalPolicy>*>(dest))
         {
+            // This is more performant compared to the generic case
+            // The structure of the matrix is the same compared to the generic
+            // case, but dest sizes may be modified compared to the generic case
             crs->copyNonZeros(matrix);
         }
-        else
+        else //generic case
         {
+            //no modification of the size
             for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != matrix.end(); ++rowIt)
             {
                 const int cid = rowIt.index();
