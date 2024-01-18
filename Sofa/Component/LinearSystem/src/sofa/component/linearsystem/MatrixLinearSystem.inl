@@ -1074,6 +1074,13 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         J->resize(mstate->getMatrixSize(), input->getMatrixSize());
         unsigned int offset {};
         input->copyToBaseMatrix(J.get(), mappingJacobianId, offset);
+
+        //set the sizes again because in some cases they are changed in copyToBaseMatrix
+        J->nCol = input->getMatrixSize();
+        J->nRow = mstate->getMatrixSize();
+        J->nBlockCol = J->nCol;
+        J->nBlockRow = J->nRow;
+
         J->fullRows();
     }
 
