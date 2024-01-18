@@ -520,11 +520,16 @@ public:
         static constexpr auto NbBlocksRows = SrcBlockRows / DstBlockRows;
         static constexpr auto NbBlocksColumns = SrcBlockColumns / DstBlockColumns;
 
-        srcMatrix.compress();
-        this->nRow = srcMatrix.rowSize();
-        this->nCol = srcMatrix.colSize();
-        this->nBlockRow = srcMatrix.rowSize() / DstBlockRows;
-        this->nBlockCol = srcMatrix.colSize() / DstBlockColumns;
+        if constexpr (TMatrix::Policy::AutoCompress)
+        {
+            /// \warning this violates the const-ness of TMatrix !
+            const_cast<std::remove_const_t<TMatrix>*>(&srcMatrix)->compress();
+        }
+
+        this->nRow = srcMatrix.nBlockRow * SrcBlockRows;
+        this->nCol = srcMatrix.nBlockCol * SrcBlockColumns;
+        this->nBlockRow = srcMatrix.nBlockRow * NbBlocksRows;
+        this->nBlockCol = srcMatrix.nBlockCol * NbBlocksColumns;
         this->rowIndex.clear();
         this->rowBegin.clear();
         this->colsIndex.clear();
