@@ -1,4 +1,4 @@
-name: Post pending GitHub discussions
+name: Post Announcement topics
 
 on:
   discussion:
@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        if: XXX == XXX
+        if: ( context.payload.discussion.category.name == 'Announcement' ) || ( context.payload.discussion.category.name == 'Share your achievements' )
         run: |
           pip install python-graphql-client
           pip install python-dateutil

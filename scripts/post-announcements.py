@@ -9,7 +9,7 @@ discussion_number = os.environ['DISCUSSION_NUMBER']
 discussion_author = os.environ['DISCUSSION_AUTHOR']
 
 # Create the message
-message = "New post: ["+str(discussion_name)+"](https://github.com/sofa-framework/sofa/discussions/"+str(discussion_number)+")\nby "+str(discussion_author)
+message = ":loudspeaker: New announcement :arrow_right: **["+str(discussion_name)+"](https://github.com/sofa-framework/sofa/discussions/"+str(discussion_number)+")** by ["+str(discussion_author)+"](https://github.com/"+str(discussion_author)+")\n"
 
 # Send message to Discord room
 payload = {'content': message}

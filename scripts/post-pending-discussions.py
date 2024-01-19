@@ -78,7 +78,7 @@ def computeListOfOpenDiscussionsPerCategory():
 
 
 def printDiscussionsPerCategory(categories, discussions_numbers):
-    Message = "#### GHD open discussion topics:"
+    Message = ":speech_balloon: GitHub pending discussion topics :point_down: "
     postOnDiscord(Message)
 
     categoryDone = []
@@ -103,7 +103,7 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
         categoryDone.append(category)
 
     #print(Message)
-    postOnDiscord("\n-----------")
+    postOnDiscord(":fire: SOFA community appreciates all your support :fire: \n")
 
     return
 
