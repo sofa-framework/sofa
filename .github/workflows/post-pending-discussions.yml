@@ -31,5 +31,4 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
-
+          DISCORD_MAIN_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
