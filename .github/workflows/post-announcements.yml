@@ -26,7 +26,7 @@ jobs:
           python scripts/post-announcements.py
         working-directory: ${{ github.workspace }}
         env:
-          DISCORD_ANNOUNCEMENT_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URL }}
+          DISCORD_ANNOUNCEMENTS_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
           DISCUSSION_NAME: context.payload.discussion.category.name
           DISCUSSION_NUMBER: context.payload.discussion.number
           DISCUSSION_AUTHOR: context.payload.discussion.author.login

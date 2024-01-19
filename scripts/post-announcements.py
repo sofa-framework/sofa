@@ -3,7 +3,7 @@ import os
 import requests
 
 # Recover all info as env var
-discord_token = os.environ['DISCORD_ANNOUNCEMENT_WEBHOOK_URL']
+discord_token = os.environ['DISCORD_ANNOUNCEMENTS_WEBHOOK_URL']
 discussion_name = os.environ['DISCUSSION_NAME']
 discussion_number = os.environ['DISCUSSION_NUMBER']
 discussion_author = os.environ['DISCUSSION_AUTHOR']
