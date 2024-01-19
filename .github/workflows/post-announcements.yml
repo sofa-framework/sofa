@@ -1,0 +1,33 @@
+name: Post pending GitHub discussions
+
+on:
+  discussion:
+    types: [created]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        if: XXX == XXX
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+        working-directory: ${{ github.workspace }}
+
+      - name: Run script post-announcements.py
+        if: ( context.payload.discussion.category.name == 'Announcement' ) || ( context.payload.discussion.category.name == 'Share your achievements' )
+        run: |
+          python scripts/post-announcements.py
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URL }}
+          DISCUSSION_NAME: context.payload.discussion.category.name
+
+
