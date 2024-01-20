@@ -27,7 +27,7 @@ jobs:
 
       - name: Run script post-pending-discussions.py
         run: |
-          python scripts/post-pending-discussions.py
+          python scripts/discord/post-pending-discussions.py
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

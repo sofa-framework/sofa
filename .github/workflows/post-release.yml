@@ -22,7 +22,7 @@ jobs:
 
       - name: Run script post-release.py
         run: |
-          python scripts/post-release.py
+          python scripts/discord/post-release.py
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_ANNOUNCEMENTS_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}

@@ -23,7 +23,7 @@ jobs:
       - name: Run script post-announcements.py
         if: ( context.payload.discussion.category.name == 'Announcement' ) || ( context.payload.discussion.category.name == 'Share your achievements' )
         run: |
-          python scripts/post-announcements.py
+          python scripts/discord/post-announcements.py
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_ANNOUNCEMENTS_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
