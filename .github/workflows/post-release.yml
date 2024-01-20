@@ -1,0 +1,31 @@
+name: Post new SOFA release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+        working-directory: ${{ github.workspace }}
+
+      - name: Run script post-release.py
+        run: |
+          python scripts/post-release.py
+        working-directory: ${{ github.workspace }}
+        env:
+          DISCORD_ANNOUNCEMENTS_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
+          RELEASE_NAME: context.payload.release.name
+          RELEASE_TAG: context.payload.release.tag_name
+
