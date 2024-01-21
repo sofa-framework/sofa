@@ -28,7 +28,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
           MESSAGE: ":loudspeaker: New post \"${{context.payload.discussion.category.name}}\" :arrow_right: **[${{context.payload.discussion.title}}](https://github.com/sofa-framework/sofa/discussions/${{context.payload.discussion.number}})** by [${{context.payload.discussion.author.login}}](https://github.com/${{context.payload.discussion.author.login}})"
-          BOT_NAME: "GitHub discussion announcement"
+          BOT_NAME: "Discussion announcement"
           EMBEDS_TITLE: ${{context.payload.discussion.title}}
           EMBEDS_URL: "https://github.com/sofa-framework/sofa/discussions/${{context.payload.discussion.number}}"
 
