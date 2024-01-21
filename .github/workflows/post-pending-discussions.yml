@@ -3,7 +3,7 @@ name: Post pending GitHub discussions
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * 2,5'  # 8 pm CET on Tuesday and Friday
+    - cron: '0 6 * * 2,5'  # 8 am CET on Tuesday and Friday
 
 jobs:
   run:

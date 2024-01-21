@@ -20,15 +20,18 @@ jobs:
           pip install requests
         working-directory: ${{ github.workspace }}
 
-      - name: Run script post-announcements.py
+      - name: Run script post-discord-message.py
         if: ( context.payload.discussion.category.name == 'Announcement' ) || ( context.payload.discussion.category.name == 'Share your achievements' )
         run: |
-          python scripts/discord/post-announcements.py
+          python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
         env:
-          DISCORD_ANNOUNCEMENTS_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
-          DISCUSSION_NAME: context.payload.discussion.category.name
-          DISCUSSION_NUMBER: context.payload.discussion.number
-          DISCUSSION_AUTHOR: context.payload.discussion.author.login
-
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
+          DISCUSSION_NAME: ${{context.payload.discussion.category.name}}
+          DISCUSSION_NUMBER: ${{context.payload.discussion.number}}
+          DISCUSSION_AUTHOR: ${{context.payload.discussion.author.login}}
+          MESSAGE: ":loudspeaker: New announcement :arrow_right: **[${{context.payload.discussion.title}}](https://github.com/sofa-framework/sofa/discussions/${{context.payload.discussion.number}})** by [${{context.payload.discussion.author.login}}](https://github.com/${{context.payload.discussion.author.login}})\n"
+          BOT_NAME: "GitHub announcement"
+          EMBEDS_TITLE: ${{context.payload.discussion.title}}
+          EMBEDS_URL: https://github.com/sofa-framework/sofa/discussions/${{context.payload.discussion.number}}
 
