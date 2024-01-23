@@ -1,4 +1,4 @@
-name: Post inquiring info for SOFA dev meeting
+name: Post - SOFA dev meeting agenda/reminder
 
 on:
   schedule:

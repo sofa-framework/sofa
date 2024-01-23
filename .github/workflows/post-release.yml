@@ -1,4 +1,4 @@
-name: Post new SOFA release
+name: Post - Release highlight
 
 on:
   release:

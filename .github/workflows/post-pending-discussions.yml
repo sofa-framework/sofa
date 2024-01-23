@@ -1,4 +1,4 @@
-name: Post pending GitHub discussions
+name: Post - List pending GHD
 
 on:
   workflow_dispatch:
