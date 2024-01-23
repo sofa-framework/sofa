@@ -30,6 +30,9 @@ endif()
 if(WIN32)
     # remove warnings about deprecation (CRT,etc)
     target_compile_options(${PROJECT_NAME} PRIVATE "/wd4996")
+
+    # Automatically export all symbols (and create .lib)
+    set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 
 sofa_create_package_with_targets(
