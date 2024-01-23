@@ -564,25 +564,16 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "</ul>\n";
 }
 
+bool ObjectFactory::registerObjects(RegisterObject& ro)
+{
+    return ro.commit(this);
+}
+
 RegisterObject::RegisterObject(const std::string& description)
 {
     if (!description.empty())
     {
         addDescription(description);
-    }
-}
-
-RegisterObject::RegisterObject(const std::string& description, ObjectFactory* objectFactory)
-    : RegisterObject(description)
-{
-    m_objectFactory = objectFactory;
-}
-
-RegisterObject::~RegisterObject()
-{
-    if (m_objectFactory)
-    {
-        commit(m_objectFactory);
     }
 }
 

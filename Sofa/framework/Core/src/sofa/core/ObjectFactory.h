@@ -48,6 +48,8 @@ namespace sofa::core
  *  \see RegisterObject for how new classes should be registered.
  *
  */
+class RegisterObject;
+
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
@@ -200,6 +202,7 @@ public:
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
 
     bool registerObjectsFromPlugin(const sofa::helper::system::Plugin& plugin);
+    bool registerObjects(RegisterObject& ro);
 };
 
 template<class BaseClass>
@@ -304,15 +307,10 @@ protected:
     /// Class entry being constructed
     ObjectFactory::ClassEntry entry;
 
-    // Store information about the ObjectFactory will register the Object into.
-    ObjectFactory* m_objectFactory{nullptr};
 public:
 
     /// Start the registration by giving the description of this class.
     explicit RegisterObject(const std::string& description);
-
-    explicit RegisterObject(const std::string& description, ObjectFactory* objectFactory);
-    ~RegisterObject();
 
     /// Add an alias name for this class
     RegisterObject& addAlias(std::string val);
