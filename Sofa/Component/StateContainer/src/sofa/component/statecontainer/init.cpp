@@ -20,14 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/statecontainer/init.h>
-#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/statecontainer/MappedObject.h>
-#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::statecontainer
 {
-    
+
+extern void registerMechanicalObject(sofa::core::ObjectFactory* factory);
+extern void registerMappedObject(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -68,25 +69,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 
     if (!registered)
     {
-        using namespace sofa::defaulttype;
-        
-        // MappedObject
-        factory->registerObjects(core::RegisterObject("Mapped state vectors")
-            .add< MappedObject<Vec1Types> >()
-            .add< MappedObject<Vec3Types> >(true) // default template
-            .add< MappedObject<Vec2Types> >()
-            .add< MappedObject<Vec6Types> >()
-            .add< MappedObject<Rigid3Types> >()
-            .add< MappedObject<Rigid2Types> >());
-
-        // MechanicalObject
-        factory->registerObjects(core::RegisterObject("mechanical state vectors")
-            .add< MechanicalObject<Vec3Types> >(true) // default template
-            .add< MechanicalObject<Vec2Types> >()
-            .add< MechanicalObject<Vec1Types> >()
-            .add< MechanicalObject<Vec6Types> >()
-            .add< MechanicalObject<Rigid3Types> >()
-            .add< MechanicalObject<Rigid2Types> >());
+        registerMappedObject(factory);
+        registerMechanicalObject(factory);
 
         registered = true;
     }

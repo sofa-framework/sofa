@@ -24,6 +24,8 @@
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 #include <sofa/type/Quat.h>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component::statecontainer
 {
 
@@ -38,6 +40,17 @@ template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec1Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec6Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid3Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
+
+void registerMechanicalObject(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::RegisterObject("mechanical state vectors")
+        .add< MechanicalObject<Vec3Types> >(true) // default template
+        .add< MechanicalObject<Vec2Types> >()
+        .add< MechanicalObject<Vec1Types> >()
+        .add< MechanicalObject<Vec6Types> >()
+        .add< MechanicalObject<Rigid3Types> >()
+        .add< MechanicalObject<Rigid2Types> >());
+}
 
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q)
