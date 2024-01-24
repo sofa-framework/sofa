@@ -75,9 +75,9 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
           MESSAGE: ":space_invader: New issue raised"
           BOT_NAME: "SOFA Github bot"
-          EMBEDS_TITLE: "\"${{github.context.payload.issue.title}}\" by @${{github.context.payload.issue.user.login}}"
-          EMBEDS_URL: "https://github.com/sofa-framework/sofa/issues/${{github.context.payload.issue.number}}"
-          EMBEDS_DESCRIPTION: "#${{github.event.issue.number}} ${{github.event.issue.title}} ${{github.event.issue.number}} ${{github.event.types}}"
+          EMBEDS_TITLE: "\"${{github.event.issue.title}}\" by @${{github.event.issue.user.login}}"
+          EMBEDS_URL: "https://github.com/sofa-framework/sofa/issues/${{github.event.issue.number}}"
+          EMBEDS_DESCRIPTION: "${{github.event.issue.state}}"
 
       # Star/watch related event
       - name: Run script post-discord-message.py for stars
