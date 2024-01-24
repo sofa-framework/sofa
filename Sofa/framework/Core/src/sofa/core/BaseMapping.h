@@ -157,6 +157,25 @@ public:
     /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
     virtual const linearalgebra::BaseMatrix* getK() { return nullptr; }
 
+    /**
+     * \brief Assembles the geometric stiffness matrix of the mapping in the
+     *        provided matrix object.
+     *
+     * The geometric stiffness is defined as dJ^T/dx * outForce, where outForce
+     * is the forces applying on the output of the mapping, J is the jacobian
+     * matrix of the mapping and x is the position of the input of the mapping.
+     *
+     * Inside the method, outForce is retrieved, while dJ^T/dx and its product
+     * with outForce must be computed.
+     *
+     * Note that dJ^T/dx is null for linear mappings, meaning that the method
+     * can remain empty.
+     *
+     * The geometric stiffness is a term that must be added into the global
+     * mechanical matrix.
+     *
+     * \param matrices The matrix to fill in with the geometric stiffness of the mapping
+     */
     virtual void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices);
 
     /// @}

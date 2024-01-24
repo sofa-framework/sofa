@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,29 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SCENEUTILS_H
-#define SOFA_SCENEUTILS_H
-
-#include <SceneCreator/config.h>
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
-#include <sofa/core/VecId.h>
-namespace sofa
+#pragma once
+#include <SofaCUDA/config.h>
+namespace sofa::gpu::cuda
 {
-namespace modeling
-{
-
-typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
-
-typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
-typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
-
-/// Get a state vector from the scene graph. Includes only the independent state values, or also the
-/// mapped ones, depending on the flag.
-SOFA_SCENECREATOR_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
-
-}// modeling
-
-}// sofa
-
-#endif
+SOFA_GPU_CUDA_API void init();
+} // namespace sofa::gpu::cuda
