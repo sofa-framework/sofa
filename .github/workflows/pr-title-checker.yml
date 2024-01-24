@@ -1,4 +1,4 @@
-name: Pull Request Title Check
+name: PR check - Title
 on:
   pull_request:
     types: [opened, synchronize, edited, reopened]

@@ -75,7 +75,7 @@ struct FileInfoOwningFilename : public FileInfo
 
     ~FileInfoOwningFilename(){
         if(filename)
-            delete filename ;
+            delete[] filename ;
     }
 };
 
