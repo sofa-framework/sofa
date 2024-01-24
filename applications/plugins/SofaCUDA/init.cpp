@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaCUDA/config.h>
+#include <SofaCUDA/init.h>
 #include <sofa/gpu/cuda/mycuda.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -40,7 +41,7 @@ SOFA_GPU_CUDA_API bool moduleIsInitialized();
 
 bool isModuleInitialized = false;
 
-void initExternalModule()
+void init()
 {
     static bool first = true;
     if (first)
@@ -48,6 +49,11 @@ void initExternalModule()
         isModuleInitialized = sofa::gpu::cuda::mycudaInit();
         first = false;
     }
+}
+
+void initExternalModule()
+{
+    init();
 }
 
 const char* getModuleName()
