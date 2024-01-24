@@ -1,5 +1,5 @@
 ---
-name: Label Checker
+name: PR check - Labels
 on:
   pull_request:
     types:

@@ -317,7 +317,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 template<>
 void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodPoints()
 {
-    std::cout << "(StandardTetrahedralFEMForceField) GPU-GEMS activated" << std::endl;
+    msg_info() << "(StandardTetrahedralFEMForceField) GPU-GEMS activated";
 
     StandardTetrahedralFEMForceField_nbMaxTetraPerNode() = 0;
 

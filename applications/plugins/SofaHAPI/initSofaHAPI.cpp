@@ -52,7 +52,7 @@ namespace sofa
 
 		const char* getModuleLicense()
 		{
-			return "GPL";
+            return "LGPL";
 		}
 
 
