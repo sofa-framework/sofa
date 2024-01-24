@@ -74,7 +74,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
           MESSAGE: ":space_invader: New issue raised"
-          BOT_NAME: ${{github.context.payload.issue.user.login}}
+          BOT_NAME: "SOFA Github bot"
           EMBEDS_TITLE: "\"${{github.context.payload.issue.title}}\" by @${{github.context.payload.issue.user.login}}"
           EMBEDS_URL: "https://github.com/sofa-framework/sofa/issues/${{github.context.payload.issue.number}}"
           EMBEDS_DESCRIPTION: "${{github.context.payload.issue.title}} ${{github.context.payload.issue.user.login}} {{github.context.payload.issue.number}}"
