@@ -9,12 +9,6 @@ client = GraphqlClient(endpoint="https://api.github.com/graphql")
 github_token = os.environ['GITHUB_TOKEN']
 discord_token = os.environ['DISCORD_MAIN_WEBHOOK_URL']
 
-# set up env var for the post-discord-message.py script
-os.environ["BOT_NAME"] = "SOFA Github bot"
-os.environ["EMBEDS_TITLE"] = ""
-os.environ["EMBEDS_URL"] = ""
-os.environ["EMBEDS_DESCRIPTION"] = ""
-
 # List of the repository to scan
 repos=[['sofa-framework','sofa']]
 
@@ -84,9 +78,8 @@ def computeListOfOpenDiscussionsPerCategory():
 
 
 def printDiscussionsPerCategory(categories, discussions_numbers):
-
-    os.environ["MESSAGE"] = ":speech_balloon: GitHub pending discussion topics :point_down:"
-    os.system("scripts/discord/post-discord-message.py")
+    Message = ":speech_balloon: GitHub pending discussion topics :point_down: "
+    postOnDiscord(Message)
 
     categoryDone = []
 
@@ -105,13 +98,39 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
             tempMessage = tempMessage + " [#"+ str(id) +"](https://github.com/sofa-framework/sofa/discussions/"+ str(id) +") "
 
         # Category has been covered
-        os.environ["MESSAGE"] = tempMessage
-        os.system("scripts/discord/post-discord-message.py")
-
+        postOnDiscord(tempMessage)
+        Message = Message + tempMessage + "\n"
         categoryDone.append(category)
 
-    os.environ["MESSAGE"] = ":fire: SOFA community appreciates all your support :fire:"
-    os.system("scripts/discord/post-discord-message.py")
+    #print(Message)
+    postOnDiscord(":fire: SOFA community appreciates all your support :fire: \n")
+
+    return
+
+
+
+# Function posting a message on Discord
+def postOnDiscord(message):
+    # Format message
+    data = {
+        "content" : message,
+        "username" : "SOFA Github bot"
+    }
+    #leave this out if you dont want an embed
+    data["embeds"] = [
+        {
+            "description" : "",
+            "title" : "",
+            "type" : "rich",
+            "url" : "",
+            "color" : "15224347"
+        }
+    ]
+
+    # Send message to Discord
+    response = requests.post(discord_token, json=data)
+    print("Status: "+str(response.status_code)+"\nReason: "+str(response.reason)+"\nText: "+str(response.text))
+
     return
 
 
