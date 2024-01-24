@@ -114,12 +114,16 @@ def postOnDiscord(message):
     # Format message
     data = {
         "content" : message,
-        "username" : "SOFA Github bot"
+        "username" : "SOFA Github bot",
     }
     #leave this out if you dont want an embed
     data["embeds"] = [
         {
-            "color" : "15224347"
+            "description" : "",
+            "title" : "",
+            "type" : "rich",
+            "url" : "",
+            "color" : "15224347",
         }
     ]
 
