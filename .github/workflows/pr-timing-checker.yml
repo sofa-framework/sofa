@@ -1,4 +1,4 @@
-name: Check PR Age
+name: PR check - Age
 on:
   pull_request:
     types:
