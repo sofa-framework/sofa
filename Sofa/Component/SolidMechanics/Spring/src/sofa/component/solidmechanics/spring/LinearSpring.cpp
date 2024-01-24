@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,31 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+#define SOFA_COMPONENT_FORCEFIELD_LINEARSPRING_CPP
+#include <sofa/component/solidmechanics/spring/LinearSpring.h>
 
-namespace sofa::component::solidmechanics::spring
-{
-
-using namespace sofa::defaulttype;
-
-
-//Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >()
-        ;
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Rigid3Types>;
-
-} // namespace sofa::component::solidmechanics::spring
+template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API
+sofa::component::solidmechanics::spring::LinearSpring<SReal>;

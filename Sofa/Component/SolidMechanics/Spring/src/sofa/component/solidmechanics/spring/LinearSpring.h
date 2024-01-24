@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,31 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <ostream>
+#include <istream>
+#include <sofa/component/solidmechanics/spring/config.h>
 
 namespace sofa::component::solidmechanics::spring
 {
 
-using namespace sofa::defaulttype;
+/// This class contains the description of one linear spring
+template<class T>
+class LinearSpring
+{
+public:
+    using Real = T;
 
+    sofa::Index m1, m2;     ///< the two extremities of the spring: masses m1 and m2
+    Real ks;                ///< spring stiffness
+    Real kd;                ///< damping factor
+    Real initpos;           ///< rest length of the spring
+    bool elongationOnly;    ///< only forbid elongation, not compression
+    bool enabled;           ///< false to disable this spring (i.e. broken)
 
-//Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >()
-        ;
+    explicit LinearSpring(const sofa::Index m1 = 0, const sofa::Index m2 = 0,
+                          Real ks = 0.0, Real kd = 0.0, Real initpos = 0.0,
+                          const bool noCompression = false,
+                          const bool enabled = true)
+        : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos),
+          elongationOnly(noCompression), enabled(enabled)
+    {}
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Rigid3Types>;
+    friend std::istream& operator >> ( std::istream& in, LinearSpring<Real>& s )
+    {
+        in >> s.m1 >> s.m2 >> s.ks >> s.kd >> s.initpos;
+        return in;
+    }
 
-} // namespace sofa::component::solidmechanics::spring
+    friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
+    {
+        out << s.m1 << " " << s.m2 << " " << s.ks << " " << s.kd << " " << s.initpos;
+        return out;
+    }
+};
+
+#if !defined(SOFA_COMPONENT_FORCEFIELD_LINEARSPRING_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
+#endif
+
+}
