@@ -53,7 +53,7 @@ jobs:
 
       # PR review requested event
       - name: Run script post-discord-message.py for PR review request
-        if: (github.event_name == 'pull_request') && (github.pull_request.action == 'review_requested')
+        if: (github.event_name == 'pull_request') && (github.context.payload.pull_request.action == 'review_requested')
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
