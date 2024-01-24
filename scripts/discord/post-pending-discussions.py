@@ -9,6 +9,12 @@ client = GraphqlClient(endpoint="https://api.github.com/graphql")
 github_token = os.environ['GITHUB_TOKEN']
 discord_token = os.environ['DISCORD_MAIN_WEBHOOK_URL']
 
+# set up env var for the post-discord-message.py script
+os.environ["BOT_NAME"] = "SOFA Github bot"
+os.environ["EMBEDS_TITLE"] = ""
+os.environ["EMBEDS_URL"] = ""
+os.environ["EMBEDS_DESCRIPTION"] = ""
+
 # List of the repository to scan
 repos=[['sofa-framework','sofa']]
 
@@ -78,8 +84,9 @@ def computeListOfOpenDiscussionsPerCategory():
 
 
 def printDiscussionsPerCategory(categories, discussions_numbers):
-    Message = ":speech_balloon: GitHub pending discussion topics :point_down: "
-    postOnDiscord(Message)
+
+    os.environ["MESSAGE"] = ":speech_balloon: GitHub pending discussion topics :point_down:"
+    os.system("scripts/discord/post-discord-message.py")
 
     categoryDone = []
 
@@ -99,23 +106,14 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
 
         # Category has been covered
         postOnDiscord(tempMessage)
-        Message = Message + tempMessage + "\n"
+        os.environ["MESSAGE"] = tempMessage
+        os.system("scripts/discord/post-discord-message.py")
+
         categoryDone.append(category)
 
-    #print(Message)
-    postOnDiscord(":fire: SOFA community appreciates all your support :fire: \n")
-
+    os.environ["MESSAGE"] = ":fire: SOFA community appreciates all your support :fire:"
+    os.system("scripts/discord/post-discord-message.py")
     return
-
-
-
-# Function posting a message on Discord
-def postOnDiscord(message):
-    payload = {'content': message}
-    response = requests.post(discord_token, json=payload)
-    print(response)
-    return
-
 
 
 # Query to access all discussions
