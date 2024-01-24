@@ -105,7 +105,6 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
             tempMessage = tempMessage + " [#"+ str(id) +"](https://github.com/sofa-framework/sofa/discussions/"+ str(id) +") "
 
         # Category has been covered
-        postOnDiscord(tempMessage)
         os.environ["MESSAGE"] = tempMessage
         os.system("scripts/discord/post-discord-message.py")
 
