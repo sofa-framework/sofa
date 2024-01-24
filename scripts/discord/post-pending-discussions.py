@@ -119,10 +119,6 @@ def postOnDiscord(message):
     #leave this out if you dont want an embed
     data["embeds"] = [
         {
-            "description" : "",
-            "title" : "",
-            "type" : "rich",
-            "url" : "",
             "color" : "15224347"
         }
     ]
