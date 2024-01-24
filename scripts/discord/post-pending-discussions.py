@@ -111,27 +111,11 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
 
 # Function posting a message on Discord
 def postOnDiscord(message):
-    # Format message
-    data = {
-        "content" : message,
-        "username" : "SOFA Github bot",
-    }
-    #leave this out if you dont want an embed
-    data["embeds"] = [
-        {
-            "description" : "",
-            "title" : "",
-            "type" : "rich",
-            "url" : "",
-            "color" : "15224347",
-        }
-    ]
-
-    # Send message to Discord
-    response = requests.post(discord_token, json=data)
+    payload = {'content': message, 'username' : 'SOFA Github bot', 'embeds' : []}
+    response = requests.post(discord_token, json=payload)
     print("Status: "+str(response.status_code)+"\nReason: "+str(response.reason)+"\nText: "+str(response.text))
-
     return
+
 
 
 # Query to access all discussions
