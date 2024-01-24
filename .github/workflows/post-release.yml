@@ -26,10 +26,10 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_ANNOUNCEMENTS_WEBHOOK_URL }}
-          MESSAGE: ":loudspeaker: **New SOFA release** :loudspeaker: \n > SOFA ${{context.payload.release.name}} is now available, [check it out](https://github.com/sofa-framework/sofa/releases/tag/${{context.payload.release.tag_name}})! \n > For more, see the [ChangeLog](https://github.com/sofa-framework/sofa/blob/${{context.payload.release.tag_name}}/CHANGELOG.md) \n \n Thanks to all contributors!"
+          MESSAGE: ":loudspeaker: **New SOFA release** :loudspeaker: \n > SOFA ${{github.context.payload.release.name}} is now available, [check it out](https://github.com/sofa-framework/sofa/releases/tag/${{github.context.payload.release.tag_name}})! \n > For more, see the [ChangeLog](https://github.com/sofa-framework/sofa/blob/${{github.context.payload.release.tag_name}}/CHANGELOG.md) \n \n Thanks to all contributors!"
           BOT_NAME: "Release announcement"
-          EMBEDS_TITLE: "SOFA ${{context.payload.release.name}}"
-          EMBEDS_URL: "https://github.com/sofa-framework/sofa/releases/tag/${{context.payload.release.tag_name}}"
+          EMBEDS_TITLE: "SOFA ${{github.context.payload.release.name}}"
+          EMBEDS_URL: "https://github.com/sofa-framework/sofa/releases/tag/${{github.context.payload.release.tag_name}}"
           EMBEDS_DESCRIPTION: "New source and binary release of SOFA"
 
 
