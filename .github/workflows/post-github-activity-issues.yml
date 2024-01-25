@@ -1,4 +1,4 @@
-name: Post - Github activity (PRs, issues, stars)
+name: Post - Github activity (issues)
 
 on:
   issues:
