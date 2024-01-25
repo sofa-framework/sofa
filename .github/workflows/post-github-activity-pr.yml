@@ -24,7 +24,7 @@ jobs:
 
       # PR opened
       - name: Run script post-discord-message.py for PR opened (main)
-        if: github.event.pull_request.action == 'opened'
+        if: ${{github.event.pull_request.action}} == 'opened'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
