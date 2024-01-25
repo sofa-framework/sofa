@@ -38,7 +38,7 @@ jobs:
 
       # PR merged
       - name: Run script post-discord-message.py for PR merged
-        if: ${{ (github.event.pull_request.action == 'closed') && (github.event.pull_request.merged == true) }}
+        if: (${{github.event.pull_request.action}} == 'closed') && (${{github.event.pull_request.merged}} == true)
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
@@ -52,7 +52,7 @@ jobs:
 
       # PR review requested event
       - name: Run script post-discord-message.py for PR review request
-        if: github.event.pull_request.action == 'review_requested'
+        if: ${{github.event.pull_request.action}} == 'review_requested'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
