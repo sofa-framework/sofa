@@ -26,7 +26,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
-          MESSAGE: ":fire: :fire: Come ON! :fire: :fire: \nOne new :star: for SOFA on Github"
+          MESSAGE: ":fire: :fire:  Come ON!  :fire: :fire: \nOne new :star: for SOFA on Github given by [@${{github.event.watch.sender}}](https://github.com/${{github.event.watch.sender}})"
           BOT_NAME: "SOFA Github bot"
           EMBEDS_TITLE: ""
           EMBEDS_URL: ""
