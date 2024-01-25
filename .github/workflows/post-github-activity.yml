@@ -10,6 +10,7 @@ on:
   pull_request:
     types:
       - opened
+      - synchronize
       - review_requested
       - closed
       - labeled
