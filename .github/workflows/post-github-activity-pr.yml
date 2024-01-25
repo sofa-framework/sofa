@@ -4,8 +4,10 @@ on:
   pull_request:
     types:
       - opened
+      - synchronize
       - review_requested
       - closed
+      - labeled
 
 jobs:
   run:
@@ -24,7 +26,6 @@ jobs:
 
       # PR opened
       - name: Run script post-discord-message.py for PR opened (main)
-        if: ${{ (github.event_name == 'pull_request') && (github.event.pull_request.action == 'opened') }}
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
