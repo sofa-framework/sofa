@@ -22,7 +22,7 @@ jobs:
 
       # Monday message : agenda
       - name: Run script post-discord-message.py
-        if: ${{ github.event_name == 'schedule' && github.event.scheduled_time | date('%-u') == '1' }}
+        if: ${{ github.event.scheduled_time | date('%-u') == '1' }}
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
@@ -36,7 +36,7 @@ jobs:
 
       # Wednesday message : get ready
       - name: Run script post-discord-message.py
-        if: ${{ github.event_name == 'schedule' && github.event.scheduled_time | date('%-u') == '3' }}
+        if: ${{ github.event.scheduled_time | date('%-u') == '3' }}
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
