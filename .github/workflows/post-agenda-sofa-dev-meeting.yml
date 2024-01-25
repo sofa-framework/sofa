@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: '30 7 * * 1'  # 9:30 am CET every Monday
     - cron: '0 6 * * 3'   # 8:00 am CET on Wednesdays
+
 jobs:
   run:
     runs-on: ubuntu-latest

@@ -1,7 +1,11 @@
 name: PR check - Title
 on:
   pull_request:
-    types: [opened, synchronize, edited, reopened]
+    types:
+      - opened
+      - synchronize
+      - edited
+      - reopened
 
 jobs:
   check_title:

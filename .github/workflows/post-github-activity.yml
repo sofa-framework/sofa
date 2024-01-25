@@ -2,11 +2,16 @@ name: Post - Github activity (PRs, issues, stars)
 
 on:
   watch:
-    types: [started]
+    types:
+      - started
   issues:
-    types: [opened]
+    types:
+      - opened
   pull_request:
-    types: [opened,review_requested,closed]
+    types:
+      - opened
+      - review_requested
+      - closed
 
 jobs:
   run:
