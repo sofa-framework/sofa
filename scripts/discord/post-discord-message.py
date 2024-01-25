@@ -18,16 +18,18 @@ data = {
     "username" : bot_name
 }
 
-#leave this out if you dont want an embed
-data["embeds"] = [
-    {
-        "description" : embeds_description,
-        "title" : embeds_title,
-        "type" : "rich",
-        "url" : embeds_url,
-        "color" : "15224347"
-    }
-]
+if embeds_title == "":
+    data["flags"] = 4
+elif:
+    data["embeds"] = [
+        {
+            "description" : embeds_description,
+            "title" : embeds_title,
+            "type" : "rich",
+            "url" : embeds_url,
+            "color" : "15224347"
+        }
+    ]
 
 # Send message to Discord
 response = requests.post(discord_token, json=data)

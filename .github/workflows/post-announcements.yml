@@ -32,4 +32,5 @@ jobs:
           BOT_NAME: "Discussion announcement"
           EMBEDS_TITLE: "${{github.event.discussion.title}}"
           EMBEDS_URL: "https://github.com/sofa-framework/sofa/discussions/${{github.event.discussion.number}}"
+          EMBEDS_DESCRIPTION: ""
 
