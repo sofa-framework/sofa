@@ -579,7 +579,7 @@ public:
                 }
             }
 
-            if (!keepEmptyRows && this->rowBegin.back() == vid) // row was empty
+            if (!keepEmptyRows && !this->rowBegin.empty() && this->rowBegin.back() == vid) // row was empty
             {
                 this->rowIndex.pop_back();
                 this->rowBegin.pop_back();
