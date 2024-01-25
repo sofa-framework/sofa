@@ -44,7 +44,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
-          MESSAGE: ":raised_hands:  Thanks @${{github.event.pull_request.merged_by.login}} for merging PR [#${{github.event.pull_request.number}}  ${{github.event.pull_request.title}}](https://github.com/sofa-framework/sofa/pull/${{github.event.pull_request.number}}) authored by @${{github.event.pull_request.author.login}}"
+          MESSAGE: ":raised_hands:  Thanks [@${{github.event.pull_request.merged_by.login}}](https://github.com/${{github.event.pull_request.merged_by.login}}) for merging PR [#${{github.event.pull_request.number}}  ${{github.event.pull_request.title}}](https://github.com/sofa-framework/sofa/pull/${{github.event.pull_request.number}}) authored by @${{github.event.pull_request.user.login}}"
           BOT_NAME: "SOFA Github bot"
           EMBEDS_TITLE: ""
           EMBEDS_URL: ""
