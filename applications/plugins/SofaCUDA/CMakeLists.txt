@@ -14,6 +14,7 @@ set(SOFACUDA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaCUDA")
 
 set(HEADER_FILES
     config.h.in
+    init.h
     
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
@@ -99,7 +100,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ### Common
-    main.cpp
+    init.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/mycuda.cpp
 

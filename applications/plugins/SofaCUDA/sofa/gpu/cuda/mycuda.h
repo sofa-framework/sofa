@@ -105,6 +105,7 @@ extern "C" {
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
     extern int SOFA_GPU_CUDA_API mycudaPrintf(const char* fmt, ...);
+    extern int SOFA_GPU_CUDA_API mycudaPrintfError(const char* fmt, ...);
     extern int SOFA_GPU_CUDA_API mycudaGetMultiProcessorCount();
     extern void mycudaPrivateInit(int device=-1);
 

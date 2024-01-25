@@ -149,7 +149,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
                     return sofa::core::objectmodel::ComponentState::Invalid;
                 }
 
-                for(auto i = 0; i < comp.size() ; i += 7)
+                for(sofa::Size i = 0; i < comp.size() ; i += 7)
                 {
                     if(comp[i] == 0.)
                     {

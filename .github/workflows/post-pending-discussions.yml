@@ -1,0 +1,34 @@
+name: Post - List pending GHD
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 2,5'  # 8 am CET on Tuesday and Friday
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10' # Use the desired Python version
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+        working-directory: ${{ github.workspace }}
+
+      - name: Run script post-pending-discussions.py
+        run: |
+          python scripts/discord/post-pending-discussions.py
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_MAIN_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
