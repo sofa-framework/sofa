@@ -31,7 +31,7 @@ jobs:
 
       # PR opened
       - name: Run script post-discord-message.py for PR opened (main)
-        if: ${{ (github.event_name == 'pull_request') }}
+        if: ${{ (github.event.pull_request.action == 'labeled') }}
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
