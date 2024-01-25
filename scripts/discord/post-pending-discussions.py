@@ -78,7 +78,7 @@ def computeListOfOpenDiscussionsPerCategory():
 
 
 def printDiscussionsPerCategory(categories, discussions_numbers):
-    Message = ":speech_balloon: GitHub pending discussion topics :point_down: "
+    Message = ":speech_balloon: GitHub pending discussion topics :speech_balloon: "
     postOnDiscord(Message)
 
     categoryDone = []
@@ -111,7 +111,11 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
 
 # Function posting a message on Discord
 def postOnDiscord(message):
-    payload = {'content' : message, 'username' : 'SOFA Github bot', 'embeds' : [],}
+    payload = {
+        'content' : message,
+        'username' : 'SOFA Github bot',
+        'flags' : 4,
+    }
     response = requests.post(discord_token, json=payload)
     print("Status: "+str(response.status_code)+"\nReason: "+str(response.reason)+"\nText: "+str(response.text))
     return
