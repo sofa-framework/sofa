@@ -20,7 +20,7 @@ data = {
 
 if embeds_title == "":
     data["flags"] = 4
-elif:
+else:
     data["embeds"] = [
         {
             "description" : embeds_description,
