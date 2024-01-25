@@ -13,7 +13,9 @@ sofa_add_subdirectory(library LinearAlgebra Sofa.LinearAlgebra ON)
 sofa_add_subdirectory(library DefaultType Sofa.DefaultType ON)
 sofa_add_subdirectory(library Core Sofa.Core ON)
 sofa_add_subdirectory(library Simulation Sofa.Simulation ON)
-sofa_add_subdirectory(library Testing Sofa.Testing ON)
+if(SOFA_BUILD_TESTS)
+  sofa_add_subdirectory(library Testing Sofa.Testing ON)
+endif()
 
 # Library gathering all framework libraries
 sofa_add_subdirectory(library Framework Sofa.Framework ON)
