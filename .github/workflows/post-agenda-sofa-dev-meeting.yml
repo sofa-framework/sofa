@@ -28,7 +28,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
-          MESSAGE : ":sunrise: Morning, dear SOFA community! Next Wednesday takes place the weekly SOFA dev meeting:\n**_Any specific topic to share or to discuss?_** If so, please reply in this thread :speech_balloon: *Remember you can use the tag \"pr: dev meeting topic\" for your PRs*"
+          MESSAGE : ":sunrise:  Morning, dear SOFA community! Next Wednesday takes place the weekly SOFA dev meeting:\n**_Any specific topic to share or to discuss?_** If so, please reply in this thread :speech_balloon: *Remember you can use the tag \"pr: dev meeting topic\" for your PRs*"
           BOT_NAME: "Meeting reminder"
           EMBEDS_TITLE: "Label \"pr: dev-meeting topic\""
           EMBEDS_URL: "https://github.com/sofa-framework/sofa/labels/pr%3A%20dev%20meeting%20topic"
