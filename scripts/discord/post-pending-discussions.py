@@ -111,7 +111,7 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
 
 # Function posting a message on Discord
 def postOnDiscord(message):
-    payload = {'content': message, 'username' : 'SOFA Github bot', 'embeds' : []}
+    payload = {'content' : message, 'username' : 'SOFA Github bot', 'embeds' : [],}
     response = requests.post(discord_token, json=payload)
     print("Status: "+str(response.status_code)+"\nReason: "+str(response.reason)+"\nText: "+str(response.text))
     return
