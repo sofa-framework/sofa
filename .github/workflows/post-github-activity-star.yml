@@ -21,7 +21,6 @@ jobs:
 
       # Star/watch related event
       - name: Run script post-discord-message.py for stars
-        if: github.event_name == 'watch'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
