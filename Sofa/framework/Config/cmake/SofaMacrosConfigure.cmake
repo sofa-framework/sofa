@@ -187,7 +187,7 @@ endmacro()
 #
 function(sofa_add_generic_external directory name type)
     set(optionArgs FETCH_ONLY)
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -222,6 +222,11 @@ function(sofa_add_generic_external directory name type)
     # Fetch
     if(${fetch_enabled})
         message("Fetching ${type_lower} ${name}")
+
+        if("${ARG_GIT_REF}" STREQUAL "")
+            message(SEND_ERROR "One value argument GIT_REF is required when option EXTERNAL is set. This is the name of the branch or the tag checkouted when cloning the subdirectory.")
+            return()
+        endif()
 
         if(NOT EXISTS ${fetched_dir})
             file(MAKE_DIRECTORY "${fetched_dir}/")
@@ -275,7 +280,7 @@ endfunction()
 
 macro(sofa_add_subdirectory type directory name)
     set(optionArgs EXTERNAL EXPERIMENTAL)
-    set(oneValueArgs)
+    set(oneValueArgs GIT_REF)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -291,8 +296,9 @@ macro(sofa_add_subdirectory type directory name)
         set(default_value ON)
     endif()
 
+
     if(ARG_EXTERNAL)
-        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" DEFAULT_VALUE ${default_value} ${ARGN})
+        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value}  ${ARGN})
     else()
         sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
     endif()
