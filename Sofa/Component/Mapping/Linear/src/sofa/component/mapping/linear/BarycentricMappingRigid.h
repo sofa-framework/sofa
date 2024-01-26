@@ -119,7 +119,7 @@ public:
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapping< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperRegularGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperSparseGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;

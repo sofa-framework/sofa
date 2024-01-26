@@ -437,7 +437,7 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vec3> &points,
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size);
+    gl::Axis::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
 }
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size, const type::RGBAColor &color)
 {
@@ -748,11 +748,11 @@ void DrawToolGL::internalDrawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &
         const type::RGBAColor &c1, const type::RGBAColor &c2, const type::RGBAColor &c3)
 {
     glNormalT(normal);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertexNv<3>(p1.ptr());
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertexNv<3>(p2.ptr());
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertexNv<3>(p3.ptr());
 }
 
@@ -762,13 +762,13 @@ void DrawToolGL::internalDrawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &
         const type::RGBAColor &c1, const type::RGBAColor &c2, const type::RGBAColor &c3)
 {
     glNormalT(normal1);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertexNv<3>(p1.ptr());
     glNormalT(normal2);
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertexNv<3>(p2.ptr());
     glNormalT(normal3);
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertexNv<3>(p3.ptr());
 }
 
@@ -777,7 +777,7 @@ void DrawToolGL::internalDrawTriangle( const Vec3 &p1, const Vec3 &p2, const Vec
         const Vec3 &normal, const  type::RGBAColor &c)
 {
     glNormalT(normal);
-    glColor4fv(c.array());
+    glColor4fv(c.data());
     glVertexNv<3>(p1.ptr());
     glVertexNv<3>(p2.ptr());
     glVertexNv<3>(p3.ptr());
@@ -845,7 +845,7 @@ void DrawToolGL::internalDrawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,c
         const Vec3 &normal, const type::RGBAColor &c)
 {
     glNormalT(normal);
-    glColor4fv(c.array());
+    glColor4fv(c.data());
     glVertexNv<3>(p1.ptr());
     glVertexNv<3>(p2.ptr());
     glVertexNv<3>(p3.ptr());
@@ -857,13 +857,13 @@ void DrawToolGL::internalDrawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,c
         const type::RGBAColor &c1, const type::RGBAColor &c2, const type::RGBAColor &c3, const type::RGBAColor &c4)
 {
     glNormalT(normal);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertexNv<3>(p1.ptr());
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertexNv<3>(p2.ptr());
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertexNv<3>(p3.ptr());
-    glColor4fv(c4.array());
+    glColor4fv(c4.data());
     glVertexNv<3>(p4.ptr());
 }
 
@@ -872,16 +872,16 @@ void DrawToolGL::internalDrawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,c
         const type::RGBAColor &c1, const type::RGBAColor &c2, const type::RGBAColor &c3, const type::RGBAColor &c4)
 {
     glNormalT(normal1);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertexNv<3>(p1.ptr());
     glNormalT(normal2);
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertexNv<3>(p2.ptr());
     glNormalT(normal3);
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertexNv<3>(p3.ptr());
     glNormalT(normal4);
-    glColor4fv(c4.array());
+    glColor4fv(c4.data());
     glVertexNv<3>(p4.ptr());
 }
 
@@ -1411,7 +1411,7 @@ void DrawToolGL::disableDepthTest()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vec3 &p, float scale, const type::RGBAColor &color, const char* text)
 {
-    glColor4fv(color.array());
+    glColor4fv(color.data());
 
     sofa::gl::GlText::draw(text, p, (double)scale);
 }

@@ -658,8 +658,6 @@ template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::computePrincipalStress()
 {
     const VecElement& triangles = m_topology->getTriangles();
-
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triStates = d_triangleState;
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfos = d_triangleInfo;
 
     Real minStress = 0;

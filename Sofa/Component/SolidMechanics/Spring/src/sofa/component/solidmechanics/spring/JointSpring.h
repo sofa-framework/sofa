@@ -212,7 +212,7 @@ public:
 }
 };
 
-#if  !defined(SOFA_JOINTSPRING_CPP)
+#if !defined(SOFA_JOINTSPRING_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API JointSpring<defaulttype::Rigid3Types>;
 #endif
 

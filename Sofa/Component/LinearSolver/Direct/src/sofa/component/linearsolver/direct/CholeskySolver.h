@@ -63,7 +63,7 @@ private :
     linearalgebra::FullMatrix<typename Vector::Real> L;
 };
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::SparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::FullMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 

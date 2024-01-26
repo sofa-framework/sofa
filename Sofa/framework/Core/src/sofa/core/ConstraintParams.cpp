@@ -38,7 +38,7 @@ ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
     , m_j(MatrixDerivId::constraintJacobian())
     , m_dx(VecDerivId::dx())
     , m_lambda(VecDerivId::externalForce())
-    , m_constOrder (POS_AND_VEL)
+    , m_constOrder (ConstraintOrder::POS_AND_VEL)
     , m_smoothFactor (1)
 {
 }

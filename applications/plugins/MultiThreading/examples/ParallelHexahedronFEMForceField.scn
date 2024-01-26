@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02">
     <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelHexahedronFEMForceField] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -28,7 +28,7 @@
         <HexahedronSetTopologyModifier name="Modifier" />
 
         <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
-        <FixedConstraint indices="@box.indices" />
+        <FixedProjectiveConstraint indices="@box.indices" />
         <ParallelHexahedronFEMForceField name="FEM" youngModulus="400000" poissonRatio="0.4" method="large" updateStiffnessMatrix="false"/>
 
         <Node name="surface">

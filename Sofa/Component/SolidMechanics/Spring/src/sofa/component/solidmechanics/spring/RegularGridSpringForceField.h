@@ -119,7 +119,7 @@ public:
 protected:
     topology::container::grid::RegularGridTopology* topology;
 };
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<defaulttype::Vec1Types>;

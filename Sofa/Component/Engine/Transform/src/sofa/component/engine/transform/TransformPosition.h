@@ -111,7 +111,7 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformPosition<defaulttype::Vec3Types>;
  
 #endif

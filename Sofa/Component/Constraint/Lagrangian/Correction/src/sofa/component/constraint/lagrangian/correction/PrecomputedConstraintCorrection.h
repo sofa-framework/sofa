@@ -215,7 +215,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::draw(const core::v
 
 
 
-#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<defaulttype::Rigid3Types>;

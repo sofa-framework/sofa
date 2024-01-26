@@ -149,7 +149,7 @@ protected:
     bool buttonDevice;
 };
 
-#if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
+#if !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
 extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3Types>;
 #endif

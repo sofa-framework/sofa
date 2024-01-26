@@ -200,7 +200,7 @@ int mycudaInit(int device)
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
     {
-        std::cerr << "CUDA error returned from cudaGetDeviceCount: " << cudaGetErrorString(getDeviceCountError) << "\n";
+        mycudaPrintfError("error returned from cudaGetDeviceCount: %s", cudaGetErrorString(getDeviceCountError));
         return 0;
     }
     mycudaPrintf("CUDA: %d device(s) found.\n", deviceCount);
@@ -254,7 +254,7 @@ int mycudaInit(int device)
     }
 
 
-#ifdef SOFA_GPU_CUBLAS
+#if defined(SOFA_GPU_CUBLAS) && !defined(SOFA_GPU_CUBLAS_V2)
     cublasInit();
 #endif
     return 1;

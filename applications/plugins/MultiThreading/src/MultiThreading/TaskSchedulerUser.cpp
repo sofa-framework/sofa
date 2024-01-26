@@ -65,7 +65,7 @@ void TaskSchedulerUser::reinitTaskScheduler()
     if (m_taskScheduler)
     {
         const auto nbThreads = d_nbThreads.getValue();
-        if ( nbThreads != m_taskScheduler->getThreadCount() )
+        if ( nbThreads != static_cast<int>(m_taskScheduler->getThreadCount()) )
         {
             m_taskScheduler->init(nbThreads);
             sofa::simulation::initThreadLocalData();

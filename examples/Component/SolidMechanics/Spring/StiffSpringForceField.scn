@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.005"  >
-	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 	<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
 	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -18,7 +18,7 @@
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3" showObject="1" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 			<UniformMass name="uniformMass1"  vertexMass="0.1" />
-			<FixedConstraint template="Vec3" name="fixedConstraint1"  indices="0 3 6 9 12 15 18 21 24" />
+			<FixedProjectiveConstraint template="Vec3" name="fixedProjectiveConstraint1"  indices="0 3 6 9 12 15 18 21 24" />
 			<StiffSpringForceField template="Vec3" name="InternalSprings1"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
  2 11 500 5 3.5

@@ -267,7 +267,7 @@ typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgume
 } //namespace sofa::gui::qt
 
 //MOC_SKIP_BEGIN
-#if  !defined(SOFA_BUILD_SOFA_GUI_QT)
+#if !defined(SOFA_BUILD_SOFA_GUI_QT)
 namespace sofa::helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file

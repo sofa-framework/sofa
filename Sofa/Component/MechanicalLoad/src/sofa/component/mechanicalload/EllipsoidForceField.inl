@@ -57,7 +57,7 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 EllipsoidForceField<DataTypes>::EllipsoidForceField()
-    : d_contacts(initData(&d_contacts,"contacts", "Contacts"))
+    : d_contacts(initData(&d_contacts,"contacts", "Vector of contacts"))
     , d_center(initData(&d_center, "center", "ellipsoid center"))
     , d_vradius(initData(&d_vradius, "vradius", "ellipsoid radius"))
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
@@ -69,12 +69,6 @@ EllipsoidForceField<DataTypes>::EllipsoidForceField()
 template <class DataTypes>
 EllipsoidForceField<DataTypes>::~EllipsoidForceField()
 {
-    d_contacts.~Data();
-    d_center.~Data();
-    d_vradius.~Data();
-    d_stiffness.~Data();
-    d_damping.~Data();
-    d_color.~Data();
 }
 
 template<class DataTypes>
@@ -104,22 +98,28 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     const Real stiffabs = helper::rabs(stiffness);
     //const Real s2 = (stiff < 0 ? - stiff*stiff : stiff*stiff );
     Coord inv_r2;
-    for (int j=0; j<N; j++) inv_r2[j] = 1/(r[j]*r[j]);
+    for (unsigned int j=0; j<N; j++)
+    {
+        inv_r2[j] = 1 / (r[j] * r[j]);
+    }
     sofa::type::vector<Contact>* contacts = this->d_contacts.beginEdit();
     contacts->clear();
     f1.resize(p1.size());
-    for (unsigned int i=0; i<p1.size(); i++)
+    for (Size i=0; i<p1.size(); i++)
     {
         Coord dp = p1[i] - center;
         Real norm2 = 0;
-        for (int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*inv_r2[j];
+        for (unsigned int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*inv_r2[j];
         //Real d = (norm2-1)*s2;
         if ((norm2-1)*stiffness<0)
         {
             Real norm = helper::rsqrt(norm2);
             Real v = norm-1;
             Coord grad;
-            for (int j=0; j<N; j++) grad[j] = dp[j]*inv_r2[j];
+            for (unsigned int j=0; j<N; j++)
+            {
+                grad[j] = dp[j]*inv_r2[j];
+            }
             Real gnorm2 = grad.norm2();
             Real gnorm = helper::rsqrt(gnorm2);
             //grad /= gnorm; //.normalize();
@@ -132,9 +132,9 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
             Real fact1 = -stiffabs / (norm * gnorm);
             Real fact2 = -stiffabs*v / gnorm;
             Real fact3 = -stiffabs*v / gnorm2;
-            for (int ci = 0; ci < N; ++ci)
+            for (unsigned int ci = 0; ci < N; ++ci)
             {
-                for (int cj = 0; cj < N; ++cj)
+                for (unsigned int cj = 0; cj < N; ++cj)
                     c.m[ci][cj] = grad[ci]*grad[cj] * (fact1 + fact3*inv_r2[cj]);
                 c.m[ci][ci] += fact2*inv_r2[ci];
             }

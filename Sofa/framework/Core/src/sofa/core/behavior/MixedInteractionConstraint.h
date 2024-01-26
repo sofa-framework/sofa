@@ -130,7 +130,7 @@ public:
     }
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1Types, defaulttype::Vec1Types>;

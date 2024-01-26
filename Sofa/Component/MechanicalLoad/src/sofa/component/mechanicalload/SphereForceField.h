@@ -118,7 +118,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<defaulttype::Vec1Types>;

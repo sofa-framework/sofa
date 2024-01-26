@@ -85,13 +85,13 @@ void SceneCheckUsingAlias::doPrintSummary()
             const unsigned int count = std::count(i.second.begin(), i.second.end(), unique_alias);
 
             using sofa::helper::lifecycle::ComponentChange;
-            using sofa::helper::lifecycle::uncreatableComponents;
+            using sofa::helper::lifecycle::renamedComponents;
 
             usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
-            auto searchAlias = uncreatableComponents.find(unique_alias);
-            if( searchAlias != uncreatableComponents.end() )
+            auto searchAlias = renamedComponents.find(unique_alias);
+            if( searchAlias != renamedComponents.end() )
             {
-                usingAliasesWarning << " This alias will be REMOVED at the SOFA release " << searchAlias->second.getVersion() << ", please update your scenes.";
+                usingAliasesWarning << " " << searchAlias->second.getMessage();
             }
 
             if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;

@@ -24,7 +24,7 @@
 
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
@@ -51,7 +51,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef sofa::component::solidmechanics::spring::LinearSpring<Real> Spring;
     typedef sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes> SpringObjectType;
-    typedef sofa::component::constraint::projective::FixedConstraint<DataTypes> FixObjectType;
+    typedef sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes> FixObjectType;
 
     SuturePointPerformer(BaseMouseInteractor *i);
     ~SuturePointPerformer();
@@ -70,7 +70,7 @@ protected:
     FixObjectType *FixObject;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
 #endif

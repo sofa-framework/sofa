@@ -138,7 +138,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API QuadPressureForceField<defaulttype::Vec3Types>;
 
 

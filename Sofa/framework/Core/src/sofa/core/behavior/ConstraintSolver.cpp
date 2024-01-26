@@ -33,36 +33,11 @@ ConstraintSolver::~ConstraintSolver() = default;
 
 void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
 {
-    const std::string className = "SolveConstraint: " + cParams->getName();
-    sofa::helper::ScopedAdvancedTimer solveConstraintTimer(className);
-
-    bool continueSolving = true;
-    {
-        helper::ScopedAdvancedTimer timer(className + " - PrepareState");
-        continueSolving = prepareStates(cParams, res1, res2);
-    }
-
-    if (continueSolving)
-    {
-        helper::ScopedAdvancedTimer timer(className + " - BuildSystem");
-        continueSolving = buildSystem(cParams, res1, res2);
-
-        postBuildSystem(cParams);
-    }
-
-    if (continueSolving)
-    {
-        helper::ScopedAdvancedTimer timer(className + " - SolveSystem");
-        continueSolving = solveSystem(cParams, res1, res2);
-
-        postSolveSystem(cParams);
-    }
-
-    if (continueSolving)
-    {
-        helper::ScopedAdvancedTimer timer(className + " - ApplyCorrection");
-        applyCorrection(cParams, res1, res2);
-    }
+    SCOPED_TIMER("SolveConstraint");
+    prepareStatesTask(cParams, res1, res2) &&
+    buildSystemTask(cParams, res1, res2) &&
+    solveSystemTask(cParams, res1, res2) &&
+    applyCorrectionTask(cParams, res1, res2);
 }
 
 bool ConstraintSolver::insertInNode( objectmodel::BaseNode* node )
@@ -77,6 +52,34 @@ bool ConstraintSolver::removeInNode( objectmodel::BaseNode* node )
     node->removeConstraintSolver(this);
     Inherit1::removeInNode(node);
     return true;
+}
+
+bool ConstraintSolver::prepareStatesTask(const ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
+{
+    SCOPED_TIMER("PrepareState");
+    return prepareStates(cParams, res1, res2);
+}
+
+bool ConstraintSolver::buildSystemTask(const ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
+{
+    SCOPED_TIMER("BuildSystem");
+    const auto success = buildSystem(cParams, res1, res2);
+    postBuildSystem(cParams);
+    return success;
+}
+
+bool ConstraintSolver::solveSystemTask(const ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
+{
+    SCOPED_TIMER("SolveSystem");
+    const auto success = solveSystem(cParams, res1, res2);
+    postSolveSystem(cParams);
+    return success;
+}
+
+bool ConstraintSolver::applyCorrectionTask(const ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
+{
+    SCOPED_TIMER("ApplyCorrection");
+    return applyCorrection(cParams, res1, res2);
 }
 
 } // namespace sofa::core::behavior

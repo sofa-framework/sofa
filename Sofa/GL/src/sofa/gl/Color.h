@@ -20,25 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gl/config.h>
+#include <sofa/config.h>
 
-#include <sofa/type/RGBAColor.h>
-
-/// Forward declaration
-namespace sofa::gl
-{
-
-class SOFA_GL_API Color
-{
-public:
-    static void set(const sofa::type::RGBAColor& color) ;
-
-    static void setHSVA( float h, float s, float v, float a );
-    static void getHSVA( float* rgba, float h, float s, float v, float a );
-
-private:
-    Color();
-    ~Color();
-};
-
-} // namespace sofa::gl
+SOFA_DISABLED_HEADER_NOT_REPLACED("v17.06", "v23.12")

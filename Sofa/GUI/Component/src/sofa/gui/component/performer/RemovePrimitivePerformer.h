@@ -136,7 +136,7 @@ private:
     sofa::core::topology::BaseMeshTopology* topo_curr;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 #endif

@@ -88,7 +88,7 @@ protected:
 };
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_NearestPointROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_NearestPointROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API NearestPointROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API NearestPointROI<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API NearestPointROI<defaulttype::Vec1Types>;

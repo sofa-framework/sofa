@@ -1,0 +1,48 @@
+name: PR check - Age
+on:
+  pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
+      - labeled
+      - unlabeled
+
+
+jobs:
+
+  check_labels:
+    name: Check labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Labels and Age
+        id: check_labels_and_comment
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get PR labels
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+
+            // Define the fast merge label
+            const fastMergeFlag = ['pr: fast merge'];
+
+            // Check if any label fits fast merge
+            const isFastMerge = labels.some(label => fastMergeFlag.includes(label));
+
+            // If regular PR (not fast merge), check PR age
+            if (!isFastMerge) {
+            const creationDate = new Date(context.payload.pull_request.created_at);
+            const currentDate = new Date();
+            
+            // Check if the PR is more than 7 days old
+            const daysDiff = Math.floor((currentDate - creationDate) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff < 7) {
+              core.setFailed("PR is less than 7 days old and it is not flagged as 'pr: fast merge'");
+            } else {
+              console.log('PR is more than 7 days old');
+            }
+            } else {
+              console.log("PR is flagged as 'pr: fast merge'");
+            }

@@ -1629,11 +1629,11 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
         for (c1=0; c1<numContacts; c1++)
         {
             // index of contact
-            int index1 = c1;
+            const int index1 = c1;
 
             // put the previous value of the contact force in a buffer and put the current value to 0
             f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
-            set3Dof(f,index1,0.0,0.0,0.0); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+            set3Dof(f,index1, 0, 0, 0); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
 
             // computation of actual d due to contribution of other contacts
             dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
@@ -1649,7 +1649,8 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
             if (minW != 0.0 && fabs(W[3*index1  ][3*index1  ]) <= minW)
             {
                 // constraint compliance is too small
-                if(it==0){
+                if(it==0)
+                {
                     std::stringstream tmpmsg;
                     tmpmsg << "Compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed ;
                     dmsg_warning("LCPcalc") << tmpmsg.str() ;
@@ -1740,19 +1741,17 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
 
 int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, SReal timeout, bool verbose)
 {
-    SReal test = dim/3;
-    const SReal zero = 0.0;
-    const int numContacts =  (int) floor(test);
-    test = dim/3 - numContacts;
+    const int numContacts =  dim/3;
+
+    if (dim % 3)
+    {
+        dmsg_info("LCPcalc") << "dim should be dividable by 3 in nlcp_gaussseidelTimed" ;
+        return 0;
+    }
 
     const ctime_t t0 = CTime::getTime();
     const ctime_t tdiff = (ctime_t)(timeout*CTime::getTicksPerSec());
 
-    if (test>0.01)
-    {
-        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
-        return 0;
-    }
     // iterators
     int it,c1,i;
 
@@ -1772,17 +1771,6 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
     W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
         W33[c1] = new LocalBlock33();
-    /*
-    std::vector<listElem> sortedList;
-    listElem buf;
-    sortedList.clear();
-    for (c1=0; c1<numContacts; c1++)
-    {
-        buf.value = dfree[3*c1];
-        buf.index = c1;
-        sortedList.push_back(buf);
-    }
-    */
 
     //////////////
     // Beginning of iterative computations
@@ -1800,7 +1788,7 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
 
             // put the previous value of the contact force in a buffer and put the current value to 0
             f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
-            set3Dof(f,index1,zero,zero,zero); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+            set3Dof(f,index1, 0, 0, 0); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
 
             // computation of actual d due to contribution of other contacts
             dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];

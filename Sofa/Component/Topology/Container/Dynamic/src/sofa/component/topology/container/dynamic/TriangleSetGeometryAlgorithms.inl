@@ -2402,46 +2402,6 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
     return -1;
 }
 
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for (size_t i=0; i<numVertices; ++i)
-    {
-        Real x = (Real) vect_c[i][0];
-        Real y = (Real) vect_c[i][1];
-        Real z = (Real) vect_c[i][2];
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Triangle> &ta=this->m_topology->getTriangles();
-
-    myfile << ta.size() <<"\n";
-
-    for (size_t i=0; i<ta.size(); ++i)
-    {
-        myfile << i+1 << " 2 6 6 3 " << ta[i][0]+1 << " " << ta[i][1]+1 << " " << ta[i][2]+1 <<"\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
-}
-
 
 template <typename DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNormals()
@@ -2686,7 +2646,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::Suture2Points(TriangleID ind_ta
     x_created.push_back((Real)point_created[1]);
     x_created.push_back((Real)point_created[2]);
 
-    core::behavior::MechanicalState<DataTypes>* state = this->getDOF();
+    auto* state = this->getDOF();
 
     sofa::helper::WriteAccessor< Data<VecCoord> > x_wA = *state->write(core::VecCoordId::position());
     sofa::helper::WriteAccessor< Data<VecDeriv> > v_wA = *state->write(core::VecDerivId::velocity());
@@ -4128,7 +4088,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 ancestors2Snap[i].push_back((PointID)points2Snap[i][6]);
             }
             else
-                coefs2Snap[i] = this->compute2PointsBarycoefs(SnapedCoord, firstAncestor, secondAncestor);
+                coefs2Snap[i] = this->computeEdgeBarycentricCoordinates(SnapedCoord, firstAncestor, secondAncestor);
         }
         m_modifier->movePointsProcess(id2Snap, ancestors2Snap, coefs2Snap);
     }

@@ -1011,48 +1011,6 @@ const sofa::type::vector<BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgor
 }
 
 
-/// Write the current mesh into a msh file
-template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
-{
-    std::ofstream myfile;
-    myfile.open (filename);
-
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-    const size_t numVertices = vect_c.size();
-
-    myfile << "$NOD\n";
-    myfile << numVertices <<"\n";
-
-    for (size_t i=0; i<numVertices; ++i)
-    {
-        Real x = (Real) vect_c[i][0];
-        Real y = (Real) vect_c[i][1];
-        Real z = (Real) vect_c[i][2];
-
-        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
-    }
-
-    myfile << "$ENDNOD\n";
-    myfile << "$ELM\n";
-
-    const sofa::type::vector<Tetrahedron> &tea = this->m_topology->getTetrahedra();
-
-    myfile << tea.size() <<"\n";
-
-    for (size_t i=0; i<tea.size(); ++i)
-    {
-        myfile << i+1 << " 4 1 1 4 " << tea[i][0]+1 << " " << tea[i][1]+1 << " " << tea[i][2]+1 << " " << tea[i][3]+1 <<"\n";
-    }
-
-    myfile << "$ENDELM\n";
-
-    myfile.close();
-}
-
-
-
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
@@ -1174,7 +1132,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< SReal > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->computeEdgeBarycentricCoordinates(p, theEdge[0], theEdge[1]);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
@@ -2285,7 +2243,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< SReal > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->computeEdgeBarycentricCoordinates(p, theEdge[0], theEdge[1], true);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);

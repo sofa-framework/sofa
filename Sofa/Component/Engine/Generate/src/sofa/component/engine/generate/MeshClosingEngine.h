@@ -106,7 +106,7 @@ public:
     void doUpdate() override;
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MeshClosingEngine<defaulttype::Vec3Types>;
  
 #endif

@@ -25,7 +25,7 @@
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/gui/component/AttachBodyButtonSetting.h>
-#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
 
 #include <sofa/core/visual/DisplayFlags.h>
 
@@ -57,7 +57,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
-//        typedef sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint< DataTypes > MouseConstraint;
+//        typedef sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint< DataTypes > MouseConstraint;
 
 //        typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
@@ -91,14 +91,14 @@ protected:
     virtual bool start_partial(const BodyPicked& picked);
 
     MouseContactMapper  *mapper;
-    sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
+    sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
 
     core::visual::DisplayFlags flags;
 
     sofa::core::behavior::MechanicalState<DataTypes> *mstate1, *mstate2;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif
 

@@ -82,7 +82,7 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ComplementaryROI<defaulttype::Vec3Types>;
 
 

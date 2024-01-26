@@ -138,7 +138,7 @@ SReal SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<defaulttype::Rigid2Type
 
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec1Types>;

@@ -103,7 +103,7 @@ protected:
     double invTotalMass;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;

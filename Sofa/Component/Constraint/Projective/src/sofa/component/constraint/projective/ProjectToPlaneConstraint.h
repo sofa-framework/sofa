@@ -20,118 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/projective/config.h>
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BaseVector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/type/vector.h>
-#include <sofa/type/Mat.h>
-#include <sofa/core/topology/TopologySubsetIndices.h>
-#include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <set>
+#include <sofa/component/constraint/projective/PlaneProjectiveConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/PlaneProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class ProjectToPlaneConstraintInternalData
-{
-
-};
-
-/** Project particles to an affine plane.
-  @author Francois Faure, 2012
-  @todo Optimized versions for planes parallel to the main directions
-*/
-template <class DataTypes>
-class ProjectToPlaneConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProjectToPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
-
-    using Index = sofa::Index;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::CPos CPos;
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-    typedef Data<VecCoord> DataVecCoord;
-    typedef Data<VecDeriv> DataVecDeriv;
-    typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef type::vector<Index> Indices;
-    typedef sofa::core::topology::TopologySubsetIndices IndexSubsetData;
-    typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
-    typedef linearalgebra::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
-    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
-    enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
-protected:
-    ProjectToPlaneConstraint();
-
-    virtual ~ProjectToPlaneConstraint();
-
-public:
-    IndexSubsetData f_indices;  ///< the particles to project
-    Data<CPos> f_origin;       ///< A point in the plane
-    Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
-    Data<SReal> f_drawSize;    ///< The size of the display of the constrained particles
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<ProjectToPlaneConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
-protected:
-    ProjectToPlaneConstraintInternalData<DataTypes>* data;
-    friend class ProjectToPlaneConstraintInternalData<DataTypes>;
-
-
-public:
-    void clearConstraints();
-    void addConstraint(Index index);
-    void removeConstraint(Index index);
-
-    // -- Constraint interface
-    void init() override;
-    void reinit() override;
-
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-    /** Project the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
-      */
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-protected :
-
-    SparseMatrix jacobian; ///< projection matrix in local state
-    SparseMatrix J;        ///< auxiliary variable
-};
-
-
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneConstraint<defaulttype::Vec2Types>;
-
-#endif
-
-} // namespace sofa::component::constraint::projective
-
+template <class T>
+using ProjectToPlaneConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "ProjectToPlaneConstraint has been renamed to PlaneProjectiveConstraint") = PlaneProjectiveConstraint<T>;
+}

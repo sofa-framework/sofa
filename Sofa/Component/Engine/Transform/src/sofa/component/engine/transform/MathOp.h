@@ -69,7 +69,7 @@ protected:
     void createInputs(int nb = -1);
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
 
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<int> >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< type::vector<bool> >;

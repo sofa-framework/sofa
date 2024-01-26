@@ -139,7 +139,7 @@ public:
     Data <float> p_vectorLength; ///< vector length visualisation. 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif

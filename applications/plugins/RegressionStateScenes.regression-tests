@@ -2,8 +2,14 @@
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
+### References relative path ###
+../projects/Regression/references/applications/plugins
+
 ### Sph Plugin ###
 SofaSphFluid/examples/SPHFluidForceField.scn 100 1e-4 1 1
 SofaSphFluid/examples/SPHFluidForceField_benchmarks.scn 100 1e-4 1 1
 SofaSphFluid/examples/SPHParticleSink.scn 100 1e-4 1 1
 SofaSphFluid/examples/SPHParticleSource.scn 100 1e-4 1 1
+
+### MultiThreading ###
+MultiThreading/examples/ParallelCGLinearSolver.scn 100 1e-8 1 1

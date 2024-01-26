@@ -174,7 +174,7 @@ private:
 };
 
 
-#if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP)
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec2Types >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1Types >;

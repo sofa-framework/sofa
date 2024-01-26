@@ -1900,7 +1900,7 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
                 else
                 {
                     sofa::helper::ColorMap::evaluator<Real> evalColor = this->m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-                    auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[elementId]));
+                    auto col = evalColor(vM[elementId]);
                     col[3] = 1.0f;
                     color[0] = col;
                     color[1] = col;
@@ -2542,7 +2542,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     updateVonMisesStress=false;
 
-    helper::WriteAccessor<Data<type::vector<type::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
+    helper::WriteAccessor<Data<type::vector<type::RGBAColor> > > vonMisesStressColors(_vonMisesStressColors);
     vonMisesStressColors.clear();
     type::vector<unsigned int> vonMisesStressColorsCoeff;
 
@@ -2565,12 +2565,12 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-        const type::Vec4f col = evalColor(vME[i]);
+        const auto col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 
         for(unsigned int j=0 ; j<4 ; j++)
         {
-            vonMisesStressColors[tetra[j]] += (col);
+            vonMisesStressColors[tetra[j]] = vonMisesStressColors[tetra[j]]+(col);
             vonMisesStressColorsCoeff[tetra[j]] ++;
         }
     }
@@ -2579,7 +2579,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     {
         if(vonMisesStressColorsCoeff[i] != 0)
         {
-            vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
+            vonMisesStressColors[i] = vonMisesStressColors[i] / vonMisesStressColorsCoeff[i];
         }
     }
 }

@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TetrahedronCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -32,7 +32,7 @@
     <Node name="Cylinder Static Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="0 0 0" rotation="0 90 0" scale="10" />
-        <FixedConstraint name="FixedConstraint" template="Vec3" indices="0" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" template="Vec3" indices="0" />
         <UniformMass name="Mass" template="Vec3" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -48,7 +48,7 @@
     </Node>
     <Node name="Cylinder Regular Mesh">
         <MechanicalObject name="DOFs" template="Vec3" translation="0 0 -10" rotation="0 0 -90" />
-        <FixedConstraint name="FixedConstraint" template="Vec3" indices="54 44 45 55" drawSize="0" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" template="Vec3" indices="54 44 45 55" drawSize="0" />
         <UniformMass name="Mass" template="Vec3" totalMass="500" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -63,7 +63,7 @@
     <Node name="Cylinder Dynamic Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="0 0 10" rotation="0 90 0" scale="10" />
-        <FixedConstraint name="FixedConstraint" template="Vec3" indices="0" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" template="Vec3" indices="0" />
         <UniformMass name="Mass" template="Vec3" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />

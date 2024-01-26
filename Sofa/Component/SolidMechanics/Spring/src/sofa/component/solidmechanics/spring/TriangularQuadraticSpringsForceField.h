@@ -198,7 +198,7 @@ protected :
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3Types>;
 

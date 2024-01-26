@@ -82,7 +82,7 @@ protected:
     core::visual::DisplayFlags flags;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Vec2Types>;
 extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Vec3Types>;
 extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Rigid3Types>;

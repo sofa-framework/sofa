@@ -51,8 +51,6 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void buildSystem_matrixFree(unsigned int numConstraints);
-    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
@@ -104,15 +102,19 @@ protected:
 
     void clearConstraintProblemLocks();
 
-    enum { CP_BUFFER_SIZE = 10 };
-    sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
-    sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
+    static constexpr auto CP_BUFFER_SIZE = 10;
+    sofa::type::fixed_array<GenericConstraintProblem, CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
     SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_CONSTRAINTCORRECTIONS() DeprecatedAndRemoved constraintCorrections; //use ConstraintSolverImpl::l_constraintCorrections instead
-    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
+
+    void buildSystem_matrixFree(unsigned int numConstraints);
+
+    // Explicitly compute the compliance matrix projected in the constraint space
+    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
 
 private:
 
@@ -132,6 +134,16 @@ private:
         ComplianceMatrixType& m_complianceMatrix;
         std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
     };
+
+
+    sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections() const;
+
+    void computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, GenericConstraintSolver::MultiVecId res1, GenericConstraintSolver::MultiVecId res2) const;
+    void applyMotionCorrection(
+        const core::ConstraintParams* cParams,
+        MultiVecId res1, MultiVecId res2,
+        core::behavior::BaseConstraintCorrection* constraintCorrection) const;
+    void storeConstraintLambdas(const core::ConstraintParams* cParams);
 
 };
 

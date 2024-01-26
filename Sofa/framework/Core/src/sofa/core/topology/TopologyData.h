@@ -164,5 +164,9 @@ template< class VecT > using QuadData        = TopologyData<core::topology::Base
 template< class VecT > using TetrahedronData = TopologyData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
 template< class VecT > using HexahedronData  = TopologyData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
+#if !defined(SOFA_CORE_TOPOLOGY_TOPOLOGYDATA_DEFINITION)
+extern template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+#endif
+
 
 } //namespace sofa::core::topology

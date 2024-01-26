@@ -401,7 +401,7 @@ protected:
     typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 };
 
-#if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
+#if !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;

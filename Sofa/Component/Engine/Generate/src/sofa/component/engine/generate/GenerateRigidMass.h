@@ -95,7 +95,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
 
 #endif

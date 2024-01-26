@@ -101,7 +101,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;

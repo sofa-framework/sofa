@@ -122,7 +122,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 
 #endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)

@@ -41,34 +41,7 @@ namespace sofa::component::linearsolver::direct
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
     : numStep(0)
-    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
-        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
-                                  "where M is the matrix of the linear system and J is any "
-                                  "matrix with compatible dimensions"))
-{
-    this->addUpdateCallback("parallelODESolving", {&d_parallelInverseProduct},
-    [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
-    {
-        SOFA_UNUSED(tracker);
-        if (d_parallelInverseProduct.getValue())
-        {
-            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-            assert(taskScheduler);
-
-            if (taskScheduler->getThreadCount() < 1)
-            {
-                taskScheduler->init(0);
-                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-            else
-            {
-                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-        }
-        return this->d_componentState.getValue();
-    },
-    {});
-}
+{}
 
 template <class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
@@ -198,7 +171,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
     const unsigned int JlocalRowSize = (unsigned int)Jlocal2global.size();
 
-    const simulation::ForEachExecutionPolicy execution = d_parallelInverseProduct.getValue() ?
+    const simulation::ForEachExecutionPolicy execution = this->d_parallelInverseProduct.getValue() ?
         simulation::ForEachExecutionPolicy::PARALLEL :
         simulation::ForEachExecutionPolicy::SEQUENTIAL;
 
@@ -223,58 +196,75 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this](const auto& range)
-        {
-            for (auto i = range.start; i != range.end; ++i)
+    {
+        SCOPED_TIMER("LowerSystem");
+        simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+            [&data, this](const auto& range)
             {
-                Real* line = JLinv[i];
-                sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
-            }
-        });
-
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this](const auto& range)
-        {
-            for (auto i = range.start; i != range.end; ++i)
-            {
-                Real* lineD = JLinv[i];
-                Real* lineM = JLinvDinv[i];
-                sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(data->n, lineD, lineM, data->invD.data());
-            }
-        });
-
-    std::mutex mutex;
-    simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
-        [&data, this, fact, &mutex, result, JlocalRowSize](const auto& range)
-        {
-            sofa::type::vector<std::tuple<sofa::SignedIndex, sofa::SignedIndex, Real> > triplets;
-            triplets.reserve(JlocalRowSize * (range.end - range.start));
-
-            for (auto j = range.start; j != range.end; ++j)
-            {
-                Real* lineJ = JLinvDinv[j];
-                sofa::SignedIndex globalRowJ = Jlocal2global[j];
-                for (unsigned i = j; i < JlocalRowSize; ++i)
+                SCOPED_TIMER("Lower");
+                for (auto i = range.start; i != range.end; ++i)
                 {
+                    Real* line = JLinv[i];
+                    sofa::linearalgebra::solveLowerUnitriangularSystemCSR(data->n, line, line, data->LT_colptr.data(), data->LT_rowind.data(), data->LT_values.data());
+                }
+            });
+    }
+
+    {
+        SCOPED_TIMER("Diagonal");
+        simulation::forEachRange(execution, *taskScheduler, 0u, JlocalRowSize,
+           [&data, this](const auto& range)
+           {
+               for (auto i = range.start; i != range.end; ++i)
+               {
+                   Real* lineD = JLinv[i];
+                   Real* lineM = JLinvDinv[i];
+                   sofa::linearalgebra::solveDiagonalSystemUsingInvertedValues(data->n, lineD, lineM, data->invD.data());
+               }
+           });
+    }
+
+    const auto nbTriplets = JlocalRowSize * (JlocalRowSize+1) / 2;
+    std::vector<Triplet> tripletsBuffer(nbTriplets);
+
+    SCOPED_TIMER("UpperSystem");
+    std::mutex mutex;
+
+    // Distribution of the tasks according to the number of triplets, i.e. the
+    // number of elements in a triangular matrix
+    simulation::forEachRange(execution, *taskScheduler, 0u, nbTriplets,
+        [&data, this, fact, &mutex, result, &tripletsBuffer](const auto& range)
+        {
+            {
+                SCOPED_TIMER("UpperRange");
+                for (auto r = range.start; r != range.end; ++r)
+                {
+                    //convert a triangular matrix (flat) index to row and column coordinates
+                    sofa::Index i, j;
+                    linearalgebra::computeRowColumnCoordinateFromIndexInLowerTriangularMatrix(r, i, j);
+
+                    auto& [row, col, value] = tripletsBuffer[r];
+                    row = Jlocal2global[j];
+                    col = Jlocal2global[i];
+
                     Real* lineI = JLinv[i];
-                    int globalRowI = Jlocal2global[i];
+                    Real* lineJ = JLinvDinv[j];
 
-                    Real acc = 0;
-                    for (unsigned k = 0; k < (unsigned)data->n; k++)
+                    value = 0;
+                    for (int k = 0; k < data->n; ++k)
                     {
-                        acc += lineJ[k] * lineI[k];
+                        value += lineJ[k] * lineI[k];
                     }
-                    acc *= fact;
-
-                    triplets.emplace_back(globalRowJ, globalRowI, acc);
+                    value *= fact;
                 }
             }
 
             std::lock_guard guard(mutex);
 
-            for (const auto& [row, col, value] : triplets)
+            SCOPED_TIMER("Assembling");
+            for (auto r = range.start; r != range.end; ++r)
             {
+                const auto& [row, col, value] = tripletsBuffer[r];
                 result->add(row, col, value);
                 if (row != col)
                 {

@@ -102,7 +102,7 @@ protected:
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 
 

@@ -188,7 +188,7 @@ protected:
     void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points);
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec1Types>;

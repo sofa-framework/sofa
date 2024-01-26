@@ -92,7 +92,7 @@ private:
     void computeNeighbors(VVI& ngb);
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSampler<defaulttype::Vec3Types>;
  
 #endif

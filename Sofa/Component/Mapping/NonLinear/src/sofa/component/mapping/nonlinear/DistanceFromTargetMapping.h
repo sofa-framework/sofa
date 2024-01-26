@@ -136,7 +136,7 @@ protected:
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;

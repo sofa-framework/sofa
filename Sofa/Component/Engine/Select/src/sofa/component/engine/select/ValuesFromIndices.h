@@ -65,7 +65,7 @@ public:
     Data<std::string> f_outStr; ///< Output values corresponding to the indices, converted as a string
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<std::string>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<int>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<unsigned int>;

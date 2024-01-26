@@ -195,7 +195,7 @@ protected:
     inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
-                                          const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
+                                          const type::Vec<8, Coord> &nodes, const sofa::Index elementIndice,
                                           double stiffnessFactor=1.0) const;
     static Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
@@ -225,7 +225,7 @@ protected:
     bool _alreadyInit;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedronFEMForceField<defaulttype::Vec3Types>;
 
 #endif

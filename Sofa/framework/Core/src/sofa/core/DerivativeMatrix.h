@@ -50,6 +50,8 @@ public:
         void operator+=(const sofa::type::Mat<2, 2, double>& value) const { mat->add(row, col, value); }
         void operator+=(const sofa::type::Mat<3, 3, float> & value) const { mat->add(row, col, value); }
         void operator+=(const sofa::type::Mat<3, 3, double>& value) const { mat->add(row, col, value); }
+        void operator+=(const sofa::type::Mat<6, 6, float> & value) const { mat->add(row, col, value); }
+        void operator+=(const sofa::type::Mat<6, 6, double>& value) const { mat->add(row, col, value); }
 
         [[nodiscard]] bool isValid() const { return mat != nullptr; }
         operator bool() const { return isValid(); }

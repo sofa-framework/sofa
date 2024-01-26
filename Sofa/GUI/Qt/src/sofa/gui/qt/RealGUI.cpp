@@ -1180,7 +1180,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
 
 BaseViewer* RealGUI::getViewer()
 {
-    return m_viewer!=nullptr ? m_viewer : nullptr;
+    return m_viewer;
 }
 
 //------------------------------------

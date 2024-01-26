@@ -12,10 +12,10 @@ endif()
 
 if (Qt5Core_FOUND)
     sofa_find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets REQUIRED)
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
+    set(QGLViewer_QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
 elseif (Qt6Core_FOUND)
     sofa_find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets Xml REQUIRED)
-    set(QT_TARGETS ${QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
+    set(QGLViewer_QT_TARGETS ${QGLViewer_QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
 endif()
 
 set(MOC_HEADER_FILES
@@ -47,6 +47,12 @@ set(HEADER_FILES
     mouseGrabber.h
     quaternion.h
     vec.h
+    camera.h
+    frame.h
+    keyFrameInterpolator.h
+    manipulatedCameraFrame.h
+    manipulatedFrame.h
+    qglviewer.h
     )
 set(SOURCE_FILES
     VRender/BSPSortMethod.cpp
@@ -92,7 +98,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
-target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QGLViewer_QT_TARGETS})
 if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
 else()
@@ -115,7 +121,7 @@ sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
-    INCLUDE_INSTALL_DIR "extlibs/${PROJECT_NAME}/${PROJECT_NAME}"
+    INCLUDE_INSTALL_DIR "extlibs"
     )
 
 # Qt deployment

@@ -284,10 +284,6 @@ public:
     int getTriangleInDirection(PointID p, const sofa::type::Vec<3,Real>& dir) const;
 
 
-    /** \brief Write the current mesh into a msh file
-     */
-    void writeMSHfile(const char *filename) const;
-
     /** \brief This function will changed vertex index in triangles if normal from one to another triangle are in opposite direction.
       First triangle index is used as ground truth. Use option flipNormals if first triangle direction is wrong.
       */
@@ -354,7 +350,8 @@ public:
     virtual bool InciseAlongEdgeList(const sofa::type::vector<EdgeID>& edges, sofa::type::vector<PointID>& new_points, sofa::type::vector<PointID>& end_points, bool& reachBorder);
 
 
-
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
@@ -410,7 +407,7 @@ inline Real areaProduct(const type::Vec<2,Real>& a, const type::Vec<2,Real>& b )
 template< class Real>
 inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif

@@ -32,7 +32,6 @@
 		<MechanicalObject template="CudaVec3f" />
 
 		<CudaPrecomputedWarpPreconditioner name="preconditioner" solverName="initsolver" init_bw="false" />
-		<!--<SparseCholeskySolver name="initsolver" printLog="true" />-->
 		<SparseTAUCSSolver name="initsolver" symmetric="true" options="taucs.factor.LLT=true taucs.factor.ordering=metis" printLog="false" />
 
 		<UniformMass totalMass="400" />

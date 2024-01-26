@@ -9,7 +9,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI CudaTetrahedronTLEDForceField DiagonalMass FixedConstraint IdentityMapping MechanicalObject TetrahedronSetGeometryAlgorithms TriangleSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI CudaTetrahedronTLEDForceField DiagonalMass FixedProjectiveConstraint IdentityMapping MechanicalObject TetrahedronSetGeometryAlgorithms TriangleSetGeometryAlgorithms] -->
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
@@ -37,7 +37,7 @@
         <DiagonalMass totalMass="50.0" />
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         <CudaHexahedronTLEDForceField name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="2000" />
 
         <Node name="tetra">

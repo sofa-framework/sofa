@@ -121,7 +121,7 @@ public:
     }
 };
 
-#if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
+#if !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec1Types>;

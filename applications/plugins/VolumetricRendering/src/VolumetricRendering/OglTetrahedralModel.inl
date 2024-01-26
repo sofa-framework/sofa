@@ -28,7 +28,6 @@
 #include <sofa/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <limits>
 
 namespace sofa
@@ -63,8 +62,8 @@ void OglTetrahedralModel<DataTypes>::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloatVector4Variable, sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloatVector4Variable, sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -85,7 +84,7 @@ void OglTetrahedralModel<DataTypes>::init()
     if (!m_mappingTableValues)
     {
         msg_info() << "No MappingTable found, instanciating one";
-        m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_mappingTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
 
@@ -109,7 +108,7 @@ void OglTetrahedralModel<DataTypes>::init()
     {
         msg_info() << "No RunSelectTable found, instanciating one";
 
-        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
         m_runSelectTableValues->setID("RunSelectTable");
 
@@ -179,6 +178,13 @@ void OglTetrahedralModel<DataTypes>::initVisual()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVisual()
 {
+    // Workaround if updateVisual() is called without an opengl context
+    const auto* vparams = core::visual::VisualParams::defaultInstance();
+    if (!vparams->isSupported(core::visual::API_OpenGL))
+    {
+        return;
+    }
+
     if ((modified && !m_positions.getValue().empty())
         || useTopology)
     {
@@ -255,7 +261,6 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    using sofa::component::topology::TetrahedronSetTopologyContainer;
     if (!vparams->displayFlags().getShowVisualModels()) return;
     if (m_topology == NULL) return;
     if (m_topology->getNbTetrahedra() < 1) return;
@@ -288,7 +293,15 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
 
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    int gltype = GL_FLOAT;
+
+    if constexpr (std::is_same_v<typename Coord::value_type, double>)
+    {
+        gltype = GL_DOUBLE;
+    }
+
+    glVertexPointer(3, gltype, 0, nullptr);
+
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -314,24 +327,21 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params, bool /* onlyVisible */)
 {
-    if (m_topology)
+    const type::vector<Coord>& position = m_positions.getValue();
+
+    if (m_topology && position.size() > 0)
     {
-        const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
-        core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-        Coord v;
-        const type::vector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
-        const SReal min_real = std::numeric_limits<SReal>::min();
+        const SReal min_real = std::numeric_limits<SReal>::lowest();
 
         SReal maxBBox[3] = { min_real,min_real,min_real };
         SReal minBBox[3] = { max_real,max_real,max_real };
 
-        for (it = vec.begin(); it != vec.end(); it++)
+        for(const auto& tetra : m_topology->getTetrahedra())
         {
             for (unsigned int i = 0; i< 4; i++)
             {
-                v = position[(*it)[i]];
-                //v = x[(*it)[i]];
+                const auto& v = position[tetra[i]];
 
                 if (minBBox[0] > v[0]) minBBox[0] = v[0];
                 if (minBBox[1] > v[1]) minBBox[1] = v[1];

@@ -104,7 +104,7 @@ protected:
     type::vector<Index> m_indicesToRemove;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher<sofa::defaulttype::Vec3Types>;
 #endif //  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
 

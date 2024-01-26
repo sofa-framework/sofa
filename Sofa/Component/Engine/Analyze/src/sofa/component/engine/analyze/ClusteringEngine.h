@@ -113,7 +113,7 @@ private:
     bool save();
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API ClusteringEngine<defaulttype::Vec3Types>;
  
 #endif

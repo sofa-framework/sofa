@@ -7,7 +7,7 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint IdentityMapping MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
 
 
     <DefaultAnimationLoop/>

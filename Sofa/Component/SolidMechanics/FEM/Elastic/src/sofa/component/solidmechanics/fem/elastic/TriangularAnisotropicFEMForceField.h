@@ -100,7 +100,7 @@ public:
     using Inherit1::m_topology;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangularAnisotropicFEMForceField<defaulttype::Vec3Types>;
 
 #endif

@@ -144,7 +144,7 @@ protected :
 
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
 extern template class HexahedronCompositeFEMMapping< core::Mapping< defaulttype::Vec3Types, defaulttype::Vec3Types > >;
 
 

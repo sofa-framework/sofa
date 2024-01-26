@@ -30,6 +30,7 @@
 #include <type_traits>
 #include <sofa/type/fwd.h>
 #include <cmath>
+#include <array>
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -54,13 +55,25 @@ struct NoInit {};
 constexpr NoInit NOINIT;
 
 template < sofa::Size N, typename ValueType>
-class Vec : public sofa::type::fixed_array<ValueType,size_t(N)>
+class Vec
 {
-
     static_assert( N > 0, "" );
 
 public:
-    typedef sofa::Size Size;
+    using ArrayType = std::array<ValueType, N>;
+    ArrayType elems{};
+
+    typedef sofa::Size                          Size;
+    typedef ValueType                           value_type;
+    typedef typename ArrayType::iterator        iterator;
+    typedef typename ArrayType::const_iterator  const_iterator;
+    typedef typename ArrayType::reference       reference;
+    typedef typename ArrayType::const_reference const_reference;
+    typedef sofa::Size       size_type;
+    typedef std::ptrdiff_t   difference_type;
+
+    static constexpr sofa::Size static_size = N;
+    static constexpr sofa::Size size() { return static_size; }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
     static constexpr Size total_size = N;
@@ -68,10 +81,7 @@ public:
     static constexpr Size spatial_dimensions = N;
 
     /// Default constructor: sets all values to 0.
-    constexpr Vec()
-    {
-        this->clear();
-    }
+    constexpr Vec() = default;
 
     /// Fast constructor: no initialization
     explicit constexpr Vec(NoInit)
@@ -90,7 +100,7 @@ public:
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
     constexpr Vec(ArgsT&&... r) noexcept
-        : sofa::type::fixed_array<ValueType, size_t(N)>(std::forward<ArgsT>(r)...)
+        : elems{ static_cast<value_type>(std::forward< ArgsT >(r))... }
     {}
 
     /// Specific constructor for 6-elements vectors, taking two 3-elements vectors
@@ -237,6 +247,13 @@ public:
             this->elems[i] = (ValueType)v(i);
     }
 
+    // assign one value to all elements
+    constexpr void assign(const ValueType& value) noexcept
+    {
+        for (size_type i = 0; i < N; i++)
+            elems[i] = value;
+    }
+
     /// Sets every element to 0.
     constexpr void clear() noexcept
     {
@@ -264,13 +281,27 @@ public:
     /// Cast into a const array of values.
     constexpr const ValueType* ptr() const noexcept
     {
-        return this->elems;
+        return this->elems.data();
     }
 
     /// Cast into an array of values.
     constexpr ValueType* ptr() noexcept
     {
-        return this->elems;
+        return this->elems.data();
+    }
+
+    template <Size N2, std::enable_if_t<(N2 < N), bool> = true>
+    constexpr void getsub(const Size i, Vec<N2, ValueType>& m) const noexcept
+    {
+        for (Size j = 0; j < N2; j++)
+        {
+            m[j] = this->elems[j + i];
+        }
+    }
+
+    constexpr void getsub(const Size i, ValueType& m) const noexcept
+    {
+        m = this->elems[i];
     }
 
     // LINEAR ALGEBRA
@@ -527,7 +558,7 @@ public:
 
     /// return true if norm()==1
     bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
-    { 
+    {
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }
 
@@ -569,8 +600,64 @@ public:
         return false;
     }
 
+
+    // operator[]
+    constexpr reference operator[](size_type i)
+    {
+        assert(i < N && "index in Vec must be smaller than size");
+        return elems[i];
+    }
+    constexpr const_reference operator[](size_type i) const
+    {
+        assert(i < N && "index in Vec must be smaller than size");
+        return elems[i];
+    }
+
+    // direct access to data
+    constexpr const ValueType* data() const noexcept
+    {
+        return elems.data();
+    }
+
+    constexpr iterator begin() noexcept
+    {
+        return elems.begin();
+    }
+    constexpr const_iterator begin() const noexcept
+    {
+        return elems.begin();
+    }
+
+    constexpr iterator end() noexcept
+    {
+        return elems.end();
+    }
+    constexpr const_iterator end() const noexcept
+    {
+        return elems.end();
+    }
+
+    constexpr reference front()
+    {
+        return elems[0];
+    }
+    constexpr const_reference front() const
+    {
+        return elems[0];
+    }
+    constexpr reference back()
+    {
+        return elems[N - 1];
+    }
+    constexpr const_reference back() const
+    {
+        return elems[N - 1];
+    }
+
     /// @}
 };
+
+
 
 
 /// Same as Vec except the values are not initialized by default
@@ -581,6 +668,15 @@ public:
     constexpr VecNoInit() noexcept
         : Vec<N,real>(NOINIT)
     {}
+
+    constexpr VecNoInit(const Vec<N,real>& v) noexcept
+        : Vec<N,real>(v)
+    {}
+
+    constexpr VecNoInit(Vec<N,real>&& v) noexcept
+        : Vec<N,real>(v)
+    {}
+
     using Vec<N,real>::Vec;
 
     using Vec<N,real>::operator=; // make every = from Vec available
@@ -646,6 +742,20 @@ template <sofa::Size N, typename real>
 constexpr Vec<N,real> operator*(const float& a, const Vec<N,real>& V) noexcept
 {
     return V * a;
+}
+
+/// Checks if v1 is lexicographically less than v2. Similar to std::lexicographical_compare
+template<typename T, sofa::Size N>
+constexpr bool operator<(const Vec<N, T>& v1, const Vec<N, T>& v2) noexcept
+{
+    for (sofa::Size i = 0; i < N; i++)
+    {
+        if (v1[i] < v2[i])
+            return true;
+        if (v2[i] < v1[i])
+            return false;
+    }
+    return false;
 }
 
 } // namespace sofa::type

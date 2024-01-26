@@ -75,25 +75,31 @@ protected:
     class EdgeInformation
     {
     public:
-        Mat DfDx; /// the edge stiffness matrix
 
-        int     m1, m2;  /// the two extremities of the first spring: masses m1 and m2
-        int     m3, m4;  /// the two extremities of the second spring: masses m3 and m4
+        struct Spring
+        {
+            sofa::topology::Edge edge;
+            Real restLength;
+            Mat DfDx; /// the edge stiffness matrix
+        };
 
-        SReal  ks;      /// spring stiffness (initialized to the default value)
-        SReal  kd;      /// damping factor (initialized to the default value)
+        sofa::type::fixed_array<Spring, 2> springs;
 
-        SReal  restlength1; /// rest length of the first spring
-        SReal  restlength2; /// rest length of the second spring
+        SReal  ks {};      /// spring stiffness
+        SReal  kd {};      /// damping factor
 
         bool is_activated;
 
         bool is_initialized;
 
-        EdgeInformation(int m1=0, int m2=0, int m3=0, int m4=0, SReal restlength1=0.0, SReal restlength2=0.0, bool is_activated=false, bool is_initialized=false)
-            : m1(m1), m2(m2), m3(m3), m4(m4), restlength1(restlength1), restlength2(restlength2), is_activated(is_activated), is_initialized(is_initialized)
-        {
-        }
+        EdgeInformation(int m1 = 0, int m2 = 0, int m3 = 0, int m4 = 0,
+                        SReal restlength1 = 0_sreal, SReal restlength2 = 0_sreal,
+                        const bool is_activated = false, const bool is_initialized = false)
+            : springs{
+                Spring{ {m1, m2}, restlength1},
+                Spring{ {m3, m4}, restlength2}
+            }, is_activated(is_activated), is_initialized(is_initialized)
+        { }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
@@ -108,14 +114,13 @@ protected:
         }
     };
 
-
-
 public:
     /// Searches quad topology and creates the bending springs
     void init() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const override;
@@ -132,10 +137,7 @@ public:
         f_kd.setValue((SReal)kd);
     }
 
-    // -- VisualModel interface
     void draw(const core::visual::VisualParams* vparams) override;
-    void initTextures() { }
-    void update() { }
 
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
@@ -178,6 +180,19 @@ public:
 protected:
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
+    struct ForceOutput
+    {
+        Deriv force;
+        Real forceIntensity;
+        Real inverseLength;
+    };
+
+    ForceOutput computeForce(const VecDeriv& v, const EdgeInformation& einfo, const typename EdgeInformation::Spring& spring, Coord direction, Real distance);
+    Mat computeLocalJacobian(EdgeInformation& einfo, const Coord& direction, const ForceOutput& force);
+    void computeSpringForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v,
+                          EdgeInformation& einfo,
+                          typename EdgeInformation::Spring& spring);
+
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -186,7 +201,7 @@ protected:
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadularBendingSprings<sofa::defaulttype::Vec3Types>;
 

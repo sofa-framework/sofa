@@ -179,7 +179,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API VectorSpringForceField<defaulttype::Vec3Types>;
 
 #endif

@@ -87,7 +87,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 

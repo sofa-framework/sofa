@@ -42,11 +42,16 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
-    : d_rayleighStiffness(initData(&d_rayleighStiffness,0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , d_rayleighMass( initData(&d_rayleighMass,0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , d_velocityDamping( initData(&d_velocityDamping,0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
-    , d_gamma( initData(&d_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient"))
-    , d_beta( initData(&d_beta, 0.25, "beta", "Newmark scheme beta coefficient") )
+    : d_rayleighStiffness(initData(&d_rayleighStiffness, 0_sreal,
+                                   "rayleighStiffness",
+                                   "Rayleigh damping coefficient related to stiffness"))
+    , d_rayleighMass(initData(&d_rayleighMass, 0_sreal, "rayleighMass",
+                              "Rayleigh damping coefficient related to mass"))
+    , d_velocityDamping(initData(&d_velocityDamping, 0_sreal, "vdamping",
+                                 "Velocity decay coefficient (no decay if null)"))
+    , d_gamma(initData(&d_gamma, 0.5_sreal, "gamma",
+                       "Newmark scheme gamma coefficient"))
+    , d_beta(initData(&d_beta, 0.25_sreal, "beta", "Newmark scheme beta coefficient"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
@@ -70,10 +75,10 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 
     const SReal h = dt;
-    const double gamma = d_gamma.getValue();
-    const double beta = d_beta.getValue();
-    const double rM = d_rayleighMass.getValue();
-    const double rK = d_rayleighStiffness.getValue();
+    const SReal gamma = d_gamma.getValue();
+    const SReal beta = d_beta.getValue();
+    const SReal rM = d_rayleighMass.getValue();
+    const SReal rK = d_rayleighStiffness.getValue();
 
     // 1. Initialize a_t and to store it as a vecId to be used in the resolution of this solver (using as well old xand v)
     // Once we have a_{t+dt} we can update the new x and v.
@@ -138,11 +143,11 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    solveConstraint(dt,xResult,core::ConstraintParams::POS);
+    solveConstraint(dt,xResult,core::ConstraintParams::ConstOrder::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
-    solveConstraint(dt,vResult,core::ConstraintParams::VEL);
+    solveConstraint(dt,vResult,core::ConstraintParams::ConstOrder::VEL);
 
 #else // single-operation optimization
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -160,8 +165,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
     vop.v_multiop(ops);
 
-    mop.solveConstraint(vResult,core::ConstraintParams::VEL);
-    mop.solveConstraint(xResult,core::ConstraintParams::POS);
+    mop.solveConstraint(vResult,core::ConstraintOrder::VEL);
+    mop.solveConstraint(xResult,core::ConstraintOrder::POS);
 
 #endif
 

@@ -71,7 +71,7 @@ public:
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec1Types>;

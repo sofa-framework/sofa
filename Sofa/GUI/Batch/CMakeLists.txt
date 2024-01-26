@@ -7,11 +7,14 @@ set(HEADER_FILES
     ${SOFAGUIBATCH_ROOT}/config.h.in
     ${SOFAGUIBATCH_ROOT}/init.h
     ${SOFAGUIBATCH_ROOT}/BatchGUI.h
+    ${SOFAGUIBATCH_ROOT}/ProgressBar.h
+    ${SOFAGUIBATCH_ROOT}/indicators/indicators.hpp
 )
 
 set(SOURCE_FILES
     ${SOFAGUIBATCH_ROOT}/init.cpp
     ${SOFAGUIBATCH_ROOT}/BatchGUI.cpp
+    ${SOFAGUIBATCH_ROOT}/ProgressBar.cpp
 )
 
 sofa_find_package(Sofa.GUI.Common REQUIRED)

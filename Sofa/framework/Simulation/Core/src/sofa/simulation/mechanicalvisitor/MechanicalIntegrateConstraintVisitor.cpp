@@ -58,7 +58,7 @@ MechanicalIntegrateConstraintsVisitor::Result MechanicalIntegrateConstraintsVisi
         ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
     }
 
-    const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL ? velocityFactor : positionFactor;
+    const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintOrder::VEL ? velocityFactor : positionFactor;
 
     //dx *= correctionFactor;
     ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);

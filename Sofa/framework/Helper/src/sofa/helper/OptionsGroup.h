@@ -41,7 +41,6 @@ namespace sofa::helper
  * selected.
  *
  */
-
 class SOFA_HELPER_API OptionsGroup
 {
 public :
