@@ -11,6 +11,7 @@ jobs:
   check_title:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'sofa-framework' }}
+
     steps:
     - name: Check Pull Request Title
       id: title_check
