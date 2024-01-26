@@ -18,6 +18,7 @@ data = {
     "username" : bot_name
 }
 
+# Check whether an embed is expected. If not (empty title), enforce no embed using the "flag"
 if embeds_title == "":
     data["flags"] = 4
 else:
