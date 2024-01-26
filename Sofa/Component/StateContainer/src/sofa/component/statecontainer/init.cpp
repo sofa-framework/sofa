@@ -58,22 +58,16 @@ void init()
     if (first)
     {
         // keep the former behavior of implicitely register object when the lib is dynamically loaded
-        registerObjects(sofa::core::ObjectFactory::getInstance());
+        // registerObjects(sofa::core::ObjectFactory::getInstance());
         first = false;
     }
 }
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    static bool registered = false;
-
-    if (!registered)
-    {
-        registerMappedObject(factory);
-        registerMechanicalObject(factory);
-
-        registered = true;
-    }
+    std::cout << "registerOjbects" << std::endl;
+    registerMappedObject(factory);
+    registerMechanicalObject(factory);
 }
 
 const char* getModuleComponentList()

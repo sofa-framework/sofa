@@ -108,6 +108,10 @@ protected:
     ClassEntryMap registry;
     OnCreateCallback m_callbackOnCreate ;
 
+    /// Keep track of plugins who already registered
+    using RegisteredPluginMap = std::map<std::string, bool>;
+    RegisteredPluginMap m_registeredPluginMap;
+
 public:
 
     ~ObjectFactory();

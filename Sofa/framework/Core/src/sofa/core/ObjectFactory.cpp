@@ -708,18 +708,26 @@ typedef struct RegisterObjectsEntry
 bool ObjectFactory::registerObjectsFromPlugin(const sofa::helper::system::Plugin& plugin)
 {
     sofa::helper::system::PluginManager& pluginManager = sofa::helper::system::PluginManager::getInstance();
+    const auto& pluginName = plugin.getModuleName();
+
+    // do not register if it was already done before
+    if(m_registeredPluginMap.find(pluginName) != m_registeredPluginMap.end())
+    {
+        // msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
+        return false;
+    }
 
     RegisterObjectsEntry registerObjects;
     if (pluginManager.getEntryFromPlugin(&plugin, registerObjects))
     {
         registerObjects(this);
+        m_registeredPluginMap[pluginName] = true;
         return true;
     }
     else
     {
         return false;
     }
-    
 }
 
 } // namespace sofa::core
