@@ -139,10 +139,11 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
         if(dlInfoPath.compare(handlePath) != 0)
         {
             std::ostringstream oss;
-            oss << symbol << " path: \n"
-                << dlInfoPath << "\n"
-                << "is different from where it was supposed to be loaded: \n"
-                << handlePath << "\n.";
+            oss << symbol << " was found in the library " << dlInfoPath
+                << " , but it should have been found in this library " << handlePath << "\n."
+                << "The most probable reason is that your requested library " << handlePath.filename()
+                << " does not implement the symbol " << symbol << ", but its dependency "
+                << dlInfoPath.filename()<< " does.";
 
             // the symbol was found in an other library (dependency)
             symbolAddress = nullptr;
