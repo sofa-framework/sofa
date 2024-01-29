@@ -28,6 +28,7 @@ using sofa::helper::system::FileSystem;
 # include <dlfcn.h>
 #endif
 #include <string>
+#include <filesystem>
 
 namespace sofa::helper::system
 {
@@ -109,6 +110,45 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 # endif
     if(symbolAddress == nullptr)
         fetchLastError();
+#if not defined (WIN32)
+    else // checking that the symbol really comes from the provided library
+    {
+        constexpr auto getRealPath = [] (const auto& strpath)
+        {
+            std::filesystem::path path(strpath);
+            if(std::filesystem::is_symlink(path))
+            {
+                auto symlinkHandlePath = std::filesystem::read_symlink(path);
+                // symlink created by the build process are relative
+                if(symlinkHandlePath.is_relative())
+                {
+                    path = path.parent_path() / symlinkHandlePath;
+                }
+            }
+            return path;
+        };
+
+        Dl_info dli;
+        ::dladdr(symbolAddress, &dli);
+        std::filesystem::path dlInfoPath = getRealPath(dli.dli_fname);
+
+        std::filesystem::path handlePath = getRealPath(handle.filename());
+
+        // Both paths should be exactly the same
+        if(dlInfoPath.compare(handlePath) != 0)
+        {
+            std::ostringstream oss;
+            oss << symbol << " path: \n"
+                << dlInfoPath << "\n"
+                << "is different from where it was supposed to be loaded: \n"
+                << handlePath << "\n.";
+
+            // the symbol was found in an other library (dependency)
+            symbolAddress = nullptr;
+            m_lastError = oss.str();
+        }
+    }
+#endif
     return symbolAddress;
 }
 
