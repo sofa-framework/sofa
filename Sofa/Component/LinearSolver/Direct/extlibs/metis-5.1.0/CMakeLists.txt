@@ -13,6 +13,8 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${metis_sources} ${GKlib_sources})
+# add an alias to fully qualified name to unify interface with other cmake config files
+add_library(metis::metis ALIAS metis)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/GKlib>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmetis>")
 

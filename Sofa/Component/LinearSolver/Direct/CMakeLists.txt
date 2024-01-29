@@ -55,12 +55,13 @@ set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/TypedMatrixLinearSystem[BTDMatrix].cpp
 )
 
-sofa_find_package(metis QUIET) # Unix users can have an installed version of metis
-if(NOT metis_FOUND)
+find_package(Metis 5.1.0 EXACT QUIET)
+if(NOT Metis_FOUND)
     message(STATUS "${PROJECT_NAME}: using built-in metis library")
     option(METIS-GKLIB_GKRAND "enable GKRAND support" ON) #GKRAND support allows the portability of random number generation across different architectures
     add_subdirectory(extlibs/metis-5.1.0)
 endif()
+
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
 
 # make sure you have threads for AsyncSparseLDLSolver
@@ -71,7 +72,7 @@ sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for Mat
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative)
-target_link_libraries(${PROJECT_NAME} PUBLIC metis)
+target_link_libraries(${PROJECT_NAME} PUBLIC metis::metis)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
