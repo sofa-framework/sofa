@@ -29,6 +29,7 @@ using sofa::helper::system::FileSystem;
 #endif
 #include <string>
 #include <filesystem>
+#include <sstream>
 
 namespace sofa::helper::system
 {
