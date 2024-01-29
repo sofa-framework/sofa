@@ -19,12 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TESTPLUGIN_COMPONENT_B_H
-#define TESTPLUGIN_COMPONENT_B_H
+#ifndef TESTPLUGINA_COMPONENT_A_H
+#define TESTPLUGINA_COMPONENT_A_H
 
-#include <TestPlugin/TestPlugin.h>
+#include <TestPluginA/TestPluginA.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -32,29 +31,20 @@ namespace sofa
 namespace test
 {
 
-template<class T>
-class SOFA_TESTPLUGIN_API ComponentB : public sofa::core::objectmodel::BaseObject
+class SOFA_TESTPLUGINA_API ComponentA : public sofa::core::objectmodel::BaseObject
 {
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ComponentB, T), sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentA, sofa::core::objectmodel::BaseObject);
 
 protected:
-    ComponentB();
-    ~ComponentB() override;
-
+    ComponentA();
+    ~ComponentA() override;
 };
-
-#if !defined(TESTPLUGIN_COMPONENT_B_CPP)
-extern template class SOFA_TESTPLUGIN_API ComponentB<double>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2Types>;
-extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3Types>;
-
-#endif //  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 
 } // namespace test
 
 } // namespace sofa
 
 
-#endif // TESTPLUGIN_COMPONENT_B_H
+#endif // TESTPLUGINA_COMPONENT_A_H

@@ -19,16 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TESTPLUGIN_CONFIG_H
-#define TESTPLUGIN_CONFIG_H
+#ifndef TESTPLUGINA_CONFIG_H
+#define TESTPLUGINA_CONFIG_H
 
 #include <sofa/helper/config.h>
 
-#ifdef SOFA_BUILD_TESTPLUGIN
-#  define SOFA_TARGET TestPlugin
-#  define SOFA_TESTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_TESTPLUGINA
+#  define SOFA_TARGET TestPluginA
+#  define SOFA_TESTPLUGINA_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_TESTPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_TESTPLUGINA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // TESTPLUGIN_CONFIG_H
+namespace testplugina
+{
+    SOFA_TESTPLUGINA_API void init();
+}
+
+#endif // TESTPLUGINA_CONFIG_H

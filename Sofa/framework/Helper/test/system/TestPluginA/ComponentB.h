@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define TESTPLUGIN_COMPONENT_B_CPP
+#ifndef TESTPLUGINA_COMPONENT_B_H
+#define TESTPLUGINA_COMPONENT_B_H
 
-#include "ComponentB.h"
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <TestPluginA/TestPluginA.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -33,30 +33,28 @@ namespace test
 {
 
 template<class T>
-ComponentB<T>::ComponentB()
+class SOFA_TESTPLUGINA_API ComponentB : public sofa::core::objectmodel::BaseObject
 {
-}
 
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ComponentB, T), sofa::core::objectmodel::BaseObject);
 
-template<class T>
-ComponentB<T>::~ComponentB()
-{
-}
+protected:
+    ComponentB();
+    ~ComponentB() override;
 
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2Types> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3Types> >()
+};
 
-;
+#if !defined(TESTPLUGINA_COMPONENT_B_CPP)
+extern template class SOFA_TESTPLUGINA_API ComponentB<double>;
+extern template class SOFA_TESTPLUGINA_API ComponentB<defaulttype::Vec2Types>;
+extern template class SOFA_TESTPLUGINA_API ComponentB<defaulttype::Rigid3Types>;
 
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2Types>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3Types>;
-
-
-
+#endif //  !defined(TESTPLUGINA_COMPONENT_B_CPP)
 
 } // namespace test
 
 } // namespace sofa
+
+
+#endif // TESTPLUGINA_COMPONENT_B_H

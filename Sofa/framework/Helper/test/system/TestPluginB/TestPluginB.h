@@ -19,48 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#ifndef TESTPLUGINB_CONFIG_H
+#define TESTPLUGINB_CONFIG_H
 
-extern "C" {
+#include <sofa/helper/config.h>
 
-static int counter = 0;
+#ifdef SOFA_BUILD_TESTPLUGINB
+#  define SOFA_TARGET TestPluginB
+#  define SOFA_TESTPLUGINB_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_TESTPLUGINB_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-SOFA_TESTPLUGIN_API void initExternalModule()
-{
-    static bool first = true;
-
-    if (first)
-    {
-        first = false;
-    }
-    counter++;
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleName()
-{
-    return "TestPlugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
-{
-    return "0.7";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
-{
-    return "LicenseTest";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
-{
-    return "Description of the Test Plugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
-{
-    return "ComponentA, ComponentB";
-}
-
-} // extern "C"
-
-
+#endif // TESTPLUGINB_CONFIG_H
