@@ -50,7 +50,7 @@ protected:
 
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;
-        m_testPluginName = "TestPlugin";
+        m_testPluginName = "TestPluginA";
         
         //generate on the fly test list
         std::ofstream testPluginList;
