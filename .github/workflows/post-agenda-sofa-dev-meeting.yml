@@ -2,8 +2,8 @@ name: Post - SOFA dev meeting agenda/reminder
 
 on:
   schedule:
-    - cron: '30 7 * * 1'  # 9:30 am CET every Monday
-    - cron: '0 6 * * 3'   # 8:00 am CET on Wednesdays
+    - cron: '30 8 * * 1'  # 9:30 am CET every Monday
+    - cron: '30 7 * * 3'   # 8:00 am CET on Wednesdays
 
 jobs:
   run:
@@ -23,7 +23,7 @@ jobs:
 
       # Monday message : agenda
       - name: Run script post-discord-message.py
-        if: github.event.schedule == '30 7 * * 1'
+        if: github.event.schedule == '30 8 * * 1'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
@@ -37,7 +37,7 @@ jobs:
 
       # Wednesday message : get ready
       - name: Run script post-discord-message.py
-        if: github.event.schedule == '0 6 * * 3'
+        if: github.event.schedule == '30 7 * * 3'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
