@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
+#include <sofa/component/linearsolver/ordering/NaturalOrderingMethod.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
-#include <sofa/component/linearsolver/ordering/init.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::ordering
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
 
-void initExternalModule()
+void NaturalOrderingMethod::computePermutation(
+    const SparseMatrixPattern& inPattern, int* outPermutation,
+    int* outInversePermutation)
 {
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    for (int i = 0; i < inPattern.matrixSize; ++i)
     {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
-        first = false;
+        outPermutation[i] = i;
+        outInversePermutation[i] = i;
     }
 }
 
-} // namespace sofa::component::linearsolver
+int NaturalOrderingMethodClass = core::RegisterObject("Natural order (no permutation). Corresponding to an identity matrix.")
+    .add<NaturalOrderingMethod>();
+
+}

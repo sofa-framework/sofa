@@ -68,9 +68,10 @@ sofa_find_package(Threads REQUIRED)
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for MatrixLinearSolver which will move to core
+sofa_find_package(Sofa.Component.LinearSolver.Ordering REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 

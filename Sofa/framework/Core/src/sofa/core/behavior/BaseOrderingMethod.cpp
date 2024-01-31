@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
+#include <sofa/core/behavior/BaseOrderingMethod.h>
 
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
-#include <sofa/component/linearsolver/ordering/init.h>
+sofa::core::behavior::BaseOrderingMethod::~BaseOrderingMethod()
+= default;
 
-namespace sofa::component::linearsolver
+void sofa::core::behavior::BaseOrderingMethod::computeInverseFromPermutation(
+    const int matrixSize, const int* inPermutation, int* outInversePermutation)
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    // Fill the outInversePermutation vector by swapping indices and values
+    for (int i = 0; i < matrixSize; ++i)
     {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
-        first = false;
+        outInversePermutation[inPermutation[i]] = i;
     }
 }
-
-} // namespace sofa::component::linearsolver

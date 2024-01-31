@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
+#pragma once
 
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
-#include <sofa/component/linearsolver/ordering/init.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
 
-void initExternalModule()
+/**
+ *  \brief Abstract base class for ordering methods in sparse linear solvers
+ *
+ */
+class SOFA_CORE_API BaseOrderingMethod : virtual public objectmodel::BaseObject
 {
-    init();
-}
+public:
+    SOFA_ABSTRACT_CLASS(BaseOrderingMethod, objectmodel::BaseObject)
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    ~BaseOrderingMethod() override;
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    struct SparseMatrixPattern
     {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
+        int matrixSize;
+        int numberOfNonZeros;
+        int* rowBegin;
+        int* colsIndex;
+    };
 
-        first = false;
-    }
+    virtual void computePermutation(
+        const SparseMatrixPattern& inPattern,
+        int* outPermutation,
+        int* outInversePermutation) = 0;
+
+    static void computeInverseFromPermutation(int matrixSize, const int* inPermutation, int* outInversePermutation);
+};
+
 }
-
-} // namespace sofa::component::linearsolver

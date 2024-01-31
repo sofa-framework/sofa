@@ -19,50 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
+#pragma once
 
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
-#include <sofa/component/linearsolver/ordering/init.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::linearsolver
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_ORDERING
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_LINEARSOLVER_ORDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_LINEARSOLVER_ORDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa::component::linearsolver::ordering
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofa::component::linearsolver::ordering
 
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::linearsolver

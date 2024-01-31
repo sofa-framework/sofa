@@ -19,20 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
-
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
 #include <sofa/component/linearsolver/ordering/init.h>
-
-namespace sofa::component::linearsolver
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::component::linearsolver::ordering
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -55,14 +51,14 @@ void init()
     static bool first = true;
     if (first)
     {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
         first = false;
     }
 }
 
-} // namespace sofa::component::linearsolver
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
+    return classes.c_str();
+}
+} // namespace sofa::component::linearsolver::ordering

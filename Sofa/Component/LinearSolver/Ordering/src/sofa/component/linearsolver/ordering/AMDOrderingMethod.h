@@ -19,50 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/init.h>
+#pragma once
 
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/component/linearsolver/direct/init.h>
-#include <sofa/component/linearsolver/preconditioner/init.h>
-#include <sofa/component/linearsolver/ordering/init.h>
+#include <sofa/component/linearsolver/ordering/config.h>
+#include <sofa/component/linearsolver/ordering/EigenOrderingMethod.h>
+#include <Eigen/OrderingMethods>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::ordering
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
 
-void initExternalModule()
+class SOFA_COMPONENT_LINEARSOLVER_ORDERING_API AMDOrderingMethod : public EigenOrderingMethod<Eigen::AMDOrdering<int>>
 {
-    init();
+public:
+    SOFA_CLASS(AMDOrderingMethod, EigenOrderingMethod<Eigen::AMDOrdering<int>>);
+};
+
 }
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::ordering::init();
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::linearsolver
