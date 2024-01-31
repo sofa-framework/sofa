@@ -5,7 +5,7 @@
 # to require version 3.1.2 or newer of Json.
 #
 # This module reads hints about search locations from variables:
-#  JSON_ROOT - Preferred installation prefix
+#  json_ROOT - Preferred installation prefix
 #
 # Once done this will define
 #
@@ -62,14 +62,14 @@ if(JSON_INCLUDE_DIR)
 else()
     find_path(JSON_INCLUDE_DIR NAMES nlohmann_json.h json.h json.hpp
         PATHS
-            ${JSON_ROOT}
+            ${json_ROOT}
             ${CMAKE_INSTALL_PREFIX}/include
         PATH_SUFFIXES
             nlohmann
             include/nlohmann
         # If cross-compiling and typically use CMAKE_FIND_ROOT_PATH variable,
         # each of its directory entry will be prepended to PATHS locations, and
-        # JSON_ROOT is set as an absolute path. So we have to disable this behavior
+        # json_ROOT is set as an absolute path. So we have to disable this behavior
         # for such external libs
         NO_CMAKE_FIND_ROOT_PATH
         )
