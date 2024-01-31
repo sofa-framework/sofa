@@ -30,7 +30,7 @@ if(NOT googletest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
 
         add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 
-        target_compile_options(gtest_main PRIVATE "-GTEST_LINKED_AS_SHARED_LIBRARY=0")
+        target_compile_options(gtest_main PRIVATE "-DGTEST_LINKED_AS_SHARED_LIBRARY=0")
         target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
         include(SofaMacros)
