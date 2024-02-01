@@ -34,6 +34,8 @@ public:
 
     using core::behavior::BaseOrderingMethod::SparseMatrixPattern;
 
+    std::string methodName() const override;
+
     void computePermutation(
         const SparseMatrixPattern& inPattern,
         int* outPermutation,

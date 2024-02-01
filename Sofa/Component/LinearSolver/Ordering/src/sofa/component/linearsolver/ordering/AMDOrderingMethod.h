@@ -22,16 +22,18 @@
 #pragma once
 
 #include <sofa/component/linearsolver/ordering/config.h>
-#include <sofa/component/linearsolver/ordering/EigenOrderingMethod.h>
+#include <sofa/component/linearsolver/ordering/BaseEigenOrderingMethod.h>
 #include <Eigen/OrderingMethods>
 
 namespace sofa::component::linearsolver::ordering
 {
 
-class SOFA_COMPONENT_LINEARSOLVER_ORDERING_API AMDOrderingMethod : public EigenOrderingMethod<Eigen::AMDOrdering<int>>
+class SOFA_COMPONENT_LINEARSOLVER_ORDERING_API AMDOrderingMethod : public BaseEigenOrderingMethod<Eigen::AMDOrdering<int>>
 {
 public:
-    SOFA_CLASS(AMDOrderingMethod, EigenOrderingMethod<Eigen::AMDOrdering<int>>);
+    SOFA_CLASS(AMDOrderingMethod, BaseEigenOrderingMethod<Eigen::AMDOrdering<int>>);
+
+    std::string methodName() const override;
 };
 
 }

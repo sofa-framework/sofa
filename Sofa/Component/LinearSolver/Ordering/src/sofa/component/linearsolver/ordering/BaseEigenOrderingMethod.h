@@ -27,11 +27,15 @@
 namespace sofa::component::linearsolver::ordering
 {
 
+/**
+ * \brief Ordering method implemented in the library Eigen
+ * \tparam EigenOrderingMethodType The Eigen type for the ordering algorithm. For example Eigen::AMDOdering<int>
+ */
 template<class EigenOrderingMethodType>
-class EigenOrderingMethod : public core::behavior::BaseOrderingMethod
+class BaseEigenOrderingMethod : public core::behavior::BaseOrderingMethod
 {
 public:
-    SOFA_CLASS(EigenOrderingMethod, core::behavior::BaseOrderingMethod);
+    SOFA_CLASS(BaseEigenOrderingMethod, core::behavior::BaseOrderingMethod);
 
     using core::behavior::BaseOrderingMethod::SparseMatrixPattern;
 
@@ -42,7 +46,7 @@ public:
 };
 
 template <class EigenOrderingMethodType>
-void EigenOrderingMethod<EigenOrderingMethodType>::computePermutation(
+void BaseEigenOrderingMethod<EigenOrderingMethodType>::computePermutation(
     const SparseMatrixPattern& inPattern, int* outPermutation,
     int* outInversePermutation)
 {

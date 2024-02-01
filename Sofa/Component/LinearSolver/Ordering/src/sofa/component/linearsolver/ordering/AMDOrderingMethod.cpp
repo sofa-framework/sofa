@@ -22,6 +22,15 @@
 #include <sofa/component/linearsolver/ordering/AMDOrderingMethod.h>
 #include <sofa/core/ObjectFactory.h>
 
+namespace sofa::component::linearsolver::ordering
+{
 
 int AMDOrderingMethodClass = sofa::core::RegisterObject("Approximate minimum degree ordering implemented in the Eigen library")
-    .add<sofa::component::linearsolver::ordering::AMDOrderingMethod>();
+    .add<AMDOrderingMethod>();
+
+std::string AMDOrderingMethod::methodName() const
+{
+    return "AMD";
+}
+
+}

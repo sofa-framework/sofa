@@ -22,6 +22,15 @@
 #include <sofa/component/linearsolver/ordering/COLAMDOrderingMethod.h>
 #include <sofa/core/ObjectFactory.h>
 
+namespace sofa::component::linearsolver::ordering
+{
 
 int COLAMDOrderingMethodClass = sofa::core::RegisterObject("Column approximate minimum degree ordering implemented in the Eigen library")
-    .add<sofa::component::linearsolver::ordering::COLAMDOrderingMethod>();
+    .add<COLAMDOrderingMethod>();
+
+std::string COLAMDOrderingMethod::methodName() const
+{
+    return "COLAMD";
+}
+
+}

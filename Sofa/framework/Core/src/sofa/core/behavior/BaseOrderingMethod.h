@@ -50,6 +50,8 @@ public:
         int* outPermutation,
         int* outInversePermutation) = 0;
 
+    virtual std::string methodName() const = 0;
+
     static void computeInverseFromPermutation(int matrixSize, const int* inPermutation, int* outInversePermutation);
 };
 

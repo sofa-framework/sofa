@@ -26,6 +26,11 @@
 namespace sofa::component::linearsolver::ordering
 {
 
+std::string NaturalOrderingMethod::methodName() const
+{
+    return "Natural";
+}
+
 void NaturalOrderingMethod::computePermutation(
     const SparseMatrixPattern& inPattern, int* outPermutation,
     int* outInversePermutation)
