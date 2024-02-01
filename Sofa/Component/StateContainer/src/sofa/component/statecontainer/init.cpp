@@ -21,6 +21,10 @@
 ******************************************************************************/
 #include <sofa/component/statecontainer/init.h>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/component/statecontainer/MappedObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
 namespace sofa::component::statecontainer
 {
     
@@ -29,6 +33,7 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -52,6 +57,39 @@ void init()
     if (first)
     {
         first = false;
+    }
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    static bool registered = false;
+
+    if (!registered)
+    {
+        using namespace sofa::defaulttype;
+        
+        // Registration with explicit commit
+        // MappedObject
+        core::RegisterObject("Mapped state vectors")
+            .add< MappedObject<Vec1Types> >()
+            .add< MappedObject<Vec3Types> >(true) // default template
+            .add< MappedObject<Vec2Types> >()
+            .add< MappedObject<Vec6Types> >()
+            .add< MappedObject<Rigid3Types> >()
+            .add< MappedObject<Rigid2Types> >()
+            .commit(factory);
+
+        // Registration with RAII-style commit
+        // MechanicalObject
+        core::RegisterObject("mechanical state vectors", factory)
+            .add< MechanicalObject<Vec3Types> >(true) // default template
+            .add< MechanicalObject<Vec2Types> >()
+            .add< MechanicalObject<Vec1Types> >()
+            .add< MechanicalObject<Vec6Types> >()
+            .add< MechanicalObject<Rigid3Types> >()
+            .add< MechanicalObject<Rigid2Types> >();
+
+        registered = true;
     }
 }
 

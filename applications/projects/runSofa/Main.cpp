@@ -101,6 +101,7 @@ using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <sofa/gui/common/ArgumentParser.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
 {
@@ -423,6 +424,13 @@ int main(int argc, char** argv)
     else
     {
         msg_info("runSofa") << "Automatic plugin loading disabled.";
+    }
+
+    sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
+    // calling explicitely registerObjects from loadedPlugins
+    for (const auto& [pluginPath, plugin] : PluginManager::getInstance().getPluginMap())
+    {
+        objectFactory->registerObjectsFromPlugin(plugin);
     }
 
     // Parse again to take into account the potential new options

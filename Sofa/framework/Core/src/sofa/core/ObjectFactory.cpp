@@ -26,6 +26,7 @@
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/DiffLib.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::core
 {
@@ -571,6 +572,20 @@ RegisterObject::RegisterObject(const std::string& description)
     }
 }
 
+RegisterObject::RegisterObject(const std::string& description, ObjectFactory* objectFactory)
+    : RegisterObject(description)
+{
+    m_objectFactory = objectFactory;
+}
+
+RegisterObject::~RegisterObject()
+{
+    if (m_objectFactory)
+    {
+        commit(m_objectFactory);
+    }
+}
+
 RegisterObject& RegisterObject::addAlias(std::string val)
 {
     entry.aliases.insert(val);
@@ -626,13 +641,25 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 
 RegisterObject::operator int()
 {
-    if (entry.className.empty())
+    if (commit(ObjectFactory::getInstance()))
     {
-        return 0;
+        return 1;
     }
     else
     {
-        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
+        return 0;
+    }
+}
+
+bool RegisterObject::commit(sofa::core::ObjectFactory* objectFactory)
+{
+    if (entry.className.empty() || objectFactory == nullptr)
+    {
+        return false;
+    }
+    else
+    {
+        ObjectFactory::ClassEntry& reg = objectFactory->getEntry(entry.className);
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
@@ -648,29 +675,60 @@ RegisterObject::operator int()
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (auto & creator_entry : entry.creatorMap)
+        for (auto& creator_entry : entry.creatorMap)
         {
-            const std::string & template_name = creator_entry.first;
+            const std::string& template_name = creator_entry.first;
             if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
                 if (template_name.empty()) {
                     msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
-                } else {
+                }
+                else {
                     msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
                 }
-            } else {
+            }
+            else {
                 reg.creatorMap.insert(creator_entry);
             }
         }
 
-        for (const auto & alias : entry.aliases)
+        for (const auto& alias : entry.aliases)
         {
             if (reg.aliases.find(alias) == reg.aliases.end())
             {
-                ObjectFactory::getInstance()->addAlias(alias,entry.className);
+                objectFactory->addAlias(alias, entry.className);
             }
         }
-        return 1;
+        return true;
     }
+}
+
+typedef struct RegisterObjectsEntry
+{
+    inline static const char* symbol = "registerObjects";
+    typedef void (*FuncPtr) (sofa::core::ObjectFactory*);
+    FuncPtr func;
+    void operator()(sofa::core::ObjectFactory* data)
+    {
+        if (func) return func(data);
+    }
+    RegisterObjectsEntry() :func(nullptr) {}
+} RegisterObjectsEntry;
+
+bool ObjectFactory::registerObjectsFromPlugin(const sofa::helper::system::Plugin& plugin)
+{
+    sofa::helper::system::PluginManager& pluginManager = sofa::helper::system::PluginManager::getInstance();
+
+    RegisterObjectsEntry registerObjects;
+    if (pluginManager.getEntryFromPlugin(&plugin, registerObjects))
+    {
+        registerObjects(this);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }
 
 } // namespace sofa::core
