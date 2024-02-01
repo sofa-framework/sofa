@@ -46,11 +46,12 @@
 
 namespace sofa::component
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory * factory);
 }
 
 void initExternalModule()
@@ -66,6 +67,11 @@ const char* getModuleName()
 const char* getModuleVersion()
 {
     return MODULE_VERSION;
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerObjectsInFactory(factory);
 }
 
 void init()
@@ -99,9 +105,9 @@ void init()
     }
 }
 
-void registerObjects(sofa::core::ObjectFactory* factory)
+void registerObjectsInFactory(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::statecontainer::registerObjects(factory);
+    sofa::component::statecontainer::registerObjectsInFactory(factory);
 }
 
 } // namespace sofa::component

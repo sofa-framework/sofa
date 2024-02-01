@@ -34,6 +34,7 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -58,6 +59,11 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerObjectsInFactory(factory);
+}
+
 void init()
 {
     static bool first = true;
@@ -68,7 +74,7 @@ void init()
     }
 }
 
-void registerObjects(sofa::core::ObjectFactory* factory)
+void registerObjectsInFactory(sofa::core::ObjectFactory* factory)
 {
     registerMappedObject(factory);
     registerMechanicalObject(factory);

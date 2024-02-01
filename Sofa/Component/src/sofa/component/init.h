@@ -26,11 +26,11 @@
 
 namespace sofa::core
 {
-    struct ObjectFactory;
+    class ObjectFactory;
 }
 
 namespace sofa::component
 {
 	SOFA_COMPONENT_API void init();
-    extern "C" SOFA_COMPONENT_API void registerObjects(sofa::core::ObjectFactory* factory);
+    SOFA_COMPONENT_API void registerObjectsInFactory(sofa::core::ObjectFactory* factory);
 } // namespace sofa::component
