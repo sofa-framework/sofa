@@ -113,35 +113,42 @@ Eigen::ComputationInfo EigenDirectSparseSolver<TBlockType, EigenSolver>
 template <class TBlockType, class EigenSolver>
 void EigenDirectSparseSolver<TBlockType, EigenSolver>::updateSolverOderingMethod()
 {
-    if (m_selectedOrderingMethod != d_orderingMethod.getValue().getSelectedId())
+    if (this->l_orderingMethod)
     {
-        switch(d_orderingMethod.getValue().getSelectedId())
+        if (m_selectedOrderingMethod != this->l_orderingMethod->methodName())
         {
-        case 0:  m_solver.template emplace<std::variant_alternative_t<0, decltype(m_solver)> >(); break;
-        case 1:  m_solver.template emplace<std::variant_alternative_t<1, decltype(m_solver)> >(); break;
-        case 2:  m_solver.template emplace<std::variant_alternative_t<2, decltype(m_solver)> >(); break;
-        case 3:  m_solver.template emplace<std::variant_alternative_t<3, decltype(m_solver)> >(); break;
-        default: m_solver.template emplace<std::variant_alternative_t<s_defaultOrderingMethod, decltype(m_solver)> >(); break;
+            m_selectedOrderingMethod = this->l_orderingMethod->methodName();
+
+            if (m_selectedOrderingMethod == "AMD")
+            {
+                m_solver.template emplace<AMDOrderSolver>();
+            }
+            else if (m_selectedOrderingMethod == "COLAMD")
+            {
+                m_solver.template emplace<COLAMDOrderSolver>();
+            }
+            else if (m_selectedOrderingMethod == "Natural")
+            {
+                m_solver.template emplace<NaturalOrderSolver>();
+            }
+            else
+            {
+                msg_error() << "This solver does not support the ordering method called '" << m_selectedOrderingMethod << "'. Taking AMD instead.";
+
+                m_selectedOrderingMethod = "AMD";
+                m_solver.template emplace<AMDOrderSolver>();
+            }
+
+            MfilteredrowBegin.clear();
+            MfilteredcolsIndex.clear();
+            m_map.reset();
         }
-        m_selectedOrderingMethod = d_orderingMethod.getValue().getSelectedId();
-        if (m_selectedOrderingMethod >= std::variant_size_v<decltype(m_solver)>)
-            m_selectedOrderingMethod = s_defaultOrderingMethod;
-
-        MfilteredrowBegin.clear();
-        MfilteredcolsIndex.clear();
-        m_map.reset();
     }
-}
-
-template <class TBlockType, class EigenSolver>
-EigenDirectSparseSolver<TBlockType, EigenSolver>::EigenDirectSparseSolver()
-    : Inherit1()
-    , d_orderingMethod(initData(&d_orderingMethod, "ordering", "Ordering method"))
-{
-    sofa::helper::OptionsGroup d_orderingMethodOptions{"Natural", "AMD", "COLAMD", "Metis"};
-
-    d_orderingMethodOptions.setSelectedItem(s_defaultOrderingMethod);
-    d_orderingMethod.setValue(d_orderingMethodOptions);
+    else
+    {
+        msg_fatal() << "OrderingMethod missing.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 }
