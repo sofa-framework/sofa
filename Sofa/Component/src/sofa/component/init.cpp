@@ -99,4 +99,9 @@ void init()
     }
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    sofa::component::statecontainer::registerObjects(factory);
+}
+
 } // namespace sofa::component

@@ -24,7 +24,13 @@
 
 #include <sofa/component/config.h>
 
+namespace sofa::core
+{
+    struct ObjectFactory;
+}
+
 namespace sofa::component
 {
 	SOFA_COMPONENT_API void init();
+    extern "C" SOFA_COMPONENT_API void registerObjects(sofa::core::ObjectFactory* factory);
 } // namespace sofa::component
