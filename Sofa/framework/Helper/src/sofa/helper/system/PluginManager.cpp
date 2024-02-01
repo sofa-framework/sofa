@@ -45,26 +45,6 @@ using sofa::helper::Utils;
 namespace sofa::helper::system
 {
 
-namespace
-{
-
-template <class LibraryEntry>
-[[nodiscard]] bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
-{
-    typedef typename LibraryEntry::FuncPtr FuncPtr;
-    entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
-    if( entry.func == 0 )
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-} // namespace
-
 const char* Plugin::GetModuleComponentList::symbol    = "getModuleComponentList";
 const char* Plugin::InitExternalModule::symbol        = "initExternalModule";
 const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";

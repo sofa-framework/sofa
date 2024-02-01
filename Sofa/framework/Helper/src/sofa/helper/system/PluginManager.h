@@ -141,6 +141,24 @@ private:
 
 };
 
+namespace
+{
+    template <class LibraryEntry>
+    [[nodiscard]] static bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
+    {
+        typedef typename LibraryEntry::FuncPtr FuncPtr;
+        entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
+        if (entry.func == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+}
+
 class SOFA_HELPER_API PluginManager
 {
 public:
@@ -208,6 +226,12 @@ public:
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
     Plugin* getPluginByName(const std::string& pluginName);
+    
+    template <typename Entry>
+    bool getEntryFromPlugin(const Plugin* plugin, Entry& entry)
+    {
+        return getPluginEntry(entry, plugin->dynamicLibrary);
+    }
 
     void readFromIniFile(const std::string& path);
     void readFromIniFile(const std::string& path, type::vector<std::string>& listLoadedPlugins);
