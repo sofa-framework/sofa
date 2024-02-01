@@ -34,7 +34,6 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -52,28 +51,27 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // keep the former behavior of implicitely register object when the lib is dynamically loaded
-        // registerObjects(sofa::core::ObjectFactory::getInstance());
-        first = false;
-    }
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    std::cout << "registerOjbects" << std::endl;
-    registerMappedObject(factory);
-    registerMechanicalObject(factory);
-}
-
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
     static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
     return classes.c_str();
 }
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+
+        first = false;
+    }
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerMappedObject(factory);
+    registerMechanicalObject(factory);
+}
+
 } // namespace sofa::component::statecontainer

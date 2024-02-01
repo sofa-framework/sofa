@@ -23,7 +23,13 @@
 
 #include <sofa/component/statecontainer/config.h>
 
+namespace sofa::core
+{
+    struct ObjectFactory;
+}
+
 namespace sofa::component::statecontainer
 {
     SOFA_COMPONENT_STATECONTAINER_API void init();
+    extern "C" SOFA_COMPONENT_STATECONTAINER_API void registerObjects(sofa::core::ObjectFactory* factory);
 } // namespace sofa::component::statecontainer
