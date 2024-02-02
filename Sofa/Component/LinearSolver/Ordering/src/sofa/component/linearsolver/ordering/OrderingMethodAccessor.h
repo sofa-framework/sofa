@@ -57,28 +57,52 @@ public:
             }
             else
             {
-                using DefaultOrderingMethod = AMDOrderingMethod;
-                if (const auto createdOrderingMethod = sofa::core::objectmodel::New<DefaultOrderingMethod>())
+                // METIS is the preferred ordering method to keep the same
+                // behavior compared to the time when ordering method was not
+                // an option, and METIS was systematically used.
+                // The METIS ordering method is in another module and its
+                // C++ type is not accessible here. That is why the object
+                // factory is used.
+                const std::string preferredClass = "MetisOrderingMethod";
+                core::objectmodel::BaseObjectDescription description(preferredClass.c_str(), preferredClass.c_str());
+                const core::objectmodel::BaseObject::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
+                if (auto* metisOrderingMethod = dynamic_cast<core::behavior::BaseOrderingMethod*>(baseObject.get()))
                 {
-                    createdOrderingMethod->setName(this->getContext()->getNameHelper().resolveName(createdOrderingMethod->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
-                    msg_info() << "An OrderingMethod is required by " << this->getClassName() << " but has not been found:"
-                        " a default " << createdOrderingMethod->getClassName() << " is automatically added in the scene for you. To remove this info message, add"
-                        " an OrderingMethod in the scene. The list of available OrderingMethod is: "
-                        << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
-                    this->addSlave(createdOrderingMethod);
-                    l_orderingMethod.set(createdOrderingMethod);
+                    setupCreatedOrderingMethod(metisOrderingMethod);
                 }
                 else
                 {
-                    msg_fatal() << "An OrderingMethod is required by " << this->getClassName() << " but has not been found:"
-                        " a default " << DefaultOrderingMethod::GetClass()->className << " could not be automatically added in the scene. To remove this error, add"
-                        " an OrderingMethod in the scene. The list of available OrderingMethod is: "
-                        << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
-                    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                    using DefaultOrderingMethod = AMDOrderingMethod;
+                    if (const auto createdOrderingMethod = sofa::core::objectmodel::New<DefaultOrderingMethod>())
+                    {
+                        setupCreatedOrderingMethod(createdOrderingMethod.get());
+                    }
+                    else
+                    {
+                        msg_fatal() << "An OrderingMethod is required by " << this->getClassName() << " but has not been found:"
+                            " a default " << DefaultOrderingMethod::GetClass()->className << " could not be automatically added in the scene. To remove this error, add"
+                            " an OrderingMethod in the scene. The list of available OrderingMethod is: "
+                            << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
+                        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                    }
                 }
             }
 
         }
+    }
+
+private:
+
+    void setupCreatedOrderingMethod(core::behavior::BaseOrderingMethod* createdOrderingMethod)
+    {
+        createdOrderingMethod->setName(this->getContext()->getNameHelper().resolveName(createdOrderingMethod->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
+        this->addSlave(createdOrderingMethod);
+        l_orderingMethod.set(createdOrderingMethod);
+
+        msg_info() << "An OrderingMethod is required by " << this->getClassName() << " but has not been found:"
+            " a default " << createdOrderingMethod->getClassName() << " is automatically added in the scene for you. To remove this info message, add"
+            " an OrderingMethod in the scene. The list of available OrderingMethod is: "
+            << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
     }
 };
 
