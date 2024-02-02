@@ -51,10 +51,10 @@ const char* getModuleVersion()
 template<class EigenSolverFactory, class Scalar>
 void registerOrderingMethods()
 {
-    EigenSolverFactory::template registerType<Eigen::AMDOrdering<int>, Scalar >("AMD");
-    EigenSolverFactory::template registerType<Eigen::COLAMDOrdering<int>, Scalar >("COLAMD");
-    EigenSolverFactory::template registerType<Eigen::NaturalOrdering<int>, Scalar >("Natural");
-    EigenSolverFactory::template registerType<Eigen::MetisOrdering<int>, Scalar >("Metis");
+    EigenSolverFactory::template registerSolver<Eigen::AMDOrdering<int>, Scalar >("AMD");
+    EigenSolverFactory::template registerSolver<Eigen::COLAMDOrdering<int>, Scalar >("COLAMD");
+    EigenSolverFactory::template registerSolver<Eigen::NaturalOrdering<int>, Scalar >("Natural");
+    EigenSolverFactory::template registerSolver<Eigen::MetisOrdering<int>, Scalar >("Metis");
 }
 
 template<class Scalar>

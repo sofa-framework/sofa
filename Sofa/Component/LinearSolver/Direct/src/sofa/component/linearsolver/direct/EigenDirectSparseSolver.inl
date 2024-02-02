@@ -106,16 +106,16 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>::updateSolverOderingMethod
         {
             m_selectedOrderingMethod = this->l_orderingMethod->methodName();
 
-            if (EigenSolverFactory::template hasObject<Real>(m_selectedOrderingMethod))
+            if (EigenSolverFactory::template hasSolver<Real>(m_selectedOrderingMethod))
             {
-                m_solver = std::unique_ptr<BaseEigenSolverProxy>(EigenSolverFactory::template getObject<Real>(m_selectedOrderingMethod));
+                m_solver = std::unique_ptr<BaseEigenSolverProxy>(EigenSolverFactory::template getSolver<Real>(m_selectedOrderingMethod));
             }
             else
             {
                 std::set<std::string> listAvailableOrderingMethods;
-                for (const auto& [orderingMethodName, _] : EigenSolverFactory::registeredObjects())
+                for (const auto& [orderingMethodName, _] : EigenSolverFactory::registeredSolvers())
                 {
-                    if (EigenSolverFactory::template hasObject<Real>(orderingMethodName))
+                    if (EigenSolverFactory::template hasSolver<Real>(orderingMethodName))
                     {
                         listAvailableOrderingMethods.insert(orderingMethodName);
                     }

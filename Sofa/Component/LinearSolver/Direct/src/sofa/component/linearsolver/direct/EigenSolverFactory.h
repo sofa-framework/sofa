@@ -36,6 +36,9 @@
 namespace sofa::component::linearsolver::direct
 {
 
+/**
+ * A base wrapper class for all solvers based on the Eigen library
+ */
 struct SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BaseEigenSolverProxy
 {
     virtual ~BaseEigenSolverProxy(){}
@@ -61,11 +64,20 @@ struct SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BaseEigenSolverProxy
     virtual void factorize(const EigenSparseMatrixMap<double>& a) = 0;
 };
 
+
+/**
+ * This class is the bridge between an Eigen solver class and the abstact
+ * class BaseEigenSolverProxy.
+ *
+ * Using this class, all Eigen solvers can inherit from the same base class,
+ * hence runtime polymorphism is possible. Only a subset of the Eigen solver
+ * methods are available.
+ */
 template <typename RealObject>
-class EigenSolverProxy : public BaseEigenSolverProxy
+class EigenSolverWrapper : public BaseEigenSolverProxy
 {
 public:
-    EigenSolverProxy() : m_realObject() {}
+    EigenSolverWrapper() : m_realObject() {}
 
     [[nodiscard]] Eigen::ComputationInfo info() const override
     {
@@ -142,7 +154,12 @@ private:
     }
 };
 
-class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenFactory
+
+/**
+ * A factory to create Eigen solvers from strings (the name of the ordering
+ * method, and the name of the floating-point type)
+ */
+class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSolverFactory
 {
 public:
     struct OrderingMethodName
@@ -160,7 +177,7 @@ public:
     void registerType(const std::string& orderingMethodName)
     {
         using Scalar = typename EigenClass::Scalar;
-        m_registeredTypes[join<Scalar>(orderingMethodName)] = [](){ return new EigenSolverProxy<EigenClass>(); };
+        m_registeredTypes[join<Scalar>(orderingMethodName)] = [](){ return new EigenSolverWrapper<EigenClass>(); };
     }
 
     template<class Scalar>
@@ -202,14 +219,20 @@ private:
     }
 };
 
-template <typename T>
+
+/**
+ * Base class for specialized Eigen solver factories. It is a singleton with a
+ * single instance of EigenSolverFactory. It uses the CRTP to define a single
+ * instance of EigenSolverFactory for each derived type.
+ */
+template <typename Derived>
 class BaseMainEigenSolverFactory
 {
 protected:
     static std::mutex s_mutex;
-    static EigenFactory& getFactory()
+    static EigenSolverFactory& getFactory()
     {
-        static EigenFactory factory;
+        static EigenSolverFactory factory;
         return factory;
     }
 
@@ -219,33 +242,37 @@ public:
     using EigenSparseMatrix = Eigen::SparseMatrix<Scalar>;
 
     template<class Scalar>
-    static BaseEigenSolverProxy* getObject(const std::string & orderingMethodName )
+    static BaseEigenSolverProxy* getSolver(const std::string & orderingMethodName )
     {
         std::lock_guard lock(s_mutex);
         return getFactory().getObject<Scalar>(orderingMethodName);
     }
 
     template<class Scalar>
-    static bool hasObject(const std::string & orderingMethodName )
+    static bool hasSolver(const std::string & orderingMethodName )
     {
         std::lock_guard lock(s_mutex);
         return getFactory().hasObject<Scalar>(orderingMethodName);
     }
 
-    static sofa::type::vector<EigenFactory::OrderingMethodName> registeredObjects()
+    static sofa::type::vector<EigenSolverFactory::OrderingMethodName> registeredSolvers()
     {
         std::lock_guard lock(s_mutex);
         return getFactory().registeredObjects();
     }
 };
 
+
+/**
+ * Singleton factory dedicated to LDLT solvers
+ */
 class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API MainSimplicialLDLTFactory : public BaseMainEigenSolverFactory<MainSimplicialLDLTFactory>
 {
 public:
     ~MainSimplicialLDLTFactory();
 
     template<typename OrderingMethodType, class ScalarType>
-    static void registerType(const std::string& orderingMethodName)
+    static void registerSolver(const std::string& orderingMethodName)
     {
         std::lock_guard lock(s_mutex);
         getFactory().registerType<
@@ -253,13 +280,16 @@ public:
     }
 };
 
+/**
+ * Singleton factory dedicated to LLT solvers
+ */
 class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API MainSimplicialLLTFactory : public BaseMainEigenSolverFactory<MainSimplicialLLTFactory>
 {
 public:
     ~MainSimplicialLLTFactory();
 
     template<typename OrderingMethodType, class ScalarType>
-    static void registerType(const std::string& orderingMethodName)
+    static void registerSolver(const std::string& orderingMethodName)
     {
         std::lock_guard lock(s_mutex);
         getFactory().registerType<
@@ -267,13 +297,16 @@ public:
     }
 };
 
+/**
+ * Singleton factory dedicated to QT solvers
+ */
 class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API MainQRFactory : public BaseMainEigenSolverFactory<MainQRFactory>
 {
 public:
     ~MainQRFactory();
 
     template<typename OrderingMethodType, class ScalarType>
-    static void registerType(const std::string& orderingMethodName)
+    static void registerSolver(const std::string& orderingMethodName)
     {
         std::lock_guard lock(s_mutex);
         getFactory().registerType<
@@ -281,13 +314,16 @@ public:
     }
 };
 
+/**
+ * Singleton factory dedicated to LU solvers
+ */
 class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API MainLUFactory : public BaseMainEigenSolverFactory<MainLUFactory>
 {
 public:
     ~MainLUFactory();
 
     template<typename OrderingMethodType, class ScalarType>
-    static void registerType(const std::string& orderingMethodName)
+    static void registerSolver(const std::string& orderingMethodName)
     {
         std::lock_guard lock(s_mutex);
         getFactory().registerType<
