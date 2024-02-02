@@ -27,8 +27,10 @@ namespace sofa::core::behavior
 {
 
 /**
- *  \brief Abstract base class for ordering methods in sparse linear solvers
+ * \brief Abstract base class for ordering methods in sparse linear solvers
  *
+ * A permutation is computed and applied on a sparse matrix to improve the
+ * computation time when solving a linear system.
  */
 class SOFA_CORE_API BaseOrderingMethod : virtual public objectmodel::BaseObject
 {
@@ -45,11 +47,27 @@ public:
         int* colsIndex;
     };
 
+
+    /**
+     * Computes a permutation so that a permutation matrix can be applied on
+     * sparse matrices before a factorization. It helps to reduce the number of
+     * elements in the decomposition, hence improving the computation time
+     * when solving a linear system.
+     * \param inPattern The sparse matrix pattern as an input
+     * \param outPermutation The output permutation. A memory space of the size
+     * of the matrix is expected.
+     * \param outInversePermutation The inverse of the computed permutation. A
+     * memory space of the size of the matrix is expected.
+     */
     virtual void computePermutation(
         const SparseMatrixPattern& inPattern,
         int* outPermutation,
         int* outInversePermutation) = 0;
 
+    /**
+     * Returns an identifier for the method name. This can be used as a key
+     * in a factory of solvers. See @EigenDirectSparseSolver
+     */
     virtual std::string methodName() const = 0;
 
     static void computeInverseFromPermutation(int matrixSize, const int* inPermutation, int* outInversePermutation);
