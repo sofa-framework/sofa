@@ -23,7 +23,6 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/SparseQRTraits.h>
 
 namespace sofa::component::linearsolver::direct
 {

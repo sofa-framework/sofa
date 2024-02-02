@@ -24,7 +24,6 @@
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
-#include <sofa/component/linearsolver/direct/SimplicialLDLTTraits.h>
 
 namespace sofa::component::linearsolver::direct
 {
