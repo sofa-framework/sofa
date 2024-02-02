@@ -4,7 +4,7 @@
 @PACKAGE_INIT@
 
 find_package(Threads QUIET REQUIRED)
-find_package(GTest CONFIG QUIET REQUIRED)
+find_package(GTest QUIET REQUIRED)
 find_package(SofaGTestMain QUIET REQUIRED)
 find_package(Sofa.Helper QUIET REQUIRED)
 find_package(Sofa.DefaultType QUIET REQUIRED)

@@ -6,8 +6,8 @@ enable_testing()
 
 # add googletest library
 # set(googletest_disable_pthreads ON CACHE INTERNAL "")
-find_package(googletest QUIET)
-if(NOT googletest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+find_package(GTest QUIET)
+if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
     message("${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching googletest...")
 
     include(FetchContent)
@@ -45,7 +45,7 @@ if(NOT googletest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
         set_target_properties(gtest PROPERTIES FOLDER Testing)
         set_target_properties(gtest_main PROPERTIES FOLDER Testing)
     endif()
-elseif (NOT googletest_FOUND)
+elseif (NOT GTest_FOUND)
     message(FATAL_ERROR "${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install googletest, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
@@ -82,7 +82,7 @@ sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph gtest SofaGTestMain )
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph GTest::gtest SofaGTestMain )
 target_compile_options(${PROJECT_NAME} PUBLIC "-DGTEST_LINKED_AS_SHARED_LIBRARY=1")
 
 set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
