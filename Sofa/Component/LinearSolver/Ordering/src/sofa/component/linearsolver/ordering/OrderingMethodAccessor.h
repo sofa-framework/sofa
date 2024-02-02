@@ -48,7 +48,7 @@ public:
 
         if (!l_orderingMethod.get())
         {
-            auto* orderingMethod = getContext()->template get<core::behavior::BaseOrderingMethod>(sofa::core::objectmodel::BaseContext::Local);
+            auto* orderingMethod = this->getContext()->template get<core::behavior::BaseOrderingMethod>(sofa::core::objectmodel::BaseContext::Local);
             l_orderingMethod.set(orderingMethod);
 
             if (orderingMethod)
