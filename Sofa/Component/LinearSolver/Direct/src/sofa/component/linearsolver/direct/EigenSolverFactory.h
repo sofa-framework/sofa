@@ -229,7 +229,7 @@ template <typename Derived>
 class BaseMainEigenSolverFactory
 {
 protected:
-    static std::mutex s_mutex;
+    inline static std::mutex s_mutex {};
     static EigenSolverFactory& getFactory()
     {
         static EigenSolverFactory factory;

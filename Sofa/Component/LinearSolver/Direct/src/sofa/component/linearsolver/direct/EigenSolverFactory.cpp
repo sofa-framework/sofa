@@ -24,8 +24,6 @@
 namespace sofa::component::linearsolver::direct
 {
 
-template <typename T> std::mutex BaseMainEigenSolverFactory<T>::s_mutex;
-
 MainSimplicialLDLTFactory::~MainSimplicialLDLTFactory() = default;
 MainSimplicialLLTFactory::~MainSimplicialLLTFactory() = default;
 MainQRFactory::~MainQRFactory() = default;
