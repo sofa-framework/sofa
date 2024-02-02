@@ -25,6 +25,7 @@
 #include <sofa/component/linearsolver/ordering/OrderingMethodAccessor.h>
 #include <variant>
 #include <Eigen/SparseCore>
+#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -34,24 +35,24 @@ namespace sofa::component::linearsolver::direct
 /**
  * Base class for all Eigen based direct sparse solvers
  */
-template<class TBlockType, class EigenSolver>
+template<class TBlockType, class TEigenSolverFactory>
 class EigenDirectSparseSolver
-    : public ordering::OrderingMethodAccessor<sofa::component::linearsolver::MatrixLinearSolver<
-        sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>,
-        sofa::linearalgebra::FullVector<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>::Real> > >
+    : public ordering::OrderingMethodAccessor<
+        sofa::component::linearsolver::MatrixLinearSolver<
+            sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>,
+            sofa::linearalgebra::FullVector<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>::Real>
+        >
+    >
 {
 public:
-    typedef sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType> Matrix;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>;
     using Real = typename Matrix::Real;
-    typedef sofa::linearalgebra::FullVector<Real> Vector;
+    using Vector = sofa::linearalgebra::FullVector<Real>;
 
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, EigenSolver),
-        ordering::OrderingMethodAccessor<SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector)>);
+    using EigenSolverFactory = TEigenSolverFactory;
 
-    using NaturalOrderSolver = typename EigenSolver::NaturalOrderSolver;
-    using AMDOrderSolver     = typename EigenSolver::AMDOrderSolver;
-    using COLAMDOrderSolver  = typename EigenSolver::COLAMDOrderSolver;
-    using MetisOrderSolver   = typename EigenSolver::MetisOrderSolver;
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, EigenSolverFactory),
+        SOFA_TEMPLATE(ordering::OrderingMethodAccessor, SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector)));
 
     ~EigenDirectSparseSolver() override = default;
 
@@ -70,9 +71,9 @@ protected:
     DeprecatedAndRemoved d_orderingMethod;
     std::string m_selectedOrderingMethod;
 
-    std::variant<NaturalOrderSolver, AMDOrderSolver, COLAMDOrderSolver, MetisOrderSolver> m_solver;
+    std::unique_ptr<BaseEigenSolverProxy> m_solver;
 
-    Eigen::ComputationInfo getSolverInfo() const;
+    [[nodiscard]] Eigen::ComputationInfo getSolverInfo() const;
     void updateSolverOderingMethod();
 
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;

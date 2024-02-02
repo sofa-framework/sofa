@@ -37,7 +37,7 @@ template<class TBlockType>
 class EigenSimplicialLLT
     : public EigenDirectSparseSolver<
         TBlockType,
-        SimplicialLLTTraits<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>::Real>
+        MainSimplicialLLTFactory
     >
 {
 public:
@@ -45,7 +45,7 @@ public:
     using Real = typename Matrix::Real;
     typedef sofa::linearalgebra::FullVector<Real> Vector;
 
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, SimplicialLLTTraits<Real>));
+    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainSimplicialLLTFactory));
 
 };
 
