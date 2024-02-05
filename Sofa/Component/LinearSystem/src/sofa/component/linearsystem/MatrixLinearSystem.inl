@@ -947,14 +947,10 @@ BaseAssemblingMatrixAccumulator<c>* MatrixLinearSystem<TMatrix, TVector>::create
 
     if (d_checkIndices.getValue())
     {
-        if (auto concreteLocalMatrix
-            = dynamic_cast<AssemblingMatrixAccumulator<c, core::matrixaccumulator::IndexVerificationStrategy>*>(localMatrix.get()))
+        const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
+        if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
         {
-            const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
-            if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
-            {
-                concreteLocalMatrix->indexVerificationStrategy = it->second;
-            }
+            localMatrix->setIndexCheckerStrategy(it->second);
         }
     }
 

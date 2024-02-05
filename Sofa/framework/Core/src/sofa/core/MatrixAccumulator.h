@@ -29,6 +29,11 @@
 namespace sofa::core
 {
 
+namespace matrixaccumulator
+{
+    struct IndexVerificationStrategy;
+}
+
 class SOFA_CORE_API MatrixAccumulatorInterface
 {
 public:
@@ -50,6 +55,8 @@ public:
 
     template<sofa::Size L, sofa::Size C, class real>
     void matAdd(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<L, C, real>& value);
+
+    virtual void setIndexCheckerStrategy(std::shared_ptr<matrixaccumulator::IndexVerificationStrategy>) {}
 };
 
 template <sofa::Size L, sofa::Size C, class real>
@@ -155,7 +162,12 @@ public:
     SOFA_CLASS(MatrixAccumulatorIndexChecker, TBaseMatrixAccumulator);
 
     [[maybe_unused]]
-    std::shared_ptr<TStrategy> indexVerificationStrategy;
+    std::shared_ptr<matrixaccumulator::IndexVerificationStrategy> indexVerificationStrategy;
+
+    void setIndexCheckerStrategy(std::shared_ptr<matrixaccumulator::IndexVerificationStrategy> strategy) override
+    {
+        indexVerificationStrategy = strategy;
+    }
 
     void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const float value) override final
     {
