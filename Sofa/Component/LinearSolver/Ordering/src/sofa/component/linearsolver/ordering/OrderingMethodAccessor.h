@@ -42,6 +42,10 @@ public:
     ~OrderingMethodAccessor() override = default;
     SingleLink<OrderingMethodAccessor, core::behavior::BaseOrderingMethod, BaseLink::FLAG_STRONGLINK> l_orderingMethod;
 
+private:
+    using DefaultOrderingMethod = AMDOrderingMethod;
+public:
+
     void init() override
     {
         Inherit1::init();
@@ -57,14 +61,7 @@ public:
             }
             else
             {
-                // METIS is the preferred ordering method to keep the same
-                // behavior compared to the time when ordering method was not
-                // an option, and METIS was systematically used.
-                // The METIS ordering method is in another module and its
-                // C++ type is not accessible here. That is why the object
-                // factory is used.
-                const std::string preferredClass = "MetisOrderingMethod";
-                core::objectmodel::BaseObjectDescription description(preferredClass.c_str(), preferredClass.c_str());
+                core::objectmodel::BaseObjectDescription description(desiredMethod.c_str(), desiredMethod.c_str());
                 const core::objectmodel::BaseObject::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
                 if (auto* metisOrderingMethod = dynamic_cast<core::behavior::BaseOrderingMethod*>(baseObject.get()))
                 {
@@ -72,7 +69,6 @@ public:
                 }
                 else
                 {
-                    using DefaultOrderingMethod = AMDOrderingMethod;
                     if (const auto createdOrderingMethod = sofa::core::objectmodel::New<DefaultOrderingMethod>())
                     {
                         setupCreatedOrderingMethod(createdOrderingMethod.get());
@@ -91,6 +87,43 @@ public:
         }
     }
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherit1::parse(arg);
+
+        //To remove for v24.12:
+        if (arg->getAttribute("ordering"))
+        {
+            //map storing the correspondance between the ordering method name
+            //as a Data, and its associated component
+            static const std::map<std::string, std::string> orderingMethodComponentsMap
+            {
+                {"Natural", "NaturalOrderingMethod"},
+                {"AMD", "AMDOrderingMethod"},
+                {"COLAMD", "COLAMDOrderingMethod"},
+                {"Metis", "MetisOrderingMethod"}
+            };
+
+            std::stringstream message;
+            message << "The Data 'ordering' is deprecated. Instead use a "
+                "component of type OrderingMethod. The list of available methods are: "
+                << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
+
+            const std::string methodName = arg->getAttribute("ordering");
+            const auto it = orderingMethodComponentsMap.find(methodName);
+            if (it != orderingMethodComponentsMap.end())
+            {
+                desiredMethod = it->second;
+
+                message << ". According to the value of the Data 'ordering', the "
+                           "object factory will try to instantiate the component '"
+                           << desiredMethod << "'.";
+            }
+
+            msg_warning() << message.str();
+        }
+    }
+
 private:
 
     void setupCreatedOrderingMethod(core::behavior::BaseOrderingMethod* createdOrderingMethod)
@@ -104,6 +137,11 @@ private:
             " an OrderingMethod in the scene. The list of available OrderingMethod is: "
             << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
     }
+
+    // METIS is the preferred ordering method to keep the same
+    // behavior compared to the time when ordering method was not
+    // an option, and METIS was systematically used.
+    std::string desiredMethod = "MetisOrderingMethod";
 };
 
 }
