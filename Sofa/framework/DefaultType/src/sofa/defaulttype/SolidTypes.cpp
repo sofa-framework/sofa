@@ -22,10 +22,8 @@
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_CPP
 #include <sofa/defaulttype/SolidTypes.inl>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
@@ -34,5 +32,5 @@ template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 
 }// defaulttype
 
-}// sofa
+// sofa
 

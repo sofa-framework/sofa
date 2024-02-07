@@ -28,16 +28,8 @@
 #include <atomic>
 #include <sofa/type/fixed_array.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 /**
@@ -198,12 +190,7 @@ protected:
     AtomicInt tail;
 };
 
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
-
-} // namespace helper
-
-} // namespace sofa
 
 #endif // SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H

@@ -32,13 +32,8 @@
 
 #include <unordered_map>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 
@@ -288,10 +283,7 @@ extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::de
 
 #endif
 
-} // namespace container
+} // namespace sofa::component::container
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

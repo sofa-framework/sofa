@@ -25,10 +25,8 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/collision/Pipeline.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -142,8 +140,7 @@ void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*
 }
 
 
+} // namespace sofa::simulation
 
-} // namespace simulation
 
-} // namespace sofa
 

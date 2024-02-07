@@ -28,10 +28,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 namespace _basesimulationexporter_
@@ -84,6 +82,6 @@ using _basesimulationexporter_::BaseSimulationExporter;
 
 } /// namespace simulation
 
-} /// namespace sofa
+/// namespace sofa
 
 #endif /// SOFA_CORE_EXPORTER_BASEEXPORTER_H

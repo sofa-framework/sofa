@@ -32,10 +32,8 @@
 #include <iostream>
 #include <map>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 /**
@@ -419,7 +417,7 @@ extern template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 
 }// defaulttype
 
-}// sofa
+// sofa
 
 
 

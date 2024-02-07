@@ -23,10 +23,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -58,7 +56,7 @@ void ParallelVisitorScheduler::recursiveClone(Node* node)
 
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

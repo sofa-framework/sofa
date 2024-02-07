@@ -8,14 +8,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::ImageCImg, "ImageCImg")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-
-namespace io
+namespace sofa::helper::io
 {
 
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
@@ -189,8 +183,8 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     return res;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+

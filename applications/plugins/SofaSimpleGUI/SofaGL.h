@@ -9,8 +9,9 @@
 #include "PickedPoint.h"
 #include "SpringInteractor.h"
 
-namespace sofa {
-namespace simplegui {
+
+namespace sofa::simplegui
+{
 
 /** OpenGL interface to a SofaScene.
  * This is not a viewer, this is an object used by a viewer to display a Sofa scene and to pick objects in it.
@@ -147,6 +148,6 @@ protected:
 };
 
 }
-}
+
 
 #endif // SOFA_NEWGUI_SofaGL_H

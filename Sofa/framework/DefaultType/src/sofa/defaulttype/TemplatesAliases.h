@@ -24,10 +24,8 @@
 #include <sofa/defaulttype/config.h>
 #include <string>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class T>
@@ -81,6 +79,6 @@ public:
 
 }// defaulttype
 
-}// sofa
+// sofa
 
 #endif // SOFA_HELPER_TEMPLATESALIASES_H

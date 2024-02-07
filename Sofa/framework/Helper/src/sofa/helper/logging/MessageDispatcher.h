@@ -30,11 +30,8 @@
 #include <sofa/helper/logging/Message.h>
 #include <vector>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+
+namespace sofa::helper::logging
 {
 
 // forward declaration
@@ -128,7 +125,7 @@ public:
 
 
 } // logging
-} // helper
-} // sofa
+// helper
+// sofa
 
 #endif // MESSAGEDISPATCHER_H

@@ -38,9 +38,9 @@ using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
 
-namespace sofa
+
+namespace sofa::modeling
 {
-namespace modeling {
 
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
@@ -715,5 +715,4 @@ void setDataLink(BaseData* source, BaseData* target)
 } // modeling
 
 
-
-} // sofa
+// sofa

@@ -31,9 +31,8 @@
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)
-namespace sofa
-{
-namespace modeling
+
+namespace sofa::modeling
 {
 using sofa::core::objectmodel::BaseObject ;
 
@@ -212,6 +211,6 @@ SOFA_SCENECREATOR_API void setDataLink(core::objectmodel::BaseData* source, core
 
 }// modeling
 
-}// sofa
+// sofa
 
 #endif

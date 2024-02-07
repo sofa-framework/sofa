@@ -4,8 +4,9 @@
 using std::cout;
 using std::endl;
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 
 Camera::Camera()
 {
@@ -192,5 +193,5 @@ Camera::Vec3 Camera::eye() const {
 
 
 } // simplegui
-} // sofa
+// sofa
 

@@ -45,13 +45,8 @@ using namespace std;
 // needs to be declared AFTER windows header file 
 //(https://developercommunity.visualstudio.com/content/problem/93889/error-c2872-byte-ambiguous-symbol.html)
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 static unsigned int getFileHashTimeSize(const string& filename)
@@ -180,5 +175,5 @@ int FileMonitor::updates(int timeout)
 
 
 } // system
-} // helper
-} // sofa
+// helper
+// sofa

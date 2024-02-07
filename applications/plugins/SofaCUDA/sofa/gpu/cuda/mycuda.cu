@@ -35,11 +35,9 @@ cudaDeviceProp mycudaDeviceProp;
 
 
 #if defined(__cplusplus)
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -516,7 +514,7 @@ void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t * free,size_t * total) {
 #endif
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif

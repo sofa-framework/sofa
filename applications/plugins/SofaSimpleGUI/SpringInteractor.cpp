@@ -5,8 +5,9 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 typedef sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Vec3Types> FixedConstraint3;
 
 SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
@@ -65,4 +66,4 @@ void SpringInteractor::detach()
 }
 
 }//newgui
-}//sofa
+//sofa

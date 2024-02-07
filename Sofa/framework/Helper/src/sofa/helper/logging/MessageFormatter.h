@@ -30,13 +30,8 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/system/console.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class Message;
@@ -56,8 +51,8 @@ protected:
 };
 
 } // logging
-} // helper
-} // sofa
+// helper
+// sofa
 
 
 #endif // MESSAGEFORMATTER_H

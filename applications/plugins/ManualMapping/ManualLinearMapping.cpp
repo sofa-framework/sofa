@@ -24,13 +24,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -50,12 +45,9 @@ int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subs
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec3Types, Vec3Types >;
 
 
+} // namespace sofa::component::mapping
 
 
 
-} // namespace mapping
 
-} // namespace component
-
-} // namespace sofa
 

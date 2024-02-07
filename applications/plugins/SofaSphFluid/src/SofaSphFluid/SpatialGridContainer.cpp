@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 using namespace sofa::defaulttype;
@@ -45,9 +39,9 @@ template class SOFA_SPH_FLUID_API SpatialGridContainer< Vec3Types >;
 template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3Types > >;
 
 
-} // namespace container
+} // namespace sofa::component::container
 
-} // namespace component
 
-} // namespace sofa
+
+
 

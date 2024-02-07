@@ -1705,8 +1705,9 @@ static inline int display_width(const std::wstring &input) {
 #include <cassert>
 #include <cmath>
 
-namespace indicators {
-namespace details {
+
+namespace indicators::details
+{
 
 inline void set_stream_color(std::ostream &os, Color color) {
   switch (color) {
@@ -1906,8 +1907,8 @@ private:
   std::string lead;
 };
 
-} // namespace details
-} // namespace indicators
+} // namespace indicators::details
+
 
 #endif
 

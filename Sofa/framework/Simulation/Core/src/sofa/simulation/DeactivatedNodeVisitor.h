@@ -25,10 +25,7 @@
 #include <sofa/simulation/Visitor.h>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API DeactivationVisitor : public Visitor
@@ -58,8 +55,7 @@ protected:
 };
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

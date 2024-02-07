@@ -41,11 +41,9 @@
 //#endif
 
 #if defined(__cplusplus)
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -469,7 +467,7 @@ bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType ty
 }
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif

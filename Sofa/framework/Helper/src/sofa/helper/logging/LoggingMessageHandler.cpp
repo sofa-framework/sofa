@@ -25,13 +25,8 @@
 ******************************************************************************/
 #include <sofa/helper/logging/LoggingMessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-namespace loggingmessagehandler
+
+namespace sofa::helper::logging::loggingmessagehandler
 {
 
 void LoggingMessageHandler::process(Message& m)
@@ -97,7 +92,7 @@ const vector<Message>& MainLoggingMessageHandler::getMessages()
 }
 
 } // loggingmessagehandler
-} // logging
-} // helper
-} // sofa
+// logging
+// helper
+// sofa
 

@@ -27,13 +27,8 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 class SOFA_HELPER_API Image
 {
@@ -152,15 +147,12 @@ private:
     unsigned char *data;
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
 #if !defined(SOFA_HELPER_IO_IMAGE_CPP)
 extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::string>;
 #endif
 
-} // namespace helper
-
-} // namespace sofa
 
 /// This line register Image to the messaging system
 MSG_REGISTER_CLASS(sofa::helper::io::Image, "Image")

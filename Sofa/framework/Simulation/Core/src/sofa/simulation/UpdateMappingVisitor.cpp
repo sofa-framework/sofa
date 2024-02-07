@@ -25,10 +25,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
@@ -55,7 +53,7 @@ Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

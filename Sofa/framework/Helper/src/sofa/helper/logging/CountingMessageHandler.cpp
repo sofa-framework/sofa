@@ -26,13 +26,8 @@
 #include <cassert>
 #include <sofa/helper/logging/CountingMessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-namespace countingmessagehandler
+
+namespace sofa::helper::logging::countingmessagehandler
 {
 
 void CountingMessageHandler::process(Message& m)
@@ -77,6 +72,6 @@ int MainCountingMessageHandler::getMessageCountFor(const Message::Type &type)
 
 
 } /// namespace countingmessagehandler
-} /// namespace logging
-} /// namespace helper
-} /// namespace sofa
+/// namespace logging
+/// namespace helper
+/// namespace sofa

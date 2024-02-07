@@ -25,10 +25,8 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 MechanicalParams::MechanicalParams(const sofa::core::ExecParams& p)
@@ -107,6 +105,6 @@ const MechanicalParams* MechanicalParams::defaultInstance()
     return ptr;
 }
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
+

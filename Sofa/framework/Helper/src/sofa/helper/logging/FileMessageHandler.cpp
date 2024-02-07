@@ -31,13 +31,7 @@
 #include <sofa/helper/logging/Messaging.h>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 FileMessageHandler::FileMessageHandler(const char* filename,MessageFormatter *formatter)
@@ -72,6 +66,6 @@ bool FileMessageHandler::isValid()
 
 
 } // logging
-} // helper
-} // sofa
+// helper
+// sofa
 

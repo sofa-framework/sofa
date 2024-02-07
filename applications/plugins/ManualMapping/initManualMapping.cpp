@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <ManualMapping/config.h>
 
-namespace sofa
-{
 
-namespace component
+namespace sofa::component
 {
 
 	//Here are just several convenient functions to help user to know what contains the plugin
@@ -73,8 +71,7 @@ namespace component
         /// string containing the names of the classes provided by the plugin
         return  "ManualLinearMapping";
 	}
-} 
-} 
+}
 
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms

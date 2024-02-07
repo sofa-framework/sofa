@@ -30,11 +30,8 @@
 #include <sofa/type/BoundingBox.h>
 #include <limits>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 template<class DataTypes>
@@ -382,10 +379,9 @@ void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 }
 
 
-} // namespace visualmodel
+} // namespace sofa::component::visualmodel
 
-} // namesapce component
+// namesapce component
 
-} // namespace sofa
 
 #endif //OGLTETRAHEDRALMODEL_H_

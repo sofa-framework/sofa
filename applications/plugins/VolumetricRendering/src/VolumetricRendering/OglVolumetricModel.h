@@ -34,11 +34,7 @@
 #include <sofa/gl/component/shader/OglAttribute.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 /**
@@ -113,11 +109,9 @@ public:
 
 };
 
-} // namespace visualmodel
+} // namespace sofa::component::visualmodel
 
-} // namesapce component
-
-} // namespace sofa
+// namesapce component
 
 
 #endif // OGLVOLUMETRICMODEL_H_

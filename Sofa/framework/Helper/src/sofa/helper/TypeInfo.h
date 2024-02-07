@@ -25,10 +25,8 @@
 #include <typeinfo>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 class TypeInfo
@@ -44,6 +42,6 @@ public:
 
 } /// namespace helper
 
-} /// namespace sofa
+/// namespace sofa
 
 #endif /// SOFA_HELPER_TYPEINFO_H

@@ -29,13 +29,8 @@
 #include <sofa/helper/logging/MessageHandler.h>
 #include <fstream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class MessageFormatter;
@@ -61,7 +56,7 @@ private:
 
 
 } // logging
-} // helper
-} // sofa
+// helper
+// sofa
 
 #endif // FILEMESSAGEHANDLER_H

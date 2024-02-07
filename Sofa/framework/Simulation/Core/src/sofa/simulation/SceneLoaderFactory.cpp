@@ -25,9 +25,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 SceneLoader::Listeners SceneLoader::s_listeners;
@@ -224,8 +222,8 @@ SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
     return loader;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 
 

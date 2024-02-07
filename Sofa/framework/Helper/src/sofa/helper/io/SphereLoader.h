@@ -26,13 +26,8 @@
 
 #include <sofa/type/Vec.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 /// @brief Inherit this class to load data from sphere description.
@@ -94,10 +89,7 @@ public:
     static bool Load(const std::string& filename, SphereLoaderDataHook& data);
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

@@ -26,11 +26,9 @@
 #include <stdio.h>
 
 #if defined(__cplusplus)
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -1293,7 +1291,7 @@ void TetrahedronFEMForceFieldCuda3d_getElementRotations(unsigned int nbElem, con
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif

@@ -28,13 +28,7 @@
 #include <sofa/helper/logging/SilentMessageHandler.h>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 void SilentMessageHandler::process(Message& /*m*/) {
@@ -42,6 +36,6 @@ void SilentMessageHandler::process(Message& /*m*/) {
 
 
 } // logging
-} // helper
-} // sofa
+// helper
+// sofa
 

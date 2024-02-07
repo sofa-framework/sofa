@@ -23,11 +23,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 int CudaOglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
@@ -37,5 +34,5 @@ int CudaOglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model
 template class OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes>;
 
 }
-}
-}
+
+

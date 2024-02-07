@@ -32,10 +32,7 @@
 //#include <sofa/helper/OptionsGroup.h>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
     
 class SOFA_HELPER_API ColorMap 
@@ -125,9 +122,7 @@ public:
 };
 
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 
 #endif

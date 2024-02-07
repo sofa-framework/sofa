@@ -24,11 +24,8 @@
 #include <string>
 #include <sofa/core/objectmodel/ComponentState.h>
 
-namespace sofa
-{
-namespace core
-{
-namespace objectmodel
+
+namespace sofa::core::objectmodel
 {
 
 
@@ -64,7 +61,7 @@ std::istream& operator>>(std::istream& i, ComponentState& s)
 }
 
 }  /// namespace objectmodel
-}  /// namespace core
-}  /// namespace sofa
+ /// namespace core
+ /// namespace sofa
 
 

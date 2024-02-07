@@ -23,10 +23,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -139,7 +137,7 @@ bool XMLPrintVisitor::treeTraversal(TreeTraversalRepetition& repeat)
 	return true;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

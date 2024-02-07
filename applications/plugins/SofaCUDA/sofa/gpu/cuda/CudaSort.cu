@@ -45,11 +45,9 @@
 #endif
 
 #if defined(__cplusplus)
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -242,7 +240,7 @@ bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits)
 }
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif
