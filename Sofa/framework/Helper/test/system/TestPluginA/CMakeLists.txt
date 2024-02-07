@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.12)
-project(TestPlugin VERSION 0.7)
+project(TestPluginA VERSION 0.7)
 
 
 set(HEADER_FILES
     ComponentA.h
     ComponentB.h
-    TestPlugin.h
+    TestPluginA.h
 )
 
 set(SOURCE_FILES
     ComponentA.cpp
     ComponentB.cpp
-    initTestPlugin.cpp
+    initTestPluginA.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
