@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/engine/select/NearestPointROI.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine::select
 {
@@ -38,6 +39,8 @@ NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<Data
     , d_edges(initData(&d_edges, "edges", "List of edge indices"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , d_distances(initData(&d_distances, "distances", "List of distances between pairs of points"))
+    , d_drawPairs(initData(&d_drawPairs, false, "drawPairs", "Option to draw the positions pairs computed"))
+    
 {
     addOutput(&f_indices1);
     addOutput(&f_indices2);
@@ -182,6 +185,34 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     {
         msg_error() << "Size mismatch between indices1 and indices2";
     }
+}
+
+
+template <class DataTypes>
+void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    auto indices1 = sofa::helper::getReadAccessor(f_indices1);
+    auto indices2 = sofa::helper::getReadAccessor(f_indices2);
+
+    if (indices1.empty() || indices2.empty() || d_drawPairs.getValue() == false)
+        return;
+    
+    const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
+    const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
+    std::vector<sofa::type::Vec3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
+
+    for (unsigned int i = 0; i < indices1.size(); ++i)
+    {
+        auto xId1 = x1[indices1[i]];
+        auto xId2 = x2[indices2[i]];
+        vertices.emplace_back(sofa::type::Vec3(xId1[0], xId1[1], xId1[2]));
+        vertices.emplace_back(sofa::type::Vec3(xId2[0], xId2[1], xId2[2]));
+        colors.emplace_back(sofa::type::RGBAColor(SReal(rand()) / RAND_MAX, SReal(rand()) / RAND_MAX, SReal(rand()) / RAND_MAX, 1._sreal));
+    }
+
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 }
 
 } //namespace sofa::component::engine::select
