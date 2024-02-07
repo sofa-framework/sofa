@@ -150,7 +150,7 @@ private:
 } // namespace sofa::helper::io
 
 #if !defined(SOFA_HELPER_IO_IMAGE_CPP)
-extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::string>;
+extern template class SOFA_HELPER_API sofa::helper::Factory<std::string, sofa::helper::io::Image, std::string>;
 #endif
 
 
