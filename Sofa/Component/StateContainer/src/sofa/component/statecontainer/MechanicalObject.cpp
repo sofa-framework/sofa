@@ -61,10 +61,10 @@ void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
 
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (RigidCoord<3, SReal>& xi : x)
     {
-        x[i].getCenter() = q.rotate(x[i].getCenter());
-        x[i].getOrientation() = q * x[i].getOrientation();
+        xi.getCenter() = q.rotate(xi.getCenter());
+        xi.getOrientation() = q * xi.getOrientation();
     }
 }
 

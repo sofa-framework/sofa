@@ -60,26 +60,26 @@ void MeshBoundaryROI::doUpdate()
     indices.clear();
 
     std::map<PointPair, unsigned int> edgeCount;
-    for(size_t i=0;i<triangles.size();i++)
+    for(const auto& triangle : triangles)
     {
-        if(inROI(triangles[i][0]) && inROI(triangles[i][1]) && inROI(triangles[i][2]))
+        if(inROI(triangle[0]) && inROI(triangle[1]) && inROI(triangle[2]))
         {
             for(unsigned int j=0;j<3;j++)
             {
-                PointPair edge(triangles[i][j],triangles[i][(j==2)?0:j+1]);
+                PointPair edge(triangle[j],triangle[(j==2)?0:j+1]);
                 // increment the number of elements (triangles) associated to the edge.
                 this->countEdge(edgeCount,edge);
             }
         }
     }
     
-    for(size_t i=0;i<quads.size();i++)
+    for(const auto& quad : quads)
     {
-        if(inROI(quads[i][0]) && inROI(quads[i][1]) && inROI(quads[i][2]) && inROI(quads[i][3]))
+        if(inROI(quad[0]) && inROI(quad[1]) && inROI(quad[2]) && inROI(quad[3]))
         {
             for(unsigned int j=0;j<4;j++)
             {
-                PointPair edge(quads[i][j],quads[i][(j==3)?0:j+1]);
+                PointPair edge(quad[j],quad[(j==3)?0:j+1]);
                 // increment the number of elements (quad) associated to the edge.
                 this->countEdge(edgeCount,edge);
             }
@@ -87,13 +87,13 @@ void MeshBoundaryROI::doUpdate()
     }
 
     std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
-    for(auto it=edgeCount.begin();it!=edgeCount.end();++it)
+    for(const auto & [pointPair, count] : edgeCount)
     {
         // consider edge only if it is on the boundary
-        if(it->second==1)
+        if (count == 1)
         {
-            indexset.insert(it->first.first);
-            indexset.insert(it->first.second);
+            indexset.insert(pointPair.first);
+            indexset.insert(pointPair.second);
         }
     }
     indices.wref().insert(indices.end(), indexset.begin(), indexset.end());

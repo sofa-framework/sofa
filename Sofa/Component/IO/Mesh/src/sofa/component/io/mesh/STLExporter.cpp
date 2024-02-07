@@ -137,24 +137,24 @@ bool STLExporter::writeSTL(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(unsigned int i=0;i<triangleIndices.size();i++)
+        for(auto triangleIndice : triangleIndices)
         {
-            vecTri.push_back(triangleIndices[i]);
+            vecTri.push_back(triangleIndice);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(unsigned int i=0;i<quadIndices.size();i++)
+        for(auto quadIndice : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndices[i][j];
+                tri[j] = quadIndice[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndices[i][0];
-            tri[1] = quadIndices[i][2];
-            tri[2] = quadIndices[i][3];
+            tri[0] = quadIndice[0];
+            tri[1] = quadIndice[2];
+            tri[2] = quadIndice[3];
             vecTri.push_back(tri);
         }
     }
@@ -226,24 +226,24 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(unsigned int i=0;i<triangleIndices.size();i++)
+        for(auto triangleIndice : triangleIndices)
         {
-            vecTri.push_back(triangleIndices[i]);
+            vecTri.push_back(triangleIndice);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(unsigned int i=0;i<quadIndices.size();i++)
+        for(auto quadIndice : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndices[i][j];
+                tri[j] = quadIndice[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndices[i][0];
-            tri[1] = quadIndices[i][2];
-            tri[2] = quadIndices[i][3];
+            tri[0] = quadIndice[0];
+            tri[1] = quadIndice[2];
+            tri[2] = quadIndice[3];
             vecTri.push_back(tri);
         }
     }

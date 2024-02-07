@@ -215,10 +215,10 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (const unsigned int indice : indices)
     {
-        Quatd orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
-        Vec3d center; center = x[indices[i]].getCenter();
+        Quatd orient(Vec3d(0,0,1), x[indice].getOrientation());
+        Vec3d center; center = x[indice].getCenter();
 
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
@@ -250,21 +250,21 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (const unsigned int indice : indices)
     {
         if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
+            vparams->drawTool()->drawFrame(x[indice].getCenter(), x[indice].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
         else
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
-        gravityCenter += (x[indices[i]].getCenter());
+            vparams->drawTool()->drawFrame(x[indice].getCenter(), x[indice].getOrientation(), len*d_showAxisSize.getValue() );
+        gravityCenter += (x[indice].getCenter());
     }
 
     if (d_showInitialCenterOfGravity.getValue())
     {
         const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-        for (unsigned int i=0; i<indices.size(); i++)
-            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*d_showAxisSize.getValue());
+        for (const unsigned int indice : indices)
+            vparams->drawTool()->drawFrame(x0[indice].getCenter(), x0[indice].getOrientation(), len*d_showAxisSize.getValue());
     }
 
     if(d_showCenterOfGravity.getValue())
@@ -336,12 +336,12 @@ Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
 
     type::Vec6d momentum;
 
-    for ( unsigned int i=0 ; i<indices.size() ; i++ )
+    for (const unsigned int indice : indices)
     {
-        typename RigidTypes::Vec3 linearMomentum = m*v[indices[i]].getLinear();
+        typename RigidTypes::Vec3 linearMomentum = m*v[indice].getLinear();
         for( int j=0 ; j< 3 ; ++j ) momentum[j] += linearMomentum[j];
 
-        typename RigidTypes::Vec3 angularMomentum = cross( x[indices[i]].getCenter(), linearMomentum ) + ( I * v[indices[i]].getAngular() );
+        typename RigidTypes::Vec3 angularMomentum = cross( x[indice].getCenter(), linearMomentum ) + ( I * v[indice].getAngular() );
         for( int j=0 ; j< 3 ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
@@ -361,12 +361,12 @@ Vec6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
     const MassType& m = d_vertexMass.getValue();
     type::Vec6d momentum;
 
-    for ( unsigned int i=0 ; i<indices.size() ; i++ )
+    for (const unsigned int indice : indices)
     {
-        Deriv linearMomentum = m*v[indices[i]];
+        Deriv linearMomentum = m*v[indice];
         for( int j=0 ; j<3 ; ++j ) momentum[j] += linearMomentum[j];
 
-        Deriv angularMomentum = cross( x[indices[i]], linearMomentum );
+        Deriv angularMomentum = cross( x[indice], linearMomentum );
         for( int j=0 ; j<3 ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
@@ -384,8 +384,8 @@ SReal UniformMass<VecTypes>::getPotentialEnergyRigidImpl(const core::MechanicalP
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     typename Coord::Pos g ( getContext()->getGravity() );
-    for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*d_vertexMass.getValue().mass*x[indices[i]].getCenter();
+    for (const unsigned int indice : indices)
+        e -= g*d_vertexMass.getValue().mass*x[indice].getCenter();
 
     return e;
 }
@@ -404,13 +404,13 @@ void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *res
 
     const SReal* g = getContext()->getGravity().ptr();
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (const unsigned int indice : indices)
         for (unsigned int j=0; j<derivDim; j++)
         {
             if (dx != nullptr)
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j] * (*dx)[indices[i]][0]);
+                resVect->add(offset + indice * derivDim + j, mFact * m * g[j] * (*dx)[indice][0]);
             else
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j]);
+                resVect->add(offset + indice * derivDim + j, mFact * m * g[j]);
         }
 }
 
