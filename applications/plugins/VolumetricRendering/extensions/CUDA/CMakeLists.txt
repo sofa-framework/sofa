@@ -4,10 +4,15 @@ project(VolumetricRendering.CUDA)
 set(HEADER_FILES
     src/VolumetricRendering/CUDA/init.h
     src/VolumetricRendering/CUDA/config.h.in
+
+    src/VolumetricRendering/CUDA/CudaTetrahedralVisualModel.h
+    src/VolumetricRendering/CUDA/CudaTetrahedralVisualModel.inl
 )
 
 set(SOURCE_FILES
     src/VolumetricRendering/CUDA/init.cpp
+
+    src/VolumetricRendering/CUDA/CudaTetrahedralVisualModel.cpp
 )
 
 sofa_find_package(VolumetricRendering REQUIRED)
