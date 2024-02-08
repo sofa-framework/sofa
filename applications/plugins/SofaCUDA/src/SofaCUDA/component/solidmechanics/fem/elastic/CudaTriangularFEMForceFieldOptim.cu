@@ -25,9 +25,11 @@
 
 
 #if defined(__cplusplus)
-
-
-namespace sofa::gpu::cuda
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
 {
 #endif
 
@@ -277,7 +279,7 @@ void TriangularFEMForceFieldOptimCuda3d_addDForce(unsigned int size, void* df, c
 } // extern "C"
 
 #if defined(__cplusplus)
-} // namespace sofa::gpu::cuda
-
-
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
 #endif

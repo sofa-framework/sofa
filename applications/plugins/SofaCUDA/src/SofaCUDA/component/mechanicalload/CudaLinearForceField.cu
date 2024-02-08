@@ -24,9 +24,11 @@
 #include <sofa/gpu/cuda/CudaMathRigid.h>
 
 #if defined(__cplusplus)
-
-
-namespace sofa::gpu::cuda
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
 {
 #endif
 
@@ -83,7 +85,7 @@ void LinearForceFieldCudaRigid3d_addForce(unsigned size, const void* indices, co
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #if defined(__cplusplus)
-} // namespace sofa::gpu::cuda
-
-
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
 #endif

@@ -36,9 +36,11 @@
 #endif
 
 #if defined(__cplusplus)
-
-
-namespace sofa::gpu::cuda
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
 {
 #endif
 
@@ -126,9 +128,9 @@ extern "C" {
 
 
 #if defined(__cplusplus)
-} // namespace sofa::gpu::cuda
-
-
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
 #endif
 
 #endif

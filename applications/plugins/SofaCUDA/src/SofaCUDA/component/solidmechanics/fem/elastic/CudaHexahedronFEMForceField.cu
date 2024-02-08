@@ -25,9 +25,11 @@
 #include <stdio.h>
 
 #if defined(__cplusplus)
-
-
-namespace sofa::gpu::cuda
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
 {
 #endif
 
@@ -1373,7 +1375,7 @@ void HexaahedronFEMForceFieldCuda3f_getRotations(int gatherpt,int gatherbs,int n
 }
 
 #if defined(__cplusplus)
-} // namespace sofa::gpu::cuda
-
-
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
 #endif
