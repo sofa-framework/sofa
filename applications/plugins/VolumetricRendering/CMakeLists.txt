@@ -30,3 +30,5 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+sofa_add_subdirectory(plugin extensions/CUDA VolumetricRendering.CUDA)
