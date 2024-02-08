@@ -264,17 +264,24 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatricesNonMap
     {
         for (auto& [states, localMatrix] : localMatrixMap)
         {
-            if (auto* sparsityPatternMatrix = dynamic_cast<SparsityPatternLocalMatrix<c>*>(localMatrix))
+            const bool isMapped0 = this->getMappingGraph().hasAnyMappingInput(states[0]);
+            const bool isMapped1 = this->getMappingGraph().hasAnyMappingInput(states[1]);
+            if (const bool isAnyMapped = isMapped0 || isMapped1; !isAnyMapped)
             {
-                replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrix);
-            }
-            else if (auto* sparsityPatternMatrixWithCheck = dynamic_cast<SparsityPatternLocalMatrix<c, StrategyCheckerType>*>(localMatrix))
-            {
-                replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrixWithCheck);
-            }
-            else
-            {
-                dmsg_error() << "not a sparsity pattern matrix (SparsityPatternLocalMatrix)";
+                if (auto* sparsityPatternMatrix = dynamic_cast<SparsityPatternLocalMatrix<c>*>(localMatrix))
+                {
+                    replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrix);
+                }
+                else if (auto* sparsityPatternMatrixWithCheck = dynamic_cast<SparsityPatternLocalMatrix<c, StrategyCheckerType>*>(localMatrix))
+                {
+                    replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrixWithCheck);
+                }
+                else
+                {
+                    dmsg_error() << "The component '" << localMatrix->getPathName()
+                            << "' was expected to be a sparsity pattern matrix "
+                            "(SparsityPatternLocalMatrix != " << localMatrix->getClassName() << ")";
+                }
             }
         }
     }
