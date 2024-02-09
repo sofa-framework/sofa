@@ -180,7 +180,7 @@ void computeProjection(
     {
         const auto JMap0 = makeEigenMap(*J[0]);
         const auto JMap1 = makeEigenMap(*J[1]);
-        JT_K_J = JMap0.transpose() * KMap * JMap1;
+        JT_K_J = JMap0.transpose() * ( KMap * JMap1);
     }
     else if (J[0] && !J[1])
     {
