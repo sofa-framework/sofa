@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 using namespace sofa ;
 using namespace sofa::simpleapi ;
 
