@@ -971,10 +971,16 @@ MatrixLinearSystem<TMatrix, TVector>::createLocalMappedMatrixT(
 }
 
 template <class TMatrix, class TVector>
+auto MatrixLinearSystem<TMatrix, TVector>::createMatrixMapping(
+    const PairMechanicalStates& pair)
+    -> typename MatrixMapping<LocalMappedMatrixType<Real> >::SPtr
+{
+    return core::objectmodel::New<EigenMatrixMapping<LocalMappedMatrixType<Real> > >(pair);
+}
+
+template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::MechanicalParams* mparams)
 {
-    auto cparams = core::ConstraintParams(*mparams);
-
     for (const auto& [pair, mappedMatrix] : m_localMappedMatrices)
     {
         if (!mappedMatrix)
@@ -991,104 +997,40 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
             continue;
         }
 
-        const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
-        const MappingJacobians<JacobianMatrixType> J1 =
-                            (pair[0] == pair[1]) ? J0 : computeJacobiansFrom(pair[1], mparams, crs);
-
-        const sofa::type::fixed_array<MappingJacobians<JacobianMatrixType>, 2> mappingMatricesMap { J0, J1 };
-
-        sofa::component::linearsystem::addMappedMatrixToGlobalMatrixEigen(
-            pair, crs, mappingMatricesMap, m_mappingGraph, this->getSystemMatrix());
-    }
-}
-
-template <class TMatrix, class TVector>
-std::vector<unsigned int> MatrixLinearSystem<TMatrix, TVector>::identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs)
-{
-    const auto blockSize = mstate->getMatrixBlockSize();
-    std::set<unsigned int> setAffectedDoFs;
-
-    for (std::size_t it_rows_k = 0; it_rows_k < crs->rowIndex.size(); it_rows_k++)
-    {
-        const auto row = crs->rowIndex[it_rows_k];
+        auto it = m_matrixMappings.find(pair);
+        if (it == m_matrixMappings.end())
         {
-            const sofa::SignedIndex dofId = row / blockSize;
-            setAffectedDoFs.insert(dofId);
+            //look in the scene graph
+            sofa::type::vector<MatrixMapping<LocalMappedMatrixType<Real> >*> allMatrixMappings;
+            this->getContext()->getObjects(allMatrixMappings, core::objectmodel::BaseContext::SearchDirection::SearchRoot);
+            for (auto* m : allMatrixMappings)
+            {
+                if (m->hasPairStates(pair))
+                {
+                    msg_info() << "Found a MatrixMapping for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": " << m->getPathName();
+                    const auto [insert_it, success] = m_matrixMappings.insert({pair, m});
+                    it = insert_it;
+                    break;
+                }
+            }
+
+            if (it == m_matrixMappings.end()) //it has not been found in the scene graph
+            {
+                msg_info() << "Cannot find a MatrixMapping for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": create one";
+                const auto createdMatrixMapping = createMatrixMapping(pair);
+                const auto resolvedName = this->getContext()->getNameHelper().resolveName(createdMatrixMapping->getClassName(), sofa::core::ComponentNameHelper::Convention::xml);
+                createdMatrixMapping->setName(resolvedName);
+                this->addSlave(createdMatrixMapping);
+                const auto [insert_it, success] = m_matrixMappings.insert({pair, createdMatrixMapping.get()});
+                it = insert_it;
+            }
         }
-        typename LocalMappedMatrixType<Real>::Range rowRange(crs->rowBegin[it_rows_k], crs->rowBegin[it_rows_k + 1]);
-        for (auto xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-null block
+
+        if (it != m_matrixMappings.end())
         {
-            const sofa::SignedIndex col = crs->colsIndex[xj];
-            const sofa::SignedIndex dofId = col / blockSize;
-            setAffectedDoFs.insert(dofId);
+            it->second->projectMatrixToGlobalMatrix(mparams, this->getMappingGraph(), crs, this->getSystemMatrix());
         }
     }
-
-    return std::vector( setAffectedDoFs.begin(), setAffectedDoFs.end() );
-}
-
-template <class TMatrix, class TVector>
-auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, LocalMappedMatrixType<Real>* crs)
--> MappingJacobians<JacobianMatrixType>
-{
-    auto cparams = core::ConstraintParams(*mparams);
-
-    MappingJacobians<JacobianMatrixType> jacobians(*mstate);
-
-    if (!m_mappingGraph.hasAnyMappingInput(mstate))
-    {
-        return jacobians;
-    }
-
-    auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
-
-    // this clears the matrix identified by mappingJacobian() among others
-    MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
-
-    // optimisation to build only the relevent entries of the jacobian matrices
-    // The relevent entries are the ones that have a influence on the result
-    // of the product J^T * K * J.
-    // J does not need to be fully computed if K is sparse.
-    {
-        const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
-
-        if (listAffectedDoFs.empty())
-        {
-            return jacobians;
-        }
-        mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
-    }
-
-    // apply the mappings from the bottom to the top, so it builds the jacobian
-    // matrices, transforming the space from the input DoFs to the space of the
-    // top most DoFs
-    const auto parentMappings = getMappingGraph().getBottomUpMappingsFrom(mstate);
-    for (auto* mapping : parentMappings)
-    {
-        mapping->applyJT(&cparams, mappingJacobianId, mappingJacobianId);
-    }
-
-    // copy the jacobian matrix stored in the mechanical states into a local
-    // matrix data structure
-    const auto inputs = m_mappingGraph.getTopMostMechanicalStates(mstate);
-    for (auto* input : inputs)
-    {
-        auto J = std::make_shared<LocalMappedMatrixType<Real> >();
-        jacobians.addJacobianToTopMostParent(J, input);
-        J->resize(mstate->getMatrixSize(), input->getMatrixSize());
-        unsigned int offset {};
-        input->copyToBaseMatrix(J.get(), mappingJacobianId, offset);
-
-        //set the sizes again because in some cases they are changed in copyToBaseMatrix
-        J->nCol = input->getMatrixSize();
-        J->nRow = mstate->getMatrixSize();
-        J->nBlockCol = J->nCol;
-        J->nBlockRow = J->nRow;
-
-        J->fullRows();
-    }
-
-    return jacobians;
 }
 
 template <class TMatrix, class TVector>

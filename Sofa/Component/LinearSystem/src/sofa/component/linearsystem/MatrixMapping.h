@@ -22,178 +22,68 @@
 #pragma once
 
 #include <fstream>
-#include <sofa/component/linearsystem/config.h>
 #include <sofa/component/linearsystem/MappingGraph.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/VecId.h>
-
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <Eigen/Sparse>
+#include <sofa/core/behavior/StateAccessor.h>
 
 namespace sofa::component::linearsystem
 {
 
-template<class BlockType>
-Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const linearalgebra::CompressedRowSparseMatrix<BlockType>& matrix);
-
-template <class BlockType>
-void computeProjection(
-    const Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > KMap,
-    const sofa::type::fixed_array<std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<BlockType>>, 2> J,
-    Eigen::SparseMatrix<BlockType, Eigen::RowMajor>& JT_K_J);
-
-template <class BlockType>
-void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J, const type::Vec2u positionInGlobalMatrix);
-
-/**
- * Add the local matrix which has been built locally to the main global matrix, using the Eigen library
- *
- * @remark Eigen manages the matrix operations better than CompressedRowSparseMatrix. In terms of performances, it is
- * preferable to go with Eigen.
- *
- * @param mstatePair The mapped mechanical state which the local matrix is associated
- * @param mappedMatrix The local matrix
- * @param jacobians The required mapping jacobians to project from a mechanical state toward the top most mechanical states
- * @param mappingGraph The mapping graph used to know the relationships between mechanical states. In particular, it
- * is used to know where in the global matrix the local matrix must be added.
- * @param globalMatrix Matrix in which the local matrix is added.
- */
-template<class BlockType>
-void addMappedMatrixToGlobalMatrixEigen(
-    sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
-    linearalgebra::CompressedRowSparseMatrix<BlockType>* mappedMatrix,
-    sofa::type::fixed_array<
-            MappingJacobians<linearalgebra::CompressedRowSparseMatrix<BlockType> >,
-            2> jacobians,
-    const MappingGraph& mappingGraph,
-    linearalgebra::BaseMatrix* globalMatrix)
+template<class TMatrix>
+class MatrixMapping : public core::behavior::StateAccessor
 {
-    if (!mappedMatrix)
-    {
-        return;
-    }
+public:
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(MatrixMapping, TMatrix), core::behavior::StateAccessor);
 
-    if (mappedMatrix->rows() == 0 || mappedMatrix->cols() == 0)
-    {
-        return;
-    }
+    using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
-    if (mappedMatrix->getColsValue().empty() && mappedMatrix->btemp.empty())
-    {
-        return;
-    }
+    ~MatrixMapping() override;
 
-    mappedMatrix->fullRows();
+    virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
 
-    const auto KMap = makeEigenMap(*mappedMatrix);
+    virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+        const MappingGraph& mappingGraph,
+        TMatrix* matrixToProject,
+        linearalgebra::BaseMatrix* globalMatrix) = 0;
 
-    // nb rows of K = size of first mechanical state
-    msg_error_when(sofa::Size(mappedMatrix->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
-        << "[K] Incompatible matrix size [rows] " << mappedMatrix->rows() << " " << mstatePair[0]->getMatrixSize();
-    // nb cols of K = size of second mechanical state
-    msg_error_when(sofa::Size(mappedMatrix->cols()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
-        << "[K] Incompatible matrix size [cols] " << mappedMatrix->cols() << " " << mstatePair[1]->getMatrixSize();
-
-    const auto inputs1 = mappingGraph.getTopMostMechanicalStates(mstatePair[0]);
-    const auto inputs2 = mappingGraph.getTopMostMechanicalStates(mstatePair[1]);
-
-    std::set<core::behavior::BaseMechanicalState*> inputs;
-    inputs.insert(inputs1.begin(), inputs1.end());
-    inputs.insert(inputs2.begin(), inputs2.end());
-
-    std::set< std::pair<core::behavior::BaseMechanicalState*, core::behavior::BaseMechanicalState*> > uniquePairs;
-    for (auto* a : inputs)
-    {
-        for (auto* b : inputs)
-        {
-            uniquePairs.insert({a, b});
-        }
-    }
-
-    for (const auto& [a, b] : uniquePairs)
-    {
-        const sofa::type::fixed_array<std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<BlockType>>, 2> J
-        { jacobians[0].getJacobianFrom(a), jacobians[1].getJacobianFrom(b) };
-
-        if (J[0])
-        {
-            // nb rows of J[0] = size of first mechanical state
-            msg_error_when(sofa::Size(J[0]->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
-                    << "[J0] Incompatible matrix size [rows] " << J[0]->rows() << " " << mstatePair[0]->getMatrixSize();
-            msg_error_when(sofa::Size(J[0]->cols()) != a->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->BaseMechanicalState::getMatrixSize();
-        }
-
-        if (J[1])
-        {
-            // nb rows of J[1] = size of second mechanical state
-            msg_error_when(sofa::Size(J[1]->rows()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
-                    << "[J1] Incompatible matrix size [rows] " << J[1]->rows() << " " << mstatePair[1]->getMatrixSize();
-            msg_error_when(sofa::Size(J[1]->cols()) != b->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->BaseMechanicalState::getMatrixSize();
-        }
-
-        Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J;
-        computeProjection<BlockType>(KMap, J, JT_K_J);
-
-        const type::Vec2u positionInGlobalMatrix = mappingGraph.getPositionInGlobalMatrix(a, b);
-
-        addToGlobalMatrix<BlockType>(globalMatrix, JT_K_J, positionInGlobalMatrix);
-    }
-}
+protected:
+    explicit MatrixMapping(const PairMechanicalStates& states);
+    MatrixMapping() = default;
+};
 
 
-template<class BlockType>
-Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const linearalgebra::CompressedRowSparseMatrix<BlockType>& matrix)
+template<class TMatrix>
+class EigenMatrixMapping : public MatrixMapping<TMatrix>
 {
-    using EigenMap = Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> >;
-    return Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> >(
-            static_cast<typename EigenMap::Index>(matrix.rows()),
-            static_cast<typename EigenMap::Index>(matrix.cols()),
-            static_cast<typename EigenMap::Index>(matrix.getColsValue().size()),
-            (typename EigenMap::StorageIndex*)matrix.rowBegin.data(),
-            (typename EigenMap::StorageIndex*)matrix.colsIndex.data(),
-            (typename EigenMap::Scalar*)matrix.colsValue.data());
-}
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(EigenMatrixMapping, TMatrix), SOFA_TEMPLATE(MatrixMapping, TMatrix));
+    using PairMechanicalStates = typename MatrixMapping<TMatrix>::PairMechanicalStates;
 
-template <class BlockType>
-void computeProjection(
-    const Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > KMap,
-    const sofa::type::fixed_array<std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<BlockType>>, 2> J,
-    Eigen::SparseMatrix<BlockType, Eigen::RowMajor>& JT_K_J)
-{
-    if (J[0] && J[1])
-    {
-        const auto JMap0 = makeEigenMap(*J[0]);
-        const auto JMap1 = makeEigenMap(*J[1]);
-        JT_K_J = JMap0.transpose() * KMap * JMap1;
-    }
-    else if (J[0] && !J[1])
-    {
-        const auto JMap0 = makeEigenMap(*J[0]);
-        JT_K_J = JMap0.transpose() * KMap;
-    }
-    else if (!J[0] && J[1])
-    {
-        const auto JMap1 = makeEigenMap(*J[1]);
-        JT_K_J = KMap * JMap1;
-    }
-    else
-    {
-        JT_K_J = KMap;
-    }
-}
+    ~EigenMatrixMapping() override;
 
-template <class BlockType>
-void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J, const type::Vec2u positionInGlobalMatrix)
-{
-    for (int k = 0; k < JT_K_J.outerSize(); ++k)
-    {
-        for (typename Eigen::SparseMatrix<BlockType, Eigen::RowMajor>::InnerIterator it(JT_K_J,k); it; ++it)
-        {
-            globalMatrix->add(it.row() + positionInGlobalMatrix[0], it.col() + positionInGlobalMatrix[1], it.value());
-        }
-    }
-}
+    void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+        const MappingGraph& mappingGraph,
+        TMatrix* matrixToProject,
+        linearalgebra::BaseMatrix* globalMatrix) override;
+
+protected:
+    using MatrixMapping<TMatrix>::MatrixMapping;
+
+    /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
+    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
+
+    /**
+    * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
+    * sense of mappings)
+    */
+    MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
+
+    core::objectmodel::BaseContext* getSolveContext();
+};
+
+#if !defined(SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP)
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+#endif
 
 } // namespace sofa::component::linearsystem
