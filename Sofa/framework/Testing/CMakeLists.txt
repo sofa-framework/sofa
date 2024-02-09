@@ -33,6 +33,9 @@ if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
         target_compile_options(gtest_main PRIVATE "-DGTEST_LINKED_AS_SHARED_LIBRARY=0")
         target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
+        install(DIRECTORY ${googletest_SOURCE_DIR}/googletest/include/gtest DESTINATION include/extlibs/GTest/ COMPONENT headers)
+        target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/>")
+        
         include(SofaMacros)
         sofa_create_package_with_targets(
             PACKAGE_NAME GTest
