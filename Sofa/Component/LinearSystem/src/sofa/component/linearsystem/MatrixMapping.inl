@@ -31,8 +31,7 @@ MatrixMapping<TMatrix>::~MatrixMapping() = default;
 template <class TMatrix>
 MatrixMapping<TMatrix>::MatrixMapping(const PairMechanicalStates& states)
 {
-    l_mechanicalStates.add(states[0]);
-    l_mechanicalStates.add(states[1]);
+    setPairStates(states);
 }
 
 template <class TMatrix>
@@ -44,7 +43,12 @@ bool MatrixMapping<TMatrix>::hasPairStates(
         l_mechanicalStates[1] == pairStates[1];
 }
 
-
-
+template <class TMatrix>
+void MatrixMapping<TMatrix>::setPairStates(const PairMechanicalStates& pairStates)
+{
+    l_mechanicalStates.clear();
+    l_mechanicalStates.add(pairStates[0]);
+    l_mechanicalStates.add(pairStates[1]);
+}
 
 }

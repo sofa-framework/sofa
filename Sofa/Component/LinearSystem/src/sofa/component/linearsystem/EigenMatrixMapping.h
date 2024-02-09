@@ -21,12 +21,15 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/MatrixMapping.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <optional>
 
 namespace sofa::component::linearsystem
 {
 
+/**
+ * The component is a @MatrixMapping computing the matrix projection using
+ * the Eigen library.
+ */
 template<class TMatrix>
 class EigenMatrixMapping : public MatrixMapping<TMatrix>
 {
@@ -49,9 +52,9 @@ protected:
     std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
 
     /**
-    * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
-    * sense of mappings)
-    */
+     * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
+     * sense of mappings)
+     */
     MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
 
     core::objectmodel::BaseContext* getSolveContext();

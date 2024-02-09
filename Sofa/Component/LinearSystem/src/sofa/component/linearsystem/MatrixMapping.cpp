@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP
-#include <sofa/component/linearsystem/config.h>
 #include <sofa/component/linearsystem/MatrixMapping.inl>
 
 namespace sofa::component::linearsystem

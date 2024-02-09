@@ -21,15 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <fstream>
+#include <sofa/component/linearsystem/config.h>
 #include <sofa/component/linearsystem/MappingGraph.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsystem
 {
 
+/**
+ * A component associated to a pair of @BaseMechanicalState able to perform
+ * the projection of a matrix from the space of the @BaseMechanicalState's
+ * to the main space using the mapping graph.
+ *
+ * Basically, if K is the matrix to be projected, it computes J, and then the
+ * product J^T * K * J. The J matrix comes from the chain of mappings from
+ * the @BaseMechanicalState to its top most parents.
+ */
 template<class TMatrix>
 class MatrixMapping : public core::behavior::StateAccessor
 {
@@ -41,11 +49,22 @@ public:
     ~MatrixMapping() override;
 
     virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
+    void setPairStates(const PairMechanicalStates& pairStates);
 
+    /**
+     * \brief The main function of the component: it compute the mappings
+     * jacobian matrices, then the projection of the provided matrix.
+     *
+     * \param mparams
+     * \param mappingGraph The current mapping graph linking all the @BaseMechanicalState
+     * \param matrixToProject The matrix to project. Its size must be compatible
+     * with the sizes of the @BaseMechanicalState's
+     * \param globalMatrix The product is added into this matrix
+     */
     virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-        const MappingGraph& mappingGraph,
-        TMatrix* matrixToProject,
-        linearalgebra::BaseMatrix* globalMatrix) = 0;
+                                             const MappingGraph& mappingGraph,
+                                             TMatrix* matrixToProject,
+                                             linearalgebra::BaseMatrix* globalMatrix) = 0;
 
 protected:
     explicit MatrixMapping(const PairMechanicalStates& states);

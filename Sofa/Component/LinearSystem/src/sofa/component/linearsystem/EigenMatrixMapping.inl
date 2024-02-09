@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/EigenMatrixMapping.h>
+#include <sofa/component/linearsystem/MatrixMapping.inl>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <Eigen/Sparse>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsystem
 {
@@ -44,8 +44,7 @@ template <class TMatrix>
 EigenMatrixMapping<TMatrix>::EigenMatrixMapping(
     const PairMechanicalStates& states) : EigenMatrixMapping()
 {
-    this->l_mechanicalStates.add(states[0]);
-    this->l_mechanicalStates.add(states[1]);
+    this->setPairStates(states);
 }
 
 
