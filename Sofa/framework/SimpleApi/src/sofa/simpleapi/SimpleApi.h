@@ -21,13 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/graph/config.h>
-#include <string>
-#include <sstream>
-#include <map>
+#include <sofa/simpleapi/config.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/fwd.h>
+
+#include <string>
+#include <sstream>
+#include <map>
 
 namespace sofa::simpleapi
 {
@@ -39,40 +40,40 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::simulation::NodeSPtr ;
 
-bool SOFA_SIMULATION_GRAPH_API importPlugin(const std::string& name) ;
+bool SOFA_SIMPLEAPI_API importPlugin(const std::string& name) ;
 
-Simulation::SPtr SOFA_SIMULATION_GRAPH_API createSimulation(const std::string& type="DAG") ;
+Simulation::SPtr SOFA_SIMPLEAPI_API createSimulation(const std::string& type="DAG") ;
 
-NodeSPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation::SPtr, const std::string& name,
+NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation::SPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-NodeSPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation* s, const std::string& name,
+NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation* s, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief Create a sofa object in the provided node.
 ///The parameter "params" is for passing specific data argument to the created object including the
 ///object's type.
-sofa::core::sptr<BaseObject> SOFA_SIMULATION_GRAPH_API createObject(NodeSPtr node, BaseObjectDescription& params);
+sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject(NodeSPtr node, BaseObjectDescription& params);
 
 ///@brief create a sofa object in the provided node of the given type.
 ///The parameter "params" is for passing specific data argument to the created object.
-sofa::core::sptr<BaseObject> SOFA_SIMULATION_GRAPH_API createObject( NodeSPtr node, const std::string& type,
+sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject( NodeSPtr node, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided nodeof given name.
 ///The parameter "params" is for passing specific data argument to the created object.
-NodeSPtr SOFA_SIMULATION_GRAPH_API createChild( NodeSPtr node, const std::string& name,
+NodeSPtr SOFA_SIMPLEAPI_API createChild( NodeSPtr node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided node.
 ///The parameter "params" is for passing specific data argument to the created object (including the node name).
-NodeSPtr SOFA_SIMULATION_GRAPH_API createChild(NodeSPtr node, BaseObjectDescription& desc);
+NodeSPtr SOFA_SIMPLEAPI_API createChild(NodeSPtr node, BaseObjectDescription& desc);
 
 ///@brief create a child to the provided node.
 ///The parameter "params" is for passing specific data argument to the created object (including the node name).
-NodeSPtr SOFA_SIMULATION_GRAPH_API createNode(const std::string& name);
+NodeSPtr SOFA_SIMPLEAPI_API createNode(const std::string& name);
 
-void SOFA_SIMULATION_GRAPH_API dumpScene(NodeSPtr root) ;
+void SOFA_SIMPLEAPI_API dumpScene(NodeSPtr root) ;
 
 template<class T>
 std::string str(const T& t)
