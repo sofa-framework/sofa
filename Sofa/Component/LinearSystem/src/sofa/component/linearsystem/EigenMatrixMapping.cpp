@@ -19,43 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <fstream>
-#include <sofa/component/linearsystem/MappingGraph.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/StateAccessor.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#define SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP
+#include <sofa/component/linearsystem/EigenMatrixMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsystem
 {
+template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
 
-template<class TMatrix>
-class MatrixMapping : public core::behavior::StateAccessor
-{
-public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(MatrixMapping, TMatrix), core::behavior::StateAccessor);
-
-    using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
-
-    ~MatrixMapping() override;
-
-    virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
-
-    virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-        const MappingGraph& mappingGraph,
-        TMatrix* matrixToProject,
-        linearalgebra::BaseMatrix* globalMatrix) = 0;
-
-protected:
-    explicit MatrixMapping(const PairMechanicalStates& states);
-    MatrixMapping() = default;
-};
-
-
-
-#if !defined(SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP)
-extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
-#endif
-
-} // namespace sofa::component::linearsystem
+int MatrixMappingClass = core::RegisterObject("Matrix mapping using Eigen products")
+        .add< EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
+        ;
+}

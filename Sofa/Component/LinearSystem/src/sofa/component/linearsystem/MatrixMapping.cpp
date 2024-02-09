@@ -22,15 +22,8 @@
 #define SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP
 #include <sofa/component/linearsystem/config.h>
 #include <sofa/component/linearsystem/MatrixMapping.inl>
-#include <sofa/core/ObjectFactory.h>
-
 
 namespace sofa::component::linearsystem
 {
 template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<linearalgebra::CompressedRowSparseMatrix<SReal> >;
-template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
-
-int MatrixMappingClass = core::RegisterObject("Matrix mapping")
-        .add< EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
-        ;
 }

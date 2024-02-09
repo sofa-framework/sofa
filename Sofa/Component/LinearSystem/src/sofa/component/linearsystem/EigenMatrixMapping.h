@@ -20,42 +20,44 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <fstream>
-#include <sofa/component/linearsystem/MappingGraph.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/StateAccessor.h>
+#include <sofa/component/linearsystem/MatrixMapping.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+
 
 namespace sofa::component::linearsystem
 {
 
 template<class TMatrix>
-class MatrixMapping : public core::behavior::StateAccessor
+class EigenMatrixMapping : public MatrixMapping<TMatrix>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(MatrixMapping, TMatrix), core::behavior::StateAccessor);
+    SOFA_CLASS(SOFA_TEMPLATE(EigenMatrixMapping, TMatrix), SOFA_TEMPLATE(MatrixMapping, TMatrix));
+    using PairMechanicalStates = typename MatrixMapping<TMatrix>::PairMechanicalStates;
 
-    using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
+    ~EigenMatrixMapping() override;
 
-    ~MatrixMapping() override;
-
-    virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
-
-    virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+    void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
         const MappingGraph& mappingGraph,
         TMatrix* matrixToProject,
-        linearalgebra::BaseMatrix* globalMatrix) = 0;
+        linearalgebra::BaseMatrix* globalMatrix) override;
 
 protected:
-    explicit MatrixMapping(const PairMechanicalStates& states);
-    MatrixMapping() = default;
+    using MatrixMapping<TMatrix>::MatrixMapping;
+
+    /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
+    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
+
+    /**
+    * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
+    * sense of mappings)
+    */
+    MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
+
+    core::objectmodel::BaseContext* getSolveContext();
 };
 
-
-
-#if !defined(SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP)
-extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+#if !defined(SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP)
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<linearalgebra::CompressedRowSparseMatrix<SReal> >;
 #endif
 
-} // namespace sofa::component::linearsystem
+}

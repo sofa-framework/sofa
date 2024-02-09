@@ -23,6 +23,7 @@
 #include <optional>
 #include <unordered_set>
 #include <mutex>
+#include <sofa/component/linearsystem/EigenMatrixMapping.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
@@ -32,7 +33,6 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/component/linearsystem/MatrixMapping.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/core/MechanicalParams.h>
