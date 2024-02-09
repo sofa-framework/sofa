@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/linearsystem/MatrixMapping.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-
+#include <optional>
 
 namespace sofa::component::linearsystem
 {
@@ -42,7 +42,8 @@ public:
         linearalgebra::BaseMatrix* globalMatrix) override;
 
 protected:
-    using MatrixMapping<TMatrix>::MatrixMapping;
+    explicit EigenMatrixMapping(const PairMechanicalStates& states);
+    EigenMatrixMapping();
 
     /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
     std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
@@ -54,6 +55,10 @@ protected:
     MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
 
     core::objectmodel::BaseContext* getSolveContext();
+
+    Data<bool> d_areJacobiansConstant; ///< True if mapping jacobians are considered constant over time. They are computed only the first time.
+
+    std::optional<sofa::type::fixed_array<MappingJacobians<TMatrix>, 2>> m_mappingJacobians;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP)

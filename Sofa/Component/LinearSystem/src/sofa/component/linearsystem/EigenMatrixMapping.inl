@@ -35,6 +35,20 @@ namespace sofa::component::linearsystem
 template <class TMatrix>
 EigenMatrixMapping<TMatrix>::~EigenMatrixMapping() = default;
 
+template <class TMatrix>
+EigenMatrixMapping<TMatrix>::EigenMatrixMapping()
+    : d_areJacobiansConstant(initData(&d_areJacobiansConstant, false, "areJacobiansConstant", "True if mapping jacobians are considered constant over time. They are computed only the first time."))
+{}
+
+template <class TMatrix>
+EigenMatrixMapping<TMatrix>::EigenMatrixMapping(
+    const PairMechanicalStates& states) : EigenMatrixMapping()
+{
+    this->l_mechanicalStates.add(states[0]);
+    this->l_mechanicalStates.add(states[1]);
+}
+
+
 template<class BlockType>
 Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const linearalgebra::CompressedRowSparseMatrix<BlockType>& matrix);
 
@@ -202,17 +216,21 @@ void EigenMatrixMapping<TMatrix>::projectMatrixToGlobalMatrix(const core::Mechan
     const MappingGraph& mappingGraph,
     TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
 {
-    const MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
-        this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
-    const MappingJacobians<TMatrix> J1 =
-        (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
-            J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
+    if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
+    {
+        const MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
+            this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
 
-    const sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> mappingMatricesMap { J0, J1 };
+        const MappingJacobians<TMatrix> J1 =
+            (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
+                J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
+
+        m_mappingJacobians.emplace(J0, J1);
+    }
 
     sofa::component::linearsystem::addMappedMatrixToGlobalMatrixEigen(
         {this->l_mechanicalStates[0], this->l_mechanicalStates[1]},
-        matrixToProject, mappingMatricesMap, mappingGraph,
+        matrixToProject, *m_mappingJacobians, mappingGraph,
         globalMatrix);
 }
 
