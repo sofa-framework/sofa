@@ -944,6 +944,39 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         const typename DataTypes::Coord& p3,
         const typename DataTypes::Coord& p4)
 {
+    // use formula with angles
+    // if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+    sofa::type::Vec<3, Real> AB = { p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2] };
+    sofa::type::Vec<3, Real> AD = { p4[0] - p1[0], p4[1] - p1[1], p4[2] - p1[2] };
+    
+    sofa::type::Vec<3, Real> CB = { p2[0] - p3[0], p2[1] - p3[1], p2[2] - p3[2] };
+    sofa::type::Vec<3, Real> CD = { p4[0] - p3[0], p4[1] - p3[1], p4[2] - p3[2] };
+
+    AB.normalize();
+    AD.normalize();
+    Real alpha = acos(AB * AD);
+
+    CB.normalize();
+    CD.normalize();
+    Real beta = acos(CB * CD);
+    bool isdelau = (alpha + beta > M_PI) ? false : true;
+    std::cout << "alpha: " << alpha*180/ M_PI << " | beta: " << beta * 180 / M_PI << " delaunay: " << isdelau << std::endl;
+
+    sofa::type::Vec<3, Real> BA = { p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2] };
+    sofa::type::Vec<3, Real> BC = { p3[0] - p2[0], p3[1] - p2[1], p3[2] - p2[2] };
+
+    sofa::type::Vec<3, Real> DC = { p3[0] - p4[0], p3[1] - p4[1], p3[2] - p4[2] };
+    sofa::type::Vec<3, Real> DA = { p1[0] - p4[0], p1[1] - p4[1], p1[2] - p4[2] };
+    BA.normalize();
+    BC.normalize();
+    Real alpha2 = acos(BA * BC);
+
+    DC.normalize();
+    DA.normalize();
+    Real beta2 = acos(DC * DA);
+    std::cout << "alpha2: " << alpha2 * 180 / M_PI << " | beta2: " << beta2 * 180 / M_PI << " delaunay: " << isdelau << std::endl;
+
+    return isdelau;
     Coord tri1[3], tri2[3];
 
     tri1[0] = p1; tri1[1] = p2; tri1[2] = p3;
@@ -959,9 +992,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
     oppositeVertices[1] = p3; sofa::type::Vec<3,Real> D; D = p4;
 
     bool intersected = false;
-
+    std::cout << "isQuadDeulaunayOriented: " << std::endl;
     Coord inter = this->compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
-
+    std::cout << "intersected: " << intersected << std::endl;
+    std::cout << "inter: " << inter << std::endl;
     if (intersected)
     {
 
@@ -970,18 +1004,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         Real ABAX = (A - B)*(A - X);
         Real CDCX = (C - D)*(C - X);
 
-        if ( (ABAX < 0) || ((A - X).norm2() > (A - B).norm2()) )
+        if ((ABAX < 0) || ((A - X).norm2() > (A - B).norm2())) {
+            std::cout << "return true" << std::endl;
             return true;
-        else if (	(CDCX < 0) || ((C - X).norm2() > (C - D).norm2()) )
+        }
+        else if ((CDCX < 0) || ((C - X).norm2() > (C - D).norm2())) {
+            std::cout << "return false" << std::endl;
             return false;
+        }
     }
 
     sofa::type::Vec<3,Real> G = (A+B+C)/3.0;
 
-    if((G-C)*(G-C) <= (G-D)*(G-D))
+    if ((G - C) * (G - C) <= (G - D) * (G - D)) {
+        std::cout << "return true" << std::endl;
         return true;
-    else
+    }
+    else {
+        std::cout << "return false" << std::endl;
         return false;
+    }
 }
 
 
@@ -3651,16 +3693,16 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 // Triangularize the remaining quad according to the delaunay criteria
                 if (isQuadDeulaunayOriented(posOrder[0], posOrder[1], posOrder[2], posOrder[3]))
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[3]));
+                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[4]));
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[4], vertexOrder[1], vertexOrder[3]));
+                    new_triangles.push_back(Triangle(vertexOrder[2], vertexOrder[3], vertexOrder[4]));
                     new_triangles_id.push_back(next_triangle++);
                 }
                 else
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[4]));
+                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[3]));
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[2], vertexOrder[3], vertexOrder[4]));
+                    new_triangles.push_back(Triangle(vertexOrder[4], vertexOrder[1], vertexOrder[3]));                    
                     new_triangles_id.push_back(next_triangle++);
                 }
 
