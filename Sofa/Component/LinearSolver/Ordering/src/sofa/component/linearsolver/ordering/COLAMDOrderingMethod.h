@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,38 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/direct/config.h>
 
-#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
+#include <sofa/component/linearsolver/ordering/config.h>
+#include <sofa/component/linearsolver/ordering/BaseEigenOrderingMethod.h>
+#include <Eigen/OrderingMethods>
 
-namespace sofa::component::linearsolver::direct
+namespace sofa::component::linearsolver::ordering
 {
 
-/**
- * Linear solver based on direct sparse LDLT Cholesky factorization without square root
- *
- * The factorization is based on the Eigen library
- */
-template<class TBlockType>
-class EigenSimplicialLDLT
-    : public EigenDirectSparseSolver<
-        TBlockType,
-        MainSimplicialLDLTFactory
-    >
+class SOFA_COMPONENT_LINEARSOLVER_ORDERING_API COLAMDOrderingMethod : public BaseEigenOrderingMethod<Eigen::COLAMDOrdering<int>>
 {
 public:
-    typedef sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType> Matrix;
-    using Real = typename Matrix::Real;
-    typedef sofa::linearalgebra::FullVector<Real> Vector;
+    SOFA_CLASS(COLAMDOrderingMethod, BaseEigenOrderingMethod<Eigen::COLAMDOrdering<int>>);
 
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLDLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainSimplicialLDLTFactory));
-
+    std::string methodName() const override;
 };
-
-#ifndef SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENSIMPLICIALLDLT_CPP
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< SReal >;
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< sofa::type::Mat<3,3,SReal> >;
-#endif
 
 }

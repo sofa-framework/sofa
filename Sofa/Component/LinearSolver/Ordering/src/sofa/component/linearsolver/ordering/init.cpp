@@ -19,39 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/linearsolver/direct/config.h>
-
-#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
-
-namespace sofa::component::linearsolver::direct
+#include <sofa/component/linearsolver/ordering/init.h>
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::component::linearsolver::ordering
 {
 
-/**
- * Linear solver based on direct sparse LDLT Cholesky factorization without square root
- *
- * The factorization is based on the Eigen library
- */
-template<class TBlockType>
-class EigenSimplicialLDLT
-    : public EigenDirectSparseSolver<
-        TBlockType,
-        MainSimplicialLDLTFactory
-    >
-{
-public:
-    typedef sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType> Matrix;
-    using Real = typename Matrix::Real;
-    typedef sofa::linearalgebra::FullVector<Real> Vector;
-
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLDLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainSimplicialLDLTFactory));
-
-};
-
-#ifndef SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENSIMPLICIALLDLT_CPP
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< SReal >;
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< sofa::type::Mat<3,3,SReal> >;
-#endif
-
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
 }
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
+    return classes.c_str();
+}
+} // namespace sofa::component::linearsolver::ordering

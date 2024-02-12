@@ -54,7 +54,7 @@ void ConstantLocalMappedMatrix<c, TBlockType>::add(const no_check_policy&, sofa:
 {
     SOFA_UNUSED(row);
     SOFA_UNUSED(col);
-    this->m_mappedMatrix->colsValue[this->insertionOrderList[this->currentId++]] += this->m_cachedFactor * value;
+    this->m_mappedMatrix->colsValue[this->compressedInsertionOrderList[this->currentId++]] += this->m_cachedFactor * value;
 }
 
 template <core::matrixaccumulator::Contribution c, class TBlockType>
@@ -63,7 +63,7 @@ void ConstantLocalMappedMatrix<c, TBlockType>::add(const no_check_policy&, sofa:
 {
     SOFA_UNUSED(row);
     SOFA_UNUSED(col);
-    this->m_mappedMatrix->colsValue[this->insertionOrderList[this->currentId++]] += this->m_cachedFactor * value;
+    this->m_mappedMatrix->colsValue[this->compressedInsertionOrderList[this->currentId++]] += this->m_cachedFactor * value;
 }
 
 template <core::matrixaccumulator::Contribution c, class TBlockType>

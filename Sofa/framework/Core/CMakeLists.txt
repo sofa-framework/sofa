@@ -61,6 +61,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseMass.h
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
+    ${SRC_ROOT}/behavior/BaseOrderingMethod.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
@@ -232,6 +233,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
+    ${SRC_ROOT}/behavior/BaseOrderingMethod.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/Constraint.cpp
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
