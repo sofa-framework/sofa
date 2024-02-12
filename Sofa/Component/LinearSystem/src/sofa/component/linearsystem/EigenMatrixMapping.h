@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/MatrixMapping.h>
+#include <Eigen/Sparse>
 #include <optional>
 
 namespace sofa::component::linearsystem
@@ -36,17 +37,26 @@ class EigenMatrixMapping : public MatrixMapping<TMatrix>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(EigenMatrixMapping, TMatrix), SOFA_TEMPLATE(MatrixMapping, TMatrix));
     using PairMechanicalStates = typename MatrixMapping<TMatrix>::PairMechanicalStates;
+    using Block = typename TMatrix::Block;
 
     ~EigenMatrixMapping() override;
 
-    void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-        const MappingGraph& mappingGraph,
-        TMatrix* matrixToProject,
-        linearalgebra::BaseMatrix* globalMatrix) override;
+    void computeMatrixJacobians(const core::MechanicalParams* mparams,
+                                const MappingGraph& mappingGraph,
+                                TMatrix* matrixToProject);
 
 protected:
     explicit EigenMatrixMapping(const PairMechanicalStates& states);
     EigenMatrixMapping();
+
+    virtual void computeMatrixProduct(const MappingGraph& mappingGraph,
+                          TMatrix* matrixToProject,
+                          linearalgebra::BaseMatrix* globalMatrix);
+
+    virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+                                     const MappingGraph& mappingGraph,
+                                     TMatrix* matrixToProject,
+                                     linearalgebra::BaseMatrix* globalMatrix) override;
 
     /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
     std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
@@ -58,6 +68,33 @@ protected:
     MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
 
     core::objectmodel::BaseContext* getSolveContext();
+
+    /**
+     * Add the local matrix which has been built locally to the main global matrix, using the Eigen library
+     *
+     * @remark Eigen manages the matrix operations better than CompressedRowSparseMatrix. In terms of performances, it is
+     * preferable to go with Eigen.
+     *
+     * @param mstatePair The mapped mechanical state which the local matrix is associated
+     * @param mappedMatrix The local matrix
+     * @param jacobians The required mapping jacobians to project from a mechanical state toward the top most mechanical states
+     * @param mappingGraph The mapping graph used to know the relationships between mechanical states. In particular, it
+     * is used to know where in the global matrix the local matrix must be added.
+     * @param globalMatrix Matrix in which the local matrix is added.
+     */
+    void addMappedMatrixToGlobalMatrixEigen(
+        sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
+        TMatrix* mappedMatrix,
+        sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> jacobians,
+        const MappingGraph& mappingGraph,
+        linearalgebra::BaseMatrix* globalMatrix);
+
+    Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor> > makeEigenMap(const TMatrix& matrix);
+
+    virtual void computeProjection(
+        const Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor> > KMap,
+        const sofa::type::fixed_array<std::shared_ptr<TMatrix>, 2> J,
+        Eigen::SparseMatrix<Block, Eigen::RowMajor>& JT_K_J);
 
     Data<bool> d_areJacobiansConstant; ///< True if mapping jacobians are considered constant over time. They are computed only the first time.
 

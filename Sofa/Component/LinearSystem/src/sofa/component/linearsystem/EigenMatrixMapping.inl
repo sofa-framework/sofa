@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <Eigen/Sparse>
 
+
 namespace sofa::component::linearsystem
 {
 
@@ -47,10 +48,6 @@ EigenMatrixMapping<TMatrix>::EigenMatrixMapping(
     this->setPairStates(states);
 }
 
-
-template<class BlockType>
-Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const linearalgebra::CompressedRowSparseMatrix<BlockType>& matrix);
-
 template <class BlockType>
 void computeProjection(
     const Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > KMap,
@@ -60,28 +57,12 @@ void computeProjection(
 template <class BlockType>
 void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J, const type::Vec2u positionInGlobalMatrix);
 
-/**
- * Add the local matrix which has been built locally to the main global matrix, using the Eigen library
- *
- * @remark Eigen manages the matrix operations better than CompressedRowSparseMatrix. In terms of performances, it is
- * preferable to go with Eigen.
- *
- * @param mstatePair The mapped mechanical state which the local matrix is associated
- * @param mappedMatrix The local matrix
- * @param jacobians The required mapping jacobians to project from a mechanical state toward the top most mechanical states
- * @param mappingGraph The mapping graph used to know the relationships between mechanical states. In particular, it
- * is used to know where in the global matrix the local matrix must be added.
- * @param globalMatrix Matrix in which the local matrix is added.
- */
-template<class BlockType>
-void addMappedMatrixToGlobalMatrixEigen(
+template <class TMatrix>
+void EigenMatrixMapping<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
-    linearalgebra::CompressedRowSparseMatrix<BlockType>* mappedMatrix,
-    sofa::type::fixed_array<
-            MappingJacobians<linearalgebra::CompressedRowSparseMatrix<BlockType> >,
-            2> jacobians,
-    const MappingGraph& mappingGraph,
-    linearalgebra::BaseMatrix* globalMatrix)
+    TMatrix* mappedMatrix,
+    sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> jacobians,
+    const MappingGraph& mappingGraph, linearalgebra::BaseMatrix* globalMatrix)
 {
     if (!mappedMatrix)
     {
@@ -127,7 +108,7 @@ void addMappedMatrixToGlobalMatrixEigen(
 
     for (const auto& [a, b] : uniquePairs)
     {
-        const sofa::type::fixed_array<std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<BlockType>>, 2> J
+        const sofa::type::fixed_array<std::shared_ptr<TMatrix>, 2> J
         { jacobians[0].getJacobianFrom(a), jacobians[1].getJacobianFrom(b) };
 
         if (J[0])
@@ -148,20 +129,21 @@ void addMappedMatrixToGlobalMatrixEigen(
                     << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->BaseMechanicalState::getMatrixSize();
         }
 
-        Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J;
-        computeProjection<BlockType>(KMap, J, JT_K_J);
+        Eigen::SparseMatrix<Block, Eigen::RowMajor> JT_K_J;
+        computeProjection(KMap, J, JT_K_J);
 
         const type::Vec2u positionInGlobalMatrix = mappingGraph.getPositionInGlobalMatrix(a, b);
 
-        addToGlobalMatrix<BlockType>(globalMatrix, JT_K_J, positionInGlobalMatrix);
+        addToGlobalMatrix<Block>(globalMatrix, JT_K_J, positionInGlobalMatrix);
     }
 }
 
-template<class BlockType>
-Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const linearalgebra::CompressedRowSparseMatrix<BlockType>& matrix)
+template <class TMatrix>
+Eigen::Map<Eigen::SparseMatrix<typename EigenMatrixMapping<TMatrix>::Block,
+Eigen::RowMajor>> EigenMatrixMapping<TMatrix>::makeEigenMap(const TMatrix& matrix)
 {
-    using EigenMap = Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> >;
-    return Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> >(
+    using EigenMap = Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor> >;
+    return EigenMap(
             static_cast<typename EigenMap::Index>(matrix.rows()),
             static_cast<typename EigenMap::Index>(matrix.cols()),
             static_cast<typename EigenMap::Index>(matrix.getColsValue().size()),
@@ -170,11 +152,11 @@ Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > makeEigenMap(const 
             (typename EigenMap::Scalar*)matrix.colsValue.data());
 }
 
-template <class BlockType>
-void computeProjection(
-    const Eigen::Map<Eigen::SparseMatrix<BlockType, Eigen::RowMajor> > KMap,
-    const sofa::type::fixed_array<std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<BlockType>>, 2> J,
-    Eigen::SparseMatrix<BlockType, Eigen::RowMajor>& JT_K_J)
+template <class TMatrix>
+void EigenMatrixMapping<TMatrix>::computeProjection(
+    const Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor>> KMap,
+    const sofa::type::fixed_array<std::shared_ptr<TMatrix>, 2> J,
+    Eigen::SparseMatrix<Block, Eigen::RowMajor>& JT_K_J)
 {
     if (J[0] && J[1])
     {
@@ -211,9 +193,7 @@ void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMat
 }
 
 template <class TMatrix>
-void EigenMatrixMapping<TMatrix>::projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-    const MappingGraph& mappingGraph,
-    TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
+void EigenMatrixMapping<TMatrix>::computeMatrixJacobians(const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* matrixToProject)
 {
     if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
     {
@@ -221,16 +201,29 @@ void EigenMatrixMapping<TMatrix>::projectMatrixToGlobalMatrix(const core::Mechan
             this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
 
         const MappingJacobians<TMatrix> J1 =
-            (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
-                J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
+                (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
+                    J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
 
         m_mappingJacobians.emplace(J0, J1);
     }
+}
 
-    sofa::component::linearsystem::addMappedMatrixToGlobalMatrixEigen(
+template <class TMatrix>
+void EigenMatrixMapping<TMatrix>::computeMatrixProduct(const MappingGraph& mappingGraph, TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
+{
+    this->addMappedMatrixToGlobalMatrixEigen(
         {this->l_mechanicalStates[0], this->l_mechanicalStates[1]},
         matrixToProject, *m_mappingJacobians, mappingGraph,
         globalMatrix);
+}
+
+template <class TMatrix>
+void EigenMatrixMapping<TMatrix>::projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+    const MappingGraph& mappingGraph,
+    TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
+{
+    computeMatrixJacobians(mparams, mappingGraph, matrixToProject);
+    computeMatrixProduct(mappingGraph, matrixToProject, globalMatrix);
 }
 
 template <class TMatrix>
