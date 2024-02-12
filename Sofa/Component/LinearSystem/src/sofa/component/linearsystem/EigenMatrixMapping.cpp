@@ -27,7 +27,7 @@ namespace sofa::component::linearsystem
 {
 template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
 
-int MatrixMappingClass = core::RegisterObject("Matrix mapping computing the matrix projection using the Eigen library")
+int EigenMatrixMappingClass = core::RegisterObject("Matrix mapping computing the matrix projection using the Eigen library")
         .add< EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
         ;
 }
