@@ -20,21 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/direct/config.h>
 
-#include <Eigen/SparseQR>
-#include <Eigen/OrderingMethods>
-#include <Eigen/MetisSupport>
+#include <sofa/config.h>
+SOFA_DISABLED_HEADER_NOT_REPLACED("v24.06", "v24.12")
 
 namespace sofa::component::linearsolver::direct
 {
     template<class Real>
-    struct SparseQRTraits
-    {
-        using EigenSolver = Eigen::SparseMatrix<Real>;
-        using AMDOrderSolver = Eigen::SparseQR<Eigen::SparseMatrix<Real>, Eigen::AMDOrdering<typename EigenSolver::StorageIndex> >;
-        using COLAMDOrderSolver = Eigen::SparseQR<Eigen::SparseMatrix<Real>, Eigen::COLAMDOrdering<typename EigenSolver::StorageIndex> >;
-        using NaturalOrderSolver = Eigen::SparseQR<Eigen::SparseMatrix<Real>, Eigen::NaturalOrdering<typename EigenSolver::StorageIndex> >;
-        using MetisOrderSolver = Eigen::SparseQR<Eigen::SparseMatrix<Real>, Eigen::MetisOrdering<typename EigenSolver::StorageIndex> >;
-    };
+    using SparseQRTraits = DeprecatedAndRemoved;
 }

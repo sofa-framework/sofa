@@ -28,9 +28,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/linearalgebra/DiagonalSystemSolver.h>
 #include <sofa/linearalgebra/TriangularSystemSolver.h>
-#include <Eigen/SparseCore>
-#include <Eigen/MetisSupport>
-#include <Eigen/OrderingMethods>
+#include <sofa/component/linearsolver/ordering/OrderingMethodAccessor.h>
 
 
 namespace sofa::component::linearsolver::direct
@@ -151,11 +149,14 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
 }
 
 template<class TMatrix, class TVector, class TThreadManager>
-class SparseLDLSolverImpl : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
+class SparseLDLSolverImpl : public ordering::OrderingMethodAccessor<sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> >
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> Inherit;
+    SOFA_CLASS(
+        SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),
+        SOFA_TEMPLATE(ordering::OrderingMethodAccessor, SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager))
+    );
+    typedef ordering::OrderingMethodAccessor<sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> > Inherit;
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
@@ -166,18 +167,13 @@ protected :
 
     Data<bool> d_precomputeSymbolicDecomposition; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
     core::objectmodel::lifecycle::DeprecatedData d_applyPermutation{this, "v24.06", "v24.12", "applyPermutation", "Use the Data 'ordering'"};
-    Data<sofa::helper::OptionsGroup> d_orderingMethod; ///< Ordering method
     Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
-    static constexpr const char* s_defaultOrderingMethod { "Metis" };
 
-    SparseLDLSolverImpl() : Inherit()
-    , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
-    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup{"Natural", "AMD", "COLAMD", "Metis"}, "ordering", "Ordering method"))
+    SparseLDLSolverImpl()
+    : d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
-    {
-        sofa::helper::getWriteAccessor(d_orderingMethod)->setSelectedItem(s_defaultOrderingMethod);
-    }
+    {}
 
     template<class VecInt,class VecReal>
     void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data)
@@ -231,74 +227,15 @@ protected :
         }
     }
 
-    void naturalOrder(int n, int* perm, int* invperm)
+    void LDL_ordering(int n, int nnz, int* M_colptr, int* M_rowind, Real* M_values, int* perm, int* invperm)
     {
-        for (int j = 0; j < n; ++j)
-        {
-            perm[j] = j;
-            invperm[j] = j;
-        }
-    }
+        core::behavior::BaseOrderingMethod::SparseMatrixPattern pattern;
+        pattern.matrixSize = n;
+        pattern.numberOfNonZeros = nnz;
+        pattern.rowBegin = M_colptr;
+        pattern.colsIndex = M_rowind;
 
-    void LDL_ordering(int n, int nnz, int * M_colptr,int * M_rowind, Real* M_values, int * perm,int * invperm)
-    {
-        const auto orderingMethod = sofa::helper::getReadAccessor(d_orderingMethod)->getSelectedItem();
-        if (orderingMethod != "Natural")
-        {
-            const auto computeOrdering = [&](auto ordering)
-            {
-                using PermutationType = typename decltype(ordering)::PermutationType;
-                PermutationType permutation;
-                using EigenSparseMatrix = Eigen::SparseMatrix<Real, Eigen::ColMajor>;
-                using EigenSparseMatrixMap = Eigen::Map<const EigenSparseMatrix>;
-                const auto map = EigenSparseMatrixMap( n, n, nnz, M_colptr, M_rowind, M_values);
-                ordering.template operator()<const EigenSparseMatrix>(map, permutation);
-
-                const PermutationType inv = permutation.inverse();
-
-                for (int j = 0; j < n; ++j)
-                {
-                    perm[j] = permutation.indices()(j);
-                    invperm[j] = inv.indices()(j) ;
-                }
-            };
-
-            if (orderingMethod == "Metis")
-            {
-                // This could be the way to call Metis using the Eigen API, but
-                // it triggers failing unit tests compared to the other method
-                // computeOrdering(Eigen::MetisOrdering<int>());
-
-                type::vector<int> xadj,adj,t_xadj,t_adj;
-                csrToAdj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
-
-                /*
-                int numflag = 0, options = 0;
-                The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
-                 We give NULL and NULL to use the default option (see doc of metis for details) !
-                 If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
-                 In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-                */
-                METIS_NodeND(&n , xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
-            }
-            else if (orderingMethod == "COLAMD")
-            {
-                computeOrdering(Eigen::COLAMDOrdering<int>());
-            }
-            else if (orderingMethod == "AMD")
-            {
-                computeOrdering(Eigen::AMDOrdering<int>());
-            }
-            else
-            {
-                msg_error() << "Ordering method '" << orderingMethod << "' not supported: fallback to natural order";
-                naturalOrder(n, perm, invperm);
-            }
-        }
-        else 
-        {
-            naturalOrder(n, perm, invperm);
-        }
+        this->l_orderingMethod->computePermutation(pattern, perm, invperm);
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {

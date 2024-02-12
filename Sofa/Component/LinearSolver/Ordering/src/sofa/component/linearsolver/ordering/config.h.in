@@ -20,38 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/direct/config.h>
 
-#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::linearsolver::direct
-{
-
-/**
- * Linear solver based on direct sparse LDLT Cholesky factorization without square root
- *
- * The factorization is based on the Eigen library
- */
-template<class TBlockType>
-class EigenSimplicialLDLT
-    : public EigenDirectSparseSolver<
-        TBlockType,
-        MainSimplicialLDLTFactory
-    >
-{
-public:
-    typedef sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType> Matrix;
-    using Real = typename Matrix::Real;
-    typedef sofa::linearalgebra::FullVector<Real> Vector;
-
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLDLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainSimplicialLDLTFactory));
-
-};
-
-#ifndef SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENSIMPLICIALLDLT_CPP
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< SReal >;
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< sofa::type::Mat<3,3,SReal> >;
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_ORDERING
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_LINEARSOLVER_ORDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_LINEARSOLVER_ORDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-}
+namespace sofa::component::linearsolver::ordering
+{
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofa::component::linearsolver::ordering
+
