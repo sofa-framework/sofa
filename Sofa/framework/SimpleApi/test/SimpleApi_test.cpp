@@ -38,6 +38,8 @@ bool SimpleApi_test::testParamAPI()
     const Simulation::SPtr simu = createSimulation("DAG") ;
     const Node::SPtr root = createRootNode(simu, "root") ;
 
+    simpleapi::importPlugin("Sofa.Component.StateContainer");
+
     const auto meca1 = createObject(root, "MechanicalObject", {
                                         {"name", "aMechanicalObject1"},
                                         {"position", "1 2 3"}
@@ -59,6 +61,8 @@ bool SimpleApi_test::testParamString()
 {
     const Simulation::SPtr simu = createSimulation("DAG") ;
     const Node::SPtr root = createRootNode(simu, "root") ;
+
+    simpleapi::importPlugin("Sofa.Component.StateContainer");
 
     const auto meca1 = createObject(root, "MechanicalObject", {
                                         {"name", "aMechanicalObject1"},
