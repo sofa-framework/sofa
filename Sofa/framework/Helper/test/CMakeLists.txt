@@ -32,6 +32,7 @@ add_subdirectory(system/FailingPlugin)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Helper)
+target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:NDEBUG>")
 
 add_definitions("-DSTBIMAGETEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/io/images\"")
 
