@@ -90,21 +90,22 @@ TEST(MatrixAccumulatorIndexChecker, RangeVerification)
         accumulator->add(3123, 45432, 0.);
     }
 
-    accumulator->indexVerificationStrategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
+    const auto rangeVerificationStrategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
+    accumulator->setIndexCheckerStrategy(rangeVerificationStrategy);
 
     {
         EXPECT_MSG_NOEMIT(Error);
         accumulator->add(3123, 45432, 0.);
     }
 
-    accumulator->indexVerificationStrategy->maxColIndex = 20;
+    rangeVerificationStrategy->maxColIndex = 20;
 
     {
         EXPECT_MSG_NOEMIT(Error);
         accumulator->add(3123, 20, 0.);
     }
 
-    accumulator->indexVerificationStrategy->maxRowIndex = 40;
+    rangeVerificationStrategy->maxRowIndex = 40;
 
     {
         EXPECT_MSG_EMIT(Error);

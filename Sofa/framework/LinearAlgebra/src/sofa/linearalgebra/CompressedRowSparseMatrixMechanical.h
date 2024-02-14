@@ -506,43 +506,80 @@ public:
     static bool lower_nonsmall(Index   i  , Index   j  , Block& val, const Real   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
 
     template<class TMatrix>
-    void filterValues(TMatrix& M, filter_fn* filter = &nonzeros, const Real ref = Real(), bool keepEmptyRows=false)
+    void filterValues(TMatrix& srcMatrix, filter_fn* filter = &nonzeros, const Real ref = Real(), bool keepEmptyRows=false)
     {
-        M.compress();
-        this->nBlockRow = M.rowBSize();
-        this->nBlockCol = M.colBSize();
-        this->nRow = M.rowSize();
-        this->nCol = M.colSize();
+        static constexpr auto SrcBlockRows = TMatrix::NL;
+        static constexpr auto SrcBlockColumns = TMatrix::NC;
+
+        static constexpr auto DstBlockRows = NL;
+        static constexpr auto DstBlockColumns = NC;
+
+        static_assert(SrcBlockRows % DstBlockRows == 0);
+        static_assert(SrcBlockColumns % DstBlockColumns == 0);
+
+        static constexpr auto NbBlocksRows = SrcBlockRows / DstBlockRows;
+        static constexpr auto NbBlocksColumns = SrcBlockColumns / DstBlockColumns;
+
+        if constexpr (TMatrix::Policy::AutoCompress)
+        {
+            /// \warning this violates the const-ness of TMatrix !
+            const_cast<std::remove_const_t<TMatrix>*>(&srcMatrix)->compress();
+        }
+
+        this->nRow = srcMatrix.nBlockRow * SrcBlockRows;
+        this->nCol = srcMatrix.nBlockCol * SrcBlockColumns;
+        this->nBlockRow = srcMatrix.nBlockRow * NbBlocksRows;
+        this->nBlockCol = srcMatrix.nBlockCol * NbBlocksColumns;
         this->rowIndex.clear();
         this->rowBegin.clear();
         this->colsIndex.clear();
         this->colsValue.clear();
         this->skipCompressZero = true;
         this->btemp.clear();
-        this->rowIndex.reserve(M.rowIndex.size());
-        this->rowBegin.reserve(M.rowBegin.size());
-        this->colsIndex.reserve(M.colsIndex.size());
-        this->colsValue.reserve(M.colsValue.size());
+        this->rowIndex.reserve(srcMatrix.rowIndex.size() * NbBlocksRows);
+        this->rowBegin.reserve(srcMatrix.rowBegin.size() * NbBlocksRows);
+        this->colsIndex.reserve(srcMatrix.colsIndex.size() * NbBlocksRows * NbBlocksColumns);
+        this->colsValue.reserve(srcMatrix.colsValue.size() * NbBlocksRows * NbBlocksColumns);
 
         Index vid = 0;
-        for (Index rowId = 0; rowId < static_cast<Index>(M.rowIndex.size()); ++rowId)
+        for (Index srcRowId = 0; srcRowId < static_cast<Index>(srcMatrix.rowIndex.size()); ++srcRowId)
         {
-            Index i = M.rowIndex[rowId];
-            this->rowIndex.push_back(i);
-            this->rowBegin.push_back(vid);
-            Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            // row id if blocks were scalars
+            const Index scalarRowId = srcMatrix.rowIndex[srcRowId] * SrcBlockRows;
+
+            Range rowRange(srcMatrix.rowBegin[srcRowId], srcMatrix.rowBegin[srcRowId+1]);
+            for (Index subRow = 0; subRow < NbBlocksRows; ++subRow)
             {
-                Index j = M.colsIndex[xj];
-                Block b = M.colsValue[xj];
-                if ((*filter)(i,j,b,ref))
+                const auto oldVid = vid;
+
+                for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
                 {
-                    this->colsIndex.push_back(j);
-                    this->colsValue.push_back(b);
-                    ++vid;
+                    // col id if blocks were scalars
+                    const Index scalarColId = srcMatrix.colsIndex[xj] * SrcBlockColumns;
+                    const typename TMatrix::Block& srcBlock = srcMatrix.colsValue[xj];
+
+                    for (Index subCol = 0; subCol < NbBlocksColumns; ++subCol)
+                    {
+                        Block subBlock;
+                        matrix_bloc_traits<typename TMatrix::Block, sofa::SignedIndex>::subBlock(srcBlock, subRow * DstBlockRows, subCol * DstBlockColumns, subBlock);
+
+                        if ((*filter)(scalarRowId / DstBlockRows + subRow, scalarColId / DstBlockColumns + subCol, subBlock, ref))
+                        {
+                            this->colsIndex.push_back(scalarColId / DstBlockColumns + subCol);
+                            this->colsValue.push_back(subBlock);
+                            ++vid;
+                        }
+                    }
+                }
+
+                if (oldVid != vid) //check in case all sub-blocks have been filtered out
+                {
+                    this->rowIndex.push_back(scalarRowId / DstBlockRows + subRow);
+                    this->rowBegin.push_back(oldVid);
                 }
             }
-            if (!keepEmptyRows && this->rowBegin.back() == vid) // row was empty
+
+            if (!keepEmptyRows && !this->rowBegin.empty() && this->rowBegin.back() == vid) // row was empty
             {
                 this->rowIndex.pop_back();
                 this->rowBegin.pop_back();
@@ -1311,7 +1348,7 @@ public:
     template<class TBlock2, class TPolicy2>
     void operator-=(const CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2>& m)
     {
-        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> > >(MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> >(m)), true);
+        equal(MatrixExpr { MatrixNegative< CompressedRowSparseMatrixMechanical<TBlock2, TPolicy2> >(m) }, true);
     }
 
     template<class Expr2>
@@ -1329,23 +1366,23 @@ public:
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
+        addEqual(MatrixExpr{ MatrixNegative< Expr2 >(m) } );
     }
 
     MatrixExpr< MatrixTranspose< Matrix > > t() const
     {
-        return MatrixExpr< MatrixTranspose< Matrix > >(MatrixTranspose< Matrix >(*this));
+        return MatrixExpr{ MatrixTranspose< Matrix >{*this} };
     }
 
 
     MatrixExpr< MatrixNegative< Matrix > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< Matrix > >(MatrixNegative< Matrix >(*this));
+        return MatrixExpr{ MatrixNegative< Matrix >(*this) };
     }
 
     MatrixExpr< MatrixScale< Matrix, double > > operator*(const double& r) const
     {
-        return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
+        return MatrixExpr{ MatrixScale< Matrix, double >(*this, r) };
     }
 
 
@@ -1365,11 +1402,6 @@ template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type:
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3d >::add(Index row, Index col, const type::Mat3x3f& _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3d& _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3f& _M);
-
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3d > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3f > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3f > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3d > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXMECHANICAL_CPP) 
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>;

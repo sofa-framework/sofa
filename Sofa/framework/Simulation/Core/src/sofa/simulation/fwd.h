@@ -46,7 +46,6 @@ namespace sofa::simulation
      */
     SOFA_SIMULATION_CORE_API Simulation* getSimulation();
 
-    class LocalStorage;
     class MutationListener;
     class Visitor;
 

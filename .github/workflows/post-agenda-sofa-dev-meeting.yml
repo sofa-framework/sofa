@@ -1,0 +1,51 @@
+name: Post - SOFA dev meeting agenda/reminder
+
+on:
+  schedule:
+    - cron: '30 8 * * 1'  # 9:30 am CET every Monday
+    - cron: '30 7 * * 3'   # 8:00 am CET on Wednesdays
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+        working-directory: ${{ github.workspace }}
+
+      # Monday message : agenda
+      - name: Run script post-discord-message.py
+        if: github.event.schedule == '30 8 * * 1'
+        run: |
+          python scripts/discord/post-discord-message.py
+        working-directory: ${{ github.workspace }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
+          MESSAGE : ":sunrise:  Morning, dear SOFA community! Next Wednesday takes place the weekly SOFA dev meeting:\n**_Any specific topic to share or to discuss?_** If so, please reply in this thread :speech_balloon: *Remember you can use the tag \"pr: dev meeting topic\" for your PRs*"
+          BOT_NAME: "Meeting reminder"
+          EMBEDS_TITLE: "Label \"pr: dev-meeting topic\""
+          EMBEDS_URL: "https://github.com/sofa-framework/sofa/labels/pr%3A%20dev%20meeting%20topic"
+          EMBEDS_DESCRIPTION: ""
+
+      # Wednesday message : get ready
+      - name: Run script post-discord-message.py
+        if: github.event.schedule == '30 7 * * 3'
+        run: |
+          python scripts/discord/post-discord-message.py
+        working-directory: ${{ github.workspace }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
+          MESSAGE: "SOFA dev meeting is about to get started :tv: See you online!"
+          BOT_NAME: "Meeting reminder"
+          EMBEDS_TITLE: "SOFA dev visio link"
+          EMBEDS_URL: "https://www.sofa-framework.org/sofa-dev-meeting"
+          EMBEDS_DESCRIPTION: ""
+

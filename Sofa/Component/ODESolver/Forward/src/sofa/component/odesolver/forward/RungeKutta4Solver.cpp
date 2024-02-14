@@ -160,9 +160,9 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     pos2.peq(k3v,stepBy3);
     vel2.peq(k3a,stepBy3);
     pos2.peq(k4v,stepBy6);
-    solveConstraint(dt, pos2, core::ConstraintParams::POS);
+    mop.solveConstraint(pos2, core::ConstraintOrder::POS);
     vel2.peq(k4a,stepBy6);
-    solveConstraint(dt, vel2, core::ConstraintParams::VEL);
+    mop.solveConstraint(vel2, core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -182,8 +182,8 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(pos, core::ConstraintParams::POS);
-        mop.solveConstraint(vel, core::ConstraintParams::VEL);
+        mop.solveConstraint(pos, core::ConstraintOrder::POS);
+        mop.solveConstraint(vel, core::ConstraintOrder::VEL);
     }
 #endif
 }

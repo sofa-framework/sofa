@@ -95,6 +95,12 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
+    template<class TSubBlock>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        b.getsub(row, col, subBlock);
+    }
+
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
 };
 
@@ -129,6 +135,12 @@ public:
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
+
+    template<class TSubBlock>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        b.getsub(row, col, subBlock);
+    }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
     static const std::string Name()
@@ -178,6 +190,13 @@ public:
     static Block transposed(const Block& b) { return b; }
 
     static void transpose(Block& res, const Block& b) { res = b; }
+
+    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        SOFA_UNUSED(row);
+        b.getsub(col, subBlock);
+    }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
     static const std::string Name()
@@ -259,6 +278,12 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
+    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        subBlock = v(b, row, col);
+    }
+
     static const std::string Name() { return "f"; }
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
     static IndexType getElementSize() { return sizeof(Real); }
@@ -284,6 +309,12 @@ public:
         return b == 0;
     }
     static void invert(Block& result, const Block& b) { result = 1.0/b; }
+
+    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        subBlock = v(b, row, col);
+    }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
@@ -312,6 +343,12 @@ public:
         return b == 0;
     }
     static void invert(Block& result, const Block& b) { result = 1.0f/b; }
+
+    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
+    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
+    {
+        subBlock = v(b, row, col);
+    }
 
     static void split_row_index(int& index, int& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }

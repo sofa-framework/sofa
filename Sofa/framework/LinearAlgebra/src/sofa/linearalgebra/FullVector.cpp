@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+#define SOFA_LINEARALGEBRA_FULLVECTOR_DEFINITION
 #include <sofa/linearalgebra/FullVector.inl>
 
 namespace sofa::linearalgebra

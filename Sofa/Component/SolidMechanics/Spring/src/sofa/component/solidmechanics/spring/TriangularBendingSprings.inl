@@ -502,7 +502,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
+    auto df = sofa::helper::getWriteAccessor(d_df);
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
@@ -524,7 +524,33 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
         df[a]+= dforce * kFactor;
         df[b]-= dforce * kFactor;
     }
-    d_df.endEdit();
+}
+
+template <class DataTypes>
+void TriangularBendingSprings<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+
+    for (sofa::Index i = 0; i < m_topology->getNbEdges(); i++)
+    {
+        const EdgeInformation& einfo = edgeInf[i];
+        if (einfo.is_activated) // edge not in middle of 2 triangles
+        {
+            const sofa::Index a = Deriv::total_size * einfo.m1;
+            const sofa::Index b = Deriv::total_size * einfo.m2;
+
+            const Mat& dfdxLocal = einfo.DfDx;
+
+            dfdx(a, a) += -dfdxLocal;
+            dfdx(a, b) +=  dfdxLocal;
+            dfdx(b, a) +=  dfdxLocal;
+            dfdx(b, b) += -dfdxLocal;
+        }
+    }
 }
 
 template <class DataTypes>

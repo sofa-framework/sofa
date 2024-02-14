@@ -20,11 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/utility/TopologicalChangeProcessor.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
@@ -33,7 +35,6 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
-#include <sofa/simulation/Simulation.h>
 
 #include <ctime>
 

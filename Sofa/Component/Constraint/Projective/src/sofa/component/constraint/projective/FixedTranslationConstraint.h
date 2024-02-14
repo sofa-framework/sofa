@@ -20,87 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/projective/config.h>
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/core/topology/TopologySubsetIndices.h>
-#include <sofa/type/vector.h>
+#include <sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class FixedTranslationConstraintInternalData
-{
-};
-
-/** Attach given particles to their initial positions.
-*/
-template <class DataTypes>
-class FixedTranslationConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedTranslationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
-
-    using Index = sofa::Index;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef Data<VecCoord> DataVecCoord;
-    typedef Data<VecDeriv> DataVecDeriv;
-    typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef type::vector<Index> SetIndexArray;
-    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
-protected:
-    FixedTranslationConstraintInternalData<DataTypes> data;
-    friend class FixedTranslationConstraintInternalData<DataTypes>;
-
-public:
-    SetIndex f_indices; ///< Indices of the fixed points
-    Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
-    Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
-    SetIndex f_coordinates; ///< Coordinates of the fixed points
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<FixedTranslationConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-protected:
-    FixedTranslationConstraint();
-
-    virtual ~FixedTranslationConstraint();
-public:
-    // methods to add/remove some indices
-    void clearIndices();
-    void addIndex(Index index);
-    void removeIndex(Index index);
-
-    // -- Constraint interface
-    void init() override;
-
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-protected:
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx,
-        const std::function<void(DataDeriv&, const unsigned int)>& clear);
-
-};
-
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<defaulttype::Rigid2Types>;
-extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<defaulttype::Vec6Types>;
-
-#endif
-
-} // namespace sofa::component::constraint::projective
+template <class T>
+using FixedTranslationConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "FixedTranslationConstraint has been renamed to FixedTranslationProjectiveConstraint") = FixedTranslationProjectiveConstraint<T>;
+}

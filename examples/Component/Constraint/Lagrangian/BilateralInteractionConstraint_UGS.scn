@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- BilateralInteractionConstraint example -->
+<!-- BilateralLagrangianConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
@@ -7,7 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralInteractionConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -72,7 +72,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
     <Node name="CUBE_2">
         <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -98,7 +98,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_3">
         <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -124,7 +124,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_4">
         <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -150,5 +150,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_4/Constraints/points" first_point="1" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_4/Constraints/points" first_point="1" second_point="0" />
 </Node>

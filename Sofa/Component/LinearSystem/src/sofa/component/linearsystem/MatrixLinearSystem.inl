@@ -784,8 +784,7 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
     auto& strategy = matrixMaps.indexVerificationStrategy[component];
     if (d_checkIndices.getValue() && !strategy)
     {
-        strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
-        strategy->m_messageComponent = component;
+        strategy = makeIndexVerificationStrategy(component);
     }
 
 
@@ -862,10 +861,10 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             localMatrix->setPositionInGlobalMatrix(position);
         }
         localMatrix->setMatrixSize({matrixSize1, matrixSize2});
-        if (strategy)
+        if (auto* rangeStrategy = dynamic_cast<sofa::core::matrixaccumulator::RangeVerification*>(strategy.get()))
         {
-            strategy->maxRowIndex = matrixSize1;
-            strategy->maxColIndex = matrixSize2 - 1;
+            rangeStrategy->maxRowIndex = matrixSize1;
+            rangeStrategy->maxColIndex = matrixSize2 - 1;
         }
     }
 
@@ -878,6 +877,15 @@ void MatrixLinearSystem<TMatrix, TVector>::makeCreateDispatcher()
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::MASS               >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::MASS               >();
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::DAMPING            >>>(m_createDispatcher) = makeCreateDispatcher<Contribution::DAMPING            >();
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
+}
+
+template <class TMatrix, class TVector>
+std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy> MatrixLinearSystem<TMatrix, TVector>::
+makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component)
+{
+    auto strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
+    strategy->m_messageComponent = component;
+    return strategy;
 }
 
 template <class TMatrix, class TVector>
@@ -939,14 +947,10 @@ BaseAssemblingMatrixAccumulator<c>* MatrixLinearSystem<TMatrix, TVector>::create
 
     if (d_checkIndices.getValue())
     {
-        if (auto concreteLocalMatrix
-            = dynamic_cast<AssemblingMatrixAccumulator<c, core::matrixaccumulator::RangeVerification>*>(localMatrix.get()))
+        const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
+        if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
         {
-            const auto it = getLocalMatrixMap<c>().indexVerificationStrategy.find(object);
-            if (it != getLocalMatrixMap<c>().indexVerificationStrategy.end())
-            {
-                concreteLocalMatrix->indexVerificationStrategy = it->second;
-            }
+            localMatrix->setIndexCheckerStrategy(it->second);
         }
     }
 
@@ -988,7 +992,8 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
         }
 
         const MappingJacobians<JacobianMatrixType> J0 = computeJacobiansFrom(pair[0], mparams, crs);
-        const MappingJacobians<JacobianMatrixType> J1 = computeJacobiansFrom(pair[1], mparams, crs);
+        const MappingJacobians<JacobianMatrixType> J1 =
+                            (pair[0] == pair[1]) ? J0 : computeJacobiansFrom(pair[1], mparams, crs);
 
         const sofa::type::fixed_array<MappingJacobians<JacobianMatrixType>, 2> mappingMatricesMap { J0, J1 };
 
@@ -1035,10 +1040,15 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         return jacobians;
     }
 
-    MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
-
     auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
 
+    // this clears the matrix identified by mappingJacobian() among others
+    MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
+
+    // optimisation to build only the relevent entries of the jacobian matrices
+    // The relevent entries are the ones that have a influence on the result
+    // of the product J^T * K * J.
+    // J does not need to be fully computed if K is sparse.
     {
         const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
 
@@ -1049,12 +1059,17 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         mstate->buildIdentityBlocksInJacobian(listAffectedDoFs, mappingJacobianId);
     }
 
+    // apply the mappings from the bottom to the top, so it builds the jacobian
+    // matrices, transforming the space from the input DoFs to the space of the
+    // top most DoFs
     const auto parentMappings = getMappingGraph().getBottomUpMappingsFrom(mstate);
     for (auto* mapping : parentMappings)
     {
         mapping->applyJT(&cparams, mappingJacobianId, mappingJacobianId);
     }
 
+    // copy the jacobian matrix stored in the mechanical states into a local
+    // matrix data structure
     const auto inputs = m_mappingGraph.getTopMostMechanicalStates(mstate);
     for (auto* input : inputs)
     {
@@ -1062,7 +1077,14 @@ auto MatrixLinearSystem<TMatrix, TVector>::computeJacobiansFrom(BaseMechanicalSt
         jacobians.addJacobianToTopMostParent(J, input);
         J->resize(mstate->getMatrixSize(), input->getMatrixSize());
         unsigned int offset {};
-        input->copyToBaseMatrix(J.get(), sofa::core::MatrixDerivId::mappingJacobian(), offset);
+        input->copyToBaseMatrix(J.get(), mappingJacobianId, offset);
+
+        //set the sizes again because in some cases they are changed in copyToBaseMatrix
+        J->nCol = input->getMatrixSize();
+        J->nRow = mstate->getMatrixSize();
+        J->nBlockCol = J->nCol;
+        J->nBlockRow = J->nRow;
+
         J->fullRows();
     }
 

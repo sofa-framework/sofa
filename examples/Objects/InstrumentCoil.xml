@@ -12,7 +12,7 @@
     <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
     <EdgeSetController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" speed="-1"/>
     
-    <FixedConstraint name="FixedConstraint" indices="0" />
+    <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0" />
     <UniformMass vertexMass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
     <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" poissonRatio="0.49" />
     

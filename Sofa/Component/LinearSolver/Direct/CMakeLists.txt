@@ -14,11 +14,13 @@ set(HEADER_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/CholeskySolver.inl
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenDirectSparseSolver.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenDirectSparseSolver.inl
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSolverFactory.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSimplicialLDLT.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSimplicialLLT.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseLU.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseQR.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MatrixLinearSystem[BTDMatrix].h
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MetisOrderingMethod.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.inl
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SVDLinearSolver.h
@@ -45,19 +47,17 @@ set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/CholeskySolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSimplicialLDLT.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSimplicialLLT.cpp
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSolverFactory.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseLU.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseQR.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MatrixLinearSystem[BTDMatrix].cpp
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MetisOrderingMethod.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SVDLinearSolver.cpp
-    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseCholeskySolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseCommon.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseLDLSolver.cpp
-    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseLUSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/TypedMatrixLinearSystem[BTDMatrix].cpp
 )
-add_subdirectory(extlibs/csparse)
-sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE VALUE TRUE)
 
 sofa_find_package(metis QUIET) # Unix users can have an installed version of metis
 if(NOT metis_FOUND)
@@ -72,10 +72,11 @@ sofa_find_package(Threads REQUIRED)
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for MatrixLinearSolver which will move to core
+sofa_find_package(Sofa.Component.LinearSolver.Ordering REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative)
-target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
+target_link_libraries(${PROJECT_NAME} PUBLIC metis)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(

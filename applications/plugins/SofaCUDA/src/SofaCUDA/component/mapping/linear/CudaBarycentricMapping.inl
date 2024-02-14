@@ -162,7 +162,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
         for (Index i=0; i<insize; i++)
             if (Index(nout[i]) > maxNOut) maxNOut = nout[i];
         const int nbloc = (insize+BSIZE-1)/BSIZE;
-        std::cout << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
+        msg_info() << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs.";
         mapT.resize(nbloc*(BSIZE*maxNOut));
         for (unsigned int i=0; i<mapT.size(); i++)
             mapT[i] = std::make_pair(-1,0.0f);
@@ -648,7 +648,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                 addPointInCube(index-c0, coefs.ptr());
         }
     }
-    std::cout << "CUDA: BarycentricMapperMeshTopology: map initialized, "<<size<<" output points, " << outside << " points ouside input mesh, max "<<maxNIn<<" inputs points per output, "<<map.size()*BSIZE<<" contributions total."<<std::endl;
+    msg_info() << "CUDA: BarycentricMapperMeshTopology: map initialized, "<<size<<" output points, " << outside << " points ouside input mesh, max "<<maxNIn<<" inputs points per output, "<<map.size()*BSIZE<<" contributions total.";
 }
 
 
@@ -681,7 +681,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         for (Index i=0; i<Index(insize); i++)
             if (Index(nout[i]) > maxNOut) maxNOut = nout[i];
         const int nbloc = (insize+BSIZE-1)/BSIZE;
-        std::cout << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
+        msg_info() << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs.";
         mapT.clear();
         mapT.resize(nbloc*maxNOut);
         //for (unsigned int i=0;i<mapT.size();i++)

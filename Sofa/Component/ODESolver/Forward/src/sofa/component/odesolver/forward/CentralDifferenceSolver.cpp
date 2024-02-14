@@ -97,15 +97,15 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
     mop.projectResponse(dx);                    // dx is projected to the constrained space
 
-    mop.solveConstraint(dx, core::ConstraintParams::ACC);
+    mop.solveConstraint(dx, core::ConstraintOrder::ACC);
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        mop.solveConstraint(vel2, core::ConstraintParams::VEL);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        mop.solveConstraint(pos2, core::ConstraintParams::POS);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 
 #else // single-operation optimization
 
@@ -123,8 +123,8 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
     else
@@ -149,8 +149,8 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
 

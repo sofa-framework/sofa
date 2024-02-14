@@ -21,7 +21,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 		# a container
 		floorNode = self.rootNode.createChild('Floor')
 		rigid_meca = floorNode.createObject('MechanicalObject',name='father',template='Rigid',position='0 0 0 0 0 0 1')
-		floorNode.createObject('FixedConstraint',template='Rigid')
+		floorNode.createObject('FixedProjectiveConstraint',template='Rigid')
 		#floorNode.createObject('UniformMass',template='Rigid',totalMass=1)
 		mapped = floorNode.createChild('mapped')
 		mapped.createObject('MeshOBJLoader', name='loader', filename='mesh/SaladBowl.obj')
@@ -38,7 +38,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 
 		# meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position='0 0 0 0 0 0 1')
 		# mass = node.createObject('UniformMass',name='mass',totalMass=1,template='Rigid')
-		# node.createObject('FixedConstraint',template='Rigid')
+		# node.createObject('FixedProjectiveConstraint',template='Rigid')
 
 		# node.createObject('BulletOBBModel',template='Rigid',name='BASE',extents='15 15 0.2',margin="0.5")
 

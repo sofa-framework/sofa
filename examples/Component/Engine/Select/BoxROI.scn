@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -35,7 +35,7 @@
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass name="default5" massDensity="0.15" />
         <BoxROI template="Vec3" box="2 9.5 -0.5 8 10.5 0.5" drawBoxes="1" position="@mecaObj.rest_position" name="FixedROI" computeTriangles="0" computeTetrahedra="0" computeEdges="0" />
-        <FixedConstraint template="Vec3" name="default6" indices="@FixedROI.indices" />
+        <FixedProjectiveConstraint template="Vec3" name="default6" indices="@FixedROI.indices" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel template="Vec3" name="default7" />

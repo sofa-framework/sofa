@@ -354,7 +354,7 @@ int sofaVisualModel_getNbEdges(void* api_ptr, const char* name)
 }
 
 
-int sofaVisualModel_getEdges(void* api_ptr, const char* name, int* buffer)
+int sofaVisualModel_getEdges(void* /*api_ptr*/, const char* /*name*/, int* /*buffer*/)
 {
     //TODO
 

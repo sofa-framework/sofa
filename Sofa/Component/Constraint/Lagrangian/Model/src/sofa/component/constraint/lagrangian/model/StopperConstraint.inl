@@ -20,62 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/StopperConstraint.h>
-#include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/type/Vec.h>
+#include <sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.inl>
 
-namespace sofa::component::constraint::lagrangian::model
-{
-
-template<class DataTypes>
-StopperConstraint<DataTypes>::StopperConstraint(MechanicalState* object)
-    : Inherit(object)
-    , index(initData(&index, 0, "index", "index of the stop constraint"))
-    , min(initData(&min, -100.0_sreal, "min", "minimum value accepted"))
-    , max(initData(&max, 100.0_sreal, "max", "maximum value accepted"))
-{
-}
-
-template<class DataTypes>
-void StopperConstraint<DataTypes>::init()
-{
-    this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
-    assert(this->mstate);
-
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
-    VecCoord& x = xData.wref();
-    if (x[index.getValue()].x() < min.getValue())
-        x[index.getValue()].x() = (Real) min.getValue();
-    if (x[index.getValue()].x() > max.getValue())
-        x[index.getValue()].x() = (Real) max.getValue();
-}
-
-template<class DataTypes>
-void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
-{
-    cid = cIndex;
-
-    MatrixDeriv& c = *c_d.beginEdit();
-
-    MatrixDerivRowIterator c_it = c.writeLine(cid);
-    c_it.setCol(index.getValue(), Coord(1));
-
-    cIndex++;
-    c_d.endEdit();
-}
-
-template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
-{
-    resV->set(cid, x.getValue()[index.getValue()][0]);
-}
-
-template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
-{
-    for(int i=0; i<1; i++)
-        resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());
-}
-
-} //namespace sofa::component::constraint::lagrangian::model
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.inl")

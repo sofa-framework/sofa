@@ -56,7 +56,7 @@ void ParallelBVHNarrowPhase::init()
 
 void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> >& v)
 {
-    ScopedAdvancedTimer addCollisionPairsTimer("addCollisionPairs");
+    SCOPED_TIMER_VARNAME(addCollisionPairsTimer, "addCollisionPairs");
 
     if (v.empty())
     {
@@ -71,7 +71,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
     m_tasks.reserve(nbPairs);
 
     {
-        ScopedAdvancedTimer createTasksTimer("TasksCreation");
+        SCOPED_TIMER_VARNAME(createTasksTimer, "TasksCreation");
         for (const auto &pair : v)
         {
             m_tasks.emplace_back(&status, this, pair);
@@ -80,7 +80,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
     }
 
     {
-        ScopedAdvancedTimer waitTimer("ParallelTasks");
+        SCOPED_TIMER_VARNAME(waitTimer, "ParallelTasks");
         m_taskScheduler->workUntilDone(&status);
     }
 
@@ -93,7 +93,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
 void ParallelBVHNarrowPhase::createOutput(
         const sofa::type::vector<std::pair<sofa::core::CollisionModel *, sofa::core::CollisionModel *>> &v)
 {
-    ScopedAdvancedTimer createTasksTimer("OutputCreation");
+    SCOPED_TIMER_VARNAME(createTasksTimer, "OutputCreation");
 
     for (const auto &pair : v)
     {

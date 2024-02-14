@@ -19,32 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/init.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
 
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 int main(int /*argc*/, char** argv)
 {
-    sofa::simulation::tree::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::simulation::common::init();
+    sofa::simulation::graph::init();
+    sofa::component::init();
 
-    if (argv[1] == NULL)
+    if (argv[1] == nullptr)
     {
         std::cout << "Usage: sofaInfo FILE" << std::endl;
         return -1;
     }
 
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::Node::SPtr groot = sofa::simulation::node::load(argv[1]);
 
-    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(argv[1]));
-
-    if (groot==NULL)
+    if (groot == nullptr)
     {
         groot = sofa::simulation::getSimulation()->createNewGraph("");
     }
@@ -56,14 +55,14 @@ int main(int /*argc*/, char** argv)
     groot->getTreeObjects<sofa::core::objectmodel::Base>(&objects);
 
     // get the classes and targets of the scene
-    for (unsigned int i=0; i<objects.size(); i++)
+    for (const auto& object : objects)
     {
-        sofa::core::ObjectFactory::ClassEntry& entry = sofa::core::ObjectFactory::getInstance()->getEntry(objects[i]->getClassName());
-        if (entry.creatorMap.empty())
+        sofa::core::ObjectFactory::ClassEntry& entry = sofa::core::ObjectFactory::getInstance()->getEntry(object->getClassName());
+        if (!entry.creatorMap.empty())
         {
             classNames.insert(entry.className);
 
-            sofa::core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(objects[i]->getTemplateName());
+            const auto it = entry.creatorMap.find(object->getTemplateName());
             if (it != entry.creatorMap.end() && *it->second->getTarget())
             {
                 targets.insert(it->second->getTarget());
@@ -71,27 +70,18 @@ int main(int /*argc*/, char** argv)
         }
     }
 
-    std::set<std::string>::const_iterator it = classNames.begin();
-    std::set<std::string>::const_iterator end = classNames.end();
     std::cout << "=== CLASSES ===" << std::endl;
-    while (it != end)
-    {
-        std::cout << (*it) << std::endl;
-        it++;
-    }
+    std::cout << sofa::helper::join(classNames, "\n");
 
-    it = targets.begin();
-    end = targets.end();
     std::cout << std::endl << "=== TARGETS ===" << std::endl;
-    while (it != end)
+    std::cout << sofa::helper::join(targets, "\n");
+
+    if (groot != nullptr)
     {
-        std::cout << (*it) << std::endl;
-        it++;
+        sofa::simulation::node::unload(groot);
     }
 
-    if (groot!=NULL)
-        sofa::simulation::getSimulation()->unload(groot);
-
-    sofa::simulation::tree::cleanup();
+    sofa::simulation::common::cleanup();
+    sofa::simulation::graph::cleanup();
     return 0;
 }

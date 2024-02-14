@@ -14,6 +14,7 @@ set(SOFACUDA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaCUDA")
 
 set(HEADER_FILES
     config.h.in
+    init.h
     
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
@@ -88,10 +89,10 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.h
 
     ### Constraints
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.h
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.inl
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.h
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.inl
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.inl
   
@@ -99,7 +100,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ### Common
-    main.cpp
+    init.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/mycuda.cpp
 
@@ -155,11 +156,11 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
 
     ### Constraints  
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralInteractionConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.cpp
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralLagrangianConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityProjectiveConstraint.cpp
 
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaBoxROI.cpp
@@ -214,8 +215,8 @@ set(CUDA_SOURCES
     ### Collisions
     
     ### Constraints
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.cu
-    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cu
     
     
 )
@@ -330,11 +331,17 @@ else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
 endif()
 
+sofa_find_package(Sofa.GUI QUIET)
+if(Sofa.GUI_FOUND)
+    list(APPEND SOURCE_FILES sofa/gpu/gui/CudaMouseInteraction.cpp)
+endif()
+
 sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
+
 
 find_package(SofaDistanceGrid QUIET)
 if(SofaDistanceGrid_FOUND)
@@ -498,6 +505,12 @@ if(SofaDistanceGrid_FOUND)
         target_link_libraries(${PROJECT_NAME} miniFlowVR)
     endif()
 endif()
+
+
+if(Sofa.GUI_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GUI)
+endif()
+
 
 if(Sofa.GUI.Qt_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI.Qt)

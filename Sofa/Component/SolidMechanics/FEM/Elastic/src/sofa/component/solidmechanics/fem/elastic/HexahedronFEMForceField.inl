@@ -325,7 +325,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice, double stiffnessFactor) const
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::Vec<8, Coord> &nodes, const sofa::Index elementIndice, double stiffnessFactor) const
 {
     const bool verbose = elementIndice==0;
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
@@ -767,7 +767,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
         nodes[w] = p[elem[w]];
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = nodes[w];
 
@@ -869,7 +869,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
     computeRotationLarge( _rotations[i], horizontal,vertical);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    type::Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = _rotations[i] * nodes[w];
 
@@ -1063,7 +1063,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     computeRotationPolar( _rotations[i], nodes );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    type::Vec<8,Coord> deformed;
+    sofa::type::fixed_array<Coord, 8> deformed;
     for(int j=0; j<8; ++j)
         deformed[j] = _rotations[i] * nodes[j];
 

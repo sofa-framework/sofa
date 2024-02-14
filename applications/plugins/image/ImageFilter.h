@@ -221,7 +221,16 @@ protected:
             if(updateImage)
             {
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
-                cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+#if defined(_MSC_VER)
+                if constexpr (std::is_same_v<Ti, long> || std::is_same_v<Ti, unsigned long>) //this situation triggers compilation error on Windows and needs a special treatment
+                {
+                    cimglist_for(img, l) img(l) = cimg_library::CImg<float>(inimg(l),false).blur_anisotropic (amplitude);
+                }
+                else
+#endif
+                {
+                    cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+                }
             }
             break;
         case DERICHE:
@@ -466,7 +475,7 @@ protected:
                         {
                             if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p2[0]),sofa::helper::round((double)p2[1]),sofa::helper::round((double)p2[2]),k);
                             else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p2[0],p2[1],p2[2],k,OutValue);
-                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p2[0],p2[1],p2[2],k,OutValue,cimg_library::cimg::type<Ti>::min(),cimg_library::cimg::type<Ti>::max());
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p2[0],p2[1],p2[2],k,OutValue);
                         }
                     }
                 }

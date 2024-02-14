@@ -28,9 +28,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gl/GLSLShader.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <sofa/type/BoundingBox.h>
-#include <SofaOpenglVisual/OglAttribute.inl>
+#include <sofa/gl/component/shader/OglAttribute.inl>
 
 namespace sofa::component::visualmodel
 {
@@ -74,8 +73,8 @@ void OglVolumetricModel::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloatVector4Variable, sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloatVector4Variable, sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -96,7 +95,7 @@ void OglVolumetricModel::init()
     if (!m_mappingTableValues)
     {
         msg_info() << "No MappingTable found, instanciating one";
-        m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_mappingTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
 
@@ -118,7 +117,7 @@ void OglVolumetricModel::init()
     {
         msg_info() << "No RunSelectTable found, instanciating one";
 
-        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
+        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
         m_runSelectTableValues->setID("RunSelectTable");
 
@@ -156,7 +155,6 @@ void OglVolumetricModel::init()
     if (b_useTopology)
         computeMeshFromTopology();
 
-    updateVisual();
 
 }
 
@@ -185,8 +183,8 @@ void OglVolumetricModel::initVisual()
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
     //Check attributes
-    sofa::type::vector<sofa::component::visual::OglFloat4Attribute::SPtr > listVec4Attributes;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloat4Attribute, sofa::type::vector<sofa::component::visual::OglFloat4Attribute::SPtr> >
+    sofa::type::vector<sofa::gl::component::shader::OglFloat4Attribute::SPtr > listVec4Attributes;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloat4Attribute, sofa::type::vector<sofa::gl::component::shader::OglFloat4Attribute::SPtr> >
         (&listVec4Attributes, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i < listVec4Attributes.size(); i++)
     {
@@ -201,7 +199,7 @@ void OglVolumetricModel::initVisual()
     if (!m_vertexColors)
     {
         msg_error() << "No attributes called a_vertexColor found, instanciating one with a default color";
-        m_vertexColors = sofa::core::objectmodel::New<sofa::component::visual::OglFloat4Attribute>();
+        m_vertexColors = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloat4Attribute>();
         m_vertexColors->setName("a_vertexColor");
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
@@ -222,11 +220,17 @@ void OglVolumetricModel::initVisual()
     m_vertexColors->init();
     m_vertexColors->initVisual();
 
-
 }
 
 void OglVolumetricModel::updateVisual()
 {
+    // Workaround if updateVisual() is called without an opengl context
+    const auto* vparams = core::visual::VisualParams::defaultInstance();
+    if (!vparams->isSupported(core::visual::API_OpenGL))
+    {
+        return;
+    }
+
     if (b_modified || d_tetrahedra.isDirty() || d_hexahedra.isDirty() || m_positions.isDirty())
     {
         //if(b_useTopology)
@@ -358,27 +362,38 @@ void OglVolumetricModel::computeBarycenters()
     if (!b_tboCreated)
     {
         //Texture buffer objects
-
-        glGenBuffers(1, &m_tetraBarycentersTbo);
-        glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
-        glBufferData(GL_TEXTURE_BUFFER, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]), GL_DYNAMIC_COPY);
-        glGenTextures(1, &m_tetraBarycentersTboTexture);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        glGenBuffers(1, &m_hexaBarycentersTbo);
-        glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
-        glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
-        glGenTextures(1, &m_hexaBarycentersTboTexture);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        b_tboCreated = true;
+        if (m_tetraBarycenters.size() > 0)
+        {
+            glGenBuffers(1, &m_tetraBarycentersTbo);
+            glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+            glBufferData(GL_TEXTURE_BUFFER, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]), GL_DYNAMIC_COPY);
+            glGenTextures(1, &m_tetraBarycentersTboTexture);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+            b_tboCreated = true;
+        }
+        if (m_hexaBarycenters.size() > 0)
+        {
+            glGenBuffers(1, &m_hexaBarycentersTbo);
+            glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+            glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
+            glGenTextures(1, &m_hexaBarycentersTboTexture);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+            b_tboCreated = true;
+        }
     }
 
-    glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
-    glBufferSubData(GL_TEXTURE_BUFFER, 0, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]));
-    glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
-    glBufferSubData(GL_TEXTURE_BUFFER, 0, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]));
-    glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    if (m_tetraBarycenters.size() > 0)
+    {
+        glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+        glBufferSubData(GL_TEXTURE_BUFFER, 0, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]));
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    }
+    if (m_hexaBarycenters.size() > 0)
+    {
+        glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+        glBufferSubData(GL_TEXTURE_BUFFER, 0, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]));
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    }
 }
 
 void OglVolumetricModel::handleTopologyChange()
@@ -399,7 +414,6 @@ void OglVolumetricModel::handleTopologyChange()
 
 void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    using sofa::component::topology::TetrahedronSetTopologyContainer;
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -426,7 +440,14 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
 #ifdef GL_LINES_ADJACENCY_EXT
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
 
-    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    int gltype = GL_FLOAT;
+
+    if constexpr (std::is_same_v<typename Coord::value_type, double>)
+    {
+        gltype = GL_DOUBLE;
+    }
+
+    glVertexPointer(3, gltype, 0, nullptr);
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
     
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -434,6 +455,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     const type::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
     const type::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
     //glEnable(GL_CLIP_DISTANCE0);
+
 
     if (tetrahedra.size() > 0)
     {

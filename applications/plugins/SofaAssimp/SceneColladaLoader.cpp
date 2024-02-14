@@ -34,7 +34,7 @@
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/component/mapping/linear/IdentityMapping.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
-#include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
+#include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <stack>
@@ -331,18 +331,18 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             }
                         }
 
-                        // generating a SkeletalMotionConstraint and filling up its properties
-                        SkeletalMotionConstraint<Rigid3Types>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3Types> >();
+                        // generating a SkeletalMotionProjectiveConstraint and filling up its properties
+                        SkeletalMotionProjectiveConstraint<Rigid3Types>::SPtr currentSkeletalMotionProjectiveConstraint = sofa::core::objectmodel::New<SkeletalMotionProjectiveConstraint<Rigid3Types> >();
                         {
-                            // adding the generated SkeletalMotionConstraint to its parent Node
-                            currentSubNode->addObject(currentSkeletalMotionConstraint);
+                            // adding the generated SkeletalMotionProjectiveConstraint to its parent Node
+                            currentSubNode->addObject(currentSkeletalMotionProjectiveConstraint);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
                                 nameStream << componentIndex++;
-                            currentSkeletalMotionConstraint->setName(nameStream.str());
+                            currentSkeletalMotionProjectiveConstraint->setName(nameStream.str());
 
-                            currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
+                            currentSkeletalMotionProjectiveConstraint->setAnimationSpeed(animationSpeed.getValue());
 
                             aiNode* parentAiNode = NULL;
                             if(parentNodeInfo)
@@ -351,7 +351,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             type::vector<SkeletonJoint<Rigid3Types> > skeletonJoints;
                             type::vector<SkeletonBone> skeletonBones;
                             fillSkeletalInfo(currentAiScene, parentAiNode, currentAiNode, currentTransformation, currentAiMesh, skeletonJoints, skeletonBones);
-                            currentSkeletalMotionConstraint->setSkeletalMotion(skeletonJoints, skeletonBones);
+                            currentSkeletalMotionProjectiveConstraint->setSkeletalMotion(skeletonJoints, skeletonBones);
                         }
                     }
                     else

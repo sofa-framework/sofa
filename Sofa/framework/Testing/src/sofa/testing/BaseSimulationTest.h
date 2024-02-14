@@ -37,6 +37,7 @@ class SOFA_TESTING_API BaseSimulationTest : public virtual BaseTest
 public:
     BaseSimulationTest() ;
 
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_IMPORT_PLUGIN()
     bool importPlugin(const std::string& name) ;
 
     class SOFA_TESTING_API SceneInstance

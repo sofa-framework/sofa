@@ -8,6 +8,9 @@
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
+### References relative path ###
+../applications/projects/Regression/references/examples
+
 ### Demo scenes ###
 Demos/TriangleSurfaceCutting.scn 100 1e-4 1 1
 Demos/chainAll.scn 100 1e-2 1 1
@@ -33,9 +36,7 @@ Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSparseQR.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
-Component/LinearSolver/Direct/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
-Component/LinearSolver/Direct/FEMBAR_SparseLUSolver.scn 100 1e-8 0 1
 Component/LinearSolver/Iterative/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
 Component/LinearSolver/Iterative/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
 Component/LinearSolver/Iterative/FEMBAR_CGLinearSolver.scn 100 1e-8 0 1

@@ -85,7 +85,6 @@ void TopologySubsetIndices::updateLastIndex(Index posLastIndex, Index newGlobalI
 }
 
 template class SOFA_CORE_API sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 //template class SOFA_CORE_API sofa::core::topology::BaseTopologyData < type::vector<Index> >;
 
 } //namespace sofa::core::topology

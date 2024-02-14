@@ -20,108 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/Constraint.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.h>
+
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.h")
+
 
 namespace sofa::component::constraint::lagrangian::model
 {
-
-class StopperConstraintResolution1Dof : public core::behavior::ConstraintResolution
-{
-protected:
-    double _invW, _w, _min, _max ;
-
-public:
-
-    StopperConstraintResolution1Dof(const double &min, const double &max)
-        : core::behavior::ConstraintResolution(1)
-        , _min(min)
-        , _max(max)
-    { 
-    }
-
-    void init(int line, SReal** w, SReal*force) override
-    {
-        _w = w[line][line];
-        _invW = 1.0/_w;
-        force[line  ] = 0.0;
-    }
-
-    void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal*) override
-    {
-        const double dfree = d[line] - _w * force[line];
-
-        if (dfree > _max)
-            force[line] = (_max - dfree) * _invW;
-        else if (dfree < _min)
-            force[line] = (_min - dfree) * _invW;
-        else
-            force[line] = 0;
-    }
-};
-
-template< class DataTypes >
-class StopperConstraint : public core::behavior::Constraint<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
-
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::behavior::Constraint<DataTypes> Inherit;
-
-    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
-    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
-    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
-
-protected:
-
-    unsigned int cid;
-
-    Data<int> index; ///< index of the stop constraint
-    Data<SReal> min; ///< minimum value accepted
-    Data<SReal> max; ///< maximum value accepted
-
-
-
-    StopperConstraint(MechanicalState* object = nullptr);
-
-    virtual ~StopperConstraint() {}
-
-
-    virtual type::vector<std::string> getConstraintIdentifiers() override final
-    {
-        type::vector<std::string> ids = getStopperIdentifiers();
-        ids.push_back("Stopper");
-        ids.push_back("Unilateral");
-        return ids;
-    }
-
-    virtual type::vector<std::string> getStopperIdentifiers(){ return {}; }
-
-
-
-public:
-    void init() override;
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
-    void getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
-
-    void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
-};
-
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperConstraint<defaulttype::Vec1Types>;
-
-#endif
-
-} //namespace sofa::component::constraint::lagrangian::model
+template<class T>
+using StopperConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "StopperConstraint has been renamed to StopperLagrangianConstraint") = StopperLagrangianConstraint<T>;
+}

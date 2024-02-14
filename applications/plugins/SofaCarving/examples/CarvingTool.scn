@@ -5,7 +5,7 @@
         <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->  
         <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [PointCollisionModel, TriangleCollisionModel] -->  
         <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->  
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint, LinearMovementConstraint] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint, LinearMovementProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->  
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader, MeshOBJLoader] -->  
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
@@ -43,7 +43,7 @@
         <DiagonalMass massDensity="0.5" />
 
         <BoxROI name="ROI1" box="-1 -1 -1 1 1 0.01" drawBoxes="1" />
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
 
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="160" poissonRatio="0.3" method="large" />
 
@@ -66,7 +66,7 @@
 
         <MechanicalObject template="Rigid3d" name="instrumentState" tags="Omni" rotation="90 45 0" translation="0 0 1"/>
         <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
-        <LinearMovementConstraint template="Rigid3d" keyTimes="0 2" movements="0 0 0   0 0 0
+        <LinearMovementProjectiveConstraint template="Rigid3d" keyTimes="0 2" movements="0 0 0   0 0 0
                                           0 0 0   0 0 0" />
         <Node name="VisualModel" >
             <MeshOBJLoader name="meshLoader_0" filename="mesh/dental_instrument_light.obj" scale3d="1 1 1" translation="-0.412256 -0.067639 3.35" rotation="180 0 150" handleSeams="1" />

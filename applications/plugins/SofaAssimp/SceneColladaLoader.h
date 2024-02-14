@@ -26,7 +26,7 @@
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/type/SVector.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
+#include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
@@ -130,7 +130,7 @@ protected:
 
 private:
 
-    // build the joints and bones array used in the SkeletalMotionConstraint
+    // build the joints and bones array used in the SkeletalMotionProjectiveConstraint
     bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<constraint::projective::SkeletonJoint<defaulttype::Rigid3Types> >& skeletonJoints, type::vector<constraint::projective::SkeletonBone>& skeletonBones) const;
 
     // clean the scene graph of its empty and useless intermediary nodes

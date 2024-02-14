@@ -20,93 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/projective/config.h>
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/type/vector.h>
+#include <sofa/component/constraint/projective/OscillatorProjectiveConstraint.h>
 
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {
-
-/**
- * Apply sinusoidal trajectories to particles.
- * Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
- * where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
- */
-template <class TDataTypes>
-class OscillatorConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,TDataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
-
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-    typedef Data<VecCoord> DataVecCoord;
-    typedef Data<VecDeriv> DataVecDeriv;
-    typedef Data<MatrixDeriv> DataMatrixDeriv;
-
-protected:
-    struct Oscillator
-    {
-        unsigned int index;
-        Coord mean;
-        Deriv amplitude;
-        Real pulsation;
-        Real phase;
-
-        Oscillator();
-        Oscillator(unsigned int i, const Coord& m, const Deriv& a,
-                   const Real& w, const Real& p);
-
-        inline friend std::istream& operator >>(std::istream& in, Oscillator& o)
-        {
-            in >> o.index >> o.mean >> o.amplitude >> o.pulsation >> o.phase;
-            return in;
-        }
-
-        inline friend std::ostream& operator <<(std::ostream& out, const Oscillator& o)
-        {
-            out << o.index << " " << o.mean << " " << o.amplitude << " "
-                << o.pulsation << " " << o.phase << "\n";
-            return out;
-        }
-    };
-
-    Data< type::vector< Oscillator > > constraints; ///< constrained particles
-
-
-public:
-    explicit OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
-    ~OscillatorConstraint() override ;
-
-    OscillatorConstraint<TDataTypes>* addConstraint(unsigned index,
-                                                    const Coord& mean, const Deriv& amplitude,
-                                                    Real pulsation, Real phase);
-
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-protected:
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx,
-        const std::function<void(DataDeriv&, const unsigned int)>& clear);
-};
-
-
-#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP)
-extern template class OscillatorConstraint<defaulttype::Rigid3Types>;
-extern template class OscillatorConstraint<defaulttype::Vec3Types>;
-#endif
-
-} // namespace sofa::component::constraint::projective
+template <class T>
+using OscillatorConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "OscillatorConstraint has been renamed to OscillatorProjectiveConstraint") = OscillatorProjectiveConstraint<T>;
+}
