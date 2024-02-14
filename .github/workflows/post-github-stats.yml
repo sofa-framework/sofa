@@ -1,0 +1,52 @@
+name: Post - GitHub stats for activity tracking
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1,15 * *"   # Every 1st & 15th of the month
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+          pip install beautifulsoup4
+          pip install urllib
+        working-directory: ${{ github.workspace }}
+
+
+      - name: Get download stats
+        run: |
+          output=$(python scripts/github_activity/get_downloads.py)
+          echo "OUTPUT_TEXT=$DownloadStatsOutput" >> $GITHUB_ENV
+
+      - name: Get cloner stats
+        run: |
+          output=$(python scripts/github_activity/get_cloners.py)
+          echo "OUTPUT_TEXT=$ClonerStatsOutput" >> $GITHUB_ENV
+
+      - name: Get GitHub stats - PR issues discussions
+        run: |
+          output=$(python scripts/github_activity/get_repo_stats.py)
+          echo "OUTPUT_TEXT=$GitHubStatOutput" >> $GITHUB_ENV
+          
+      - name: Send message
+        run: |
+          python scripts/discord/post-discord-message.py
+
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_GITHUB_STATS_WEBHOOK_URL }}
+          MESSAGE: "${DownloadStatsOutput}\n${ClonerStatsOutput}\n${GitHubStatOutput}"
+          BOT_NAME: "Gitub Stats Bot"
+          EMBEDS_TITLE: ""
+          EMBEDS_URL: ""
+          EMBEDS_DESCRIPTION: ""
+
