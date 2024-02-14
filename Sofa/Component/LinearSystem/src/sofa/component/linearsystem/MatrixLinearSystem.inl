@@ -1007,7 +1007,7 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
             {
                 if (m->hasPairStates(pair))
                 {
-                    msg_info() << "Found a MatrixMapping for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": " << m->getPathName();
+                    msg_info() << "Found a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": " << m->getPathName();
                     const auto [insert_it, success] = m_matrixMappings.insert({pair, m});
                     it = insert_it;
                     break;
@@ -1016,7 +1016,7 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
 
             if (it == m_matrixMappings.end()) //it has not been found in the scene graph
             {
-                msg_info() << "Cannot find a MatrixMapping for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": create one";
+                msg_info() << "Cannot find a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": create one";
                 const auto createdMatrixMapping = createMatrixMapping(pair);
                 const auto resolvedName = this->getContext()->getNameHelper().resolveName(createdMatrixMapping->getClassName(), sofa::core::ComponentNameHelper::Convention::xml);
                 createdMatrixMapping->setName(resolvedName);
