@@ -19,9 +19,8 @@ jobs:
           pip install python-dateutil
           pip install requests
           pip install beautifulsoup4
-          pip install urllib
-        working-directory: ${{ github.workspace }}
 
+        working-directory: ${{ github.workspace }}
 
       - name: Get download stats
         run: |
