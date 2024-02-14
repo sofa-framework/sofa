@@ -28,16 +28,20 @@ namespace sofa::component::linearsystem
 /**
  * Local matrix using the insertion order to insert the value directly into the compressed matrix
  */
-template<class TMatrix, core::matrixaccumulator::Contribution c>
-class ConstantLocalMatrix : public virtual AssemblingMatrixAccumulator<c>
+template<class TMatrix, core::matrixaccumulator::Contribution c, class TStrategy = sofa::core::matrixaccumulator::NoIndexVerification>
+class ConstantLocalMatrix : public virtual AssemblingMatrixAccumulator<c, TStrategy>
 {
 public:
-    SOFA_CLASS(ConstantLocalMatrix, AssemblingMatrixAccumulator<c>);
+    SOFA_CLASS(ConstantLocalMatrix, SOFA_TEMPLATE2(AssemblingMatrixAccumulator, c, TStrategy));
     using ComponentType = typename Inherit1::ComponentType;
 
     using Inherit1::add;
+    using Row = sofa::SignedIndex;
+    using Col = sofa::SignedIndex;
 
-    sofa::type::vector<std::size_t> insertionOrderList;
+    /// list of indices in the compressed values
+    sofa::type::vector<std::size_t> compressedInsertionOrderList;
+
     std::size_t currentId {};
 
 protected:
@@ -49,26 +53,26 @@ protected:
 
 };
 
-template <class TMatrix, core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, float value)
+template <class TMatrix, core::matrixaccumulator::Contribution c, class TStrategy>
+void ConstantLocalMatrix<TMatrix, c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, float value)
 {
     SOFA_UNUSED(row);
     SOFA_UNUSED(col);
-    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
-        += this->m_cachedFactor * value;
+    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[compressedInsertionOrderList[currentId++]]
+                += this->m_cachedFactor * value;
 }
 
-template <class TMatrix, core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value)
+template <class TMatrix, core::matrixaccumulator::Contribution c, class TStrategy>
+void ConstantLocalMatrix<TMatrix, c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col, double value)
 {
     SOFA_UNUSED(row);
     SOFA_UNUSED(col);
-    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[insertionOrderList[currentId++]]
-        += this->m_cachedFactor * value;
+    static_cast<TMatrix*>(this->m_globalMatrix)->colsValue[compressedInsertionOrderList[currentId++]]
+                += this->m_cachedFactor * value;
 }
 
-template <class TMatrix, core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
+template <class TMatrix, core::matrixaccumulator::Contribution c, class TStrategy>
+void ConstantLocalMatrix<TMatrix, c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<3, 3, float>& value)
 {
     for (sofa::SignedIndex i = 0; i < 3; ++i)
@@ -80,8 +84,8 @@ void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_chec
     }
 }
 
-template <class TMatrix, core::matrixaccumulator::Contribution c>
-void ConstantLocalMatrix<TMatrix, c>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
+template <class TMatrix, core::matrixaccumulator::Contribution c, class TStrategy>
+void ConstantLocalMatrix<TMatrix, c, TStrategy>::add(const core::matrixaccumulator::no_check_policy&, sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<3, 3, double>& value)
 {
     for (sofa::SignedIndex i = 0; i < 3; ++i)

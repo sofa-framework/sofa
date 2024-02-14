@@ -43,7 +43,8 @@ public:
     }
 
     /// Inherited from FileEventListener
-    void fileHasChanged(const std::string& filename){
+    void fileHasChanged(const std::string& filename) override
+    {
         /// We are recompiling & re-initializing all the shaders...
         /// If this become a bottleneck we can do finer grain updates to
         /// speed up the thing.

@@ -47,6 +47,7 @@ ParticleSource<DataTypes>::ParticleSource()
     , d_delay(initData(&d_delay, (Real)0.01, "delay", "Delay between particles creation"))
     , d_start(initData(&d_start, (Real)0, "start", "Source starting time"))
     , d_stop(initData(&d_stop, (Real)1e10, "stop", "Source stopping time"))
+    , d_addNoise(initData(&d_addNoise, (bool)true, "addNoise", "Will add random value to the radius of new created particles"))
     , m_numberParticles(0)
     , m_lastparticles(initData(&m_lastparticles, "lastparticles", "lastparticles indices"))
 {
@@ -231,18 +232,26 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
         newX.reserve(nbParticlesToCreate * m_numberParticles);
         newV.reserve(nbParticlesToCreate * m_numberParticles);
-        const Deriv v0 = d_velocity.getValue();
+        const Deriv& v0 = d_velocity.getValue();
+        const Real& delay = d_delay.getValue();
+
+        const type::vector<Coord>& center = d_center.getValue();
+        const Real& scale = d_scale.getValue();
+        const Coord& translation = d_translation.getValue();
+        const Coord& radius = d_radius.getValue();
+        bool addNoise = d_addNoise.getValue();
+        
         for (size_t i = 0; i < nbParticlesToCreate; i++)
         {
-            m_lastTime += d_delay.getValue();
-            m_maxdist += d_delay.getValue() * d_velocity.getValue().norm() / d_scale.getValue();
+            m_lastTime += delay;
+            m_maxdist += delay * v0.norm() / scale;
 
             //int lastparticle = i0 + i * N;
             size_t lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
             if (lp0 > 0)
             {
                 size_t shift = _lastparticles.size() - lp0;
-                Deriv dpos = v0 * d_delay.getValue();
+                Deriv dpos = v0 * delay;
                 for (size_t s = 0; s < lp0; s++)
                 {
                     _lastparticles[s] = _lastparticles[s + shift];
@@ -255,10 +264,17 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
             for (size_t s = 0; s < m_numberParticles; s++)
             {
-                Coord p = d_center.getValue()[s] * d_scale.getValue() + d_translation.getValue();
+                Coord p = center[s] * scale + translation;
 
-                for (unsigned int c = 0; c < p.size(); c++)
-                    p[c] += d_radius.getValue()[c] * rrand();
+                if (addNoise)
+                {
+                    for (unsigned int c = 0; c < p.size(); c++)
+                        p[c] += radius[c] * rrand();
+                }
+                else
+                {
+                    p += radius;
+                }
 
                 m_lastpos.push_back(p);
                 _lastparticles.push_back((Index)(i0 + newX.size()));
