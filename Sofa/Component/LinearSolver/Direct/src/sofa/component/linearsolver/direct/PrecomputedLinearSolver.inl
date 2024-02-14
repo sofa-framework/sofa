@@ -116,6 +116,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCholeskyDecompositi
     r.resize(systemSize);
     b.resize(systemSize);
     EigenSimplicialLLT<SReal> solver;
+    solver.init();
 
     for (unsigned int j=0; j<systemSize; j++)
     {

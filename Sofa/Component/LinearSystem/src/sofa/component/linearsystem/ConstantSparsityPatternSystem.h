@@ -29,6 +29,10 @@ namespace sofa::component::linearsystem
 {
 
 using core::matrixaccumulator::no_check_policy;
+template<core::matrixaccumulator::Contribution c, class TStrategy>
+class SparsityPatternLocalMatrix;
+template<core::matrixaccumulator::Contribution c, class TStrategy>
+class SparsityPatternLocalMappedMatrix;
 
 /**
  * Assembling method benefitting from the constant sparsity pattern of the linear system in order to increase the
@@ -91,6 +95,15 @@ protected:
     template <core::matrixaccumulator::Contribution c>
     void replaceLocalMatricesNonMapped(const core::MechanicalParams* mparams, LocalMatrixMaps<c, Real>& matrixMaps);
 
+    template<core::matrixaccumulator::Contribution c, class TStrategy = sofa::core::matrixaccumulator::NoIndexVerification>
+    void replaceLocalMatrixNonMapped(const core::MechanicalParams* mparams,
+        LocalMatrixMaps<c, Real>& matrixMaps,
+        sofa::core::matrixaccumulator::get_component_type<c>* component,
+        BaseAssemblingMatrixAccumulator<c>*& localMatrix,
+        const typename Inherit1::PairMechanicalStates& states,
+        SparsityPatternLocalMatrix<c, TStrategy>* sparsityPatternMatrix);
+
+
 
     template<core::matrixaccumulator::Contribution c>
     void reinitLocalMatrices(LocalMatrixMaps<c, Real>& matrixMaps);
@@ -99,6 +112,9 @@ protected:
     static void buildHashTable(linearalgebra::CompressedRowSparseMatrix<SReal>& M, ConstantCRSMapping& mapping);
 
     void makeCreateDispatcher() override;
+
+    std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component) override;
 
 private:
     template<Contribution c>

@@ -253,6 +253,9 @@ protected:
     /// To override if matrix accumulation methods differs from this class.
     virtual void makeCreateDispatcher();
 
+    virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component);
+
 private:
     template<Contribution c>
     static std::unique_ptr<CreateMatrixDispatcher<c>> makeCreateDispatcher();
@@ -268,7 +271,7 @@ struct LocalMatrixMaps
     /// The local matrix (value) that has been created and associated to a mapped component (key)
     std::map< ComponentType*, std::map<PairMechanicalStates, AssemblingMappedMatrixAccumulator<c, Real>*> > mappedLocalMatrix;
     /// A verification strategy allowing to verify that the matrix indices provided are valid
-    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::RangeVerification> > indexVerificationStrategy;
+    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::IndexVerificationStrategy> > indexVerificationStrategy;
 
 
     std::map< ComponentType*, std::map<PairMechanicalStates, BaseAssemblingMatrixAccumulator<c>* > > componentLocalMatrix;

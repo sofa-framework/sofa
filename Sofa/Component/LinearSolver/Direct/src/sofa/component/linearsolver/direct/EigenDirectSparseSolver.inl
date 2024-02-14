@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
+#include <sofa/core/ComponentLibrary.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
@@ -50,10 +51,7 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
     EigenVectorXdMap xMap(x.ptr(), x.size());
     EigenVectorXdMap bMap(b.ptr(), b.size());
 
-    std::visit([&bMap, &xMap](auto&& solver)
-    {
-        xMap = solver.solve(bMap);
-    }, m_solver);
+    m_solver->solve(bMap, xMap);
 }
 
 template <class TBlockType, class EigenSolver>
@@ -76,10 +74,7 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
     if (analyzePattern)
     {
         SCOPED_TIMER_VARNAME(patternAnalysisTimer, "patternAnalysis");
-        std::visit([this](auto&& solver)
-        {
-            solver.analyzePattern(*m_map);
-        }, m_solver);
+        m_solver->analyzePattern(*m_map);
 
         MfilteredrowBegin = Mfiltered.rowBegin;
         MfilteredcolsIndex = Mfiltered.colsIndex;
@@ -87,10 +82,7 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
 
     {
         SCOPED_TIMER_VARNAME(factorizeTimer, "factorization");
-        std::visit([this](auto&& solver)
-        {
-            solver.factorize(*m_map);
-        }, m_solver);
+        m_solver->factorize(*m_map);
     }
 
     msg_error_when(getSolverInfo() == Eigen::ComputationInfo::InvalidInput) << "Solver cannot factorize: invalid input";
@@ -102,46 +94,50 @@ template <class TBlockType, class EigenSolver>
 Eigen::ComputationInfo EigenDirectSparseSolver<TBlockType, EigenSolver>
 ::getSolverInfo() const
 {
-    Eigen::ComputationInfo info;
-    std::visit([&info](auto&& solver)
-    {
-        info = solver.info();
-    }, m_solver);
-    return info;
+    return m_solver->info();
 }
 
 template <class TBlockType, class EigenSolver>
 void EigenDirectSparseSolver<TBlockType, EigenSolver>::updateSolverOderingMethod()
 {
-    if (m_selectedOrderingMethod != d_orderingMethod.getValue().getSelectedId())
+    if (this->l_orderingMethod)
     {
-        switch(d_orderingMethod.getValue().getSelectedId())
+        if (m_selectedOrderingMethod != this->l_orderingMethod->methodName())
         {
-        case 0:  m_solver.template emplace<std::variant_alternative_t<0, decltype(m_solver)> >(); break;
-        case 1:  m_solver.template emplace<std::variant_alternative_t<1, decltype(m_solver)> >(); break;
-        case 2:  m_solver.template emplace<std::variant_alternative_t<2, decltype(m_solver)> >(); break;
-        case 3:  m_solver.template emplace<std::variant_alternative_t<3, decltype(m_solver)> >(); break;
-        default: m_solver.template emplace<std::variant_alternative_t<s_defaultOrderingMethod, decltype(m_solver)> >(); break;
+            m_selectedOrderingMethod = this->l_orderingMethod->methodName();
+
+            if (EigenSolverFactory::template hasSolver<Real>(m_selectedOrderingMethod))
+            {
+                m_solver = std::unique_ptr<BaseEigenSolverProxy>(EigenSolverFactory::template getSolver<Real>(m_selectedOrderingMethod));
+            }
+            else
+            {
+                std::set<std::string> listAvailableOrderingMethods;
+                for (const auto& [orderingMethodName, _] : EigenSolverFactory::registeredSolvers())
+                {
+                    if (EigenSolverFactory::template hasSolver<Real>(orderingMethodName))
+                    {
+                        listAvailableOrderingMethods.insert(orderingMethodName);
+                    }
+                }
+
+                msg_error() << "This solver does not support the ordering method called '"
+                    << m_selectedOrderingMethod << "' found in the component "
+                    << this->l_orderingMethod->getPathName() << ". The list of available methods are: "
+                    << sofa::helper::join(listAvailableOrderingMethods, ",");
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            }
+
+            MfilteredrowBegin.clear();
+            MfilteredcolsIndex.clear();
+            m_map.reset();
         }
-        m_selectedOrderingMethod = d_orderingMethod.getValue().getSelectedId();
-        if (m_selectedOrderingMethod >= std::variant_size_v<decltype(m_solver)>)
-            m_selectedOrderingMethod = s_defaultOrderingMethod;
-
-        MfilteredrowBegin.clear();
-        MfilteredcolsIndex.clear();
-        m_map.reset();
     }
-}
-
-template <class TBlockType, class EigenSolver>
-EigenDirectSparseSolver<TBlockType, EigenSolver>::EigenDirectSparseSolver()
-    : Inherit1()
-    , d_orderingMethod(initData(&d_orderingMethod, "ordering", "Ordering method"))
-{
-    sofa::helper::OptionsGroup d_orderingMethodOptions{"Natural", "AMD", "COLAMD", "Metis"};
-
-    d_orderingMethodOptions.setSelectedItem(s_defaultOrderingMethod);
-    d_orderingMethod.setValue(d_orderingMethodOptions);
+    else
+    {
+        msg_fatal() << "OrderingMethod missing.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 }

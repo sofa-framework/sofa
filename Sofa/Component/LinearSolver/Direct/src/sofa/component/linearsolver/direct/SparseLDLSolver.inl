@@ -48,7 +48,10 @@ void SparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
 {
     Inherit::init();
 
-    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Invalid)
+    {
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+    }
 }
 
 template <class TMatrix, class TVector, class TThreadManager>

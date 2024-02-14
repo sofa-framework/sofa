@@ -24,6 +24,7 @@
 #include <sofa/component/linearsolver/iterative/init.h>
 #include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/component/linearsolver/preconditioner/init.h>
+#include <sofa/component/linearsolver/ordering/init.h>
 
 namespace sofa::component::linearsolver
 {
@@ -55,6 +56,7 @@ void init()
     if (first)
     {
         // force dependencies at compile-time
+        sofa::component::linearsolver::ordering::init();
         sofa::component::linearsolver::direct::init();
         sofa::component::linearsolver::iterative::init();
         sofa::component::linearsolver::preconditioner::init();
