@@ -39,14 +39,14 @@ namespace sofa::component::linearsystem
  * the @BaseMechanicalState to its top most parents.
  */
 template<class TMatrix>
-class MatrixMapping : public core::behavior::StateAccessor
+class BaseMatrixProjectionMethod : public core::behavior::StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(MatrixMapping, TMatrix), core::behavior::StateAccessor);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(BaseMatrixProjectionMethod, TMatrix), core::behavior::StateAccessor);
 
     using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
-    ~MatrixMapping() override;
+    ~BaseMatrixProjectionMethod() override;
 
     virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
     void setPairStates(const PairMechanicalStates& pairStates);
@@ -67,14 +67,14 @@ public:
                                              linearalgebra::BaseMatrix* globalMatrix) = 0;
 
 protected:
-    explicit MatrixMapping(const PairMechanicalStates& states);
-    MatrixMapping() = default;
+    explicit BaseMatrixProjectionMethod(const PairMechanicalStates& states);
+    BaseMatrixProjectionMethod() = default;
 };
 
 
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP)
-extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API BaseMatrixProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
 #endif
 
 } // namespace sofa::component::linearsystem

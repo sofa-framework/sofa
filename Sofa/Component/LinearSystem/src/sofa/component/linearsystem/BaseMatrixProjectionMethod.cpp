@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSYSTEM_MATRIXMAPPING_CPP
-#include <sofa/component/linearsystem/MatrixMapping.inl>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.inl>
 
 namespace sofa::component::linearsystem
 {
-template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixMapping<linearalgebra::CompressedRowSparseMatrix<SReal> >;
+template class SOFA_COMPONENT_LINEARSYSTEM_API BaseMatrixProjectionMethod<linearalgebra::CompressedRowSparseMatrix<SReal> >;
 }

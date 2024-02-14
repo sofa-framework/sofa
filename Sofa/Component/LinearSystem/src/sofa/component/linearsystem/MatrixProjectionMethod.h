@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsystem/MatrixMapping.h>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
 #include <Eigen/Sparse>
 #include <optional>
 
@@ -32,22 +32,22 @@ namespace sofa::component::linearsystem
  * the Eigen library.
  */
 template<class TMatrix>
-class EigenMatrixMapping : public MatrixMapping<TMatrix>
+class MatrixProjectionMethod : public BaseMatrixProjectionMethod<TMatrix>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(EigenMatrixMapping, TMatrix), SOFA_TEMPLATE(MatrixMapping, TMatrix));
-    using PairMechanicalStates = typename MatrixMapping<TMatrix>::PairMechanicalStates;
+    SOFA_CLASS(SOFA_TEMPLATE(MatrixProjectionMethod, TMatrix), SOFA_TEMPLATE(BaseMatrixProjectionMethod, TMatrix));
+    using PairMechanicalStates = typename BaseMatrixProjectionMethod<TMatrix>::PairMechanicalStates;
     using Block = typename TMatrix::Block;
 
-    ~EigenMatrixMapping() override;
+    ~MatrixProjectionMethod() override;
 
     void computeMatrixJacobians(const core::MechanicalParams* mparams,
                                 const MappingGraph& mappingGraph,
                                 TMatrix* matrixToProject);
 
 protected:
-    explicit EigenMatrixMapping(const PairMechanicalStates& states);
-    EigenMatrixMapping();
+    explicit MatrixProjectionMethod(const PairMechanicalStates& states);
+    MatrixProjectionMethod();
 
     virtual void computeMatrixProduct(const MappingGraph& mappingGraph,
                           TMatrix* matrixToProject,
@@ -102,7 +102,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP)
-extern template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<linearalgebra::CompressedRowSparseMatrix<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixProjectionMethod<linearalgebra::CompressedRowSparseMatrix<SReal> >;
 #endif
 
 }

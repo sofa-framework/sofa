@@ -23,7 +23,7 @@
 #include <optional>
 #include <unordered_set>
 #include <mutex>
-#include <sofa/component/linearsystem/EigenMatrixMapping.h>
+#include <sofa/component/linearsystem/MatrixProjectionMethod.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
@@ -973,9 +973,9 @@ MatrixLinearSystem<TMatrix, TVector>::createLocalMappedMatrixT(
 template <class TMatrix, class TVector>
 auto MatrixLinearSystem<TMatrix, TVector>::createMatrixMapping(
     const PairMechanicalStates& pair)
-    -> typename MatrixMapping<LocalMappedMatrixType<Real> >::SPtr
+    -> typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr
 {
-    return core::objectmodel::New<EigenMatrixMapping<LocalMappedMatrixType<Real> > >(pair);
+    return core::objectmodel::New<MatrixProjectionMethod<LocalMappedMatrixType<Real> > >(pair);
 }
 
 template <class TMatrix, class TVector>
@@ -1001,7 +1001,7 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
         if (it == m_matrixMappings.end())
         {
             //look in the scene graph
-            sofa::type::vector<MatrixMapping<LocalMappedMatrixType<Real> >*> allMatrixMappings;
+            sofa::type::vector<BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*> allMatrixMappings;
             this->getContext()->getObjects(allMatrixMappings, core::objectmodel::BaseContext::SearchDirection::SearchRoot);
             for (auto* m : allMatrixMappings)
             {

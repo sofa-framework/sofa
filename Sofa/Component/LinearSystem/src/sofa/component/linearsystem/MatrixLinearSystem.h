@@ -31,7 +31,7 @@
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
 #include <optional>
-#include <sofa/component/linearsystem/MatrixMapping.h>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
 
 
 namespace sofa::component::linearsystem
@@ -248,9 +248,9 @@ protected:
     virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
     makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component);
 
-    std::map< PairMechanicalStates, MatrixMapping<LocalMappedMatrixType<Real> >* > m_matrixMappings;
+    std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
 
-    virtual typename MatrixMapping<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
+    virtual typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
 
 private:
     template<Contribution c>

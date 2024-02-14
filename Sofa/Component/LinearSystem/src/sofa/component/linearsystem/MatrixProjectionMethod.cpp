@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP
-#include <sofa/component/linearsystem/EigenMatrixMapping.inl>
+#include <sofa/component/linearsystem/MatrixProjectionMethod.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsystem
 {
-template class SOFA_COMPONENT_LINEARSYSTEM_API EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
 
 int EigenMatrixMappingClass = core::RegisterObject("Matrix mapping computing the matrix projection using the Eigen library")
-        .add< EigenMatrixMapping<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
+        .add< MatrixProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
         ;
 }

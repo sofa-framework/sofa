@@ -20,22 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsystem/MatrixMapping.h>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
 
 namespace sofa::component::linearsystem
 {
 
 template <class TMatrix>
-MatrixMapping<TMatrix>::~MatrixMapping() = default;
+BaseMatrixProjectionMethod<TMatrix>::~BaseMatrixProjectionMethod() = default;
 
 template <class TMatrix>
-MatrixMapping<TMatrix>::MatrixMapping(const PairMechanicalStates& states)
+BaseMatrixProjectionMethod<TMatrix>::BaseMatrixProjectionMethod(const PairMechanicalStates& states)
 {
     setPairStates(states);
 }
 
 template <class TMatrix>
-bool MatrixMapping<TMatrix>::hasPairStates(
+bool BaseMatrixProjectionMethod<TMatrix>::hasPairStates(
     const PairMechanicalStates& pairStates) const
 {
     return l_mechanicalStates.size() >= 2 &&
@@ -44,7 +44,7 @@ bool MatrixMapping<TMatrix>::hasPairStates(
 }
 
 template <class TMatrix>
-void MatrixMapping<TMatrix>::setPairStates(const PairMechanicalStates& pairStates)
+void BaseMatrixProjectionMethod<TMatrix>::setPairStates(const PairMechanicalStates& pairStates)
 {
     l_mechanicalStates.clear();
     l_mechanicalStates.add(pairStates[0]);
