@@ -80,31 +80,37 @@ logger() const
                : msg_error("RangeVerification");
 }
 
-void matrixaccumulator::RangeVerification::checkRowIndex(sofa::SignedIndex row)
+bool matrixaccumulator::RangeVerification::checkRowIndex(sofa::SignedIndex row)
 {
     if (row < minRowIndex)
     {
         logger() << "Trying to accumulate a matrix entry out of the allowed submatrix: minimum "
             "row index is " << minRowIndex << " while " << row << " was provided";
+        return false;
     }
     if (row > maxRowIndex)
     {
         logger() << "Trying to accumulate a matrix entry out of the allowed submatrix: maximum "
             "row index is " << maxRowIndex << " while " << row << " was provided";
+        return false;
     }
+    return true;
 }
 
-void matrixaccumulator::RangeVerification::checkColIndex(sofa::SignedIndex col)
+bool matrixaccumulator::RangeVerification::checkColIndex(sofa::SignedIndex col)
 {
     if (col < minColIndex)
     {
         logger() << "Trying to accumulate a matrix entry out of the allowed submatrix: minimum "
             "column index is " << minColIndex << " while " << col << " was provided";
+        return false;
     }
     if (col > maxColIndex)
     {
         logger() << "Trying to accumulate a matrix entry out of the allowed submatrix: maximum "
             "column index is " << maxColIndex << " while " << col << " was provided";
+        return false;
     }
+    return true;
 }
 }

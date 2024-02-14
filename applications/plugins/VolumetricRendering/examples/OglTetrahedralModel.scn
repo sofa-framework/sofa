@@ -5,7 +5,6 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms,TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloat4Variable,OglFloatVariable,OglShader] -->
-    <RequiredPlugin name="SofaCUDA"/>
     <RequiredPlugin name="VolumetricRendering"/>
 
     <DefaultAnimationLoop/>

@@ -32,12 +32,15 @@ using sofa::testing::BaseTest;
 using sofa::helper::system::PluginManager;
 using sofa::helper::system::FileSystem;
 
-static std::string pluginName = "TestPlugin";
+static std::string pluginAName = "TestPluginA";
+static std::string pluginBName = "TestPluginB";
 
 #ifdef NDEBUG
-static std::string pluginFileName = "TestPlugin";
+static std::string pluginAFileName = "TestPluginA";
+static std::string pluginBFileName = "TestPluginB";
 #else
-static std::string pluginFileName = "TestPlugin_d";
+static std::string pluginAFileName = "TestPluginA_d";
+static std::string pluginBFileName = "TestPluginB_d";
 #endif //N_DEBUG
 
 static std::string nonpluginName = "RandomNameForAPluginButHopeItDoesNotExist";
@@ -63,7 +66,7 @@ struct PluginManager_test: public BaseTest
         // Set pluginDir by searching pluginFileName in the PluginRepository
         for ( std::string path : sofa::helper::system::PluginRepository.getPaths() )
         {
-            if ( FileSystem::exists(path + separator + prefix + pluginFileName + dotExt) )
+            if ( FileSystem::exists(path + separator + prefix + pluginAFileName + dotExt) )
             {
                 pluginDir = path;
                 break;
@@ -72,7 +75,7 @@ struct PluginManager_test: public BaseTest
 
         ASSERT_FALSE( pluginDir.empty() );
 
-        std::cout << "PluginManager_test.loadTestPluginByPath: "
+        std::cout << "PluginManager_test.loadTestPluginAByPath: "
                   << "pluginDir = " << pluginDir
                   << std::endl;
     }
@@ -102,14 +105,14 @@ struct PluginManager_test: public BaseTest
 };
 
 
-TEST_F(PluginManager_test, loadTestPluginByPath)
+TEST_F(PluginManager_test, loadTestPluginAByPath)
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    const std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
+    const std::string pluginPath = pluginDir + separator + prefix + pluginAFileName + dotExt;
     const std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
-    std::cout << "PluginManager_test.loadTestPluginByPath: "
+    std::cout << "PluginManager_test.loadTestPluginAByPath: "
               << "pluginPath = " << pluginPath
               << std::endl;
 
@@ -118,11 +121,11 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     {
         EXPECT_MSG_NOEMIT(Warning, Error);
 
-        std::cout << "PluginManager_test.loadTestPluginByPath: "
+        std::cout << "PluginManager_test.loadTestPluginAByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
                   << std::endl;
         ASSERT_EQ(pm.loadPluginByPath(pluginPath), PluginManager::PluginLoadStatus::SUCCESS);
-        ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
+        ASSERT_GT(pm.findPlugin(pluginAName).size(), 0u);
     }
 
     /// Check that non existing plugin are currectly handled and returns an
@@ -131,18 +134,18 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
         EXPECT_MSG_NOEMIT(Warning);
         EXPECT_MSG_EMIT(Error);
 
-        std::cout << "PluginManager_test.loadTestPluginByPath: "
+        std::cout << "PluginManager_test.loadTestPluginAByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
                   << std::endl;
         ASSERT_EQ(pm.loadPluginByPath(nonpluginPath), PluginManager::PluginLoadStatus::PLUGIN_FILE_NOT_FOUND);
         ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
-        std::cout << "PluginManager_test.loadTestPluginByPath: "
+        std::cout << "PluginManager_test.loadTestPluginAByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
                   << std::endl;
     }
 }
 
-TEST_F(PluginManager_test, loadTestPluginByName )
+TEST_F(PluginManager_test, loadTestPluginAByName )
 {
     PluginManager&pm = PluginManager::getInstance();
 
@@ -151,8 +154,8 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     {
         EXPECT_MSG_NOEMIT(Warning, Error);
 
-        ASSERT_EQ(pm.loadPluginByName(pluginName), PluginManager::PluginLoadStatus::SUCCESS );
-        const std::string pluginPath = pm.findPlugin(pluginName);
+        ASSERT_EQ(pm.loadPluginByName(pluginAName), PluginManager::PluginLoadStatus::SUCCESS );
+        const std::string pluginPath = pm.findPlugin(pluginAName);
         ASSERT_GT(pluginPath.size(), 0u);
     }
 
@@ -171,8 +174,8 @@ TEST_F(PluginManager_test, pluginEntries)
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    pm.loadPluginByName(pluginName);
-    const std::string pluginPath = pm.findPlugin(pluginName);
+    pm.loadPluginByName(pluginAName);
+    const std::string pluginPath = pm.findPlugin(pluginAName);
     const sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
 
     EXPECT_TRUE(p.initExternalModule.func != nullptr);
@@ -188,14 +191,14 @@ TEST_F(PluginManager_test, pluginEntriesValues)
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    pm.loadPluginByName(pluginName);
-    const std::string pluginPath = pm.findPlugin(pluginName);
+    pm.loadPluginByName(pluginAName);
+    const std::string pluginPath = pm.findPlugin(pluginAName);
     sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
 
-    std::string testModuleName = "TestPlugin";
+    std::string testModuleName = "TestPluginA";
     std::string testModuleVersion = "0.7";
     std::string testModuleLicense = "LicenseTest";
-    std::string testModuleDescription = "Description of the Test Plugin";
+    std::string testModuleDescription = "Description of the Test Plugin A";
     std::string testModuleComponentList = "ComponentA, ComponentB";
 
     ASSERT_EQ(0, std::string(p.getModuleName()).compare(testModuleName));
@@ -220,8 +223,8 @@ TEST_F(PluginManager_test, testIniFile)
     EXPECT_MSG_NOEMIT(Deprecated);
 
     PluginManager&pm = PluginManager::getInstance();
-    pm.loadPluginByName(pluginName);
-    const std::string pluginPath = pm.findPlugin(pluginName);
+    pm.loadPluginByName(pluginAName);
+    const std::string pluginPath = pm.findPlugin(pluginAName);
 
     const std::string pathIniFile = "PluginManager_test.ini";
     pm.writeToIniFile(pathIniFile);
@@ -237,7 +240,7 @@ TEST_F(PluginManager_test, testIniFile)
     ASSERT_TRUE(FileSystem::exists(pathIniFile));
 
     pm.readFromIniFile(pathIniFile);
-    ASSERT_EQ(pm.findPlugin(pluginName).compare(pluginPath), 0);
+    ASSERT_EQ(pm.findPlugin(pluginAName).compare(pluginPath), 0);
 
 }
 
@@ -252,10 +255,33 @@ TEST_F(PluginManager_test, testDeprecatedIniFileWoVersion)
     const std::string pathIniFile = "PluginManager_test_deprecated_wo_version.ini";
     std::ofstream outstream(pathIniFile.c_str());
 
-    outstream << pluginName << std::endl;
+    outstream << pluginAName << std::endl;
     outstream.close();
     ASSERT_TRUE(FileSystem::exists(pathIniFile));
     pm.readFromIniFile(pathIniFile);
 
     createdFilesToDelete.push_back(pathIniFile);
+}
+
+TEST_F(PluginManager_test, testPluginAAsDependencyOfPluginB)
+{
+    std::string testModuleName = "TestPluginB";
+    PluginManager&pm = PluginManager::getInstance();
+
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
+
+    pm.loadPluginByName(pluginBFileName);
+    const std::string pluginPath = pm.findPlugin(pluginBName);
+    const sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+
+    EXPECT_TRUE(p.initExternalModule.func != nullptr);
+    EXPECT_TRUE(p.getModuleName.func != nullptr);
+    ASSERT_EQ(0, std::string(p.getModuleName()).compare(testModuleName));
+
+    // TestPluginB does not implement the other get*() functions
+    EXPECT_FALSE(p.getModuleVersion.func != nullptr);
+    EXPECT_FALSE(p.getModuleLicense.func != nullptr);
+    EXPECT_FALSE(p.getModuleDescription.func != nullptr);
+    EXPECT_FALSE(p.getModuleComponentList.func != nullptr);
+
 }

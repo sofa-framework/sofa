@@ -118,6 +118,8 @@ type::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
+    Inherit1::init();
+
     for (auto toModel : this->toModels)
     {
         if (!toModel->toBaseMechanicalState())

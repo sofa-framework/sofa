@@ -236,6 +236,20 @@ public:
                 m[i][j] = this->elems[i+L0][j+C0];
     }
 
+    template <Size C2>
+    constexpr void getsub(const Size L0, const Size C0, Vec<C2, real>& m) const noexcept
+    {
+        for (Size j = 0; j < C2; j++)
+        {
+            m[j] = this->elems[L0][j + C0];
+        }
+    }
+
+    constexpr void getsub(Size L0, Size C0, real& m) const noexcept
+    {
+        m = this->elems[L0][C0];
+    }
+
     template<Size L2, Size C2> 
     constexpr void setsub(Size L0, Size C0, const Mat<L2,C2,real>& m) noexcept
     {

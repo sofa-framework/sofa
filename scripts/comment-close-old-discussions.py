@@ -37,7 +37,7 @@ date_reference_closing = date_today - delay_closing
 
 
 # List of reviewers on GitHub Discussions
-reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["VannesteFelix"],["EulalieCoevoet"],["github-actions"]]
+reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["VannesteFelix"],["adagolodjo"],["EulalieCoevoet"],["github-actions"]]
 
 
 # Check if the "createdAt" is older than the "date_reference"
@@ -148,12 +148,8 @@ def make_query_discussions(owner, name, after_cursor=None):
               number
               isAnswered
               closed
-              authorAssociation
               author {
                 login
-              }
-              answer {
-                body
               }
               comments (first: 100) {
                 nodes {

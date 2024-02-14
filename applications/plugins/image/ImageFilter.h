@@ -221,7 +221,16 @@ protected:
             if(updateImage)
             {
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
-                cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+#if defined(_MSC_VER)
+                if constexpr (std::is_same_v<Ti, long> || std::is_same_v<Ti, unsigned long>) //this situation triggers compilation error on Windows and needs a special treatment
+                {
+                    cimglist_for(img, l) img(l) = cimg_library::CImg<float>(inimg(l),false).blur_anisotropic (amplitude);
+                }
+                else
+#endif
+                {
+                    cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+                }
             }
             break;
         case DERICHE:

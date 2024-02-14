@@ -93,7 +93,7 @@ using namespace gpu::cuda;
     template<>
     void TetrahedralTensorMassForceField<CudaVec3fTypes>::initNeighbourhoodPoints()
     {
-        std::cout<<"(TetrahedralTensorMassForceField) GPU-GEMS activated"<<std::endl;
+        msg_info() <<"GPU-GEMS activated";
 
         /// Initialize the number max of edges per node
         TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
@@ -173,7 +173,7 @@ using namespace gpu::cuda;
 	template<>
 	void TetrahedralTensorMassForceField<CudaVec3dTypes>::initNeighbourhoodPoints()
 	{
-		std::cout<<"(TetrahedralTensorMassForceField) GPU-GEMS activated"<<std::endl;
+        msg_info() <<"GPU-GEMS activated";
 
 		/// Initialize the number max of edges per node
 		TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;

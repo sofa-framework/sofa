@@ -1,0 +1,35 @@
+name: Post - Github activity (stars)
+
+on:
+  watch:
+    types: [started]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
+        working-directory: ${{ github.workspace }}
+
+      # Star/watch related event
+      - name: Run script post-discord-message.py for stars
+        run: |
+          python scripts/discord/post-discord-message.py
+        working-directory: ${{ github.workspace }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
+          MESSAGE: ":fire: :fire:  Come ON  :fire: :fire: \nOne new :star: for SOFA on Github!"
+          BOT_NAME: "SOFA Github bot"
+          EMBEDS_TITLE: ""
+          EMBEDS_URL: ""
+          EMBEDS_DESCRIPTION: ""
+

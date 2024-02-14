@@ -88,7 +88,7 @@ void CudaSortCPU(TKey* keys, TData* data, unsigned int size, int /*bits*/)
 static inline void CudaSortPrepare(unsigned int size, bool withData = true)
 {
     if (!CudaSortGPUAvailable(size, withData))
-        std::cerr << "CUDA: GPU sort implementation not available (size="<<size<<")" << std::endl;
+        msg_error("SofaCUDA") << "CUDA: GPU sort implementation not available (size=" << size << ")";
 }
 
 template<class TKey, class TData>

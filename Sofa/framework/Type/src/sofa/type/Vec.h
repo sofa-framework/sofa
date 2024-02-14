@@ -290,6 +290,20 @@ public:
         return this->elems.data();
     }
 
+    template <Size N2, std::enable_if_t<(N2 < N), bool> = true>
+    constexpr void getsub(const Size i, Vec<N2, ValueType>& m) const noexcept
+    {
+        for (Size j = 0; j < N2; j++)
+        {
+            m[j] = this->elems[j + i];
+        }
+    }
+
+    constexpr void getsub(const Size i, ValueType& m) const noexcept
+    {
+        m = this->elems[i];
+    }
+
     // LINEAR ALGEBRA
     constexpr Vec<N,ValueType> mulscalar(const ValueType f) const noexcept
     {

@@ -31,7 +31,7 @@ using sofa::helper::system::FileSystem;
   #include <filesystem>
   namespace fs = std::filesystem;
 #elif __has_include(<experimental/filesystem>)
-  #include <experimental/filesystem> 
+  #include <experimental/filesystem>
   namespace fs = std::experimental::filesystem;
 #else
   error "Missing the <filesystem> header."
@@ -49,7 +49,7 @@ namespace
 {
 
 template <class LibraryEntry>
-bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
+[[nodiscard]] bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
 {
     typedef typename LibraryEntry::FuncPtr FuncPtr;
     entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
@@ -199,17 +199,21 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
             if (errlog) (*errlog) << msg << std::endl;
             return PluginLoadStatus::MISSING_SYMBOL;
         }
-        getPluginEntry(p.getModuleName,d);
+
+        if(!getPluginEntry(p.getModuleName,d))
+        {
+            dmsg_warning("PluginManager") << DynamicLibrary::getLastError();
+        }
 
         if (checkDuplicatedPlugin(p, pluginPath))
         {
             return PluginLoadStatus::ALREADY_LOADED;
         }
 
-        getPluginEntry(p.getModuleDescription,d);
-        getPluginEntry(p.getModuleLicense,d);
-        getPluginEntry(p.getModuleComponentList,d);
-        getPluginEntry(p.getModuleVersion,d);
+        [[maybe_unused]] const auto moduleDescriptionResult = getPluginEntry(p.getModuleDescription,d);
+        [[maybe_unused]] const auto moduleLicenseResult = getPluginEntry(p.getModuleLicense,d);
+        [[maybe_unused]] const auto moduleComponentListResult = getPluginEntry(p.getModuleComponentList,d);
+        [[maybe_unused]] const auto moduleVersionResult = getPluginEntry(p.getModuleVersion,d);
     }
 
     p.dynamicLibrary = d;
