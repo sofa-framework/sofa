@@ -25,17 +25,17 @@ jobs:
       - name: Get download stats
         run: |
           output=$(python scripts/github_activity/get_downloads.py)
-          echo "OUTPUT_TEXT=$DownloadStatsOutput" >> $GITHUB_ENV
+          echo "DownloadStatsOutput=$output" >> $GITHUB_ENV
 
       - name: Get cloner stats
         run: |
           output=$(python scripts/github_activity/get_cloners.py)
-          echo "OUTPUT_TEXT=$ClonerStatsOutput" >> $GITHUB_ENV
+          echo "ClonerStatsOutput=$output" >> $GITHUB_ENV
 
       - name: Get GitHub stats - PR issues discussions
         run: |
           output=$(python scripts/github_activity/get_repo_stats.py)
-          echo "OUTPUT_TEXT=$GitHubStatOutput" >> $GITHUB_ENV
+          echo "GitHubStatOutput=$output" >> $GITHUB_ENV
           
       - name: Send message
         run: |
