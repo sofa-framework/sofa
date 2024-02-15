@@ -137,15 +137,15 @@ bool STLExporter::writeSTL(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(auto triangleIndice : triangleIndices)
+        for(const auto& triangleIndex : triangleIndices)
         {
-            vecTri.push_back(triangleIndice);
+            vecTri.push_back(triangleIndex);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(auto quadIndice : quadIndices)
+        for(const auto& quadIndice : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
@@ -226,24 +226,24 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(auto triangleIndice : triangleIndices)
+        for(const auto& triangleIndex : triangleIndices)
         {
-            vecTri.push_back(triangleIndice);
+            vecTri.push_back(triangleIndex);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(auto quadIndice : quadIndices)
+        for(const auto& quadIndex : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndice[j];
+                tri[j] = quadIndex[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndice[0];
-            tri[1] = quadIndice[2];
-            tri[2] = quadIndice[3];
+            tri[0] = quadIndex[0];
+            tri[1] = quadIndex[2];
+            tri[2] = quadIndex[3];
             vecTri.push_back(tri);
         }
     }
