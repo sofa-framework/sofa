@@ -19,32 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/simulation/common/config.h>
-#include <sofa/simulation/common/xml/Element.h>
-
-namespace tinyxml2
+#include <VolumetricRendering/CUDA/init.h>
+#include <VolumetricRendering/initVolumetricRendering.h>
+#include <sofa/core/ObjectFactory.h>
+namespace volumetricrendering::cuda
 {
 
-  class XMLDocument;
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+}
 
-} // namespace tinyxml2
-
-namespace sofa::simulation::xml
+void initExternalModule()
 {
+    init();
+}
 
-SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const tinyxml2::XMLDocument &doc, bool fromMem=false);
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-SOFA_SIMULATION_COMMON_API BaseElement* loadFromFile(const char *filename);
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
 
-SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
-BaseElement* loadFromMemory(const char* filename, const char* data, unsigned int size) = delete;
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        volumetricrendering::init();
+        first = false;
+    }
+}
 
-SOFA_SIMULATION_COMMON_API BaseElement* loadFromMemory(const char *filename, const char *data);
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
+    return classes.c_str();
+}
 
-
-SOFA_SIMULATION_COMMON_API bool save(const char *filename, BaseElement* root);
-
-extern int SOFA_SIMULATION_COMMON_API numDefault;
-
-} // namespace sofa::simulation::xml
+} // namespace volumetricrendering::cuda

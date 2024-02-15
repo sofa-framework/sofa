@@ -20,31 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/simulation/common/config.h>
-#include <sofa/simulation/common/xml/Element.h>
 
-namespace tinyxml2
+#include <VolumetricRendering/CUDA/config.h>
+
+namespace volumetricrendering::cuda
 {
-
-  class XMLDocument;
-
-} // namespace tinyxml2
-
-namespace sofa::simulation::xml
-{
-
-SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const tinyxml2::XMLDocument &doc, bool fromMem=false);
-
-SOFA_SIMULATION_COMMON_API BaseElement* loadFromFile(const char *filename);
-
-SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
-BaseElement* loadFromMemory(const char* filename, const char* data, unsigned int size) = delete;
-
-SOFA_SIMULATION_COMMON_API BaseElement* loadFromMemory(const char *filename, const char *data);
-
-
-SOFA_SIMULATION_COMMON_API bool save(const char *filename, BaseElement* root);
-
-extern int SOFA_SIMULATION_COMMON_API numDefault;
-
-} // namespace sofa::simulation::xml
+SOFA_VOLUMETRICRENDERING_CUDA_API void init();
+} // namespace volumetricrendering::cuda
