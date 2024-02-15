@@ -42,7 +42,7 @@ if(SOFA_GUI_QT_HAVE_NODEEDITOR)
     find_package(NodeEditor QUIET REQUIRED)
 endif()
 if(SOFA_GUI_QT_HAVE_TINYXML)
-    find_package(TinyXML QUIET REQUIRED)
+    find_package(TinyXML2 QUIET REQUIRED)
 endif()
 
 if(NOT TARGET @PROJECT_NAME@)
