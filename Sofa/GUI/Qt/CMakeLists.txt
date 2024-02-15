@@ -106,7 +106,7 @@ sofa_find_package(FFMPEG_exec BOTH_SCOPES)
 
 # TinyXML
 if(SOFA_DUMP_VISITOR_INFO)
-    sofa_find_package(TinyXML REQUIRED BOTH_SCOPES)
+    sofa_find_package(TinyXML2 REQUIRED BOTH_SCOPES)
 endif()
 
 set(SRC_ROOT src/sofa/gui/qt)
@@ -324,7 +324,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
 
 if(SOFA_DUMP_VISITOR_INFO)
-    target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
+    target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml2::tinyxml2)
 endif()
 
 if(Sofa.GL_FOUND)
