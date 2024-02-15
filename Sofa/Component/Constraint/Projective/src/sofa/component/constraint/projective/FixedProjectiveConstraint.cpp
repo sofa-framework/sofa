@@ -85,12 +85,16 @@ void FixedProjectiveConstraint<Rigid3Types>::draw(const core::visual::VisualPara
         if( x.size() < indices.size() )
         {
             for (unsigned i=0; i<x.size(); i++ )
+            {
                 points.push_back(x[indices[i]].getCenter());
+            }
         }
         else
         {
-            for (const unsigned int indice : indices)
-                points.push_back(x[indice].getCenter());
+            for (const unsigned int index : indices)
+            {
+                points.push_back(x[index].getCenter());
+            }
         }
     }
 
