@@ -70,11 +70,6 @@ Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
     return evec;
 }
 
-
-
-} // namespace defaulttype
-
-
-// iostream
+}
 
 #endif

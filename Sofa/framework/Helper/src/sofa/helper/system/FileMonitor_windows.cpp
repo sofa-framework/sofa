@@ -174,6 +174,4 @@ int FileMonitor::updates(int timeout)
 }
 
 
-} // system
-// helper
-// sofa
+}

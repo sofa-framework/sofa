@@ -79,5 +79,4 @@ Vector getVector( core::ConstVecId id, bool indep )
     return ve;
 }
 
-} /// modeling
-/// sofa
+}

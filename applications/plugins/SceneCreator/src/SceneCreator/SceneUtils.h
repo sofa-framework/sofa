@@ -40,8 +40,6 @@ typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
 /// mapped ones, depending on the flag.
 SOFA_SCENECREATOR_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
 
-}// modeling
-
-// sofa
+}
 
 #endif

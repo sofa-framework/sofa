@@ -72,8 +72,4 @@ void MainRoutingMessageHandler::removeAllFilters()
 }
 
 
-} // loggingmessagehandler
-// logging
-// helper
-// sofa
-
+}

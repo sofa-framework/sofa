@@ -35,7 +35,4 @@ void SilentMessageHandler::process(Message& /*m*/) {
 }
 
 
-} // logging
-// helper
-// sofa
-
+}

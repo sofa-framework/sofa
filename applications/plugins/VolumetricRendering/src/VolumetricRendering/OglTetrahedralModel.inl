@@ -381,7 +381,4 @@ void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 
 } // namespace sofa::component::visualmodel
 
-// namesapce component
-
-
 #endif //OGLTETRAHEDRALMODEL_H_

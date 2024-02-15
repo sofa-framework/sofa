@@ -136,8 +136,4 @@ void BaseSimulationExporter::cleanup()
 }
 
 
-} /// namespace _baseexporter_
-
-/// namespace core
-
-/// namespace sofa
+}

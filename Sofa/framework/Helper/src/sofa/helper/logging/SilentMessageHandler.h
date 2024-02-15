@@ -43,8 +43,6 @@ public:
 };
 
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // CONSOLEMESSAGEHANDLER_H

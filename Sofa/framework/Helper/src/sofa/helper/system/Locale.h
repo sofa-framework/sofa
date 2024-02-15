@@ -53,6 +53,4 @@ public:
 } // namespace sofa::helper::system
 
 
-// sofa
-
 #endif

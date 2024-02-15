@@ -71,7 +71,4 @@ int MainCountingMessageHandler::getMessageCountFor(const Message::Type &type)
 }
 
 
-} /// namespace countingmessagehandler
-/// namespace logging
-/// namespace helper
-/// namespace sofa
+}

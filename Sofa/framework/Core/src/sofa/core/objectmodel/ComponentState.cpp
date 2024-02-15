@@ -60,8 +60,5 @@ std::istream& operator>>(std::istream& i, ComponentState& s)
     return i;
 }
 
-}  /// namespace objectmodel
- /// namespace core
- /// namespace sofa
-
+}
 

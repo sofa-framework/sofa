@@ -337,6 +337,4 @@ type::Vec3f ColorMap::hsv2rgb(const type::Vec3f&hsv)
 }
 
 
-} // namespace component
-
-
+}

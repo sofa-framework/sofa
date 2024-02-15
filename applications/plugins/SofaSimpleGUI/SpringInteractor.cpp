@@ -65,5 +65,4 @@ void SpringInteractor::detach()
     _interactionNode->addObject(_spring);
 }
 
-}//newgui
-//sofa
+}

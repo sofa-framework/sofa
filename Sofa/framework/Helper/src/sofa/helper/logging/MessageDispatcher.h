@@ -124,8 +124,6 @@ public:
 
 
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // MESSAGEDISPATCHER_H

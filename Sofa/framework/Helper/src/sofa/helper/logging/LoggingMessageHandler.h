@@ -135,15 +135,13 @@ private:
 };
 
 
-} // loggingmessagehandler
+}
 
 using loggingmessagehandler::LoggingMessageHandler ;
 using loggingmessagehandler::MainLoggingMessageHandler ;
 using loggingmessagehandler::LogMessage ;
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // TESTMESSAGEHANDLER_H
 

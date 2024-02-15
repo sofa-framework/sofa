@@ -43,8 +43,6 @@ public:
 };
 
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // MESSAGEHANDLER_H

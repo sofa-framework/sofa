@@ -96,9 +96,7 @@ public:
 using routingmessagehandler::RoutingMessageHandler ;
 using routingmessagehandler::MainRoutingMessageHandler ;
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // TESTMESSAGEHANDLER_H
 

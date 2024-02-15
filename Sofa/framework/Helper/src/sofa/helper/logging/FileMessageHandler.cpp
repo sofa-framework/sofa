@@ -65,7 +65,5 @@ bool FileMessageHandler::isValid()
 }
 
 
-} // logging
-// helper
-// sofa
+}
 

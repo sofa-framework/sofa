@@ -39,8 +39,6 @@ public:
 
 };
 
-} // logging
-// helper
-// sofa
+}
 
 #endif // FILEMESSAGE_H

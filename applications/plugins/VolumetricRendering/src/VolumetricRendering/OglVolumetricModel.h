@@ -111,7 +111,5 @@ public:
 
 } // namespace sofa::component::visualmodel
 
-// namesapce component
-
 
 #endif // OGLVOLUMETRICMODEL_H_

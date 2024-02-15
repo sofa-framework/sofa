@@ -96,7 +96,5 @@ extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaultty
 
 } // namespace sofa::component::visualmodel
 
-// namesapce component
-
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

@@ -91,8 +91,4 @@ const vector<Message>& MainLoggingMessageHandler::getMessages()
     return getInstance().getMessages() ;
 }
 
-} // loggingmessagehandler
-// logging
-// helper
-// sofa
-
+}

@@ -525,9 +525,6 @@ typename SolidTypes<R>::Mat3x3 SolidTypes<R>::dyad( const Vec& u, const Vec& v )
     return m;
 }
 
-
-}// defaulttype
-
-// sofa
+}
 
 #endif

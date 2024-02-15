@@ -40,8 +40,6 @@ public:
     bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
 };
 
-} /// namespace helper
-
-/// namespace sofa
+}
 
 #endif /// SOFA_HELPER_TYPEINFO_H

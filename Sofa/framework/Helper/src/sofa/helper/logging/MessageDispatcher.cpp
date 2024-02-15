@@ -193,8 +193,5 @@ MessageDispatcher::LoggerStream::~LoggerStream()
 }
 
 
-} // logging
-// helper
-// sofa
-
+}
 

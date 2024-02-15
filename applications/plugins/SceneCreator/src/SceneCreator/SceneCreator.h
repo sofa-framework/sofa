@@ -209,8 +209,6 @@ SOFA_SCENECREATOR_API simulation::Node::SPtr clearScene();
 /// Create a link from source to target.
 SOFA_SCENECREATOR_API void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target);
 
-}// modeling
-
-// sofa
+}
 
 #endif

@@ -101,9 +101,6 @@ template<> SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi
 SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 SOFA_HELPER_API const std::string toString(const Message::Type type) ;
 
-} // logging
-// helper
-// sofa
-
+}
 
 #endif // MESSAGE_H

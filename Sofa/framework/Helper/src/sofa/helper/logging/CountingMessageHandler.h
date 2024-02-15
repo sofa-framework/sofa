@@ -89,8 +89,6 @@ public:
 using countingmessagehandler::MainCountingMessageHandler ;
 using countingmessagehandler::CountingMessageHandler ;
 
-} /// namespace logging
-/// namespace helper
-/// namespace sofa
+}
 
 #endif // COUNTINGMESSAGEHANDLER_H

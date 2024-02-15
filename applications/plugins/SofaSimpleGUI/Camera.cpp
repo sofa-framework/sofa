@@ -192,6 +192,5 @@ Camera::Vec3 Camera::eye() const {
 }
 
 
-} // simplegui
-// sofa
+}
 

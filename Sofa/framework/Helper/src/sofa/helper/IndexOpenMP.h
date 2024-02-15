@@ -39,8 +39,6 @@ struct IndexOpenMP
 #endif
 }; // struct IndexOpenMP
 
-} // helper
-
-// sofa
+}
 
 #endif // SOFA_HELPER_INDEX_TYPE_H

@@ -50,9 +50,6 @@ protected:
 
 };
 
-} // logging
-// helper
-// sofa
-
+}
 
 #endif // MESSAGEFORMATTER_H

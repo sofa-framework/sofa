@@ -712,7 +712,4 @@ void setDataLink(BaseData* source, BaseData* target)
 
 
 
-} // modeling
-
-
-// sofa
+}

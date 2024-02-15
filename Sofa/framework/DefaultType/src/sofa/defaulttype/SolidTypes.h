@@ -415,11 +415,7 @@ extern template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 
 #endif
 
-}// defaulttype
-
-// sofa
-
-
+}
 
 #endif
 

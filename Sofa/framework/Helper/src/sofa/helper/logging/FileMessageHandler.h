@@ -54,9 +54,6 @@ private:
     MessageFormatter    *m_formatter;
 };
 
-
-} // logging
-// helper
-// sofa
+}
 
 #endif // FILEMESSAGEHANDLER_H
