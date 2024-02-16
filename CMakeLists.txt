@@ -202,6 +202,9 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
+## External Plugins
+add_subdirectory(applications/external_plugins)
+
 # Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
