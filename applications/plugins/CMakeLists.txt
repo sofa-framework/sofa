@@ -28,7 +28,7 @@ sofa_add_subdirectory(plugin Registration Registration EXTERNAL GIT_REF master) 
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL GIT_REF master)
-sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader)
+sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ManifoldTopologies ManifoldTopologies EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
