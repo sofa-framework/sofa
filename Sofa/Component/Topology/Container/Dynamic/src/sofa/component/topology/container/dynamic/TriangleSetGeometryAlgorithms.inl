@@ -962,8 +962,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
     CB.normalize();
     CD.normalize();
     Real beta = acos(CB * CD);
-    bool isDelau = (alpha + beta > M_PI) ? false : true;
-    //std::cout << "alpha: " << alpha*180/ M_PI << " | beta: " << beta * 180 / M_PI << " delaunay: " << isDelau << std::endl;
+    const bool isDelau = (alpha + beta <= M_PI);
 
     return isDelau;
 }
