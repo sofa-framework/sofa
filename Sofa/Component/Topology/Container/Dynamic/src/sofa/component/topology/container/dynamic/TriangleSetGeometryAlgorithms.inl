@@ -3629,23 +3629,23 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
                 // Create the triangle around corner
-                new_triangles.push_back(Triangle(vertexOrder[0], vertexOrder[1], vertexOrder[4]));
+                new_triangles.emplace_back(vertexOrder[0], vertexOrder[1], vertexOrder[4]);
                 new_triangles_id.push_back(next_triangle++);
 
 
                 // Triangularize the remaining quad according to the delaunay criteria
                 if (isQuadDeulaunayOriented(posOrder[0], posOrder[1], posOrder[2], posOrder[3]))
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[4]));
+                    new_triangles.emplace_back(vertexOrder[1], vertexOrder[2], vertexOrder[4]);
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[2], vertexOrder[3], vertexOrder[4]));
+                    new_triangles.emplace_back(vertexOrder[2], vertexOrder[3], vertexOrder[4]);
                     new_triangles_id.push_back(next_triangle++);
                 }
                 else
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[3]));
+                    new_triangles.emplace_back(vertexOrder[1], vertexOrder[2], vertexOrder[3]);
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[4], vertexOrder[1], vertexOrder[3]));                    
+                    new_triangles.emplace_back(vertexOrder[4], vertexOrder[1], vertexOrder[3]);
                     new_triangles_id.push_back(next_triangle++);
                 }
 
@@ -3679,16 +3679,16 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
                 // create two triangles linking p with the corner
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[edgeInTriangle], theTriangleSecond[(edgeInTriangle + 1) % 3]));
+                new_triangles.emplace_back(p2, theTriangleSecond[edgeInTriangle], theTriangleSecond[(edgeInTriangle + 1) % 3]);
                 new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[(edgeInTriangle + 2) % 3], theTriangleSecond[edgeInTriangle]));
+                new_triangles.emplace_back(p2, theTriangleSecond[(edgeInTriangle + 2) % 3], theTriangleSecond[edgeInTriangle]);
                 new_triangles_id.push_back(next_triangle++);
 
 
                 // create two triangles linking p with the splitted edge
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[(edgeInTriangle + 1) % 3], p1));
+                new_triangles.emplace_back(p2, theTriangleSecond[(edgeInTriangle + 1) % 3], p1);
                 new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p2, p1, theTriangleSecond[(edgeInTriangle + 2) % 3]));
+                new_triangles.emplace_back(p2, p1, theTriangleSecond[(edgeInTriangle + 2) % 3]);
                 new_triangles_id.push_back(next_triangle++);
 
                 removed_triangles.push_back(triangleIDSecond);
