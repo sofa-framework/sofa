@@ -130,8 +130,8 @@ void FixedProjectiveConstraint<Rigid2Types>::draw(const core::visual::VisualPara
     }
     else
     {
-        for (const unsigned int indice : indices)
-            vertices.emplace_back(x[indice].getCenter()[0], x[indice].getCenter()[1], 0.0);
+        for (const unsigned int index : indices)
+            vertices.emplace_back(x[index].getCenter()[0], x[index].getCenter()[1], 0.0);
     }
 
     vparams->drawTool()->drawPoints(vertices, 10, color);

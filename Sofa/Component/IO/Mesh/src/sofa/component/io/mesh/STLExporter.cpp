@@ -145,16 +145,16 @@ bool STLExporter::writeSTL(bool autonumbering)
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(const auto& quadIndice : quadIndices)
+        for(const auto& quadIndex : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndice[j];
+                tri[j] = quadIndex[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndice[0];
-            tri[1] = quadIndice[2];
-            tri[2] = quadIndice[3];
+            tri[0] = quadIndex[0];
+            tri[1] = quadIndex[2];
+            tri[2] = quadIndex[3];
             vecTri.push_back(tri);
         }
     }
