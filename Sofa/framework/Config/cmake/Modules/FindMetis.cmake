@@ -6,7 +6,7 @@
 #
 # Defines:
 #   Metis_FOUND : True if metis is found
-#   Metis_FOUND : True if metis is found
+#   Metis_VERSION : metis version if found
 #
 # Provides both targets metis and metis::metis.
 #   Target metis::metis is just an alias to metis.
@@ -53,7 +53,6 @@ macro(_metis_check_version)
     message(SEND_ERROR "Metis version ${Metis_VERSION} found in ${Metis_INCLUDE_DIR}, "
                        "but exact version ${Metis_FIND_VERSION} is required")
   endif()
-  # message(STATUS "Metis version found: ${Metis_VERSION} in ${Metis_INCLUDE_DIR}, ${Metis_FIND_VERSION} was required ")
 endmacro()
 
 if(TARGET metis)
