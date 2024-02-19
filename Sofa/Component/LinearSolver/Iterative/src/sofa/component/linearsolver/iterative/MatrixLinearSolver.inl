@@ -45,14 +45,14 @@ using namespace sofa::component::linearsystem;
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     : Inherit()
+    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
+                                        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
+                                                                  "where M is the matrix of the linear system and J is any "
+                                                                  "matrix with compatible dimensions"))
     , invertData()
     , linearSystem()
     , currentMFactor(), currentBFactor(), currentKFactor()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
-    , d_parallelInverseProduct(initData(&d_parallelInverseProduct, false,
-        "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
-                                  "where M is the matrix of the linear system and J is any "
-                                  "matrix with compatible dimensions"))
 {
     this->addUpdateCallback("parallelInverseProduct", {&d_parallelInverseProduct},
     [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState

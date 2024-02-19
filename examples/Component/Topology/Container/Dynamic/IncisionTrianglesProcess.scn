@@ -1,7 +1,7 @@
 <!-- Automatic incision example: incision path is define in: ./IncisionTrianglesProcess.txt -->
 <Node name="root" gravity="0 0 -50" dt="0.01">
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -30,9 +30,9 @@
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass template="Vec3,Vec3" name="default5" massDensity="1.5" />
         <BoxROI template="Vec3" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
-        <FixedConstraint template="Vec3" name="fixedConstraint1" indices="@box_roi1.indices"/>
+        <FixedProjectiveConstraint template="Vec3" name="fixedProjectiveConstraint1" indices="@box_roi1.indices"/>
         <BoxROI template="Vec3" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>
-        <FixedConstraint template="Vec3" name="fixedConstraint2" indices="@box_roi2.indices"/>
+        <FixedProjectiveConstraint template="Vec3" name="fixedProjectiveConstraint2" indices="@box_roi2.indices"/>
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="30000" />
         <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="10000" damping="1" />
         <TriangleCollisionModel name="default7" selfCollision="true" />

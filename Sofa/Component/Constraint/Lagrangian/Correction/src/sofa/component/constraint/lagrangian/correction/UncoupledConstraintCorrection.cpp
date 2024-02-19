@@ -89,7 +89,6 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
                     massValue = um->getVertexMass();
                     usedComp.push_back(odeFactor / massValue.mass);
                     msg_info() << "Compliance matrix is evaluated using the UniformMass";
-
                 }
                 else
                 {
@@ -109,6 +108,8 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][2]);
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[2][2]);
         compliance.setValue(usedComp);
+
+        msg_info() << "\'compliance\' equals: " << compliance.getValue();
     }
     else
     {

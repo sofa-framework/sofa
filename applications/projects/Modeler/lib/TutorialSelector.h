@@ -30,8 +30,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 // Forward declarations
-class TiXmlNode;
-class TiXmlElement;
+class tinyxml2::XMLNode;
+class tinyxml2::XMLElement;
 
 #include <map>
 
@@ -106,8 +106,8 @@ protected:
     void openTutorial(const Tutorial&);
 
     void loadTutorials(const std::string &fileTutorials);
-    void openNode(TiXmlNode* node, QTreeWidgetItem *parent=nullptr, bool isRoot=false);
-    void openAttribute(TiXmlElement* element,  QTreeWidgetItem *item);
+    void openNode(tinyxml2::XMLNode* node, QTreeWidgetItem *parent=nullptr, bool isRoot=false);
+    void openAttribute(tinyxml2::XMLElement* element,  QTreeWidgetItem *item);
 
     std::map< QTreeWidgetItem *, Category> itemToCategory;
     std::map< QTreeWidgetItem *, Tutorial> itemToTutorial;

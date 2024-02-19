@@ -4,6 +4,7 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/narrow_cast.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalPickParticlesVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
@@ -276,8 +277,13 @@ void SofaGL::getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, f
 {
     SReal xm, xM, ym, yM, zm, zM;
     _sofaScene->getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
-    //    cerr << "SofaGL::getSceneBBox, xm=" << xm <<", xM=" << xM << endl;
-    *xmin=xm, *xmax=xM, *ymin=ym, *ymax=yM, *zmin=zm, *zmax=zM;
+
+    *xmin = helper::narrow_cast<float>(xm);
+    *xmax = helper::narrow_cast<float>(xM);
+    *ymin = helper::narrow_cast<float>(ym);
+    *ymax = helper::narrow_cast<float>(yM);
+    *zmin = helper::narrow_cast<float>(zm);
+    *zmax = helper::narrow_cast<float>(zM);
 }
 
 

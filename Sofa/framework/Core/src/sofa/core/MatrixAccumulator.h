@@ -29,6 +29,11 @@
 namespace sofa::core
 {
 
+namespace matrixaccumulator
+{
+    struct IndexVerificationStrategy;
+}
+
 class SOFA_CORE_API MatrixAccumulatorInterface
 {
 public:
@@ -50,6 +55,8 @@ public:
 
     template<sofa::Size L, sofa::Size C, class real>
     void matAdd(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<L, C, real>& value);
+
+    virtual void setIndexCheckerStrategy(std::shared_ptr<matrixaccumulator::IndexVerificationStrategy>) {}
 };
 
 template <sofa::Size L, sofa::Size C, class real>
@@ -75,22 +82,54 @@ struct SOFA_CORE_API IndexVerificationStrategy
 {
     virtual ~IndexVerificationStrategy() = default;
     using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
 
-    virtual void checkRowIndex(sofa::SignedIndex row) = 0;
-    virtual void checkColIndex(sofa::SignedIndex col) = 0;
+    virtual bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) = 0;
 };
 
-struct SOFA_CORE_API NoIndexVerification : IndexVerificationStrategy
+struct SOFA_CORE_API IndividualIndexVerificationStrategy : virtual IndexVerificationStrategy
+{
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    {
+        const auto bRow = checkRowIndex(row);
+        const auto bCol = checkColIndex(col);
+        return bRow && bCol;
+    }
+
+protected:
+    virtual bool checkRowIndex(sofa::SignedIndex row) = 0;
+    virtual bool checkColIndex(sofa::SignedIndex col) = 0;
+};
+
+
+/**
+ * \brief The concatenation of multiple index verification strategies
+ * \tparam Strategies A list of strategy types deriving from @IndexVerificationStrategy
+ */
+template<class... Strategies>
+struct CompositeIndexVerificationStrategy : Strategies...
+{
+    using verify_index = std::bool_constant<std::disjunction_v<typename Strategies::verify_index...>>;
+    using skip_insertion_if_error = std::bool_constant<std::disjunction_v<typename Strategies::skip_insertion_if_error...>>;
+
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    {
+        return (Strategies::checkRowColIndices(row, col) && ...);
+    }
+};
+
+struct SOFA_CORE_API NoIndexVerification : virtual IndexVerificationStrategy
 {
     using verify_index = std::false_type;
+    using skip_insertion_if_error = std::false_type;
 private:
-    void checkRowIndex(sofa::SignedIndex /* row */) override {}
-    void checkColIndex(sofa::SignedIndex /* col */) override {}
+    bool checkRowColIndices(sofa::SignedIndex /* row */, sofa::SignedIndex /* col */) override { return true; }
 };
 
-struct SOFA_CORE_API RangeVerification : IndexVerificationStrategy
+struct SOFA_CORE_API RangeVerification : virtual IndividualIndexVerificationStrategy
 {
     using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
 
     sofa::SignedIndex minRowIndex { 0 };
     sofa::SignedIndex maxRowIndex { std::numeric_limits<sofa::SignedIndex>::max() };
@@ -103,8 +142,8 @@ struct SOFA_CORE_API RangeVerification : IndexVerificationStrategy
     [[nodiscard]]
     helper::logging::MessageDispatcher::LoggerStream logger() const;
 
-    void checkRowIndex(sofa::SignedIndex row) override;
-    void checkColIndex(sofa::SignedIndex col) override;
+    bool checkRowIndex(sofa::SignedIndex row) override;
+    bool checkColIndex(sofa::SignedIndex col) override;
 };
 
 }
@@ -123,7 +162,12 @@ public:
     SOFA_CLASS(MatrixAccumulatorIndexChecker, TBaseMatrixAccumulator);
 
     [[maybe_unused]]
-    std::shared_ptr<TStrategy> indexVerificationStrategy;
+    std::shared_ptr<matrixaccumulator::IndexVerificationStrategy> indexVerificationStrategy;
+
+    void setIndexCheckerStrategy(std::shared_ptr<matrixaccumulator::IndexVerificationStrategy> strategy) override
+    {
+        indexVerificationStrategy = strategy;
+    }
 
     void add(const sofa::SignedIndex row, const sofa::SignedIndex col, const float value) override final
     {
@@ -211,11 +255,21 @@ protected:
         {
             if (indexVerificationStrategy)
             {
-                indexVerificationStrategy->checkRowIndex(row);
-                indexVerificationStrategy->checkColIndex(col);
+                const bool success = indexVerificationStrategy->checkRowColIndices(row, col);
+                if (!TStrategy::skip_insertion_if_error::value || success)
+                {
+                    add(matrixaccumulator::no_check, row, col, value);
+                }
+            }
+            else
+            {
+                add(matrixaccumulator::no_check, row, col, value);
             }
         }
-        add(matrixaccumulator::no_check, row, col, value);
+        else
+        {
+            add(matrixaccumulator::no_check, row, col, value);
+        }
     }
 };
 

@@ -2,7 +2,8 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <SparseLDLSolver applyPermutation="false" template="CompressedRowSparseMatrixMat3x3"/>
+    <NaturalOrderingMethod/>
+    <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

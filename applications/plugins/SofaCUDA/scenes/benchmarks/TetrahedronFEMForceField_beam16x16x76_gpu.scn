@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI DiagonalMass FixedConstraint IdentityMapping MechanicalObject PlaneForceField TetrahedronFEMForceField TetrahedronSetGeometryAlgorithms TriangleSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI DiagonalMass FixedProjectiveConstraint IdentityMapping MechanicalObject PlaneForceField TetrahedronFEMForceField TetrahedronSetGeometryAlgorithms TriangleSetGeometryAlgorithms] -->
   
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
@@ -45,7 +45,7 @@
         <DiagonalMass totalMass="50.0" />
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         <TetrahedronFEMForceField template="CudaVec3f" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="1000" />
 		<PlaneForceField normal="0 1 0" d="2" stiffness="10000"  showPlane="1" />
         

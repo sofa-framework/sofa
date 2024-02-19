@@ -35,13 +35,14 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
+#include <sofa/simulation/graph/SimpleApi.h>
+
 namespace sofa::testing
 {
 
 bool BaseSimulationTest::importPlugin(const std::string& name)
 {
-    const auto status = PluginManager::getInstance().loadPlugin(name);
-    return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
+    return sofa::simpleapi::importPlugin(name);
 }
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
@@ -79,7 +80,7 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
 void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
 {
     root = sofa::simulation::node::load(filename);
-    
+
     if (root == nullptr)
         msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '" << filename << "'";
 }

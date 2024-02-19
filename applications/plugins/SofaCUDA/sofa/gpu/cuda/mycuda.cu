@@ -200,7 +200,7 @@ int mycudaInit(int device)
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
     {
-        std::cerr << "CUDA error returned from cudaGetDeviceCount: " << cudaGetErrorString(getDeviceCountError) << "\n";
+        mycudaPrintfError("error returned from cudaGetDeviceCount: %s", cudaGetErrorString(getDeviceCountError));
         return 0;
     }
     mycudaPrintf("CUDA: %d device(s) found.\n", deviceCount);

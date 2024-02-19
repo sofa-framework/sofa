@@ -28,6 +28,7 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/type/isRigidType.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -110,6 +111,68 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , l_topology(initLink("topology", "link to the topology container"))
     , m_pOdeSolver(nullptr)
 {
+    // Check defaultCompliance and entries of the compliance vector are not zero
+    core::objectmodel::Base::addUpdateCallback("checkNonZeroComplianceInput", {&defaultCompliance, &compliance}, [this](const core::DataTracker& t)
+    {
+        // Update of the defaultCompliance data
+        if(t.hasChanged(defaultCompliance))
+        {
+            if(defaultCompliance.getValue() == 0.0)
+            {
+                msg_error() << "Zero defaultCompliance is set: this will cause the constraint resolution to diverge";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        // Update of the compliance data
+        else
+        {
+            // Case: soft body
+            if constexpr (!sofa::type::isRigidType<DataTypes>())
+            {
+                const VecReal &comp = compliance.getValue();
+                if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))
+                {
+                    msg_error() << "Zero values set in the compliance vector: this will cause the constraint resolution to diverge";
+                    return sofa::core::objectmodel::ComponentState::Invalid;
+                }
+            }
+            // Case: rigid body
+            else
+            {
+                const VecReal &comp = compliance.getValue();
+                sofa::Size compSize = comp.size();
+
+                if (compSize % 7 != 0)
+                {
+                    msg_error() << "Compliance vector should be a multiple of 7 in rigid case (1 for translation dofs, and 6 for the rotation matrix)";
+                    return sofa::core::objectmodel::ComponentState::Invalid;
+                }
+
+                for(sofa::Size i = 0; i < comp.size() ; i += 7)
+                {
+                    if(comp[i] == 0.)
+                    {
+                        msg_error() << "Zero compliance set on translation dofs: this will cause the constraint resolution to diverge (compliance[" << i << "])";
+                        return sofa::core::objectmodel::ComponentState::Invalid;
+                    }
+                    // Check if the translational compliance and the diagonal values of the rotation compliance matrix are non zero
+                    // In Rigid case, the inertia matrix generates this 3x3 rotation compliance matrix 
+                    // In the compliance vector comp, SOFA stores:
+                    //   - the translational compliance (comp[0])
+                    //   - the triangular part of the rotation compliance matrix: r[0,0]=comp[1],r[0,1],r[0,2],r[1,1]=comp[4],r[1,2],r[2,2]=comp[6]
+                    if(comp[i+1] == 0. || comp[i+4] == 0. || comp[i+6] == 0.)
+                    {
+                        msg_error() << "Zero compliance set on rotation dofs (matrix diagonal): this will cause the constraint resolution to diverge (compliance[" << i << "])";
+                        return sofa::core::objectmodel::ComponentState::Invalid;
+                    }
+                }
+            }
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+
+    }, {}
+    );
 }
 
 template<class DataTypes>
@@ -123,7 +186,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
-    if( !defaultCompliance.isSet() && !compliance.isSet() )
+    if (!defaultCompliance.isSet() && !compliance.isSet())
     {
         msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
     }
@@ -205,6 +268,8 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         }
         d_useOdeSolverIntegrationFactors.setReadOnly(true);
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class DataTypes>
@@ -216,6 +281,9 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& constraints = constraintsData.wref();
 
@@ -286,6 +354,9 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::linearalgebra::BaseMatrix *W)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
     VecReal comp = compliance.getValue();
     Real comp0 = defaultCompliance.getValue();
@@ -402,6 +473,9 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
     const unsigned int s = this->mstate->getSize(); // comp.size();
@@ -438,6 +512,9 @@ void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const cor
 {
     SOFA_UNUSED(cparams);
 
+    if(!this->isComponentStateValid())
+        return;
+
     auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
     const Data<VecDeriv>& f_d = *f[this->getMState()].read();
     computeDx(f_d, writeDx.wref());
@@ -447,6 +524,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data<VecDeriv>& dx_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
 
     auto dx         = sofa::helper::getWriteAccessor(dx_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
@@ -479,6 +558,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv >& dx_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     auto dx = sofa::helper::getWriteAccessor(dx_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
 
@@ -504,6 +586,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data<VecDeriv>& dv_d, const Data< VecDeriv > &correction_d)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     auto dx = sofa::helper::getWriteAccessor(dv_d);
     auto correction = sofa::helper::getReadAccessor(correction_d);
 
@@ -529,6 +614,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
@@ -656,6 +744,9 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
 /// in the Vec1Types and Vec3Types case, compliance is a vector of size mstate->getSize()
 /// constraint_force contains the force applied on dof involved with the contact
 /// TODO : compute a constraint_disp that is updated each time a new force is provided !
+
+    if(!this->isComponentStateValid())
+        return;
 
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 

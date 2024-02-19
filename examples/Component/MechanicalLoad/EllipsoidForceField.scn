@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping SubsetMapping] -->
@@ -36,7 +36,7 @@
         <BoxROI name="box1" box="-12 7 12 -10 7 12" />
         <BoxROI name="box2" box="10 7 12 12 7 12" />
         <MergeVectors template="Data<int>" name="mergedFixedIndices" nbInputs="2" input1="@box1.indices" input2="@box2.indices" />
-        <FixedConstraint name="ProjectiveFixedConstraint" indices="@mergedFixedIndices.output" />
+        <FixedProjectiveConstraint name="ProjectiveFixedProjectiveConstraint" indices="@mergedFixedIndices.output" />
         
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="20" damping="0" />

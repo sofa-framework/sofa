@@ -384,22 +384,22 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {
-        Vec4f color;
+        sofa::type::RGBAColor color;
 
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
         if (external)
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                color = Vec4f(1,0,0,1);
+                color = sofa::type::RGBAColor::red();
             else
-                color = Vec4f(0,1,0,1);
+                color = sofa::type::RGBAColor::green();
         }
         else
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                color = Vec4f(1,0.5f,0,1);
+                color = sofa::type::RGBAColor(1,0.5f,0,1);
             else
-                color = Vec4f(0,1,0.5f,1);
+                color = sofa::type::RGBAColor(0,1,0.5f,1);
         }
 
         Vec3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);

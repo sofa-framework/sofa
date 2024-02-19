@@ -1,9 +1,9 @@
 <Node   name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformLagrangianConstraint] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [TransformEngine] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [StringMeshCreator] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLLT] -->
@@ -30,12 +30,12 @@
     <EdgeSetTopologyContainer position="@translate.output_position" edges="@loader.edges" />
     <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
     <EdgeSetGeometryAlgorithms drawEdges="true" />
-    <FixedConstraint indices="0" />
+    <FixedProjectiveConstraint indices="0" />
     <DiagonalMass  name="mass" totalMass="1e-3"/>
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <DistanceMapping  name="distanceMapping" />
-        <UniformConstraint template="Vec1d" iterative="false" />
+        <UniformLagrangianConstraint template="Vec1d" iterative="false" />
     </Node>
 
 </Node>

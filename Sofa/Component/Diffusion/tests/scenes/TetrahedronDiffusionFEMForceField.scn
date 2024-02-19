@@ -1,6 +1,6 @@
 <Node name="root" dt="0.0001" gravity="0 0 0" >
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint LinearMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint LinearMovementProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -36,8 +36,8 @@
             <MechanicalObject template="Vec1d" position="@../../temperatureLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat" />
             <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1.0" tagMechanics="geom" tags="heat" topology="@../Container"/>
             <DiagonalMass template="Vec1d,Vec3d" name="Mass" massDensity="1.0" tags="heat" topology="@../Container" geometryState="@../../gridDOFs" />
-            <LinearMovementConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
-            <FixedConstraint indices="@../../box-fixed.indices" />
+            <LinearMovementProjectiveConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
+            <FixedProjectiveConstraint indices="@../../box-fixed.indices" />
         </Node>
     </Node>
 </Node>

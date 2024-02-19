@@ -45,60 +45,62 @@ class MatrixNegative;
 template<class M1, class R2>
 class MatrixScale;
 
+/// Data structure representing an operation on matrices. Used in the context of
+/// the expression templates pattern.
 template<class T>
 class MatrixExpr : public T
 {
 public:
     typedef T Expr;
 
-    MatrixExpr(const Expr& e) : Expr(e) {}
+    explicit MatrixExpr(const Expr& e) : Expr(e) {}
 
     template<class M2>
     MatrixExpr< MatrixProduct< Expr, typename M2::Expr > > operator*(const M2& m) const
     {
-        return MatrixExpr< MatrixProduct< Expr, typename M2::Expr > >(MatrixProduct< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixProduct< Expr, typename M2::Expr >(*this, m) };
     }
     template<class M2>
     MatrixExpr< MatrixAddition< Expr, typename M2::Expr > > operator+(const M2& m) const
     {
-        return MatrixExpr< MatrixAddition< Expr, typename M2::Expr > >(MatrixAddition< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixAddition< Expr, typename M2::Expr >(*this, m) };
     }
     template<class M2>
     MatrixExpr< MatrixSubstraction< Expr, typename M2::Expr > > operator-(const M2& m) const
     {
-        return MatrixExpr< MatrixSubstraction< Expr, typename M2::Expr > >(MatrixSubstraction< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixSubstraction< Expr, typename M2::Expr >(*this, m) };
     }
     MatrixExpr< MatrixNegative< Expr > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< Expr > >(MatrixNegative< Expr >(*this));
+        return MatrixExpr { MatrixNegative< Expr >(*this) };
     }
     MatrixExpr< MatrixTranspose< Expr > > t() const
     {
-        return MatrixExpr< MatrixTranspose< Expr > >(MatrixTranspose< Expr >(*this));
+        return MatrixExpr { MatrixTranspose< Expr >(*this) };
     }
 
     MatrixExpr< MatrixScale< Expr, double > > operator*(double d) const
     {
-        return MatrixExpr< MatrixScale< Expr, double > >(MatrixScale< Expr, double >(*this, d));
+        return MatrixExpr { MatrixScale< Expr, double >(*this, d) };
     }
     friend MatrixExpr< MatrixScale< Expr, double > > operator*(double d, const MatrixExpr<Expr>& m)
     {
-        return MatrixExpr< MatrixScale< Expr, double > >(MatrixScale< Expr, double >(m, d));
+        return MatrixExpr { MatrixScale< Expr, double >(m, d) };
     }
     template<class M1>
     friend MatrixExpr< MatrixProduct< typename M1::Expr, Expr > > operator*(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixProduct< typename M1::Expr, Expr > >(MatrixProduct< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixProduct< typename M1::Expr, Expr >(m1,m2) };
     }
     template<class M1>
     friend MatrixExpr< MatrixAddition< typename M1::Expr, Expr > > operator+(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixAddition< typename M1::Expr, Expr > >(MatrixAddition< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixAddition< typename M1::Expr, Expr >(m1,m2) };
     }
     template<class M1>
     friend MatrixExpr< MatrixSubstraction< typename M1::Expr, Expr > > operator-(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixSubstraction< typename M1::Expr, Expr > >(MatrixSubstraction< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixSubstraction< typename M1::Expr, Expr >(m1,m2) };
     }
 };
 
@@ -216,7 +218,8 @@ public:
     typedef typename M1::matrix_type matrix_type;
 
     const M1& m1;
-    MatrixNegative(const M1& m1) : m1(m1)
+
+    explicit MatrixNegative(const M1& m1) : m1(m1)
     {}
 
     bool valid() const
@@ -274,7 +277,8 @@ public:
     typedef typename M1::matrix_type matrix_type;
 
     const M1& m1;
-    MatrixTranspose(const M1& m1) : m1(m1)
+
+    explicit MatrixTranspose(const M1& m1) : m1(m1)
     {}
 
     bool valid() const
@@ -556,7 +560,8 @@ public:
     enum { operand = 0 };
 
     const M1& m1;
-    MatrixInverse(const M1& m1) : m1(m1)
+
+    explicit MatrixInverse(const M1& m1) : m1(m1)
     {}
 
     bool valid() const

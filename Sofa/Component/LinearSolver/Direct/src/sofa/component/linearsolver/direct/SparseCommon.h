@@ -37,10 +37,12 @@ xadj[i+1]-xadj[i] is the number of neighbors of the i-th node
 adj[xadj[i]] is the first neighbor of the i-th node
 
 **/
+SOFA_ATTRIBUTE_DEPRECATED__SPARSECOMMON()
 SOFA_COMPONENT_LINEARSOLVER_DIRECT_API
 void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj, type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec );
 
 // compute the fill reducing permutation via METIS
+SOFA_ATTRIBUTE_DEPRECATED__SPARSECOMMON()
 SOFA_COMPONENT_LINEARSOLVER_DIRECT_API
 void fillReducingPermutation(int nbColumns, int *columns, int* rowIndices,
     int * perm,int * invperm);

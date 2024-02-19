@@ -81,7 +81,7 @@ bool ImageCImg::load(std::string filename)
     Image::DataType dataType;
     Image::ChannelFormat channelFormat;
 
-    if (!cimg_library::cimg::strcasecmp(cimgImage.pixel_type(),"unsigned char"))
+    if (!cimg_library::cimg::strcasecmp(cimgImage.pixel_type(),"uint8"))
     {
         dataType = Image::UNORM8;
     }

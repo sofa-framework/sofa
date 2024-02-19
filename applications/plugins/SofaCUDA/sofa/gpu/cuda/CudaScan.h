@@ -74,7 +74,7 @@ void CudaScanCPU(const TData* input, TData* output, unsigned int size, ScanType 
 static inline void CudaScanPrepare(unsigned int size, ScanType type)
 {
     if (!CudaScanGPUAvailable(size, type))
-        std::cerr << "CUDA: GPU scan implementation not available (size="<<size<<")" << std::endl;
+        msg_error("SofaCUDA") << "CUDA: GPU scan implementation not available (size=" << size << ")";
 }
 
 template<class TData>

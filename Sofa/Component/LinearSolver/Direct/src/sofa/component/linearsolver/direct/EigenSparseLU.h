@@ -23,7 +23,6 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/SparseLUTraits.h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -37,7 +36,7 @@ template<class TBlockType>
 class EigenSparseLU
     : public EigenDirectSparseSolver<
         TBlockType,
-        SparseLUTraits<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>::Real>
+        MainLUFactory
     >
 {
 public:
@@ -45,7 +44,7 @@ public:
     using Real = typename Matrix::Real;
     typedef sofa::linearalgebra::FullVector<Real> Vector;
 
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSparseLU, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, SparseLUTraits<Real>));
+    SOFA_CLASS(SOFA_TEMPLATE(EigenSparseLU, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainLUFactory));
 
     bool supportNonSymmetricSystem() const override { return true; }
 };

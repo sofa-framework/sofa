@@ -25,6 +25,7 @@
 #include <sofa/helper/config.h>
 
 #include <sofa/type/vector.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/type/Vec.h>
 #include <string>
@@ -40,10 +41,7 @@ namespace helper
 class SOFA_HELPER_API ColorMap 
 {
 public:
-
-    typedef type::Vec3f Color3;  // Color tripplet
-    typedef type::Vec4f Color;   // ... with alpha value
-    typedef sofa::type::vector<Color> VecColor;
+    typedef sofa::type::vector<type::RGBAColor> VecColor;
     
     ColorMap(unsigned int paletteSize = 256, const std::string& colorScheme = "HSV");
     virtual ~ColorMap();
@@ -59,7 +57,7 @@ public:
         evaluator(const ColorMap* map, Real vmin, Real vmax)
             : map(map), vmin(vmin), vmax(vmax), vscale((vmax == vmin) ? (Real)0 : (map->entries.size()-1)/(vmax-vmin)) {}
 
-        Color operator()(Real r) const
+        auto operator()(Real r) const
         {
             Real e = (r-vmin)*vscale;
             if (e<0) return map->entries.front();
@@ -67,8 +65,8 @@ public:
             unsigned int i = (unsigned int)(e);
             if (i>=map->entries.size()-1) return map->entries.back();
 
-            Color c1 = map->entries[i];
-            const Color c2 = map->entries[i+1];
+            const auto& c1 = map->entries[i];
+            const auto& c2 = map->entries[i+1];
             return c1+(c2-c1)*(e-i);
         }
     protected:
@@ -93,9 +91,9 @@ public:
     void setColorScheme(const std::string& colorScheme) { m_colorScheme = colorScheme; }
 
     unsigned int getNbColors() const { return (unsigned int) entries.size(); }
-    Color getColor(unsigned int i) {
+    type::RGBAColor getColor(unsigned int i) {
         if (i < entries.size()) return entries[i];
-        return Color(0.f, 0.f, 0.f, 0.f);
+        return type::RGBAColor(0.f, 0.f, 0.f, 0.f);
     }
 
     static ColorMap* getDefault();
@@ -110,7 +108,8 @@ public:
         }
     }
 
-    Color3 hsv2rgb(const Color3 &hsv);
+    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    type::Vec3f hsv2rgb(const type::Vec3f& hsv);
 
     inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
     {

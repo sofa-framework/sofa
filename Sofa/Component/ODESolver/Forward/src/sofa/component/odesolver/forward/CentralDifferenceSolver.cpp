@@ -103,9 +103,9 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        mop.solveConstraint(vel2, core::ConstraintParams::ConstOrder::VEL);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        mop.solveConstraint(pos2, core::ConstraintParams::ConstOrder::POS);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 
 #else // single-operation optimization
 

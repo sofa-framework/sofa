@@ -132,7 +132,7 @@ public:
     Data< Real > d_delay; ///< Delay between particles creation
     Data< Real > d_start; ///< Source starting time
     Data< Real > d_stop; ///< Source stopping time
-    Data< bool > d_canHaveEmptyVector;
+    Data< bool > d_addNoise; ///< Will add random value to the radius of new created particles
 
 protected:    
     size_t m_numberParticles; ///< Number particles given by the initial particles size

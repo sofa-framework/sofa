@@ -9,7 +9,7 @@ endif()
 
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 
-sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL)
+sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
@@ -22,15 +22,15 @@ sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgP
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
-sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL)
-sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL)     # Depends on image
-sofa_add_subdirectory(plugin Registration Registration EXTERNAL) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
+sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL GIT_REF master)     # Depends on image
+sofa_add_subdirectory(plugin Registration Registration EXTERNAL GIT_REF master) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL)
+sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader)
-sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL)
-sofa_add_subdirectory(plugin ManifoldTopologies ManifoldTopologies EXTERNAL)
+sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin ManifoldTopologies ManifoldTopologies EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
 sofa_add_subdirectory(plugin SofaOpenCL SofaOpenCL)
 sofa_add_subdirectory(plugin Xitact Xitact)
@@ -45,20 +45,22 @@ sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
 sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
-sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL)
-sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL)
-sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL)
-sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
-sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
-sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL)
-sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL)
+sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL GIT_REF master)
 
 
-sofa_add_subdirectory(plugin PSL PSL EXTERNAL)
+sofa_add_subdirectory(plugin PSL PSL EXTERNAL GIT_REF master)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
+
+sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
 
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
@@ -67,5 +69,3 @@ if(Sofa.GL_FOUND)
 else()
     message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
 endif()
-
-sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)

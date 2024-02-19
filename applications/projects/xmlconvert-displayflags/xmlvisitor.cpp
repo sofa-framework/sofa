@@ -31,10 +31,10 @@ namespace xml
 {
 
 
-bool DiscoverNodes::VisitEnter(const TiXmlElement& element, const TiXmlAttribute* )
+bool DiscoverNodes::VisitEnter(const tinyxml2::XMLElement& element, const tinyxml2::XMLAttribute* )
 {
     if( element.ValueStr() != std::string("Node") ) return true;
-    const TiXmlElement* child;
+    const tinyxml2::XMLElement* child;
     bool is_leafnode = true;
     for( child = element.FirstChildElement() ; child != 0; child = child->NextSiblingElement())
     {
@@ -47,13 +47,13 @@ bool DiscoverNodes::VisitEnter(const TiXmlElement& element, const TiXmlAttribute
     if( is_leafnode)
     {
         //std::cout << element << std::endl;
-        leaves.push_back(const_cast<TiXmlElement*>(&element));
+        leaves.push_back(const_cast<tinyxml2::XMLElement*>(&element));
     }
-    nodes.push_back(const_cast<TiXmlElement*>(&element));
+    nodes.push_back(const_cast<tinyxml2::XMLElement*>(&element));
     return true;
 }
 
-bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const TiXmlAttribute * attribute)
+bool DiscoverDisplayFlagsVisitor::VisitEnter(const tinyxml2::XMLElement & element, const tinyxml2::XMLAttribute * attribute)
 {
 
     // skip elements other than Nodes
@@ -69,7 +69,7 @@ bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const
 
     sofa::core::visual::DisplayFlags* flags = map_displayFlags[&element];
 
-    const TiXmlAttribute* current;
+    const tinyxml2::XMLAttribute* current;
     for( current = attribute; current != NULL; current = current->Next() )
     {
         std::string attribute_name( current->Name() );
@@ -161,7 +161,7 @@ bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const
 
 DiscoverDisplayFlagsVisitor::~DiscoverDisplayFlagsVisitor()
 {
-    std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*>::iterator it_map;
+    std::map<const tinyxml2::XMLElement*,sofa::core::visual::DisplayFlags*>::iterator it_map;
     for(it_map = map_displayFlags.begin(); it_map != map_displayFlags.end(); ++it_map)
     {
         delete it_map->second;
@@ -170,13 +170,13 @@ DiscoverDisplayFlagsVisitor::~DiscoverDisplayFlagsVisitor()
 
 }
 
-void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*>& map_displayFlags)
+void createVisualStyleVisitor(tinyxml2::XMLElement* origin, const std::map<const tinyxml2::XMLElement*,sofa::core::visual::DisplayFlags*>& map_displayFlags)
 {
-    TiXmlNode* parent = origin->Parent();
-    TiXmlElement* parent_element = parent->ToElement();
+    tinyxml2::XMLNode* parent = origin->Parent();
+    tinyxml2::XMLElement* parent_element = parent->ToElement();
     if( ! parent_element )
     {
-        std::map<const TiXmlElement*,DisplayFlags*>::const_iterator it_current;
+        std::map<const tinyxml2::XMLElement*,DisplayFlags*>::const_iterator it_current;
         it_current = map_displayFlags.find(origin);
         if(it_current == map_displayFlags.end() )
         {
@@ -189,11 +189,11 @@ void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlEl
             if( origin->FirstChildElement("VisualStyle") == NULL )
             {
                 //convert_false_to_neutral(current_flags);
-                TiXmlElement* visualstyle = new TiXmlElement("VisualStyle");
+                tinyxml2::XMLElement* visualstyle = new tinyxml2::XMLElement("VisualStyle");
                 std::ostringstream oss;
                 oss << current_flags;
                 visualstyle->SetAttribute("displayFlags",oss.str());
-                TiXmlElement* first_child = origin->FirstChildElement();
+                tinyxml2::XMLElement* first_child = origin->FirstChildElement();
                 if(first_child) origin->InsertBeforeChild(first_child,*visualstyle);
                 else origin->LinkEndChild(visualstyle);
             }
@@ -201,8 +201,8 @@ void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlEl
         return;
     }
 
-    std::map<const TiXmlElement*,DisplayFlags*>::const_iterator it_current;
-    std::map<const TiXmlElement*,DisplayFlags*>::const_iterator it_parent;
+    std::map<const tinyxml2::XMLElement*,DisplayFlags*>::const_iterator it_current;
+    std::map<const tinyxml2::XMLElement*,DisplayFlags*>::const_iterator it_parent;
     it_current = map_displayFlags.find(origin);
     it_parent  = map_displayFlags.find(parent_element);
 
@@ -225,11 +225,11 @@ void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlEl
     {
         if( origin->FirstChildElement("VisualStyle") == NULL )
         {
-            TiXmlElement* visualstyle = new TiXmlElement("VisualStyle");
+            tinyxml2::XMLElement* visualstyle = new tinyxml2::XMLElement("VisualStyle");
             std::ostringstream oss;
             oss << difference;
             visualstyle->SetAttribute("displayFlags",oss.str());
-            TiXmlElement* first_child = origin->FirstChildElement();
+            tinyxml2::XMLElement* first_child = origin->FirstChildElement();
             if(first_child) origin->InsertBeforeChild(first_child,*visualstyle);
             else origin->LinkEndChild(visualstyle);
 
@@ -239,24 +239,24 @@ void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlEl
 }
 
 
-void removeShowAttributes(TiXmlElement* node)
+void removeShowAttributes(tinyxml2::XMLElement* node)
 {
-    node->RemoveAttribute("showAll");
-    node->RemoveAttribute("showVisual");
-    node->RemoveAttribute("showVisualModels");
-    node->RemoveAttribute("showBehavior");
-    node->RemoveAttribute("showForceFields");
-    node->RemoveAttribute("showInteractionForceFields");
-    node->RemoveAttribute("showBehaviorModels");
-    node->RemoveAttribute("showCollision");
-    node->RemoveAttribute("showCollisionModels");
-    node->RemoveAttribute("showBoundingCollisionModels");
-    node->RemoveAttribute("showMapping");
-    node->RemoveAttribute("showMappings");
-    node->RemoveAttribute("showMechanicalMappings");
-    node->RemoveAttribute("showWireFrame");
-    node->RemoveAttribute("showNormals");
-    node->RemoveAttribute("showProcessorColor");
+    node->DeleteAttribute("showAll");
+    node->DeleteAttribute("showVisual");
+    node->DeleteAttribute("showVisualModels");
+    node->DeleteAttribute("showBehavior");
+    node->DeleteAttribute("showForceFields");
+    node->DeleteAttribute("showInteractionForceFields");
+    node->DeleteAttribute("showBehaviorModels");
+    node->DeleteAttribute("showCollision");
+    node->DeleteAttribute("showCollisionModels");
+    node->DeleteAttribute("showBoundingCollisionModels");
+    node->DeleteAttribute("showMapping");
+    node->DeleteAttribute("showMappings");
+    node->DeleteAttribute("showMechanicalMappings");
+    node->DeleteAttribute("showWireFrame");
+    node->DeleteAttribute("showNormals");
+    node->DeleteAttribute("showProcessorColor");
 
 }
 

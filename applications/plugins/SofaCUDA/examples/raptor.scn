@@ -10,7 +10,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping BoxROI CudaVisualModel FixedConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping BoxROI CudaVisualModel FixedProjectiveConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_12580.vtu" onlyAttachedPoints="true" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
@@ -31,7 +31,7 @@
 	<TetrahedronFEMForceField name="FEM" youngModulus="@ind_box1.outputValues" poissonRatio="0.4" listening="true" />
 
 	<BoxROI name="box3" box="-1.9 -0.2  -0.5 -0.7 0.4 0.3    0.7 -0.2  -0.5 1.9 0.4 0.3" drawBoxes="1" drawSize="2" />
-	<FixedConstraint indices="@box3.indices" />	  
+	<FixedProjectiveConstraint indices="@box3.indices" />
 
 	<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
     <ConstantForceField points="@boxF.indices" force="7.5 -6.63 -15" showArrowSize="0.1" />

@@ -144,7 +144,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         {
             mmodel2 = mapper2.createMapping(getName().c_str());
         }
-        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::UnilateralInteractionConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
+        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::UnilateralLagrangianConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
         setInteractionTags(mmodel1, mmodel2);
         m_constraint->setCustomTolerance( tol.getValue() );
