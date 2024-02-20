@@ -31,6 +31,8 @@
 #include <sofa/type/vector.h>
 #include <iostream>
 #include <map>
+#include <sofa/defaulttype/SpatialVector.h>
+
 
 
 namespace sofa::defaulttype
@@ -60,122 +62,7 @@ public:
     typedef type::Vec<6,Real> Vec6;
     typedef Vec6 DOF; ///< For compatibility
 
-
-    /** A spatial vector.
-    When representing a velocity, lineVec is the angular velocity and freeVec is the linear velocity.
-    When representing a spatial force, lineVec is the force and freeVec is the torque. */
-    class SOFA_DEFAULTTYPE_API SpatialVector
-    {
-    public:
-        Vec lineVec{ type::NOINIT };
-        Vec freeVec{ type::NOINIT };
-
-        void clear();
-        SpatialVector() = default;
-        /**
-        \param l The line vector: angular velocity, or force
-        \param f The free vector: linear velocity, or torque
-        */
-        SpatialVector( const Vec& l, const Vec& f );
-
-
-        SpatialVector& operator += (const SpatialVector& v);
-
-        //template<class Real2>
-        SpatialVector operator * ( Real a ) const
-        {
-            return SpatialVector( lineVec *a, freeVec * a);
-        }
-
-        SpatialVector& operator *= ( Real a )
-        {
-            lineVec *=a;
-            freeVec *= a;
-            return *this;
-        }
-
-        SpatialVector operator + ( const SpatialVector& v ) const;
-        SpatialVector operator - ( const SpatialVector& v ) const;
-        SpatialVector operator - ( ) const;
-        /// Spatial dot product (cross terms)
-        Real operator * ( const SpatialVector& v ) const;
-        /// Spatial cross product
-        SpatialVector cross( const SpatialVector& v ) const;
-        /// product with a dense matrix
-        SpatialVector operator * (const Mat66&) const;
-
-        /// write to an output stream
-        inline friend std::ostream& operator << (std::ostream& out, const SpatialVector& t )
-        {
-            out << t.lineVec << " " << t.freeVec;
-            return out;
-        }
-
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, SpatialVector& t )
-        {
-            in >> t.lineVec >> t.freeVec;
-            return in;
-        }
-
-        /// If the SpatialVector models a spatial velocity, then the linear velocity is the freeVec.
-        /// Otherwise, the SpatialVector models a spatial force, and this method returns a torque.
-        Vec& getLinearVelocity()
-        {
-            return freeVec;
-        }
-        const Vec& getLinearVelocity() const
-        {
-            return freeVec;
-        }
-        void setLinearVelocity(const Vec& v)
-        {
-            freeVec = v;
-        }
-        /// If the SpatialVector models a spatial velocity, then the angular velocity is the lineVec.
-        /// Otherwise, the SpatialVector models a spatial force, and this method returns a force.
-        Vec& getAngularVelocity()
-        {
-            return lineVec;
-        }
-        const Vec& getAngularVelocity() const
-        {
-            return lineVec;
-        }
-        void setAngularVelocity(const Vec& v)
-        {
-            lineVec = v;
-        }
-
-        /// If the SpatialVector models a spatial force, then the torque is the freeVec.
-        /// Otherwise, the SpatialVector models a spatial velocity, and this method returns a linear velocity.
-        Vec& getTorque()
-        {
-            return freeVec;
-        }
-        const Vec& getTorque() const
-        {
-            return freeVec;
-        }
-        void setTorque(const Vec& v)
-        {
-            freeVec = v;
-        }
-        /// If the SpatialVector models a spatial force, then the torque is the lineVec.
-        /// Otherwise, the SpatialVector models a spatial velocity, and this method returns an angular velocity.
-        Vec& getForce()
-        {
-            return lineVec;
-        }
-        const Vec& getForce() const
-        {
-            return lineVec;
-        }
-        void setForce(const Vec& v)
-        {
-            lineVec = v;
-        }
-    };
+    using SpatialVector = SpatialVector<R>;
 
     /**
      * \brief A twist aka a SpatialVector representing a velocity
