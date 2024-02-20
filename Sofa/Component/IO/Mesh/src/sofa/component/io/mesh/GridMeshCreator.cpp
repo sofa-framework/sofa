@@ -145,8 +145,8 @@ bool GridMeshCreator::doLoad()
         }
 
     auto my_edges = getWriteOnlyAccessor(d_edges);
-    for( std::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
-        my_edges.push_back( *it );
+    for (const auto& uniqueEdge : uniqueEdges)
+        my_edges.push_back( uniqueEdge );
 
     return true;
 }

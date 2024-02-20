@@ -339,9 +339,8 @@ void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_m
     dmsg_error_when(sizeCoarseSystem==0) <<"no constraint" ;
 
     _Wcoarse.resize(sizeCoarseSystem,sizeCoarseSystem);
-    for (unsigned int i=0; i<l_constraintCorrections.size(); i++)
+    for (const auto& cc : l_constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
         cc->getComplianceWithConstraintMerge(&_Wcoarse, constraint_merge);
     }
 }
@@ -752,9 +751,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     }
 
 
-    for (unsigned int i=0; i<l_constraintCorrections.size(); i++)
+    for (const auto& cc : l_constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
     }
 
@@ -1009,9 +1007,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
     }
 
 
-    for (unsigned int i=0; i<l_constraintCorrections.size(); i++)
+    for (const auto& cc : l_constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
     }
 
