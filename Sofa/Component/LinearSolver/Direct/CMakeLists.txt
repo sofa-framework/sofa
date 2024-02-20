@@ -70,6 +70,9 @@ if(NOT Metis_FOUND)
     FetchContent_MakeAvailable(Metis)
 endif()
 
+#message("${metis_SOURCE_DIR}")
+#message("")
+
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
 
 # make sure you have threads for AsyncSparseLDLSolver
@@ -83,7 +86,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FIL
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
 target_link_libraries(${PROJECT_NAME} PRIVATE metis)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
