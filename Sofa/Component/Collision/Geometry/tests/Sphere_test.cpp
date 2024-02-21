@@ -64,7 +64,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/collision/testing/SpherePrimitiveCreator.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa {
 
