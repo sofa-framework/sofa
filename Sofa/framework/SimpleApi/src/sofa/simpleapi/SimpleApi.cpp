@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simpleapi/SimpleApi.h>
+
 #include <sofa/simulation/Node.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -29,8 +31,6 @@ using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
-
-#include <sofa/simulation/graph/SimpleApi.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/simulation/XMLPrintVisitor.h>

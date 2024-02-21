@@ -54,7 +54,7 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 //TODO(dmarchal): handle properly the memory cycle of the simulation objects.
 // now it is soo ugly...

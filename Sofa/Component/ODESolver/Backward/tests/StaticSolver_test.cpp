@@ -23,7 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <vector>
 #include <algorithm>
