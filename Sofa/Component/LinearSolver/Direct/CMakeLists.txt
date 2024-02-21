@@ -60,14 +60,16 @@ set(SOURCE_FILES
 )
 
 find_package(metis 5.1.0 EXACT QUIET)
-if(NOT metis_FOUND)
-    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND, fetching metis...")
+if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
     include(FetchContent)
     FetchContent_Declare(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
             GIT_TAG v5.1.0-ModernInstall
     )
     FetchContent_MakeAvailable(metis)
+elseif (NOT metis_FOUND)
+    message(FATAL_ERROR "Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
