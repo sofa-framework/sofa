@@ -54,7 +54,7 @@ using sofa::component::statecontainer::MechanicalObject ;
 using sofa::component::mechanicalload::ConstantForceField ;
 using sofa::core::execparams::defaultInstance; 
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple
