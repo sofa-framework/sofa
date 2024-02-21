@@ -45,7 +45,7 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace cliplane_test
 {

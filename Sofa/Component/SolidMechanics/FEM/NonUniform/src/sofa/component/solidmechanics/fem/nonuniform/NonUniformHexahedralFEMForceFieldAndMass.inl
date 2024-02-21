@@ -959,9 +959,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
             {
                 Deriv x_2 = Ret * dx[hexahedra[i][k]];
 
-                const int indice = k*3;
+                const int index = k*3;
                 for(int j=0 ; j<3 ; ++j )
-                    rdx[indice+j] = x_2[j];
+                    rdx[index+j] = x_2[j];
             }
 
             rdf = this->_elementMasses.getValue()[i] * rdx * mFactor - hexahedronInf[i].stiffness * rdx * kFactor;

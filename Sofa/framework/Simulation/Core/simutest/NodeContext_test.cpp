@@ -32,7 +32,7 @@ using sofa::component::sceneutility::InfoComponent;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 class NodeContext_test: public BaseSimulationTest
 {

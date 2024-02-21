@@ -53,7 +53,7 @@ using sofa::core::objectmodel::BaseContext;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 class SceneCreator_test : public BaseSimulationTest
 {

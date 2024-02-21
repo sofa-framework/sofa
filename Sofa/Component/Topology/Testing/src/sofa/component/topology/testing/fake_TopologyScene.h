@@ -23,7 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
 class fake_TopologyScene

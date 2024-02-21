@@ -32,7 +32,7 @@
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
