@@ -17,11 +17,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
     ${SRC_ROOT}/SolidTypes.inl
-    ${SRC_ROOT}/SpatialVector.h
-    ${SRC_ROOT}/SpatialVector.inl
     ${SRC_ROOT}/TemplatesAliases.h
-    ${SRC_ROOT}/Transform.h
-    ${SRC_ROOT}/Transform.inl
     ${SRC_ROOT}/TypeInfoID.h
     ${SRC_ROOT}/TypeInfoRegistry.h
     ${SRC_ROOT}/TypeInfoRegistryTools.h
@@ -63,9 +59,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/MatrixExporter.cpp
     ${SRC_ROOT}/SolidTypes.cpp
-    ${SRC_ROOT}/SpatialVector.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
-    ${SRC_ROOT}/Transform.cpp
     ${SRC_ROOT}/TypeInfoID.cpp
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp

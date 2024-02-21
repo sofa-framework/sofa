@@ -22,9 +22,9 @@
 #pragma once
 
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/config.h>
+#include <sofa/type/config.h>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
 
 /**
@@ -33,7 +33,7 @@ namespace sofa::defaulttype
  * When representing a spatial force, lineVec is the force and freeVec is the torque.
  * */
 template<class TReal>
-class SOFA_DEFAULTTYPE_API SpatialVector
+class SpatialVector
 {
 public:
     using Real = TReal;
@@ -150,9 +150,9 @@ public:
     }
 };
 
-#if !defined(SOFA_DEFAULTTYPE_SPATIALVECTOR_CPP)
-extern template class SOFA_DEFAULTTYPE_API SpatialVector<double>;
-extern template class SOFA_DEFAULTTYPE_API SpatialVector<float>;
+#if !defined(SOFA_TYPE_SPATIALVECTOR_CPP)
+extern template class SOFA_TYPE_API SpatialVector<double>;
+extern template class SOFA_TYPE_API SpatialVector<float>;
 #endif
 
 }

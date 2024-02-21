@@ -31,7 +31,7 @@
 #include <sofa/type/vector.h>
 #include <iostream>
 #include <map>
-#include <sofa/defaulttype/Transform.h>
+#include <sofa/type/Transform.h>
 
 
 
@@ -58,8 +58,8 @@ public:
     typedef type::Vec<6,Real> Vec6;
     typedef Vec6 DOF; ///< For compatibility
 
-    using SpatialVector = SpatialVector<R>;
-    using Transform = Transform<R>;
+    using SpatialVector = sofa::type::SpatialVector<R>;
+    using Transform = sofa::type::Transform<R>;
 
     /**
      * \brief A twist aka a SpatialVector representing a velocity

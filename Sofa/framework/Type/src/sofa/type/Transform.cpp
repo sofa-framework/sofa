@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_SPATIALVECTOR_CPP
-#include <sofa/defaulttype/SpatialVector.inl>
+#define SOFA_TYPE_TRANSFORM_CPP
+#include <sofa/type/Transform.inl>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
-template class SOFA_DEFAULTTYPE_API SpatialVector<double>;
-template class SOFA_DEFAULTTYPE_API SpatialVector<float>;
+template class SOFA_TYPE_API Transform<double>;
+template class SOFA_TYPE_API Transform<float>;
 }

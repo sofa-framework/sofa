@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/defaulttype/SpatialVector.h>
+#include <sofa/type/SpatialVector.h>
 #include <sofa/type/Quat.h>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
 
 /**
@@ -38,7 +38,7 @@ namespace sofa::defaulttype
  * to model the Transform the standard way (i.e. translation givne in the parent frame).
  **/
 template<class TReal>
-class SOFA_DEFAULTTYPE_API Transform
+class Transform
 {
 public:
     using Real = TReal;
@@ -172,9 +172,9 @@ protected:
 
 };
 
-#if !defined(SOFA_DEFAULTTYPE_TRANSFORM_CPP)
-extern template class SOFA_DEFAULTTYPE_API Transform<double>;
-extern template class SOFA_DEFAULTTYPE_API Transform<float>;
+#if !defined(SOFA_TYPE_TRANSFORM_CPP)
+extern template class SOFA_TYPE_API Transform<double>;
+extern template class SOFA_TYPE_API Transform<float>;
 #endif
 
 }

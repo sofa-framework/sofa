@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/SpatialVector.h>
+#include <sofa/type/SpatialVector.h>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
 
 template<class TReal>

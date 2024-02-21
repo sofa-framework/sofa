@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/defaulttype/Transform.h>
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/Transform.h>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
 
 template<class TReal>
@@ -265,7 +264,6 @@ Transform<TReal>& Transform<TReal>::operator += (const SpatialVector<TReal>& v)
 template<class TReal>
 Transform<TReal>& Transform<TReal>::operator +=(const Transform& a)
 {
-    dmsg_warning("SolidTypes::operator+") << "+";
     origin_ += a.getOriginOfParentInChild();
 
     // previously commented out:
