@@ -418,9 +418,9 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
                     vNormals[pi] += my_normals[ni];
             }
         }
-        for (size_t i=0; i<vNormals.size(); ++i)
+        for (auto& vNormal : vNormals)
         {
-            vNormals[i].normalize();
+            vNormal.normalize();
         }
     }
     else
@@ -554,9 +554,9 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
                     addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
             }
         }
-        for (size_t i=0; i<vnormals.size(); ++i)
+        for (auto& vnormal : vnormals)
         {
-            vnormals[i].normalize();
+            vnormal.normalize();
         }
     }
 
@@ -575,7 +575,7 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
                     out.push_back(f);
             }
         }
-        for (int ft = 0; ft < NBFACETYPE; ++ft)
+        for (const auto& materialFace : materialFaces)
         {
             std::string fname;
             switch (faceType)
@@ -585,10 +585,8 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
             case MeshOBJLoader::QUAD:     fname = "quad"; break;
             default: break;
             }
-            for (std::map< std::string, type::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+            for (const auto& [materialName, faces] : materialFace)
             {
-                std::string materialName = it->first;
-                const type::vector<unsigned>& faces = it->second;
                 if (faces.empty()) continue;
                 std::ostringstream oname;
                 oname << "material_" << materialName << "_" << fname << "Indices";

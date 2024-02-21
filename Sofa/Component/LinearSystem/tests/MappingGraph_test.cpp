@@ -23,7 +23,7 @@
 #include <sofa/component/linearsystem/MappingGraph.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/graph/DAGNode.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mapping/linear/SubsetMapping.h>
 #include <sofa/simulation/graph/DAGSimulation.h>

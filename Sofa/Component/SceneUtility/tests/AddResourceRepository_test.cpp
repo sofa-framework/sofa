@@ -31,7 +31,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/sceneutility/AddResourceRepository.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa
 {

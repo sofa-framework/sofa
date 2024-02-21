@@ -92,10 +92,10 @@ void MeshTetraStuffing::doUpdate()
     {
         // triangulate quads
         inT.reserve(inQ.size()*2);
-        for (unsigned int i=0; i < inQ.size(); ++i)
+        for (const auto& quad : inQ)
         {
-            inT.push_back(Triangle(inQ[i][0], inQ[i][1], inQ[i][2]));
-            inT.push_back(Triangle(inQ[i][0], inQ[i][2], inQ[i][3]));
+            inT.push_back(Triangle(quad[0], quad[1], quad[2]));
+            inT.push_back(Triangle(quad[0], quad[2], quad[3]));
         }
     }
     SeqPoints inTN;
@@ -335,15 +335,14 @@ void MeshTetraStuffing::doUpdate()
         do
         {
             nwraps = 0;
-            for (std::set<int>::const_iterator it = violatedOutsidePoints.begin(), itend = violatedOutsidePoints.end(); it != itend; ++it)
+            for (const int violatedOutsidePoint : violatedOutsidePoints)
             {
-                int p = *it;
-                if (pInside[p] == 0) continue; // point already wrapped
+                if (pInside[violatedOutsidePoint] == 0) continue; // point already wrapped
                 Real minDist = 0;
                 int minEdge = -1;
                 for (int e=0; e<EDGESHELL; ++e)
                 {
-                    int p2 = getEdgePoint2(p,e);
+                    int p2 = getEdgePoint2(violatedOutsidePoint,e);
                     if (p2 == -1) continue;
                     bool in2 = (pInside[p2] > 0);
                     if (in2 || pViolated[p2]) continue; // only move towards unviolated points
@@ -352,8 +351,8 @@ void MeshTetraStuffing::doUpdate()
                         alpha = alphaLong;
                     else
                         alpha = alphaShort;
-                    if (eBDist[p][e] == 0.0 || eBDist[p][e] >= alpha) continue; // this edge is not violated
-                    Real dist = eBDist[p][e] * eBDist[p][e] * getEdgeSize2(e);
+                    if (eBDist[violatedOutsidePoint][e] == 0.0 || eBDist[violatedOutsidePoint][e] >= alpha) continue; // this edge is not violated
+                    Real dist = eBDist[violatedOutsidePoint][e] * eBDist[violatedOutsidePoint][e] * getEdgeSize2(e);
                     if (minEdge == -1 || dist < minDist)
                     {
                         minEdge = e;
@@ -362,18 +361,18 @@ void MeshTetraStuffing::doUpdate()
                 }
                 if (minEdge == -1) continue; // no violated edge toward an unviolated point
                 int e = minEdge;
-                int p2 = getEdgePoint2(p,e);
+                int p2 = getEdgePoint2(violatedOutsidePoint,e);
                 // Wrap p toward p2
-                msg_info() << "Wrapping outside point " << p << " toward " << p2 << " by " << eBDist[p][e];
-                outP[p] += (outP[p2]-outP[p]) * (eBDist[p][e]);
-                snaps.push_back(outP[p]);
+                msg_info() << "Wrapping outside point " << violatedOutsidePoint << " toward " << p2 << " by " << eBDist[violatedOutsidePoint][e];
+                outP[violatedOutsidePoint] += (outP[p2]-outP[violatedOutsidePoint]) * (eBDist[violatedOutsidePoint][e]);
+                snaps.push_back(outP[violatedOutsidePoint]);
                 ++nwraps;
-                pInside[p] = 0; // p is now on the surface
-                pViolated[p] = false; // and now longer violated
+                pInside[violatedOutsidePoint] = 0; // p is now on the surface
+                pViolated[violatedOutsidePoint] = false; // and now longer violated
                 for (int e=0; e<EDGESHELL; ++e)
                 {
-                    eBDist[p][e] = 0; // remove all cut points from p
-                    int p2 = getEdgePoint2(p,e);
+                    eBDist[violatedOutsidePoint][e] = 0; // remove all cut points from p
+                    int p2 = getEdgePoint2(violatedOutsidePoint,e);
                     if (p2 == -1) continue;
                     eBDist[p2][e^1] = 0; // remove all cut points toward p
                     if (pViolated[p2] && pInside[p2] > 0)
@@ -405,19 +404,18 @@ void MeshTetraStuffing::doUpdate()
         }
         while (nwraps > 0);
         // then order remaining violated inside points
-        for (std::set<int>::const_iterator it = violatedInsidePoints.begin(), itend = violatedInsidePoints.end(); it != itend; ++it)
+        for (const int violatedOutsidePoint : violatedInsidePoints)
         {
-            int p = *it;
-            if (pInside[p] == 0)
+            if (pInside[violatedOutsidePoint] == 0)
             {
-                msg_error() << "Inside point " << p << " already wrapped.";
+                msg_error() << "Inside point " << violatedOutsidePoint << " already wrapped.";
                 continue;
             }
             Real minDist = 0;
             int minEdge = -1;
             for (int e=0; e<EDGESHELL; ++e)
             {
-                int p2 = getEdgePoint2(p,e);
+                int p2 = getEdgePoint2(violatedOutsidePoint,e);
                 if (p2 == -1) continue;
                 if (pInside[p2] >= 0) continue; // only move towards outside points
                 Real alpha;
@@ -425,8 +423,8 @@ void MeshTetraStuffing::doUpdate()
                     alpha = alphaLong;
                 else
                     alpha = alphaShort;
-                if (eBDist[p][e] == 0.0 || eBDist[p][e] >= alpha) continue; // this edges is not violated
-                Real dist = eBDist[p][e] * eBDist[p][e] * getEdgeSize2(e);
+                if (eBDist[violatedOutsidePoint][e] == 0.0 || eBDist[violatedOutsidePoint][e] >= alpha) continue; // this edges is not violated
+                Real dist = eBDist[violatedOutsidePoint][e] * eBDist[violatedOutsidePoint][e] * getEdgeSize2(e);
                 if (minEdge == -1 || dist < minDist)
                 {
                     minEdge = e;
@@ -435,21 +433,21 @@ void MeshTetraStuffing::doUpdate()
             }
             if (minEdge == -1) // no violated edge
             {
-                msg_error() << "Inside point " << p << " has no violated edges.";
+                msg_error() << "Inside point " << violatedOutsidePoint << " has no violated edges.";
                 continue;
             }
             int e = minEdge;
-            int p2 = getEdgePoint2(p,e);
+            int p2 = getEdgePoint2(violatedOutsidePoint,e);
             // Wrap p toward p2
-            msg_info() << "Wrapping inside point " << p << " toward " << p2 << " by " << eBDist[p][e];
-            outP[p] += (outP[p2]-outP[p]) * (eBDist[p][e]);
-            snaps.push_back(outP[p]);
-            pInside[p] = 0; // p is now on the surface
-            pViolated[p] = false; // and now longer violated
+            msg_info() << "Wrapping inside point " << violatedOutsidePoint << " toward " << p2 << " by " << eBDist[violatedOutsidePoint][e];
+            outP[violatedOutsidePoint] += (outP[p2]-outP[violatedOutsidePoint]) * (eBDist[violatedOutsidePoint][e]);
+            snaps.push_back(outP[violatedOutsidePoint]);
+            pInside[violatedOutsidePoint] = 0; // p is now on the surface
+            pViolated[violatedOutsidePoint] = false; // and now longer violated
             for (int e=0; e<EDGESHELL; ++e)
             {
-                eBDist[p][e] = 0; // remove all cut points from p
-                int p2 = getEdgePoint2(p,e);
+                eBDist[violatedOutsidePoint][e] = 0; // remove all cut points from p
+                int p2 = getEdgePoint2(violatedOutsidePoint,e);
                 if (p2 == -1) continue;
                 eBDist[p2][e^1] = 0; // remove all cut points toward p
             }
@@ -525,9 +523,9 @@ void MeshTetraStuffing::doUpdate()
     // compress output points to remove unused ones
     vector<int> newPid;
     newPid.resize(outP.size());
-    for (unsigned int t=0; t<outT.size(); ++t)
+    for (const auto& t : outT)
         for (int i=0; i<4; ++i)
-            newPid[outT[t][i]] = 1;
+            newPid[t[i]] = 1;
     nbp = 0;
     for (unsigned int p=0; p<newPid.size(); ++p)
     {
@@ -549,9 +547,9 @@ void MeshTetraStuffing::doUpdate()
     pInside.resize(nbp);
     eBDist.clear();
 
-    for (unsigned int t=0; t<outT.size(); ++t)
+    for (auto& t : outT)
         for (int i=0; i<4; ++i)
-            outT[t][i] = newPid[outT[t][i]];
+            t[i] = newPid[t[i]];
 
     std::set<Triangle> triSet;
 

@@ -29,7 +29,7 @@ using namespace sofa::defaulttype ;
 
 using sofa::component::mass::UniformMass ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;

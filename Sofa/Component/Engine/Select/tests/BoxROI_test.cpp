@@ -59,7 +59,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 template <typename TDataType>
 struct BoxROITest :  public sofa::testing::BaseTest
