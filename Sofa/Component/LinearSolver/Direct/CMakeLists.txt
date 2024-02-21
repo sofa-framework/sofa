@@ -70,9 +70,6 @@ if(NOT metis_FOUND)
     FetchContent_MakeAvailable(metis)
 endif()
 
-#message("${metis_SOURCE_DIR}")
-#message("")
-
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
 
 # make sure you have threads for AsyncSparseLDLSolver
