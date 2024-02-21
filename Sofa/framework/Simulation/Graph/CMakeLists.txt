@@ -9,7 +9,6 @@ set(HEADER_FILES
     ${SOFASIMULATIONGRAPH_SRC}/initSofaSimulationGraph.h
     ${SOFASIMULATIONGRAPH_SRC}/DAGNode.h
     ${SOFASIMULATIONGRAPH_SRC}/DAGSimulation.h
-    ${SOFASIMULATIONGRAPH_SRC}/SimpleApi.h
 )
 
 set(SOURCE_FILES
@@ -17,7 +16,6 @@ set(SOURCE_FILES
     ${SOFASIMULATIONGRAPH_SRC}/initSofaSimulationGraph.cpp
     ${SOFASIMULATIONGRAPH_SRC}/DAGNode.cpp
     ${SOFASIMULATIONGRAPH_SRC}/DAGSimulation.cpp
-    ${SOFASIMULATIONGRAPH_SRC}/SimpleApi.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Common REQUIRED)

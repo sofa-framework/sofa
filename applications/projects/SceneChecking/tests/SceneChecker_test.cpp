@@ -58,7 +58,7 @@ using sofa::core::objectmodel::Base;
 using sofa::core::ObjectFactory;
 using sofa::core::ExecParams;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 class ComponentDeprecated : public BaseObject
 {

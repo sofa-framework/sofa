@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 using namespace sofa ;
 using namespace sofa::simpleapi ;
 
@@ -37,6 +37,8 @@ bool SimpleApi_test::testParamAPI()
 {
     const Simulation::SPtr simu = createSimulation("DAG") ;
     const Node::SPtr root = createRootNode(simu, "root") ;
+
+    simpleapi::importPlugin("Sofa.Component.StateContainer");
 
     const auto meca1 = createObject(root, "MechanicalObject", {
                                         {"name", "aMechanicalObject1"},
@@ -59,6 +61,8 @@ bool SimpleApi_test::testParamString()
 {
     const Simulation::SPtr simu = createSimulation("DAG") ;
     const Node::SPtr root = createRootNode(simu, "root") ;
+
+    simpleapi::importPlugin("Sofa.Component.StateContainer");
 
     const auto meca1 = createObject(root, "MechanicalObject", {
                                         {"name", "aMechanicalObject1"},

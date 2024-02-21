@@ -25,7 +25,7 @@
 #include <sofa/component/mapping/testing/MappingTestCreation.h>
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa {
 namespace {

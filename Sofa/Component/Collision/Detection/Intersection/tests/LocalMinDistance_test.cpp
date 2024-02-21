@@ -43,7 +43,7 @@ using sofa::component::collision::detection::intersection::LocalMinDistance ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <gtest/gtest-spi.h> // for expected non fatal
 
