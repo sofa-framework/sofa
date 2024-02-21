@@ -61,7 +61,7 @@ set(SOURCE_FILES
 
 find_package(metis 5.1.0 EXACT QUIET)
 if(NOT metis_FOUND)
-    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND, fetching Metis...")
+    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND, fetching metis...")
     include(FetchContent)
     FetchContent_Declare(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
