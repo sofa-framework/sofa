@@ -59,15 +59,15 @@ set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/TypedMatrixLinearSystem[BTDMatrix].cpp
 )
 
-find_package(Metis 5.1.0 EXACT QUIET)
-if(NOT Metis_FOUND)
-    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY Metis NOT FOUND, fetching Metis...")
+find_package(metis 5.1.0 EXACT QUIET)
+if(NOT metis_FOUND)
+    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND, fetching Metis...")
     include(FetchContent)
-    FetchContent_Declare(Metis
+    FetchContent_Declare(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
             GIT_TAG v5.1.0-ModernInstall
     )
-    FetchContent_MakeAvailable(Metis)
+    FetchContent_MakeAvailable(metis)
 endif()
 
 #message("${metis_SOURCE_DIR}")

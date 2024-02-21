@@ -8,11 +8,24 @@ sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 sofa_find_package(Sofa.GUI.Qt QUIET)
 
+find_package(metis 5.1.0 EXACT QUIET)
+if(NOT metis_FOUND)
+    message("SofaMatrix: DEPENDENCY Metis NOT FOUND, fetching Metis...")
+    include(FetchContent)
+    FetchContent_Declare(metis
+            GIT_REPOSITORY https://github.com/sofa-framework/METIS
+            GIT_TAG v5.1.0-ModernInstall
+    )
+    FetchContent_MakeAvailable(metis)
+endif()
+
+
 set(SOFA_MODULES
     Sofa.Component.Constraint.Lagrangian.Solver
     Sofa.Component.LinearSolver.Direct
     Sofa.Core
     Eigen3::Eigen
+    Sofa.GUI.Qt
 )
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
@@ -77,7 +90,8 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${MOC_HEADER_FILES} ${MOC_FILES})
 
 # Link the plugin library to its dependency(ies).
-target_link_libraries(${PROJECT_NAME} ${SOFA_MODULES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFA_MODULES})
+target_link_libraries(${PROJECT_NAME} PRIVATE metis)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
