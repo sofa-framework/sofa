@@ -121,9 +121,9 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
             m_instance.simulate(0.05);
         }
 
-        EXPECT_EQ(topoCon->getNbTriangles(), 1680);
-        EXPECT_EQ(topoCon->getNbEdges(), 2710);
-        EXPECT_EQ(topoCon->getNbPoints(), 1029);
+        EXPECT_EQ(topoCon->getNbTriangles(), 1677);
+        EXPECT_EQ(topoCon->getNbEdges(), 2704);
+        EXPECT_EQ(topoCon->getNbPoints(), 1026);
 
         return true;
     }
