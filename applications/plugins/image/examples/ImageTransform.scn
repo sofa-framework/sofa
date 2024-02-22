@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- example of how to give translation parameter to an image and update it every time step-->
 <Node 	name="root" gravity="0 -10 0" dt="0.01"  >
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
