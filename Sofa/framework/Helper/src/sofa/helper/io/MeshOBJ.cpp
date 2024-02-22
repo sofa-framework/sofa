@@ -27,13 +27,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <istream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -442,9 +437,9 @@ void MeshOBJ::readMTL(const char* filename)
     }
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/CactusStackStorage.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 void CactusStackStorage::push(void* data)
@@ -53,7 +51,7 @@ bool CactusStackStorage::empty() const
     return stack.empty() && (up == nullptr || up->empty());
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

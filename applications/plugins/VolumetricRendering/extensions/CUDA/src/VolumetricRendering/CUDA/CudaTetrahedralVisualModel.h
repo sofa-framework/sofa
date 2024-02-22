@@ -25,11 +25,8 @@
 #include <VolumetricRendering/OglTetrahedralModel.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -104,5 +101,5 @@ protected:
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/
 }
-}
-}
+
+

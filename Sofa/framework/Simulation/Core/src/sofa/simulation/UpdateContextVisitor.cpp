@@ -24,10 +24,8 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Result UpdateContextVisitor::processNodeTopDown(simulation::Node* node)
@@ -65,7 +63,7 @@ Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node*
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

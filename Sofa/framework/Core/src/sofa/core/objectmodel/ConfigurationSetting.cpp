@@ -23,13 +23,8 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 ConfigurationSetting::ConfigurationSetting()
@@ -70,8 +65,8 @@ bool ConfigurationSetting::removeInNode( objectmodel::BaseNode* node )
 }
 
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+

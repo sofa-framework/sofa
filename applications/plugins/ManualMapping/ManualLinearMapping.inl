@@ -28,13 +28,7 @@
 #include <sofa/core/Mapping.inl>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -108,10 +102,7 @@ const typename ManualLinearMapping<TIn, TOut>::js_type* ManualLinearMapping<TIn,
 }
 
 
-} // namespace mapping
+} // namespace sofa::component::mapping
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

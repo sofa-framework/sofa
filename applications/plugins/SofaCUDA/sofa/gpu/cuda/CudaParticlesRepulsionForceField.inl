@@ -29,10 +29,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -49,14 +47,10 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace component::forcefield
 {
 
 using namespace gpu::cuda;
@@ -166,9 +160,8 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const co
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
-} // namespace forcefield
+} // namespace component::forcefield
 
-} // namespace component
 
 } // namespace sofa
 

@@ -35,13 +35,7 @@
 #include <list>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -570,10 +564,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->drawLines(points3, 1, sofa::type::RGBAColor(0.,1.,0.,1.));
 }
 
-} // namespace mapping
+} // namespace sofa::component::mapping
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

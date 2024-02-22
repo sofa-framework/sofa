@@ -25,13 +25,8 @@
 #include <SofaSphFluid/config.h>
 #include <SofaSphFluid/ParticleSink.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 
@@ -245,11 +240,8 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::type::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
 }
 
-} // namespace misc
+} // namespace sofa::component::misc
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_PARTICLESINK_INL
 

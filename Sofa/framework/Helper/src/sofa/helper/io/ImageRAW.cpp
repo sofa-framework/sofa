@@ -25,13 +25,8 @@
 #include <iostream>
 #include <cstdio>		// fopen and friends
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 ImageRAW::ImageRAW ()
@@ -120,9 +115,9 @@ bool ImageRAW::save(std::string filename, int)
     return isWriteOk;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

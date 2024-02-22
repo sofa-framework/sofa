@@ -26,11 +26,8 @@
 
 #include <sofa/gl/GLSLShader.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 using namespace sofa::defaulttype;
@@ -163,7 +160,6 @@ bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::add
 }
 
 }
-}
-}
+
 
 #endif //OGLTETRAHEDRALMODEL_H_

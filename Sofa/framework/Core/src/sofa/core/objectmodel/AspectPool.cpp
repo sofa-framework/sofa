@@ -24,13 +24,8 @@
 #include <sofa/helper/system/thread/CircularQueue.inl>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -225,8 +220,8 @@ bool AspectBuffer::pop(AspectRef& id)
     return true;
 }
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+

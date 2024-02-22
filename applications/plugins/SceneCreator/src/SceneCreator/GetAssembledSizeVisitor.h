@@ -39,10 +39,9 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/linearalgebra/BaseVector.h>
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 /** Compute the size of the assembled position vector and velocity vector.
@@ -69,7 +68,7 @@ protected:
     bool independentOnly;
 };
 
-} // namespace simulation
-} // namespace sofa
+} // namespace sofa::simulation
+
 
 #endif
