@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <SofaSphFluid/config.h>
 
-namespace sofa
-{
 
-namespace component
+namespace sofa::component
 {
 
 extern "C" {
@@ -72,6 +70,6 @@ const char* getModuleComponentList()
 }
 
 
-} // namespace component
+} // namespace sofa::component
 
-} // namespace sofa
+

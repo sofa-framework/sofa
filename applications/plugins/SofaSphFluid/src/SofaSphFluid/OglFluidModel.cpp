@@ -2,11 +2,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 SOFA_DECL_CLASS(OglFluidModel)
@@ -17,5 +14,5 @@ int OglFluidModelClass = sofa::core::RegisterObject("Particle model for OpenGL d
 template class SOFA_SPH_FLUID_API OglFluidModel<sofa::defaulttype::Vec3Types>;
 
 }
-}
-}
+
+

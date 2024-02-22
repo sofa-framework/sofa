@@ -26,10 +26,8 @@
 
 SOFA_HEADER_DEPRECATED_LOCALSTORAGE()
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -49,8 +47,7 @@ public:
     virtual bool empty() const = 0;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

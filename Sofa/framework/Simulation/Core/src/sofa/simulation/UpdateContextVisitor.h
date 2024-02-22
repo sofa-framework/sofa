@@ -27,13 +27,12 @@
 namespace sofa
 {
 
-namespace core
+
+namespace core::visual
 {
-namespace visual
-{
-class VisualParams; 
-} // namespace visual
-} // namespace core
+class VisualParams;
+} // namespace core::visual
+
 
 namespace simulation
 {

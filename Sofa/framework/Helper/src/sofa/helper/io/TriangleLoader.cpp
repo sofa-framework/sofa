@@ -35,13 +35,8 @@
 /// This register the TriangleLoader object to the logging system so that we can use msg_*(this)
 MSG_REGISTER_CLASS(sofa::helper::io::TriangleLoader, "TriangleLoader")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -249,9 +244,9 @@ void TriangleLoader::loadTriangles(FILE *file)
     }
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

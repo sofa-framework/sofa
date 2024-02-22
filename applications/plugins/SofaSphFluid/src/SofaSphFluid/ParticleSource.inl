@@ -28,13 +28,8 @@
 #include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 template<class DataTypes>
@@ -363,11 +358,8 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->drawPoints(pointsInit, 10, sofa::type::RGBAColor(1., 0.5, 0.5, 1.));
 }
 
-} // namespace misc
+} // namespace sofa::component::misc
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_PARTICLESOURCE_INL
 

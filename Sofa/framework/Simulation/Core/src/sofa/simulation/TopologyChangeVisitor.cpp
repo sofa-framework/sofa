@@ -25,10 +25,8 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/topology/Topology.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -108,7 +106,7 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

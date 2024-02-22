@@ -67,13 +67,8 @@ Year = {2009}                                                                   
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 #include "vector_types.h"
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -158,10 +153,7 @@ protected:
 
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif

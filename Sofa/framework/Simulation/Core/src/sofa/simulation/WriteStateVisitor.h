@@ -24,10 +24,8 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API WriteStateVisitor: public Visitor
@@ -43,7 +41,7 @@ protected:
     std::ostream& m_out;
 };
 
-} // namespace simulation
-} // namespace sofa
+} // namespace sofa::simulation
+
 
 #endif

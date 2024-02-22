@@ -30,13 +30,8 @@
 #include <sofa/type/PrimitiveGroup.h>
 #include <sofa/topology/Topology.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
     using namespace sofa::topology;
 
@@ -166,10 +161,7 @@ protected:
 
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

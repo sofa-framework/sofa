@@ -25,13 +25,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::component::collision::geometry;
@@ -246,9 +241,9 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     root->addCube(Cube(cubeModel,0), Cube(cubeModel,cubeModel->getSize()));
 }
 
-} // namespace collision
+} // namespace sofa::component::collision
 
-} // namespace component
 
-} // namespace sofa
+
+
 

@@ -25,10 +25,8 @@
 #include <TestPluginA/TestPluginA.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
 
-namespace test
+namespace sofa::test
 {
 
 class SOFA_TESTPLUGINA_API ComponentA : public sofa::core::objectmodel::BaseObject
@@ -42,9 +40,7 @@ protected:
     ~ComponentA() override;
 };
 
-} // namespace test
-
-} // namespace sofa
+} // namespace sofa::test
 
 
 #endif // TESTPLUGINA_COMPONENT_A_H

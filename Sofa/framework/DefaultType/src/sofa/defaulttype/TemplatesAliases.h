@@ -24,10 +24,8 @@
 #include <sofa/defaulttype/config.h>
 #include <string>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class T>
@@ -79,8 +77,6 @@ public:
     RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser=false);
 };
 
-}// defaulttype
-
-}// sofa
+}
 
 #endif // SOFA_HELPER_TEMPLATESALIASES_H

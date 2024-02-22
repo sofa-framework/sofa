@@ -26,10 +26,8 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 VelocityThresholdVisitor::VelocityThresholdVisitor( const core::ExecParams* params, core::MultiVecId v, SReal t  )
@@ -48,7 +46,7 @@ Visitor::Result VelocityThresholdVisitor::processNodeTopDown(simulation::Node* n
     return Visitor::RESULT_CONTINUE;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

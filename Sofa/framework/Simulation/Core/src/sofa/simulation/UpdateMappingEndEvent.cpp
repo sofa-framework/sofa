@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 SOFA_EVENT_CPP( UpdateMappingEndEvent )
@@ -40,6 +38,6 @@ UpdateMappingEndEvent::~UpdateMappingEndEvent()
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

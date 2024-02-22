@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/DetachNodeEvent.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( DetachNodeEvent )
@@ -60,8 +55,8 @@ bool DetachNodeEvent::contains(BaseObject* o) const
     return contains(o->getContext()->toBaseNode());
 }
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+

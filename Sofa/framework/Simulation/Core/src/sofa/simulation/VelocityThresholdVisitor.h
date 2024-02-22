@@ -25,10 +25,8 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API VelocityThresholdVisitor : public Visitor
@@ -53,8 +51,7 @@ protected:
     SReal threshold; ///< All the entries below this threshold will be set to 0.
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

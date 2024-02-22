@@ -28,10 +28,8 @@ SOFA_HEADER_DEPRECATED_PARALLELVISITORSCHEDULER()
 #include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -56,8 +54,7 @@ protected:
     virtual void executeParallelVisitor(Node* node, Visitor* action) = 0;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

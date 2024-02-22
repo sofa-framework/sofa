@@ -25,13 +25,8 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -45,8 +40,8 @@ int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations 
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

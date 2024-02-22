@@ -34,10 +34,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -63,7 +61,7 @@ Visitor::Result GetAssembledSizeVisitor::processNodeTopDown( simulation::Node* g
     return Visitor::RESULT_CONTINUE;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

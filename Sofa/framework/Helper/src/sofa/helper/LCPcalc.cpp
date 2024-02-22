@@ -30,10 +30,8 @@
 #include <cstring>
 #include <iomanip>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 using namespace std;
@@ -1940,6 +1938,6 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+

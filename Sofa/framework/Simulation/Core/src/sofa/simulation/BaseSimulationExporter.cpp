@@ -24,13 +24,8 @@
 #include <sofa/simulation/events/SimulationInitDoneEvent.h>
 #include <sofa/helper/system/FileSystem.h>
 
-namespace sofa
-{
 
-namespace simulation
-{
-
-namespace _basesimulationexporter_
+namespace sofa::simulation::_basesimulationexporter_
 {
 using sofa::simulation::SimulationInitDoneEvent ;
 using sofa::simulation::AnimateEndEvent ;
@@ -141,8 +136,4 @@ void BaseSimulationExporter::cleanup()
 }
 
 
-} /// namespace _baseexporter_
-
-} /// namespace core
-
-} /// namespace sofa
+}

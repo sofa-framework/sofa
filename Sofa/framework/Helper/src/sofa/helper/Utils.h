@@ -27,9 +27,8 @@
 #include <string>
 #include <map>
 
-namespace sofa
-{
-namespace helper
+
+namespace sofa::helper
 {
 
 /// @brief Contains possibly useful functions, that don't fit anywhere else.
@@ -96,8 +95,7 @@ static std::map<std::string, std::string> readBasicIniFile(const std::string& pa
 };
 
 
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper
 
 
 #endif

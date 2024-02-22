@@ -67,13 +67,8 @@ Year = {2009}                                                                   
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -164,10 +159,7 @@ protected:
     float4* m_device_F7 { nullptr };
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif

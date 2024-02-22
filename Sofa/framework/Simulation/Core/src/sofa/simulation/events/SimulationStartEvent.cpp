@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/events/SimulationStartEvent.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 SOFA_EVENT_CPP( SimulationStartEvent )
@@ -32,6 +30,6 @@ SOFA_EVENT_CPP( SimulationStartEvent )
 SimulationStartEvent::SimulationStartEvent(){}
 SimulationStartEvent::~SimulationStartEvent(){}
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

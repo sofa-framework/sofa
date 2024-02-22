@@ -35,13 +35,8 @@ using sofa::type::Vec3;
 #include <string>
 #include <cmath>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 XspLoaderDataHook::~XspLoaderDataHook(){}
@@ -239,9 +234,9 @@ bool XspLoader::Load(const std::string& filename,
     return isOk;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

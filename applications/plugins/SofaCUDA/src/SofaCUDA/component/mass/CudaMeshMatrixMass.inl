@@ -28,9 +28,8 @@
 
 namespace sofa
 {
-namespace gpu
-{
-namespace cuda
+
+namespace gpu::cuda
 {
 
 using namespace sofa::gpu::cuda;
@@ -49,13 +48,10 @@ extern "C"
     void MeshMatrixMassCuda_addForce1f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
     void MeshMatrixMassCuda_accFromF1f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 }
-}// cuda
-}// gpu
+}
 
-namespace component
-{
 
-namespace mass
+namespace component::mass
 {
 
 using namespace sofa::gpu::cuda;
@@ -205,8 +201,8 @@ void MeshMatrixMass<CudaVec1fTypes>::accFromF(const core::MechanicalParams* /*mp
 }
 
 
-} // namespace mass
-} // namespace component
+} // namespace component::mass
+
 } // namespace sofa
 
 #endif // SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_INL
