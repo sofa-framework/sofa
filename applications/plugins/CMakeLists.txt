@@ -14,7 +14,7 @@ sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF mas
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
-sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid)
+sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
