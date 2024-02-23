@@ -704,7 +704,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     }
 
     // do not register if it was already done before
-    if(m_registeredPluginMap.find(pluginName) != m_registeredPluginMap.end())
+    if(m_registeredPluginSet.count(pluginName) == 0)
     {
         // msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
         return false;
@@ -714,7 +714,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     if (pluginManager.getEntryFromPlugin(plugin, registerObjects))
     {
         registerObjects(this);
-        m_registeredPluginMap[pluginName] = true;
+        m_registeredPluginSet.insert(pluginName);
         return true;
     }
     else
