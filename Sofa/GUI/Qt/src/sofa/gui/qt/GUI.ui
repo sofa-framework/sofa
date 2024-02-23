@@ -78,7 +78,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="fileNewAction"/>
     <addaction name="fileOpenAction"/>
     <addaction name="fileReloadAction"/>
     <addaction name="fileSaveAction"/>
@@ -659,24 +658,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
     </layout>
    </widget>
   </widget>
-  <action name="fileNewAction">
-   <property name="icon">
-    <iconset>
-     <normaloff>image2</normaloff>image2</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New</string>
-   </property>
-   <property name="iconText">
-    <string>New</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>fileNewAction</cstring>
-   </property>
-  </action>
   <action name="fileOpenAction">
    <property name="icon">
     <iconset>
@@ -886,22 +867,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
  </includes>
  <resources/>
  <connections>
-  <connection>
-   <sender>fileNewAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>fileNew()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>fileOpenAction</sender>
    <signal>triggered()</signal>
