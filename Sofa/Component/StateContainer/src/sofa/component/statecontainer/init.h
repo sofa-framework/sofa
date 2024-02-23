@@ -31,6 +31,5 @@ namespace sofa::core
 namespace sofa::component::statecontainer
 {
     SOFA_COMPONENT_STATECONTAINER_API void init();
-    SOFA_COMPONENT_STATECONTAINER_API void registerObjectsInFactory(sofa::core::ObjectFactory* factory);
 
 } // namespace sofa::component::statecontainer

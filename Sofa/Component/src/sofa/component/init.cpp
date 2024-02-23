@@ -44,6 +44,8 @@
 #include <sofa/component/topology/init.h>
 #include <sofa/component/visual/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component
 {
 
@@ -71,7 +73,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    registerObjectsInFactory(factory);
+    factory->registerObjectsFromPlugin("Sofa.Component.StateContainer");
 }
 
 void init()
@@ -103,11 +105,6 @@ void init()
 
         first = false;
     }
-}
-
-void registerObjectsInFactory(sofa::core::ObjectFactory* factory)
-{
-    sofa::component::statecontainer::registerObjectsInFactory(factory);
 }
 
 } // namespace sofa::component

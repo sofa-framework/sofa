@@ -693,10 +693,15 @@ typedef struct ObjectRegistrationEntry
     ObjectRegistrationEntry() :func(nullptr) {}
 } ObjectRegistrationEntry;
 
-bool ObjectFactory::registerObjectsFromPlugin(const sofa::helper::system::Plugin& plugin)
+bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
 {
     sofa::helper::system::PluginManager& pluginManager = sofa::helper::system::PluginManager::getInstance();
-    const auto& pluginName = plugin.getModuleName();
+    auto* plugin = pluginManager.getPlugin(pluginName);
+    if (plugin == nullptr)
+    {
+        msg_error("ObjectFactory") << pluginName << " has not been loaded yet.";
+        return false;
+    }
 
     // do not register if it was already done before
     if(m_registeredPluginMap.find(pluginName) != m_registeredPluginMap.end())
@@ -706,7 +711,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const sofa::helper::system::Plugin
     }
 
     ObjectRegistrationEntry registerObjects;
-    if (pluginManager.getEntryFromPlugin(&plugin, registerObjects))
+    if (pluginManager.getEntryFromPlugin(plugin, registerObjects))
     {
         registerObjects(this);
         m_registeredPluginMap[pluginName] = true;
