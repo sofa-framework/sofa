@@ -112,8 +112,8 @@ protected:
     OnCreateCallback m_callbackOnCreate ;
 
     /// Keep track of plugins who already registered
-    using RegisteredPluginMap = std::map<std::string, bool>;
-    RegisteredPluginMap m_registeredPluginMap;
+    using RegisteredPluginSet = std::set<std::string>;
+    RegisteredPluginSet m_registeredPluginSet;
 
 public:
 
