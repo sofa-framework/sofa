@@ -396,9 +396,11 @@ int main(int argc, char** argv)
     // Add Batch GUI (runSofa without any GUIs wont be useful)
     sofa::gui::batch::init();
 
+    auto& pluginManager = PluginManager::getInstance();
+
     for (const auto& plugin : plugins)
     {
-        PluginManager::getInstance().loadPlugin(plugin);
+        pluginManager.loadPlugin(plugin);
     }
 
     if (!noAutoloadPlugins)
@@ -409,12 +411,12 @@ int main(int argc, char** argv)
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
-            PluginManager::getInstance().readFromIniFile(configPluginPath);
+            pluginManager.readFromIniFile(configPluginPath);
         }
         else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
-            PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+            pluginManager.readFromIniFile(defaultConfigPluginPath);
         }
         else
         {
@@ -428,9 +430,10 @@ int main(int argc, char** argv)
 
     sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
     // calling explicitely registerObjects from loadedPlugins
-    for (const auto& [pluginPath, plugin] : PluginManager::getInstance().getPluginMap())
+    for (const auto& [pluginPath, plugin] : pluginManager.getPluginMap())
     {
-        objectFactory->registerObjectsFromPlugin(plugin);
+        const auto& pluginName = plugin.getModuleName();
+        objectFactory->registerObjectsFromPlugin(pluginName);
     }
 
     // Parse again to take into account the potential new options
@@ -442,7 +445,7 @@ int main(int argc, char** argv)
     // (because of its positional parameter)
     files = argParser->getInputFileList();
 
-    PluginManager::getInstance().init();
+    pluginManager.init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
     {

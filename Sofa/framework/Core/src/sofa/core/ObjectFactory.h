@@ -208,7 +208,7 @@ public:
 
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
 
-    bool registerObjectsFromPlugin(const sofa::helper::system::Plugin& plugin);
+    bool registerObjectsFromPlugin(const std::string& pluginName);
     bool registerObjects(ObjectRegistrationData& ro);
 
 };

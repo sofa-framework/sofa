@@ -128,16 +128,8 @@ bool RequiredPlugin::loadPlugin()
                 isNameLoaded = true;
 
                 // Register Objects explicitely
-                // Here we only have access to the path, so we need to find the Plugin from it
-                const auto* plugin = pluginManager.getPluginByName(name);
-                if (plugin) // can be nullptr if getModuleName is not (or badly) set
-                {
-                    sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(*plugin);
-                }
-                else
-                {
-                    msg_error() << "Could not register objects for " << name << "; check if getModuleName matches the given name.";
-                }
+                sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(name);
+
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
         }

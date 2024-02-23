@@ -32,5 +32,4 @@ namespace sofa::core
 namespace sofa::component
 {
 	SOFA_COMPONENT_API void init();
-    SOFA_COMPONENT_API void registerObjectsInFactory(sofa::core::ObjectFactory* factory);
 } // namespace sofa::component

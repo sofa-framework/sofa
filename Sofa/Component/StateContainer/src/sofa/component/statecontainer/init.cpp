@@ -61,7 +61,8 @@ const char* getModuleComponentList()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    registerObjectsInFactory(factory);
+    registerMappedObject(factory);
+    registerMechanicalObject(factory);
 }
 
 void init()
@@ -72,12 +73,6 @@ void init()
 
         first = false;
     }
-}
-
-void registerObjectsInFactory(sofa::core::ObjectFactory* factory)
-{
-    registerMappedObject(factory);
-    registerMechanicalObject(factory);
 }
 
 } // namespace sofa::component::statecontainer

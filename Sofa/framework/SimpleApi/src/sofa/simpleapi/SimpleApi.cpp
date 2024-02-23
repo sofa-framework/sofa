@@ -49,8 +49,7 @@ bool importPlugin(const std::string& name)
     const auto status = pluginManager.loadPlugin(name);
     if(status == PluginManager::PluginLoadStatus::SUCCESS)
     {
-        const auto* plugin = pluginManager.getPluginByName(name);
-        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(*plugin);
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(name);
     }
     return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
