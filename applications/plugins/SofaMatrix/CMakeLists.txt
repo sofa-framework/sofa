@@ -27,7 +27,6 @@ set(SOFA_MODULES
     Sofa.Component.LinearSolver.Direct
     Sofa.Core
     Eigen3::Eigen
-    Sofa.GUI.Qt
 )
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
