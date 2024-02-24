@@ -220,11 +220,6 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
 }
 
 
-int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
-{
-    return solveLCP(dim, q, M, res);
-}
-
 //#include "mex.h"
 /* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
@@ -409,21 +404,6 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
     free(base);
 
     return result;
-}
-
-void afficheSyst(SReal* q, SReal** M, int* base, SReal** mat, int dim)
-{
-    printSyst(q, M, base, mat, dim);
-}
-
-void afficheLCP(SReal* q, SReal** M, int dim)
-{
-    printLCP(q, M, dim);
-}
-
-void afficheLCP(SReal* q, SReal** M, SReal* f, int dim)
-{
-    printLCP(q, M, f, dim);
 }
 
 

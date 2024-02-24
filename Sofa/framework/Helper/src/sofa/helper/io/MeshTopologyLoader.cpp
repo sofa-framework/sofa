@@ -150,13 +150,6 @@ bool MeshTopologyLoader::loadGmsh(const char *filename)
     return addMeshtoTopology();
 }
 
-bool MeshTopologyLoader::loadMesh(std::ifstream &file)
-{
-    SOFA_UNUSED(file);
-    return false;
-}
-
-
 bool MeshTopologyLoader::loadVtk(const char *filename)
 {
     m_mesh = helper::io::Mesh::Create("vtu", filename);

@@ -55,5 +55,5 @@ Automatically creates one if no Simulation has been set.
  */
 SOFA_SIMULATION_GRAPH_API
 SOFA_ATTRIBUTE_DISABLED_DAGSIMULATION_GETSIMULATION()
-Simulation* getSimulation();
+Simulation* getSimulation() = delete;
 } // namespace sofa::simulation::graph

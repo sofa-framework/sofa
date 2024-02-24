@@ -161,12 +161,12 @@ public:
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
     /// This version is offered a LocalStorage to store temporary data
     SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
-    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*) { return processNodeTopDown(node); }
+    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*)  = delete;
 
     /// Callback method called after child node have been processed and before going back to the parent node.
     /// This version is offered a LocalStorage to store temporary data
     SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
-    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
+    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) = delete;
 
     typedef sofa::core::objectmodel::Tag Tag;
     typedef sofa::core::objectmodel::TagSet TagSet;
