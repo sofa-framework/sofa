@@ -151,7 +151,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AnimateVisitor.cpp
     ${SRC_ROOT}/BaseMechanicalVisitor.cpp
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.cpp
-    ${SRC_ROOT}/CactusStackStorage.cpp
     ${SRC_ROOT}/CleanupVisitor.cpp
     ${SRC_ROOT}/CollisionAnimationLoop.cpp
     ${SRC_ROOT}/CollisionBeginEvent.cpp
@@ -176,7 +175,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalVisitor.cpp
     ${SRC_ROOT}/MutationListener.cpp
     ${SRC_ROOT}/Node.cpp
-    ${SRC_ROOT}/ParallelVisitorScheduler.cpp
     ${SRC_ROOT}/PauseEvent.cpp
     ${SRC_ROOT}/PipelineImpl.cpp
     ${SRC_ROOT}/PositionEvent.cpp
@@ -201,7 +199,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/VectorOperations.cpp
     ${SRC_ROOT}/VelocityThresholdVisitor.cpp
     ${SRC_ROOT}/Visitor.cpp
-    ${SRC_ROOT}/VisitorScheduler.cpp
     ${SRC_ROOT}/VisualVisitor.cpp
     ${SRC_ROOT}/WriteStateVisitor.cpp
     ${SRC_ROOT}/XMLPrintVisitor.cpp

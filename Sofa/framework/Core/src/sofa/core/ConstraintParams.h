@@ -35,10 +35,10 @@ class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
 
     /// @name Flags and parameters getters
     /// @{

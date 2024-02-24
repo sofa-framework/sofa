@@ -107,8 +107,8 @@ public:
 
     Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
 
-    SOFA_ATTRIBUTE_DEPRECATED__PRECONDITIONER_VERBOSEDATA()
-    Data<bool> f_verbose; ///< Dump system state at each iteration
+    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     Data<bool> use_file; ///< Dump system matrix in a file
     Data<bool> share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)

@@ -108,7 +108,7 @@ public:
         }
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
     type::Vec3f hsv2rgb(const type::Vec3f& hsv);
 
     inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )

@@ -65,7 +65,7 @@ public:
 
     /// @}
 
-    SOFA_ATTRIBUTE_DEPRECATED__SYMMETRICMATRIX("Use supportOnlySymmetricMatrix instead.")
+    SOFA_ATTRIBUTE_DISABLED__SYMMETRICMATRIX("Use supportOnlySymmetricMatrix instead.")
     bool symmetricMatrix() const { return supportOnlySymmetricMatrix(); }
 
     /// Symmetric matrix flag, for solvers specialized on symmetric matrices
@@ -162,7 +162,7 @@ public:
     /// Set Stiffness matrix contributions factor (for implicit schemes)
     MechanicalParams& setKFactor(SReal v) { m_kFactor = v; return *this; }
 
-    SOFA_ATTRIBUTE_DEPRECATED__SYMMETRICMATRIX("Use setSupportOnlySymmetricMatrix instead.")
+    SOFA_ATTRIBUTE_DISABLED__SYMMETRICMATRIX("Use setSupportOnlySymmetricMatrix instead.")
     MechanicalParams& setSymmetricMatrix(bool b) { return setSupportOnlySymmetricMatrix(b); }
 
     /// Set the flag (for implicit schemes) specifying if solvers are only specialized for symmetric matrices

@@ -23,49 +23,6 @@
 #define SOFA_SIMULATION_VISITORSCHEDULER_H
 
 #include <sofa/simulation/config.h>
-SOFA_HEADER_DEPRECATED_VISITORSCHEDULER()
-
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/fwd.h>
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-class Visitor;
-
-/// Abstract class defining custom schedule of action execution through the graph.
-SOFA_ATTRIBUTE_DEPRECATED_VISITORSCHEDULER()
-class SOFA_SIMULATION_CORE_API VisitorScheduler : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_ABSTRACT_CLASS(VisitorScheduler, sofa::core::objectmodel::BaseObject);
-
-    virtual void executeVisitor(simulation::Node* node, Visitor* act) = 0;
-
-    /// Specify whether this scheduler is multi-threaded.
-    virtual bool isMultiThreaded() const { return false; }
-
-protected:
-
-    VisitorScheduler() {}
-
-    ~VisitorScheduler() override {}
-
-    /// Execute the given action recursively
-    void doExecuteVisitor(simulation::Node* node, Visitor* act);
-	
-private:
-	VisitorScheduler(const VisitorScheduler& n) ;
-	VisitorScheduler& operator=(const VisitorScheduler& n) ;
-	
-	
-};
-
-} // namespace simulation
-
-} // namespace sofa
+SOFA_HEADER_DISABLED_VISITORSCHEDULER()
 
 #endif
