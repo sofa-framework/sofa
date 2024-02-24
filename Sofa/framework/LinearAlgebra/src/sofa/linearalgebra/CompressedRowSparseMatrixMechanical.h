@@ -548,7 +548,7 @@ public:
             const Index scalarRowId = srcMatrix.rowIndex[srcRowId] * SrcBlockRows;
 
             Range rowRange(srcMatrix.rowBegin[srcRowId], srcMatrix.rowBegin[srcRowId+1]);
-            for (Index subRow = 0; subRow < NbBlocksRows; ++subRow)
+            for (Index subRow = 0; subRow < (Index)NbBlocksRows; ++subRow)
             {
                 const auto oldVid = vid;
 
@@ -558,7 +558,7 @@ public:
                     const Index scalarColId = srcMatrix.colsIndex[xj] * SrcBlockColumns;
                     const typename TMatrix::Block& srcBlock = srcMatrix.colsValue[xj];
 
-                    for (Index subCol = 0; subCol < NbBlocksColumns; ++subCol)
+                    for (Index subCol = 0; subCol < (Index)NbBlocksColumns; ++subCol)
                     {
                         Block subBlock;
                         matrix_bloc_traits<typename TMatrix::Block, sofa::SignedIndex>::subBlock(srcBlock, subRow * DstBlockRows, subCol * DstBlockColumns, subBlock);
