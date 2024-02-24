@@ -170,7 +170,7 @@ public:
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates")
     sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
 
-    SOFA_ATTRIBUTE_DEPRSOFA_ATTRIBUTE_DISABLEDECATED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
     sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
 
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
