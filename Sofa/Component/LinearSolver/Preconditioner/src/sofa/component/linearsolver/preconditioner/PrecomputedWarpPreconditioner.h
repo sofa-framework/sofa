@@ -116,25 +116,8 @@ public:
     Data<bool> use_rotations; ///< Use Rotations around the preconditioner
     Data<double> draw_rotations_scale; ///< Scale rotations in draw function
 
-    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
-    Data <std::string> solverName;
-    //SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3155)";
-        }
-        if (arg->getAttribute("verbose"))
-        {
-            msg_warning() << "Attribute 'verbose' has no use in this component. "
-                             "To disable this warning, remove the attribute from the scene.";
-        }
-    }
-
-
     MState * mstate;
+
 protected:
     PrecomputedWarpPreconditioner();
 

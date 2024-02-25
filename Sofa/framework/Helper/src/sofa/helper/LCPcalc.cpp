@@ -329,9 +329,8 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
         // si le pivot est nul, le LCP echoue
         if (fabs(pivot)<EPSILON_LCP)
         {
-            afficheLCP(q,M,dim);
+            printLCP(q,M,dim);
             printf("*** Pas de solution *** \n");
-//            boucles=MAX_BOU;
             result=0;
             for(compteur=0; compteur<dim; compteur++)
             {

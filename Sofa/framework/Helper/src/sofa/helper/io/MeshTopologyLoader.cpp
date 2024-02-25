@@ -180,10 +180,9 @@ bool MeshTopologyLoader::load(const char *filename)
 	else
 	{
 		std::ifstream file(filename);
-		if (!file.good()) return false;
-		msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
-		fileLoaded = loadMesh(file);
-		file.close();
+        if (!file.good())
+            return false;
+        msg_error() << "This file format: " << filename << " is not be supported.";
 	}
        
     if(fileLoaded)

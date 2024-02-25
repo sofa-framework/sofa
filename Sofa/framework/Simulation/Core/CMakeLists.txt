@@ -89,7 +89,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationStopEvent.h
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h
@@ -221,7 +220,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.cpp
