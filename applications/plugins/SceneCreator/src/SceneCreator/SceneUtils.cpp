@@ -40,9 +40,9 @@ using sofa::core::ObjectFactory ;
 
 #include <sofa/linearalgebra/FullVector.h>
 
-namespace sofa
+
+namespace sofa::modeling
 {
-namespace modeling {
 using sofa::defaulttype::Vec3Types;
 
 
@@ -79,5 +79,4 @@ Vector getVector( core::ConstVecId id, bool indep )
     return ve;
 }
 
-} /// modeling
-} /// sofa
+}

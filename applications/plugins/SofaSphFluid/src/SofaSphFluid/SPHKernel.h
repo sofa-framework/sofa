@@ -26,13 +26,7 @@
 #include <cmath>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 enum SPHKernels
@@ -554,10 +548,7 @@ public:
     }
 };
 
-} // namespace forcefield
+} // namespace sofa::component::forcefield
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_SPHKERNEL_H

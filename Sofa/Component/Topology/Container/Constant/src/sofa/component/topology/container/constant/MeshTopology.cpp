@@ -74,15 +74,14 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     unsigned int edgeIndex;
 
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
-    for (unsigned int i = 0; i < tetrahedra.size(); ++i)
+    for (const auto& t : tetrahedra)
     {
-        const Tetra &t=tetrahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        for (unsigned int j=0; j<6; ++j)
+        for (const auto j : edgesInTetrahedronArray)
         {
-            unsigned int v1=t[edgesInTetrahedronArray[j][0]];
-            unsigned int v2=t[edgesInTetrahedronArray[j][1]];
+            unsigned int v1 = t[j[0]];
+            unsigned int v2 = t[j[1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -112,15 +111,14 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     // create a temporary map to find redundant edges
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
-    for (unsigned int i = 0; i < hexahedra.size(); ++i)
+    for (const auto& h : hexahedra)
     {
-        const Hexa &h=hexahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        for (unsigned int j=0; j<12; ++j)
+        for (const auto j : edgesInHexahedronArray)
         {
-            unsigned int v1=h[edgesInHexahedronArray[j][0]];
-            unsigned int v2=h[edgesInHexahedronArray[j][1]];
+            unsigned int v1 = h[j[0]];
+            unsigned int v2 = h[j[1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -159,9 +157,8 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
     const SeqTriangles& triangles = topology->getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
-    for (unsigned int i = 0; i < triangles.size(); ++i)
+    for (const auto& t : triangles)
     {
-        const Triangle &t=triangles[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<3; ++j)
@@ -192,9 +189,8 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     }
 
     const SeqQuads& quads = topology->getQuads(); // do not use seqQuads directly as it might not be up-to-date
-    for (unsigned int i = 0; i < quads.size(); ++i)
+    for (const auto& t : quads)
     {
-        const Quad &t=quads[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<4; ++j)
@@ -252,10 +248,10 @@ void MeshTopology::TriangleUpdate::doUpdate()
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
         const Tetra &t=topology->seqTetrahedra.getValue()[i];
-        for (TriangleID j=0; j<4; ++j)
+        for (const auto j : sofa::core::topology::trianglesOrientationInTetrahedronArray)
         {
             for (PointID k=0; k<3; ++k)
-                v[k] = t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][k]];
+                v[k] = t[j[k]];
 
             // sort v such that v[0] is the smallest one
             while ((v[0]>v[1]) || (v[0]>v[2]))
@@ -307,10 +303,8 @@ void MeshTopology::QuadUpdate::doUpdate()
     unsigned int v[4],val;
     unsigned int quadIndex;
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
-    for (unsigned int i = 0; i < hexahedra.size(); ++i)
+    for (const auto& h : hexahedra)
     {
-        const Hexa &h=hexahedra[i];
-
         // Quad 0 :
         v[0]=h[0]; v[1]=h[3]; v[2]=h[2]; v[3]=h[1];
         // sort v such that v[0] is the smallest one
@@ -2445,17 +2439,17 @@ const sofa::type::vector<Index> MeshTopology::getConnectedElement(Index elem)
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each elementID on the propagation front
 
         // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        for (unsigned int id : elemNextFront)
         {
             bool find = false;
-            unsigned int id = elemNextFront[i];
-
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
-                if (id == elemAll[j])
+            for (const unsigned int j : elemAll)
+            {
+                if (id == j)
                 {
                     find = true;
                     break;
                 }
+            }
 
             if (!find)
             {
@@ -2537,16 +2531,14 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElement(Index elem
             elemAV = this->getEdgesAroundVertex(getEdge(elem)[i]);
 
 
-        for (unsigned int j = 0; j<elemAV.size(); ++j) // for each element around the node
+        for (const unsigned int id : elemAV) // for each element around the node
         {
             bool find = false;
-            unsigned int id = elemAV[j];
-
             if (id == elem)
                 continue;
 
-            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
-                if (id == elems[k])
+            for (const unsigned int elem : elems) // check no redundancy
+                if (id == elem)
                 {
                     find = true;
                     break;
@@ -2593,20 +2585,18 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElements(sofa::typ
     }
 
 
-    for (unsigned int i = 0; i <elems.size(); ++i) // for each elementID of input vector
+    for (const unsigned int elem : elems) // for each elementID of input vector
     {
-        sofa::type::vector<Index> elemTmp2 = this->getElementAroundElement(elems[i]);
+        sofa::type::vector<Index> elemTmp2 = this->getElementAroundElement(elem);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }
 
-    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each elementID found
+    for (const unsigned int id : elemTmp) // for each elementID found
     {
         bool find = false;
-        unsigned int id = elemTmp[i];
-
-        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
-            if (id == elems[j])
+        for (const unsigned int elem : elems) // check no redundancy with input vector
+            if (id == elem)
             {
                 find = true;
                 break;
@@ -2614,8 +2604,8 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElements(sofa::typ
 
         if (!find)
         {
-            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
-                if (id == elemAll[j])
+            for (const unsigned int j : elemAll) // check no redundancy in output vector
+                if (id == j)
                 {
                     find = true;
                     break;

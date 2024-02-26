@@ -23,10 +23,8 @@
 #include <sofa/helper/StringUtils.h>
 #include <algorithm>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 /// Taken from https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
@@ -106,7 +104,7 @@ std::string_view removeTrailingCharacters(std::string_view sv, const std::initia
     return sv.substr(0, end - sv.begin());
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+
 

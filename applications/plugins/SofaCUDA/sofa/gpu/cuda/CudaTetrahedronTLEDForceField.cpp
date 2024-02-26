@@ -29,13 +29,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetrahedron forcefield using CUDA")
@@ -594,8 +589,8 @@ void CudaTetrahedronTLEDForceField::updateLameCoefficients(void)
     Mu = youngModulus.getValue()/(2*(1 + poissonRatio.getValue()));
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

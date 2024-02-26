@@ -25,10 +25,8 @@
 #include <cstdio>
 #include <cstring>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 template class SOFA_HELPER_API Factory<std::string, sofa::helper::io::Image, std::string>;
@@ -435,7 +433,7 @@ Image* Image::Create(std::string filename)
 
 } // namespace io
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+
 

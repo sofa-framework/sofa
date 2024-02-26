@@ -31,6 +31,8 @@
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
 #include <optional>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
+
 
 namespace sofa::component::linearsystem
 {
@@ -188,13 +190,6 @@ protected:
      */
     virtual void projectMappedMatrices(const core::MechanicalParams* mparams);
 
-
-    /**
-     * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
-     * sense of mappings)
-     */
-    MappingJacobians<JacobianMatrixType> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, LocalMappedMatrixType<Real>* crs);
-
     /**
      * Assemble the matrices under mappings into the global matrix
      */
@@ -238,9 +233,6 @@ protected:
     void buildGroupsOfComponentAssociatedToMechanicalStates(
         std::map< PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups);
 
-    /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
-    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs);
-
     /// An object with factory methods to create local matrices
     std::tuple<
         std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>,
@@ -255,6 +247,10 @@ protected:
 
     virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
     makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component);
+
+    std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
+
+    virtual typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
 
 private:
     template<Contribution c>

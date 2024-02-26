@@ -28,13 +28,8 @@
 #include <fstream>
 using namespace std;
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED hexahedron forcefield using CUDA")
@@ -779,8 +774,8 @@ void CudaHexahedronTLEDForceField::updateLameCoefficients(void)
     Mu = youngModulus.getValue()/(2*(1 + poissonRatio.getValue()));
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

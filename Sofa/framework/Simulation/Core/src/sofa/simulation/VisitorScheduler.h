@@ -23,6 +23,7 @@
 #define SOFA_SIMULATION_VISITORSCHEDULER_H
 
 #include <sofa/simulation/config.h>
+
 SOFA_HEADER_DISABLED_VISITORSCHEDULER()
 
 #endif

@@ -32,13 +32,7 @@
 #include <cmath>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -196,10 +190,7 @@ extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::V
 extern template class SOFA_SPH_FLUID_API SPHFluidForceField<sofa::defaulttype::Vec2Types>;
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
-} // namespace forcefield
+} // namespace sofa::component::forcefield
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H

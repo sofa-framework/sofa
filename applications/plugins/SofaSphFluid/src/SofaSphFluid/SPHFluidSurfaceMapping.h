@@ -32,13 +32,8 @@
 
 #include <vector>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -212,10 +207,7 @@ extern template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< defaulttype::Ve
 #endif
 
 
-} // namespace mapping
+} // namespace sofa::component::mapping
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

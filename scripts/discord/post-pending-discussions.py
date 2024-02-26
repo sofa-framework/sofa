@@ -13,7 +13,7 @@ discord_token = os.environ['DISCORD_MAIN_WEBHOOK_URL']
 repos=[['sofa-framework','sofa']]
 
 # List of reviewers on GitHub Discussions
-reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["VannesteFelix"],["EulalieCoevoet"],["adagolodjo"],["github-actions"]]
+reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["rmolazem"],["samuelmyoussef"],["VannesteFelix"],["EulalieCoevoet"],["adagolodjo"],["github-actions"]]
 
 
 def computeListOfOpenDiscussionsPerCategory():
@@ -55,7 +55,7 @@ def computeListOfOpenDiscussionsPerCategory():
 
                 lastReplyOnLastComment = len(discussion["comments"]["nodes"][lastCommentId]["replies"]["nodes"]) - 1
 
-                # No replies on the last comment
+                # No reply on the last comment
                 if(lastReplyOnLastComment < 0):
                     author = discussion["comments"]["nodes"][lastCommentId]["author"]["login"]
                 # Select the last reply of the last comment

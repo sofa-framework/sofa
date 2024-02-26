@@ -25,10 +25,8 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 //enum { NDefaultColorMapEntries = 64 };
@@ -325,6 +323,4 @@ void ColorMap::reinit()
     }
 }
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::helper

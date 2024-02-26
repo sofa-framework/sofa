@@ -29,7 +29,7 @@
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
 
         <Node name="matrices">
-            <MatrixLinearSystem template="CompressedRowSparseMatrixd" name="system" checkIndices="true"/>
+            <MatrixLinearSystem template="CompressedRowSparseMatrixd" name="system" checkIndices="true" printLog="true"/>
             <MatrixLinearSystem template="CompressedRowSparseMatrixd" name="GS" assembleStiffness="false" assembleMass="false" assembleDamping="false" assembleGeometricStiffness="true" applyProjectiveConstraints="false"/>
             <GlobalSystemMatrixImage name="imageA" linearSystem="@system"/>
             <GlobalSystemMatrixImage name="imageGS" linearSystem="@GS"/>
@@ -80,6 +80,10 @@
                 <MechanicalObject template="Vec3d" name="DOFs"/>
                 <SubsetMapping input="@../DOFs" output="@DOFs" indices="@box.indices"/>
             </Node>
+            <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/a/DOFs @/rigidSections/green/a/DOFs"/>
+            <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/a/DOFs @/rigidSections/green/b/DOFs"/>
+            <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/b/DOFs @/rigidSections/green/a/DOFs"/>
+            <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/b/DOFs @/rigidSections/green/b/DOFs"/>
             <StiffSpringForceField object1="@a/DOFs" object2="@b/DOFs" spring="0 0 100 1 1" showArrowSize="0.05" drawMode="2"/>
 
             <Node name="Visual">

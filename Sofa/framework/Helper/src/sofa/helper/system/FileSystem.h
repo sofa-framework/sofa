@@ -28,11 +28,8 @@
 #include <string>
 #include <vector>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+
+namespace sofa::helper::system
 {
 
 /// @brief Contains functions to interact with the file system.
@@ -159,8 +156,7 @@ static std::string append(const std::string_view& existingPath, const std::strin
 };
 
 
-} // namespace system
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper::system
+
 
 #endif

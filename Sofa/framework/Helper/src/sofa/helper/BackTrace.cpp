@@ -41,10 +41,8 @@
 #include <iostream>
 #include <string>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
@@ -199,7 +197,7 @@ void BackTrace::sig(int sig)
     raise(sig);
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+
 

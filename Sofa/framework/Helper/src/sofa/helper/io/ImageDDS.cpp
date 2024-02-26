@@ -87,11 +87,8 @@
 #define DDS_GBIT_RG3_B2     0x1C
 #define DDS_BBIT_RG3_B2     0x03
 
-namespace sofa
-{
-namespace helper
-{
-namespace io
+
+namespace sofa::helper::io
 {
 Creator<Image::FactoryImage,ImageDDS> ImageDDSClass("dds");
 
@@ -460,6 +457,6 @@ bool ImageDDS::save(std::string filename, int)
     }
     return isWriteOk;
 }
-} // namespace io
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper::io
+
+

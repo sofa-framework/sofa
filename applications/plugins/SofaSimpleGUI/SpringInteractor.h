@@ -8,8 +8,9 @@
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
     using sofa::defaulttype::Vec3Types ;
     using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<Vec3Types> ;
     using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<Vec3Types> ;
@@ -48,6 +49,6 @@ public:
 };
 
 }
-}
+
 
 #endif // SOFA_SpringInteractor_H

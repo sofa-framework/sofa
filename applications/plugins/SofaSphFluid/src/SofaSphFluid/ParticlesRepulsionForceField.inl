@@ -29,15 +29,7 @@
 #include <iostream>
 
 
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -219,10 +211,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     vparams->drawTool()->drawLines(vertices,1,colorVector);
 }
 
-} // namespace forcefield
+} // namespace sofa::component::forcefield
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL

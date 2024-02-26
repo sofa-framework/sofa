@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -49,10 +43,9 @@ template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3Types>;
 template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2Types>;
 
 
+} // namespace sofa::component::forcefield
 
-} // namespace forcefield
 
-} // namespace component
 
-} // namespace sofa
+
 

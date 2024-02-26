@@ -27,10 +27,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class R>
@@ -527,9 +525,6 @@ typename SolidTypes<R>::Mat3x3 SolidTypes<R>::dyad( const Vec& u, const Vec& v )
     return m;
 }
 
-
-}// defaulttype
-
-}// sofa
+}
 
 #endif

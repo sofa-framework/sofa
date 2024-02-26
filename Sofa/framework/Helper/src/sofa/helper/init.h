@@ -26,10 +26,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 // Initializing and cleaning up Sofa
@@ -80,8 +78,7 @@ SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library
 SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction);
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

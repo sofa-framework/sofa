@@ -26,10 +26,8 @@
 
 #include <iostream>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 static bool s_initialized = false;
@@ -92,6 +90,6 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+

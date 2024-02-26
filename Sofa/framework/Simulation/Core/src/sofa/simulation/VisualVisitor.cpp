@@ -34,10 +34,8 @@
 #define DO_DEBUG_DRAW false
 #endif // DEBUG_DRAW
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
@@ -206,7 +204,7 @@ void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::Beh
     bm->addBBox(minBBox, maxBBox);
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

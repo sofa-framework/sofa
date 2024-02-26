@@ -25,13 +25,8 @@
 #include <sofa/helper/io/Mesh.h>
 #include <fstream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_HELPER_API MeshTopologyLoader
@@ -74,10 +69,7 @@ private:
     helper::io::Mesh* m_mesh;
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

@@ -30,10 +30,7 @@
 #include <ostream>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 #define EPSILON_LCP		0.00000000001	// epsilon pour tests = 0
@@ -157,8 +154,7 @@ SOFA_HELPER_API int nlcp_multiGrid_Nlevels(int dim, SReal *dfree, SReal**W, SRea
 SOFA_HELPER_API int nlcp_gaussseidel(int dim, SReal*dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, bool verbose = false, SReal minW=0.0, SReal maxF=0.0, std::vector<SReal>* residuals = nullptr, std::vector<SReal>* violations = nullptr);
 // Timed Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidelTimed(int, SReal*, SReal**, SReal*, SReal, SReal, int, bool, SReal timeout, bool verbose=false);
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

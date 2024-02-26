@@ -26,10 +26,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
 
-namespace test
+namespace sofa::test
 {
 
 template<class T>
@@ -55,8 +53,6 @@ template class SOFA_TESTPLUGINA_API ComponentB<sofa::defaulttype::Vec2Types>;
 template class SOFA_TESTPLUGINA_API ComponentB<sofa::defaulttype::Rigid3Types>;
 
 
+} // namespace sofa::test
 
 
-} // namespace test
-
-} // namespace sofa

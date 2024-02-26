@@ -31,13 +31,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::MeshTopologyLoader, "MeshTopologyLoader")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -200,9 +195,9 @@ bool MeshTopologyLoader::load(const char *filename)
     return fileLoaded;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

@@ -19,16 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MESHSTEPLOADER_CONFIG_H
-#define MESHSTEPLOADER_CONFIG_H
+#pragma once
+#include <sofa/simpleapi/config.h>
 
-#include <sofa/config.h>
+namespace sofa::simpleapi
+{
 
-#ifdef SOFA_BUILD_MeshSTEPLoader
-#  define SOFA_TARGET MeshSTEPLoader
-#  define SOFA_MeshSTEPLoader_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MeshSTEPLoader_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+/// @brief Initialize the Sofa.SimpleApi library, as well as its
+/// dependencies.
+SOFA_SIMPLEAPI_API void init();
 
-#endif
+/// @brief Return true if and only if the Sofa.SimpleApi library has been
+/// initialized.
+SOFA_SIMPLEAPI_API bool isInitialized();
+
+/// @brief Clean up the resources used by the SofaSimulationGraph library, as
+/// well as its dependencies.
+SOFA_SIMPLEAPI_API void cleanup();
+
+/// @brief Return true if and only if the Sofa.SimpleApi library has been
+/// cleaned up.
+SOFA_SIMPLEAPI_API bool isCleanedUp();
+
+} // namespace sofa::simpleapi

@@ -26,13 +26,8 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 // A small utility class to temporarly set the current directory to the same as a specified file
@@ -81,10 +76,7 @@ public:
 
 };
 
-} // namespace system
+} // namespace sofa::helper::system
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

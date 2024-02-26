@@ -532,21 +532,21 @@ bool MeshVTKLoader::setInputsMesh()
 bool MeshVTKLoader::setInputsData()
 {
     ///Point Data
-    for (size_t i = 0 ; i < reader->inputPointDataVector.size() ; i++)
+    for (const auto& inputPointData : reader->inputPointDataVector)
     {
-        const char* dataname = reader->inputPointDataVector[i]->name.c_str();
+        const char* dataname = inputPointData->name.c_str();
 
-        BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
+        BaseData* basedata = inputPointData->createSofaData();
         this->addData(basedata, dataname);
         addOutputsToCallback("filename", {basedata});
 
     }
 
     ///Cell Data
-    for (size_t i = 0 ; i < reader->inputCellDataVector.size() ; i++)
+    for (const auto& inputCellData : reader->inputCellDataVector)
     {
-        const char* dataname = reader->inputCellDataVector[i]->name.c_str();
-        BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
+        const char* dataname = inputCellData->name.c_str();
+        BaseData* basedata = inputCellData->createSofaData();
         this->addData(basedata, dataname);
         addOutputsToCallback("filename", {basedata});
     }
