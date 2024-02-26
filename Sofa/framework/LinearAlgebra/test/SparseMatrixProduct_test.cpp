@@ -19,19 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/linearalgebra/SparseMatrixProduct[CompressedRowSparseMatrix].h>
-#include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
+#include <sofa/linearalgebra/SparseMatrixProduct.inl>
 #include <sofa/testing/NumericTest.h>
 #include <Sofa.LinearAlgebra.Testing/SparseMatrixTest.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <Eigen/Sparse>
 #include <sofa/helper/random.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-template <class TMatrix, class TReal>
+
+template <class TLHSMatrix, class TRHSMatrix, class TReal>
 struct TestSparseMatrixProductTraits
 {
-    using Matrix = TMatrix;
+    using LHSMatrix = TLHSMatrix;
+    using RHSMatrix = TRHSMatrix;
     using Real = TReal;
 };
 
@@ -43,34 +45,37 @@ struct TestSparseMatrixProductTraits
 template <class T>
 struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename T::Real>
 {
-    using Matrix = typename T::Matrix;
+    using LHSMatrix = typename T::LHSMatrix;
+    using RHSMatrix = typename T::RHSMatrix;
     using Real = typename T::Real;
     using Base = sofa::testing::SparseMatrixTest<typename T::Real>;
     using Base::generateRandomSparseMatrix;
     using Base::copyFromEigen;
     using Base::compareSparseMatrix;
 
-    bool checkMatrix(typename Matrix::Index nbRowsA, typename Matrix::Index nbColsA, typename Matrix::Index nbColsB, Real sparsity)
+    bool checkMatrix(typename LHSMatrix::Index nbRowsA, typename LHSMatrix::Index nbColsA, typename RHSMatrix::Index nbColsB, Real sparsity)
     {
-        Eigen::SparseMatrix<Real> eigen_a, eigen_b;
+        Eigen::SparseMatrix<Real, Eigen::RowMajor> eigen_a;
+        Eigen::SparseMatrix<Real, Eigen::ColMajor> eigen_b;
 
         generateRandomSparseMatrix(eigen_a, nbRowsA, nbColsA, sparsity);
         generateRandomSparseMatrix(eigen_b, nbColsA, nbColsB, sparsity);
 
-        Matrix A, B;
+        LHSMatrix A;
+        RHSMatrix B;
         copyFromEigen(A, eigen_a);
         copyFromEigen(B, eigen_b);
 
         EXPECT_GT(eigen_a.outerSize(), 0);
         EXPECT_GT(eigen_b.outerSize(), 0);
 
-        Eigen::SparseMatrix<Real> eigen_c = eigen_a * eigen_b;
+        Eigen::SparseMatrix<Real, Eigen::RowMajor> eigen_c = eigen_a * eigen_b;
 
         EXPECT_EQ(eigen_c.rows(), nbRowsA);
         EXPECT_EQ(eigen_c.cols(), nbColsB);
         EXPECT_GT(eigen_c.outerSize(), 0); //to make sure that there are non-zero values in the result matrix
 
-        sofa::linearalgebra::SparseMatrixProduct<Matrix> product(&A, &B);
+        sofa::linearalgebra::SparseMatrixProduct<LHSMatrix, RHSMatrix, Eigen::SparseMatrix<Real> > product(&A, &B);
         product.computeProduct();
 
         EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
@@ -92,7 +97,7 @@ struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename
         eigen_c = eigen_a * eigen_b; //result is updated using the regular matrix product
         copyFromEigen(A, eigen_a);
 
-        product.matrixA = &A;
+        product.m_lhs = &A;
         product.computeProduct(); //intersection is already computed: uses the faster algorithm
         EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
 
@@ -103,11 +108,14 @@ struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename
 using CRSMatrixScalar = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
 
 using TestSparseMatrixProductImplementations = ::testing::Types<
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, double>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, double>
-    // TestSparseMatrixProductTraits<CRSMatrixScalar, SReal, 1000, std::ratio<1, 1000> >
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float>, Eigen::SparseMatrix<float>, float>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, Eigen::SparseMatrix<double>, double>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::SparseMatrix<double, Eigen::RowMajor>, double>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::ColMajor>, Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::ColMajor>, Eigen::SparseMatrix<double, Eigen::RowMajor>, double>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, Eigen::SparseMatrix<float, Eigen::ColMajor>, float>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::SparseMatrix<double, Eigen::ColMajor>, double>
 >;
 TYPED_TEST_SUITE(TestSparseMatrixProduct, TestSparseMatrixProductImplementations);
 

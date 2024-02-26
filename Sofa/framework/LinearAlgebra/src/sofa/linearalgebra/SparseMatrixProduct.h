@@ -23,8 +23,8 @@
 
 #include <sofa/linearalgebra/config.h>
 #include <utility>
-
-#include <sofa/type/vector_T.h>
+#include <sofa/type/vector.h>
+#include <Eigen/Core>
 
 namespace sofa::linearalgebra
 {
@@ -44,40 +44,54 @@ namespace sofa::linearalgebra
  * and
  * Saupin, G., 2008. Vers la simulation interactive réaliste de corps déformables virtuels (Doctoral dissertation, Lille 1).
  */
-template<class TMatrix>
+template<class Lhs, class Rhs, class ResultType>
 class SparseMatrixProduct
 {
 public:
+
+    using LhsCleaned = std::decay_t<Lhs>;
+    using RhsCleaned = std::decay_t<Rhs>;
+    using ResultCleaned = std::decay_t<ResultType>;
+
+    using LhsScalar = typename LhsCleaned::Scalar;
+    using RhsScalar = typename RhsCleaned::Scalar;
+    using ResultScalar = typename ResultCleaned::Scalar;
+
     /// Left side of the product A*B
-    const TMatrix* matrixA { nullptr };
+    const LhsCleaned* m_lhs { nullptr };
     /// Right side of the product A*B
-    const TMatrix* matrixB { nullptr };
+    const RhsCleaned* m_rhs { nullptr };
+
+    using Index = Eigen::Index;
+
+    using ProductResult = ResultType;
+
 
     void computeProduct(bool forceComputeIntersection = false);
     void computeRegularProduct();
 
-    const TMatrix& getProductResult() const { return matrixC; }
+    [[nodiscard]] const ResultType& getProductResult() const { return m_productResult; }
 
     void invalidateIntersection();
 
-    SparseMatrixProduct(TMatrix* a, TMatrix* b) : matrixA(a), matrixB(b) {}
+    SparseMatrixProduct(Lhs* a, Rhs* b) : m_lhs(a), m_rhs(b) {}
     SparseMatrixProduct() = default;
 
     struct Intersection
     {
         // Two indices: the first for the values vector of the matrix A, the second for the values vector of the matrix B
-        using PairIndex = std::pair<typename TMatrix::Index, typename TMatrix::Index>;
+        using PairIndex = std::pair<Index, Index>;
         // A list of pairs of indices
-        using ListPairIndex = type::vector<PairIndex>;
+        using ListPairIndex = sofa::type::vector<PairIndex>;
         /// Each element of this vector gives the list of values from matrix A and B to multiply together and accumulate
         /// them into the matrix C at the same location in the values vector
-        using ValuesIntersection = type::vector<ListPairIndex>;
+        using ValuesIntersection = sofa::type::vector<ListPairIndex>;
 
         ValuesIntersection intersection;
     };
 
 protected:
-    TMatrix matrixC; /// Result of A*B
+    ProductResult m_productResult; /// Result of A*B
 
     bool m_hasComputedIntersection { false };
     void computeIntersection();
@@ -87,38 +101,5 @@ protected:
 
 };
 
-template <class TMatrix>
-void SparseMatrixProduct<TMatrix>::computeProduct(bool forceComputeIntersection)
-{
-    if (forceComputeIntersection)
-    {
-        m_hasComputedIntersection = false;
-    }
-
-    if (m_hasComputedIntersection == false)
-    {
-        computeIntersection();
-        m_hasComputedIntersection = true;
-    }
-    computeProductFromIntersection();
-}
-
-template <class TMatrix>
-void SparseMatrixProduct<TMatrix>::computeIntersection()
-{
-
-}
-
-template <class TMatrix>
-void SparseMatrixProduct<TMatrix>::computeProductFromIntersection()
-{
-    matrixC = (*matrixA) * (*matrixB);
-}
-
-template <class TMatrix>
-void SparseMatrixProduct<TMatrix>::invalidateIntersection()
-{
-    m_hasComputedIntersection = false;
-}
 
 }// sofa::linearalgebra
