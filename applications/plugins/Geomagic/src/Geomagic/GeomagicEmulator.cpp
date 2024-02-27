@@ -33,6 +33,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
 
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+
 #include <chrono>
 #include <thread>
 
@@ -58,7 +60,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
     
     if (m_driver->m_terminate == false)
     {
-        TaskScheduler::getInstance()->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
+        _taskScheduler->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
