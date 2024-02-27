@@ -39,6 +39,7 @@ using sofa::simulation::Colors;
 
 #include "resources/icons/iconmultinode.xpm"
 #include "resources/icons/iconnode.xpm"
+#include "resources/icons/iconprefab.xpm"
 #include "resources/icons/iconinfo.xpm"
 #include "resources/icons/iconwarning.xpm"
 #include "resources/icons/iconerror.xpm"
@@ -88,7 +89,11 @@ QPixmap* getPixmapForFlags(unsigned int flags, std::map<unsigned int, QPixmap*>&
     {
         if(flags&(1<<Colors::NODE))
         {
-            const char** icon = reinterpret_cast<const char**>(iconnode_xpm);
+            const char** icon = nullptr;
+            if(flags & (1 << Colors::PREFAB))
+                icon = reinterpret_cast<const char**>(iconprefab_xpm);
+            else
+                icon = reinterpret_cast<const char**>(iconnode_xpm);
 
             // Create a new image from pixmap
             const QImage timg(icon);
@@ -213,6 +218,9 @@ QPixmap* getPixmapForFlagsAndState(unsigned int typeFlags,
 QPixmap* getBaseNodePixmap(core::objectmodel::BaseNode* node, bool haveInfo, bool haveWarning, bool haveErrors)
 {
     unsigned int flags = 1 << Colors::NODE;
+    if(node->getClassName() == "Prefab")
+        flags |= 1 << Colors::PREFAB;
+
     return getPixmapForFlagsAndState(flags,
                                      node->getContext()->isSleeping(),
                                      haveInfo, haveWarning, haveErrors);
