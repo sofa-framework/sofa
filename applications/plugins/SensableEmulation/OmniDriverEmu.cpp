@@ -373,7 +373,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_base = sofa::core::objectmodel::New<OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
