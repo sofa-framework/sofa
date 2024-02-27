@@ -26,12 +26,13 @@
 #include <cstring>
 
 
-namespace sofa::simulation::Colors
+namespace sofa::simulation
 {
 
-enum
+typedef enum
 {
-    NODE,
+    NODE = 0,
+    PREFAB,
     OBJECT,
     CONTEXT,
     BMODEL,
@@ -51,14 +52,15 @@ enum
     LOADER ,
     CONFIGURATIONSETTING,
     ALLCOLORS
-};
+} Colors;
 
 // See http://www.graphviz.org/doc/info/colors.html
 // The following is mostly the "set312" colors
 
-static const char* COLOR[ALLCOLORS]=
+static const char* DEFAULT_COLOR[ALLCOLORS]=
 {
     /*Node                  =*/ "#dedede", // color 9
+    /*Prefab                =*/ "#dedede", // color 9
     /*Object                =*/ "#ffffff", // white
     /*Context               =*/ "#d7191c", // color spectral4/1
     /*BehaviorModel         =*/ "#93ff49", // color 7 (brighter)
@@ -79,30 +81,36 @@ static const char* COLOR[ALLCOLORS]=
     /*ConfigurationSetting  =*/ "#aaaaaa", // pale pink
 };
 
-inline const char* getColor(const char* classname)
+inline const char* getDefaultColor(unsigned int index, const char* defaultValue="")
 {
-    if (!strcmp(classname,"BaseNode")) return COLOR[NODE];
-    if (!strcmp(classname,"BaseObject")) return COLOR[OBJECT];
-    if (!strcmp(classname,"ContextObject")) return COLOR[CONTEXT];
-    if (!strcmp(classname,"BehaviorModel")) return COLOR[BMODEL];
-    if (!strcmp(classname,"CollisionModel")) return COLOR[CMODEL];
-    if (!strcmp(classname,"MechanicalState")) return COLOR[MMODEL];
-    if (!strcmp(classname,"ProjectiveConstraintSet")) return COLOR[PROJECTIVECONSTRAINTSET];
-    if (!strcmp(classname,"ConstraintSet")) return COLOR[CONSTRAINTSET];
-    if (!strcmp(classname,"InteractionForceField")) return COLOR[IFFIELD];
-    if (!strcmp(classname,"ForceField")) return COLOR[FFIELD];
-    if (!strcmp(classname,"BaseAnimationLoop")) return COLOR[SOLVER];
-    if (!strcmp(classname,"OdeSolver")) return COLOR[SOLVER];
-    if (!strcmp(classname,"CollisionPipeline")) return COLOR[COLLISION];
-    if (!strcmp(classname,"MechanicalMapping")) return COLOR[MMAPPING];
-    if (!strcmp(classname,"Mapping")) return COLOR[MAPPING];
-    if (!strcmp(classname,"Mass")) return COLOR[MASS];
-    if (!strcmp(classname,"Topology")) return COLOR[TOPOLOGY];
-    if (!strcmp(classname,"VisualModel")) return COLOR[VMODEL];
-    if (!strcmp(classname,"Loader")) return COLOR[LOADER];
-    if (!strcmp(classname,"ConfigurationSetting")) return COLOR[CONFIGURATIONSETTING];
-    return "";
+    if(index >= Colors::ALLCOLORS)
+        return defaultValue;
+    return DEFAULT_COLOR[index];
+}
 
+inline const char* getDefaultColor(const char* classname, const char* defaultValue="")
+{
+    if (!strcmp(classname,"BaseNode")) return DEFAULT_COLOR[NODE];
+    if (!strcmp(classname,"BaseObject")) return DEFAULT_COLOR[OBJECT];
+    if (!strcmp(classname,"ContextObject")) return DEFAULT_COLOR[CONTEXT];
+    if (!strcmp(classname,"BehaviorModel")) return DEFAULT_COLOR[BMODEL];
+    if (!strcmp(classname,"CollisionModel")) return DEFAULT_COLOR[CMODEL];
+    if (!strcmp(classname,"MechanicalState")) return DEFAULT_COLOR[MMODEL];
+    if (!strcmp(classname,"ProjectiveConstraintSet")) return DEFAULT_COLOR[PROJECTIVECONSTRAINTSET];
+    if (!strcmp(classname,"ConstraintSet")) return DEFAULT_COLOR[CONSTRAINTSET];
+    if (!strcmp(classname,"InteractionForceField")) return DEFAULT_COLOR[IFFIELD];
+    if (!strcmp(classname,"ForceField")) return DEFAULT_COLOR[FFIELD];
+    if (!strcmp(classname,"BaseAnimationLoop")) return DEFAULT_COLOR[SOLVER];
+    if (!strcmp(classname,"OdeSolver")) return DEFAULT_COLOR[SOLVER];
+    if (!strcmp(classname,"CollisionPipeline")) return DEFAULT_COLOR[COLLISION];
+    if (!strcmp(classname,"MechanicalMapping")) return DEFAULT_COLOR[MMAPPING];
+    if (!strcmp(classname,"Mapping")) return DEFAULT_COLOR[MAPPING];
+    if (!strcmp(classname,"Mass")) return DEFAULT_COLOR[MASS];
+    if (!strcmp(classname,"Topology")) return DEFAULT_COLOR[TOPOLOGY];
+    if (!strcmp(classname,"VisualModel")) return DEFAULT_COLOR[VMODEL];
+    if (!strcmp(classname,"Loader")) return DEFAULT_COLOR[LOADER];
+    if (!strcmp(classname,"ConfigurationSetting")) return DEFAULT_COLOR[CONFIGURATIONSETTING];
+    return defaultValue;
 }
 
 }

@@ -71,11 +71,10 @@ ExportDotVisitor::~ExportDotVisitor()
 /// Test if a node should be displayed
 bool ExportDotVisitor::display(Node* node, const char **color)
 {
-    using namespace Colors;
     if (!node) return false;
     if (showNode)
     {
-        if (color) *color = COLOR[NODE];
+        if (color) *color = getDefaultColor(NODE);
         return true;
     }
     else
@@ -85,42 +84,41 @@ bool ExportDotVisitor::display(Node* node, const char **color)
 /// Test if an object should be displayed
 bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **color)
 {
-    using namespace Colors;
     const char* c = nullptr;
     if (color==nullptr) color=&c;
     if (!obj) return false;
     if (!showObject) return false;
-    *color = COLOR[OBJECT];
+    *color = getDefaultColor(OBJECT);
     bool show = false;
     bool hide = false;
     if (obj->toBaseMechanicalState())
     {
-        if (showMechanicalState) { show = true; *color = COLOR[MMODEL]; }
+        if (showMechanicalState) { show = true; *color = getDefaultColor(MMODEL); }
         else hide = true;
     }
     if (obj->toBaseMass())
     {
-        if (showMass) { show = true; *color = COLOR[MASS]; }
+        if (showMass) { show = true; *color = getDefaultColor(MASS); }
         else hide = true;
     }
     if (obj->toTopology ())
     {
-        if (showTopology) { show = true; *color = COLOR[TOPOLOGY]; }
+        if (showTopology) { show = true; *color = getDefaultColor(TOPOLOGY); }
         else hide = true;
     }
     if (obj->toCollisionModel())
     {
-        if (showCollisionModel) { show = true; *color = COLOR[CMODEL]; }
+        if (showCollisionModel) { show = true; *color = getDefaultColor(CMODEL); }
         else hide = true;
     }
     if (obj->toBaseMapping())
     {
-        if (showMapping) { show = true; *color = COLOR[MAPPING]; }
+        if (showMapping) { show = true; *color = getDefaultColor(MAPPING); }
         else hide = true;
     }
     if (obj->toContextObject())
     {
-        if (showContext) { show = true; *color = COLOR[CONTEXT]; }
+        if (showContext) { show = true; *color = getDefaultColor(CONTEXT); }
         else hide = true;
     }
     if (obj->toPipeline()
@@ -129,44 +127,44 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
         || obj->toContactManager()
         || obj->toCollisionGroupManager())
     {
-        if (showCollisionPipeline) { show = true; *color = COLOR[COLLISION]; }
+        if (showCollisionPipeline) { show = true; *color = getDefaultColor(COLLISION); }
         else hide = true;
     }
     if (obj->toOdeSolver())
     {
-        if (showSolver) { show = true; *color = COLOR[SOLVER]; }
+        if (showSolver) { show = true; *color = getDefaultColor(SOLVER); }
         else hide = true;
     }
     if (obj->toBaseInteractionForceField() &&
         obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
     {
-        if (showInteractionForceField) { show = true; *color = COLOR[IFFIELD]; }
+        if (showInteractionForceField) { show = true; *color = getDefaultColor(IFFIELD); }
         else hide = true;
     }
     else if (obj->toBaseForceField())
     {
-        if (showForceField) { show = true; *color = COLOR[FFIELD]; }
+        if (showForceField) { show = true; *color = getDefaultColor(FFIELD); }
         else hide = true;
     }
     if (obj->toBaseProjectiveConstraintSet())
     {
-        if (showConstraint) { show = true; *color = COLOR[PROJECTIVECONSTRAINTSET]; }
+        if (showConstraint) { show = true; *color = getDefaultColor(PROJECTIVECONSTRAINTSET); }
         else hide = true;
     }
     if (obj->toBaseConstraintSet())
     {
-        if (showConstraint) { show = true; *color = COLOR[CONSTRAINTSET]; }
+        if (showConstraint) { show = true; *color = getDefaultColor(CONSTRAINTSET); }
         else hide = true;
     }
     if (obj->toBehaviorModel())
     {
-        if (showBehaviorModel) { show = true; *color = COLOR[BMODEL]; }
+        if (showBehaviorModel) { show = true; *color = getDefaultColor(BMODEL); }
         else hide = true;
     }
 
     if (obj->toVisualModel() && !hide && !show)
     {
-        if (showVisualModel) { show = true; *color = COLOR[VMODEL]; }
+        if (showVisualModel) { show = true; *color = getDefaultColor(VMODEL); }
         else hide = true;
     }
 
