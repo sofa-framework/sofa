@@ -60,7 +60,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
     
     if (m_driver->m_terminate == false)
     {
-        _taskScheduler->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
+        m_driver->_taskScheduler->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
@@ -97,8 +97,6 @@ void GeomagicEmulator::clearDevice()
 
 void GeomagicEmulator::initDevice()
 {
-    unsigned int mNbThread = 2;
-
     _taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(_taskScheduler);
     _taskScheduler->init();
