@@ -383,7 +383,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_end = sofa::core::objectmodel::New<OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -542,7 +542,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='H' || kpe->getKey()=='h')
         {
             msg_info() << "emulated button 1 pressed";
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                                                              sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
@@ -552,7 +552,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='J' || kpe->getKey()=='j')
         {
             std::cout << "emulated button 2 pressed" << std::endl;
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                                                              sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
@@ -569,7 +569,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 || kre->getKey()=='J' || kre->getKey()=='j')
         {
             msg_info() << "emulated button released" ;
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);
             sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(getContext()->getRootContext()); // access to current node
