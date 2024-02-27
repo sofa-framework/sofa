@@ -78,7 +78,7 @@ sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for Mat
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative)
 target_link_libraries(${PROJECT_NAME} PRIVATE metis)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
