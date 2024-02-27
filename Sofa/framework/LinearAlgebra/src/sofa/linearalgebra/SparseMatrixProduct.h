@@ -74,8 +74,9 @@ public:
 
     void invalidateIntersection();
 
-    SparseMatrixProduct(Lhs* a, Rhs* b) : m_lhs(a), m_rhs(b) {}
+    SparseMatrixProduct(Lhs* lhs, Rhs* rhs) : m_lhs(lhs), m_rhs(rhs) {}
     SparseMatrixProduct() = default;
+    virtual ~SparseMatrixProduct() = default;
 
     struct Intersection
     {
@@ -91,11 +92,11 @@ public:
     };
 
 protected:
-    ProductResult m_productResult; /// Result of A*B
+    ProductResult m_productResult; /// Result of LHS * RHS
 
     bool m_hasComputedIntersection { false };
     void computeIntersection();
-    void computeProductFromIntersection();
+    virtual void computeProductFromIntersection();
 
     Intersection m_intersectionAB;
 
