@@ -57,8 +57,8 @@ bool WorkerThread::isFinished() const
 
 bool WorkerThread::start(DefaultTaskScheduler *const &taskScheduler)
 {
+    SOFA_UNUSED(taskScheduler);
     assert(taskScheduler);
-    m_taskScheduler = taskScheduler;
     m_currentStatus = nullptr;
 
     return true;
@@ -66,7 +66,7 @@ bool WorkerThread::start(DefaultTaskScheduler *const &taskScheduler)
 
 std::thread *WorkerThread::create_and_attach(DefaultTaskScheduler *const &taskScheduler)
 {
-    SOFA_UNUSED(taskScheduler);
+    m_taskScheduler = taskScheduler;
     m_stdThread = std::thread([this] { run(); });
     return &m_stdThread;
 }
@@ -89,7 +89,7 @@ void WorkerThread::run(void)
     {
         Idle();
 
-        while (m_taskScheduler->m_mainTaskStatus != nullptr)
+        while (!m_taskScheduler->testMainTaskStatus(nullptr))
         {
 
             doWork(nullptr);
@@ -133,7 +133,7 @@ void WorkerThread::doWork(Task::Status *status)
         }
 
         // check if main work is finished
-        if (m_taskScheduler->m_mainTaskStatus == nullptr)
+        if (m_taskScheduler->testMainTaskStatus(nullptr))
             return;
 
         if (!stealTask(&task))
@@ -173,9 +173,9 @@ void WorkerThread::workUntilDone(Task::Status *status)
         doWork(status);
     }
 
-    if (m_taskScheduler->m_mainTaskStatus == status)
+    if (m_taskScheduler->testMainTaskStatus(status))
     {
-        m_taskScheduler->m_mainTaskStatus = nullptr;
+        m_taskScheduler->setMainTaskStatus(nullptr);
         m_taskScheduler->m_workerThreadsIdle = true;
     }
 }
@@ -211,9 +211,9 @@ bool WorkerThread::pushTask(Task *task)
     }
 
 
-    if (!m_taskScheduler->m_mainTaskStatus)
+    if (!m_taskScheduler->testMainTaskStatus(nullptr))
     {
-        m_taskScheduler->m_mainTaskStatus = task->getStatus();
+        m_taskScheduler->setMainTaskStatus(task->getStatus());
         m_taskScheduler->wakeUpWorkers();
     }
 

@@ -35,14 +35,14 @@ const bool DefaultTaskSchedulerRegistered = MainTaskSchedulerFactory::registerSc
 class StdTaskAllocator : public Task::Allocator
 {
 public:
-            
+
     void* allocate(std::size_t sz) final
     {
         return ::operator new(sz);
     }
-            
+
     void free(void* ptr, std::size_t sz) final
-    {  
+    {
         SOFA_UNUSED(sz);
         ::operator delete(ptr);
     }
@@ -52,28 +52,28 @@ DefaultTaskScheduler* DefaultTaskScheduler::create()
 {
     return new DefaultTaskScheduler();
 }
-        
+
 DefaultTaskScheduler::DefaultTaskScheduler()
 : TaskScheduler()
 {
     m_isInitialized = false;
     m_threadCount = 0;
     m_isClosing = false;
-            
+
     // init global static thread local var
     {
         _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");// new WorkerThread(this, 0, "Main  ");
     }
 }
-        
+
 DefaultTaskScheduler::~DefaultTaskScheduler()
 {
-    if ( m_isInitialized ) 
+    if ( m_isInitialized )
     {
         stop();
     }
 }
-        
+
 WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 {
     const auto thread =_threads.find(id);
@@ -83,13 +83,13 @@ WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
     }
     return thread->second;
 }
-        
+
 Task::Allocator* DefaultTaskScheduler::getTaskAllocator()
 {
     static StdTaskAllocator defaultTaskAllocator;
     return &defaultTaskAllocator;
 }
-        
+
 void DefaultTaskScheduler::init(const unsigned int NbThread )
 {
     if ( m_isInitialized )
@@ -100,26 +100,26 @@ void DefaultTaskScheduler::init(const unsigned int NbThread )
         }
         stop();
     }
-            
+
     start(NbThread);
 }
-        
+
 void DefaultTaskScheduler::start(const unsigned int NbThread )
 {
     stop();
-            
+
     m_isClosing = false;
     m_workerThreadsIdle = true;
-    m_mainTaskStatus	= nullptr;          
-            
+    m_mainTaskStatus	= nullptr;
+
     // default number of thread: only physical cores. no advantage from hyperthreading.
     m_threadCount = GetHardwareThreadsCount();
-            
+
     if ( NbThread > 0 )//&& NbThread <= MAX_THREADS  )
     {
         m_threadCount = NbThread;
     }
-            
+
     /* start worker threads */
     for( unsigned int i=1; i<m_threadCount; ++i)
     {
@@ -128,24 +128,24 @@ void DefaultTaskScheduler::start(const unsigned int NbThread )
         _threads[thread->getId()] = thread;
         thread->start(this);
     }
-            
+
     m_workerThreadCount = m_threadCount;
     m_isInitialized = true;
 }
-        
-        
-        
+
+
+
 void DefaultTaskScheduler::stop()
 {
     m_isClosing = true;
-            
+
     if ( m_isInitialized )
     {
         // wait for all
         WaitForWorkersToBeReady();
         wakeUpWorkers();
         m_isInitialized = false;
-                
+
         for (auto [threadId, workerThread] : _threads)
         {
             // if this is the main thread continue
@@ -166,7 +166,7 @@ void DefaultTaskScheduler::stop()
             delete workerThread;
             workerThread = nullptr;
         }
-                
+
         m_threadCount = 1;
         m_workerThreadCount = 1;
 
@@ -175,7 +175,7 @@ void DefaultTaskScheduler::stop()
         _threads.clear();
         _threads[std::this_thread::get_id()] = mainThread;
     }
-            
+
     return;
 }
 
@@ -189,37 +189,47 @@ const char* DefaultTaskScheduler::getCurrentThreadName()
     const WorkerThread* thread = getCurrent();
     return thread->getName();
 }
-        
+
 int DefaultTaskScheduler::getCurrentThreadType()
 {
     const WorkerThread* thread = getCurrent();
     return thread->getType();
 }
-        
+
 bool DefaultTaskScheduler::addTask(Task* task)
 {
     WorkerThread* thread = getCurrent();
     return thread->addTask(task);
 }
-        
+
 void DefaultTaskScheduler::workUntilDone(Task::Status* status)
 {
     WorkerThread* thread = getCurrent();
     thread->workUntilDone(status);
 }
-        
+
 void DefaultTaskScheduler::wakeUpWorkers()
 {
     {
         std::lock_guard guard(m_wakeUpMutex);
         m_workerThreadsIdle = false;
-    }								
+    }
     m_wakeUpEvent.notify_all();
 }
-        
+
 void DefaultTaskScheduler::WaitForWorkersToBeReady()
 {
     m_workerThreadsIdle = true;
+}
+
+void DefaultTaskScheduler::setMainTaskStatus(const Task::Status* mainTaskStatus)
+{
+    m_mainTaskStatus.store(mainTaskStatus, std::memory_order::memory_order_relaxed);
+}
+
+bool DefaultTaskScheduler::testMainTaskStatus(const Task::Status* status)
+{
+    return m_mainTaskStatus.load(std::memory_order::memory_order_relaxed) == status;
 }
 
 } // namespace sofa::simulation
