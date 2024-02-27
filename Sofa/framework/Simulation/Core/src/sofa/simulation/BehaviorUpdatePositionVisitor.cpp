@@ -21,10 +21,9 @@
 ******************************************************************************/
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/Node.h>
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 void BehaviorUpdatePositionVisitor::processBehaviorModel(simulation::Node* , core::BehaviorModel* b)
@@ -41,8 +40,7 @@ Visitor::Result BehaviorUpdatePositionVisitor::processNodeTopDown(simulation::No
 }
 
 
+} // namespace sofa::simulation
 
-} // namespace simulation
 
-} // namespace sofa
 

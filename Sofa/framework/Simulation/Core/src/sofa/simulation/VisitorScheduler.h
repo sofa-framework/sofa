@@ -28,10 +28,8 @@ SOFA_HEADER_DEPRECATED_VISITORSCHEDULER()
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class Visitor;
@@ -64,8 +62,7 @@ private:
 	
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

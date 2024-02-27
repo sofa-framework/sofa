@@ -23,13 +23,8 @@
 
 #include <sofa/core/objectmodel/Data.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /// Specialization for reading strings
@@ -64,10 +59,6 @@ template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 template class SOFA_CORE_API Data< bool >;
 template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 
-} // objectmodel
-
-} // core
-
-} // sofa
+}
 
 

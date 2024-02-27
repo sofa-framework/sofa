@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/ClassInfo.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 std::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
@@ -43,9 +38,9 @@ ClassInfo::~ClassInfo()
 }
 
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+
 

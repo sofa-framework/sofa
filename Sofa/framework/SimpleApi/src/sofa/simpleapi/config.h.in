@@ -1,5 +1,5 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
+*                 SOFA,  Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -19,71 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_MESHSTEPLOADERPLUGIN_API
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#define SOFASIMPLEAPI_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFA_SIMPLEAPI
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SIMPLEAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#ifdef SOFA_BUILD_MESHSTEPLOADERPLUGIN
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SIMPLEAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-#endif
-
-namespace sofa
-{
-
-namespace component
-{
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_MESHSTEPLOADERPLUGIN_API void initExternalModule();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleName();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleLicense();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleVersion();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleDescription();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleName()
-{
-    return "Plugin MeshSTEPLoader";
-}
-
-const char* getModuleVersion()
-{
-    return "0.5";
-}
-
-const char* getModuleDescription()
-{
-    return "Load STEP files into SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "MeshSTEPLoader";
-}
-}
-
-}
-

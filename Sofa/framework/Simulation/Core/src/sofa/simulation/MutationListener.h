@@ -26,10 +26,8 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class Node;
@@ -75,8 +73,7 @@ class SOFA_SIMULATION_CORE_API MutationListener
                                core::objectmodel::BaseObject *slave);
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

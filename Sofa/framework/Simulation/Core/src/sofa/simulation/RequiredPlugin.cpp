@@ -67,7 +67,10 @@ void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
     Inherit1::parse(arg);
     if(loadPlugin())
+    {
         d_componentState = sofa::core::objectmodel::ComponentState::Valid;
+        d_loadedPlugins.cleanDirty();
+    }
 }
 
 bool RequiredPlugin::loadPlugin()

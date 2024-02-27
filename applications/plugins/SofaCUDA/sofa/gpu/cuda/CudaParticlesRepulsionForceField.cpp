@@ -25,13 +25,8 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaSphFluid/ParticlesRepulsionForceField.inl>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int ParticlesRepulsionForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -41,8 +36,8 @@ int ParticlesRepulsionForceFieldCudaClass = core::RegisterObject("Supports GPU-s
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

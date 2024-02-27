@@ -13,11 +13,8 @@
 #include <SofaSphFluid/shaders/spriteShade.cppglsl>
 #include <SofaSphFluid/shaders/spriteFinalPass.cppglsl>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 using namespace sofa::type;
@@ -777,6 +774,6 @@ void OglFluidModel<DataTypes>::updateVertexBuffer()
 
 
 }
-}
-}
+
+
 

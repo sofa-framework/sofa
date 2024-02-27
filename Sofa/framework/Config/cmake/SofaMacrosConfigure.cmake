@@ -237,8 +237,10 @@ function(sofa_add_generic_external directory name type)
         # Copy ExternalProjectConfig.cmake.in in build dir for post-pull recovery in src dir
         file(COPY ${directory}/ExternalProjectConfig.cmake.in DESTINATION ${fetched_dir})
 
+
         # Execute commands to fetch content
-        message("  Pulling ...")
+        message("  Pulling reference ${ARG_GIT_REF}...")
+
         file(WRITE "${fetched_dir}/logs.txt" "") # Empty log file
         execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
             WORKING_DIRECTORY "${fetched_dir}"

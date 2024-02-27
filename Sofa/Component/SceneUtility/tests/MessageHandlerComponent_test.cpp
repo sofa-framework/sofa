@@ -41,7 +41,7 @@ using sofa::component::sceneutility::MessageHandlerComponent ;
 
 using sofa::helper::logging::MessageDispatcher ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 bool perTestInit()
 {

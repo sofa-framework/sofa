@@ -25,10 +25,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -49,7 +47,7 @@ public:
     virtual void eval() = 0;
 };
 
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core
+
 
 #endif //SOFA_CORE_DEVBASEMONITOR_H

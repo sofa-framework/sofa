@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <SofaSimpleGUI/config.h>
 
-namespace sofa
-{
 
-namespace component
+namespace sofa::component
 {
 
 	//Here are just several convenient functions to help user to know what contains the plugin
@@ -79,4 +77,4 @@ namespace component
 
 } 
 
-} 
+

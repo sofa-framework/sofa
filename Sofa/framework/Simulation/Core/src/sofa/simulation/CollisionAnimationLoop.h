@@ -29,10 +29,8 @@
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -86,8 +84,7 @@ protected:
     const Solvers& getSolverSequence();
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif /* SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_H */

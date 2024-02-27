@@ -37,13 +37,8 @@
 #include <sofa/gl/gl.h>
 #endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 
@@ -790,10 +785,7 @@ void SpatialGridContainer<DataTypes>::draw(const core::visual::VisualParams* vpa
         grid->draw(vparams);
 }
 
-} // namespace container
+} // namespace sofa::component::container
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

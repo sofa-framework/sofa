@@ -27,10 +27,8 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 using type::Mat;
@@ -2895,8 +2893,7 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif // SOFA_HELPER_DECOMPOSE_INL

@@ -24,10 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace test
+namespace sofa::test
 {
     
 ComponentA::ComponentA()
@@ -43,6 +40,6 @@ ComponentA::~ComponentA()
 int ComponentAClass = core::RegisterObject("Component A").add< ComponentA >();
 
 
-} // namespace test
+} // namespace sofa::test
 
-} // namespace sofa
+

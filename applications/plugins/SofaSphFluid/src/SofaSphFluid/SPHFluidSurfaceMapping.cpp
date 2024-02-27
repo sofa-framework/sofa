@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -45,11 +39,9 @@ int SPHFluidSurfaceMappingClass = core::RegisterObject("SPHFluidSurfaceMappingCl
 template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3Types, Vec3Types >;
 
 
+} // namespace sofa::component::mapping
 
 
-} // namespace mapping
 
-} // namespace component
 
-} // namespace sofa
 

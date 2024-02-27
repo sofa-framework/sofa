@@ -144,16 +144,15 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
 {
     std::stringstream errorStream;
 
-    for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
-        outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
+    for (const auto& [models, output] : outputsMap)
     {
-        const auto contactInsert = contactMap.insert(ContactMap::value_type(outputsIt->first, core::collision::Contact::SPtr()));
+        const auto contactInsert = contactMap.insert(ContactMap::value_type(models, core::collision::Contact::SPtr()));
         const ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second) //insertion success
         {
             // new contact
-            core::CollisionModel* model1 = outputsIt->first.first;
-            core::CollisionModel* model2 = outputsIt->first.second;
+            core::CollisionModel* model1 = models.first;
+            core::CollisionModel* model2 = models.second;
 
             dmsg_error_when(model1 == nullptr || model2 == nullptr) << "Contact found with an invalid collision model";
 
@@ -182,7 +181,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
                     setContactTags(model1, model2, contact);
                     contact->f_printLog.setValue(notMuted());
                     contact->init();
-                    contact->setDetectionOutputs(outputsIt->second);
+                    contact->setDetectionOutputs(output);
                     ++nbContact;
                 }
             }
@@ -190,7 +189,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
         else
         {
             // pre-existing and still active contact
-            contactIt->second->setDetectionOutputs(outputsIt->second);
+            contactIt->second->setDetectionOutputs(output);
             ++nbContact;
         }
     }

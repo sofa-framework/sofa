@@ -26,10 +26,8 @@
 #include <vector>
 #include <string>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 class SOFA_HELPER_API BackTrace
@@ -53,8 +51,7 @@ protected:
     static void sig(int sig);
 };
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

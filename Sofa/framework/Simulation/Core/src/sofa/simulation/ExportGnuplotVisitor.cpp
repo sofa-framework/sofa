@@ -25,10 +25,8 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/Mass.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
@@ -88,7 +86,7 @@ simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation:
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

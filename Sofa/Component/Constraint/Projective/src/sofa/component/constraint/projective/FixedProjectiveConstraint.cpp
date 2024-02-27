@@ -77,20 +77,24 @@ void FixedProjectiveConstraint<Rigid3Types>::draw(const core::visual::VisualPara
 
     if (d_fixAll.getValue())
     {
-        for (unsigned i = 0; i < x.size(); i++)
-            points.push_back(x[i].getCenter());
+        for (const auto& xi : x)
+            points.push_back(xi.getCenter());
     }
     else
     {
         if( x.size() < indices.size() )
         {
             for (unsigned i=0; i<x.size(); i++ )
+            {
                 points.push_back(x[indices[i]].getCenter());
+            }
         }
         else
         {
-            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                points.push_back(x[*it].getCenter());
+            for (const unsigned int index : indices)
+            {
+                points.push_back(x[index].getCenter());
+            }
         }
     }
 
@@ -121,13 +125,13 @@ void FixedProjectiveConstraint<Rigid2Types>::draw(const core::visual::VisualPara
 
     if(d_fixAll.getValue())
     {
-        for (unsigned i=0; i<x.size(); i++ )
-            vertices.emplace_back(x[i].getCenter()[0], x[i].getCenter()[1], 0.0);
+        for (const auto& xi : x)
+            vertices.emplace_back(xi.getCenter()[0], xi.getCenter()[1], 0.0);
     }
     else
     {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            vertices.emplace_back(x[*it].getCenter()[0], x[*it].getCenter()[1], 0.0);
+        for (const unsigned int index : indices)
+            vertices.emplace_back(x[index].getCenter()[0], x[index].getCenter()[1], 0.0);
     }
 
     vparams->drawTool()->drawPoints(vertices, 10, color);

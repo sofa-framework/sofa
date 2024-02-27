@@ -31,13 +31,7 @@
 #include <cmath>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -116,10 +110,7 @@ extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<sofa::defa
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 
-} // namespace forcefield
+} // namespace sofa::component::forcefield
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H

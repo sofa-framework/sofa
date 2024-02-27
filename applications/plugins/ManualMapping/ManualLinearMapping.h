@@ -30,13 +30,8 @@
 #include <memory>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -125,10 +120,7 @@ extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::V
 
 #endif
 
-} // namespace mapping
+} // namespace sofa::component::mapping
 
-} // namespace component
-
-} // namespace sofa
 
 #endif
