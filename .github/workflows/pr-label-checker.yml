@@ -24,7 +24,7 @@ jobs:
           sleep 10
       - name: Check Labels and Add Comment
         id: check_labels_and_comment
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
