@@ -97,8 +97,9 @@ void GeomagicEmulator::initDevice()
 {
     unsigned int mNbThread = 2;
 
-    _taskScheduler = sofa::simulation::TaskScheduler::getInstance();
-    _taskScheduler->init(mNbThread);
+    _taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(_taskScheduler);
+    _taskScheduler->init();
     _taskScheduler->addTask(new GeomagicEmulatorTask(this, &_simStepStatus));
 
     double init_jointAngles[3] = { 0.0, 0.26889, -0.370813 };
