@@ -211,7 +211,7 @@ bool WorkerThread::pushTask(Task *task)
     }
 
 
-    if (!m_taskScheduler->testMainTaskStatus(nullptr))
+    if (m_taskScheduler->testMainTaskStatus(nullptr))
     {
         m_taskScheduler->setMainTaskStatus(task->getStatus());
         m_taskScheduler->wakeUpWorkers();
