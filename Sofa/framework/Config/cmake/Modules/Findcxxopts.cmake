@@ -38,12 +38,7 @@ macro(_cxxopts_check_version)
   endif()
 endmacro()
 
-if(TARGET cxxopts::cxxopts)
-  if(cxxopts_INCLUDE_DIR AND NOT DEFINED cxxopts_VERSION)
-  _cxxopts_check_version()
-  endif()
-  set(cxxopts_FOUND ${cxxopts_VERSION_OK})
-else()
+if(NOT TARGET cxxopts::cxxopts)
 
   if(NOT cxxopts_INCLUDE_DIR)
     find_path(cxxopts_INCLUDE_DIR
