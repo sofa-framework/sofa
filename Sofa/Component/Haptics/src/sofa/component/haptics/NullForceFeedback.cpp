@@ -36,7 +36,7 @@ void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SRea
     fx = fy = fz = 0.0;
 }
 
-void NullForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &/*world_H_tool*/, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
+void NullForceFeedback::computeWrench(const sofa::type::Transform<SReal> &/*world_H_tool*/, const sofa::type::SpatialVector<SReal> &/*V_tool_world*/, sofa::type::SpatialVector<SReal> &W_tool_world )
 {
     W_tool_world.clear();
 }

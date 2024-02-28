@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
-#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/type/Transform.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/fwd.h>
 namespace sofa::component::container
@@ -45,7 +45,7 @@ class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedHierarchyContainer : public vi
 public:
     SOFA_CLASS(ArticulatedHierarchyContainer,core::objectmodel::BaseObject);
 
-    typedef defaulttype::SolidTypes<SReal>::Transform Transform;
+    typedef sofa::type::Transform<SReal> Transform;
 
 protected:
     ArticulatedHierarchyContainer();
