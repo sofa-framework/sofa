@@ -102,7 +102,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Ba
     void createScene(double g, double M, double m, double x0_x, double v0_y)
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        assert(sofa::simulation::getSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
 
         // Create the scene
