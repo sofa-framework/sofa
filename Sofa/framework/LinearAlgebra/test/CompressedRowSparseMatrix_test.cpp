@@ -306,9 +306,9 @@ TEST(CompressedRowSparseMatrix, copyNonZerosFrom3x3Blocks)
 
     B.copyNonZeros(A);
 
-    for (sofa::Index r = 0; r < A.rowSize(); ++r)
+    for (sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>>::Index r = 0; r < A.rowSize(); ++r)
     {
-        for (sofa::Index c = 0; c < A.colSize(); ++c)
+        for (sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Index c = 0; c < A.colSize(); ++c)
         {
             EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal) << "r = " << r << ", c = " << c;
         }
@@ -334,9 +334,9 @@ TEST(CompressedRowSparseMatrix, copyNonZerosFrom1x3Blocks)
 
     B.copyNonZeros(A);
 
-    for (unsigned int r = 0; r < A.rowSize(); ++r)
+    for (sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Vec<3, SReal>>::Index r = 0; r < A.rowSize(); ++r)
     {
-        for (unsigned int c = 0; c < A.colSize(); ++c)
+        for (sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Index c = 0; c < A.colSize(); ++c)
         {
             EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal) << "r = " << r << ", c = " << c;
         }

@@ -49,9 +49,6 @@ GeomagicEmulatorTask::GeomagicEmulatorTask(GeomagicEmulator* ptr, CpuTask::Statu
 
 GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
 {
-    Vector3 currentForce;
-    Vector3 pos_in_world;
-    
     m_driver->lockPosition.lock();
     m_driver->m_simuData = m_driver->m_hapticData;
     m_driver->lockPosition.unlock();

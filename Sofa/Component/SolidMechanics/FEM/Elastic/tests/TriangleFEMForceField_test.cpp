@@ -656,7 +656,7 @@ public:
             return;
 
         const int nbrTest = 10;
-        double diffTimeMs = 0;
+        //double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
@@ -675,7 +675,7 @@ public:
             if (timeMax < diffTimed)
                 timeMax = diffTimed;
 
-            diffTimeMs += diffTimed;
+            //diffTimeMs += diffTimed;
             sofa::simulation::node::reset(m_root.get());
         }
 

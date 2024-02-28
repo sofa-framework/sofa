@@ -157,7 +157,7 @@ void CarvingManager::doCarve()
             continue;
         }
 
-        int nbelems = 0;
+        [[maybe_unused]] int nbelems = 0;
         type::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)

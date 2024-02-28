@@ -65,8 +65,6 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     typedef MeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef MeshTopology::SeqHexahedra  SeqHexahedra;
     typedef MeshTopology::SeqEdges     SeqEdges;
-    typedef MeshTopology::Tetra Tetra;
-    typedef MeshTopology::Hexa Hexa;
 
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
@@ -151,8 +149,6 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     typedef MeshTopology::SeqTriangles SeqTriangles;
     typedef MeshTopology::SeqQuads     SeqQuads;
     typedef MeshTopology::SeqEdges     SeqEdges;
-    typedef MeshTopology::Triangle     Triangle;
-    typedef MeshTopology::Quad         Quad;
 
     std::map<Edge,unsigned int> edgeMap;
     unsigned int edgeIndex;
