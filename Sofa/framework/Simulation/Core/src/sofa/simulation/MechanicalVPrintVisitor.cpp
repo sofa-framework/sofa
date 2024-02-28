@@ -23,10 +23,9 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 using namespace sofa::core;
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 
@@ -101,6 +100,6 @@ Visitor::Result DofPrintVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

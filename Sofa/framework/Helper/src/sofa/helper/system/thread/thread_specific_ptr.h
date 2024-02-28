@@ -36,16 +36,8 @@
 #define SOFA_TLS_PTHREAD
 #endif
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 template<class T> class thread_specific_ptr;
@@ -115,12 +107,7 @@ public:
 #error thread local storage is not supported on your platform
 #endif
 
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
-
-} // namespace helper
-
-} // namespace sofa
 
 #endif

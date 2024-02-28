@@ -24,13 +24,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 int ParticleSourceClass = core::RegisterObject("Parametrable particle generator")
@@ -44,5 +39,5 @@ template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2Types>;
 
 
 }
-}
-}
+
+

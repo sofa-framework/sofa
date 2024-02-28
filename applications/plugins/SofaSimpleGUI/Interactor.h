@@ -6,9 +6,8 @@
 #include "PickedPoint.h"
 
 
-
-namespace sofa{
-namespace simplegui{
+namespace sofa::simplegui
+{
 
 class SofaScene;
 
@@ -54,6 +53,6 @@ public:
 };
 
 }
-}
+
 
 #endif // SOFA_Interactor_H

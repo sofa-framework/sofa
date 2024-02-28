@@ -32,11 +32,8 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/gl/component/shader/OglVariable.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 /**
@@ -97,11 +94,7 @@ extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaultty
 
 #endif
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel
 
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

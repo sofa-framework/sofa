@@ -29,13 +29,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/trait/Rebind.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 template<class DataTypes>
@@ -132,7 +127,7 @@ public:
     Data< Real > d_delay; ///< Delay between particles creation
     Data< Real > d_start; ///< Source starting time
     Data< Real > d_stop; ///< Source stopping time
-    Data< bool > d_canHaveEmptyVector;
+    Data< bool > d_addNoise; ///< Will add random value to the radius of new created particles
 
 protected:    
     size_t m_numberParticles; ///< Number particles given by the initial particles size
@@ -149,11 +144,8 @@ extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec3T
 extern template class SOFA_SPH_FLUID_API ParticleSource<sofa::defaulttype::Vec2Types>;
 #endif
 
-} // namespace misc
+} // namespace sofa::component::misc
 
-} // namespace component
-
-} // namespace sofa
 
 #endif
 

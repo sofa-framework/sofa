@@ -28,13 +28,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
@@ -84,10 +79,7 @@ protected:
     };
 };
 
-} // namespace collision
+} // namespace sofa::component::collision
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

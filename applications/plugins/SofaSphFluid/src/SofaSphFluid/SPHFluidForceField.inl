@@ -29,13 +29,8 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -554,10 +549,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     colorVector.clear();
 }
 
-} // namespace forcefield
+} // namespace sofa::component::forcefield
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL

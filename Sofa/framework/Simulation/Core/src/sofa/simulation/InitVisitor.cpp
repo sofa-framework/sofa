@@ -25,10 +25,8 @@
 #include <sofa/type/BoundingBox.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -69,8 +67,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 }
 
 
+} // namespace sofa::simulation
 
-} // namespace simulation
 
-} // namespace sofa
 

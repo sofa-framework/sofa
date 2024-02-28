@@ -26,9 +26,9 @@
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 #include <sofa/core/VecId.h>
-namespace sofa
-{
-namespace modeling
+
+
+namespace sofa::modeling
 {
 
 typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
@@ -40,8 +40,6 @@ typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
 /// mapped ones, depending on the flag.
 SOFA_SCENECREATOR_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
 
-}// modeling
-
-}// sofa
+}
 
 #endif

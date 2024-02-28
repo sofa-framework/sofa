@@ -19,7 +19,7 @@
         <GIDMeshLoader name="loader" filename="mesh/tripod.gidmsh" />
         <MeshTopology src="@loader"/>
         <MechanicalObject/>
-        <UniformMass totalMass=0.035/>
+        <UniformMass totalMass="0.035"/>
         <BoxROI name="roi" box="-10 -10 -10 10 10 10" drawBoxes="1"/>
         <FixedProjectiveConstraint indices="@roi.indices"/>
         <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.45"/>

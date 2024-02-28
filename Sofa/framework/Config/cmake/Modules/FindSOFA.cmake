@@ -146,7 +146,6 @@ list(APPEND SOFA_INCLUDE_OTHER_DIRS
     ${SOFA_INCLUDE_EXTLIBS}/taucs
     ${SOFA_INCLUDE_EXTLIBS}/taucs_mt
     ${SOFA_INCLUDE_EXTLIBS}/taucs-svn
-    ${SOFA_INCLUDE_EXTLIBS}/tinyxml
     ${SOFA_INCLUDE_EXTLIBS}/VRPN
     ${SOFA_INCLUDE_EXTLIBS}/wiiuse
     )
@@ -330,7 +329,6 @@ list(APPEND SOFA_LIB_EXT_NAME
     qwt         SOFA_LIB_QWT
     miniFlowVR  SOFA_LIB_MINI_FLOWVR
     newmat      SOFA_LIB_NEWMAT
-    tinyxml     SOFA_LIB_TINYXML
     ${SOFA_LIB_MSVC}
     )
 

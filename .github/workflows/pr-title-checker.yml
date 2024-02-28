@@ -1,16 +1,21 @@
 name: PR check - Title
 on:
   pull_request:
-    types: [opened, synchronize, edited, reopened]
+    types:
+      - opened
+      - synchronize
+      - edited
+      - reopened
 
 jobs:
   check_title:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'sofa-framework' }}
+
     steps:
     - name: Check Pull Request Title
       id: title_check
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

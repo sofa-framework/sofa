@@ -59,13 +59,8 @@ using sofa::helper::system::FileSystem;
 #define ON_WIN32 false
 #endif // WIN32
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 // replacing every occurences of "//"  by "/"
 std::string cleanPath( const std::string& path )
@@ -358,9 +353,9 @@ const std::string FileRepository::getTempPath() const
     return fs::temp_directory_path().string();
 }
 
-} // namespace system
+} // namespace sofa::helper::system
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

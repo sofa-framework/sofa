@@ -29,10 +29,7 @@
 SOFA_HEADER_DEPRECATED_LOCALSTORAGE()
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -74,8 +71,7 @@ public:
     virtual const char* getClassName() const { return "CactusStackStorage"; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

@@ -24,6 +24,7 @@
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/component/solidmechanics/spring/LinearSpring.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
@@ -34,39 +35,6 @@
 
 namespace sofa::component::solidmechanics::spring
 {
-
-/// This class contains the description of one linear spring
-template<class T>
-class LinearSpring
-{
-public:
-    typedef T Real;
-    sofa::Index  m1, m2;    ///< the two extremities of the spring: masses m1 and m2
-    Real ks;                ///< spring stiffness
-    Real kd;                ///< damping factor
-    Real initpos;           ///< rest length of the spring
-    bool elongationOnly;    ///< only forbid elongation, not compression
-    bool enabled;           ///< false to disable this spring (i.e. broken)
-
-    LinearSpring(sofa::Index m1=0, sofa::Index m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
-        : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos), elongationOnly(noCompression), enabled(enabled)
-    {
-    }
-
-    inline friend std::istream& operator >> ( std::istream& in, LinearSpring<Real>& s )
-    {
-        in>>s.m1>>s.m2>>s.ks>>s.kd>>s.initpos;
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
-    {
-        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos;
-        return out;
-    }
-
-};
-
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
@@ -201,7 +169,6 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec1Types>;

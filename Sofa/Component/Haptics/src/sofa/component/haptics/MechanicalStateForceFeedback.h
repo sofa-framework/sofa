@@ -44,8 +44,8 @@ public:
 
     void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
     void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
-    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}
+    void computeWrench(const sofa::type::Transform<SReal> &, const sofa::type::SpatialVector<SReal> &, sofa::type::SpatialVector<SReal> & ) override = 0;
+    void setReferencePosition(sofa::type::Transform<SReal>& /*referencePosition*/) override {}
 
 protected:
     MechanicalStateForceFeedback(void) {}

@@ -34,12 +34,13 @@ using sofa::component::io::mesh::BaseVTKReader ;
 /// This is needed for template specialization.
 #include <sofa/component/io/mesh/BaseVTKReader.inl>
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 //XML VTK Loader
 #define checkError(A) if (!A) { return false; }
 #define checkErrorPtr(A) if (!A) { return nullptr; }
 #define checkErrorMsg(A, B) if (!A) { msg_error() << B << "\n" ; return false; }
+#define checkErrorMsgAuto(A) if(A != tinyxml2::XML_SUCCESS) { msg_error() << "TinyXML error message : " << tinyxml2::XMLDocument::ErrorIDToName(A) << "\n" ; return false; }
 
 namespace sofa::component::io::mesh
 {
@@ -69,15 +70,15 @@ class XMLVTKReader : public BaseVTKReader
 public:
     bool readFile(const char* filename) override;
 protected:
-    bool loadUnstructuredGrid(TiXmlHandle datasetFormatHandle);
-    bool loadPolydata(TiXmlHandle datasetFormatHandle);
-    bool loadRectilinearGrid(TiXmlHandle datasetFormatHandle);
-    bool loadStructuredGrid(TiXmlHandle datasetFormatHandle);
-    bool loadStructuredPoints(TiXmlHandle datasetFormatHandle);
-    bool loadImageData(TiXmlHandle datasetFormatHandle);
-    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement, int size, string type);
-    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement, int size);
-    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement);
+    bool loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle);
+    bool loadPolydata(tinyxml2::XMLHandle datasetFormatHandle);
+    bool loadRectilinearGrid(tinyxml2::XMLHandle datasetFormatHandle);
+    bool loadStructuredGrid(tinyxml2::XMLHandle datasetFormatHandle);
+    bool loadStructuredPoints(tinyxml2::XMLHandle datasetFormatHandle);
+    bool loadImageData(tinyxml2::XMLHandle datasetFormatHandle);
+    BaseVTKDataIO* loadDataArray(tinyxml2::XMLElement* dataArrayElement, int size, string type);
+    BaseVTKDataIO* loadDataArray(tinyxml2::XMLElement* dataArrayElement, int size);
+    BaseVTKDataIO* loadDataArray(tinyxml2::XMLElement* dataArrayElement);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,21 +532,21 @@ bool MeshVTKLoader::setInputsMesh()
 bool MeshVTKLoader::setInputsData()
 {
     ///Point Data
-    for (size_t i = 0 ; i < reader->inputPointDataVector.size() ; i++)
+    for (const auto& inputPointData : reader->inputPointDataVector)
     {
-        const char* dataname = reader->inputPointDataVector[i]->name.c_str();
+        const char* dataname = inputPointData->name.c_str();
 
-        BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
+        BaseData* basedata = inputPointData->createSofaData();
         this->addData(basedata, dataname);
         addOutputsToCallback("filename", {basedata});
 
     }
 
     ///Cell Data
-    for (size_t i = 0 ; i < reader->inputCellDataVector.size() ; i++)
+    for (const auto& inputCellData : reader->inputCellDataVector)
     {
-        const char* dataname = reader->inputCellDataVector[i]->name.c_str();
-        BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
+        const char* dataname = inputCellData->name.c_str();
+        BaseData* basedata = inputCellData->createSofaData();
         this->addData(basedata, dataname);
         addOutputsToCallback("filename", {basedata});
     }
@@ -950,19 +951,19 @@ bool LegacyVTKReader::readFile(const char* filename)
 
 bool XMLVTKReader::readFile(const char* filename)
 {
-    TiXmlDocument vtkDoc(filename);
+    tinyxml2::XMLDocument vtkDoc(true,tinyxml2::COLLAPSE_WHITESPACE);
     //quick check
-    checkErrorMsg(vtkDoc.LoadFile(), "Unknown error while loading VTK Xml doc");
+    checkErrorMsgAuto(vtkDoc.LoadFile(filename))
 
-    const TiXmlHandle hVTKDoc(&vtkDoc);
-    TiXmlElement* pElem;
-    TiXmlHandle hVTKDocRoot(nullptr);
+    tinyxml2::XMLHandle hVTKDoc(&vtkDoc);
+    tinyxml2::XMLElement* pElem;
+    tinyxml2::XMLHandle hVTKDocRoot(nullptr);
 
     //block VTKFile
     pElem = hVTKDoc.FirstChildElement().ToElement();
     checkErrorMsg(pElem, "VTKFile Node not found");
 
-    hVTKDocRoot = TiXmlHandle(pElem);
+    hVTKDocRoot = tinyxml2::XMLHandle(pElem);
 
     //Endianness
     const char* endiannessStrTemp = pElem->Attribute("byte_order");
@@ -1003,7 +1004,7 @@ bool XMLVTKReader::readFile(const char* filename)
         checkErrorMsg(false, "Dataset format " << datasetFormatStr << " not recognized");
     }
 
-    const TiXmlHandle datasetFormatHandle = TiXmlHandle(hVTKDocRoot.FirstChild( datasetFormatStr.c_str() ).ToElement());
+    const tinyxml2::XMLHandle datasetFormatHandle = tinyxml2::XMLHandle(hVTKDocRoot.FirstChildElement( datasetFormatStr.c_str() ));
 
     bool stateLoading = false;
     switch (datasetFormat)
@@ -1035,17 +1036,17 @@ bool XMLVTKReader::readFile(const char* filename)
     return true;
 }
 
-BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement)
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(tinyxml2::XMLElement* dataArrayElement)
 {
     return loadDataArray(dataArrayElement, 0);
 }
 
-BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size)
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(tinyxml2::XMLElement* dataArrayElement, int size)
 {
     return loadDataArray(dataArrayElement, size, "");
 }
 
-BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size, string type)
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(tinyxml2::XMLElement* dataArrayElement, int size, string type)
 {
     //Type
     const char* typeStrTemp;
@@ -1085,7 +1086,7 @@ BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArra
 
     //NumberOfComponents
     int numberOfComponents;
-    if (dataArrayElement->QueryIntAttribute("NumberOfComponents", &numberOfComponents) != TIXML_SUCCESS)
+    if (dataArrayElement->QueryIntAttribute("NumberOfComponents", &numberOfComponents) != tinyxml2::XML_SUCCESS)
     {
         numberOfComponents = 1;
     }
@@ -1124,9 +1125,9 @@ BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArra
     return d;
 }
 
-bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle)
 {
-    TiXmlElement* pieceElem = datasetFormatHandle.FirstChild( "Piece" ).ToElement();
+    tinyxml2::XMLElement* pieceElem = datasetFormatHandle.FirstChildElement( "Piece" ).ToElement();
 
     checkError(pieceElem);
     for( ; pieceElem; pieceElem = pieceElem->NextSiblingElement())
@@ -1134,9 +1135,9 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
         pieceElem->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
         pieceElem->QueryIntAttribute("NumberOfCells", &numberOfCells);
 
-        TiXmlNode* dataArrayNode;
-        TiXmlElement* dataArrayElement;
-        TiXmlNode* node = pieceElem->FirstChild();
+        tinyxml2::XMLNode* dataArrayNode;
+        tinyxml2::XMLElement* dataArrayElement;
+        tinyxml2::XMLNode* node = pieceElem->FirstChild();
 
         for ( ; node ; node = node->NextSibling())
         {
@@ -1145,7 +1146,7 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
             if (currentNodeName.compare("Points") == 0)
             {
                 /* Points */
-                dataArrayNode = node->FirstChild("DataArray");
+                dataArrayNode = node->FirstChildElement("DataArray");
                 checkError(dataArrayNode);
                 dataArrayElement = dataArrayNode->ToElement();
                 checkError(dataArrayElement);
@@ -1157,8 +1158,8 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
             if (currentNodeName.compare("Cells") == 0)
             {
                 /* Cells */
-                dataArrayNode = node->FirstChild("DataArray");
-                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                dataArrayNode = node->FirstChildElement("DataArray");
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSiblingElement( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -1187,8 +1188,8 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
 
             if (currentNodeName.compare("PointData") == 0)
             {
-                dataArrayNode = node->FirstChild("DataArray");
-                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                dataArrayNode = node->FirstChildElement("DataArray");
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSiblingElement( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -1203,8 +1204,8 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
             }
             if (currentNodeName.compare("CellData") == 0)
             {
-                dataArrayNode = node->FirstChild("DataArray");
-                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                dataArrayNode = node->FirstChildElement("DataArray");
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSiblingElement( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -1221,35 +1222,35 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
     return true;
 }
 
-bool XMLVTKReader::loadPolydata(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadPolydata(tinyxml2::XMLHandle datasetFormatHandle)
 {
     SOFA_UNUSED(datasetFormatHandle);
     msg_error() << "Polydata dataset not implemented yet" ;
     return false;
 }
 
-bool XMLVTKReader::loadRectilinearGrid(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadRectilinearGrid(tinyxml2::XMLHandle datasetFormatHandle)
 {
     SOFA_UNUSED(datasetFormatHandle);
     msg_error() << "RectilinearGrid dataset not implemented yet" ;
     return false;
 }
 
-bool XMLVTKReader::loadStructuredGrid(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadStructuredGrid(tinyxml2::XMLHandle datasetFormatHandle)
 {
     SOFA_UNUSED(datasetFormatHandle);
     msg_error() << "StructuredGrid dataset not implemented yet" ;
     return false;
 }
 
-bool XMLVTKReader::loadStructuredPoints(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadStructuredPoints(tinyxml2::XMLHandle datasetFormatHandle)
 {
     SOFA_UNUSED(datasetFormatHandle);
     msg_error() << "StructuredPoints dataset not implemented yet" ;
     return false;
 }
 
-bool XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadImageData(tinyxml2::XMLHandle datasetFormatHandle)
 {
     SOFA_UNUSED(datasetFormatHandle);
     msg_error() << "ImageData dataset not implemented yet" ;

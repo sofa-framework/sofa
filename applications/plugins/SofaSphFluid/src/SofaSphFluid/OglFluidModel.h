@@ -29,11 +29,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 /**
  *  \brief Render volume using particles
@@ -103,7 +100,7 @@ public:
 
 }
 
-}
 
-}
+
+
 

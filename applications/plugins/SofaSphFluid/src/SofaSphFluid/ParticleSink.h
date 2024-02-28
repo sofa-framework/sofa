@@ -43,13 +43,7 @@
 #include <algorithm>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 template<class TDataTypes>
@@ -118,11 +112,8 @@ extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec3Typ
 extern template class SOFA_SPH_FLUID_API ParticleSink<sofa::defaulttype::Vec2Types>;
 #endif
 
-} // namespace misc
+} // namespace sofa::component::misc
 
-} // namespace component
-
-} // namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_PARTICLESINK_H
 

@@ -23,13 +23,8 @@
 
 #include "CudaBaseVector.h"
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
@@ -37,8 +32,8 @@ template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
 template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
 #endif
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

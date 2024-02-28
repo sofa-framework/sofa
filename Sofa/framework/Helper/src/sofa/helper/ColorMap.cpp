@@ -25,10 +25,8 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 //enum { NDefaultColorMapEntries = 64 };
@@ -339,6 +337,4 @@ type::Vec3f ColorMap::hsv2rgb(const type::Vec3f&hsv)
 }
 
 
-} // namespace component
-
-} // namespace sofa
+}

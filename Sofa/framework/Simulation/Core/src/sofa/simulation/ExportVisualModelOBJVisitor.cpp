@@ -24,10 +24,8 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/visual/VisualModel.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -65,7 +63,7 @@ void ExportVisualModelOBJVisitor::processNodeBottomUp(Node* /*node*/)
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

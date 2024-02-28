@@ -433,9 +433,8 @@ void VoxelGridLoader::createSegmentation3DTexture( unsigned char **textureData, 
     const unsigned char *data = getData();
     const type::vector<unsigned int>& _idxInRegularGrid = idxInRegularGrid.getValue();
     // for all "active" data voxels
-    for(unsigned i=0; i<_idxInRegularGrid.size(); ++i)
+    for(const unsigned int idxData : _idxInRegularGrid)
     {
-        const int idxData = _idxInRegularGrid[i];
         const int I = idxData % resol[0];
         const int J = (idxData/resol[0]) % resol[1];
         const int K = idxData / (resol[0] * resol[1]);

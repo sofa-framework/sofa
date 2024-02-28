@@ -42,10 +42,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -57,14 +55,10 @@ extern "C"
 //void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace container
+namespace component::container
 {
 
 using namespace sofa::helper;
@@ -169,7 +163,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_compu
     int /*cellBits*/, Real /*cellWidth*/, int /*nbPoints*/, void* /*particleIndex*/, void* /*particleHash*/,
     const void* /*x*/)
 {
-    msg_error() << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_computeHash()";
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_computeHash()";
 }
 
 template<>
@@ -177,7 +171,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updat
     int /*cellBits*/, int /*index0*/, Real /*cellWidth*/, int /*nbPoints*/, const void* /*particleHash*/,
     void* /*cells*/, void* /*cellGhost*/)
 {
-    msg_error() << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid()";
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid()";
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -334,9 +328,8 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace container
+} // namespace component::container
 
-} // namespace component
 
 } // namespace sofa
 

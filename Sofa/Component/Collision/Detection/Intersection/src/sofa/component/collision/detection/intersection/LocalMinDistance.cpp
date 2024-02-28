@@ -1205,9 +1205,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
     const auto& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
     Vec3 nMean;
 
-    for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
+    for (unsigned int t : trianglesAroundVertex)
     {
-        const unsigned int t = trianglesAroundVertex[i];
         const auto& ptr = topology->getTriangle(t);
         Vec3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
@@ -1216,9 +1215,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
 
     if (trianglesAroundVertex.empty())
     {
-        for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
+        for (unsigned int e : edgesAroundVertex)
         {
-            const unsigned int e = edgesAroundVertex[i];
             const auto& ped = topology->getEdge(e);
             Vec3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
@@ -1240,9 +1238,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
         }
     }
 
-    for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
+    for (unsigned int e : edgesAroundVertex)
     {
-        const unsigned int e = edgesAroundVertex[i];
         const auto& ped = topology->getEdge(e);
         Vec3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();

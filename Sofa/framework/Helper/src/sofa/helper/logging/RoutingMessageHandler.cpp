@@ -25,13 +25,8 @@
 ******************************************************************************/
 #include <sofa/helper/logging/RoutingMessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-namespace routingmessagehandler
+
+namespace sofa::helper::logging::routingmessagehandler
 {
 
 void RoutingMessageHandler::process(Message& m)
@@ -77,8 +72,4 @@ void MainRoutingMessageHandler::removeAllFilters()
 }
 
 
-} // loggingmessagehandler
-} // logging
-} // helper
-} // sofa
-
+}

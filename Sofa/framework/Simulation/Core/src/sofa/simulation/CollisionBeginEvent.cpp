@@ -22,15 +22,13 @@
 
 #include <sofa/simulation/CollisionBeginEvent.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
     SOFA_EVENT_CPP( CollisionBeginEvent )
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

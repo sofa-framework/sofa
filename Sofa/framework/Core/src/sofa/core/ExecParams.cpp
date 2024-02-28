@@ -22,10 +22,8 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 std::atomic<int> ExecParams::g_nbThreads(0);
@@ -74,6 +72,6 @@ void ExecParams::update()
     storage = threadStorage();
 }
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
+

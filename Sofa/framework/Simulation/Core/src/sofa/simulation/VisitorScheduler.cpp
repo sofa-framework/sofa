@@ -22,10 +22,8 @@
 #include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /// Execute the given action recursively
@@ -34,7 +32,7 @@ void VisitorScheduler::doExecuteVisitor(simulation::Node* node, Visitor* act)
     node->doExecuteVisitor(act);
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

@@ -23,10 +23,8 @@
 
 #include <sofa/simulation/MutationListener.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 MutationListener::~MutationListener() {}
@@ -104,6 +102,6 @@ void MutationListener::onEndRemoveSlave(core::objectmodel::BaseObject *master,
     SOFA_UNUSED(slave);
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

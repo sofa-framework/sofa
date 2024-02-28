@@ -22,10 +22,8 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -45,7 +43,7 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
     }
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

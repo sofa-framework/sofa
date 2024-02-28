@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <sofa/helper/messaging/FileMessage.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace messaging
+namespace sofa::helper::messaging
 {
 
 const std::string FileMessage::unableToOpenFile(const char* filename)
@@ -38,6 +33,4 @@ const std::string FileMessage::unableToOpenFile(const char* filename)
     return errormsg;
 }
 
-} // logging
-} // helper
-} // sofa
+}

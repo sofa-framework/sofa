@@ -79,7 +79,9 @@ class GTEST_API_ AnyFailureChecker {
   const TestPartResult::Type type_;
   const std::string substr_;
 
-  GTEST_DISALLOW_COPY_AND_ASSIGN_(AnyFailureChecker);
+  AnyFailureChecker(const AnyFailureChecker&) = delete;
+  AnyFailureChecker& operator=(const AnyFailureChecker&) =
+      delete;
 };
 
 

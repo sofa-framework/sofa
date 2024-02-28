@@ -28,13 +28,8 @@
 
 #include <sofa/helper/logging/MessageHandler.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class Message;
@@ -48,8 +43,6 @@ public:
 };
 
 
-} // logging
-} // helper
-} // sofa
+}
 
 #endif // CONSOLEMESSAGEHANDLER_H

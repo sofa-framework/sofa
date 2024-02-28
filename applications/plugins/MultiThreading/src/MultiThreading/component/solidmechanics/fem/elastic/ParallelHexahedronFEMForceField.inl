@@ -170,9 +170,9 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
     sofa::type::Vec<24, Real> D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int index = k*3;
         for(int j=0 ; j<3 ; ++j )
-            D[indice+j] = this->_rotatedInitialElements[elementId][k][j] - deformed[k][j];
+            D[index+j] = this->_rotatedInitialElements[elementId][k][j] - deformed[k][j];
     }
 
     if(updateStiffnessMatrices)

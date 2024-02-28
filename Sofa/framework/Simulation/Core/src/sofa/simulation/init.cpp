@@ -26,13 +26,8 @@
 
 #include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
-namespace sofa
-{
 
-namespace simulation
-{
-
-namespace core
+namespace sofa::simulation::core
 {
 
 static bool s_initialized = false;
@@ -78,8 +73,8 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace core
+} // namespace sofa::simulation::core
 
-} // namespace simulation
 
-} // namespace sofa
+
+

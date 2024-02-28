@@ -775,9 +775,9 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        const int indice = k*3;
+        const int index = k*3;
         for(int j=0 ; j<3 ; ++j )
-            D[indice+j] = _rotatedInitialElements[i][k][j] - nodes[k][j];
+            D[index+j] = _rotatedInitialElements[i][k][j] - nodes[k][j];
     }
 
     auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
@@ -878,9 +878,9 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        const int indice = k*3;
+        const int index = k*3;
         for(int j=0 ; j<3 ; ++j )
-            D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
+            D[index+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }
 
     auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
@@ -1073,9 +1073,9 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        const int indice = k*3;
+        const int index = k*3;
         for(int j=0 ; j<3 ; ++j )
-            D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
+            D[index+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }
 
     //forces

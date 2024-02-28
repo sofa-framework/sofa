@@ -609,6 +609,7 @@ namespace sofa::linearalgebra
         template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
         static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
         {
+            SOFA_UNUSED(row);
             subBlock = b[col];
         }
 

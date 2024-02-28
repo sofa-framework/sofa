@@ -26,10 +26,7 @@
 #include <sofa/simulation/Visitor.h>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -84,9 +81,7 @@ public:
 };
 
 
+} // namespace sofa::simulation
 
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

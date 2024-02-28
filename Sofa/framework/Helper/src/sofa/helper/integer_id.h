@@ -31,10 +31,8 @@
 #include <sofa/type/trait/Rebind.h>
 #include <limits>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 typedef const char* (*integer_id_name)();
@@ -435,8 +433,7 @@ public:
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

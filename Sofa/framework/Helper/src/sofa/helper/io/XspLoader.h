@@ -27,13 +27,7 @@
 #include <sofa/helper/config.h>     /// For SOFA_HELPER_API
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 /// @brief Inherit this class to load data from a Xsp file.
@@ -129,10 +123,7 @@ private:
 
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

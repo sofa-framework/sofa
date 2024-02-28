@@ -38,13 +38,7 @@
 #endif
 
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template<class T, class MemoryManager = CudaMemoryManager<T> >
@@ -523,10 +517,7 @@ protected:
 #undef DEBUG_OUT_M
 #endif
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif
