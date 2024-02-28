@@ -35,11 +35,10 @@
 #include <bitset>
 
 using sofa::component::sceneutility::InfoComponent ;
-using sofa::simulation::Colors;
+using namespace sofa::simulation;
 
 #include "resources/icons/iconmultinode.xpm"
 #include "resources/icons/iconnode.xpm"
-#include "resources/icons/iconprefab.xpm"
 #include "resources/icons/iconinfo.xpm"
 #include "resources/icons/iconwarning.xpm"
 #include "resources/icons/iconerror.xpm"
@@ -56,10 +55,6 @@ namespace sofa::gui::qt
 {
 
 //***********************************************************************************************************
-static const int iconWidth=8;
-static const int iconHeight=16;
-static const int iconMargin=6;
-
 static int hexval(char c)
 {
     if (c>='0' && c<='9') return c-'0';
@@ -90,10 +85,7 @@ QPixmap* getPixmapForFlags(unsigned int flags, std::map<unsigned int, QPixmap*>&
         if(flags&(1<<Colors::NODE))
         {
             const char** icon = nullptr;
-            if(flags & (1 << Colors::PREFAB))
-                icon = reinterpret_cast<const char**>(iconprefab_xpm);
-            else
-                icon = reinterpret_cast<const char**>(iconnode_xpm);
+            icon = reinterpret_cast<const char**>(iconnode_xpm);
 
             // Create a new image from pixmap
             const QImage timg(icon);
@@ -132,7 +124,7 @@ QPixmap* getPixmapForFlags(unsigned int flags, std::map<unsigned int, QPixmap*>&
                 }
             }
 
-            const char* color = simulation::getDefaultColor(nc);
+            const char* color = Colors::COLOR[nc];
             const int r = (hexval(color[1])*16+hexval(color[2]));
             const int g = (hexval(color[3])*16+hexval(color[4]));
             const int b = (hexval(color[5])*16+hexval(color[6]));
@@ -218,9 +210,6 @@ QPixmap* getPixmapForFlagsAndState(unsigned int typeFlags,
 QPixmap* getBaseNodePixmap(core::objectmodel::BaseNode* node, bool haveInfo, bool haveWarning, bool haveErrors)
 {
     unsigned int flags = 1 << Colors::NODE;
-    if(node->getClassName() == "Prefab")
-        flags |= 1 << Colors::PREFAB;
-
     return getPixmapForFlagsAndState(flags,
                                      node->getContext()->isSleeping(),
                                      haveInfo, haveWarning, haveErrors);
