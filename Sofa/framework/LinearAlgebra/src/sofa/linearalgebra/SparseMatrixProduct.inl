@@ -23,8 +23,6 @@
 #include <sofa/linearalgebra/SparseMatrixProduct.h>
 #include <Eigen/Sparse>
 #include <sofa/type/vector.h>
-#include <numeric>
-#include <sofa/helper/logging/Messaging.h>
 
 
 namespace sofa::linearalgebra::sparsematrixproduct
@@ -226,13 +224,26 @@ void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeIntersection()
         m_intersectionAB.intersection.push_back(product.valuePtr()[i].getIndices());
 
         //depending on the storage scheme, Eigen can change the order of the lhs and rhs
-        if constexpr (Lhs::IsRowMajor || Rhs::IsRowMajor)
+        //Note: the condition has been determined empirically, using unit tests
+        //testing all possible combinations = 2^3 = 8
+        if constexpr ((Lhs::IsRowMajor && Rhs::IsRowMajor && ResultType::IsRowMajor)
+            || ((Lhs::IsRowMajor || Rhs::IsRowMajor) && !ResultType::IsRowMajor))
         {
             for (auto& [lhsIndex, rhsIndex] : m_intersectionAB.intersection.back())
             {
                 std::swap(lhsIndex, rhsIndex);
             }
         }
+
+#if !defined(NDEBUG)
+        const auto lhsNonZeros = m_lhs->nonZeros();
+        const auto rhsNonZeros = m_rhs->nonZeros();
+        for (const auto& [lhsIndex, rhsIndex] : m_intersectionAB.intersection.back())
+        {
+            assert(lhsIndex < lhsNonZeros);
+            assert(rhsIndex < rhsNonZeros);
+        }
+#endif
     }
 
     m_productResult = product.template cast<ResultScalar>();
@@ -248,12 +259,17 @@ void __computeProductFromIntersection(const Lhs* lhs, const Rhs* rhs, ResultType
     auto* rhs_ptr = rhs->valuePtr();
     auto* product_ptr = product->valuePtr();
 
+    const auto lhsNonZeros = lhs->nonZeros();
+    const auto rhsNonZeros = rhs->nonZeros();
+
     for (const auto& pairs : intersection.intersection)
     {
         auto& value = *product_ptr++;
         value = 0;
-        for (auto [lhsIndex, rhsIndex] : pairs)
+        for (const auto& [lhsIndex, rhsIndex] : pairs)
         {
+            assert(lhsIndex < lhsNonZeros);
+            assert(rhsIndex < rhsNonZeros);
             value += lhs_ptr[lhsIndex] * rhs_ptr[rhsIndex];
         }
     }
@@ -262,11 +278,6 @@ void __computeProductFromIntersection(const Lhs* lhs, const Rhs* rhs, ResultType
 template<class Lhs, class Rhs, class ResultType>
 void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeProductFromIntersection()
 {
-    if (m_hasComputedIntersection == false)
-    {
-        msg_error("SparseMatrixProduct") << "Intersection computation is required before computing the product";
-        return;
-    }
     __computeProductFromIntersection(m_lhs, m_rhs, &m_productResult, m_intersectionAB);
 }
 
