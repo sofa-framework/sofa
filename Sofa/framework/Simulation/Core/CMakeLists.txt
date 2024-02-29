@@ -38,6 +38,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
     ${SRC_ROOT}/ParallelForEach.h
+    ${SRC_ROOT}/ParallelSparseMatrixProduct.h
     ${SRC_ROOT}/ParallelVisitorScheduler.h
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
