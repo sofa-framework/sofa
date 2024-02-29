@@ -30,12 +30,19 @@
 
 namespace sofa::linearalgebra::testing
 {
-template <class TLHSMatrix, class TRHSMatrix, class TReal>
-struct TestSparseMatrixProductTraits
+
+template<class T>
+struct SparseMatrixProductInit
 {
-    using LHSMatrix = TLHSMatrix;
-    using RHSMatrix = TRHSMatrix;
-    using Real = TReal;
+    static void init(T& product)
+    {
+        SOFA_UNUSED(product);
+    };
+
+    static void cleanup(T& product)
+    {
+        SOFA_UNUSED(product);
+    }
 };
 
 /**
@@ -44,12 +51,12 @@ struct TestSparseMatrixProductTraits
  * The type of matrix can be any of the types supported by SparseMatrixProduct.
  */
 template <class T>
-struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename T::Real>
+struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename T::LhsScalar>
 {
-    using LHSMatrix = typename T::LHSMatrix;
-    using RHSMatrix = typename T::RHSMatrix;
-    using Real = typename T::Real;
-    using Base = sofa::testing::SparseMatrixTest<typename T::Real>;
+    using LHSMatrix = typename T::LhsCleaned;
+    using RHSMatrix = typename T::RhsCleaned;
+    using Real = typename T::LhsScalar;
+    using Base = sofa::testing::SparseMatrixTest<Real>;
     using Base::generateRandomSparseMatrix;
     using Base::copyFromEigen;
     using Base::compareSparseMatrix;
@@ -76,7 +83,8 @@ struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename
         EXPECT_EQ(eigen_c.cols(), nbColsB);
         EXPECT_GT(eigen_c.outerSize(), 0); //to make sure that there are non-zero values in the result matrix
 
-        sofa::linearalgebra::SparseMatrixProduct<LHSMatrix, RHSMatrix, Eigen::SparseMatrix<Real> > product(&A, &B);
+        T product(&A, &B);
+        SparseMatrixProductInit<T>::init(product);
         product.computeProduct();
 
         EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
@@ -102,6 +110,8 @@ struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename
         product.computeProduct(); //intersection is already computed: uses the faster algorithm
         EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
 
+        SparseMatrixProductInit<T>::cleanup(product);
+
         return true;
     }
 };
@@ -110,27 +120,28 @@ TYPED_TEST_SUITE_P(TestSparseMatrixProduct);
 
 TYPED_TEST_P(TestSparseMatrixProduct, squareMatrix )
 {
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 5, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 5, 3. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 5, 5, 5, 1. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 5, 5, 5, 3. / 5. ) );
 
-    ASSERT_TRUE( this->checkMatrix( 100, 1000, 1000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 1000, 1000, 20. / 1000. ) );
+    EXPECT_TRUE( this->checkMatrix( 100, 1000, 1000, 1. / 1000. ) );
+    EXPECT_TRUE( this->checkMatrix( 1000, 1000, 1000, 20. / 1000. ) );
+    // EXPECT_TRUE( this->checkMatrix( 1000, 1000, 1000, 150. / 1000. ) );
 
-    ASSERT_TRUE( this->checkMatrix( 20, 20, 20, 1. ) );
+    EXPECT_TRUE( this->checkMatrix( 20, 20, 20, 1. ) );
 }
 
 TYPED_TEST_P(TestSparseMatrixProduct, rectangularMatrix )
 {
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 3. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 5, 10, 7, 1. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 5, 10, 7, 3. / 5. ) );
 
-    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 3. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 10, 5, 7, 1. / 5. ) );
+    EXPECT_TRUE( this->checkMatrix( 10, 5, 7, 3. / 5. ) );
 
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 20. / 1000. ) );
+    EXPECT_TRUE( this->checkMatrix( 1000, 3000, 2000, 1. / 1000. ) );
+    EXPECT_TRUE( this->checkMatrix( 1000, 3000, 2000, 20. / 1000. ) );
 
-    ASSERT_TRUE( this->checkMatrix( 20, 30, 10, 1. ) );
+    EXPECT_TRUE( this->checkMatrix( 20, 30, 10, 1. ) );
 }
 
 REGISTER_TYPED_TEST_SUITE_P(TestSparseMatrixProduct,

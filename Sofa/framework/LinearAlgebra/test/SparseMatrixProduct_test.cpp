@@ -27,16 +27,29 @@ namespace sofa
 
 using namespace sofa::linearalgebra::testing;
 
+#define DEFINE_TEST_FOR_TYPE(scalar, StorageLHS, StorageRHS, StorageResult)\
+    sofa::linearalgebra::SparseMatrixProduct<\
+        Eigen::SparseMatrix<scalar, StorageLHS>,\
+        Eigen::SparseMatrix<scalar, StorageRHS>,\
+        Eigen::SparseMatrix<scalar, StorageResult>\
+    >
+#define DEFINE_TEST_FOR_STORAGE(StorageLHS, StorageRHS, StorageResult)\
+    DEFINE_TEST_FOR_TYPE(float, StorageLHS, StorageRHS, StorageResult),\
+    DEFINE_TEST_FOR_TYPE(double, StorageLHS, StorageRHS, StorageResult)
+
 using TestSparseMatrixProductImplementations = ::testing::Types<
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float>, Eigen::SparseMatrix<float>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, Eigen::SparseMatrix<double>, double>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::SparseMatrix<double, Eigen::RowMajor>, double>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::ColMajor>, Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::ColMajor>, Eigen::SparseMatrix<double, Eigen::RowMajor>, double>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, Eigen::SparseMatrix<float, Eigen::ColMajor>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::SparseMatrix<double, Eigen::ColMajor>, double>
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::RowMajor)
 >;
+
+#undef DEFINE_TEST_FOR_STORAGE
+#undef DEFINE_TEST_FOR_TYPE
 
 INSTANTIATE_TYPED_TEST_SUITE_P(
     TestSparseMatrixProduct,
