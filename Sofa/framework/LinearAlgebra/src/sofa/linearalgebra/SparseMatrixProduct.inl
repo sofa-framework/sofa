@@ -184,18 +184,51 @@ void flagValueIndices(Eigen::SparseMatrix<sparsematrixproduct::IndexedValue<_Sca
     }
 }
 
+template<class T>
+struct EigenOptions
+{
+    static constexpr auto value = T::Options;
+};
+
+template<class T>
+static constexpr auto EigenOptions_v = EigenOptions<T>::value;
+
+template<class T, int Options, typename StrideType>
+struct EigenOptions<Eigen::Map<T, Options, StrideType>>
+{
+    static constexpr auto value = EigenOptions_v<T>;
+};
+
+template<class T, int Options, typename StrideType>
+struct EigenOptions<const Eigen::Map<T, Options, StrideType>>
+{
+    static constexpr auto value = EigenOptions_v<T>;
+};
+
+template<class T>
+struct EigenOptions<Eigen::Transpose<T>>
+{
+    static constexpr auto value = (EigenOptions_v<T> == Eigen::RowMajor) ? Eigen::ColMajor : Eigen::RowMajor;
+};
+
+template<class T>
+struct EigenOptions<const Eigen::Transpose<T>>
+{
+    static constexpr auto value = (EigenOptions_v<T> == Eigen::RowMajor) ? Eigen::ColMajor : Eigen::RowMajor;
+};
+
 template<class Lhs, class Rhs, class ResultType>
 void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeIntersection()
 {
     using LocalLhs = Eigen::SparseMatrix<
         sparsematrixproduct::IndexedValue<LhsScalar>,
-        Lhs::Options,
+        EigenOptions_v<Lhs>,
         typename Lhs::StorageIndex
     >;
 
     using LocalRhs = Eigen::SparseMatrix<
         sparsematrixproduct::IndexedValue<RhsScalar>,
-        Rhs::Options,
+        EigenOptions_v<Rhs>,
         typename Rhs::StorageIndex
     >;
 
@@ -250,19 +283,18 @@ void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeIntersection()
 }
 
 template<class Lhs, class Rhs, class ResultType>
-void __computeProductFromIntersection(const Lhs* lhs, const Rhs* rhs, ResultType* product,
-    const typename SparseMatrixProduct<Lhs, Rhs, ResultType>::Intersection& intersection)
+void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeProductFromIntersection()
 {
     assert(intersection.intersection.size() == product->nonZeros());
 
-    auto* lhs_ptr = lhs->valuePtr();
-    auto* rhs_ptr = rhs->valuePtr();
-    auto* product_ptr = product->valuePtr();
+    auto* lhs_ptr = m_lhs->valuePtr();
+    auto* rhs_ptr = m_rhs->valuePtr();
+    auto* product_ptr = m_productResult.valuePtr();
 
-    const auto lhsNonZeros = lhs->nonZeros();
-    const auto rhsNonZeros = rhs->nonZeros();
+    const auto lhsNonZeros = m_lhs->nonZeros();
+    const auto rhsNonZeros = m_rhs->nonZeros();
 
-    for (const auto& pairs : intersection.intersection)
+    for (const auto& pairs : m_intersectionAB.intersection)
     {
         auto& value = *product_ptr++;
         value = 0;
@@ -273,12 +305,6 @@ void __computeProductFromIntersection(const Lhs* lhs, const Rhs* rhs, ResultType
             value += lhs_ptr[lhsIndex] * rhs_ptr[rhsIndex];
         }
     }
-}
-
-template<class Lhs, class Rhs, class ResultType>
-void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeProductFromIntersection()
-{
-    __computeProductFromIntersection(m_lhs, m_rhs, &m_productResult, m_intersectionAB);
 }
 
 template<class Lhs, class Rhs, class ResultType>
