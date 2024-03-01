@@ -157,7 +157,6 @@ void CarvingManager::doCarve()
             continue;
         }
 
-        [[maybe_unused]] int nbelems = 0;
         type::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)
@@ -174,7 +173,11 @@ void CarvingManager::doCarve()
         if (!elemsToRemove.empty())
         {
             static sofa::gui::component::performer::TopologicalChangeManager manager;
-            nbelems += manager.removeItemsFromCollisionModel(targetModel, elemsToRemove);
+            int nbElems = manager.removeItemsFromCollisionModel(targetModel, elemsToRemove);
+            if (nbElems == 0)
+            {
+                msg_warning() << "Carving failed, " << elemsToRemove.size() << " elements were selected for carving, but none were removed.";
+            }
         }
     }
 }
