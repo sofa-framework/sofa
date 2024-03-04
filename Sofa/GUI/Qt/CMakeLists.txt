@@ -324,7 +324,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_TARGETS})
 
 if(SOFA_DUMP_VISITOR_INFO)
-    target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml2::tinyxml2)
+    target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml2::tinyxml2)
 endif()
 
 if(Sofa.GL_FOUND)
