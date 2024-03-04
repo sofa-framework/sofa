@@ -4,7 +4,6 @@
 @PACKAGE_INIT@
 
 find_package(Sofa.Simulation.Core QUIET REQUIRED)
-find_package(TinyXML2 QUIET REQUIRED)
 find_package(Sofa.Component.Topology.Container.Grid QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
