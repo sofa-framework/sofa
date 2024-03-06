@@ -47,7 +47,7 @@ if(NOT TARGET cxxopts::cxxopts)
     )
   endif()
 
-  if(cxxopts_INCLUDE_DIR)
+  if(cxxopts_INCLUDE_DIR AND cxxopts_FIND_VERSION)
     _cxxopts_check_version()
     set(cxxopts_FOUND ${cxxopts_VERSION_OK})
   endif()
