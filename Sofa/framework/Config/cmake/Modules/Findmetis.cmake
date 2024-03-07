@@ -60,8 +60,8 @@ if(TARGET metis)
   set(metis_FOUND TRUE) # only metis_FOUND has been set
   if(metis_INCLUDE_DIR AND NOT DEFINED metis_VERSION)
     _metis_check_version()
+    set(metis_FOUND ${metis_VERSION_OK})
   endif()
-  set(metis_FOUND ${metis_VERSION_OK})
   add_library(metis::metis ALIAS metis)
 else()
 
