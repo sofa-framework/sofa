@@ -1783,44 +1783,6 @@ void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 
 //------------------------------------
 
-void RealGUI::fileSaveAs(Node *node)
-{
-    if (node == nullptr) node = currentSimulation();
-    const std::string filename(this->windowFilePath().toStdString());
-
-
-    QString filter( "Scenes (");
-
-    int nb=0;
-    SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
-    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
-    {
-        SceneLoader::ExtensionList extensions;
-        (*it)->getExtensionList(&extensions);
-        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
-        {
-            if( (*it)->canWriteFileExtension( itExt->c_str() ) )
-            {
-                if (nb!=0) filter +=" ";
-                filter += "*.";
-                filter += QString( itExt->c_str() );
-                ++nb;
-            }
-        }
-    }
-
-    filter += ")";
-
-
-    QString s = getSaveFileName ( this, filename.empty() ?nullptr:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
-    if (s.length() > 0) {
-        fileSaveAs(node, s.toStdString().c_str());
-    }
-
-}
-
-//------------------------------------
-
 void RealGUI::lockAnimation(bool value)
 {
     if(value)
