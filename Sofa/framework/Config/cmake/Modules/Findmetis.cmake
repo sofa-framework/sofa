@@ -14,7 +14,7 @@
 # was used to provide the library, as some package managers (such vcpkg) defines only short name
 # for the target, whereas others (such as conan) defines a fully qualified name.
 
-find_package(metis NO_MODULE QUIET HINTS ${metis_DIR})
+find_package(metis NO_MODULE QUIET HINTS ${metis_DIR} NAMES metis Metis)
 
 
 if(NOT metis_FIND_VERSION)
