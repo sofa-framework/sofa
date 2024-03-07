@@ -833,35 +833,6 @@ void RealGUI::setTitle ( std::string windowTitle )
 
 //------------------------------------
 
-void RealGUI::fileNew()
-{
-    std::string newScene("config/newScene.scn");
-    if (DataRepository.findFile (newScene))
-        fileOpen(DataRepository.getFile ( newScene ).c_str());
-}
-
-//------------------------------------
-
-void RealGUI::fileSave()
-{
-    const std::string filename(this->windowFilePath().toStdString());
-    const std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
-
-    if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
-        return;
-
-    fileSaveAs ( currentSimulation(), filename.c_str() );
-}
-
-//------------------------------------
-
-void RealGUI::fileSaveAs ( Node *node, const char* filename )
-{
-    sofa::simulation::node::exportGraph ( node, filename );
-}
-
-//------------------------------------
-
 void RealGUI::fileReload()
 {
     std::string filename(this->windowFilePath().toStdString());

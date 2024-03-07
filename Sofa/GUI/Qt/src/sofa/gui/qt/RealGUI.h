@@ -223,8 +223,6 @@ public:
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
-    virtual void fileSaveAs(Node* node,const char* filename);
-//    virtual void saveXML();
 
     void setViewerResolution(int w, int h) override;
     void setFullScreen() override { setFullScreen(true); }
@@ -322,7 +320,6 @@ public slots:
     virtual void newRootNode(sofa::simulation::Node* root, const char* path);
     virtual void activateNode(sofa::simulation::Node* , bool );
     virtual void setSleepingNode(sofa::simulation::Node*, bool);
-    virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void lockAnimation(bool);
     virtual void fileRecentlyOpened(QAction * action);
     virtual void playpauseGUI(bool value);
@@ -357,14 +354,9 @@ public slots:
     virtual void displayProflierWindow(bool);
     virtual void currentTabChanged(int index);
 
-    virtual void fileNew();
     virtual void popupOpenFileSelector();
     virtual void fileReload();
-    virtual void fileSave();
     virtual void fileExit();
-    virtual void fileSaveAs() {
-        fileSaveAs((Node *)nullptr);
-    }
     virtual void helpAbout() { /* TODO */ }
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
