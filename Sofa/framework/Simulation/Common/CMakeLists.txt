@@ -41,10 +41,10 @@ sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(TinyXML2 REQUIRED)
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    sofa_install_libraries(TARGETS tinyxml2::tinyxml2)
-else()
+if(UNIX AND NOT APPLE)
     sofa_install_libraries(PATHS ${TinyXML2_LIBRARY})
+else()
+    sofa_install_libraries(TARGETS tinyxml2::tinyxml2)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
