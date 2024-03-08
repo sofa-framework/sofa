@@ -346,6 +346,7 @@ void GeomagicDriver::initDevice()
     updatePosition();
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 #else
+    msg_error() << "GeomagicDriver initialisation failed because OpenHaptics (HD/hd.h) has not been found. Please install openHaptics and specify OpenHaptics_DIR at CMake configure stage.";
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 #endif
 }
