@@ -36,9 +36,9 @@ public:
     virtual ~ContactIdentifier();
 
 protected:
-    inline static sofa::core::collision::DetectionOutput::ContactId cpt = 0;
+    inline static thread_local sofa::core::collision::DetectionOutput::ContactId cpt = 0;
     sofa::core::collision::DetectionOutput::ContactId id;
-    inline static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
+    inline static thread_local std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
 };
 
 inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
