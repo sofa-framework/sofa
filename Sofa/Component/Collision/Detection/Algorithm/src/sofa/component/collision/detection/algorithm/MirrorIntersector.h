@@ -38,6 +38,11 @@ public:
         assert(intersector != nullptr);
         return intersector->canIntersect(elem2, elem1);
     }
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
+    {
+        assert(intersector != nullptr);
+        return intersector->canIntersect(elem2, elem1, currentIntersection);
+    }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is nullptr, then this method should allocate it.
@@ -52,6 +57,11 @@ public:
     {
         assert(intersector != nullptr);
         return intersector->intersect(elem2, elem1, contacts);
+    }
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
+    {
+        assert(intersector != nullptr);
+        return intersector->intersect(elem2, elem1, contacts, currentIntersection);
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.

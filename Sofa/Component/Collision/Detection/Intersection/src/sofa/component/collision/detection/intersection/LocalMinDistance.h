@@ -96,6 +96,31 @@ public:
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, OutputVector*);
     int computeIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, OutputVector*);
     int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
+    
+    bool testIntersection(collision::geometry::Cube& ,collision::geometry::Cube&, const core::collision::Intersection* currentIntersection) override;
+
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&, const core::collision::Intersection* currentIntersection) override;
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Sphere&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, const core::collision::Intersection* currentIntersection);
+
+    int computeIntersection(collision::geometry::Cube&, collision::geometry::Cube&, OutputVector*, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&, OutputVector*, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Sphere&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*, const core::collision::Intersection* currentIntersection);
 
     /// These methods check the validity of a found intersection.
     /// According to the local configuration around the found intersected primitive,

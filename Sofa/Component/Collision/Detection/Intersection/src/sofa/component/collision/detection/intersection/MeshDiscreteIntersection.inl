@@ -29,7 +29,7 @@ namespace sofa::component::collision::detection::intersection
 
 
 template<class T>
-bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
+bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, const core::collision::Intersection* currentIntersection)
 {
     const double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -80,7 +80,7 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
 }
 
 template<class T>
-int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     const double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -138,6 +138,18 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
 #undef SAMESIDE
 
     return 0; // No intersection: passed all tests for intersections !
+}
+
+template<class T>
+bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
+{
+    return testIntersection(sph, triangle, {});
+}
+
+template<class T>
+int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
+{
+    return computeIntersection(sph, triangle, contacts, {});
 }
 
 } // namespace sofa::component::collision::detection::intersection

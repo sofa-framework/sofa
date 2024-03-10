@@ -61,6 +61,8 @@ public:
     /// Intersectors for cubes using proximities
     bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
     int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection) override;
 
 };
 

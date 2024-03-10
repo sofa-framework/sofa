@@ -68,11 +68,18 @@ public:
 
     bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
     int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection) override;
 
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2);
     template<typename SphereType1, typename SphereType2>
     int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts);
+    template<typename SphereType1, typename SphereType2>
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2, const core::collision::Intersection* currentIntersection);
+    template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
 
 protected:
     NewProximityIntersection();

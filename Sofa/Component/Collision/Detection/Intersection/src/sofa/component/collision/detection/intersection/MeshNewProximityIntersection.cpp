@@ -57,55 +57,61 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
     }
 }
 
-bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
+bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(pt1);
     SOFA_UNUSED(pt2);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
+bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(line);
     SOFA_UNUSED(pt);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
+bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(line1);
     SOFA_UNUSED(line2);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(tri);
     SOFA_UNUSED(pt);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(tri);
     SOFA_UNUSED(line);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(tri1);
     SOFA_UNUSED(tri2);
+    SOFA_UNUSED(currentIntersection);
     return false;
 }
 
-int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const int n = NewProximityIntersection::doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -117,13 +123,13 @@ int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
 }
 
 
-int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -134,15 +140,15 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, Outpu
 }
 
 
-int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
     const Index id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     const int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -152,14 +158,14 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     return n;
 }
 
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
     const int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -170,10 +176,10 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
 }
 
 
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal    dist2 = alarmDist*alarmDist;
     const Triangle::Coord& p1 = e1.p1();
     const Triangle::Coord& p2 = e1.p2();
@@ -214,7 +220,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -226,7 +232,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 }
 
 
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
@@ -248,7 +254,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
          e1.p3Index()==e2.p1Index() || e1.p3Index()==e2.p2Index() || e1.p3Index()==e2.p3Index());
 
 
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
     const auto& p1 = e1.p1();
     const auto& p2 = e1.p2();
@@ -332,7 +338,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (int i = 0; i < n; ++i)
         {
             (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -342,7 +348,74 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     return n;
 }
+///////////////////////
+///
 
+bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
+{
+    return testIntersection(pt1, pt2, {});
+}
+
+bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
+{
+    return testIntersection(line, pt, {});
+}
+
+bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
+{
+    return testIntersection(line1, line2, {});
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
+{
+    return testIntersection(tri, pt, {});
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
+{
+    return testIntersection(tri, line, {});
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
+{
+    return testIntersection(tri1, tri2, {});
+}
+
+int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+
+int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+
+int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
+{
+    static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
+    
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
 
 
 } // namespace sofa::component::collision::detection::intersection

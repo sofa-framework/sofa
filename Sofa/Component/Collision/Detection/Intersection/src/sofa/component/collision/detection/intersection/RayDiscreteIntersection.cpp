@@ -55,12 +55,12 @@ RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object, b
     }
 }
 
-bool RayDiscreteIntersection::testIntersection(Ray&, Triangle&)
+bool RayDiscreteIntersection::testIntersection(Ray&, Triangle&, const sofa::core::collision::Intersection*)
 {
     return true;
 }
 
-int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVector* contacts)
+int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVector* contacts, const sofa::core::collision::Intersection*)
 {
     Vec3 A = e2.p1();
     Vec3 AB = e2.p2()-A;
@@ -96,6 +96,16 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     detection->elem.second = e2;
     detection->id = e1.getIndex();
     return 1;
+}
+
+bool RayDiscreteIntersection::testIntersection(Ray& r, Triangle& t)
+{
+    return testIntersection(r, t, {});
+}
+
+int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, {});
 }
 
 } //namespace sofa::component::collision::detection::intersection

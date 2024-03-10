@@ -41,6 +41,13 @@ public:
         Elem2 e2(elem2);
         return impl->testIntersection(e1, e2);
     }
+    
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
+    {
+        Elem1 e1(elem1);
+        Elem2 e2(elem2);
+        return impl->testIntersection(e1, e2, currentIntersection);
+    }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is nullptr, then this method should allocate it.
@@ -61,6 +68,13 @@ public:
         Elem1 e1(elem1);
         Elem2 e2(elem2);
         return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
+    }
+    
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
+    {
+        Elem1 e1(elem1);
+        Elem2 e2(elem2);
+        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
     }
 
     std::string name() const override

@@ -49,7 +49,20 @@ public:
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*);
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&);
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*);
-
+    
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, const core::collision::Intersection* currentIntersection);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*, const core::collision::Intersection* currentIntersection);
+    
     template <class T>
     bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt);
     template <class T> 
@@ -62,6 +75,19 @@ public:
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
     template <class T> 
     int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*);
+    
+    template <class T>
+    bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, const core::collision::Intersection* currentIntersection);
+    template <class T>
+    int computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, OutputVector*, const core::collision::Intersection* currentIntersection);
+    template <class T>
+    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, const core::collision::Intersection* currentIntersection);
+    template <class T>
+    int computeIntersection(collision::geometry::Line& line, collision::geometry::TSphere<T>& sph, OutputVector*, const core::collision::Intersection* currentIntersection);
+    template <class T>
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, const core::collision::Intersection* currentIntersection);
+    template <class T>
+    int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*, const core::collision::Intersection* currentIntersection);
 
     static inline int doIntersectionLineLine(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q1, const type::Vec3& q2, OutputVector* contacts, int id, const type::Vec3& n=type::Vec3(), bool useNormal=false);
     static inline int doIntersectionLinePoint(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false);
