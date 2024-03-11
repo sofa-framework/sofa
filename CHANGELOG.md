@@ -165,6 +165,12 @@
 - [VolumetricRendering] Fix crashes in batch mode [#4436](https://github.com/sofa-framework/sofa/pull/4436)
 - [LinearSolver.Direct] Fix metis dependency [#4450](https://github.com/sofa-framework/sofa/pull/4450)
 - [Simulation.Common] Fix tinyXML2 install for windows [#4525](https://github.com/sofa-framework/sofa/pull/4525)
+- [all] Install FindTinyXML2  [#4545](https://github.com/sofa-framework/sofa/pull/4545)
+- [cmake] Remove error in Findcxxopt [#4554](https://github.com/sofa-framework/sofa/pull/4554)
+- [GUI.qt] Set link to tinyxml2 to PRIVATE and fix config file [#4558](https://github.com/sofa-framework/sofa/pull/4558)
+- [Config] Fix findcxxopt when version is not specified [#4564](https://github.com/sofa-framework/sofa/pull/4564)
+- [Config] Fix Findmetis module when using config mode [#4570](https://github.com/sofa-framework/sofa/pull/4570)
+- [all] Fix tinyxml2 dependency [#4574](https://github.com/sofa-framework/sofa/pull/4574)
 
 
 ### Cleaning
