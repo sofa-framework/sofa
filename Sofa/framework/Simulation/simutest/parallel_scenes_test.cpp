@@ -47,12 +47,14 @@ public:
     {
     }
     
-    void executeInParallel(const char* sceneStr, const std::size_t nbScenes)
+    void executeInParallel(const char* sceneStr, const std::size_t nbScenes, const std::size_t nbSteps)
     {
         EXPECT_MSG_NOEMIT(Error);
+        EXPECT_MSG_NOEMIT(Warning);
         
         std::vector<sofa::simulation::NodeSPtr> groots;
         groots.resize(nbScenes);
+        std::size_t index = 0;
         for (auto& groot : groots)
         {
             groot = SceneLoaderXML::loadFromMemory("testscene", sceneStr);
@@ -60,22 +62,23 @@ public:
 
             sofa::simulation::node::initRoot(groot.get());
             groot->setAnimate(true);
+            
+            groot->setName("Scene " + std::to_string(index));
+            index++;
         }
         
         auto simuLambda = [&](auto groot)
             {
-                constexpr std::size_t totalNbSteps = 5000;
                 std::size_t counter = 0;
-
-                while (counter < totalNbSteps)
+                msg_info(groot->getName()) << "start";
+                while (counter < nbSteps)
                 {
-                    //msg_info("") << ">>>> " << simuId << " Step " << counter << " start ";
                     sofa::simulation::node::animate(groot.get());
-                    //msg_info("") << "<<<< " << simuId << " Step " << counter << " end ";
                     counter++;
                 }
+                msg_info(groot->getName()) << "end";
                 
-                EXPECT_TRUE(counter == totalNbSteps);
+                EXPECT_TRUE(counter == nbSteps);
             };
         
         std::vector<std::thread> threads;
@@ -89,14 +92,14 @@ public:
             t.join();
         }
         
-        for (auto groot : groots)
+        for (auto& groot : groots)
         {
             ASSERT_TRUE(groot);
             sofa::simulation::node::unload(groot);
         }
     }
 
-    void testParallelLiver(const std::size_t nbScenes)
+    void testParallelLiver(const std::size_t nbScenes, const std::size_t nbSteps)
     {
         const std::string sceneStr = R"(
         <?xml version="1.0" ?>
@@ -149,10 +152,10 @@ public:
         </Node>
         )";
         
-        executeInParallel(sceneStr.c_str(), nbScenes);
+        executeInParallel(sceneStr.c_str(), nbScenes, nbSteps);
     }
     
-    void testParallelCaduceusNoMT(const std::size_t nbScenes)
+    void testParallelCaduceusNoMT(const std::size_t nbScenes, const std::size_t nbSteps)
     {
         const std::string sceneStr = R"(
         <?xml version="1.0" ?>
@@ -268,16 +271,16 @@ public:
         </Node>
         )";
         
-        executeInParallel(sceneStr.c_str(), nbScenes);
+        executeInParallel(sceneStr.c_str(), nbScenes, nbSteps);
     }
 };
 
 TEST_F(ParallelScenesTest , testParallelLiver )
 {
-    this->testParallelLiver(3);
+    this->testParallelLiver(8, 5000);
 }
 
 TEST_F(ParallelScenesTest , testParallelCaduceusNoMT )
 {
-    this->testParallelCaduceusNoMT(3);
+    this->testParallelCaduceusNoMT(8, 5000);
 }
