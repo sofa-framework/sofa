@@ -46,8 +46,113 @@ public:
     ParallelScenesTest()
     {
     }
+    
+    void executeInParallel(const char* sceneStr, const std::size_t nbScenes)
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        
+        std::vector<sofa::simulation::NodeSPtr> groots;
+        groots.resize(nbScenes);
+        for (auto& groot : groots)
+        {
+            groot = SceneLoaderXML::loadFromMemory("testscene", sceneStr);
+            ASSERT_TRUE(groot);
 
-    void testParallelScenes(std::size_t nbScenes)
+            sofa::simulation::node::initRoot(groot.get());
+            groot->setAnimate(true);
+        }
+        
+        auto simuLambda = [&](auto groot)
+            {
+                constexpr std::size_t totalNbSteps = 5000;
+                std::size_t counter = 0;
+
+                while (counter < totalNbSteps)
+                {
+                    //msg_info("") << ">>>> " << simuId << " Step " << counter << " start ";
+                    sofa::simulation::node::animate(groot.get());
+                    //msg_info("") << "<<<< " << simuId << " Step " << counter << " end ";
+                    counter++;
+                }
+                
+                EXPECT_TRUE(counter == totalNbSteps);
+            };
+        
+        std::vector<std::thread> threads;
+        for(auto& groot : groots)
+        {
+            threads.emplace_back(simuLambda, groot);
+        }
+
+        for(auto& t : threads)
+        {
+            t.join();
+        }
+        
+        for (auto groot : groots)
+        {
+            ASSERT_TRUE(groot);
+            sofa::simulation::node::unload(groot);
+        }
+    }
+
+    void testParallelLiver(const std::size_t nbScenes)
+    {
+        const std::string sceneStr = R"(
+        <?xml version="1.0" ?>
+        <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
+            <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+            <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
+            <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+            <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+            <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+            <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader SphereLoader] -->
+            <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+            <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+            <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+            <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+            <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
+            <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+            <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
+            <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+            <CollisionPipeline name="CollisionPipeline" verbose="0" />
+            <DefaultAnimationLoop/>
+            <BruteForceBroadPhase/>
+            <BVHNarrowPhase/>
+            <CollisionResponse name="collision response" response="PenalityContactForceField" />
+            <DiscreteIntersection/>
+
+            <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+
+            <Node name="Liver" gravity="0 -9.81 0">
+                <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
+                <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+                <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+                <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+                <MechanicalObject name="dofs" src="@meshLoader" />
+                <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+                <DiagonalMass  name="computed using mass density" massDensity="1" />
+                <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+                <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="3 39 64" />
+                <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
+                    <OglModel  name="VisualModel" src="@../../LiverSurface" />
+                    <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+                </Node>
+                <Node name="Surf" gravity="0 -9.81 0">
+                    <SphereLoader filename="mesh/liver.sph" />
+                    <MechanicalObject name="spheres" position="@[-1].position" />
+                    <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+                    <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
+                </Node>
+            </Node>
+        </Node>
+        )";
+        
+        executeInParallel(sceneStr.c_str(), nbScenes);
+    }
+    
+    void testParallelCaduceusNoMT(const std::size_t nbScenes)
     {
         const std::string sceneStr = R"(
         <?xml version="1.0" ?>
@@ -161,53 +266,18 @@ public:
                 </Node>
             </Node>
         </Node>
-        
         )";
         
-        std::vector<sofa::simulation::NodeSPtr> groots;
-        groots.resize(nbScenes);
-        for (auto& groot : groots)
-        {
-            groot = SceneLoaderXML::loadFromMemory("testscene", sceneStr.c_str());
-            ASSERT_TRUE(groot);
-
-            sofa::simulation::node::initRoot(groot.get());
-            groot->setAnimate(true);
-        }
-        
-        auto simuLambda = [&](auto groot)
-            {
-                std::size_t counter = 0;
-
-                while (counter < 5000)
-                {
-                    //msg_info("") << ">>>> " << simuId << " Step " << counter << " start ";
-                    sofa::simulation::node::animate(groot.get());
-                    //msg_info("") << "<<<< " << simuId << " Step " << counter << " end ";
-                    counter++;
-                }
-            };
-        
-        std::vector<std::thread> threads;
-        for(auto& groot : groots)
-        {
-            threads.emplace_back(simuLambda, groot);
-        }
-
-        for(auto& t : threads)
-        {
-            t.join();
-        }
-        
-        for (auto groot : groots)
-        {
-            ASSERT_TRUE(groot);
-            sofa::simulation::node::unload(groot);
-        }
+        executeInParallel(sceneStr.c_str(), nbScenes);
     }
 };
 
-TEST_F(ParallelScenesTest , testParallelScenes )
+TEST_F(ParallelScenesTest , testParallelLiver )
 {
-    this->testParallelScenes(3);
+    this->testParallelLiver(3);
+}
+
+TEST_F(ParallelScenesTest , testParallelCaduceusNoMT )
+{
+    this->testParallelCaduceusNoMT(3);
 }
