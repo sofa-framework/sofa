@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL.Component.Engine LANGUAGES CXX)
 
 set(SOFAGLCOMPONENTENGINE_SOURCE_DIR "src/sofa/gl/component/engine")

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaEigen2Solver LANGUAGES CXX)
 
 set(SOFAEIGEN2SOLVER_SRC "src/${PROJECT_NAME}")
