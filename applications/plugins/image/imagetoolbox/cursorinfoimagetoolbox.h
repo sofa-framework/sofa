@@ -1,9 +1,0 @@
-#ifndef CURSORINFOIMAGETOOLBOX_H
-#define CURSORINFOIMAGETOOLBOX_H
-
-/*struct CursorInfoImageToolBox
-{
-    
-};*/
-
-#endif // CURSORINFOIMAGETOOLBOX_H

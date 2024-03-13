@@ -1,3 +1,0 @@
-LIBRARY   CIMGPLUGIN
-EXPORTS
-   Mutex_attr   @1
