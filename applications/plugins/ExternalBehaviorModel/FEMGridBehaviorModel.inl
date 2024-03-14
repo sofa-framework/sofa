@@ -29,9 +29,9 @@
 
 
 // internal model includes (here SOFA but could be any library)
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -73,7 +73,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
 
     m_internalNode = simulation::Node::create("internal hidden node"); //sofa::simulation::getSimulation()->createNewGraph("internal hidden node");
 
-    m_internalTopology = sofa::core::objectmodel::New< component::topology::RegularGridTopology >();
+    m_internalTopology = sofa::core::objectmodel::New< sofa::component::topology::container::grid::RegularGridTopology >();
     m_internalTopology->setSize(_subdivisions.getValue()+1,_subdivisions.getValue()+1,_subdivisions.getValue()+1);
 
     m_internalDofs = sofa::core::objectmodel::New< Dofs >();
@@ -94,22 +94,22 @@ void FEMGridBehaviorModel<DataTypes>::init()
 
     m_internalTopology->setPos( min[0], max[0], min[1], max[1], min[2], max[2] );
 
-    m_internalForceField = sofa::core::objectmodel::New< component::forcefield::HexahedronFEMForceField<DataTypes> >();
+    m_internalForceField = sofa::core::objectmodel::New< sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes> >();
     m_internalForceField->setYoungModulus( _youngModulus.getValue() );
     m_internalForceField->setPoissonRatio( _poissonRatio.getValue() );
 
 
-    m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes,Real> >();
+    m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes> >();
     m_internalMass->d_totalMass.setValue( _totalMass.getValue() );
 
 
     // to constrain certain internal dof to exposed sofa dofs. Here there are exactly at the same place, they could be interpolated
-    typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr constraint = sofa::core::objectmodel::New< component::projectiveconstraintset::FixedConstraint<DataTypes> >();
-    typename component::odesolver::EulerImplicitSolver::SPtr odesolver = sofa::core::objectmodel::New< component::odesolver::EulerImplicitSolver >();
+    typename sofa::component::constraint::projective::FixedConstraint<DataTypes>::SPtr constraint = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedConstraint<DataTypes> >();
+    typename sofa::component::odesolver::backward::EulerImplicitSolver::SPtr odesolver = sofa::core::objectmodel::New< sofa::component::odesolver::backward::EulerImplicitSolver >();
     odesolver->f_rayleighStiffness.setValue(0);
     odesolver->f_rayleighMass.setValue(0);
     odesolver->f_velocityDamping.setValue(0);
-    typename component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::SPtr cg = sofa::core::objectmodel::New< component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+    typename sofa::component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::SPtr cg = sofa::core::objectmodel::New< sofa::component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
     cg->d_maxIter.setValue(100);
     cg->d_smallDenominatorThreshold.setValue(1e-10);
     cg->d_tolerance.setValue(1e-10);

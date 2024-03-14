@@ -19,37 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
 
 
-namespace sofa
+namespace sofa::component::topology::container::dynamic
 {
 
-namespace component
-{
-
-namespace topology
-{
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::gpu::cuda;
@@ -187,9 +182,4 @@ template class SOFA_GPU_CUDA_API HexahedronSetGeometryAlgorithms<CudaVec3dTypes>
 template class SOFA_GPU_CUDA_API HexahedronSetGeometryAlgorithms<CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API HexahedronSetGeometryAlgorithms<CudaVec3f1Types>;
 
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::topology::container::dynamic

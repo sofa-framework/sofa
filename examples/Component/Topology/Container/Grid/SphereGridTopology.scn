@@ -1,0 +1,49 @@
+<!-- SphereGrid examples -->
+<Node name="root" dt="0.02" gravity="0 -10 0">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SphereGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <DefaultAnimationLoop/>
+    <Node name="SphereFEMTetra">
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="-10" />
+        <UniformMass totalMass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="-14 0.5 2.5 -8 4 4" fixAll="0"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
+	<Node name="Visu">
+            <OglModel name="Visual" color="red" translation="-5 0 0" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+    <Node name="SphereFEM">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject />
+        <UniformMass totalMass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="-4 0.5 2.5 4 4 4" fixAll="0"/>
+        <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
+    </Node>
+    <Node name="SphereSpring">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="10" />
+        <UniformMass totalMass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="8 0.5 2.5 14 4 4" fixAll="0"/>
+        <MeshSpringForceField name="FEM" stiffness="1000" />
+    </Node>
+
+</Node>

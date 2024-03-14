@@ -27,13 +27,13 @@
 namespace sofa::component::linearsolver
 {
 
-int GlobalSystemMatrixImageClass = core::RegisterObject("View the global linear system matrix as an binary image.")
+int GlobalSystemMatrixImageClass = core::RegisterObject("View the global linear system matrix as a binary image.")
     .add<GlobalSystemMatrixImage>();
 
 GlobalSystemMatrixImage::GlobalSystemMatrixImage()
     : Inherit1()
     , d_bitmap(initData(&d_bitmap, type::BaseMatrixImageProxy(), "bitmap", "Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros."))
-    , l_linearSolver(initLink("linearSolver", "Link to the linear solver containing a matrix"))
+    , l_linearSystem(initLink("linearSystem", "Link to the linear system containing a matrix"))
 {
     d_bitmap.setGroup("Image");
     d_bitmap.setWidget("matrixbitmap"); //the widget used to display the image is registered in a factory with the key 'matrixbitmap'
@@ -48,15 +48,16 @@ void GlobalSystemMatrixImage::init()
 {
     Inherit1::init();
 
-    if (!l_linearSolver)
+    if (!l_linearSystem)
     {
-        l_linearSolver.set(this->getContext()->template get<sofa::core::behavior::LinearSolver>());
+        l_linearSystem.set(this->getContext()->template get<sofa::core::behavior::BaseMatrixLinearSystem>());
     }
 
-    if (!l_linearSolver)
+    if (!l_linearSystem)
     {
         msg_error() << "No linear solver found in the current context, whereas it is required. This component retrieves the matrix from a linear solver.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -73,9 +74,12 @@ void GlobalSystemMatrixImage::handleEvent(core::objectmodel::Event* event)
 
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
-        // even if the pointer to the matrix stays the same, the write accessor leads to an update of the widget
-        auto& bitmap = *helper::getWriteOnlyAccessor(d_bitmap);
-        bitmap.setMatrix(l_linearSolver->getSystemBaseMatrix());
+        if (l_linearSystem)
+        {
+            // even if the pointer to the matrix stays the same, the write accessor leads to an update of the widget
+            auto& bitmap = *helper::getWriteOnlyAccessor(d_bitmap);
+            bitmap.setMatrix(l_linearSystem->getSystemBaseMatrix());
+        }
     }
 }
 } //namespace sofa::component::linearsolver

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseLinearSolver/CGLinearSolver.inl>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.inl>
 #include <SofaNewmat/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -27,10 +27,10 @@ namespace sofa::component::linearsolver
 {
 
 int NewMatCGLinearSolverClass = core::RegisterObject("NewMat linear system solver using the conjugate gradient iterative algorithm")
-        .add< CGLinearSolver< NewMatMatrix, NewMatVector > >()
-        .add< CGLinearSolver< NewMatSymmetricMatrix, NewMatVector > >()
-        .add< CGLinearSolver< NewMatBandMatrix, NewMatVector > >()
-        .add< CGLinearSolver< NewMatSymmetricBandMatrix, NewMatVector > >()
+        .add< iterative::CGLinearSolver< NewMatMatrix, NewMatVector > >()
+        .add< iterative::CGLinearSolver< NewMatSymmetricMatrix, NewMatVector > >()
+        .add< iterative::CGLinearSolver< NewMatBandMatrix, NewMatVector > >()
+        .add< iterative::CGLinearSolver< NewMatSymmetricBandMatrix, NewMatVector > >()
         ;
 
 } // namespace sofa::component::linearsolver

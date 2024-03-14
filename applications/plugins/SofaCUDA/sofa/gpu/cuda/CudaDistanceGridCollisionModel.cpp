@@ -23,9 +23,9 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
-#include <SofaBaseCollision/CubeModel.h>
 #if SOFACUDA_HAVE_MINIFLOWVR
     #include <flowvr/render/mesh.h>
 #endif // SOFACUDA_HAVE_MINIFLOWVR
@@ -200,7 +200,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
-        const sofa::type::vector<Vector3> & vertices = mesh->getVertices();
+        const sofa::type::vector<type::Vec3> & vertices = mesh->getVertices();
 
         std::cout << "Computing bbox."<<std::endl;
         Coord bbmin, bbmax;
@@ -348,8 +348,8 @@ void CudaDistanceGrid::sampleSurface(double sampling)
                 SReal d = dists[index(x,y,z)];
                 if (helper::rabs(d) > maxD) continue;
 
-                Vector3 pos = coord(x,y,z);
-                Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
+                type::Vec3 pos = coord(x,y,z);
+                type::Vec3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
                 n.normalize();
                 pos -= n * (d * 0.99); // push pos back to the surface
                 d = interp(pos);
@@ -576,7 +576,7 @@ void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, Index 
     modified = true;
 }
 
-void CudaRigidDistanceGridCollisionModel::setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void CudaRigidDistanceGridCollisionModel::setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const type::Vec3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -590,14 +590,14 @@ void CudaRigidDistanceGridCollisionModel::setNewState(Index index, double dt, Cu
     if (!elems[index].isTransformed)
     {
         Matrix3 I; I.identity();
-        if (!(rotation == I) || !(translation == Vector3()))
+        if (!(rotation == I) || !(translation == type::Vec3()))
             elems[index].isTransformed = true;
     }
     elems[index].prevDt = dt;
     modified = true;
 }
 
-using sofa::component::collision::CubeCollisionModel;
+using sofa::component::collision::geometry::CubeCollisionModel;
 
 /// Create or update the bounding volume hierarchy.
 void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
@@ -612,7 +612,7 @@ void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
-        Vector3 emin, emax;
+        type::Vec3 emin, emax;
         if (rigid)
         {
             const RigidTypes::Coord& xform = rigid->read(core::ConstVecCoordId::position())->getValue()[i];
@@ -623,7 +623,7 @@ void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         if (elems[i].isTransformed)
         {
             //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
-            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
+            type::Vec3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
             emin = corner;
             emax = emin;
             for (int j=1; j<8; j++)
@@ -685,7 +685,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         m.identity();
         m = elems[index].rotation;
         m.transpose();
-        m[3] = Vector4(elems[index].translation,1.0);
+        m[3] = Vec4(elems[index].translation,1.0);
         sofa::gl::glMultMatrix(m.ptr());
     }
 

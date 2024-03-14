@@ -2,13 +2,18 @@
 <?php echo '<!-- Generated from benchmark_cubes.pscn -->';?>
 
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+
+    <Node name="pluginList" >
+        <RequiredPlugin name="SofaOpenglVisual"/>
+        <RequiredPlugin name="SofaConstraint"/>
+        <RequiredPlugin name="SofaMeshCollision"/>
+        <RequiredPlugin name="SofaRigid"/>
+        <RequiredPlugin name="SofaImplicitOdeSolver"/>
+        <RequiredPlugin name="SofaLoader"/>
+        <RequiredPlugin name="SofaGeneralEngine"/>
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin name="SofaMiscCollision"/>
+    </Node>
 
 
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
@@ -50,22 +55,15 @@
             <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
-<?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
+<?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
 
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
             <Node name="Collision Model">
                 <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
                 <MechanicalObject name="Collision_Cube" />
                 <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
+                <OBBCollisionModel/>
                 <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
             </Node>
         </Node>

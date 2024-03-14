@@ -1,0 +1,9 @@
+<Node name="root" dt="0.02" gravity="0 -10 0">
+
+    <include href="../FEMBAR-common.xml"/>
+
+    <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
+    <BlockJacobiPreconditioner name="preconditioner"/>
+    <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+
+</Node>

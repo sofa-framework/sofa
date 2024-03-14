@@ -28,9 +28,9 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
-#include <SofaGui/initSofaGui.h>
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/init.h>
+#include <sofa/gui/common/GUIManager.h>
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/Utils.h>
@@ -473,7 +473,7 @@ void SofaModeler::updateViewerList()
     sofa::gui::initSofaGui();
 
     //Set the different available GUI
-    std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();
+    std::vector<std::string> listGUI = sofa::gui::common::GUIManager::ListSupportedGUI();
 
     //Insert default GUI
     {
@@ -1085,7 +1085,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 {
     if (!root) return;
     // Init the scene
-    sofa::gui::GUIManager::Init("Modeler");
+    sofa::gui::common::GUIManager::Init("Modeler");
 
     //Saving the scene in a temporary file ==> doesn't modify the current Node of the simulation
     std::string path;
@@ -1111,7 +1111,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             {
                 viewerName = listActionGUI[i]->text().toStdString();
                 if (viewerName == "default")
-                    viewerName = sofa::gui::GUIManager::GetValidGUIName();
+                    viewerName = sofa::gui::common::GUIManager::GetValidGUIName();
 
                 if (viewerName == "qt") //default viewer: no extension
                 {

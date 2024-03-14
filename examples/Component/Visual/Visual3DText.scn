@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Node name="root" >
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [Visual3DText VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
+    
+	<VisualStyle displayFlags="showVisualModels"/>
+        <Visual3DText text="hello world!" position="1 1 1" color="red" scale="2" depthTest="false"/>
+        
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+        <OglModel src="@meshLoader_0"/>
+</Node>

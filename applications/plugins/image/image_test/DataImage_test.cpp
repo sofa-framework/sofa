@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <image/ImageContainer.h>
 
 namespace sofa {
@@ -32,7 +32,7 @@ Create two data image and a link between them.
 The first data image is the data of an image container. Check that the second data image is the same image.
 Then compare data pointers to see if data link duplicates the datas.
   */
-struct DataImageLink_test : public Sofa_test<>
+struct DataImageLink_test : public sofa::testing::BaseTest
 {
     typedef defaulttype::Image<unsigned char> Image;
     // Image Container

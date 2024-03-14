@@ -12,14 +12,8 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 
 
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaGeneralEngine'/>
-    <RequiredPlugin pluginName='MultiThreading'/>
+    <Node name="pluginList" />
+    </Node>
 
 
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
@@ -27,7 +21,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 
     <!-- Basic Components to perform the collision detection -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" />
-    <DefaultPipeline name="CollisionPipeline" />
+    <CollisionPipeline name="CollisionPipeline" />
 
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>
@@ -35,8 +29,8 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 <!--    <BruteForceBroadPhase/>-->
 <!--    <BVHNarrowPhase/>-->
 
-    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
 
@@ -49,20 +43,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.74819886067333 0.13000773132313 0.93028979372712" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -72,20 +53,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.3804729733991 0.77457089385696 0.27803373722268" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -95,20 +63,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.8670557578407 0.72764094440622 0.57778551223585" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -118,20 +73,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.52166113561097 5.0046672055054 0.10088881528978" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -141,20 +83,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.9450474625663 5.2738956775395 0.89534907690033" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -164,20 +93,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.305407303062 4.5237374729587 0.39064753911954" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -187,20 +103,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.071737911119935 9.523777224833 0.58510420731507" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -210,20 +113,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.0065867209372 9.9413022501121 0.37843590061107" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -233,20 +123,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.2205059766865 9.1447510035451 0.6489813419287" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -256,20 +133,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.45521484057196 13.636816443939 0.34713000261557" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -279,20 +143,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.7994200369806 13.985573250561 0.064533073019485" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -302,20 +153,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.7237247050385 13.884293768268 0.63587171194883" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -325,20 +163,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.93478864614609 18.345891356164 0.70599745712522" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -348,20 +173,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.321946673478 18.265142549884 0.52448542440519" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -371,20 +183,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.2815712151497 18.894561551928 0.31266520419748" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -394,20 +193,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.3549315493344 23.275718517963 0.24514779459925" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -417,20 +203,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.5063231964625 23.236317592085 0.37010838993364" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -440,20 +213,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.9298104769223 23.441940895255 0.67634991681033" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -463,20 +223,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.95332908441933 0.36214441310714 3.8638965107332" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -486,20 +233,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.8713179339521 0.72825660031673 4.4170562354462" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -509,20 +243,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.3623172698367 0.42303866540223 4.2916329795456" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -532,20 +253,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.41599076540023 5.011850300949 4.0764630770201" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -555,20 +263,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.1831578415274 4.5458585773808 3.657553949001" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -578,20 +273,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.3023503712855 5.2596857597864 4.4541927831965" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -601,20 +283,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.76817353431516 9.4053872043292 3.9015833886348" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -624,20 +293,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.2292593758224 9.1146520563004 3.6763078310417" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -647,20 +303,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.0779307592092 9.5021445925823 3.5487861833762" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -670,20 +313,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.95456032825381 14.079579005753 3.9779275546213" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -693,20 +323,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.523460344888 14.072634430869 3.847393618127" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -716,20 +333,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.147231008926 14.275786010444 4.385838838241" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -739,20 +343,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.033113344587904 18.947797390142 3.5628156732129" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -762,20 +353,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.1209282542676 18.712580375705 4.1972367044991" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -785,20 +363,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.4567343417819 18.837116944528 3.9945605623045" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -808,20 +373,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.45280707555488 22.736685181612 3.6824013070121" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -831,20 +383,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.2000142329838 22.655285063272 4.4546194779475" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -854,20 +393,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.2545063110322 23.301119732578 3.7903861488637" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -877,20 +403,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.15341132886401 0.16820048083002 7.5094929363157" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -900,20 +413,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.8576176000562 0.53452356138012 7.1683901088165" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -923,20 +423,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.0715503013095 0.51248217444517 7.0173420589498" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -946,20 +433,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.25969415216692 5.333801087846 7.2361134994943" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -969,20 +443,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.0694888157628 5.1161159149446 7.6208188285217" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -992,20 +453,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.5960498701763 4.9855055615704 7.3799518441688" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1015,20 +463,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.76430473093144 9.6086890309158 7.0650074975868" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1038,20 +473,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.8057373828747 9.1482642410082 7.4258274763943" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1061,20 +483,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.5454184466719 9.4156656071617 7.6357635323125" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1084,20 +493,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.27177981393029 13.737715651392 7.6596358635741" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1107,20 +503,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.3768386486344 14.108665051688 7.9202950656974" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1130,20 +513,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.6850976271951 13.885693371941 7.6036874165776" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1153,20 +523,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.73397222474868 18.105128143497 7.5915422609968" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1176,20 +533,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.5186291742225 18.128789600045 7.3756774833313" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1199,20 +543,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.1199427680671 18.613336643955 7.5970546564074" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1222,20 +553,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.87562178442051 23.386319402552 7.7875950596238" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1245,20 +563,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.0230774183399 22.973699588549 7.3888650198415" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1268,20 +573,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.1893345374564 23.204612573006 7.9542482183102" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1291,20 +583,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.70143965198725 0.46208797370181 11.339157561231" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1314,20 +593,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.5612233099813 0.76873835118894 10.7542899946" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1337,20 +603,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.8808409226503 0.47441122283899 10.761158771935" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1360,20 +613,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.20105870682795 5.2240685013701 11.228900610343" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1383,20 +623,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.7781574303648 5.1834110597537 11.499482400249" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1406,20 +633,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.378450799444 4.6493099369804 10.858263911846" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1429,20 +643,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.5189850952099 9.8197980647999 10.900365949795" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1452,20 +653,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.4804301839231 9.4211909856746 10.967158918952" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1475,20 +663,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.7952008055501 9.8081736153961 11.096402088458" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1498,20 +673,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.79275295687502 14.464405236284 10.748098089475" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1521,20 +683,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.6885991167224 13.893336361457 10.928832660163" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1544,20 +693,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.2408640437018 14.334363525191 11.055393364539" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1567,20 +703,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.71346587348425 18.499748504488 11.371397064939" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1590,20 +713,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="3.5899672480719 18.040807920527 10.888626934676" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1613,20 +723,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.2406462054889 18.491647830928 10.765999238596" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1636,20 +733,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0.18580314292843 22.549640740757 10.934388120861" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1659,20 +743,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="4.1552629799839 23.388142889779 11.26025542466" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 
@@ -1682,20 +753,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="7.1060958626243 22.531728374321 11.242810407068" />
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
-            <Node name="Visual Model">
-                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
-                <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
-                <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
-            </Node>
-            <Node name="Collision Model">
-                <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
-                <MechanicalObject name="Collision_Cube" />
-                <!-- Collision Models -->
-                <TriangleCollisionModel name="Cube Triangle For Collision" />
-                <LineCollisionModel name="Cube Edge For Collision" />
-                <PointCollisionModel name="Cube Point For Collision" />
-                <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube_RigidDOF" output="@Collision_Cube" />
-            </Node>
+            <OBBCollisionModel/>
         </Node>
 
 

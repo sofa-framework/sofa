@@ -29,36 +29,34 @@ echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
 disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaEulerianFluid     \
-        SofaDistanceGrid      \
-        SofaImplicitField     \
-        MultiThreading        \
-        DiffusionSolver       \
-        image                 \
-        Compliant             \
-        SofaPython            \
-        Flexible              \
-        Registration          \
-        ExternalBehaviorModel \
-        ManifoldTopologies    \
-        ManualMapping         \
-        THMPGSpatialHashing   \
-        SofaCarving           \
-        RigidScale            \
-                              \
-        LMConstraint          \
-        SofaHaptics           \
-        SofaValidation        \
-        SofaNonUniformFem     \
-        SofaExporter          \
-        SofaPreconditioner    \
-        SofaMiscTopology      \
-        SofaMiscExtra         \
-        SofaMiscForceField    \
-        SofaMiscEngine        \
-        SofaMiscSolver        \
-        SofaMiscFem           \
-        SofaMiscMapping       \
+        ArticulatedSystemPlugin   \
+        CollisionOBBCapsule       \
+        Compliant                 \
+        DiffusionSolver           \
+        ExternalBehaviorModel     \
+        Flexible                  \
+        Geomagic                  \
+        image                     \
+        InvertibleFVM             \
+        LMConstraint              \
+        ManifoldTopologies        \
+        ManualMapping             \
+        MultiThreading            \
+        OptiTrackNatNet           \
+        PluginExample             \
+        Registration              \
+        RigidScale                \
+        SensableEmulation         \
+        SofaAssimp                \
+        SofaCUDA                  \
+        SofaCarving               \
+        SofaDistanceGrid          \
+        SofaEulerianFluid         \
+        SofaImplicitField         \
+        SofaPython                \
+        SofaSimpleGUI             \
+        SofaSphFluid              \
+        THMPGSpatialHashing       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done
@@ -116,6 +114,7 @@ check-all-deps() {
            echo "$dependencies" | grep --quiet "/libicu"   ||
            echo "$dependencies" | grep --quiet "/libGLEW"  ||
            echo "$dependencies" | grep --quiet "/libjpeg"  ||
+           echo "$dependencies" | grep --quiet "/libtinyxml2"  ||
            echo "$dependencies" | grep --quiet "/libpng"   ; then
             is_fixup_needed="true"
         fi
@@ -136,6 +135,8 @@ check-all-deps() {
                 libname="$libjpeg"
             elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
                 libname="$libpng"
+            elif libtinyxml2="$(echo $dep | egrep -o "/libtinyxml2[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtinyxml2" ]; then
+                libname="$libtinyxml2"
             elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
                 libname="$libtiff"
             else

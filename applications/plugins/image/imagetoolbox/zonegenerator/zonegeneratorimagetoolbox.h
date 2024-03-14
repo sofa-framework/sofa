@@ -23,7 +23,7 @@ namespace engine
 
 using type::vector;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
@@ -44,7 +44,7 @@ public:
     typedef std::list<Vec2i> ListVec2i;
 
 
-    
+
     ZoneGeneratorImageToolBoxNoTemplated():LabelImageToolBox()
 
 
@@ -57,9 +57,9 @@ public:
         , threshold(initData(&threshold,"threshold",""))
         , radius(initData(&radius,"radius",""))*/
     {
-    
+
     }
-    
+
     void init() override
     {/*
         d_ip.setGroup("PixelClicked");
@@ -70,17 +70,17 @@ public:
         addOutput(&d_vecCoord);
         addOutput(&d_vecPixCoord);*/
     }
-    
+
     sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
         return new sofa::gui::qt::ZoneGeneratorImageToolBoxAction(this,parent);
     }
-    
-    
+
+
     virtual void generate()=0;
     //virtual void getImageSize(unsigned int& x,unsigned int& y,unsigned int &z)=0;
-     
-    
+
+
 public:
     /*Data<pixCoord> d_ip;
     Data<Vec3d> d_p;
@@ -101,9 +101,9 @@ class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox: public ZoneGeneratorImageToo
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ZoneGeneratorImageToolBox,_ImageTypes),ZoneGeneratorImageToolBoxNoTemplated);
-    
+
     typedef ZoneGeneratorImageToolBoxNoTemplated Inherited;
-    
+
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
@@ -129,7 +129,7 @@ public:
         return index;
     }
 
-    
+
     ZoneGeneratorImageToolBox():ZoneGeneratorImageToolBoxNoTemplated(),
       d_image(initData(&d_image, "imageIn", "Input image")),
       d_imageOut(initData(&d_imageOut, "imageOut", "OutputImage")),
@@ -138,9 +138,9 @@ public:
       d_radius(initData(&d_radius, (float)0.1 , "radius","")),
       d_k(initData(&d_k, (unsigned int)100 , "k",""))
     {
-    
+
     }
-    
+
     void init() override
     {
         Inherited::init();
@@ -264,9 +264,9 @@ public:
 
                             if(sam.x()!=0 && sam.y()!=0)
                             {
-                                double x = sam.x()-samples.x();
-                                double y = sam.y()-samples.y();
-                                double distance = x*x+y*y;
+                                double tmpx = sam.x()-samples.x();
+                                double tmpy = sam.y()-samples.y();
+                                double distance = tmpx * tmpx + tmpy * tmpy;
 
                                 if(radius2>distance)
                                 {
@@ -326,7 +326,7 @@ public:
                 //im_out->getCImg().draw_point(pospixel.x(), pospixel.y(), 0, pColor);
             }
         }
-        
+
         // select color
         unsigned int sizemax = listPosition.size();
         for(unsigned int i=0;i<sizemax;i++)
@@ -489,8 +489,8 @@ public:
 
         //for(unsigned int i=0;i<sizemax;i++)std::cout << "test " << i << " :" << test[i]<<std::endl;
 
-        
-        
+
+
 
 /*
         for(unsigned int i=0;i<dimX;i++)
@@ -777,14 +777,14 @@ public:
 
         const imCoord dim=rimage->getDimensions();
         Vec<8,Coord> p;
-        p[0]=Vector3(0,0,0);
-        p[1]=Vector3(dim[0]-1,0,0);
-        p[2]=Vector3(0,dim[1]-1,0);
-        p[3]=Vector3(dim[0]-1,dim[1]-1,0);
-        p[4]=Vector3(0,0,dim[2]-1);
-        p[5]=Vector3(dim[0]-1,0,dim[2]-1);
-        p[6]=Vector3(0,dim[1]-1,dim[2]-1);
-        p[7]=Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
+        p[0]=Vec3(0,0,0);
+        p[1]=Vec3(dim[0]-1,0,0);
+        p[2]=Vec3(0,dim[1]-1,0);
+        p[3]=Vec3(dim[0]-1,dim[1]-1,0);
+        p[4]=Vec3(0,0,dim[2]-1);
+        p[5]=Vec3(dim[0]-1,0,dim[2]-1);
+        p[6]=Vec3(0,dim[1]-1,dim[2]-1);
+        p[7]=Vec3(dim[0]-1,dim[1]-1,dim[2]-1);
 
         Coord tp=rtransform->fromImage(p[0]);
         BB[0]=tp;

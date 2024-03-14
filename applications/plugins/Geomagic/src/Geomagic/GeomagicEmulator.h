@@ -73,7 +73,7 @@ public:
 
 
 
-    Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed    
+    Data <SReal> d_speedFactor; ///< factor to increase/decrease the movements speed    
 
     void applyTranslation(sofa::type::Vec3 translation);
     void worldToLocal(sofa::type::Vec3& vector);
@@ -95,7 +95,7 @@ public:
 public:
     sofa::simulation::TaskScheduler* _taskScheduler;
     sofa::simulation::CpuTask::Status _simStepStatus;
-    sofa::type::Vector3 m_toolForceFeedBack;
+    sofa::type::Vec3 m_toolForceFeedBack;
 
     std::mutex lockPosition;
 

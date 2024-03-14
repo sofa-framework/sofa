@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -25,50 +25,56 @@
 #include "Elasticity_test.h"
 
 // Solvers
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
 // Box roi
-#include <SofaGeneralEngine/PairBoxRoi.h>
-#include <SofaEngine/BoxROI.h>
-#include <SofaGeneralEngine/GenerateCylinder.h>
+#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/PairBoxRoi.h>
+#include <sofa/component/engine/generate/GenerateCylinder.h>
+
 
 // Constraint
-#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBoundaryCondition/FixedPlaneConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 
 // ForceField
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseVisual/VisualStyle.h>
-#include <SofaGeneralDeformable/RegularGridSpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaMiscForceField/MeshMatrixMass.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-#include <SofaRigid/RigidMapping.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
+
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+
+#include <sofa/component/visual/VisualStyle.h>
+
+#include <sofa/component/solidmechanics/spring/RegularGridSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
 
 namespace sofa
 {
 
-typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
-typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
-typedef component::interactionforcefield::RegularGridSpringForceField<defaulttype::Vec3Types> RegularGridSpringForceField3;
-typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
-typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
-typedef component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> UniformMassRigid3;
-typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
-typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Rigid3Types> FixedConstraintRigid3;
-typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
+typedef component::statecontainer::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
+typedef component::statecontainer::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
+typedef component::solidmechanics::spring::RegularGridSpringForceField<defaulttype::Vec3Types> RegularGridSpringForceField3;
+typedef component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
+typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
+typedef component::mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
+typedef component::mass::UniformMass<defaulttype::Rigid3Types> UniformMassRigid3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
+typedef component::constraint::projective::FixedConstraint<defaulttype::Rigid3Types> FixedConstraintRigid3;
+typedef component::constraint::projective::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
 
 /// Create a scene with a regular grid and an affine constraint for patch test
 
@@ -87,13 +93,13 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
     typedef typename DataTypes::Real Real;
-    typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::mass::UniformMass <DataTypes, Real> UniformMass;
-    typedef component::topology::RegularGridTopology RegularGridTopology;
-    typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
-    typedef typename sofa::component::engine::PairBoxROI<DataTypes> PairBoxRoi;
-    typedef typename component::projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+    typedef typename component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename sofa::component::mass::UniformMass <DataTypes> UniformMass;
+    typedef component::topology::container::grid::RegularGridTopology RegularGridTopology;
+    typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
+    typedef typename sofa::component::engine::select::PairBoxROI<DataTypes> PairBoxRoi;
+    typedef typename sofa::component::constraint::projective::AffineMovementProjectiveConstraint<DataTypes> AffineMovementProjectiveConstraint;
+    typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
     root->setGravity( Coord(0,0,0) );
@@ -104,7 +110,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
@@ -138,7 +144,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     pairBoxRoi->includedBox.setValue(includedBox);
 
     //Affine constraint
-    patchStruct.affineConstraint  = modeling::addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
+    patchStruct.affineConstraint  = modeling::addNew<AffineMovementProjectiveConstraint>(SquareNode,"affineConstraint");
     modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
     modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
 
@@ -156,9 +162,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     // Definitions
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+    typedef typename component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
+    typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
     typename simulation::Node::SPtr root;
     CylinderTractionStruct<DataTypes> tractionStruct;
 
@@ -172,19 +178,19 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 
 
     // GenerateCylinder object
-    typename sofa::component::engine::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::GenerateCylinder<DataTypes> >(root,"cylinder");
+    typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");
     eng->f_radius=0.2;
     eng->f_height=1.0;
     eng->f_resolutionCircumferential=resolutionCircumferential;
     eng->f_resolutionRadial=resolutionRadial;
     eng->f_resolutionHeight=resolutionHeight;
     // TetrahedronSetTopologyContainer object
-    typename sofa::component::topology::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetTopologyContainer>(root,"Container1");
+    typename sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer>(root,"Container1");
     sofa::modeling::setDataLink(&eng->f_tetrahedra,&container1->d_tetrahedron);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&container1->d_initPoints);
     container1->d_createTriangleArray=true;
     // TetrahedronSetGeometryAlgorithms object
-    typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
+    typename sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 
     // CGLinearSolver
     typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
@@ -192,13 +198,13 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
-    typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
+    typename component::odesolver::backward::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
-    typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
+    typename sofa::component::mass::MeshMatrixMass<DataTypes>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes> >(root,"BezierMass");
     sofa::type::vector< Real > massDensity;
     massDensity.clear();
     massDensity.resize(1);
@@ -214,12 +220,12 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     boxRoi1->d_alignedBoxes.setValue(vecBox);
     boxRoi1->d_strict.setValue(false);
     // FixedConstraint
-    typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
-        modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
+    typename component::constraint::projective::FixedConstraint<DataTypes>::SPtr fc=
+        modeling::addNew<typename component::constraint::projective::FixedConstraint<DataTypes> >(root);
     sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
-    // FixedPlaneConstraint
-    typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
-            modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
+    // FixedPlaneProjectiveConstraint
+    typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes>::SPtr fpc=
+            modeling::addNew<typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes> >(root);
     fpc->d_dmin= -0.01;
     fpc->d_dmax= 0.01;
     fpc->d_direction=Coord(0,0,1);
@@ -231,13 +237,13 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     boxRoi2->d_computeTriangles=true;
     boxRoi2->d_strict.setValue(false);
     /// TrianglePressureForceField
-    typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
-            modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
+    typename sofa::component::mechanicalload::TrianglePressureForceField<DataTypes>::SPtr tpff=
+            modeling::addNew<typename sofa::component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
-    // ProjectToLineConstraint
-    typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
-            modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
+    // LineProjectiveConstraint
+    typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
+            modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::type::vector<sofa::Index> vArray;
@@ -268,11 +274,11 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     root->setGravity( Coord(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
-    component::visualmodel::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
+    component::visual::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
 
     simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
-    component::odesolver::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::EulerImplicitSolver>();
+    component::odesolver::backward::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::backward::EulerImplicitSolver>();
     simulatedScene->addObject( eulerImplicitSolver );
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
@@ -297,7 +303,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     simulation::Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
-    component::topology::RegularGridTopology::SPtr deformableGrid_grid = modeling::addNew<component::topology::RegularGridTopology>( deformableGrid, "grid" );
+    component::topology::container::grid::RegularGridTopology::SPtr deformableGrid_grid = modeling::addNew<component::topology::container::grid::RegularGridTopology>( deformableGrid, "grid" );
     deformableGrid_grid->setSize(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 

@@ -30,8 +30,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/component/visual/VisualModelImpl.h>
+#include <sofa/component/visual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -141,7 +141,7 @@ public:
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
-    typedef sofa::component::visualmodel::VisualModelImpl VisuModelType;
+    typedef sofa::component::visual::VisualModelImpl VisuModelType;
 
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
@@ -382,7 +382,7 @@ public:
             sofa::simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
             if(root)
             {
-                sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+                sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
                 if(currentCamera)
                 {
                     currentCamera->m_translationPositions.setValue(this->points.getValue());
@@ -404,20 +404,20 @@ public:
     }
 
 
-    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vec3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        type::Vec<8,type::Vector3> p;
-        p[0]=type::Vector3(-0.5,-0.5,-0.5);
-        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vec3> p;
+        p[0]=type::Vec3(-0.5,-0.5,-0.5);
+        p[1]=type::Vec3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vec3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vec3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vec3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vec3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vec3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vec3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -429,7 +429,7 @@ public:
         SOFA_UNUSED(onlyVisible);
         //if( onlyVisible) return;
 
-        type::Vec<8,type::Vector3> c;
+        type::Vec<8,type::Vec3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -651,8 +651,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            type::Vec<4,type::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            type::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            type::Vec<4,type::Vec3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            type::Vec3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);

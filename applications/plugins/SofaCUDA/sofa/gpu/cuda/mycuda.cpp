@@ -23,12 +23,15 @@
 #include <sofa/helper/BackTrace.h>
 #include <iostream>
 #include <fstream>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
 #include <cassert>
 
 #include "mycuda.h"
+
+#include <sofa/helper/StringUtils.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
 
@@ -122,11 +125,8 @@ private:
 #endif
 #endif
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -153,19 +153,60 @@ void mycudaPrivateInit(int /*device*/)
 
 void mycudaLogError(const char* err, const char* src)
 {
-    std::cerr << "CUDA error: "<< err <<" returned from "<< src <<".\n";
+    msg_error("SofaCUDA") << "CUDA error: "<< err <<" returned from "<< src;
     sofa::helper::BackTrace::dump();
     assert(0);
     exit(1);
+}
+
+std::string
+format(const char *const format, va_list args)
+{
+    // Determine the size needed for the buffer
+    va_list args_copy;
+    va_copy(args_copy, args);
+    int size = vsnprintf(nullptr, 0, format, args_copy);
+    va_end(args_copy);
+
+    // Allocate memory for the buffer
+    std::string result(size + 1, '0');
+    result[size] = '\0';
+
+    // Format the string into the buffer
+    vsprintf(&result[0], format, args);
+
+    // Resize the string to exclude the null terminator
+    result.resize(size);
+
+    return result;
 }
 
 int mycudaPrintf(const char* fmt, ...)
 {
     va_list args;
     va_start( args, fmt );
-    int r = vfprintf( stderr, fmt, args );
+    auto message = format(fmt, args);
     va_end( args );
-    return r;
+
+    message = sofa::helper::removeTrailingCharacter(message, '\n');
+
+    msg_info("SofaCUDA") << message;
+
+    return static_cast<int>(message.size());
+}
+
+int mycudaPrintfError(const char* fmt, ...)
+{
+    va_list args;
+    va_start( args, fmt );
+    auto message = format(fmt, args);
+    va_end( args );
+
+    message = sofa::helper::removeTrailingCharacter(message, '\n');
+
+    msg_error("SofaCUDA") << message;
+
+    return static_cast<int>(message.size());
 }
 
 const char* mygetenv(const char* name)
@@ -192,6 +233,6 @@ void displayStack(const char * /*name*/)
 #endif
 
 
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+

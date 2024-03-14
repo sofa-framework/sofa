@@ -1,0 +1,128 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="Geomagic"/> <!-- Needed to use components [GeomagicDriver] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.Haptics"/> <!-- Needed to use components [LCPForceFeedback] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridRamificationTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels" />
+    
+    <DefaultVisualManagerLoop />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="response" response="FrictionContactConstraint" />
+    <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.1" />
+    
+    <FreeMotionAnimationLoop/>
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    
+	<GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"
+    drawDevice="0" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1" manualStart="false" drawDebug="1"/>	
+    
+    
+    <Node name="DeformableSphere">		
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" /> 
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        
+        <MeshOBJLoader name="loaderS" filename="mesh/sphere_05.obj" scale3d="0.05 0.05 0.05" translation="0 0 2" />
+        <SparseGridRamificationTopology name="grid" n="6 6 6" src="@./loaderS" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="gridDof" position="@grid.position"/>
+		
+        <TetrahedronFEMForceField name="FEM" youngModulus="80000" poissonRatio="0.45" method="large" />
+        <DiagonalMass totalMass="10.0" topology="@grid" geometryState="@gridDof"/>
+        
+        <BoxROI name="boxRoi1" box="-0.6 -0.6 1.4   0.6 0.6 2.6" drawBoxes="1"/>
+        <FixedProjectiveConstraint indices="@boxRoi1.indices" />
+            
+        <LinearSolverConstraintCorrection />
+        <Node name="MappingSphere">
+            <MechanicalObject name="dofs" position="@../loaderS.position"/>
+            
+            <TriangleSetTopologyContainer name="Container1" src="@../loaderS"/>
+            <TriangleSetTopologyModifier />
+            <TriangleSetGeometryAlgorithms template="Vec3d" />
+
+            <TriangleCollisionModel bothSide="false" group="1" contactStiffness="100000"/>
+            <LineCollisionModel group="1" contactStiffness="100000"/>
+            <PointCollisionModel group="1" contactStiffness="100000"/>
+
+            <BarycentricMapping input="@../gridDof" output="@dofs" />            
+
+            <Node name="VisuSurface">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@.." output="@Visual" />
+            </Node>
+		</Node>
+    </Node>
+    
+	
+    <Node name="Floor">
+        <MeshOBJLoader name="loaderF" filename="mesh/cube.obj" scale3d="20 0.5 20" translation="0 -10 0"/>
+        <MeshTopology src="@loaderF" />
+        <MechanicalObject src="@loaderF" />
+        <TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
+        <LineCollisionModel simulated="0" moving="0" group="1" />
+        <PointCollisionModel simulated="0" moving="0" group="1"/>
+		<Node name="VisuFloor" >
+            <OglModel name="FloorVisualModel"/>
+            <IdentityMapping input="@../" output="@FloorVisualModel" />
+        </Node>
+    </Node>
+
+	
+    <Node name="Omni">
+        <MechanicalObject template="Rigid3" name="DOFs" position="@GeomagicDevice.positionDevice"/>
+    </Node>
+	
+	<Node name="Instrument" >
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" />
+		<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        
+		<MechanicalObject name="instrumentState" template="Rigid3" tags="GeomagicDevice" />
+		<UniformMass name="mass" totalMass="1" />
+		
+		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
+        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.0001"/> 
+        <LinearSolverConstraintCorrection />
+		
+		<Node name="VisuTool" >
+            <MeshOBJLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
+        </Node>
+		
+        <Node name="CollisionModel" >
+            <MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
+            <LineCollisionModel />			
+            <PointCollisionModel />
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />		
+        </Node>
+    </Node> 
+
+</Node>

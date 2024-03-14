@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -28,11 +28,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 namespace sofa {
 
@@ -41,8 +41,8 @@ template<class T>
 struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
-    typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-    typename component::container::MechanicalObject<T>::SPtr dofs;
+    typename component::constraint::projective::AffineMovementProjectiveConstraint<T>::SPtr affineConstraint;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 
 /// Structure which contains the nodes and the pointers useful for the patch test
@@ -50,15 +50,15 @@ template<class T>
 struct CylinderTractionStruct
 {
     simulation::Node::SPtr root;
-    typename component::container::MechanicalObject<T>::SPtr dofs;
-    typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
+    typename component::mechanicalload::TrianglePressureForceField<T>::SPtr forceField;
 };
 
 
 template< class DataTypes>
 struct SOFA_SOFATEST_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
 {
-    typedef component::container::MechanicalObject<DataTypes> DOFs;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Real  Real;
     typedef typename DOFs::Coord  Coord;
     typedef typename DOFs::Deriv  Deriv;

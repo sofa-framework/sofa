@@ -633,7 +633,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
             Coord normal = (p1-p0).cross(p2-p0);
             normal.normalize();
             SReal d = -(p0*normal);
-            int nedges = 0;
             int ix0 = ix(bbmin)-1; if (ix0 < 0) ix0 = 0;
             int iy0 = iy(bbmin)-1; if (iy0 < 0) iy0 = 0;
             int iz0 = iz(bbmin)-1; if (iz0 < 0) iz0 = 0;
@@ -660,7 +659,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<1,2>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
@@ -709,7 +707,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<2,0>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
@@ -758,7 +755,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<0,1>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {
@@ -1164,8 +1160,8 @@ void DistanceGrid::sampleSurface(double sampling)
                     SReal d = m_dists[index(x,y,z)];
                     if (rabs(d) > maxD) continue;
 
-                    Vector3 pos = coord(x,y,z);
-                    Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
+                    type::Vec3 pos = coord(x,y,z);
+                    type::Vec3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
                     n.normalize();
                     pos -= n * (d * 0.99); // push pos back to the surface
                     d = interp(pos);
@@ -1208,7 +1204,7 @@ void DistanceGrid::sampleSurface(double sampling)
                     if (!inGrid(pos)) continue;
                     SReal d = interp(pos);
                     if (rabs(d) > maxD) continue;
-                    Vector3 n = grad(pos);
+                    type::Vec3 n = grad(pos);
                     n.normalize();
                     pos -= n * (d * 0.99); // push pos back to the surface
                     d = interp(pos);

@@ -1,41 +1,57 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.03333" gravity="0 0 -10" >
-	<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
-	<BulletCollisionDetection name="bulletCollisionDetection0" />
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
-	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
-	<DefaultContactManager name="Response"  response="distanceLMConstraint" />
-	<!-- <TreeCollisionGroupManager name="Group" /> -->
-	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
-	<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
-        <LMConstraintSolver listening="1" constraintVel="1" constraintPos="1" numIterations="25" />
-	<BulletIntersection contactDistance="1"/>
-	<Node 	 name="Dragon"  >
-	    <MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />
-		<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 10 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="uniformMass0"  totalmass="10" />
-		<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true"/>
-		<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
+
+	<Node name="Plugins"  >
+		<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
+		<RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
+		<RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+		<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+		<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+		<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+		<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+		<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+		<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+		<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+		<RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+		<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
 	</Node>
 
-	<Node 	 name="Frog"  >
-		<MeshOBJLoader name="loader"  filename="mesh/frog_body.obj" />
-		<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 30 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="uniformMass0"  totalmass="10" />
-		<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true" concavityThreeshold="50"/>
-		<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
-	</Node>
-	<Node 	 name="Floor"  >
-		<MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 -20 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="uniformMass63" />
-		<FixedConstraint template="Rigid3d" name="fixedConstraint0"  indices="0" />
-		<Node 	 name="TRIANGLE"  >
-			<MeshOBJLoader name="loader"  filename="mesh/SaladBowl.obj" />
-			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
-			<MechanicalObject template="Vec3d" name="the_bowl"  src="@loader" scale3d="100 100 100"/>
-			<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
-			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@the_bowl" />
-			<BulletTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" margin="1"/>
+	<BulletCollisionDetection name="bulletCollisionDetection0" />
+	<CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
+	<BulletIntersection contactDistance="1"/>
+	<CollisionResponse name="Response"  response="PenalityContactForceField" />
+
+	<Node name="Objects"  >
+		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
+		<Node 	 name="Dragon"  >
+		    <MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />
+			<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 10 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+			<UniformMass template="Rigid3d" name="uniformMass0"  totalMass="10" />
+			<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true"/>
+			<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
+		</Node>
+
+		<Node 	 name="Frog"  >
+			<MeshOBJLoader name="loader"  filename="mesh/frog_body.obj" />
+			<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 30 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+			<UniformMass template="Rigid3d" name="uniformMass0"  totalMass="10" />
+			<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true" concavityThreeshold="50"/>
+			<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
+		</Node>
+		<Node 	 name="Floor"  >
+			<MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 -20 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+			<UniformMass template="Rigid3d" name="uniformMass63" />
+			<FixedProjectiveConstraint template="Rigid3d" name="fixedProjectiveConstraint0"  indices="0" />
+			<Node 	 name="TRIANGLE"  >
+				<MeshOBJLoader name="loader"  filename="mesh/SaladBowl.obj" />
+				<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
+				<MechanicalObject template="Vec3d" name="the_bowl"  src="@loader" scale3d="100 100 100"/>
+				<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
+				<RigidMapping template="Rigid3d,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@the_bowl" />
+				<BulletTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" margin="1"/>
+			</Node>
 		</Node>
 	</Node>
 </Node>

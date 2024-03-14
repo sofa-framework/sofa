@@ -42,7 +42,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${LEAP_INCL
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LEAPMOTION_VERSION})
 
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaUserInteraction ${LEAP_LIBRARY})
+target_link_libraries(${PROJECT_NAME} Sofa.Helper SofaOpenglVisual SofaUserInteraction ${LEAP_LIBRARY})
 
 
 ## Install rules for the library and headers; CMake package configurations files

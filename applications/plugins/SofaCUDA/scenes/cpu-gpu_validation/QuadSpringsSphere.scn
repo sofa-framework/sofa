@@ -1,0 +1,80 @@
+<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField SphereForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField QuadBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
+
+    <DefaultAnimationLoop/>
+    <DefaultVisualManagerLoop/>
+
+    <Node name="Floor">
+        <RegularGridTopology
+                nx="2" ny="1" nz="2"
+                xmin="20" xmax="-20"
+                ymin="-3.05" ymax="-3.05"
+                zmin="-20" zmax="20" />
+        <MechanicalObject />
+        <Node name="Visu">
+            <OglModel name="Visual" color="red"/>
+            <IdentityMapping input="@.." output="@Visual"/>
+        </Node>
+    </Node>
+
+    <Node name="SquareCloth-GPU-Green">
+        <EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
+        <CGLinearSolver iterations="10" threshold="0.000001" tolerance="1e-5"/>
+        <MechanicalObject template="CudaVec3f" />
+        <UniformMass totalMass="100" />
+        <RegularGridTopology
+                nx="100" ny="1" nz="100"
+                xmin="12" xmax="-12"
+                ymin="7" ymax="7"
+                zmin="-12" zmax="12" />
+        <BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12"/>
+        <MeshSpringForceField name="Springs" stiffness="1000" damping="0"/>
+        <QuadBendingSprings name="Bend" stiffness="2000" damping="1"/>
+        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" />
+        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
+        <Node name="Visu">
+            <OglModel name="Visual" color="green"/>
+            <IdentityMapping input="@.." output="@Visual"/>
+        </Node>
+    </Node>
+
+    <Node name="SquareCloth-CPU-red">
+        <EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
+        <CGLinearSolver iterations="10" threshold="0.000001" tolerance="1e-5"/>
+        <MechanicalObject template="Vec3d" />
+        <UniformMass totalMass="100" />
+        <RegularGridTopology
+                nx="100" ny="1" nz="100"
+                xmin="12" xmax="-12"
+                ymin="7" ymax="7"
+                zmin="-12" zmax="12" />
+        <BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12"/>
+        <MeshSpringForceField name="Springs" stiffness="1000" damping="0"/>
+        <QuadBendingSprings name="Bend" stiffness="2000" damping="1"/>
+        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" />
+        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
+        <Node name="Visu">
+            <OglModel name="Visual" color="red"/>
+            <IdentityMapping input="@.." output="@Visual"/>
+        </Node>
+    </Node>
+
+    <Node name="Sphere">
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="3.95" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" dx="0" dy="1" dz="3" color="blue"/>
+    </Node>
+</Node>
+

@@ -1,0 +1,134 @@
+<!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
+<Node name="root" gravity="0 -9 1" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [TrianglePressureForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [TriangularBendingSprings TriangularBiquadraticSpringsForceField TriangularQuadraticSpringsForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.TensorMass"/> <!-- Needed to use components [TriangularTensorMassForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <CollisionPipeline name="default0" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="default1" response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+
+    <Node name="TriangularBendingSprings">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 0" createSubelements="true"/>
+        <MechanicalObject name="TriangularBendingSprings" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
+        <TriangleCollisionModel />
+
+        <Node >
+          <OglModel name="Visual" color="black" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+
+    <Node name="TriangularBiquadratic">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
+        <MechanicalObject name="TriangularBiquadratic" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
+        <TriangleCollisionModel />
+
+        <Node >
+          <OglModel name="Visual" color="white" />
+          <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+
+
+    <Node name="TriangularQuadratic">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 0" createSubelements="true"/>
+        <MechanicalObject name="TriangularQuadratic" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
+        <TriangleCollisionModel />
+
+        <Node >
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+
+    <Node name="TriangularFEM">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 -1" createSubelements="true"/>
+        <MechanicalObject name="TriangularFEM" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
+        <TriangleCollisionModel />
+        <Node >
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+
+    </Node>
+
+    <Node name="TriangularTensorMass">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="0 0 -1" createSubelements="true"/>
+        <MechanicalObject name="TriangularTensorMass" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
+        <TriangleCollisionModel />
+
+        <Node >
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+
+    </Node>
+
+    <Node name="TrianglePressureForceField">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 -1" createSubelements="true"/>
+        <MechanicalObject name="TrianglePressureForceField" src="@loader" scale="10" />
+        <include href="Objects/TriangleSetTopology.xml" src="@loader" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedProjectiveConstraint indices="0 1" />
+        <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0 1 0" />
+        <TriangleCollisionModel />
+        <Node >
+            <OglModel name="Visual" color="blue" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+
+</Node>

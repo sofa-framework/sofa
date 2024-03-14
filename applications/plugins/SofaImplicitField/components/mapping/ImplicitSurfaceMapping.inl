@@ -43,7 +43,7 @@ template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::init()
 {
     core::Mapping<In,Out>::init();
-    topology::MeshTopology::init();
+    topology::container::constant::MeshTopology::init();
 }
 
 template <class In, class Out>

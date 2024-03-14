@@ -25,6 +25,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaMatrix/BaseMatrixImageProxy.h>
 
+#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
+
 namespace sofa::component::linearsolver
 {
 
@@ -45,8 +47,8 @@ protected:
     void init() override;
     void handleEvent(core::objectmodel::Event *event) override;
 
-    Data< type::BaseMatrixImageProxy > d_bitmap; /// A proxy to visualize the produced image in the GUI through a DataWidget
-    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
+    Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget
+    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSystem;
 };
 
 } //namespace sofa::component::linearsolver

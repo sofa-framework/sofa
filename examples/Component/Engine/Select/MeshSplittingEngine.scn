@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<!-- MeshSplittingEngine Example -->
+
+<Node name="root" dt="0.1">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI MeshSplittingEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping SubsetMultiMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    
+    <VisualStyle displayFlags="showBehavior showVisual" />
+    <BackgroundSetting color="1 1 1"/>
+    <DefaultAnimationLoop/>
+    
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <MeshTopology name="mesh" src="@loader" />
+    <BoxROI template="Vec3" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
+
+    <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
+
+        <Node name="rigid">
+            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" printLog="0" />
+            
+            <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
+            <UniformMass  />
+            <FixedProjectiveConstraint indices="0"/>
+            
+            <Node name="rigidmapped points">
+                    <MechanicalObject position="@/split.position1"/>
+                    <RigidMapping globalToLocalCoords="1"/>
+
+                    <Node name="free points">
+                        <MechanicalObject position="@/split.position2" showObject="true"/>
+                        <UniformMass totalMass="1" />
+    
+                        <Node name="multimapped full object">
+                            <MeshTopology name="mesh" src="@/mesh" />
+                            <MechanicalObject src="@mesh" />
+                            <SubsetMultiMapping template = "Vec3,Vec3" input="@../../ @../" output="@./" indexPairs="@/split.indexPairs"/>
+                            <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.3"/>
+                            
+                            <Node name="Visu">
+                                <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                                <OglModel name="Visual" src="@meshLoader_0" color="5E-1 5E-1 5E-1 5E-1" />
+                                <BarycentricMapping  />
+                            </Node>
+                        </Node>
+                        
+                    </Node>
+
+            </Node>
+        </Node>
+
+</Node>

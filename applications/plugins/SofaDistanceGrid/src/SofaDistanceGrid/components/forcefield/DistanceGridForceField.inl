@@ -67,6 +67,13 @@ void DistanceGridForceField<DataTypes>::init()
                                     nx.getValue(),ny.getValue(),nz.getValue(),
                                     box.getValue()[0],box.getValue()[1]);
 
+    if (grid == nullptr)
+    {
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error() << "Failed to initialize: Invalid distance grid";
+        return;
+    }
+
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {
         core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
@@ -125,6 +132,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
     }
 
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>
@@ -403,8 +411,8 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
             const int p = c.index;
             const Real fact = (Real)(c.fact * -kFactor);
             const Deriv& normal = c.normal;
-            for (int l=0; l<Deriv::total_size; ++l)
-                for (int c=0; c<Deriv::total_size; ++c)
+            for (sofa::Size l=0; l<Deriv::total_size; ++l)
+                for (sofa::Size c=0; c<Deriv::total_size; ++c)
                 {
                     SReal coef = normal[l] * fact * normal[c];
                     mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
@@ -428,8 +436,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< type::Vector3 > pointsLineIn;
-    std::vector< type::Vector3 > pointsLineOut;
+    std::vector< type::Vec3 > pointsLineIn;
+    std::vector< type::Vec3 > pointsLineOut;
     // lines for points penetrating the distancegrid
 
     unsigned int ibegin = 0;
@@ -445,7 +453,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const Real stiffOut = stiffnessOut.getValue();
     const Real maxdist = maxDist.getValue();
 
-    type::Vector3 point1,point2;
+    type::Vec3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         if (i < pOnBorder.size() && !pOnBorder[i]) continue;
@@ -483,11 +491,11 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const sofa::type::vector<TContact>& tcontacts = this->tcontacts.getValue();
     if (!tcontacts.empty())
     {
-        std::vector< type::Vector3 > pointsTri;
+        std::vector< type::Vec3 > pointsTri;
         for (unsigned int i=0; i<tcontacts.size(); i++)
         {
             const TContact& c = (this->tcontacts.getValue())[i];
-            type::Vector3 p;
+            type::Vec3 p;
             for (int j=0; j<3; ++j)
             {
                 p = DataTypes::getCPos(p1[c.index[j]]);
@@ -499,12 +507,12 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const sofa::type::vector<VContact>& vcontacts = this->vcontacts.getValue();
     if (!vcontacts.empty())
     {
-        std::vector< type::Vector3 > pointsTet;
+        std::vector< type::Vec3 > pointsTet;
         for (unsigned int i=0; i<vcontacts.size(); i++)
         {
             const VContact& c = (this->vcontacts.getValue())[i];
             const type::fixed_array<unsigned int,4>& t = c.index;
-            type::Vector3 p[4];
+            type::Vec3 p[4];
             Coord pc = (p1[t[0]]+p1[t[1]]+p1[t[2]]+p1[t[3]])*0.25f;
             for (int j=0; j<4; ++j)
             {
@@ -530,8 +538,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     if (drawPoints.getValue())
     {
-        std::vector< type::Vector3 > distancePointsIn;
-        std::vector< type::Vector3 > distancePointsOut;
+        std::vector< type::Vec3 > distancePointsIn;
+        std::vector< type::Vec3 > distancePointsOut;
 
         for (int i=0; i < grid->getNx(); i++)
             for (int j=0; j < grid->getNy(); j++)

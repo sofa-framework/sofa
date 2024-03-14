@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,115 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
-#define SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
+#pragma once
 
-#include "CudaTypes.h"
-#include <SofaMiscForceField/MeshMatrixMass.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace mass
-{
-
-using namespace sofa::gpu::cuda;
-using namespace sofa::component::mass;
-
-template<>
-class MeshMatrixMassInternalData<CudaVec3fTypes,float>
-{
-public:
-    /// Cuda vector copying the vertex mass (enabling deviceRead)
-    CudaVector<float> vMass;
-
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
-};
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::copyVertexMass();
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
-
-
-
-
-template<>
-class MeshMatrixMassInternalData<CudaVec2fTypes,float>
-{
-public:
-    /// Cuda vector copying the vertex mass (enabling deviceRead)
-    CudaVector<float> vMass;
-
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
-};
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::copyVertexMass();
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
-
-
-
-
-template<>
-class MeshMatrixMassInternalData<CudaVec1fTypes,float>
-{
-public:
-    /// Cuda vector copying the vertex mass (enabling deviceRead)
-    CudaVector<float> vMass;
-
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
-};
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::copyVertexMass();
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
-
-template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
-
-
-#ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-#endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
-
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mass/CudaMeshMatrixMass.h")

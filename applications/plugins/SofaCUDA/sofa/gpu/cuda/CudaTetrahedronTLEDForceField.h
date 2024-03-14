@@ -62,21 +62,19 @@ Year = {2009}                                                                   
 #ifndef SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+#include "vector_types.h"
 
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
+
+template<class T>
+class CudaTextureObject;
 
 class CudaTetrahedronTLEDForceField : public core::behavior::ForceField<CudaVec3fTypes>
 {
@@ -84,8 +82,8 @@ public:
     SOFA_CLASS(CudaTetrahedronTLEDForceField,SOFA_TEMPLATE(core::behavior::ForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
-    typedef component::topology::MeshTopology::Tetra Element;
-    typedef component::topology::MeshTopology::SeqTetrahedra VecElement;
+    typedef component::topology::container::constant::MeshTopology::Tetra Element;
+    typedef component::topology::container::constant::MeshTopology::SeqTetrahedra VecElement;
 
 
     int nbVertex;                           // number of vertices
@@ -111,6 +109,8 @@ public:
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) override;
 //    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix*) final {}
+    void buildDampingMatrix(core::behavior::DampingMatrix*) final {}
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* , const DataVecCoord&) const override { return 0.0; }
     // Computes lambda and mu based on Young's modulus and Poisson ratio
     void updateLameCoefficients();
@@ -121,12 +121,39 @@ public:
 
 protected:
 
+    /// Device data
+    //@{
+
+    int4* m_device_nodesPerElement { nullptr };
+
+    float4* m_device_DhC0 { nullptr };
+    float4* m_device_DhC1 { nullptr };
+    float4* m_device_DhC2 { nullptr };
+
+    float* m_device_volume { nullptr };
+
+    int2* m_device_forceCoordinates { nullptr };
+
+    float3* m_device_preferredDirection { nullptr };
+
+    // Rate-dependant stress (isochoric part)
+    float4* m_device_Di1 { nullptr };
+    float4* m_device_Di2 { nullptr };
+
+    // Rate-dependant stress (volumetric part)
+    float4* m_device_Dv1 { nullptr };
+    float4* m_device_Dv2 { nullptr };
+
+    float4* m_device_F0 { nullptr };
+    float4* m_device_F1 { nullptr };
+    float4* m_device_F2 { nullptr };
+    float4* m_device_F3 { nullptr };
+
+    //@}
+
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif

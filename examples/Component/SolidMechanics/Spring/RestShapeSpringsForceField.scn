@@ -1,0 +1,106 @@
+<Node name="root" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    
+    <DefaultAnimationLoop/>
+    <Node name="Dragon">
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
+        <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
+        <MechanicalObject dx="-12.0" />
+        <UniformMass vertexMass="1.0" />
+        <RestShapeSpringsForceField name="Springs" stiffness="50"/>
+		
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/dragon.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="0.5 1.0 0.5 1.0" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+		
+        <Node name="TriangleSurf">
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+    </Node>
+	<Node name="Dragon with Damping">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
+        <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
+        <MechanicalObject dx="12.0" />
+        <UniformMass vertexMass="1.0" />
+        <RestShapeSpringsForceField name="Springs" stiffness="50"/>
+		
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.5 1.0" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+		
+        <Node name="TriangleSurf">
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel group="1" />
+            <LineCollisionModel group="1" />
+            <PointCollisionModel group="1" />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+    </Node>
+	<Node name="CUBE">
+		<EulerImplicitSolver />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
+		<MechanicalObject template="Rigid3" dx="-12.0" dy="-20" rx="10" />
+		<UniformMass totalMass="1.0" />
+		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50"/>
+		<Node name="Visu">
+			<MeshOBJLoader name="meshLoader_3" filename="mesh/smCube27.obj" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_3" color="0.5 1.0 0.5 1.0" />
+			<RigidMapping input="@.." output="@Visual" />
+		</Node>
+		<Node name="Surf2">
+			<MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+			<MeshTopology src="@loader"/>
+			<MechanicalObject src="@loader"/>
+			<TriangleCollisionModel group="1"/>
+			<LineCollisionModel group="1"/>
+			<PointCollisionModel group="1"/>
+			<RigidMapping input="@.." output="@."/>
+		</Node>
+	</Node>
+	<Node name="CUBE with Damping">
+		<EulerImplicitSolver />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
+		<MechanicalObject template="Rigid3" dx="12.0" dy="-20" rx="10" />
+		<UniformMass totalMass="1.0" />
+		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50" />
+		<Node name="Visu">
+			<MeshOBJLoader name="meshLoader_0" filename="mesh/smCube27.obj" handleSeams="1" />
+			<OglModel name="Visual" src="@meshLoader_0" color="1.0 0.5 0.5 1.0" />
+			<RigidMapping input="@.." output="@Visual" />
+		</Node>
+		<Node name="Surf2">
+			<MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+			<MeshTopology src="@loader"/>
+			<MechanicalObject src="@loader"/>
+			<TriangleCollisionModel group="1"/>
+			<LineCollisionModel group="1"/>
+			<PointCollisionModel group="1"/>
+			<RigidMapping input="@.." output="@."/>
+		</Node>
+	</Node>
+</Node>

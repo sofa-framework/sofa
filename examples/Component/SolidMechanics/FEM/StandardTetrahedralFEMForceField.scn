@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" ?>
+<Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 0">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [StandardTetrahedralFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [Visual3DText VisualStyle] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showForceFields showBehaviorModels" />
+
+    <Node name="Corrotational">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="0 0 0"/>
+
+        <MechanicalObject name="mechObj"/>
+        <UniformMass/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.45" method="large" />
+
+        <BoxROI drawBoxes="0" box="0 0 0 1 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+        <Visual3DText text="Corrotational" position="1 0 -0.5" scale="0.2" />
+    </Node>
+
+    <Node name="ArrudaBoyce">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="2 0 0"/>
+
+        <MechanicalObject name="mechObj"/>
+        <UniformMass/>
+
+        <Node name="tetras">
+            <TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+
+            <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483"/>
+        </Node>
+
+        <BoxROI drawBoxes="1" box="2 0 0 3 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+        <Visual3DText text="ArrudaBoyce" position="3 0 -0.5" scale="0.2" />
+    </Node>
+
+    <Node name="StVenantKirchhoff">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="4 0 0"/>
+
+        <MechanicalObject name="mechObj"/>
+        <UniformMass/>
+
+        <Node name="tetras">
+            <TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+
+            <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="StVenantKirchhoff"/>
+        </Node>
+
+        <BoxROI drawBoxes="1" box="4 0 0 5 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+        <Visual3DText text="StVenantKirchhoff" position="5 0 -0.5" scale="0.2" />
+    </Node>
+
+
+    <Node name="NeoHookean">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="6 0 0"/>
+
+        <MechanicalObject name="mechObj"/>
+        <UniformMass/>
+
+        <Node name="tetras">
+            <TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+
+            <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="NeoHookean"/>
+        </Node>
+
+        <BoxROI drawBoxes="1" box="6 0 0 7 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+        <Visual3DText text="NeoHookean" position="7 0 -0.5" scale="0.2" />
+    </Node>
+
+
+    <Node name="MooneyRivlin">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="8 0 0"/>
+
+        <MechanicalObject name="mechObj"/>
+        <UniformMass/>
+
+        <Node name="tetras">
+            <TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+
+            <StandardTetrahedralFEMForceField name="FEM" ParameterSet="5000 7000 10" materialName="MooneyRivlin"/>
+        </Node>
+
+        <BoxROI drawBoxes="1" box="8 0 0 9 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+        <Visual3DText text="MooneyRivlin" position="9 0 -0.5" scale="0.2" />
+    </Node>
+</Node>

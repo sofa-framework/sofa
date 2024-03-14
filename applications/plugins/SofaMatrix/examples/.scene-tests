@@ -1,2 +1,5 @@
 # No need for more than 1 iteration to test an export
 iterations "GlobalSystemMatrixExporter.scn" "1"
+
+# The scene compares the use of a fill-in reducing strategy compared to not using it. No need more than one iteration
+iterations "FillReducingOrdering.scn" "1"

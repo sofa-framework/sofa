@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCUDA)
+project(SofaCUDA LANGUAGES CUDA CXX)
 
 set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
@@ -10,8 +10,11 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
+set(SOFACUDA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaCUDA")
+
 set(HEADER_FILES
     config.h.in
+    init.h
     
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
@@ -24,148 +27,152 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
+    sofa/gpu/cuda/CudaTexture.h
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/mycuda.h
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.h
-    sofa/gpu/cuda/CudaMechanicalObject.inl
-    sofa/gpu/cuda/CudaParticleSource.h
-    sofa/gpu/cuda/CudaParticleSource.inl
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.h
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.inl
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.h
-    sofa/gpu/cuda/CudaBarycentricMapping.inl
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.h
-    sofa/gpu/cuda/CudaIdentityMapping.h
-    sofa/gpu/cuda/CudaIdentityMapping.inl
-    sofa/gpu/cuda/CudaRigidMapping.h
-    sofa/gpu/cuda/CudaRigidMapping.inl
-    sofa/gpu/cuda/CudaSubsetMapping.h
-    sofa/gpu/cuda/CudaSubsetMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.inl
 
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.h
-    sofa/gpu/cuda/CudaDiagonalMass.inl
-    sofa/gpu/cuda/CudaMeshMatrixMass.h
-    sofa/gpu/cuda/CudaMeshMatrixMass.inl
-    sofa/gpu/cuda/CudaUniformMass.h
-    sofa/gpu/cuda/CudaUniformMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.inl
     
 
     ### FEM
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.inl
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
-    sofa/gpu/cuda/CudaEllipsoidForceField.h
-    sofa/gpu/cuda/CudaEllipsoidForceField.inl
-    sofa/gpu/cuda/CudaLinearForceField.h
-    sofa/gpu/cuda/CudaLinearForceField.inl
-    sofa/gpu/cuda/CudaPlaneForceField.h
-    sofa/gpu/cuda/CudaPlaneForceField.inl
-    sofa/gpu/cuda/CudaSphereForceField.h
-    sofa/gpu/cuda/CudaSphereForceField.inl
-    sofa/gpu/cuda/CudaSpringForceField.h
-    sofa/gpu/cuda/CudaSpringForceField.inl
-
-    
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.inl
 
     ### Collisions
-    sofa/gpu/cuda/CudaLineModel.h
-    sofa/gpu/cuda/CudaPointModel.h
-    sofa/gpu/cuda/CudaSphereModel.h
-    sofa/gpu/cuda/CudaTriangleModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.h
 
     ### Constraints
-    sofa/gpu/cuda/CudaFixedConstraint.h
-    sofa/gpu/cuda/CudaFixedConstraint.inl
-    sofa/gpu/cuda/CudaLinearMovementConstraint.h
-    sofa/gpu/cuda/CudaLinearMovementConstraint.inl
-    sofa/gpu/cuda/CudaPenalityContactForceField.h
-    sofa/gpu/cuda/CudaPenalityContactForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.inl
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.inl
   
 )
 
 set(SOURCE_FILES
     ### Common
-    main.cpp
+    init.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
-    sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-d.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping.cpp
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
-    sofa/gpu/cuda/CudaIdentityMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-d.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
-    sofa/gpu/cuda/CudaRigidMapping.cpp
-    sofa/gpu/cuda/CudaSubsetMapping.cpp
-    sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.cpp
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cpp
-    sofa/gpu/cuda/CudaMeshMatrixMass.cpp
-    sofa/gpu/cuda/CudaUniformMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cpp
 
     ### FEM
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cpp
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
-    sofa/gpu/cuda/CudaConstantForceField.cpp
-    sofa/gpu/cuda/CudaEllipsoidForceField.cpp
-    sofa/gpu/cuda/CudaLinearForceField.cpp
-    sofa/gpu/cuda/CudaPenalityContactForceField.cpp
-    sofa/gpu/cuda/CudaPlaneForceField.cpp
-    sofa/gpu/cuda/CudaRestShapeSpringsForceField.cpp
-    sofa/gpu/cuda/CudaSphereForceField.cpp
-    sofa/gpu/cuda/CudaSpringForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaRestShapeSpringsForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cpp
     
 
     ### Collisions
     sofa/gpu/cuda/CudaCollision.cpp
-    sofa/gpu/cuda/CudaLineModel.cpp
-    sofa/gpu/cuda/CudaPointModel.cpp
-    sofa/gpu/cuda/CudaSphereModel.cpp
-    sofa/gpu/cuda/CudaTriangleModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
 
-    ### Constraints
-    sofa/gpu/cuda/CudaFixedConstraint.cpp
-    sofa/gpu/cuda/CudaFixedTranslationConstraint.cpp
-    sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
-    sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
+    ### Constraints  
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralLagrangianConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityProjectiveConstraint.cpp
 
-    sofa/gpu/cuda/CudaBeamLinearMapping.cpp
-    sofa/gpu/cuda/CudaBoxROI.cpp
-    sofa/gpu/cuda/CudaSphereROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaBoxROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaNearestPointROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaSphereROI.cpp
 
-    sofa/gpu/cuda/CudaExtraMonitor.cpp
-    sofa/gpu/cuda/CudaIndexValueMapper.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/transform/CudaIndexValueMapper.cpp
+
+    ### ConstraintCorrection
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaLinearSolverConstraintCorrection.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaPrecomputedConstraintCorrection.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaUncoupledConstraintCorrection.cpp
 )
 
 set(CUDA_SOURCES
@@ -176,40 +183,40 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSort.cu
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cu
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cu
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.cu
-    sofa/gpu/cuda/CudaRigidMapping.cu
-    sofa/gpu/cuda/CudaSubsetMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cu
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cu
-    sofa/gpu/cuda/CudaMeshMatrixMass.cu
-    sofa/gpu/cuda/CudaUniformMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cu
 
     ### FEM
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cu
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
-    
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cu
 
     ### ForceFields
-    sofa/gpu/cuda/CudaEllipsoidForceField.cu
-    sofa/gpu/cuda/CudaLinearForceField.cu
-    sofa/gpu/cuda/CudaPenalityContactForceField.cu
-    sofa/gpu/cuda/CudaPlaneForceField.cu
-    sofa/gpu/cuda/CudaSphereForceField.cu
-    sofa/gpu/cuda/CudaSpringForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cu
 
     ### Collisions
     
     ### Constraints
-    sofa/gpu/cuda/CudaFixedConstraint.cu
-    sofa/gpu/cuda/CudaLinearMovementConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cu
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cu
     
     
 )
@@ -231,42 +238,104 @@ else()
     )
 endif()
 
-set(README_FILES SofaCUDA.txt)
+#Compatibility
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaBarycentricMapping.h
+        sofa/gpu/cuda/CudaBarycentricMapping.inl
+        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+        sofa/gpu/cuda/CudaRigidMapping.h
+        sofa/gpu/cuda/CudaRigidMapping.inl
+        sofa/gpu/cuda/CudaIdentityMapping.h
+        sofa/gpu/cuda/CudaIdentityMapping.inl
+        sofa/gpu/cuda/CudaSubsetMapping.h
+        sofa/gpu/cuda/CudaSubsetMapping.inl
 
-find_package(CUDA REQUIRED)
+        sofa/gpu/cuda/CudaDiagonalMass.h
+        sofa/gpu/cuda/CudaDiagonalMass.inl
 
-find_package(SofaGeneralEngine REQUIRED)
-find_package(SofaGeneralDeformable REQUIRED)
-find_package(SofaEngine REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaNonUniformFem REQUIRED)
-find_package(SofaMiscMapping REQUIRED)
-find_package(SofaMiscFem REQUIRED)
-find_package(SofaValidation REQUIRED)
-find_package(SofaMiscForceField REQUIRED)
-find_package(SofaGeneralObjectInteraction REQUIRED)
+        sofa/gpu/cuda/CudaMeshMatrixMass.h
+        sofa/gpu/cuda/CudaMeshMatrixMass.inl
 
-find_package(VolumetricRendering QUIET)
+        sofa/gpu/cuda/CudaUniformMass.h
+        sofa/gpu/cuda/CudaUniformMass.inl
 
-if(VolumetricRendering_FOUND)
-    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
-    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.inl)
-    list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp)
-    add_definitions("-DSOFACUDA_ENABLE_VOLUMETRICRENDERING")
-else()
-    message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.h
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
+
+        sofa/gpu/cuda/CudaFixedConstraint.h
+        sofa/gpu/cuda/CudaFixedConstraint.inl
+        sofa/gpu/cuda/CudaLinearMovementConstraint.h
+        sofa/gpu/cuda/CudaLinearMovementConstraint.inl
+
+        sofa/gpu/cuda/CudaLineModel.h
+        sofa/gpu/cuda/CudaPointModel.h
+        sofa/gpu/cuda/CudaSphereModel.h
+        sofa/gpu/cuda/CudaTriangleModel.h
+
+        sofa/gpu/cuda/CudaPenalityContactForceField.h
+        sofa/gpu/cuda/CudaPenalityContactForceField.inl
+
+        sofa/gpu/cuda/CudaSpringForceField.h
+        sofa/gpu/cuda/CudaSpringForceField.inl
+
+        sofa/gpu/cuda/CudaSphereForceField.h
+        sofa/gpu/cuda/CudaSphereForceField.inl
+
+        sofa/gpu/cuda/CudaPlaneForceField.h
+        sofa/gpu/cuda/CudaPlaneForceField.inl
+
+        sofa/gpu/cuda/CudaLinearForceField.h
+        sofa/gpu/cuda/CudaLinearForceField.inl
+
+        sofa/gpu/cuda/CudaEllipsoidForceField.h
+        sofa/gpu/cuda/CudaEllipsoidForceField.inl
+
+        sofa/gpu/cuda/CudaMechanicalObject.h
+        sofa/gpu/cuda/CudaMechanicalObject.inl
+    )
 endif()
 
-sofa_find_package(SofaGuiQt QUIET)
-if(SofaGuiQt_FOUND)
+set(README_FILES README.md)
+
+sofa_find_package(Sofa.Component.Mass REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
+sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
+
+sofa_find_package(Sofa.GUI QUIET)
+if(Sofa.GUI_FOUND)
+    list(APPEND SOURCE_FILES sofa/gpu/gui/CudaMouseInteraction.cpp)
+endif()
+
+sofa_find_package(Sofa.GUI.Qt QUIET)
+if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
 
-find_package(SofaDistanceGrid QUIET)
-sofa_find_package(MiniFlowVR QUIET)
 
+find_package(SofaDistanceGrid QUIET)
 if(SofaDistanceGrid_FOUND)
+    sofa_find_package(MiniFlowVR QUIET)
     if(MiniFlowVR_FOUND)
         message(STATUS "SofaCUDA: MiniFlowVR enabled.")
     else()
@@ -290,39 +359,42 @@ else()
     message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
-if (PLUGIN_SOFASPHFLUID)
-    find_package(SofaSphFluid QUIET)
-    if(SofaSphFluid_FOUND)
-        list(APPEND HEADER_FILES
-            sofa/gpu/cuda/CudaParticleSource.h
-            sofa/gpu/cuda/CudaParticleSource.inl
-            sofa/gpu/cuda/CudaSPHFluidForceField.h
-            sofa/gpu/cuda/CudaSPHFluidForceField.inl
-            sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
-            sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
-            sofa/gpu/cuda/CudaSpatialGridContainer.h
-            sofa/gpu/cuda/CudaSpatialGridContainer.inl
-            )
-        list(APPEND SOURCE_FILES
-        sofa/gpu/cuda/CudaParticleSource.cpp
-        sofa/gpu/cuda/CudaSPHFluidForceField.cpp
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
-        sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+find_package(SofaSphFluid QUIET)
+if(SofaSphFluid_FOUND)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaParticleSource.h
+        sofa/gpu/cuda/CudaParticleSource.inl
+        sofa/gpu/cuda/CudaSPHFluidForceField.h
+        sofa/gpu/cuda/CudaSPHFluidForceField.inl
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
+        sofa/gpu/cuda/CudaSpatialGridContainer.h
+        sofa/gpu/cuda/CudaSpatialGridContainer.inl
         )
-        list(APPEND CUDA_SOURCES
-        sofa/gpu/cuda/CudaParticleSource.cu
-        sofa/gpu/cuda/CudaSPHFluidForceField.cu
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
-        sofa/gpu/cuda/CudaSpatialGridContainer.cu
-        )
-        message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
-    else()
-        message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
-    endif()
+    list(APPEND SOURCE_FILES
+    sofa/gpu/cuda/CudaParticleSource.cpp
+    sofa/gpu/cuda/CudaSPHFluidForceField.cpp
+    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
+    sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+    )
+    list(APPEND CUDA_SOURCES
+    sofa/gpu/cuda/CudaParticleSource.cu
+    sofa/gpu/cuda/CudaSPHFluidForceField.cu
+    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
+    sofa/gpu/cuda/CudaSpatialGridContainer.cu
+    )
+    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
 else()
-    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not enabled. ")
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
 endif()
 
+sofa_find_package(SofaValidation QUIET)
+if(SofaValidation_FOUND)
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaExtraMonitor.cpp
+        )
+    message(STATUS "SofaCUDA: found SofaValidation, enabling CudaExtraMonitor (Warning: this component is being deprecated). ")
+endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -386,43 +458,61 @@ add_definitions("-DSOFA_BUILD_SOFACUDA")
 # Give include directories to nvcc compiler.
 # Note: keep cuda_include_directories() before cuda_add_library().
 cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME}
-    SofaGeneralEngine
-    SofaGeneralDeformable
-    SofaEngine
-    SofaUserInteraction
-    SofaNonUniformFem
-    SofaMiscMapping
-    SofaMiscFem
-    SofaValidation
-    SofaMiscForceField
-    SofaGeneralObjectInteraction
-    )
+    Sofa.Component.Mass
+    Sofa.Component.SolidMechanics.FEM.Elastic
+    Sofa.Component.SolidMechanics.FEM.HyperElastic
+    Sofa.Component.SolidMechanics.TensorMass
+    Sofa.Component.MechanicalLoad
+    Sofa.Component.Collision.Response.Contact
+    Sofa.Component.Collision.Detection.Algorithm
+    Sofa.Component.Collision.Detection.Intersection
+    Sofa.Component.StateContainer
+    Sofa.Component.Constraint.Projective
+    Sofa.Component.Mapping.Linear
+    Sofa.Component.Mapping.NonLinear
+    Sofa.Component.Engine.Select
+    Sofa.Component.Engine.Transform
+    Sofa.Component.MechanicalLoad
+)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-if(SofaOpenglVisual_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+    if(MiniFlowVR_FOUND)
+        target_link_libraries(${PROJECT_NAME} miniFlowVR)
+    endif()
 endif()
 
-if(MiniFlowVR_FOUND)
-    target_link_libraries(${PROJECT_NAME} miniFlowVR)
+
+if(Sofa.GUI_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GUI)
 endif()
 
-if(SofaGuiQt_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+
+if(Sofa.GUI.Qt_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GUI.Qt)
 endif()
 
+if(SofaValidation_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaValidation)
+endif()
+
+if(SofaSphFluid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
+endif()
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
@@ -431,12 +521,7 @@ endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
-if(VolumetricRendering_FOUND)
-    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
-endif()
-if(SofaSphFluid_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
-endif()
+
 
 
 ## SofaCUDANvccFlags.cmake

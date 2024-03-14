@@ -6,8 +6,9 @@
 
 using namespace sofa;
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 
 Interactor::Interactor(const PickedPoint& picked)
     : _pickedPoint( picked )
@@ -31,4 +32,4 @@ void Interactor::detach()
 }
 
 }
-}
+

@@ -137,7 +137,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
 
-    double omni_force[3];
+    GeomagicDriver::SHDdouble omni_force[3];
     omni_force[0] = force_in_omni[0];
     omni_force[1] = force_in_omni[1];
     omni_force[2] = force_in_omni[2];
@@ -194,7 +194,7 @@ void GeomagicDriver::init()
     if (l_forceFeedback.empty())
     {
         simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-        m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+        m_forceFeedback = context->get<sofa::component::haptics::ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
     }
     else
     {
@@ -216,7 +216,8 @@ void GeomagicDriver::init()
 void GeomagicDriver::clearDevice()
 {
 #if GEOMAGIC_HAVE_OPENHAPTICS
-    hdMakeCurrentDevice(m_hHD);
+    if (m_hHD != HD_INVALID_HANDLE)
+        hdMakeCurrentDevice(m_hHD);
 
     // stop scheduler first only if some works are registered
     if (!m_hStateHandles.empty() && s_schedulerRunning) {
@@ -261,7 +262,7 @@ void GeomagicDriver::initDevice()
     if (catchHDError(false) == HD_DEVICE_ALREADY_INITIATED)
     {
         // double initialisation, this can occure if device has not been release due to bad program exit
-        msg_warning() << "Device has already been initialized. Will clear driver and reinit the device properly.";
+        msg_warning() << "Device has already been initialized. SOFA Will clear current device using 'hdDisableDevice' and re-init the device properly using 'hdInitDevice'.";
         
         // Will Try clear and reinit device (10 times max): get device id in the current HD servo loop and try to release it and iterate on init
         HDerror tmpError = HD_DEVICE_ALREADY_INITIATED;
@@ -293,7 +294,7 @@ void GeomagicDriver::initDevice()
     if (hdCheckCalibration() != HD_CALIBRATION_OK)
     {
         // Possible values are : HD_CALIBRATION_OK || HD_CALIBRATION_NEEDS_UPDATE || HD_CALIBRATION_NEEDS_MANUAL_INPUT
-        msg_error() << "GeomagicDriver initialisation failed becase device " << d_deviceName.getValue() << " is not calibrated. Calibration should be done before using Geomagic device in SOFA simulation.";
+        msg_error() << "GeomagicDriver initialisation failed because device " << d_deviceName.getValue() << " is not calibrated. Calibration should be done using Geomagic Touch setup before using it in SOFA.";
         return;
     }
     
@@ -352,7 +353,7 @@ void GeomagicDriver::initDevice()
 
 void GeomagicDriver::updatePosition()
 {
-    type::Vector6 & angle = *d_angle.beginEdit();
+    type::Vec6 & angle = *d_angle.beginEdit();
     GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
 
     const Vec3 & positionBase = d_positionBase.getValue();

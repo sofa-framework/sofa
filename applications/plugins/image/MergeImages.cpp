@@ -38,6 +38,7 @@ using namespace defaulttype;
 int MergeImagesClass = core::RegisterObject("Merge images")
         .add<MergeImages<ImageUC> >(true)
         .add<MergeImages<ImageD> >()
+        .add<MergeImages<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<MergeImages<ImageC> >()
         .add<MergeImages<ImageI> >()
@@ -47,7 +48,6 @@ int MergeImagesClass = core::RegisterObject("Merge images")
         .add<MergeImages<ImageL> >()
         .add<MergeImages<ImageUL> >()
         .add<MergeImages<ImageF> >()
-        .add<MergeImages<ImageB> >()
 #endif
         ;
 

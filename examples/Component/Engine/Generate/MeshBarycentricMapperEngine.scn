@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MeshBarycentricMapperEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RegularGridTopology name="GridTopology" nx="10" ny="10" nz="10" min="-10 -10 -10" max="10 10 10" drawEdges="1"/>
+
+    <DefaultAnimationLoop/>
+    <Node name="Tetra-Topo">
+        <TetrahedronSetTopologyContainer name="Container" checkTopology="1"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <Hexa2TetraTopologicalMapping name="default28" input="@../GridTopology" output="@Container" />
+        <Node name="Liver">
+            <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
+            <MeshTopology src="@meshLoader" name="LiverTopo"  />
+            <MeshBarycentricMapperEngine inputPositions="@../../GridTopology.position" mappedPointPositions="@./LiverTopo.position" topology="@../Container"/>
+            <OglModel name="Visual" src="@meshLoader" color='1.0 0.0 0.0 1' />
+        </Node>
+    </Node>
+</Node>

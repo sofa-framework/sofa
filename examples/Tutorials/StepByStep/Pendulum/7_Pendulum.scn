@@ -1,27 +1,32 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9.81" dt="0.01">
 
-    <RequiredPlugin name='SofaImplicitOdeSolver'/> <!-- EulerImplicitSolver -->
-    <RequiredPlugin name='SofaBoundaryCondition'/> <!-- FixedConstraint -->
-    <RequiredPlugin name='SofaOpenglVisual'/> <!-- OglGrid -->
-    <RequiredPlugin name='SofaDeformable'/> <!-- StiffSpringForceField -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
 
-    <OglGrid/>
+    <VisualGrid/>
     <OglSceneFrame/>
 
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehavior" />
     <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="FirstObject" gravity="0 -9.81 0">
-        <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 1 0 0" />
-        <UniformMass template="Vec3d,double" name="Mass" />
-        <FixedConstraint template="Vec3d" name="Fix Particles" indices="0" />
-        <StiffSpringForceField template="Vec3d" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" />
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particles" indices="0" />
+        <StiffSpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
     </Node>
     <Node name="SecondObject" gravity="0 -9.81 0">
         <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping hideOptions" />
-        <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="2 0 0" />
-        <UniformMass template="Vec3d,double" name="Mass" />
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="2 0 0" showObject="1" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" />
     </Node>
-    <StiffSpringForceField template="Vec3d" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
+    <StiffSpringForceField template="Vec3" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
 </Node>

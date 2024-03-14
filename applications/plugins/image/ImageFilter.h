@@ -123,7 +123,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(30	,"0 - None"
+        helper::OptionsGroup filterOptions{"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -153,7 +153,7 @@ public:
                                            ,"27 - Mirror (axis=0)"
                                            ,"28 - Sharpen (sigma)"
                                            ,"29 - Expand ( size )"
-                                           );
+                                          };
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
     }
@@ -221,7 +221,16 @@ protected:
             if(updateImage)
             {
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
-                cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+#if defined(_MSC_VER)
+                if constexpr (std::is_same_v<Ti, long> || std::is_same_v<Ti, unsigned long>) //this situation triggers compilation error on Windows and needs a special treatment
+                {
+                    cimglist_for(img, l) img(l) = cimg_library::CImg<float>(inimg(l),false).blur_anisotropic (amplitude);
+                }
+                else
+#endif
+                {
+                    cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
+                }
             }
             break;
         case DERICHE:
@@ -459,14 +468,14 @@ protected:
                     img(l).resize(dimx,dimy,dimz,nbc);
                     cimg_forXYZ(img(l),x,y,z)
                     {
-                        Coord p=inT->toImage(outT->fromImage(Coord(x,y,z)));
-                        if(p[0]<-0.5 || p[1]<-0.5 || p[2]<-0.5 || p[0]>inimg(l).width()-0.5 || p[1]>inimg(l).height()-0.5 || p[2]>inimg(l).depth()-0.5)
+                        Coord p2=inT->toImage(outT->fromImage(Coord(x,y,z)));
+                        if(p2[0]<-0.5 || p2[1]<-0.5 || p2[2]<-0.5 || p2[0]>inimg(l).width()-0.5 || p2[1]>inimg(l).height()-0.5 || p2[2]>inimg(l).depth()-0.5)
                             for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
                         else
                         {
-                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p[0]),sofa::helper::round((double)p[1]),sofa::helper::round((double)p[2]),k);
-                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
-                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg_library::cimg::type<Ti>::min(),cimg_library::cimg::type<Ti>::max());
+                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p2[0]),sofa::helper::round((double)p2[1]),sofa::helper::round((double)p2[2]),k);
+                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p2[0],p2[1],p2[2],k,OutValue);
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p2[0],p2[1],p2[2],k,OutValue);
                         }
                     }
                 }

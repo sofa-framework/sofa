@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
 #include <SofaMatrix/config.h>
 #include <sofa/simulation/BaseSimulationExporter.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsystem
 {
 
 /**
@@ -43,10 +43,11 @@ public:
     void doInit() override;
 
 protected:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
+    Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format
+    Data<int> d_precision; ///< Number of digits used to write an entry of the matrix, default is 6
 
     GlobalSystemMatrixExporter();
 
-    SingleLink<GlobalSystemMatrixExporter, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
+    SingleLink<GlobalSystemMatrixExporter, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSystem;
 };
 }

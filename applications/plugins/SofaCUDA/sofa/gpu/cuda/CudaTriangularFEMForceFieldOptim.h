@@ -19,73 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_H
-#define SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_H
+#pragma once
 
-#include "CudaTypes.h"
-#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-} // namespace cuda
-
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
-{
-
-template <>
-class TriangularFEMForceFieldOptimInternalData<gpu::cuda::CudaVec3fTypes>
-{
-public:
-    typedef TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes> Main;
-    struct GPUTriangleInfo
-    {
-        int ia, ib, ic;
-    };
-
-    typedef gpu::cuda::CudaVector<GPUTriangleInfo> VecGPUTriangleInfo;
-
-    VecGPUTriangleInfo gpuTriangleInfo;
-
-    void reinit(Main* m)
-    {
-
-        const Main::VecElement& triangles = m->l_topology.get()->getTriangles();
-        helper::WriteAccessor< VecGPUTriangleInfo > gpuTriangleInfo = this->gpuTriangleInfo;
-
-        gpuTriangleInfo.resize(triangles.size());
-        for (unsigned int i=0;i<triangles.size();++i)
-        {
-            gpuTriangleInfo[i].ia = triangles[i][0];
-            gpuTriangleInfo[i].ib = triangles[i][1];
-            gpuTriangleInfo[i].ic = triangles[i][2];
-        }
-        std::cout << "CREATED " << gpuTriangleInfo.size() << " GPU TRIANGLESTATE" << std::endl;
-    }
-
-};
-
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h")

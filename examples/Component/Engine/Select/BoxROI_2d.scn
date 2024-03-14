@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 1" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <DefaultAnimationLoop/>
+    <DefaultVisualManagerLoop/>
+
+    <Node name="M1">
+        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver template="CompressedRowSparseMatrix" iterations="1000" threshold="1e-9" tolerance="1e-9"/>
+        <MechanicalObject template="Vec2"/>
+        <UniformMass vertexMass="1" />
+        <RegularGridTopology nx="21" ny="5" nz="1" xmin="0" xmax="20" ymin="0" ymax="4" zmin="0" zmax="0"/>
+        <BoxROI name="box" box="-0.1 -0.1 -1e4  0.1 4.1 1e4"/>
+        <FixedProjectiveConstraint indices="@box.indices" />
+        <MeshSpringForceField stiffness="10000"/>
+    </Node>
+</Node>

@@ -19,12 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaCommon.h"
-#include "CudaMath.h"
-#include "CudaTexture.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
+#include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
-
-//#define umul24(x,y) ((x)*(y))
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
@@ -117,7 +114,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         float x1 = tex1Dfetch(tex_3f_x, i3);
         float x2 = tex1Dfetch(tex_3f_x, i3+1);
         float x3 = tex1Dfetch(tex_3f_x, i3+2);
@@ -136,7 +133,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getN(int i, const TIn* n)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         float x1 = tex1Dfetch(tex_3f_n, i3);
         float x2 = tex1Dfetch(tex_3f_n, i3+1);
         float x3 = tex1Dfetch(tex_3f_n, i3+2);
@@ -190,11 +187,11 @@ public:
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t_calcTNormals_kernel(int nbElem, const int* elems, real* fnormals, const TIn* x)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
-    int index3 = umul24(index1,3);
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int index3 = index1 * 3;
+    int iext = index0 * 3 + index1;
 
     __shared__  union
     {
@@ -236,11 +233,11 @@ __global__ void CudaVisualModelCuda3t_calcTNormals_kernel(int nbElem, const int*
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t1_calcTNormals_kernel(int nbElem, const int* elems, CudaVec4<real>* fnormals, const TIn* x)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
-    int index3 = umul24(index1,3);
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int index3 = index1 * 3;
+    int iext = index0 * 3 + index1;
 
     __shared__ int itemp[3*BSIZE];
 
@@ -268,11 +265,11 @@ __global__ void CudaVisualModelCuda3t1_calcTNormals_kernel(int nbElem, const int
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t_calcQNormals_kernel(int nbElem, const int4* elems, real* fnormals, const TIn* x)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
-    int index3 = umul24(index1,3);
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int index3 = index1 * 3;
+    int iext = index0 * 3 + index1;
 
     __shared__ real rtemp[3*BSIZE];
 
@@ -304,7 +301,7 @@ __global__ void CudaVisualModelCuda3t_calcQNormals_kernel(int nbElem, const int4
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t1_calcQNormals_kernel(int nbElem, const int4* elems, CudaVec4<real>* fnormals, const TIn* x)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -328,17 +325,17 @@ __global__ void CudaVisualModelCuda3t1_calcQNormals_kernel(int nbElem, const int
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t_calcVNormals_kernel(int nbVertex, unsigned int nbElemPerVertex, const int* velems, real* vnormals, const TIn* fnormals)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
-    int index3 = umul24(index1,3); //3*index1;
+    int index3 = index1 * 3; //3*index1;
 
     __shared__  real temp[3*BSIZE];
 
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int iext = index0 * 3 + index1;
 
     CudaVec3<real> n = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    velems+=umul24(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index0+index1 < nbVertex)
     {
@@ -370,13 +367,13 @@ __global__ void CudaVisualModelCuda3t_calcVNormals_kernel(int nbVertex, unsigned
 template<typename real, class TIn>
 __global__ void CudaVisualModelCuda3t1_calcVNormals_kernel(int nbVertex, unsigned int nbElemPerVertex, const int* velems, CudaVec4<real>* vnormals, const TIn* fnormals)
 {
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
     const int index = index0 + index1;
 
     CudaVec3<real> n = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    velems+=umul24(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index < nbVertex)
     {

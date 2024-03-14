@@ -28,13 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
@@ -44,17 +38,11 @@ template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
 template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}// namespace misc
-
-}// namespace component
+}// namespace sofa::component::misc
 
 
-namespace gpu
+namespace sofa::gpu::cuda
 {
-
-namespace cuda
-{
-
 int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()
         .add< component::misc::ExtraMonitor<CudaVec6fTypes> >()
@@ -64,8 +52,4 @@ int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation 
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-}// namespace cuda
-
-}// namespace gpu
-
-}// namespace sofa
+}// namespace sofa::gpu::cuda

@@ -1,13 +1,12 @@
 <Node name="root" dt="0.04">
 	<VisualStyle displayFlags="showBehaviorModels showForceFields" />
-	<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	
 	<Node name="M1">
 		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
 		<EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.01" />
 		<CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
-<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
+<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioner="@precond" />
 		<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
 		<MeshTopology src="@volume" />
 		<MechanicalObject template="Vec3" />
@@ -22,10 +21,10 @@
 		<TetrahedronFEMForceField name="FEM" youngModulus="@ind_box1.outputValues" poissonRatio="0.4" listening="true" />
 
 		<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
-		<FixedConstraint indices="@box3.indices" />	  
+		<FixedProjectiveConstraint indices="@box3.indices" />
 
 		<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
-                <ConstantForceField indices="@boxF.indices" force="7.5 -6.63 -15" showArrowSize="0.1" />
+		<ConstantForceField indices="@boxF.indices" forces="7.5 -6.63 -15" showArrowSize="0.1" />
 		<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  showPlane="1" showPlaneSize="20" />
 <!--
 		<Node name="Surf">

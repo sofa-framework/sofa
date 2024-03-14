@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaVisualModel.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int CudaVisualModelClass = core::RegisterObject("Rendering of meshes based on CUDA")
@@ -41,8 +36,8 @@ int CudaVisualModelClass = core::RegisterObject("Rendering of meshes based on CU
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

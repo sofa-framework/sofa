@@ -47,11 +47,11 @@ int32_t fingersIdsArray[5] = {-1,-1,-1,-1,-1};
 LeapMotionDriver::LeapMotionDriver()
     : scale(initData(&scale, 1.0, "scale","Default scale applied to the Leap Motion Coordinates. "))
     , translation(initData(&translation, Vec3d(0,0,0), "translation","Position of the tool/hand in the Leap Motion reference frame"))
-    , rotation(initData(&rotation, sofa::type::Vector3(), "rotation", "Rotation of the DOFs of the hand"))
+    , rotation(initData(&rotation, sofa::type::Vec3(), "rotation", "Rotation of the DOFs of the hand"))
     , handPalmCoordinate(initData(&handPalmCoordinate, "handPalmCoordinate","Coordinate of the hand detected by the Leap Motion"))
     , sphereCenter(initData(&sphereCenter, "sphereCenter","Center of the sphere of the hand detected by the Leap Motion"))
     , sphereRadius(initData(&sphereRadius, "sphereRadius","Radius of the sphere of the hand detected by the Leap Motion"))
-    , fingersCoordinates(initData(&fingersCoordinates, sofa::type::vector<Rigid3dTypes::Coord>(1,Rigid3dTypes::Coord(sofa::type::Vector3(0,0,0),Quat(0,0,0,1))), "fingersCoordinates","Coordinate of the fingers detected by the Leap Motion"))
+    , fingersCoordinates(initData(&fingersCoordinates, sofa::type::vector<Rigid3dTypes::Coord>(1,Rigid3dTypes::Coord(sofa::type::Vec3(0,0,0),Quat(0,0,0,1))), "fingersCoordinates","Coordinate of the fingers detected by the Leap Motion"))
     , gestureType(initData(&gestureType, int(-1) ,"gestureType","Type of the current gesture detected by the Leap Motion"))
     , gesturePosition(initData(&gesturePosition, "gesturePosition","Position of the current gesture detected by the Leap Motion"))
     , gestureDirection(initData(&gestureDirection, "gestureDirection","Direction of the current gesture detected by the Leap Motion"))
@@ -132,12 +132,6 @@ void LeapMotionDriver::init()
             lastGesturesFrameIds.push_back(std::make_pair(i,0));
 	}
 	lastGestureFrameId = 0;
-}
-
-
-void LeapMotionDriver::bwdInit()
-{
-    msg_info() <<"LeapMotionDriver::bwdInit()";
 }
 
 

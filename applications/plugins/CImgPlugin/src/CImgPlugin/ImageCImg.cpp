@@ -8,14 +8,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::ImageCImg, "ImageCImg")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-
-namespace io
+namespace sofa::helper::io
 {
 
 std::vector<std::string> ImageCImgCreators::cimgSupportedExtensions {
@@ -40,7 +34,7 @@ ImageCImgCreators::ImageCImgCreators()
         const std::string& ext = cimgSupportedExtensions[i];
         if (!sofa::helper::io::Image::FactoryImage::HasKey(ext))
         {
-            creators.push_back(new Creator<helper::io::Image::FactoryImage, ImageCImg>(ext));
+            creators.push_back(std::make_shared<Creator<helper::io::Image::FactoryImage, ImageCImg>>(ext));
         }
     }
 
@@ -81,7 +75,7 @@ bool ImageCImg::load(std::string filename)
     Image::DataType dataType;
     Image::ChannelFormat channelFormat;
 
-    if (!cimg_library::cimg::strcasecmp(cimgImage.pixel_type(),"unsigned char"))
+    if (!cimg_library::cimg::strcasecmp(cimgImage.pixel_type(),"uint8"))
     {
         dataType = Image::UNORM8;
     }
@@ -121,7 +115,7 @@ bool ImageCImg::load(std::string filename)
     // e.g R1R2R3...G1G2G3....B1B2B3
     // sofa::Image stores it interleaved
     // e.g R1G1B1R2G2B2R3G3B3
-    unsigned int totalSize = width * height;
+    const unsigned int totalSize = width * height;
 
     for(unsigned int xy=0 ; xy < totalSize ; xy++)
             for(unsigned int c=0 ; c < channels ; c++)
@@ -146,8 +140,8 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     }
 
     const unsigned char *data = getPixels();
-    unsigned int totalSize = getWidth() * getHeight();
-    unsigned int channelsNb = this->getChannelCount();
+    const unsigned int totalSize = getWidth() * getHeight();
+    const unsigned int channelsNb = this->getChannelCount();
 
     cimg_library::CImg<unsigned char> cimgImage(getWidth(), getHeight(),1, channelsNb);
 
@@ -189,8 +183,8 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     return res;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+

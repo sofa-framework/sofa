@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Node name="root" >
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [SmoothMeshEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <Node name="origin" >
+        <VisualStyle displayFlags="showWireframe" />
+        <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
+        <OglModel name="visual" src="@loader" color="yellow" />
+    </Node>
+    <Node name="smoothed" >
+        <VisualStyle displayFlags="hideWireframe" />
+        <MeshTopology name="topology" src="@/origin/loader"/>
+        <SmoothMeshEngine template="Vec3" name="smoother" input_position="@/origin/loader.position" nb_iterations="1" showOutput="true"/>
+    </Node>
+</Node>

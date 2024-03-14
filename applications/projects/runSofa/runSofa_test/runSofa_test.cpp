@@ -21,8 +21,7 @@
 ******************************************************************************/
 
 #include <fstream>
-#include <gtest/gtest.h>
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -34,7 +33,7 @@ using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::PluginManager;
 
-class runSofa_test : public Sofa_test<>
+class runSofa_test : public sofa::testing::BaseTest
 {
 protected:
     std::string m_testConfigPluginName;
@@ -51,7 +50,7 @@ protected:
 
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;
-        m_testPluginName = "TestPlugin";
+        m_testPluginName = "TestPluginA";
         
         //generate on the fly test list
         std::ofstream testPluginList;
@@ -69,13 +68,13 @@ protected:
 TEST_F(runSofa_test, runSofa_autoload)
 {
     PluginManager& pm = PluginManager::getInstance();
-    unsigned int num = pm.getPluginMap().size() ;
+    const unsigned int num = pm.getPluginMap().size() ;
     pm.readFromIniFile(m_testConfigPluginPath);
     PluginManager::getInstance().init();
     ASSERT_GT(pm.getPluginMap().size(), num);
     const std::string pluginPath = pm.findPlugin(m_testPluginName);
     ASSERT_GT(pluginPath.size(), 0U);
-    helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+    const helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
     ASSERT_EQ(0, std::string(p.getModuleName()).compare(m_testPluginName));
 }
 

@@ -24,9 +24,9 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
-#include <sofa/gpu/cuda/CudaSphereModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
+#include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
 
@@ -182,6 +182,19 @@ public:
         else
             return NULL;
     }
+
+    /// Const iterator to iterate the detection pairs
+    virtual type::Vec3 getFirstPosition(unsigned idx) override
+    {
+        return type::Vec3(getP1(idx)->p[0],getP1(idx)->p[1],getP1(idx)->p[2]);
+    }
+
+    /// Const iterator end to iterate the detection pairs
+    virtual type::Vec3 getSecondPosition(unsigned idx) override
+    {
+        return type::Vec3(getP2(idx)->p[0],getP2(idx)->p[1],getP2(idx)->p[2]);
+    }
+
 };
 
 template<>
@@ -190,7 +203,7 @@ class TDetectionOutputVector<sofa::gpu::cuda::CudaRigidDistanceGridCollisionMode
 };
 
 template<>
-class TDetectionOutputVector<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+class TDetectionOutputVector<sofa::gpu::cuda::CudaSphereCollisionModel, sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
 {
 };
 
@@ -212,11 +225,11 @@ namespace cuda
 
 
 class CudaCollisionDetection
-        : public sofa::component::collision::BruteForceBroadPhase
+        : public sofa::component::collision::detection::algorithm::BruteForceBroadPhase
         , public sofa::core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(CudaCollisionDetection, sofa::component::collision::BruteForceBroadPhase, sofa::core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(CudaCollisionDetection, sofa::component::collision::detection::algorithm::BruteForceBroadPhase, sofa::core::collision::NarrowPhaseDetection);
     struct GPUTest
     {
         void* result;
@@ -298,9 +311,9 @@ public:
     class SphereRigidTest : public Test
     {
     public:
-        sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* model1;
+        CudaSphereCollisionModel* model1;
         CudaRigidDistanceGridCollisionModel* model2;
-        SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2);
+        SphereRigidTest(CudaSphereCollisionModel *model1, CudaRigidDistanceGridCollisionModel* model2);
         bool useGPU() { return true; }
         /// Returns how many tests are required
         virtual int init();

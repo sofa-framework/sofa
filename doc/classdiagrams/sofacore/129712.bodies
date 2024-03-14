@@ -1,4 +1,0 @@
-class Processor
-!!!132144.cpp!!!	get_current() : Processor
-	static Processor _current;
-        return &_current;

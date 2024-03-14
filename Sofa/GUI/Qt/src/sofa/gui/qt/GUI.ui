@@ -1,0 +1,1009 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GUI</class>
+ <widget class="QMainWindow" name="GUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>210</width>
+    <height>481</height>
+   </size>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Sofa</string>
+  </property>
+  <widget class="QWidget" name="widget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <layout class="QVBoxLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" name="mainWidgetLayout"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileOpenAction"/>
+    <addaction name="fileReloadAction"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="fileExitAction"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="editRecordDirectoryAction"/>
+    <addaction name="editGnuplotDirectoryAction"/>
+    <addaction name="separator"/>
+    <addaction name="PluginManagerAction"/>
+    <addaction name="MouseManagerAction"/>
+    <addaction name="VideoRecorderManagerAction"/>
+    <addaction name="DataGraphAction"/>
+   </widget>
+   <widget class="QMenu" name="View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="helpShowDocBrowser"/>
+    <addaction name="helpAboutAction"/>
+   </widget>
+   <addaction name="fileMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="View"/>
+   <addaction name="helpMenu"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>551</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>200</width>
+      <height>0</height>
+     </size>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QWidget" name="optionTabs" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QVBoxLayout" name="_13">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
+        <item>
+         <layout class="QGridLayout" name="_14">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="ResetViewButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Set the camera to initial position and orientation</string>
+            </property>
+            <property name="text">
+             <string>Reset &amp;View</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+V</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="startButton">
+            <property name="toolTip">
+             <string>Launch the Simulation</string>
+            </property>
+            <property name="text">
+             <string>&amp;Animate</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+A</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="SaveViewButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Save the position and orientation of the camera</string>
+            </property>
+            <property name="text">
+             <string>Save Vie&amp;w</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+W</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="ReloadSceneButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Reload the simulation file</string>
+            </property>
+            <property name="text">
+             <string>&amp;Reload Scene</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+R</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="stepButton">
+            <property name="toolTip">
+             <string>Compute the simulation at time t+DT</string>
+            </property>
+            <property name="text">
+             <string>S&amp;tep</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+T</string>
+            </property>
+            <property name="autoRepeat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="screenshotButton">
+            <property name="text">
+             <string>Save S&amp;creenshot</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+C</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="_15">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="dtLabel">
+              <property name="text">
+               <string>DT:</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="dtEdit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>32767</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="realTimeCheckBox">
+              <property name="toolTip">
+               <string>Use the duration of the previous simulation step as the next DT</string>
+              </property>
+              <property name="text">
+               <string>Real Time</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="spacer_tab">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>8</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="tabs">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="TabGraph">
+           <attribute name="title">
+            <string>Graph</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="_19">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QPushButton" name="ExportGraphButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Export Graph...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>image1</normaloff>image1</iconset>
+                </property>
+                <property name="shortcut">
+                 <string>Alt+X</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="CollapseAllButton">
+                <property name="toolTip">
+                 <string>Collapse All</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="ExpandAllButton">
+                <property name="toolTip">
+                 <string>Expand All</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sceneGraphRefreshToggleButton">
+                <property name="toolTip">
+                 <string>The scene graph update button has three states
+State 0: unlocked (all the changes on the graph are immediately taken into account)
+State 1: locked (the changes on the graph are not done but the simulation graph is set to dirty if
+         there is some changes on the graph. A click on the button unlocks the graph (go to state 0).
+State 2: dirty, in that state the button reflect the fact that the scene graph view has changed but not displayed.
+         A click on the button refreshes the graph view but does not change the Lock/Unlock state</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabView">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <attribute name="title">
+            <string>View</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout1">
+            <item row="2" column="0">
+             <layout class="QGridLayout" name="_17">
+              <item row="1" column="0">
+               <layout class="QGridLayout" name="_18">
+                <item row="0" column="2">
+                 <spacer name="spacer8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Ignored</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="pixmapLabel1">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>http://sofa-framework.org</string>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap>image0</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <spacer name="spacer7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Ignored</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="TabVisualGraph">
+           <attribute name="title">
+            <string>Visual</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="_20">
+            <item>
+             <widget class="QPushButton" name="ExportVisualGraphButton">
+              <property name="text">
+               <string>E&amp;xport Graph...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>image1</normaloff>image1</iconset>
+              </property>
+              <property name="shortcut">
+               <string>Alt+X</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="TabStats">
+           <attribute name="title">
+            <string>Stats</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="_21">
+            <item>
+             <widget class="QCheckBox" name="dumpStateCheckBox">
+              <property name="toolTip">
+               <string comment="This is used to plut curves fter a simulation">Record the state at each time step in file &quot;dumpState.data&quot;</string>
+              </property>
+              <property name="text">
+               <string>Dump State</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="displayComputationTimeCheckBox">
+              <property name="toolTip">
+               <string>Display information about the time spent at each branch of the graph</string>
+              </property>
+              <property name="text">
+               <string>Log Time</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="exportGnuplotFilesCheckbox">
+              <property name="toolTip">
+               <string>Create gnuplot files for each named element of the simulation</string>
+              </property>
+              <property name="text">
+               <string>Export state as gnuplot files</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="exportVisitorCheckbox">
+              <property name="toolTip">
+               <string>Open a Dialog showing a trace of the execution and time spent</string>
+              </property>
+              <property name="text">
+               <string>Trace Visitor and Component execution</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="displayTimeProfiler">
+              <property name="text">
+               <string>Display AdvancedTimer profiler</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="TabPage">
+           <attribute name="title">
+            <string>Viewer</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="_22">
+            <item>
+             <layout class="QHBoxLayout" name="_23">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="spacer5_3_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>2</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="sizeW">
+                <property name="maximum">
+                 <number>30000</number>
+                </property>
+                <property name="value">
+                 <number>800</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="textLabel_sizeX">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>&lt;p align=&quot;center&quot;&gt;x&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="sizeH">
+                <property name="maximum">
+                 <number>30000</number>
+                </property>
+                <property name="value">
+                 <number>600</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="spacer5_3_2_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>2</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTextBrowser" name="textEdit1"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="fileOpenAction">
+   <property name="icon">
+    <iconset>
+     <normaloff>image3</normaloff>image3</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="iconText">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileOpenAction</cstring>
+   </property>
+  </action>
+  <action name="fileReloadAction">
+   <property name="text">
+    <string>&amp;Reload</string>
+   </property>
+   <property name="iconText">
+    <string>Reload</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileReloadAction</cstring>
+   </property>
+  </action>
+  <action name="fileExitAction">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+   <property name="iconText">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileExitAction</cstring>
+   </property>
+  </action>
+  <action name="helpAboutAction">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="iconText">
+    <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>helpAboutAction</cstring>
+   </property>
+  </action>
+  <action name="ViewerAction">
+   <property name="iconText">
+    <string>Viewer</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>ViewerAction</cstring>
+   </property>
+  </action>
+  <action name="editRecordDirectoryAction">
+   <property name="text">
+    <string>Record Directory...</string>
+   </property>
+   <property name="iconText">
+    <string>Record Directory...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>editRecordDirectoryAction</cstring>
+   </property>
+  </action>
+  <action name="editGnuplotDirectoryAction">
+   <property name="text">
+    <string>Gnuplot Directory...</string>
+   </property>
+   <property name="iconText">
+    <string>Gnuplot Directory...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>editGnuplotDirectoryAction</cstring>
+   </property>
+  </action>
+  <action name="PluginManagerAction">
+   <property name="text">
+    <string>Plugin Manager...</string>
+   </property>
+   <property name="iconText">
+    <string>Plugin Manager...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>PluginManagerAction</cstring>
+   </property>
+  </action>
+  <action name="MouseManagerAction">
+   <property name="text">
+    <string>Mouse Manager...</string>
+   </property>
+   <property name="iconText">
+    <string>Mouse Manager...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>MouseManagerAction</cstring>
+   </property>
+  </action>
+  <action name="Action">
+   <property name="iconText">
+    <string>Recently Opened Files...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>Action</cstring>
+   </property>
+  </action>
+  <action name="TestAction">
+   <property name="text">
+    <string>Test</string>
+   </property>
+   <property name="iconText">
+    <string>Test</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>TestAction</cstring>
+   </property>
+  </action>
+  <action name="VideoRecorderManagerAction">
+   <property name="text">
+    <string>Video Recorder Manager...</string>
+   </property>
+   <property name="iconText">
+    <string>Video Recorder Manager...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>VideoRecorderManagerAction</cstring>
+   </property>
+  </action>
+  <action name="helpShowDocBrowser">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show doc browser</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="DataGraphAction">
+   <property name="text">
+    <string>Data Graph...</string>
+   </property>
+   <property name="toolTip">
+    <string>Data Graph Window</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="2" margin="5"/>
+ <includes>
+  <include location="global">sofa/gui/qt/config.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>fileOpenAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>popupOpenFileSelector()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileReloadAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>fileReload()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileExitAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>fileExit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editRecordDirectoryAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>editRecordDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PluginManagerAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showPluginManager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MouseManagerAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showMouseManager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DataGraphAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showWindowDataGraph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editGnuplotDirectoryAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>editGnuplotDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>VideoRecorderManagerAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showVideoRecorderManager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>helpShowDocBrowser</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showDocBrowser()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>showDocBrowser()</slot>
+  <slot>fileNew()</slot>
+  <slot>popupOpenFileSelector()</slot>
+  <slot>fileReload()</slot>
+  <slot>fileSave()</slot>
+  <slot>fileSaveAs()</slot>
+  <slot>fileExit()</slot>
+  <slot>editRecordDirectory()</slot>
+  <slot>showPluginManager()</slot>
+  <slot>showMouseManager()</slot>
+  <slot>showWindowDataGraph()</slot>
+  <slot>editGnuplotDirectory()</slot>
+  <slot>showVideoRecorderManager()</slot>
+ </slots>
+</ui>

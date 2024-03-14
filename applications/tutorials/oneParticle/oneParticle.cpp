@@ -19,28 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/Node.h>
-#include <SofaGraphComponent/Gravity.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/visual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 #include <sofa/core/VecId.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/helper/accessor.h>
 
-#include <SofaComponentAll/initSofaComponentAll.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/component/init.h>
+#include <sofa/gui/init.h>
 
 
 
-using sofa::component::odesolver::EulerExplicitSolver;
+using sofa::component::odesolver::forward::EulerExplicitSolver;
 using namespace sofa::component::collision;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
@@ -53,18 +51,19 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    SOFA_UNUSED(argc);
+
     //force load SofaComponentAll
-    sofa::component::initSofaComponentAll();
+    sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    sofa::gui::GUIManager::SetDimension(800, 600);
+    sofa::gui::common::GUIManager::SetDimension(800, 600);
 
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     // The graph root node
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity({ 0,-10,0 });
 
@@ -77,7 +76,7 @@ int main(int argc, char** argv)
     // One node to define the particle
     sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
     // The particule, i.e, its degrees of freedom : a point with a velocity
-    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+    using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
     auto dof = sofa::core::objectmodel::New<MechanicalObject3>();
     dof->setName("particle");
     particule_node->addObject(dof);
@@ -93,7 +92,7 @@ int main(int argc, char** argv)
     dof->showObjectScale.setValue(10.);
 
     // Its properties, i.e, a simple mass node
-    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types>;
     auto mass = sofa::core::objectmodel::New<UniformMass3>();
     mass->setName("mass");
     particule_node->addObject(mass);
@@ -106,27 +105,27 @@ int main(int argc, char** argv)
 //    sphere->defaultRadius.setValue(0.1);
 
     // Display Flags
-    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
     sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
     flags.setShowBehaviorModels(true);
     flags.setShowCollisionModels(true);
     style->displayFlags.endEdit();
 
-    sofa::simulation::graph::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     groot->setAnimate(false);
 
     //======================================
     // Set up the GUI
-    sofa::gui::GUIManager::Init(argv[0]);
-    sofa::gui::GUIManager::createGUI(groot);
-    sofa::gui::GUIManager::SetDimension(800,700);
-//    sofa::gui::GUIManager::SetFullScreen();  // why does this not work ?
+    sofa::gui::common::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::createGUI(groot);
+    sofa::gui::common::GUIManager::SetDimension(800,700);
+//    sofa::gui::common::GUIManager::SetFullScreen();  // why does this not work ?
 
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(groot);
+    sofa::gui::common::GUIManager::MainLoop(groot);
 
     sofa::simulation::graph::cleanup();
     return 0;

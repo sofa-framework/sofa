@@ -1,0 +1,257 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+
+#include <sofa/config.h>
+
+#define SOFA_HAVE_DAG
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SIMULATION_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SIMULATION_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DISABLED_MECHANICALACCUMULATECONSTRAINT()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_MECHANICALACCUMULATECONSTRAINT() \
+    SOFA_ATTRIBUTE_DISABLED( \
+    "v22.12", "v23.06", "use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER() \
+    SOFA_ATTRIBUTE_DISABLED( \
+    "v22.12", "v23.06", "Use TaskSchedulerFactory instead")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_NODECREATENODE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_NODECREATENODE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v23.12", "v24.06", "")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_PRINT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_PRINT() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v23.12", "v24.06", "Use sofa::simulation::node::printNode")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INIT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INIT() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::initRoot")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITNODE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITNODE() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::init")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTXML()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTXML() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::exportInXML")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUALCONTEXT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUALCONTEXT() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::updateVisualContext")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_ANIMATE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_ANIMATE() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::animate")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUAL()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUAL() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::updateVisual")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_RESET()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_RESET() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::reset")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITTEXTURE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITTEXTURE() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::initTextures")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATECONTEXT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATECONTEXT() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::updateContext")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTEBBOX()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTEBBOX() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::computeBBox")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTETOTALBBOX()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTETOTALBBOX() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::computeTotalBBox")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DRAW()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DRAW() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::draw")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTOBJ()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTOBJ() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::exportOBJ")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTGRAPH()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTGRAPH() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::exportGraph")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DUMPSTATE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DUMPSTATE() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::dumpState")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_LOAD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_LOAD() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::load")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UNLOAD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UNLOAD() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "Use sofa::simulation::node::unload")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_SETSIMULATIONRAWPOINTER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_SETSIMULATIONRAWPOINTER() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v23.12", "v24.06", "This function is no longer useful if Sofa.Simulation.Graph is loaded. Calling this function may result in a memory leak.")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_VISITORSCHEDULER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_VISITORSCHEDULER() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v23.12", "v24.06", "This class is no longer used")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_HEADER_DEPRECATED_VISITORSCHEDULER()
+#else
+#define SOFA_HEADER_DEPRECATED_VISITORSCHEDULER() \
+    SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.12", "v24.06")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_PARALLELVISITORSCHEDULER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_PARALLELVISITORSCHEDULER() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v23.12", "v24.06", "This class is no longer used")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_HEADER_DEPRECATED_PARALLELVISITORSCHEDULER()
+#else
+#define SOFA_HEADER_DEPRECATED_PARALLELVISITORSCHEDULER() \
+    SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.12", "v24.06")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_HEADER_DEPRECATED_LOCALSTORAGE()
+#define SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
+#else
+#define SOFA_HEADER_DEPRECATED_LOCALSTORAGE() \
+    SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.12", "v24.06")
+#define SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE() \
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "LocalStorage feature was seemingly not used so it has been deprecated.")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED_NODEDATA()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED_NODEDATA() \
+SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "rootdata/nodedata feature was never really used so it has been deprecated. All the related functions/members/variables won't do anything.")
+#endif // SOFA_BUILD_SOFA_SIMULATION_CORE

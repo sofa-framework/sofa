@@ -1,0 +1,39 @@
+<Node name="Root" gravity="0 0 0" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetTopologyContainer] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Engine"/> <!-- Needed to use components [TextureInterpolation] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <CollisionPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <Node name="MecaNode" gravity="0 0 0">
+        <MeshGmshLoader name="loader" tags="meca" filename="mesh/square3.msh" />
+        <MechanicalObject src="@loader" template="Vec3" name="mecaObj" tags="meca" scale="10" />
+        <TriangleSetTopologyContainer src="@loader" name="topo" tags="meca" />
+        <Node name="ElecNode" gravity="0 0 0">
+            <EulerImplicitSolver name="euler" tags="elec"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" tags="elec" />
+            <MechanicalObject template="Vec1" name="ElecObj" position="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 10 10 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" tags="elec" />
+            <!-- Components used in heat diffusion, still in work in Sophia. the potentiel
+	evolve and interpolation is computed at the same time to display the diffusion. -->
+            <!--   <TriangularDiffusionForceField template="Vec1" name="ffDiffusion" tags="elec"/>
+             <MeshMatrixMass template="Vec1" name="mass" tags="elec" />   -->
+        </Node>
+        <Node name="visu" gravity="0 0 0">
+            <TextureInterpolation template="Vec1" name="EngineInterpolation" input_states="@../ElecNode/ElecObj.position" input_coordinates="@../mecaObj.position" min_value="0.0" max_value="10.0" manual_scale="1" drawPotentiels="1" />
+            <OglModel template="Vec3" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" handleDynamicTopology="0" />
+        </Node>
+    </Node>
+</Node>

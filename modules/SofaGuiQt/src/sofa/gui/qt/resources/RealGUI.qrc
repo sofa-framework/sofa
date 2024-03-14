@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/RealGUI">
-        <file alias="collapseAll">icons/collapseAll.svg</file>
-        <file alias="expandAll">icons/expandAll.svg</file>
-    </qresource>
-</RCC>

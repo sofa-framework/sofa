@@ -19,27 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
-#define SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
+#pragma once
 
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaMeshCollision/SubsetContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
-#include <sofa/gpu/cuda/CudaPointModel.h>
-#include <sofa/gpu/cuda/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
-#include <sofa/gpu/cuda/CudaRigidMapping.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.h>
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>
 
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -48,23 +42,20 @@ extern "C"
     void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::gpu::cuda;
 using sofa::core::collision::GPUDetectionOutputVector;
 
 
 /// Mapper for CudaRigidDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes>
+class response::mapper::ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> : public response::mapper::RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -116,9 +107,9 @@ public:
             this->outmodel->resize(n);
         if (this->mapping)
         {
-            this->mapping->points.beginEdit()->fastResize(n);
-            this->mapping->rotatedPoints.fastResize(n);
-            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
+            this->mapping->d_points.beginEdit()->fastResize(n);
+            this->mapping->m_rotatedPoints.fastResize(n);
+            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->d_points.beginEdit()->deviceWrite());
         }
         else
         {
@@ -133,7 +124,7 @@ public:
 
 /// Mapper for CudaPointDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes>
+class response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes> : public response::mapper::SubsetContactMapper<sofa::gpu::cuda::CudaPointCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -165,12 +156,12 @@ public:
 
 
 template <class DataTypes>
-class ContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> : public SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes>
+class response::mapper::ContactMapper<CudaSphereCollisionModel, DataTypes> : public response::mapper::SubsetContactMapper<CudaSphereCollisionModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> Inherit;
+    typedef SubsetContactMapper<CudaSphereCollisionModel, DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
     typedef typename Inherit::MMapping MMapping;
@@ -195,12 +186,4 @@ public:
     }
 };
 
-
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

@@ -1,0 +1,35 @@
+<!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
+<Node name="Root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [QuadSetGeometryAlgorithms QuadSetTopologyContainer TriangleSetGeometryAlgorithms TriangleSetTopologyContainer] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <CollisionPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    
+    <Node name="obj file">
+        <MeshOBJLoader name="ObjLoader" filename="mesh/floor3.obj" />
+        <MechanicalObject name="dofs" src="@ObjLoader" />
+        <Node name="triangulation">
+            <TriangleSetTopologyContainer name="triangles" src="@../ObjLoader" />
+            <TriangleSetGeometryAlgorithms name="triGeo" drawEdges="1" />
+        </Node>
+        <Node name="quad_topology">
+            <QuadSetTopologyContainer name="quads" src="@../ObjLoader" />
+            <QuadSetGeometryAlgorithms name="quadGeo" drawQuads="1" />
+        </Node>
+        <Node name="visu">
+            <OglModel name="VisualModel" src="@../ObjLoader" texturename="textures/floor.bmp" />
+        </Node>
+    </Node>
+</Node>

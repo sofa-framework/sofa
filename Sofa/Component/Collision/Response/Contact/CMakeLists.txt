@@ -1,0 +1,72 @@
+cmake_minimum_required(VERSION 3.12)
+project(Sofa.Component.Collision.Response.Contact LANGUAGES CXX)
+
+set(SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR "src/sofa/component/collision/response/contact")
+
+set(HEADER_FILES
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricPenalityContact.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricPenalityContact.inl
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricStickContact.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricStickContact.inl
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/CollisionResponse.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/ContactIdentifier.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/ContactListener.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/DefaultContactManager.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/FrictionContact.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/FrictionContact.inl
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/PenalityContactForceField.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/PenalityContactForceField.inl
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/RayContact.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/RuleBasedContactManager.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/StickContactConstraint.h
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/StickContactConstraint.inl
+)
+
+set(SOURCE_FILES
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/init.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricPenalityContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/BarycentricStickContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/CollisionResponse.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/ContactIdentifier.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/ContactListener.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/FrictionContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/PenalityContactForceField.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/RayContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/RuleBasedContactManager.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/StickContactConstraint.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/TetrahedronBarycentricPenalityContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/TetrahedronFrictionContact.cpp
+    ${SOFACOMPONENTCOLLISIONRESPONSECONTACT_SOURCE_DIR}/TetrahedronRayContact.cpp
+)
+
+
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Mapper REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian REQUIRED) # FrictionContact needs UnilateralCC, StickContact BilateralInteractionConstraint
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Mapper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

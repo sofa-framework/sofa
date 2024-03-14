@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaCommon.h"
-#include "CudaMath.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
+#include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
@@ -85,7 +85,7 @@ __global__ void SubsetContactMapperCuda3f_setPoints1_kernel(unsigned int nbPoint
     GPUContact c = contacts[curTestEntry.firstIndex + threadIdx.x];
     if (threadIdx.x < curTestEntry.curSize)
     {
-        map[curTestEntry.newIndex + threadIdx.x] = umul24(curTestEntry.elem1,nbPointsPerElem) + c.p1;
+        map[curTestEntry.newIndex + threadIdx.x] = curTestEntry.elem1 * nbPointsPerElem + c.p1;
     }
 }
 

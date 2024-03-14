@@ -28,13 +28,7 @@
 #include <sofa/core/Mapping.inl>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -60,8 +54,10 @@ template <class TIn, class TOut>
 void ManualLinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
 //    if( !_matrixJ.colSize() && !_matrixJ.rowSize() ) return;
+    auto waOut = sofa::helper::getWriteOnlyAccessor(dOut);
+    auto raIn = sofa::helper::getReadAccessor(dIn);
 
-    _matrixJ.mult( *reinterpret_cast<Data<VecDeriv>*>(&dOut), *reinterpret_cast<const Data<InVecDeriv>*>(&dIn) );
+    _matrixJ.mult( *reinterpret_cast<VecDeriv*>(&(waOut.wref())), *reinterpret_cast<const InVecDeriv*>(&(raIn.ref())) );
 }
 
 template <class TIn, class TOut>
@@ -69,15 +65,20 @@ void ManualLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpa
 {
 //    if( !_matrixJ.colSize() && !_matrixJ.rowSize() ) return;
 
-    _matrixJ.mult( dOut, dIn );
+    auto waOut = sofa::helper::getWriteOnlyAccessor(dOut);
+    auto raIn = sofa::helper::getReadAccessor(dIn);
+
+    _matrixJ.mult(waOut.wref(), raIn.ref());
 }
 
 template<class TIn, class TOut>
 void ManualLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn)
 {
 //    if( !_matrixJ.colSize() && !_matrixJ.rowSize() ) return;
+    auto waOut = sofa::helper::getWriteOnlyAccessor(dOut);
+    auto raIn = sofa::helper::getReadAccessor(dIn);
 
-    _matrixJ.addMultTranspose( dOut, dIn );
+    _matrixJ.addMultTranspose( waOut.wref(), raIn.ref());
 }
 
 template <class TIn, class TOut>
@@ -101,10 +102,7 @@ const typename ManualLinearMapping<TIn, TOut>::js_type* ManualLinearMapping<TIn,
 }
 
 
-} // namespace mapping
+} // namespace sofa::component::mapping
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

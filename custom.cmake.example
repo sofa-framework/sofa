@@ -28,4 +28,4 @@ endmacro()
 # setSofaOption(APPLICATION_MODELER OFF)
 
 # ON
-# setSofaOption(SOFAGUI_QGLVIEWER ON)
+# setSofaOption(SOFA_GUI_QT_ENABLE_QGLVIEWER ON)

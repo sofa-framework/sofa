@@ -26,29 +26,22 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/State.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsCudaVisualModel;
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
-namespace component
-{
-
-namespace visualmodel
+namespace component::visualmodel
 {
 
 template <class TDataTypes>
@@ -111,23 +104,13 @@ public:
     virtual void init() override;
     virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void doDrawVisual(const core::visual::VisualParams*) override;
     virtual void drawTransparent(const core::visual::VisualParams*) override;
     virtual void drawShadow(const core::visual::VisualParams*) override;
     virtual void updateVisual() override;
     virtual void updateTopology();
     virtual void updateNormals();
     virtual void handleTopologyChange() override;
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const CudaVisualModel<TDataTypes>* = NULL)
-    {
-        return TDataTypes::Name();
-    }
-
 
     virtual void computeBBox(const core::ExecParams* params, bool=false) override;
 
@@ -140,7 +123,7 @@ protected:
         nbElement = nbe;
         nbVertex = nbv;
         nbElementPerVertex = nbelemperv;
-        int nbloc = (nbVertex+BSIZE-1)/BSIZE;
+        const int nbloc = (nbVertex+BSIZE-1)/BSIZE;
         velems.resize(nbloc*nbElementPerVertex*BSIZE);
         for (unsigned int i=0; i<velems.size(); i++)
             velems[i] = 0;
@@ -148,8 +131,8 @@ protected:
 
     void setV(int vertex, int num, int index)
     {
-        int bloc = vertex/BSIZE;
-        int b_x  = vertex%BSIZE;
+        const int bloc = vertex/BSIZE;
+        const int b_x  = vertex%BSIZE;
         velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
                 + num*BSIZE                     // offset to the element
                 + b_x                           // offset to the vertex
@@ -161,9 +144,8 @@ protected:
     SingleLink<CudaVisualModel<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> topology;
 };
 
-} // namespace visualmodel
+} // namespace component::visualmodel
 
-} // namespace component
 
 } // namespace sofa
 

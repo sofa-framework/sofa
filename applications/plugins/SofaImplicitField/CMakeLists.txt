@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaImplicitField VERSION 1.0)
 
+sofa_find_package(Sofa.Framework REQUIRED)
 sofa_find_package(SofaDistanceGrid REQUIRED)
 
 set(HEADER_FILES
@@ -41,8 +42,7 @@ set(EXTRA_FILES
     examples/README.md
     )
 
-find_package(SofaTest QUIET)
-if(SofaTest_FOUND)
+if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaImplicitField_test)
 endif()
 

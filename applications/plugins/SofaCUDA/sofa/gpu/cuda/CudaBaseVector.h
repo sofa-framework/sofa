@@ -22,16 +22,11 @@
 #ifndef SOFA_GPU_CUDA_CUDABASEVECTOR_H
 #define SOFA_GPU_CUDA_CUDABASEVECTOR_H
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 ///////////////
@@ -293,7 +288,7 @@ template<> inline const char* CudaBaseVectord::Name() { return "CudaBaseVectord"
 #endif
 
 
-#if  !defined(SOFA_BUILD_GPU_CUDA)
+#if !defined(SOFA_BUILD_GPU_CUDA)
 
 extern template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -302,8 +297,7 @@ extern template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
 
 #endif
 
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
 
 #endif

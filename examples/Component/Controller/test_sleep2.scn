@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.810 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [ValuesFromIndices] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [TransformEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager OglFloat3Variable OglShader SpotLight] -->
+    <RequiredPlugin name="SofaUserInteraction"/> <!-- Needed to use components [SleepController] -->
+	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver maxIterations="1000" tolerance="0.001" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.1" angleCone="0.0" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" responseParams="mu=0.2" />
+	<SleepController immobileThreshold="0.2" rotationThreshold="0.1" minTimeSinceWakeUp="0.1" printLog="1" />
+	
+	<LightManager />
+    <SpotLight color="1 1 1" position="0 80 50" direction="0 -1 -1" cutoff="30" exponent="1" />
+	
+    <Node name="Plan">
+		<MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+		<TransformEngine name="transform" translation="0 -1.5 0" rotation="0 0 10" scale="10 0.2 4" input_position="@loader.position" />
+		<MeshTopology src="@loader" />
+		<MechanicalObject position="@transform.output_position" template="Vec3" />
+		<TriangleCollisionModel simulated="0" moving="0" />
+		<LineCollisionModel simulated="0" moving="0" />
+		<PointCollisionModel simulated="0" moving="0" />
+		<OglModel name="Visual" color="1 0 0 1" src="@loader" position="@transform.output_position"/>
+    </Node>
+	
+    <Node name="Cube1" canChangeSleepingState="true">
+        <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="-3.0" dy="-0.5" dz="0.0" />
+        <UniformMass totalMass="1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
+			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 0 1  0.5 0.5 0.5" indices="@Cube1.sleeping" />
+			<OglFloat3Variable id="color" value="@colorEngine.out" />
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" />
+            <RigidMapping/>
+        </Node>
+        <Node name="Colli">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+    </Node>
+	
+	<Node name="Cube2" canChangeSleepingState="true">
+        <EulerImplicitSolver printLog="false" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="1.0" dy="3" dz="0.0" />
+        <UniformMass totalMass="1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
+			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
+			<OglFloat3Variable id="color" value="@colorEngine.out" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" />
+            <RigidMapping />
+        </Node>
+        <Node name="Colli">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+    </Node>
+	
+	<Node name="Cube3" canChangeSleepingState="true">
+        <EulerImplicitSolver printLog="false" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="8.0" dy="12" dz="0.0" />
+        <UniformMass totalMass="1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
+			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 1 0  0.5 0.5 0.5" indices="@Cube3.sleeping" />
+			<OglFloat3Variable id="color" value="@colorEngine.out" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" />
+            <RigidMapping />
+        </Node>
+        <Node name="Colli">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+    </Node>
+</Node>

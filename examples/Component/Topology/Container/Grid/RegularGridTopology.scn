@@ -1,0 +1,67 @@
+<!-- RegularGrid examples -->
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader SphereLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RegularGridSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <DiscreteIntersection/>
+    <DefaultAnimationLoop/>
+    
+    <Node name="LiverFFD-lowres">
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
+        <MechanicalObject />
+        <UniformMass totalMass="100.0" />
+        <RegularGridTopology nx="4" ny="3" nz="3" xmin="-10.25" xmax="-3.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />
+        <BoxConstraint box="-8.5 0 -2.5 -5 3 2" />
+        <RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="-5 0 0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="red" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Collision Surface">
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" translation="-5 0 0" />
+            <SphereCollisionModel name="Surf" listRadius="@[-2].listRadius" />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+    </Node>
+    <Node name="LiverFFD-hires">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
+        <MechanicalObject />
+        <UniformMass totalMass="100.0" />
+        <RegularGridTopology nx="8" ny="6" nz="6" xmin="-0.25" xmax="7.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />
+        <BoxConstraint box="2.5 0 -2.5 5 3 2" />
+        <RegularGridSpringForceField name="Springs" stiffness="100" damping="4" />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" translation="5 0 0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="red" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="Collision Surface">
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" translation="5 0 0" />
+            <SphereCollisionModel name="Surf" listRadius="@[-2].listRadius" />
+            <BarycentricMapping input="@.." output="@." />
+       </Node>
+    </Node>
+</Node>

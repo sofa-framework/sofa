@@ -51,56 +51,11 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
 {
     Vector3 currentForce;
     Vector3 pos_in_world;
-    bool contact = false;
-    long long duration;
     
     m_driver->lockPosition.lock();
     m_driver->m_simuData = m_driver->m_hapticData;
     m_driver->lockPosition.unlock();
-
-    //if (m_driver->m_forceFeedback)
-    //{
-    //    //Vector3 pos(driver->m_omniData.transform[12+0]*0.1,driver->m_omniData.transform[12+1]*0.1,driver->m_omniData.transform[12+2]*0.1);        
-    //    m_driver->lockPosition.lock();
-    //    pos_in_world = m_driver->d_positionBase.getValue();// +driver->d_orientationTool.getValue().rotate(pos*driver->d_scale.getValue());
-    //    m_driver->lockPosition.unlock();
-
-    //   // msg_info(m_driver) << "computeForce start: ";
-    //    auto t1 = std::chrono::high_resolution_clock::now();
-    //    m_driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
-    //    auto t2 = std::chrono::high_resolution_clock::now();        
-    //    duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        if (currentForce[i] != 0.0)
-    //        {
-    //            contact = true;
-    //            break;
-    //        }
-    //    }
-    //}
-    //
-    //m_driver->lockPosition.lock();
-    //if (contact)
-    //{        
-    //    double maxInputForceFeedback = m_driver->d_maxInputForceFeedback.getValue();
-    //    double norm = currentForce.norm();        
-    //    
-    //    msg_warning(m_driver) << "forceFeedback: " << currentForce << " | " << pos_in_world << " -> " << norm << " -> duration: " << duration;
-    //    if (norm > maxInputForceFeedback) {
-    //        msg_warning(m_driver) << "###################################################";
-    //        msg_warning(m_driver) << "BAD forceFeedback: " << currentForce << " | " << pos_in_world << " -> " << norm << " -> duration: " << duration;
-    //        currentForce = Vector3(0, 0, 0);
-    //    }        
-    //}
-
-    //m_driver->m_toolForceFeedBack = currentForce * m_driver->d_forceScale.getValue();
-    //m_driver->m_isInContact = contact;    
-    //m_driver->m_toolPosition = m_driver->d_positionBase.getValue() + currentForce * m_driver->d_forceScale.getValue();
-
-    //m_driver->lockPosition.unlock();      
-
+    
     if (m_driver->m_terminate == false)
     {
         TaskScheduler::getInstance()->addTask(new GeomagicEmulatorTask(m_driver, &m_driver->_simStepStatus));

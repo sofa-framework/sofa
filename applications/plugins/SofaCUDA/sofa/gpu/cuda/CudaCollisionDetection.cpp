@@ -32,6 +32,7 @@ namespace cuda
 {
 
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::geometry;
 
 extern "C"
 {
@@ -167,12 +168,12 @@ CudaCollisionDetection::Test* CudaCollisionDetection::createTest(core::Collision
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new RigidRigidTest(rigid1, rigid2);
-        else if (sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* sphere2 = dynamic_cast<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>*>(model2))
+        else if (CudaSphereCollisionModel* sphere2 = dynamic_cast<CudaSphereCollisionModel*>(model2))
             return new SphereRigidTest(sphere2, rigid1);
         else if (CudaPointCollisionModel* point2 = dynamic_cast<CudaPointCollisionModel*>(model2))
             return new PointRigidTest(point2, rigid1);
     }
-    else if (sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* sphere1 = dynamic_cast<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>*>(model1))
+    else if (CudaSphereCollisionModel* sphere1 = dynamic_cast<CudaSphereCollisionModel*>(model1))
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new SphereRigidTest(sphere1, rigid2);
@@ -252,7 +253,7 @@ void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest* tests)
     }
 }
 
-CudaCollisionDetection::SphereRigidTest::SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2 )
+CudaCollisionDetection::SphereRigidTest::SphereRigidTest(CudaSphereCollisionModel*model1, CudaRigidDistanceGridCollisionModel* model2 )
     : model1(model1), model2(model2)
 {
     std::cout << "CudaCollisionDetection::SphereRigidTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;

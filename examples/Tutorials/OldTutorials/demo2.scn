@@ -9,13 +9,13 @@
             <MechanicalObject src="@../loader" showObject="1"/>
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
-            <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
+            <FixedProjectiveConstraint indices="0 3 6 9 12 15 18 21 24" />
         </Node>
         <Node name="M2">
-            <MechanicalObject template="Rigid3d" dz="10.5" showObject="1"/>
+            <MechanicalObject template="Rigid3" dz="10.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
             </Node>
         </Node>
@@ -25,10 +25,10 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M4">
-            <MechanicalObject template="Rigid3d" dz="31.5" showObject="1"/>
+            <MechanicalObject template="Rigid3" dz="31.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
             </Node>
         </Node>

@@ -104,7 +104,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
     __shared__ int ghost;
     __shared__ real temp_x[BSIZE*3];
     __shared__ real temp_v[BSIZE*3];
-    int tx3 = __umul24(threadIdx.x,3);
+    int tx3 = threadIdx.x * 3;
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {
         if (!threadIdx.x)
@@ -194,7 +194,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
     __shared__ int ghost;
     __shared__ real temp_x[BSIZE*3];
     __shared__ real temp_dx[BSIZE*3];
-    int tx3 = __umul24(threadIdx.x,3);
+    int tx3 = threadIdx.x * 3;
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {
         if (!threadIdx.x)

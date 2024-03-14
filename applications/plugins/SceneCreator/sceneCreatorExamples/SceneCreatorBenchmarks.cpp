@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -21,18 +21,16 @@
 ******************************************************************************/
 
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 
-#include <sofa/gui/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/common/init.h>
+#include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGNode.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/init.h>
-
-
-#include <SofaBase/initSofaBase.h>
+#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/init.h>
 
 #include <cxxopts.hpp>
 
@@ -104,11 +102,10 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 int main(int argc, char** argv)
 {
     sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
 
     bool showHelp = false;
     unsigned int idExample = 0;
-    auto* argParser = new sofa::gui::ArgumentParser(argc, argv);
+    auto* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
     argParser->addArgument(
         cxxopts::value<bool>(showHelp)
         ->default_value("false")
@@ -121,7 +118,7 @@ int main(int argc, char** argv)
         ->default_value("0"),
         "example,e",
         "Example Number to enter from (0 - 9)",
-        [](const sofa::gui::ArgumentParser* parser, const std::string& strVal)
+        [](const sofa::gui::common::ArgumentParser* parser, const std::string& strVal)
         {
             SOFA_UNUSED(strVal);
             unsigned int value = 0;
@@ -143,15 +140,11 @@ int main(int argc, char** argv)
     }
 
     // init GUI
-    sofa::gui::initSofaGui();
-    sofa::gui::GUIManager::Init(argv[0]);
-
-    // Create simulation tree
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
+    sofa::gui::common::init();
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     // Create the graph root node with collision
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     root->setGravity( sofa::defaulttype::Vec3Types::Deriv(0,-10.0,0) );
 
 
@@ -178,11 +171,11 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(root);
+    sofa::gui::common::GUIManager::MainLoop(root);
 
     sofa::simulation::graph::cleanup();
 

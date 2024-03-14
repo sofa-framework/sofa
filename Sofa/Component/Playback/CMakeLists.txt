@@ -1,0 +1,57 @@
+cmake_minimum_required(VERSION 3.12)
+project(Sofa.Component.Playback LANGUAGES CXX)
+
+set(SOFACOMPONENTPLAYBACK_SOURCE_DIR "src/sofa/component/playback")
+
+set(HEADER_FILES
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/CompareState.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/CompareTopology.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/InputEventReader.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadState.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadState.inl
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadTopology.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadTopology.inl
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteState.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteState.inl
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteTopology.h
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteTopology.inl
+)
+
+set(SOURCE_FILES
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/init.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/CompareState.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/CompareTopology.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/InputEventReader.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadState.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/ReadTopology.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteState.cpp
+    ${SOFACOMPONENTPLAYBACK_SOURCE_DIR}/WriteTopology.cpp
+)
+
+sofa_find_package(ZLIB REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
+target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+endif()
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_PLAYBACK_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_PLAYBACK_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

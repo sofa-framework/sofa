@@ -33,4 +33,10 @@
 #  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+namespace volumetricrendering
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+}
+
 #endif

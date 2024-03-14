@@ -35,7 +35,7 @@ set(SOURCE_FILES
 )
 
 
-set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaMeshCollision SofaBaseVisual SofaBaseLinearSolver SofaCore)
+set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaMeshCollision SofaBaseVisual SofaBaseLinearSolver Sofa.Core)
 set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} ${PARDISO_LIB} gfortran blas lapack gomp)
 
 

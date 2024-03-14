@@ -24,7 +24,7 @@
 #include <SofaNewmat/config.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <SofaNewmat/NewMatVector.h>
 
@@ -37,6 +37,7 @@ class TNewMatMatrix : public Mat, public linearalgebra::BaseMatrix
 {
 public:
     typedef Mat M;
+    typedef NEWMAT::Real Real;
     //typedef NEWMAT::Matrix SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> InvMatrixType;

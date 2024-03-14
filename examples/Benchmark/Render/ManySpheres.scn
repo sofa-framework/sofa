@@ -1,13 +1,18 @@
 <Node name="root" gravity="0 0 0" dt="0.01" >
-    <RequiredPlugin name="SofaGraphComponent"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
 	<VisualStyle name="visualStyle1"  displayFlags="hideVisual 	hideBehaviorModels showCollisionModels" />
 	<BackgroundSetting color="0.5 0.5 0.5" />
+    	<DefaultAnimationLoop/>
 
 	<Node name="Example">
 		<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
-        <MechanicalObject name="DOFs" template="Vec3d" />
-        <SphereCollisionModel radius="0.1" />
+        	<MechanicalObject name="DOFs" template="Vec3" />
+        	<SphereCollisionModel radius="0.1" />
     </Node >
 		
 </Node>

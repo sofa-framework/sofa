@@ -64,9 +64,9 @@ public:
     Data<bool> d_inside; ///< If true the field is oriented inside (resp. outside) the sphere. (default = false)
     Data<double> d_radiusSphere; ///< Radius of Sphere emitting the field. (default = 1)
     Data<Vec3d> d_centerSphere; ///< Position of the Sphere Surface. (default=0 0 0)
-    Data<double> d_shift;
-    Data<double> d_ellipsoidRadius;
-    Data<double> d_excentricity;
+    Data<double> d_shift; ///< How much the top ellipsoid is shifted from the bottom sphere. (default=1)
+    Data<double> d_ellipsoidRadius; ///< Radius of the ellipsoid whose intersection with the sphere is taken off
+    Data<double> d_excentricity; ///< excentricity of ellipsoid
 protected:
     Vec3d m_center;
     double m_radius;

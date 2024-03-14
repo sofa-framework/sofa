@@ -1,0 +1,29 @@
+# We can't use CUDA on the build slaves, so let's just ignore the scenes that use the SofaCUDA plugin.
+# remove all cpu-gpu scenes
+ignore "cpu-gpu_validation/.*"
+
+# All benchmarks are heavy scenes. Ignore CUDA version and only compute 10 iterations of the cpu one.
+iterations "benchmarks/HexahedronFEMForceField_beam10x10x40_cpu.scn" "10"
+ignore "benchmarks/HexahedronFEMForceField_beam10x10x40_gpu.scn"
+
+iterations "benchmarks/HexahedronFEMForceField_beam16x16x76_cpu.scn" "10"
+ignore "benchmarks/HexahedronFEMForceField_beam16x16x76_gpu.scn"
+
+iterations "benchmarks/MeshSpringForceField_beam10x10x40_cpu.scn" "10"
+ignore "benchmarks/MeshSpringForceField_beam10x10x40_gpu.scn"
+
+iterations "benchmarks/TetrahedronFEMForceField_beam10x10x40_cpu.scn" "10"
+ignore "benchmarks/TetrahedronFEMForceField_beam10x10x40_gpu.scn"
+
+iterations "benchmarks/TetrahedronFEMForceField_beam16x16x76_cpu.scn" "10"
+ignore "benchmarks/TetrahedronFEMForceField_beam16x16x76_gpu.scn"
+
+iterations "benchmarks/TriangularFEMForceFieldOptim_tissue100x100_cpu.scn" "10"
+ignore "benchmarks/TriangularFEMForceFieldOptim_tissue100x100_gpu.scn"
+
+iterations "benchmarks/QuadSpringsSphere_cpu.scn" "10"
+ignore "benchmarks/QuadSpringsSphere_gpu.scn"
+
+ignore "benchmarks/CudaTetrahedronTLEDForceField_beam10x10x40_gpu.scn"
+ignore "benchmarks/CudaTetrahedronTLEDForceField_beam16x16x76_gpu.scn"
+ignore "benchmarks/CudaHexahedronTLEDForceField_beam10x10x40_gpu.scn"

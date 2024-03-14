@@ -1,0 +1,43 @@
+<Node name="root" dt="0.0001" gravity="0 0 0" >
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint LinearMovementProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle displayFlags="showBehaviorModels"/>
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+    <MeshOBJLoader name="temperatureLoader" filename="beamTemperatures.obj" />
+    <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
+    <MechanicalObject template="Vec3d"  name="gridDOFs" tags="geom" />
+    <BoxROI name="box-dirac" box="-0.01 -0.01 -0.01 0.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
+    <BoxROI name="box-fixed" box="0.99 -0.01 -0.01 1.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
+
+    <Node name="Tetra" gravity="0 0 0" >
+        <TetrahedronSetTopologyContainer name="Container" tags="meca"/>
+        <TetrahedronSetTopologyModifier name="Modifier" tags="meca"/>
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
+        <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
+        <TriangleCollisionModel name="collisionmodel" />
+
+        <Node name="Temperature" gravity="0 0 0"  >
+            <EulerImplicitSolver name="EulerExplicitSolver" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat" />
+            <MechanicalObject template="Vec1d" position="@../../temperatureLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat" />
+            <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1.0" tagMechanics="geom" tags="heat" topology="@../Container"/>
+            <DiagonalMass template="Vec1d,Vec3d" name="Mass" massDensity="1.0" tags="heat" topology="@../Container" geometryState="@../../gridDOFs" />
+            <LinearMovementProjectiveConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
+            <FixedProjectiveConstraint indices="@../../box-fixed.indices" />
+        </Node>
+    </Node>
+</Node>

@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.12)
+project(Sofa.Component.SceneUtility LANGUAGES CXX)
+
+set(SOFACOMPONENTSCENEUTILITY_SOURCE_DIR "src/sofa/component/sceneutility")
+
+set(HEADER_FILES
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/AddResourceRepository.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/APIVersion.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/InfoComponent.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MakeAliasComponent.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MakeDataAliasComponent.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MessageHandlerComponent.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/PauseAnimation.h
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/PauseAnimationOnEvent.h
+)
+
+set(SOURCE_FILES
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/init.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/AddResourceRepository.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/APIVersion.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/InfoComponent.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MakeAliasComponent.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MakeDataAliasComponent.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/MessageHandlerComponent.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/PauseAnimation.cpp
+    ${SOFACOMPONENTSCENEUTILITY_SOURCE_DIR}/PauseAnimationOnEvent.cpp
+)
+
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_SCENEUTILITY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_SCENEUTILITY_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

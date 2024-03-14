@@ -54,14 +54,14 @@ extern "C"
 template<class real>
 __global__ void ParticleSourceCuda3t_fillValues_kernel(unsigned int totalsize, unsigned int subsetsize, real* dest, const unsigned int* indices, real fx, real fy, real fz)
 {
-    unsigned int index0 = umul24(blockIdx.x,BSIZE);
+    unsigned int index0 = blockIdx.x * BSIZE;
     unsigned int index = index0+threadIdx.x;
     if (index < subsetsize)
     {
         unsigned int dindex = indices[index];
         if (dindex < totalsize)
         {
-            unsigned int dindex3 = umul24(dindex,3);
+            unsigned int dindex3 = dindex * 3;
             dest[dindex3+0] = fx;
             dest[dindex3+1] = fy;
             dest[dindex3+2] = fz;
@@ -72,15 +72,15 @@ __global__ void ParticleSourceCuda3t_fillValues_kernel(unsigned int totalsize, u
 template<class real>
 __global__ void ParticleSourceCuda3t_copyValuesWithOffset_kernel(unsigned int totalsize, unsigned int subsetsize, real* dest, const unsigned int* indices, const real* src, real fx, real fy, real fz)
 {
-    unsigned int index0 = umul24(blockIdx.x,BSIZE);
+    unsigned int index0 = blockIdx.x * BSIZE;
     unsigned int index = index0+threadIdx.x;
     if (index < subsetsize)
     {
         unsigned int dindex = indices[index];
         if (dindex < totalsize)
         {
-            unsigned int dindex3 = umul24(dindex,3);
-            unsigned int index3 = umul24(index,3);
+            unsigned int dindex3 = dindex * 3;
+            unsigned int index3 = index * 3;
             dest[dindex3+0] = src[index3+0]+fx;
             dest[dindex3+1] = src[index3+1]+fy;
             dest[dindex3+2] = src[index3+2]+fz;

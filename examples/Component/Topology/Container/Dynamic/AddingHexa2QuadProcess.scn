@@ -1,0 +1,49 @@
+<!-- Automatic Hexahedron adding example with Hexa2Quad mapping: Element added are define in: ./AddingHexahedraProcess.txt -->
+<Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0" bbox="-1 -1 -1 1 1 1">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms HexahedronSetTopologyContainer HexahedronSetTopologyModifier QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle displayFlags="showBehaviorModels" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+    <Node name="H">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
+        <MechanicalObject src="@loader" name="Hexa" />
+        <HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1" />
+        <HexahedronSetTopologyModifier name="Modifier" />
+        <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawHexa="1" />
+        <TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt" />
+        <!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
+        <UniformMass totalMass="1" />
+        <!--		<FixedProjectiveConstraint" indices="12 15 28 31" />     -->
+        <Node name="Q">
+            <QuadSetTopologyContainer name="Quad_topo" listening="1" />
+            <QuadSetTopologyModifier name="Modifier" />
+            <QuadSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawQuads="1" />
+            <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
+            <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
+            <TriangleCollisionModel />
+            <!--			<Node name="Visu">
+				<OglModel name="Visual" color="blue" />
+				<IdentityMapping input="@../../Hexa" output="@Visual" />
+			</Node>-->
+        </Node>
+    </Node>
+</Node>

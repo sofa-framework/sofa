@@ -1,23 +1,20 @@
 #ifndef SOFA_HELPER_IO_IMAGECIMG_H
 #define SOFA_HELPER_IO_IMAGECIMG_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <sofa/helper/io/Image.h>
 #include <CImgPlugin/CImgPlugin.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_CIMGPLUGIN_API ImageCImgCreators
 {
-    std::vector<sofa::helper::io::Image::FactoryImage::Creator*> creators;
+
+    std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator>> creators;
 public:
     static std::vector<std::string> cimgSupportedExtensions;
 
@@ -42,10 +39,7 @@ public:
     bool save(std::string filename, int compression_level = -1);
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif // SOFA_HELPER_IO_IMAGECIMG_H

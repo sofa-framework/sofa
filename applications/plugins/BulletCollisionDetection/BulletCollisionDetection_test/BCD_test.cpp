@@ -12,7 +12,7 @@
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
-typedef sofa::type::Vector3 Vec3;
+typedef sofa::type::Vec3 Vec3;
 
 using namespace sofa::PrimitiveCreationTest;
 using sofa::core::objectmodel::New;

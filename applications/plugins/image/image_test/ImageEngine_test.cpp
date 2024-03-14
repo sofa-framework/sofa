@@ -22,13 +22,14 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/DataEngine_test.h>
 #include <image/ImageContainer.h>
 #include <image/ImageViewer.h>
 #include "TestImageEngine.h"
+
+#include <sofa/testing/BaseTest.h>
+#include <sofa/component/engine/testing/DataEngineTestCreation.h>
 
 /// To activate showing the picture during the test.
 /// Set this to true.
@@ -43,7 +44,7 @@ namespace sofa {
  * Copy on Write option is true.
  * Note: the function draw of ImageViewer is actually not called in this test (it works with the gui).
   */
-struct ImageEngine_test : public Sofa_test<>
+struct ImageEngine_test : public sofa::testing::BaseTest
 {
 
     // Root of the scene graph
@@ -53,7 +54,7 @@ struct ImageEngine_test : public Sofa_test<>
     void TearDown()
     {
         if (root!=NULL)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
     // Test link
@@ -129,7 +130,7 @@ struct ImageEngine_test : public Sofa_test<>
         TestImageEngine::SPtr imageEngine;
 
         // Create a scene
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");
@@ -155,12 +156,12 @@ struct ImageEngine_test : public Sofa_test<>
         sofa::modeling::setDataLink(&imageEngine->outputImage,&imageEngine2->inputImage);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         //  do several steps of animation
         for(int l=0;l<2;++l)
         {
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(),0.5);
         }
 
         // Check if pointers of images that should be shared are equal
@@ -189,7 +190,7 @@ struct ImageEngine_test : public Sofa_test<>
         ImageViewer::SPtr imageViewer;
 
         // Create a scene
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");
@@ -220,12 +221,12 @@ struct ImageEngine_test : public Sofa_test<>
         //sofa::modeling::setDataLink(&imageContainer->image,&imageViewer->image);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         //  do several steps of animation
         for(int l=0;l<2;++l)
         {
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(),0.5);
         }
 
 

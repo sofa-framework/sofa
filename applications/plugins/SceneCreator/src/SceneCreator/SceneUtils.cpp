@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -22,15 +22,15 @@
 #include "SceneCreator.h"
 #include "SceneUtils.h"
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaBaseMechanics/MechanicalObject.inl>
-typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+typedef sofa::component::statecontainer::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
@@ -40,9 +40,9 @@ using sofa::core::ObjectFactory ;
 
 #include <sofa/linearalgebra/FullVector.h>
 
-namespace sofa
+
+namespace sofa::modeling
 {
-namespace modeling {
 using sofa::defaulttype::Vec3Types;
 
 
@@ -55,7 +55,6 @@ using type::vector;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
-using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
 
@@ -80,5 +79,4 @@ Vector getVector( core::ConstVecId id, bool indep )
     return ve;
 }
 
-} /// modeling
-} /// sofa
+}

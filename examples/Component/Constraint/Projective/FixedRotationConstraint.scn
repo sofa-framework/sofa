@@ -1,0 +1,48 @@
+<Node name="Root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedRotationProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [JointSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <CollisionPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <Node name="scene" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-12" threshold="1e-09" />
+        <Node name="Rotation around Z axis not authorized" gravity="0 -9.81 0">
+            <MechanicalObject template="Rigid3" name="default0" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1" />
+            <FixedProjectiveConstraint template="Rigid3" name="default1" indices="0" />
+            <FixedRotationProjectiveConstraint template="Rigid3" name="default2" FixedXRotation="0" FixedYRotation="0" FixedZRotation="1" />
+            <UniformMass name="default3" showAxisSizeFactor="1" />
+            <Node name="spring" gravity="0 -9.81 0">
+                <MechanicalObject template="Rigid3" name="default4" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
+                <UniformMass name="default54" showAxisSizeFactor="1" />
+                <RigidMapping template="Rigid3,Rigid3" name="default1" rigidIndexPerPoint="1 1" axisLength="0.001" />
+                <JointSpringForceField template="Rigid3" name="default5" spring="BEGIN_SPRING  0 1  KS_T 1e+06 100000  KS_R 0 1000  KS_B 100  END_SPRING&#x0A;" />
+            </Node>
+        </Node>
+        <Node name="Rotation around Z axis is free" gravity="0 -9.81 0">
+            <MechanicalObject template="Rigid3" name="default6" translation="0 0 0" rotation="0 0 0" restScale="1" position="3 0 0 0 0 0 1 4 0 0 0 0 0 1" />
+            <FixedProjectiveConstraint template="Rigid3" name="default7" indices="0" />
+            <UniformMass name="default54" showAxisSizeFactor="1" />
+            <Node name="spring" gravity="0 -9.81 0">
+                <MechanicalObject template="Rigid3" name="default9" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
+                <UniformMass name="default10" showAxisSizeFactor="1" />
+                <RigidMapping template="Rigid3,Rigid3" name="default11" rigidIndexPerPoint="1 1" axisLength="0.001" />
+                <JointSpringForceField template="Rigid3" name="default12" spring="BEGIN_SPRING  0 1  END_SPRING&#x0A;" />
+            </Node>
+        </Node>
+    </Node>
+</Node>

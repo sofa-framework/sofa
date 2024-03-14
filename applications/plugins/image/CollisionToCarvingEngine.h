@@ -57,7 +57,7 @@ template <class _InImageTypes,class _OutImageTypes>
 class CollisionToCarvingEngine : public core::DataEngine
 {
 public:
-	// ------------ Typedefs ------------------------------------------------- 
+	// ------------ Typedefs -------------------------------------------------
 	typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE2(CollisionToCarvingEngine,_InImageTypes,_OutImageTypes),Inherited);
 
@@ -79,15 +79,17 @@ public:
 
     typedef type::vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
-	typedef sofa::type::Vec<3,SReal> Vector3;
-	// -------- Datas ----------------------------
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
+    // -------- Datas ----------------------------
 	Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;
 
     Data< OutImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
-	Data< Vector3 > trackedPosition; ///< Position de test pour la collision
+	Data< type::Vec3 > trackedPosition; ///< Position de test pour la collision
 
 	// ------ Parameters ---------------------
 	raImagei* in;
@@ -100,7 +102,7 @@ public:
 		, inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
 		, outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
 		, outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
-		, trackedPosition(initData(&trackedPosition, Vector3(),"trackedPosition","Position de test pour la collision"))
+		, trackedPosition(initData(&trackedPosition, type::Vec3(),"trackedPosition","Position de test pour la collision"))
     {
 		inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);
@@ -133,25 +135,25 @@ public:
     void reinit() override { update(); }
 
 protected:
-	
+
     void doUpdate() override
     {
         bool updateImage = m_dataTracker.hasChanged(this->inputImage);	// change of input image -> update output image
         bool updateTransform = m_dataTracker.hasChanged(this->inputTransform);	// change of input transform -> update output transform
-		
+
 		if(in==NULL){in = new raImagei(this->inputImage);}
 		if(inT==NULL){inT = new raTransform(this->inputTransform);}
 		if(out==NULL){out = new waImageo(this->outputImage);}
 		if(outT==NULL){outT = new waTransform(this->outputTransform);}
 
-	
+
 		if((*in)->isEmpty()) return;
 
         const cimg_library::CImgList<Ti>& inimg = (*in)->getCImgList();
         cimg_library::CImgList<To>& img = (*out)->getCImgList();
         if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) (*outT)->operator=(*inT);	// copy
-		
+
 		//cout << this->inputImage <<endl;
 		if(updateImage || updateTransform)
 		{
@@ -162,12 +164,12 @@ protected:
 				}
 			img(0)(0,0,0) = 0;
 		}
-		Vector3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
-		Vector3 scale = (*outT)->getScale();
-		if((*outT)->getRotation() == Vector3(0,0,0))
+		type::Vec3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
+		type::Vec3 scale = (*outT)->getScale();
+		if((*outT)->getRotation() == type::Vec3(0,0,0))
 		{
 			//cout<< "L'absence de rotation n'est pas encore prise en compte" <<endl;
-			
+
 			if((*out)->isInside(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()))
 			{
                 img(0)(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()) = (To)1;
@@ -181,9 +183,9 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event) override
     {
-		
+
         if ( simulation::AnimateBeginEvent::checkEventType(event) )
-        { 
+        {
 			//cout<<"test"<<endl;
 			update();
 		}

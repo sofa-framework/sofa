@@ -1,0 +1,48 @@
+<Node name="root" dt="0.02" gravity="0 0 100">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [CylinderGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <DefaultAnimationLoop/>
+    
+    <Node name="Reference">
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
+        <OglModel src="@meshLoader_0" dx="20" dy="17" dz="0" color="green" />
+    </Node>
+    <Node name="CylinderFEMTetra">
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="-10" />
+        <UniformMass totalMass="15" />
+        <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
+        <BoxConstraint box="-14 -0.1 -4 -6 0.1 4" fixAll="0" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
+    </Node>
+    <Node name="CylinderFEM">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject />
+        <UniformMass totalMass="15" />
+        <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
+        <BoxConstraint box="-4 -0.1 -4 4 0.1 4" fixAll="0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
+    </Node>
+    <Node name="CylinderSpring">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="10" />
+        <UniformMass totalMass="15" />
+        <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
+        <BoxConstraint box="6 -0.1 -4 14 0.1 4" fixAll="0" />
+        <MeshSpringForceField name="FEM" stiffness="1000" />
+    </Node>
+</Node>

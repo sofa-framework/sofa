@@ -1,0 +1,74 @@
+<Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping TubularMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [BeamFEMForceField TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Edge2QuadTopologicalMapping Tetra2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showVisual showBehaviorModels showCollisionModels" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.05" />
+    <CollisionResponse response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
+    
+    <!-- A deformable square mesh -->
+    <Node name="Truss" activated="true" gravity="0 0 0">
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
+        <MeshGmshLoader name="meshLoader0" filename="mesh/truss_tetra.msh" />
+        <TetrahedronSetTopologyContainer name="Container" src="@meshLoader0" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <MechanicalObject template="Vec3" name="TrussMO" />
+        <UniformMass totalMass="0.05" />
+        <BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
+        <BoxROI box="0.099 -0.001 -0.001 0.11 0.011 0.011"/>
+        <ConstantForceField forces="0 -0.1 0" />
+
+        <Node name="Triangle">
+            <include href="Objects/TriangleSetTopology.xml" />
+            <Tetra2TriangleTopologicalMapping input="@/Truss/Container" output="@Container" />
+            <TriangleCollisionModel />
+            <Node name="TriangleVisual">
+                <OglModel template="Vec3" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                <IdentityMapping template="Vec3,Vec3" name="default12" input="@.." output="@Visual" />
+            </Node>
+        </Node>
+        <Node name="Beam">
+            <MechanicalObject template="Rigid3" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
+            <MeshTopology name="BeamMesh" lines="0 1 1 2 2 3 3 4 4 5" />
+            <FixedProjectiveConstraint name="BeamFixedProjectiveConstraint" indices="0" />
+            <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" />
+            <BeamFEMForceField name="BeamFEM" radius="0.005" youngModulus="3000000000" poissonRatio="0.45" />
+            <ConstantForceField indices="5" forces="0 0 0 -10 0 0" />
+            <BarycentricMapping isMechanical="true" input="@TrussMO" output="@BeamMO" />
+            <Node name="VisuThread">
+                <MechanicalObject name="Quads" />
+                <include href="Objects/QuadSetTopology.xml" />
+                <Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.005" input="@BeamMesh" output="@Container" />
+                <TubularMapping nbPointsOnEachCircle="10" radius="0.005" input="@BeamMO" output="@Quads" />
+                <Node name="VisuOgl">
+                    <OglModel name="Visual" color="0.5 0.5 1.0" />
+                    <IdentityMapping input="@Quads" output="@Visual" />
+                </Node>
+            </Node>
+        </Node>
+    </Node>
+</Node>
+

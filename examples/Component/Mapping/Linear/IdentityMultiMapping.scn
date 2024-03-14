@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02" gravity="0 0 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [GridMeshCreator] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMultiMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
+    <DefaultAnimationLoop/>
+    
+    <CollisionPipeline/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <DiscreteIntersection/>
+    
+    
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+    
+    
+    <Node name="object1">        
+        <GridMeshCreator name="loader" filename="nofile" resolution="2 2" />
+        <MeshTopology src="@loader" />
+        <MechanicalObject template="Vec3" src="@loader" name="dof1" />
+
+        <Node name="object2">        
+            <GridMeshCreator name="loader" filename="nofile" resolution="2 2" translation="2 0 0" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject template="Vec3" src="@loader"  name="dof2"/>
+            
+            <Node name="concatenation">
+                <MechanicalObject template="Vec3" name="dofall" showObject="1"/>
+                <IdentityMultiMapping template="Vec3,Vec3" input="@../../dof1 @../dof2" output="@./dofall" />
+                <SphereCollisionModel radius="0.3" selfCollision="1"/>
+                <UniformMass vertexMass="1" />
+                <ConstantForceField indices="0" forces="1 0 0"/>
+            </Node>
+            
+        </Node>
+    
+    </Node>
+        
+    
+</Node>

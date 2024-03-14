@@ -31,11 +31,8 @@
 #include <functional>
 #include <numeric> // for std::partial_sum
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -74,7 +71,7 @@ void CudaScanCPU(const TData* input, TData* output, unsigned int size, ScanType 
 static inline void CudaScanPrepare(unsigned int size, ScanType type)
 {
     if (!CudaScanGPUAvailable(size, type))
-        std::cerr << "CUDA: GPU scan implementation not available (size="<<size<<")" << std::endl;
+        msg_error("SofaCUDA") << "CUDA: GPU scan implementation not available (size=" << size << ")";
 }
 
 template<class TData>
@@ -96,9 +93,9 @@ static inline void CudaScan(const CudaVector<TData>* input, CudaVector<TData>* o
 }
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif
 
 #endif

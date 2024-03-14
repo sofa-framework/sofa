@@ -21,11 +21,10 @@
 ******************************************************************************/
 #include <iostream>
 #include <algorithm>
-
-#include <sofa/helper/proximity.h>
+#include <SofaDistanceGrid/config.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include "FFDDistanceGridDiscreteIntersection.inl"
 
 namespace sofa
@@ -40,6 +39,8 @@ namespace collision
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::geometry;
+using namespace sofa::component::collision::detection::intersection;
 
 IntersectorCreator<DiscreteIntersection, FFDDistanceGridDiscreteIntersection> FFDDistanceGridDiscreteIntersectors("FFDDistanceGrid");
 
@@ -66,10 +67,10 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     DistanceGrid* grid2 = e2.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
     bool useXForm = e2.isTransformed();
-    //const Vector3& t1 = e1.getTranslation();
-    //const Matrix3& r1 = e1.getRotation();
-    const Vector3& t2 = e2.getTranslation();
-    const Matrix3& r2 = e2.getRotation();
+    //const type::Vec3& t1 = e1.getTranslation();
+    //const type::Mat3x3& r1 = e1.getRotation();
+    const type::Vec3& t2 = e2.getTranslation();
+    const type::Mat3x3& r2 = e2.getRotation();
 
     const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
@@ -77,8 +78,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const bool singleContact = e1.getCollisionModel()->singleContact.getValue();
 
     // transform from grid1 to grid2
-    Vec3f translation;
-    Mat3x3f rotation;
+    Vec3 translation;
+    Mat3x3 rotation;
 
     if (useXForm)
     {
@@ -115,7 +116,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 SReal d = grid2->interp(p2);
                 if (d >= margin) continue;
 
-                Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                type::Vec3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
                 grad.normalize();
 
                 //p2 -= grad * d; // push p2 back to the surface
@@ -126,7 +127,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 if (!singleContact || first || (value < detection->value))
                 {
                     detection->point[0] = grid1->meshPts[c1.points[i].index];
-                    detection->point[1] = Vector3(p2) - grad * d;
+                    detection->point[1] = type::Vec3(p2) - grad * d;
                     detection->normal = r2 * -grad; // normal in global space from p1's surface
                     detection->value = value;
                     detection->elem.first = e1;
@@ -194,9 +195,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                                 double value = d - d0;
                                 if (!singleContact || first || (value < detection->value))
                                 {
-                                    detection->point[0] = Vector3(pinit);
-                                    detection->point[1] = Vector3(p2);
-                                    detection->normal = Vector3(grad); // normal in global space from p1's surface
+                                    detection->point[0] = type::Vec3(pinit);
+                                    detection->point[1] = type::Vec3(p2);
+                                    detection->normal = type::Vec3(grad); // normal in global space from p1's surface
                                     detection->value = value;
                                     detection->elem.first = e1;
                                     detection->elem.second = e2;
@@ -309,9 +310,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                             double value = d + margin - d0;
                             if (!singleContact || first || (value < detection->value))
                             {
-                                detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
-                                detection->point[1] = Vector3(pinit);
-                                detection->normal = Vector3(-grad); // normal in global space from p1's surface
+                                detection->point[0] = type::Vec3(grid1->meshPts[c1.points[i].index]);
+                                detection->point[1] = type::Vec3(pinit);
+                                detection->normal = type::Vec3(-grad); // normal in global space from p1's surface
                                 detection->value = value;
                                 detection->elem.first = e1;
                                 detection->elem.second = e2;
@@ -393,9 +394,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                             double value = d + margin - d0;
                             if (!singleContact || first || (value < detection->value))
                             {
-                                detection->point[0] = Vector3(pinit);
-                                detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
-                                detection->normal = Vector3(grad); // normal in global space from p1's surface
+                                detection->point[0] = type::Vec3(pinit);
+                                detection->point[1] = type::Vec3(grid2->meshPts[c2.points[i].index]);
+                                detection->normal = type::Vec3(grad); // normal in global space from p1's surface
                                 detection->value = value;
                                 detection->elem.first = e1;
                                 detection->elem.second = e2;
@@ -445,7 +446,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const SReal cubesize = c1.invDP.norm();
     int nc = 0;
 
-    Vector3 p2 = e2.p();
+    type::Vec3 p2 = e2.p();
     DistanceGrid::Coord p1 = p2;
 
     // estimate the barycentric coordinates
@@ -486,8 +487,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     contacts->resize(contacts->size()+1);
                     DetectionOutput *detection = &*(contacts->end()-1);
 
-                    detection->point[0] = Vector3(pinit);
-                    detection->normal = Vector3(grad); // normal in global space from p1's surface
+                    detection->point[0] = type::Vec3(pinit);
+                    detection->normal = type::Vec3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
@@ -538,7 +539,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     for (unsigned int iP = 0; iP < 3; ++iP)
     {
         if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1<<iP))) continue;
-        Vector3 p2 = e2.p(iP);
+        type::Vec3 p2 = e2.p(iP);
         DistanceGrid::Coord p1 = p2;
 
         // estimate the barycentric coordinates
@@ -579,9 +580,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                         contacts->resize(contacts->size()+1);
                         DetectionOutput *detection = &*(contacts->end()-1);
 
-                        detection->point[0] = Vector3(pinit);
-                        detection->point[1] = Vector3(p2);
-                        detection->normal = Vector3(grad); // normal in global space from p1's surface
+                        detection->point[0] = type::Vec3(pinit);
+                        detection->point[1] = type::Vec3(p2);
+                        detection->normal = type::Vec3(grad); // normal in global space from p1's surface
                         detection->value = d - d0;
                         detection->elem.first = e1;
                         detection->elem.second = e2;
@@ -617,19 +618,19 @@ bool FFDDistanceGridDiscreteIntersection::testIntersection(Ray& /*e1*/, FFDDista
 
 int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanceGridCollisionElement& e1, OutputVector* contacts)
 {
-    Vector3 rayOrigin(e2.origin());
-    Vector3 rayDirection(e2.direction());
+    type::Vec3 rayOrigin(e2.origin());
+    type::Vec3 rayDirection(e2.direction());
     const double rayLength = e2.l();
 
     DistanceGrid* grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
     // Center of the sphere
-    const Vector3 center1 = c1.center;
+    const type::Vec3 center1 = c1.center;
     // Radius of the sphere
     const double radius1 = c1.radius;
 
-    const Vector3 tmp = center1 - rayOrigin;
+    const type::Vec3 tmp = center1 - rayOrigin;
     double rayPos = tmp*rayDirection;
     const double dist2 = tmp.norm2() - (rayPos*rayPos);
     if (dist2 >= (radius1*radius1))
@@ -703,7 +704,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
             }
         }
         // else move along the ray
-        //if (dot(Vector3(grid1->grad(c1.initpos(b))),rayDirection) < 0)
+        //if (dot(type::Vec3(grid1->grad(c1.initpos(b))),rayDirection) < 0)
         //    rayPos += 0.5*d;
         //else
         //    rayPos -= 0.5*d;

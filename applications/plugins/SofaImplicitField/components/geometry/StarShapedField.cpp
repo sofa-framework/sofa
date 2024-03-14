@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaImplicitField/config.h>
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 

@@ -32,7 +32,7 @@ class SerialLauncher(Launcher):
                         print("[0] sequential new sofa task in: " + str(scene))
                         begin = time.time()
                         try:
-                                a = Popen(["runSofa", "-g", "batch", "-l", "SofaPython", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+                                a = Popen(["runSofa", "-g", "batch", "-l", "SofaPython3", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
                         except:
                                 print("Unable to find runSofa, please add the runSofa location to your PATH and restart sofa-launcher.")
                                 sys.exit(-1)
@@ -76,7 +76,7 @@ class ParallelLauncher(Launcher):
                         
                         begin = time.time()
                         try:
-                                a = Popen(["runSofa", "-l", "SofaPython", "-g", "batch", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+                                a = Popen(["runSofa", "-l", "SofaPython3", "-g", "batch", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
                         except:
                                 print("Unable to find runSofa, please add the runSofa location to your PATH and restart sofa-launcher.")
                                 sys.exit(-1)
@@ -139,7 +139,7 @@ class SSHLauncher(Launcher):
                 while True:
                         task = self.pendingtask.get() 
                         (numiterations, directory, scene, log) = task 
-                        sofacmd = "{2} -g batch -l SofaPython -n {0} {1}".format(numiterations, scene, self.runSofa)
+                        sofacmd = "{2} -g batch -l SofaPython3 -n {0} {1}".format(numiterations, scene, self.runSofa)
                         print("[{0}] processing ssh sofa task: {1}".format(threading.currentThread().ident, sofacmd)) 
                         begin = time.time()
                         ssh = Popen(["ssh", "%s" % host, sofacmd], shell=False, stdout=PIPE, stderr=PIPE)

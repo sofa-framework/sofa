@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<!--
+In this scene, 3 cubes fall on the floor. They must not collide together, but they must collide with the floor. To
+achieve this behavior, collision groups are used. Collision models contained in the same group don't collide together.
+Here, the collision models of the 3 cubes are defined in the group 1. Therefore, they don't collide. The floor is not
+in the group 1, therefore cubes collide with it.
+-->
+
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+
+    <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+
+    <VisualStyle displayFlags="showBehavior showCollisionModels" />
+    <OglSceneFrame/>
+
+    <DefaultAnimationLoop/>
+
+    <CollisionPipeline name="CollisionPipeline" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+
+    <CollisionResponse name="Response" response="PenalityContactForceField"/>
+    <MinProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09" />
+
+    <Node name="grid0">
+
+        <EulerImplicitSolver name="EulerImplicit" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+
+        <Node name="Cube0">
+            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0 10 0" />
+            <UniformMass name="UniformMass" totalMass="10.0" />
+            <OBBCollisionModel group="1"/>
+        </Node>
+
+        <Node name="Cube1">
+            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="1 13 0" />
+            <UniformMass name="UniformMass" totalMass="10.0" />
+            <OBBCollisionModel group="1"/>
+        </Node>
+
+        <Node name="Cube2">
+            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="0 16 1" />
+            <UniformMass name="UniformMass" totalMass="10.0" />
+            <OBBCollisionModel group="1"/>
+        </Node>
+
+    </Node>
+
+    <Node name="Floor">
+        <MechanicalObject name="Floor Particles" template="Rigid3d"/>
+        <OBBCollisionModel name="Floor Triangle For Collision" extents="5 1 5" moving="0" simulated="0" />
+    </Node>
+
+</Node>

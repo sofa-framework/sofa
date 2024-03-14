@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<Node dt="0.01" gravity="0 -9.81 0" name="root">
+    <RequiredPlugin name="ArticulatedSystemPlugin"/> <!-- Needed to use components [ArticulatedHierarchyContainer ArticulatedSystemMapping Articulation ArticulationCenter] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [BeamFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse />
+    <CollisionPipeline />
+    <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    <Node>
+        <EulerImplicitSolver name="cg odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="100" name="linear solver" threshold="1e-20" tolerance="1e-20" />
+        <Node name="restarticulation">
+            <MechanicalObject name="rest" template="Vec1d" position="0 0 0 0" />
+            <FixedProjectiveConstraint indices="0 1 2 3" />
+        </Node>
+        <Node name="articulation">
+            <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0" />
+            <Node>
+                <MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0 0 0 1  1 0 0  0 0 0 1  3 0 0  0 0 0 1  5 0 0  0 0 0 1  7 0 0  0 0 0 1" />
+                <BeamFEMForceField name="FEM" radius="0.1" youngModulus="1e8" poissonRatio="0.45"/>
+                <MeshTopology name="lines" lines="0 1 1 2 2 3 3 4 " />
+                <UniformMass template="Rigid3d" name="mass" vertexMass="0.1 0.1 [1 0 0,0 1 0,0 0 1]" />
+                <FixedProjectiveConstraint template="Rigid3d" name="fixOrigin" indices="0" />
+                <ArticulatedSystemMapping input1="@../Articulations" output="@DOFs" />
+                <Node name="Collision">
+                    <MechanicalObject template="Vec3d" position="-1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5" />
+                    <MeshTopology lines="0 1 1 2 2 3 3 0 1 5 5 4 4 0 5 6 6 7 7 4 2 6 7 3 8 9 9 10 10 11 11 8 9 13 13 12 12 8 13 14 14 15 15 12 10 14 15 11 16 17 17 18 18 19 19 16 17 21 21 20 20 16 21 22 22 23 23 20 18 22 23 19 24 25 25 26 26 27 27 24 25 29 29 28 28 24 29 30 30 31 31 28 26 30 31 27" triangles="3 1 0 3 2 1 3 6 2 3 7 6 7 5 6 7 4 5 4 1 5 4 0 1 5 1 2 2 6 5 4 7 3 4 3 0 11 9 8 11 10 9 11 14 10 11 15 14 15 13 14 15 12 13 12 9 13 12 8 9 13 9 10 10 14 13 12 15 11 12 11 8 19 17 16 19 18 17 19 22 18 19 23 22 23 21 22 23 20 21 20 17 21 20 16 17 21 17 18 18 22 21 20 23 19 20 19 16 27 25 24 27 26 25 27 30 26 27 31 30 31 29 30 31 28 29 28 25 29 28 24 25 29 25 26 26 30 29 28 31 27 28 27 24" />
+                    <TriangleCollisionModel />
+                    <LineCollisionModel />
+                    <RigidMapping rigidIndexPerPoint="0 8 8 8 8" />
+                </Node>
+                <Node name="Visu">
+                    <OglModel name="Visual" position="-1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5" triangles="3 1 0 3 2 1 3 6 2 3 7 6 7 5 6 7 4 5 4 1 5 4 0 1 5 1 2 2 6 5 4 7 3 4 3 0 11 9 8 11 10 9 11 14 10 11 15 14 15 13 14 15 12 13 12 9 13 12 8 9 13 9 10 10 14 13 12 15 11 12 11 8 19 17 16 19 18 17 19 22 18 19 23 22 23 21 22 23 20 21 20 17 21 20 16 17 21 17 18 18 22 21 20 23 19 20 19 16 27 25 24 27 26 25 27 30 26 27 31 30 31 29 30 31 28 29 28 25 29 28 24 25 29 25 26 26 30 29 28 31 27 28 27 24" />
+                    <RigidMapping template="Rigid3d,Vec3d" rigidIndexPerPoint="1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4" input="@.." output="@Visual" />
+                </Node>
+            </Node>
+            <ArticulatedHierarchyContainer />
+            <Node name="articulationCenters">
+                <Node name="articulationCenter1">
+                    <ArticulationCenter parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="-1 0 0" articulationProcess="2" />
+                    <Node name="articulations">
+                        <Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="0" />
+                    </Node>
+                </Node>
+                <Node name="articulationCenter2">
+                    <ArticulationCenter parentIndex="1" childIndex="2" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="2" />
+                    <Node name="articulations">
+                        <Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="1" />
+                    </Node>
+                </Node>
+                <Node name="articulationCenter3">
+                    <ArticulationCenter parentIndex="2" childIndex="3" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="0" />
+                    <Node name="articulations">
+                        <Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="2" />
+                    </Node>
+                </Node>
+                <Node name="articulationCenter4">
+                    <ArticulationCenter parentIndex="3" childIndex="4" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="1" />
+                    <Node name="articulations">
+                        <Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="3" />
+                    </Node>
+                </Node>
+            </Node>
+        </Node>
+        <StiffSpringForceField name="Spring" object1="@articulation" object2="@restarticulation" spring=" 1 1 100.0 1.0 0.0  2 2 100.0 1.0 0.0  3 3 100.0 1.0 0.0" />
+    </Node>
+</Node>

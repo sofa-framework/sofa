@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!-- BilateralLagrangianConstraint example -->
+<Node name="root" dt="0.001" gravity="0 -981 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    
+    <VisualStyle displayFlags="showForceFields" />
+    <DefaultVisualManagerLoop />
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" resolutionMethod="ProjectedGaussSeidel"/>
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" />
+
+    <Node name="CUBE_0">
+        <MechanicalObject dy="2.5" />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_0" color="1 0 0 1" dy="2.5" />
+        </Node>
+        <Node name="ColliCube">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" template="Vec3" dy="2.5" />
+            <TriangleCollisionModel simulated="0" moving="0" />
+            <LineCollisionModel simulated="0" moving="0" />
+            <PointCollisionModel simulated="0" moving="0" />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3" position="1 1.25 1" />
+        </Node>
+    </Node>
+    <Node name="CUBE_1">
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="0" dz="0.0" />
+        <UniformMass totalMass="0.1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="1 1 0 1.0" />
+            <RigidMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <TriangleCollisionModel contactStiffness="10.0" />
+            <LineCollisionModel contactStiffness="10.0" />
+            <PointCollisionModel contactStiffness="10.0" />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3" position="1 1.25 1&#x09;-1.25 -1.25 1.25" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
+    <Node name="CUBE_2">
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="-2.5" dz="0.0" />
+        <UniformMass totalMass="0.1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_3" color="0 1 0 1.0" />
+            <RigidMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" scale="1.0" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3" position="-1.25 1.25 1.25&#x09;1.25 -1.25 -1.25" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
+    <Node name="CUBE_3">
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="-5.0" dz="0.0" />
+        <UniformMass totalMass="0.1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_4" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_4" color="0 1 1 1.0" />
+            <RigidMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" scale="1.0" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3" position="1.25 1.25 -1.25" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
+    <Node name="CUBE_4">
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="-2.5" dz="-2.5" />
+        <UniformMass totalMass="0.1" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="0 0 1 1.0" />
+            <RigidMapping input="@.." output="@Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" scale="1.0" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3" position="1.25 -1.25 1.25&#x09;1.25 1.25 1.25" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <BilateralLagrangianConstraint template="Vec3" object1="@CUBE_2/Constraints/points" object2="@CUBE_4/Constraints/points" first_point="1" second_point="0" />
+</Node>

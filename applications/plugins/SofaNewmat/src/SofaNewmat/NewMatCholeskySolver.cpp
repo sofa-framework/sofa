@@ -20,17 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGeneralLinearSolver/CholeskySolver.inl>
+#include <sofa/component/linearsolver/direct/CholeskySolver.inl>
 #include <SofaNewmat/NewMatMatrix.h>
 
 #include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa::component::linearsolver
 {
 
 
 int NewMatCholeskySolverClass = core::RegisterObject("NewMat direct linear solver based on Cholesky factorization, for dense matrices")
-        .add< CholeskySolver< NewMatSymmetricMatrix, NewMatVector > >()
+        .add<direct::CholeskySolver< NewMatSymmetricMatrix, NewMatVector > >()
         ;
 
 } // namespace sofa::component::linearsolver

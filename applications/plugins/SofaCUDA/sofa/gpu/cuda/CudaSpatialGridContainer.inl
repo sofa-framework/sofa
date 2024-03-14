@@ -42,10 +42,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -57,14 +55,10 @@ extern "C"
 //void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace container
+namespace component::container
 {
 
 using namespace sofa::helper;
@@ -88,19 +82,19 @@ SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> 
 template<class TCoord, class TDeriv, class TReal> template<class NeighborListener>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::findNeighbors(NeighborListener* /*dest*/, Real /*dist*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::findNeighbors(NeighborListener* dest, Real dist)"<<std::endl;
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::findNeighbors(NeighborListener* dest, Real dist)";
 }
 
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::computeField(ParticleField* /*field*/, Real /*dist*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::computeField(ParticleField* field, Real dist)"<<std::endl;
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::computeField(ParticleField* field, Real dist)";
 }
 
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<Index>* /*old2new*/, type::vector<Index>* /*new2old*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<Index>* old2new, type::vector<Index>* new2old)"<<std::endl;
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<Index>* old2new, type::vector<Index>* new2old)";
 }
 
 
@@ -169,7 +163,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_compu
     int /*cellBits*/, Real /*cellWidth*/, int /*nbPoints*/, void* /*particleIndex*/, void* /*particleHash*/,
     const void* /*x*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_computeHash()"<<std::endl;
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_computeHash()";
 }
 
 template<>
@@ -177,7 +171,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updat
     int /*cellBits*/, int /*index0*/, Real /*cellWidth*/, int /*nbPoints*/, const void* /*particleHash*/,
     void* /*cells*/, void* /*cellGhost*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid()"<<std::endl;
+    msg_error("SpatialGrid") << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid()";
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -315,7 +309,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         unsigned int p = cells[index0+i]; //particleIndex[i];
         if (cell < last)
         {
-            std::cerr << "SORT ERROR: index " << i << " key " << cell << " value " << p << " last key " << last << std::endl;
+            msg_error("SpatialGrid") << "SORT ERROR: index " << i << " key " << cell << " value " << p << " last key " << last;
         }
         last = cell;
         if (!(cell&1)) continue; // this is a ghost particle from a neighbor cell
@@ -334,9 +328,8 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace container
+} // namespace component::container
 
-} // namespace component
 
 } // namespace sofa
 

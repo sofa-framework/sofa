@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02" showBoundingTree="0">		
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [TetrahedronHyperelasticityFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    
+        <Node name="MooneyRivlin-Model" activated="1">
+            <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1"/>
+            <SparseLDLSolver saveMatrixToFile="0" />
+		
+            <MeshVTKLoader filename="cylinderPDMS12724Vol.vtk" name="loader" />
+            <MechanicalObject src="@loader" name="Volume" />
+        
+            <TetrahedronSetTopologyContainer name="Container" src="@loader" />
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="965" />
+
+            <BoxROI box="-0.05 -0.05 -0.002   0.15 0.05 0.0" drawBoxes="1"  name="fixedBox1"/>
+            <FixedProjectiveConstraint indices="@fixedBox1.indices"/>
+
+            <TetrahedronHyperelasticityFEMForceField name="FEM" materialName="MooneyRivlin" ParameterSet="151065.460 101709.668 1e07"/>
+	</Node>
+	<Node>	<!-- target obtained from experimental data with a silicon with known mechanical properties-->
+            <MechanicalObject position="0 -0.11625 0.128"/>
+            <SphereCollisionModel radius='0.002' color="white"/>
+        </Node>
+</Node>

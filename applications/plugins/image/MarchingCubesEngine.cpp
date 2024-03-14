@@ -38,6 +38,7 @@ using namespace defaulttype;
 int MarchingCubesEngineClass = core::RegisterObject("Compute an isosurface from an image using marching cubes algorithm")
         .add<MarchingCubesEngine<ImageUC> >(true)
         .add<MarchingCubesEngine<ImageD> >()
+        .add<MarchingCubesEngine<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<MarchingCubesEngine<ImageC> >()
         .add<MarchingCubesEngine<ImageI> >()
@@ -47,12 +48,12 @@ int MarchingCubesEngineClass = core::RegisterObject("Compute an isosurface from 
         .add<MarchingCubesEngine<ImageL> >()
         .add<MarchingCubesEngine<ImageUL> >()
         .add<MarchingCubesEngine<ImageF> >()
-        .add<MarchingCubesEngine<ImageB> >()
 #endif
         ;
 
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageUC>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageD>;
+template class SOFA_IMAGE_API MarchingCubesEngine<ImageB>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageC>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageI>;
@@ -62,7 +63,6 @@ template class SOFA_IMAGE_API MarchingCubesEngine<ImageUS>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageL>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageUL>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageF>;
-template class SOFA_IMAGE_API MarchingCubesEngine<ImageB>;
 #endif
 
 } //

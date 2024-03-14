@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -23,57 +23,4 @@
 
 #include <MultiThreading/config.h>
 
-#include <SofaBaseCollision/BVHNarrowPhase.h>
-#include <sofa/simulation/CpuTask.h>
-#include <unordered_set>
-
-namespace sofa::component::collision
-{
-
-class ParallelBVHNarrowPhasePairTask;
-
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase : public BVHNarrowPhase
-{
-public:
-    SOFA_CLASS(ParallelBVHNarrowPhase, BVHNarrowPhase);
-
-protected:
-    ParallelBVHNarrowPhase();
-
-    std::vector<ParallelBVHNarrowPhasePairTask> m_tasks;
-
-    std::unordered_set< sofa::core::topology::BaseMeshTopology* > m_initializedTopology;
-    std::set< std::pair<core::CollisionModel*, core::CollisionModel*> > m_initializedPairs;
-
-public:
-
-    void init() override;
-    void addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v) override;
-
-private:
-
-    /// Unlike the sequential algorithm which creates the output on the fly, the parallel implementation
-    /// requires to create the outputs before the computation, in order to avoid iterators invalidation
-    void createOutput(const type::vector<std::pair<core::CollisionModel *, core::CollisionModel *>> &v);
-
-    /// This function makes sure some topology arrays are initialized. They cannot be initialized concurrently
-    void initializeTopology(sofa::core::topology::BaseMeshTopology*);
-};
-
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhasePairTask : public sofa::simulation::CpuTask
-{
-public:
-    ParallelBVHNarrowPhasePairTask(
-            sofa::simulation::CpuTask::Status* status,
-            ParallelBVHNarrowPhase* bvhNarrowPhase,
-            std::pair<core::CollisionModel*, core::CollisionModel*> pair);
-    ~ParallelBVHNarrowPhasePairTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
-
-private:
-
-    ParallelBVHNarrowPhase* m_bvhNarrowPhase { nullptr };
-    std::pair<core::CollisionModel*, core::CollisionModel*> m_pair;
-};
-
-} //namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h")

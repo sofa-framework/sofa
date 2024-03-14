@@ -2,22 +2,22 @@
     <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
     <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false"/>
     
-    <MechanicalObject name="MechanicalDOFs" template="Rigid3d" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
+    <MechanicalObject name="MechanicalDOFs" template="Rigid3" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
     
     <EdgeSetTopologyContainer  name="Container" position="0 0 0  1 0 0  2 0 0" edges="0 1  1 2" />
     <EdgeSetTopologyModifier   name="Modifier" />
-    <EdgeSetTopologyAlgorithms name="TopoAlgo"   template="Rigid3d" />
-    <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Rigid3d" />
+    <EdgeSetTopologyAlgorithms name="TopoAlgo"   template="Rigid3" />
+    <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Rigid3" />
     
-    <MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
-    <EdgeSetController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" speed="-1"/>
+    <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+    <EdgeSetController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" speed="-1"/>
     
-    <FixedConstraint name="FixedConstraint" indices="0" />
+    <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0" />
     <UniformMass vertexMass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
     <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" poissonRatio="0.49" />
     
     <Node name="CM">
-        <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
+        <MechanicalObject name="CollisionDOFs" template="Vec3" size="3"/>
         <LineCollisionModel />
         <PointCollisionModel />
         <IdentityMapping/>

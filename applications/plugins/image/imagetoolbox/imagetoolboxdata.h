@@ -87,9 +87,9 @@ public:
     
     inline friend std::istream& operator >> ( std::istream& in, ImageToolBoxData& h )
     {
-        type::Vec<2,T> clamp;
-        in>>clamp;
-        h.setClamp(clamp);
+        type::Vec<2,T> myclamp;
+        in>>myclamp;
+        h.setClamp(myclamp);
         return in;
     }
 

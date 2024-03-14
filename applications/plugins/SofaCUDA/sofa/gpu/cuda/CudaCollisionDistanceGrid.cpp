@@ -19,39 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaSpringForceField.inl"
-#include "CudaMechanicalObject.inl"
-#include "CudaIdentityMapping.inl"
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
+#include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
+#include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include "CudaContactMapper.h"
-#include "CudaPenalityContactForceField.h"
-#include "CudaSpringForceField.h"
+#include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaDistanceGridCollisionModel.h"
-#include "CudaSphereModel.h"
-#include "CudaPointModel.h"
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 
-#include <SofaUserInteraction/MouseInteractor.inl>
-#include <SofaBaseCollision/NewProximityIntersection.inl>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaUserInteraction/ComponentMouseInteraction.inl>
-#include <SofaUserInteraction/AttachBodyPerformer.inl>
-#include <SofaUserInteraction/FixParticlePerformer.inl>
-#include <SofaUserInteraction/RayContact.h>
-#include <SofaMeshCollision/BarycentricPenalityContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <SofaObjectInteraction/PenalityContactForceField.h>
-#include <SofaGeneralDeformable/VectorSpringForceField.h>
+#include <sofa/gui/component/performer/MouseInteractor.inl>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
+#include <sofa/gui/component/performer/AttachBodyPerformer.inl>
+#include <sofa/gui/component/performer/FixParticlePerformer.inl>
+
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
+#include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+
 #include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::gpu::cuda;
@@ -109,7 +106,7 @@ void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCol
 }
 
 template <>
-void BarycentricPenalityContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
+void BarycentricPenalityContact<CudaSphereCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
 {
 
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
@@ -162,32 +159,21 @@ void BarycentricPenalityContact<sofa::component::collision::SphereCollisionModel
 
 }
 
-} //namespace collision
+} // namespace sofa::component::collision::response::contact
 
 
-} //namespace component
-
-
-namespace gpu
+namespace sofa::gpu::cuda
 {
-
-namespace cuda
-{
-
 
 using namespace sofa::component::collision;
+using namespace sofa::component::collision::response::contact;
 
 //sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaDistanceGridCudaDistanceGridContactClass("PenalityContactForceField", true);
-sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaPointCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaPointCudaDistanceGridContactClass("PenalityContactForceField", true);
-sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaSphereCudaDistanceGridContactClass("PenalityContactForceField", true);
+sofa::helper::Creator<sofa::core::collision::Contact::Factory, BarycentricPenalityContact<CudaPointCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaPointCudaDistanceGridContactClass("PenalityContactForceField", true);
+sofa::helper::Creator<sofa::core::collision::Contact::Factory, BarycentricPenalityContact<CudaSphereCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaSphereCudaDistanceGridContactClass("PenalityContactForceField", true);
 //sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::RigidDistanceGridCollisionModel> > CudaDistanceGridDistanceGridContactClass("PenalityContactForceField", true);
 //sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::PointModel> > CudaDistanceGridPointContactClass("PenalityContactForceField", true);
 //sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::SphereModel> > CudaDistanceGridSphereContactClass("PenalityContactForceField", true);
 //sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::TriangleModel> > CudaDistanceGridTriangleContactClass("PenalityContactForceField", true);
 
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

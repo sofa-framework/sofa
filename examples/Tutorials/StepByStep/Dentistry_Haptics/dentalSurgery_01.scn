@@ -3,10 +3,13 @@
    + then we load the OBJ model of the tooth and display it (using a white color) 
 -->
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaGraphComponent"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Head">
         <MeshOBJLoader name="meshLoader_0" filename="data/mesh/head.obj" handleSeams="1" />
         <OglModel name="HeadVisualModel" src="@meshLoader_0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />

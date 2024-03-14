@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.NonUniform"/> <!-- Needed to use components [HexahedronCompositeFEMForceFieldAndMass HexahedronCompositeFEMMapping] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridMultipleTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <!-- A soft grape containing a very stiff seed is deformed by using only one element. By using the HexahedronCompositeFEMMapping, the seed does not deform.  -->
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+    <MeshOBJLoader name="meshLoader_2" filename="mesh/plane_loop_2.obj" scale="1" handleSeams="1" />
+    <OglModel name="plan" src="@meshLoader_2" rx="90" rz="90" dy="-10.2" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45"/>
+    <Node name="HexahedronCompositeFEMMapping">
+        <SparseGridMultipleTopology n="2 2 2" fileTopology="mesh/grape_out.obj" fileTopologies="mesh/grape_out.obj mesh/grape_in.obj" stiffnessCoefs="1 1000000" massCoefs="1 1" nbVirtualFinerLevels="4" finestConnectivity="false" />
+        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+        <CGLinearSolver iterations="2000" tolerance="1e-5" threshold="1e-5"/>
+        <MechanicalObject dx="15" />
+        <HexahedronCompositeFEMForceFieldAndMass completeInterpolation="false" nbVirtualFinerLevels="3" youngModulus="100" poissonRatio="0.35" method="large" density="2" updateStiffnessMatrix="false" printLog="0" useMass="false" totalMass="1" drawSize=".5" />
+        <BoxConstraint box="-30 -11 -30   100 -9 30" drawSize="0.75" />
+        <Node name="Collinonunif">
+            <MeshOBJLoader name="loader" filename="mesh/grape_out.obj" />
+            <MeshTopology src="@loader" />
+            <MechanicalObject src="@loader" />
+            <HexahedronCompositeFEMMapping/>
+            <Node name="f1">
+                <ConstantForceField indices="340" forces="1000 8000 0" showArrowSize=".001" />
+            </Node>
+            <Node name="Visu2">
+                <MeshOBJLoader name="meshLoader_3" filename="mesh/grape_out.obj" handleSeams="1" />
+                <OglModel name="VisualEyes" src="@meshLoader_3" normals="0" color="0.1 .8 .3 .5" />
+                <IdentityMapping input="@.." output="@VisualEyes" />
+            </Node>
+        </Node>
+        <Node name="Visu1">
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/grape_in.obj" handleSeams="1" />
+            <OglModel name="VisualBody" src="@meshLoader_0" normals="0" color="0 0 .6 1" />
+            <HexahedronCompositeFEMMapping input="@.." output="@VisualBody" />
+        </Node>
+    </Node>
+    <Node name="BarycentricMapping">
+        <SparseGridMultipleTopology n="2 2 2" fileTopology="mesh/grape_out.obj" fileTopologies="mesh/grape_out.obj mesh/grape_in.obj" stiffnessCoefs="1 1000000" massCoefs="1 1" nbVirtualFinerLevels="4" finestConnectivity="false" />
+        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+        <CGLinearSolver iterations="2000" tolerance="1e-5" threshold="1e-5"/>
+        <MechanicalObject dx="-15" />
+        <HexahedronCompositeFEMForceFieldAndMass completeInterpolation="true" nbVirtualFinerLevels="3" youngModulus="100" poissonRatio="0.35" method="large" density="2" updateStiffnessMatrix="false" printLog="0" useMass="false" totalMass="1" drawSize=".5" />
+        <BoxConstraint box="-100 -11 -30   30 -9 30" drawSize="0.75"/>
+        <Node name="Collinonunif">
+            <MeshOBJLoader name="loader" filename="mesh/grape_out.obj"/>
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader"/>
+            <BarycentricMapping/>
+            <Node name="f2">
+                <ConstantForceField indices="340" forces="1000 8000 0" showArrowSize=".001" />
+            </Node>
+            <Node name="Visu2">
+                <MeshOBJLoader name="meshLoader_4" filename="mesh/grape_out.obj" handleSeams="1" />
+                <OglModel name="VisualEyes" src="@meshLoader_4" normals="0" color="0.1 .8 .3 .5" />
+                <IdentityMapping input="@.." output="@VisualEyes" />
+            </Node>
+        </Node>
+        <Node name="Visu1">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/grape_in.obj" handleSeams="1" />
+            <OglModel name="VisualBody" src="@meshLoader_1" normals="0" color="0 0 .6 1" />
+            <BarycentricMapping input="@.." output="@VisualBody" />
+        </Node>
+    </Node>
+</Node>

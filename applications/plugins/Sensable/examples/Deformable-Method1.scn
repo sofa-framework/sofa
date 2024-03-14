@@ -5,12 +5,11 @@
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
     <VisualStyle displayFlags="" />
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="PenalityContactForceField" />
+    <CollisionResponse response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-    <DefaultCollisionGroupManager />
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -18,8 +17,8 @@
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.5" />
-        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedConstraint indices="0" />
+        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedProjectiveConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
@@ -40,8 +39,8 @@
         <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
         <Node 	name="VisualModel" >
             <MeshOBJLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" scale3d="1 1 1" translation="-0.212256 0.132361 3.55" rotation="180 0 150" handleSeams="1" />
-            <OglModel template="ExtVec3f"  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-            <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
+            <OglModel  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+            <RigidMapping template="Rigid,Vec3d" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
         </Node>
         <Node 	name="CollisionModel"  >
 

@@ -29,18 +29,19 @@
 #include <sofa/core/visual/VisualParams.h>
 
 ////force feedback
-#include <SofaHaptics/ForceFeedback.h>
-#include <SofaHaptics/NullForceFeedback.h>
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/component/haptics/NullForceFeedback.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/simulation/PauseEvent.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/simulation/Node.h>
 #include <cstring>
 
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
@@ -102,7 +103,7 @@ OmniDriverEmu::~OmniDriverEmu()
 }
 
 
-void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
+void OmniDriverEmu::setForceFeedbacks(vector<haptics::ForceFeedback*> ffs)
 {
     data.forceFeedbacks.clear();
     for (unsigned int i=0; i<ffs.size(); i++)
@@ -304,13 +305,13 @@ void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
 void OmniDriverEmu::bwdInit()
 {
     msg_info()<<"OmniDriverEmu::bwdInit() is called";
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+    sofa::simulation::Node *context = dynamic_cast<sofa::simulation::Node *>(this->getContext()); // access to current node
 
     // depending on toolCount, search either the first force feedback, or the feedback with indice "0"
-    simulation::Node *groot = dynamic_cast<simulation::Node *>(context->getRootContext()); // access to current node
+    sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(context->getRootContext()); // access to current node
 
-    vector<ForceFeedback*> ffs;
-    groot->getTreeObjects<ForceFeedback>(&ffs);
+    vector<haptics::ForceFeedback*> ffs;
+    groot->getTreeObjects<haptics::ForceFeedback>(&ffs);
     msg_info() << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found";
     setForceFeedbacks(ffs);
 
@@ -360,6 +361,7 @@ void OmniDriverEmu::reinit()
 
 void OmniDriverEmu::draw(const core::visual::VisualParams *)
 {
+    using sofa::gl::component::rendering3d::OglModel;
     if(omniVisu.getValue())
     {
         static bool isInited=false;
@@ -369,7 +371,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
         defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
-        visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
+        visu_base = sofa::core::objectmodel::New<OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
         visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
@@ -379,7 +381,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         visu_base->applyRotation(orientationBase.getValue());
         visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
 
-        visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
+        visu_end = sofa::core::objectmodel::New<OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
         visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
@@ -392,8 +394,8 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         }
 
         // draw the 2 visual models
-        visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
-        visu_end->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
+        visu_base->doDrawVisual(sofa::core::visual::VisualParams::defaultInstance());
+        visu_end->doDrawVisual(sofa::core::visual::VisualParams::defaultInstance());
     }
 }
 
@@ -544,7 +546,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                                                              sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
-            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
         if (kpe->getKey()=='J' || kpe->getKey()=='j')
@@ -554,7 +556,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                                                              sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
-            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
 
@@ -570,7 +572,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);
-            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
     }

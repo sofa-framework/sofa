@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaCommon.h"
-#include "CudaMath.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
+#include <sofa/gpu/cuda/CudaMath.h>
 #include "mycuda.h"
 #include <cuda.h>
 
@@ -54,7 +54,7 @@ extern "C"
 template<class real>
 __global__ void Cuda_CopyVector_kernel(int dim, const real * a, real * b)
 {
-    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int ti = blockIdx.x * BSIZE + threadIdx.x;
     if (ti >= dim) return;
     b[ti] = a[ti];
 }
@@ -80,7 +80,7 @@ void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b)
 template<class real>
 __global__ void Cuda_vector_vector_peq_kernel(int dim,real f, const real * a, real * b)
 {
-    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int ti = blockIdx.x * BSIZE + threadIdx.x;
     if (ti >= dim) return;
     b[ti] += a[ti]*f;
 }
@@ -107,7 +107,7 @@ void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void *
 template<class real>
 __global__ void Cuda_sub_vector_kernel(int dim,const real * a, const real * b, real * r)
 {
-    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int ti = blockIdx.x * BSIZE + threadIdx.x;
     if (ti >= dim) return;
     r[ti] = a[ti] - b[ti];
 }
@@ -134,7 +134,7 @@ void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b
 template<class real>
 __global__ void permute_vector_kernel(int dim,const real * a, const int * perm, real * b)
 {
-    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int ti = blockIdx.x * BSIZE + threadIdx.x;
     if (ti >= dim) return;
     b[ti] = a[perm[ti]];
 }

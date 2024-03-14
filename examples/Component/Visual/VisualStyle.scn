@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader SphereLoader] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <!-- Using the VisualStyle choose your visual options! -->
+    <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->
+    <!-- DE-ACTIVATE: hideVisual hideBehavior hideForceFields hideInteractionForceFields hideCollision hideCollisionModels hideWireFrame -->
+    <VisualStyle displayFlags="showVisual showCollisionModels" />
+    <DefaultAnimationLoop/>
+    
+    <Node name="Liver" >
+        <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+        <MechanicalObject name="dofs" src="@meshLoader" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+        <DiagonalMass name="computed using mass density" massDensity="1" />
+        <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
+        <Node name="WireframeVisu" >
+            <VisualStyle displayFlags="showVisual showWireframe" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_1" />
+            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+        </Node>
+        <Node name="Sphere" >
+            <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject name="spheres" position="@[-1].position" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
+            <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
+        </Node>
+        
+        
+        <Node name="TranslatedSurface" gravity="0 -9.81 0">
+<!--             default rendering should be flat rendered and not wireframed -->
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
+            <OglModel src="@meshLoader_0" />
+        </Node>
+        
+    </Node>
+</Node>

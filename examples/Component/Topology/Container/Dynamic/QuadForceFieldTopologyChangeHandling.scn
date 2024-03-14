@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
+<Node name="root" gravity="0 -9 1" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [QuadularBendingSprings RegularGridSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showVisual showForceFields" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+    
+    <RegularGridTopology name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+    <Node name="QuadularBendingSprings">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject src="@../grid"/>
+        <include href="Objects/QuadSetTopology.xml" src="@../grid" />
+        <DiagonalMass massDensity="1.0" />
+        <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0 19" />
+        
+        <Node name="Surf">
+            <include href="Objects/TriangleSetTopology.xml" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+        </Node>
+
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+
+        <TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
+    </Node>
+
+
+    <Node name="RegularGridSprings">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject src="@../grid" translation="30 0 0"/>
+        <include href="Objects/QuadSetTopology.xml" src="@../grid" />
+        <DiagonalMass massDensity="1.0" />
+        
+        <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
+        <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0 19" />
+
+        <Node name="Surf">
+            <include href="Objects/TriangleSetTopology.xml" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+            
+
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@.." output="@Visual" />
+            </Node>
+        </Node>
+
+        <TopologicalChangeProcessor listening="1" filename="RemovingQuadProcess.txt" />
+    </Node>
+
+</Node>

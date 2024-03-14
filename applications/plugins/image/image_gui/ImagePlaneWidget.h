@@ -159,9 +159,9 @@ protected:
 
     void fitInView() // modified version of original fitinview (no margin)
     {
-        QRectF unity = this->matrix().mapRect(QRectF(0, 0, 1, 1));
+        QRectF unity = this->transform().mapRect(QRectF(0, 0, 1, 1));
         scale(1 / unity.width(), 1 / unity.height());
-        QRectF sceneRect = this->matrix().mapRect(roi);
+        QRectF sceneRect = this->transform().mapRect(roi);
         scale(viewport()->rect().width() / sceneRect.width(), viewport()->rect().height() / sceneRect.height());
         centerOn(roi.center());
     }
@@ -224,7 +224,7 @@ protected:
         else { scene->P1=pt; emit cursorChangedX(pt.x()); emit cursorChangedY(pt.y()); Render ();}
     }
 
-    void wheelEvent (QWheelEvent *wheelev) override {		emit wheelevent((wheelev->delta()>0)?1:-1);  }
+    void wheelEvent (QWheelEvent *wheelev) override {		emit wheelevent((wheelev->angleDelta().y()>0)?1:-1);  }
 
     ImagePlaneGraphScene * scene;
     QRectF roi;
@@ -438,7 +438,7 @@ public:
         QObject::connect(this,SIGNAL(toggled(bool)),label,SLOT(setVisible(bool)));
 
         QHBoxLayout *layout = new QHBoxLayout(this);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(10);
         layout->addWidget(toggle);
         layout->addWidget(slider);

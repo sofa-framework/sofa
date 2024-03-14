@@ -9,11 +9,11 @@
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver />
 
-	<DefaultPipeline depth="8" />
+	<CollisionPipeline depth="8" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
-<!--	<DefaultContactManager name="Response" response="FrictionContactConstraint"/>-->
+<!--	<CollisionResponse name="Response" response="FrictionContactConstraint"/>-->
 	<RuleBasedContactManager name="Response" response="FrictionContactConstraint"
                              rules="1 * FrictionContact?mu=0.01
                                     " />
@@ -38,7 +38,7 @@
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 		
 		<MechanicalObject name="ms" template="Rigid3d"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
-		<UniformMass totalmass="0.1" />
+		<UniformMass totalMass="0.1" />
 		<LCPForceFeedback activate="true" forceCoef="0.001" />
 
 		<Node name="Collision">
@@ -71,7 +71,7 @@
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
 		<BoxROI name="box_roi" box="-5 -5 -5  5 5 5" drawBoxes="true" />
 <!-- 		<RestShapeSpringsForceField stiffness="1e10" points="@box_roi.indices" />-->
-        <FixedConstraint indices="@box_roi.indices"/>
+        <FixedProjectiveConstraint indices="@box_roi.indices"/>
 
 <!-- 		<PrecomputedConstraintCorrection recompute="1"/> -->
 		<UncoupledConstraintCorrection compliance="0.005"/>
@@ -91,7 +91,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-10" threshold="1.0e-10" />
         <MechanicalObject template="Rigid3d" position="-12 0 0 0 0 0 1" />
         <UniformMass totalMass="1" name="mass" />
-        <FixedConstraint indices="0"/>
+        <FixedProjectiveConstraint indices="0"/>
 
 <!-- 		<PrecomputedConstraintCorrection recompute="1"/> -->
 <!--		<UncoupledConstraintCorrection compliance="0.005"/>-->

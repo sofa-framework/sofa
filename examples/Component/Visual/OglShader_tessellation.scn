@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [TaitSurfacePressureForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceFieldOptim] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [FastTriangularBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloatVariable OglShader] -->
+
+    <DefaultAnimationLoop/>
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <DiscreteIntersection />
+    <Node name="Liver">
+        <EulerImplicitSolver name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
+<!--        <CGLinearSolver template="CompressedRowSparseMatrixMat3x3" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />-->
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshOBJLoader name="loader" filename="mesh/sphere_02b.obj" scale="0.25 0.25 0.25" rotation="-90 0 0" triangulate="1" />
+        <TriangleSetTopologyContainer src="@loader" />
+        <MechanicalObject src="@loader" template="Vec3" name="DOFs" />
+        <TriangleSetTopologyModifier />
+        <TriangleSetGeometryAlgorithms />
+        <BoxConstraint box="-10 -10 -10  10 -5 10" />
+        <TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" restScale="0.97" method="large" />
+        <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
+        <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="100" printLog="1" />
+        <DiagonalMass name="mass" massDensity="1" printLog="0" />
+        <TriangleCollisionModel name="CM" />
+
+        <Node name="Visu">
+
+            <OglShader fileVertexShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileTessellationControlShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileTessellationEvaluationShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileGeometryShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileFragmentShaders="['shaders/tessellationPNTriangle.glsl']"
+                       printLog="1" />
+            <OglFloatVariable name="TessellationLevel" value="6" />
+            <OglModel name="VisualModel" src="@../loader" color="white" primitiveType="PATCHES" />
+            <IdentityMapping />
+        </Node>
+    </Node>
+</Node>

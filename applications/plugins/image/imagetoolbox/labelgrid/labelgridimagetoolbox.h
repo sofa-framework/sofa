@@ -586,7 +586,7 @@ public:
 
     bool changeResolutionSection()
     {
-        unsigned int resolution = d_reso.getValue().y();
+        const auto resy = d_reso.getValue().y();
 
         MapSection::iterator it = currentMap.begin();
         //std::cout << std::endl<<"========================="<<std::endl;
@@ -594,14 +594,14 @@ public:
         {
             VecCoord3 &vecIn = it->second;
             VecCoord3 vecOut;
-            VecReal vecDistance; vecDistance.assign(resolution,0);
+            VecReal vecDistance; vecDistance.assign(resy,0);
 
           //  std::cout << resolution << "###"<< vecIn.size() << std::endl;
 
 
             //calculate distance total;
             double distance = calculateDistance(vecIn);
-            VecReal vecDistError; vecDistError.assign(resolution,distance/(double)resolution);
+            VecReal vecDistError; vecDistError.assign(resy,distance/(double)resy);
 
             //std::cout << resolution << "##"<< vecIn.size() << std::endl;
 
@@ -610,8 +610,8 @@ public:
 
             //std::cout << resolution << "##"<< vecIn.size() << std::endl;
 
-            if(vecOut.size() != (resolution+1) )
-                std::cerr << "BUG: "<<__FILE__ <<":l" <<__LINE__<< " ->  resolution problem (" << vecOut.size() << "instead of" << resolution+1 << ")" << std::endl;
+            if(vecOut.size() != (resy+1) )
+                dmsg_error() << "BUG: "<<__FILE__ <<":l" <<__LINE__<< " ->  resolution problem (" << vecOut.size() << "instead of" << resy+1 << ")";
 
             calculateDistance(vecOut);
 

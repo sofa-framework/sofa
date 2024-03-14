@@ -1,0 +1,2 @@
+# this script uses tkinter which is not installed by default
+ignore "ArticulatedArm/robotGUI.py"

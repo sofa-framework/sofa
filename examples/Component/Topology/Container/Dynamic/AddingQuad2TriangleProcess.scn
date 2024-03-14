@@ -1,0 +1,53 @@
+<!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
+<Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    
+    <VisualStyle displayFlags="showBehaviorModels" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+    <Node name="Q">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshOBJLoader name="loader" filename="mesh/cubeQuad.obj" />
+        <MechanicalObject template="Vec3" src="@loader" name="Quads" showObject="1" />
+        <QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1" />
+        <QuadSetTopologyModifier name="Modifier" />
+        <QuadSetGeometryAlgorithms />
+        <TopologicalChangeProcessor listening="1" filename="AddingQuadsProcess.txt" />
+        <!--		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> -->
+        <DiagonalMass massDensity="0.5" />
+        <!--<FixedProjectiveConstraint indices="12 15" />-->
+        <BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
+        <Node name="T">
+            <TriangleSetTopologyContainer name="Triangle_topo" listening="1" />
+            <TriangleSetTopologyModifier name="Modifier" />
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTriangles="1" />
+            <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" />
+            <!--      		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		-->
+            <TriangleCollisionModel />
+            <!--			<Node name="Visu">
+				<OglModel name="Visual" color="red" />
+				<IdentityMapping input="@../../Quads" output="@Visual" />
+			</Node>	-->
+        </Node>
+    </Node>
+</Node>

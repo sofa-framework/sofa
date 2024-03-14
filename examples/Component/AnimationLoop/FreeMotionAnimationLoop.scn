@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<!--
+WARNING: this scene uses a PrecomputedConstraintCorrection which has a heavy initialization step. It may take some time
+to load the scene. To cache the result, set the recompute Data of PrecomputedConstraintCorrection to false.
+To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrowPhase located in the MultiThreading plugin.
+-->
+
+<Node name="root" dt="0.01" gravity="0 981 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [PrecomputedConstraintCorrection UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <VisualStyle displayFlags="showBehaviorModels"/>
+    <FreeMotionAnimationLoop parallelCollisionDetectionAndFreeMotion="true"/>
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000"/>
+    <CollisionPipeline depth="6" verbose="0" draw="0"/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <LocalMinDistance name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>
+    <CollisionResponse name="Response" response="FrictionContactConstraint"/>
+    <Node name="Torus1">
+        <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
+        <MeshTopology src="@loader"/>
+        <MechanicalObject src="@loader" scale="5.0"/>
+        <TriangleCollisionModel simulated="0" moving="0"/>
+        <LineCollisionModel simulated="0" moving="0"/>
+        <PointCollisionModel simulated="0" moving="0"/>
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+        <OglModel name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5 1.0"/>
+    </Node>
+    <Node name="TorusFEM">
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.001"/>
+        <CGLinearSolver iterations="15" threshold="1.0e-15" tolerance="1.0e-9"/>
+        <!--<SparseLDLSolver />-->
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh"/>
+        <MeshTopology src="@loader"/>
+        <MechanicalObject src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
+        <UniformMass totalMass="0.2"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="60000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
+        <!--<LinearSolverConstraintCorrection />-->
+        <PrecomputedConstraintCorrection rotations="true" recompute="true"/>
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_2" color="red" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0"/>
+            <BarycentricMapping input="@.." output="@Visual"/>
+        </Node>
+        <Node name="Surf2">
+            <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj"/>
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
+            <TriangleCollisionModel contactStiffness="0.1"/>
+            <LineCollisionModel/>
+            <PointCollisionModel/>
+            <BarycentricMapping/>
+        </Node>
+    </Node>
+    <Node name="Torus3">
+        <EulerImplicitSolver/>
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <MechanicalObject template="Rigid3" scale="5.0" dx="-25" dy="0"/>
+        <UniformMass filename="BehaviorModels/torus2.rigid" totalMass="0.02"/>
+        <UncoupledConstraintCorrection/>
+        <Node name="Visu">
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+            <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.25 1.0"/>
+            <RigidMapping input="@.." output="@Visual"/>
+        </Node>
+        <Node name="Surf2">
+            <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
+            <MeshTopology src="@loader"/>
+            <MechanicalObject src="@loader" scale="5.0"/>
+            <TriangleCollisionModel/>
+            <LineCollisionModel/>
+            <PointCollisionModel/>
+            <RigidMapping/>
+        </Node>
+    </Node>
+</Node>
