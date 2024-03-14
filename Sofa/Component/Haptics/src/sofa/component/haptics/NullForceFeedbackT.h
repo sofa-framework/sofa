@@ -43,7 +43,7 @@ public:
         fx = fy = fz = 0.0;
     }
     void computeForce(const  VecCoord &,  VecDeriv &) override {}
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
+    void computeWrench(const sofa::type::Transform<SReal> &, const sofa::type::SpatialVector<SReal> &, sofa::type::SpatialVector<SReal> &W_tool_world ) override {W_tool_world.clear();}
 };
 
 } // namespace sofa::component::haptics

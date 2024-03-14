@@ -6,12 +6,7 @@
 #Ref : Action in python https://www.python-engineer.com/posts/run-python-github-actions/
 
 
-#TEST steps:
-# - after 1st of December 2023, remove the temporary layer
-
 import os
-import sys
-import json
 from datetime import datetime, timedelta, date
 from python_graphql_client import GraphqlClient
 from dateutil.relativedelta import relativedelta
@@ -206,6 +201,8 @@ def make_github_closing_comment(discussion_id, discussion_author):
 """ % (message, discussion_id)
   return query
 
+
+
 def close_github_discussion(discussion_id):
 
   query = """
@@ -216,25 +213,10 @@ def close_github_discussion(discussion_id):
         }
       }
     }
-""" % (discussion_id)
-  return
-
-
-# ------- TO REMOVE !!!! ---------
-def temporary_github_closing_comment(discussion_id, discussion_author):
-  message = ":warning: :warning: :warning:<br>@"+str(discussion_author)+"<br>We are setting a new forum management policy: topics like this one, in which the last reply is more than 4 months old, will automatically be closed. Without further news in the coming weeks, our bot will proceed to automatic closure, thus keeping this forum clean and fresh :seedling: Thank you for your understanding"
-
-  query = """
-    mutation {
-      addDiscussionComment(input: {body: "%s", discussionId: "%s"}) {
-        comment {
-          id
-        }
-      }
-    }
-""" % (message, discussion_id)
+""" % discussion_id
   return query
-# --------------------------------
+
+
 
 
 
@@ -253,11 +235,11 @@ to_be_closed_discussion_author = result[5]
 #==========================================================
 # 2- do it using github API
 if(len(to_be_warned_discussion_id)!=len(to_be_warned_discussion_author)):
-  print('Error: size of both vectors number/author for discussions to be warned is different')
-  exit(1)
+    print('Error: size of both vectors number/author for discussions to be warned is different')
+    exit(1)
 if(len(to_be_closed_discussion_id)!=len(to_be_closed_discussion_author)):
-  print('Error: size of both vectors number/author for discussions to be closed is different')
-  exit(1)
+    print('Error: size of both vectors number/author for discussions to be closed is different')
+    exit(1)
 
 print("** Output lists **")
 print("******************")
@@ -277,17 +259,17 @@ print("******************")
 #==========================================================
 # WARNING step
 print("** WARNING step **")
+
 for index, discussion_id in enumerate(to_be_warned_discussion_id):
-  print("to_be_warned_discussion_number[index] = "+str(to_be_warned_discussion_number[index]))
-  print("to_be_warned_discussion_author[index] = "+str(to_be_warned_discussion_author[index]))
-  print("discussion_id = "+str(discussion_id))
-  # Warning comment
-  data = client.execute(
+    print("to_be_warned_discussion_number[index] = "+str(to_be_warned_discussion_number[index]))
+    print("to_be_warned_discussion_author[index] = "+str(to_be_warned_discussion_author[index]))
+    print("discussion_id = "+str(discussion_id))
+    # Warning comment
+    data = client.execute(
             query = make_github_warning_comment( discussion_id, to_be_warned_discussion_author[index] ),
             headers = {"Authorization": "Bearer {}".format(github_token)},
         )
-  print(data)
-
+    print(data)
 print("******************")
 print("******************")
 
@@ -295,46 +277,23 @@ print("******************")
 # CLOSING step
 print("** CLOSING step **")
 
-# ------- TO REMOVE !!!! ---------
-date_today = date.today()
-date_end_temporary_message = date.fromisoformat('2024-01-01')
-temporary_case = False
-
-if date_today > date_end_temporary_message:
-    temporary_case = False
-else:
-    temporary_case = True
-
-if temporary_case:
-  remaining_time = date_end_temporary_message-date_today
-  print(str(remaining_time)[:-9]+" days to go before end of temporary message")
-# --------------------------------
-
 for index, discussion_id in enumerate(to_be_closed_discussion_id):
-  print("to_be_closed_discussion_number[index] = "+str(to_be_closed_discussion_number[index]))
-  print("to_be_closed_discussion_author[index] = "+str(to_be_closed_discussion_author[index]))
-  print("discussion_id = "+str(discussion_id))
-  # ------- TO REMOVE !!!! ---------
-  if temporary_case:
+    print("to_be_closed_discussion_number[index] = "+str(to_be_closed_discussion_number[index]))
+    print("to_be_closed_discussion_author[index] = "+str(to_be_closed_discussion_author[index]))
+    print("discussion_id = "+str(discussion_id))
+
     # Closing comment
     data = client.execute(
-             query = temporary_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
-             headers = {"Authorization": "Bearer {}".format(github_token)},
-         )
+      query = make_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
+      headers = {"Authorization": "Bearer {}".format(github_token)},
+    )
     print(data)
-  else:
-  # --------------------------------
-    # Closing comment
-    data = client.execute(
-             query = make_github_closing_comment( discussion_id, to_be_closed_discussion_author[index] ),
-             headers = {"Authorization": "Bearer {}".format(github_token)},
-         )
-    print(data)
+
     # Close discussion
     data = client.execute(
-             query = close_github_discussion( discussion_id ),
-             headers = {"Authorization": "Bearer {}".format(github_token)},
-         )
+      query = close_github_discussion( discussion_id ),
+      headers = {"Authorization": "Bearer {}".format(github_token)},
+    )
     print(data)
 
 #==========================================================
