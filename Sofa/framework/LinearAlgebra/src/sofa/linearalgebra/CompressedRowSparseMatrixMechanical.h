@@ -27,8 +27,8 @@
 
 #include <sofa/linearalgebra/config.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixGeneric.h>
-
 #include <sofa/type/trait/is_vector.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::linearalgebra
 {

@@ -24,6 +24,7 @@
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 #include <sofa/component/linearsystem/matrixaccumulators/SparsityPatternLocalMappedMatrix.h>
 #include <sofa/component/linearsystem/matrixaccumulators/ConstantLocalMappedMatrix.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::linearsystem
 {
