@@ -493,7 +493,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool onlyVisible)
 {
     SOFA_UNUSED(params);
-    SOFA_UNUSED(onlyVisible);
+    if (!onlyVisible) return;
 
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
