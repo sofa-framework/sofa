@@ -31,13 +31,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::MeshTopologyLoader, "MeshTopologyLoader")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -150,13 +145,6 @@ bool MeshTopologyLoader::loadGmsh(const char *filename)
     return addMeshtoTopology();
 }
 
-bool MeshTopologyLoader::loadMesh(std::ifstream &file)
-{
-    SOFA_UNUSED(file);
-    return false;
-}
-
-
 bool MeshTopologyLoader::loadVtk(const char *filename)
 {
     m_mesh = helper::io::Mesh::Create("vtu", filename);
@@ -187,10 +175,9 @@ bool MeshTopologyLoader::load(const char *filename)
 	else
 	{
 		std::ifstream file(filename);
-		if (!file.good()) return false;
-		msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
-		fileLoaded = loadMesh(file);
-		file.close();
+        if (!file.good())
+            return false;
+        msg_error() << "This file format: " << filename << " is not be supported.";
 	}
        
     if(fileLoaded)
@@ -208,9 +195,9 @@ bool MeshTopologyLoader::load(const char *filename)
     return fileLoaded;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

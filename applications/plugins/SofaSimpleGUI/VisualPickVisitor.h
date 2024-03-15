@@ -3,9 +3,8 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/type/vector.h>
 
-namespace sofa
-{
-namespace simplegui
+
+namespace sofa::simplegui
 {
 
 /**
@@ -39,6 +38,6 @@ private:
 
 };
 
-}}
+}
 
 #endif // SOFA_SIMPLEGUI_VisualPickVisitor_H

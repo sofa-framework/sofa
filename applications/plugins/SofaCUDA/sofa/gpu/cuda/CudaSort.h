@@ -31,11 +31,8 @@
 #include <algorithm> // for std::sort
 #include <vector>
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -115,9 +112,9 @@ static inline void CudaSort(CudaVector<TKey>* keys, CudaVector<TData>* data, uns
 
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif
 
 #endif

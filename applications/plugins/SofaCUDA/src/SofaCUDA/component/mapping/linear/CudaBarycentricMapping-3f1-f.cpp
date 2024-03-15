@@ -27,10 +27,8 @@
 namespace sofa
 {
 
-namespace component
-{
 
-namespace mapping
+namespace component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -43,15 +41,10 @@ using namespace sofa::gpu::cuda;
 // instanciations involving both CudaVec3f1Types and Vec3fTypes
 
 
+} // namespace component::mapping
 
-} // namespace mapping
 
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -62,8 +55,7 @@ using namespace sofa::component::mapping::linear;
 int BarycentricMappingCudaClass_3f1_f = core::RegisterObject("Supports GPU-side computations using CUDA")
         ;
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 } // namespace sofa

@@ -25,13 +25,8 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 ///////////////
@@ -302,8 +297,7 @@ extern template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
 
 #endif
 
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
 
 #endif

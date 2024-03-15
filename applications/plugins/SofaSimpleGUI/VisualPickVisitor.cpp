@@ -9,10 +9,8 @@ using std::endl;
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/Shader.h>
 
-namespace sofa
-{
 
-namespace simplegui
+namespace sofa::simplegui
 {
 
 VisualPickVisitor::VisualPickVisitor(core::visual::VisualParams* params)
@@ -135,6 +133,6 @@ void VisualPickVisitor::processVisualModel(simulation::Node* node, core::visual:
 }
 
 
-}}
+}
 
 

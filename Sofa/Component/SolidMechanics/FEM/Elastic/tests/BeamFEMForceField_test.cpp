@@ -25,7 +25,7 @@
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>

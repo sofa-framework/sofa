@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SceneCreator VERSION 0.1)
 
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.SimpleApi REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
@@ -21,7 +22,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.Component.StateContainer)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.SimpleApi Sofa.Component.StateContainer)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
 

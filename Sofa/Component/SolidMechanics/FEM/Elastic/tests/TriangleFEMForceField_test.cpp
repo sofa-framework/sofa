@@ -26,7 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>

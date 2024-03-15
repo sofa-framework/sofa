@@ -30,13 +30,7 @@ using std::endl ;
 using std::string ;
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 Message::TypeSet Message::AnyTypes = {Type::Info,Type::Advice,Type::Deprecated,
@@ -135,6 +129,4 @@ SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
 }
 
 
-} // logging
-} // helper
-} // sofa
+}

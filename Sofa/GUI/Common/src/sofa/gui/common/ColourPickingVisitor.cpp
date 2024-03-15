@@ -99,23 +99,6 @@ simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation:
     return RESULT_CONTINUE;
 }
 
-void decodeCollisionElement(const sofa::type::Vec4f& colour, BodyPicked& body)
-{
-    decodeCollisionElement(sofa::type::RGBAColor::fromVec4(colour), body);
-}
-
-void decodePosition(BodyPicked& body, const sofa::type::Vec4f& colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
-        const unsigned int index)
-{
-    decodePosition(body, sofa::type::RGBAColor::fromVec4(colour), model, index);
-}
-
-void decodePosition(BodyPicked& body, const sofa::type::Vec4f& colour, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
-        const unsigned int index)
-{
-    decodePosition(body, sofa::type::RGBAColor::fromVec4(colour), model, index);
-}
-
 void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core::CollisionModel* o)
 {
     using namespace core::objectmodel;

@@ -21,24 +21,13 @@
 ******************************************************************************/
 #include <sofa/helper/system/thread/CircularQueue.inl>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
-{
+namespace sofa::helper::system::thread
+{} // namespace sofa::helper::system::thread
 
 
-} // namespace thread
 
-} // namespace system
 
-} // namespace helper
 
-} // namespace sofa
+
 

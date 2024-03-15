@@ -125,11 +125,8 @@ private:
 #endif
 #endif
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -236,6 +233,6 @@ void displayStack(const char * /*name*/)
 #endif
 
 
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+

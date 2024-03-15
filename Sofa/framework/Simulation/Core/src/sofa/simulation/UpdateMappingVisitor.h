@@ -24,10 +24,8 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /// propagating position and velocity through non-mechanical mappings
@@ -50,8 +48,7 @@ public:
     bool isThreadSafe() const override { return true; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

@@ -6,5 +6,4 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
     <CollisionResponse  name="Response" response="PenalityContactForceField"/>
-    <DefaultCollisionGroupManager  name="Group"/>
 </Node>

@@ -25,10 +25,8 @@
 #include <map>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class MatrixRow, class VecDeriv>
@@ -736,9 +734,7 @@ public:
 };
 
 
+} // namespace sofa::defaulttype
 
-} // namespace defaulttype
-
-} // namespace sofa
 
 #endif // SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H

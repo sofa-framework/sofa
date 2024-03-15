@@ -41,7 +41,11 @@ sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(TinyXML2 REQUIRED)
 
-sofa_install_libraries(PATHS ${TinyXML2_LIBRARY})
+if(UNIX AND NOT APPLE)
+    sofa_install_libraries(PATHS ${TinyXML2_LIBRARY})
+else()
+    sofa_install_libraries(TARGETS tinyxml2::tinyxml2)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.Simulation.Core)

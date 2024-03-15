@@ -26,7 +26,7 @@ using sofa::helper::BackTrace ;
 #include <sofa/gl/component/rendering3d/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace light_test
 {

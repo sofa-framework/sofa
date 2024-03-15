@@ -31,24 +31,17 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsCudaVisualModel;
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
-namespace component
-{
-
-namespace visualmodel
+namespace component::visualmodel
 {
 
 template <class TDataTypes>
@@ -151,9 +144,8 @@ protected:
     SingleLink<CudaVisualModel<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> topology;
 };
 
-} // namespace visualmodel
+} // namespace component::visualmodel
 
-} // namespace component
 
 } // namespace sofa
 

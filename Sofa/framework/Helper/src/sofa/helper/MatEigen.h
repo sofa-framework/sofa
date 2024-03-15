@@ -29,10 +29,7 @@
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 template <Size NumRows, Size NumCols, class Real>
@@ -73,12 +70,6 @@ Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
     return evec;
 }
 
-
-
-} // namespace defaulttype
-
-} // namespace sofa
-
-// iostream
+}
 
 #endif

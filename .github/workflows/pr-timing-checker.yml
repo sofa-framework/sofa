@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Check Labels and Age
         id: check_labels_and_comment
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

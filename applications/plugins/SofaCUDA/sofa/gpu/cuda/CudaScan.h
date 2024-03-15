@@ -31,11 +31,8 @@
 #include <functional>
 #include <numeric> // for std::partial_sum
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -96,9 +93,9 @@ static inline void CudaScan(const CudaVector<TData>* input, CudaVector<TData>* o
 }
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif
 
 #endif

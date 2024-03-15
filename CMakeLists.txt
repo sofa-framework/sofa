@@ -37,7 +37,7 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to allow some dependencies such as cxxopts to be fetched by cmake if
 # the package is not found
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
-  List of dependencies that can be fetched: cxxopts, gtest" ON)
+  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
 
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
@@ -91,6 +91,7 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
@@ -172,7 +173,6 @@ add_subdirectory(extlibs)
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
-    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 endif()
 sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)

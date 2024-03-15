@@ -35,7 +35,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa::testing
 {

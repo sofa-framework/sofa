@@ -36,13 +36,8 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 #if defined(WIN32)
@@ -217,9 +212,9 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
     else return std::string("");
 }
 
-} // namespace system
+} // namespace sofa::helper::system
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

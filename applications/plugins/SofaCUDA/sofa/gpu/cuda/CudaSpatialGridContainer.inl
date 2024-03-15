@@ -42,10 +42,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -57,14 +55,10 @@ extern "C"
 //void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace container
+namespace component::container
 {
 
 using namespace sofa::helper;
@@ -334,9 +328,8 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace container
+} // namespace component::container
 
-} // namespace component
 
 } // namespace sofa
 

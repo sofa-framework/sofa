@@ -48,9 +48,8 @@
 
 using sofa::helper::system::FileSystem;
 
-namespace sofa
-{
-namespace helper
+
+namespace sofa::helper
 {
 
 std::wstring Utils::widenString(const std::string& s)
@@ -284,6 +283,6 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
 }
 
 
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper
+
 

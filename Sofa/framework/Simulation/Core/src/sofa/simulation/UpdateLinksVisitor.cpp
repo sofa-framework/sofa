@@ -22,10 +22,8 @@
 #include <sofa/simulation/UpdateLinksVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -50,7 +48,7 @@ void UpdateLinksVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

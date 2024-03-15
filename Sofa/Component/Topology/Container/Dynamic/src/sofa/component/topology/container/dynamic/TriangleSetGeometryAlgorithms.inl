@@ -944,44 +944,27 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         const typename DataTypes::Coord& p3,
         const typename DataTypes::Coord& p4)
 {
-    Coord tri1[3], tri2[3];
+    // use formula with angles
+    // A----B     p1----p2
+    //   \   \     \     \
+    //    D----C    p4----p3
+    // if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+    sofa::type::Vec<3, Real> AB = { p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2] };
+    sofa::type::Vec<3, Real> AD = { p4[0] - p1[0], p4[1] - p1[1], p4[2] - p1[2] };
+    
+    sofa::type::Vec<3, Real> CB = { p2[0] - p3[0], p2[1] - p3[1], p2[2] - p3[2] };
+    sofa::type::Vec<3, Real> CD = { p4[0] - p3[0], p4[1] - p3[1], p4[2] - p3[2] };
 
-    tri1[0] = p1; tri1[1] = p2; tri1[2] = p3;
-    tri2[0] = p3; tri2[1] = p4; tri2[2] = p1;
+    AB.normalize();
+    AD.normalize();
+    Real alpha = acos(dot(AB, AD));
 
+    CB.normalize();
+    CD.normalize();
+    Real beta = acos(CB * CD);
+    const bool isDelau = (alpha + beta <= M_PI);
 
-    //Test if one vertex is inside the triangle formed by the 3 others
-    Coord CommonEdge[2], oppositeVertices[2];
-
-    oppositeVertices[0] = p1; sofa::type::Vec<3,Real> A; A = p1;
-    CommonEdge[0] = p2;       sofa::type::Vec<3,Real> C; C = p2;
-    CommonEdge[1] = p4;       sofa::type::Vec<3,Real> B; B = p3;
-    oppositeVertices[1] = p3; sofa::type::Vec<3,Real> D; D = p4;
-
-    bool intersected = false;
-
-    Coord inter = this->compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
-
-    if (intersected)
-    {
-
-        sofa::type::Vec<3,Real> X; DataTypes::get(X[0], X[1], X[2], inter);
-
-        Real ABAX = (A - B)*(A - X);
-        Real CDCX = (C - D)*(C - X);
-
-        if ( (ABAX < 0) || ((A - X).norm2() > (A - B).norm2()) )
-            return true;
-        else if (	(CDCX < 0) || ((C - X).norm2() > (C - D).norm2()) )
-            return false;
-    }
-
-    sofa::type::Vec<3,Real> G = (A+B+C)/3.0;
-
-    if((G-C)*(G-C) <= (G-D)*(G-D))
-        return true;
-    else
-        return false;
+    return isDelau;
 }
 
 
@@ -3625,42 +3608,44 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 int vertxInTriangle = m_container->getVertexIndexInTriangle(tri, theEdgeFirst[cornerInEdge1]);
 
                 PointID vertexOrder[5]; //corner, p1, tri+1, tri+2, p2
-                vertexOrder[0] = theEdgeFirst[cornerInEdge1]; vertexOrder[2] = tri[(vertxInTriangle + 1) % 3]; vertexOrder[3] = tri[(vertxInTriangle + 2) % 3];
                 Coord posOrder[4];
 
+                vertexOrder[0] = theEdgeFirst[cornerInEdge1]; 
                 if (tri[(vertxInTriangle + 1) % 3] == theEdgeFirst[(cornerInEdge1 + 1) % 2])
                 {
-                    vertexOrder[1] = p1; vertexOrder[4] = p2;
-                    posOrder[0] = pos1; posOrder[3] = pos2;
-                    posOrder[1] = this->getPointPosition(tri[(vertxInTriangle + 1) % 3]);
-                    posOrder[2] = this->getPointPosition(tri[(vertxInTriangle + 2) % 3]);
+                    posOrder[0] = pos1; vertexOrder[1] = p1;
+                    posOrder[3] = pos2; vertexOrder[4] = p2;
                 }
                 else
                 {
-                    vertexOrder[1] = p2; vertexOrder[4] = p1;
-                    posOrder[0] = pos2; posOrder[3] = pos1;
-                    posOrder[1] = this->getPointPosition(tri[(vertxInTriangle + 2) % 3]);
-                    posOrder[2] = this->getPointPosition(tri[(vertxInTriangle + 1) % 3]);
+                    posOrder[0] = pos2; vertexOrder[1] = p2;
+                    posOrder[3] = pos1; vertexOrder[4] = p1;
                 }
 
+                posOrder[1] = this->getPointPosition(tri[(vertxInTriangle + 1) % 3]);
+                posOrder[2] = this->getPointPosition(tri[(vertxInTriangle + 2) % 3]);
+                vertexOrder[2] = tri[(vertxInTriangle + 1) % 3];
+                vertexOrder[3] = tri[(vertxInTriangle + 2) % 3];
+
+
                 // Create the triangle around corner
-                new_triangles.push_back(Triangle(vertexOrder[0], vertexOrder[1], vertexOrder[4]));
+                new_triangles.emplace_back(vertexOrder[0], vertexOrder[1], vertexOrder[4]);
                 new_triangles_id.push_back(next_triangle++);
 
 
                 // Triangularize the remaining quad according to the delaunay criteria
                 if (isQuadDeulaunayOriented(posOrder[0], posOrder[1], posOrder[2], posOrder[3]))
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[3]));
+                    new_triangles.emplace_back(vertexOrder[1], vertexOrder[2], vertexOrder[4]);
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[4], vertexOrder[1], vertexOrder[3]));
+                    new_triangles.emplace_back(vertexOrder[2], vertexOrder[3], vertexOrder[4]);
                     new_triangles_id.push_back(next_triangle++);
                 }
                 else
                 {
-                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[4]));
+                    new_triangles.emplace_back(vertexOrder[1], vertexOrder[2], vertexOrder[3]);
                     new_triangles_id.push_back(next_triangle++);
-                    new_triangles.push_back(Triangle(vertexOrder[2], vertexOrder[3], vertexOrder[4]));
+                    new_triangles.emplace_back(vertexOrder[4], vertexOrder[1], vertexOrder[3]);
                     new_triangles_id.push_back(next_triangle++);
                 }
 
@@ -3694,16 +3679,16 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
                 // create two triangles linking p with the corner
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[edgeInTriangle], theTriangleSecond[(edgeInTriangle + 1) % 3]));
+                new_triangles.emplace_back(p2, theTriangleSecond[edgeInTriangle], theTriangleSecond[(edgeInTriangle + 1) % 3]);
                 new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[(edgeInTriangle + 2) % 3], theTriangleSecond[edgeInTriangle]));
+                new_triangles.emplace_back(p2, theTriangleSecond[(edgeInTriangle + 2) % 3], theTriangleSecond[edgeInTriangle]);
                 new_triangles_id.push_back(next_triangle++);
 
 
                 // create two triangles linking p with the splitted edge
-                new_triangles.push_back(Triangle(p2, theTriangleSecond[(edgeInTriangle + 1) % 3], p1));
+                new_triangles.emplace_back(p2, theTriangleSecond[(edgeInTriangle + 1) % 3], p1);
                 new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p2, p1, theTriangleSecond[(edgeInTriangle + 2) % 3]));
+                new_triangles.emplace_back(p2, p1, theTriangleSecond[(edgeInTriangle + 2) % 3]);
                 new_triangles_id.push_back(next_triangle++);
 
                 removed_triangles.push_back(triangleIDSecond);

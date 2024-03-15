@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/loader/SceneLoader.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 using namespace sofa::defaulttype;
@@ -57,9 +52,9 @@ bool SceneLoader::canLoad()
     return BaseLoader::canLoad();
 }
 
-} // namespace loader
+} // namespace sofa::core::loader
 
-} // namespace core
 
-} // namespace sofa
+
+
 

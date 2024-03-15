@@ -34,16 +34,8 @@
  * Time measurement *
  ********************/
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 #ifdef WIN32
@@ -81,12 +73,7 @@ protected:
     static ctime_t computeTicksPerSec();
 };
 
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
-
-} // namespace helper
-
-} // namespace sofa
 
 #endif

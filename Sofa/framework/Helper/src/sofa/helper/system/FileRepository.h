@@ -30,13 +30,8 @@
 #include <map>
 #include <list>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 /// Helper class to find files in a list of directories.
@@ -191,10 +186,7 @@ protected:
 extern SOFA_HELPER_API FileRepository DataRepository; ///< Default repository
 extern SOFA_HELPER_API FileRepository PluginRepository; ///< Default repository
 
-} // namespace system
+} // namespace sofa::helper::system
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

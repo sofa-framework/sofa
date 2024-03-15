@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/gl/component/shader/config.h>
 
-#include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/gl/component/shader/Light.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/type/Mat.h>

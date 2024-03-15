@@ -99,9 +99,8 @@ void VTKExporter::init()
 
 void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
 {
-    for (unsigned int i=0 ; i<strData.size() ; i++)
+    for (auto str : strData)
     {
-        std::string str = strData[i];
         std::string name, objectName, dataFieldName;
         std::string::size_type loc = str.find_first_of('=');
         if (loc != std::string::npos)
