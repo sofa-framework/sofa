@@ -72,34 +72,6 @@ public:
 protected:
 
     friend class Task;
-
-
-
-
-
-public:
-
-    /**
-     * Deprecated API. Use TaskSchedulerFactory instead.
-     */
-    ///@{
-
-        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* create(const char* name = "");
-
-        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
-        typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
-
-        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
-        static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
-
-        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* getInstance();
-
-        SOFA_ATTRIBUTE_DISABLED_STATIC_TASKSCHEDULER()
-        static std::string getCurrentName();
-
-    ///@}
 };
 
 } // namespace sofa::simulation

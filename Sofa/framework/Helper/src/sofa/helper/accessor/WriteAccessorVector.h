@@ -71,7 +71,6 @@ public:
 
     ////// Modifiers //////    
     void clear() { vref->clear(); }
-    SOFA_WRITEACCESSOR_RESIZE_DISABLED() void resize(Size s, bool) { vref->resize(s); }
     void resize(Size s) { vref->resize(s); }
     
     iterator insert(const_iterator pos, const T& value) { return vref->insert(pos, value); }

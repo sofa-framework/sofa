@@ -220,15 +220,6 @@ class DeprecatedAndRemoved {};
         "This type member " sofa_tostring(type) " is now deprecated. To update your code please replace it with " sofa_tostring(newtype)) \
         typedef newtype type
 
-#define SOFA_ATTRIBUTE_DISABLED__VECTOR(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12 (PR#3299)", "v23.06", \
-        "Long aliases for VectorX will be removed. " msg)
-
-#define SOFA_ATTRIBUTE_DISABLED__READX_PARAMS(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12 (PR#3304)", "v23.06", \
-        "Calling ReadX with SingleLink's argument will be removed." msg)
 
 /**********************************************/
 
