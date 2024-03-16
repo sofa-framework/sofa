@@ -20,16 +20,49 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/linearalgebra/SparseMatrixProduct.inl>
+#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/TaskScheduler.h>
 
-#include <sofa/linearalgebra/SparseMatrixProduct.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-namespace sofa::linearalgebra
+namespace sofa::simulation
 {
 
-#if !defined(SOFA_LINEARAGEBRA_SPARSEMATRIXPRODUCT_COMPRESSEDROWSPARSEMATRIX_CPP)
-    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<CompressedRowSparseMatrix<float> >;
-    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<CompressedRowSparseMatrix<double> >;
-#endif
+template<class Lhs, class Rhs, class ResultType>
+class ParallelSparseMatrixProduct
+    : public linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>
+{
+public:
+    using linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>::SparseMatrixProduct;
+    TaskScheduler* taskScheduler { nullptr };
 
-} //namespace sofa::linearalgebra
+    void computeProductFromIntersection() override
+    {
+        assert(this->m_intersectionAB.intersection.size() == this->m_productResult.nonZeros());
+        assert(taskScheduler);
+
+        auto* lhs_ptr = this->m_lhs->valuePtr();
+        auto* rhs_ptr = this->m_rhs->valuePtr();
+        auto* product_ptr = this->m_productResult.valuePtr();
+
+        parallelForEachRange(*taskScheduler,
+            this->m_intersectionAB.intersection.begin(), this->m_intersectionAB.intersection.end(),
+            [lhs_ptr, rhs_ptr, product_ptr, this](const auto& range)
+            {
+                auto i = std::distance(this->m_intersectionAB.intersection.begin(), range.start);
+                auto* p = product_ptr + i;
+
+                for (auto it = range.start; it != range.end; ++it)
+                {
+                    auto& value = *p++;
+                    value = 0;
+                    for (const auto& [lhsIndex, rhsIndex] : *it)
+                    {
+                        value += lhs_ptr[lhsIndex] * rhs_ptr[rhsIndex];
+                    }
+                }
+            });
+    }
+};
+
+}

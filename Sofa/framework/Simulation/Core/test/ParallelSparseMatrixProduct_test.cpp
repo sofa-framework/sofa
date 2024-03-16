@@ -19,16 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerRegistry.h>
 #include <Sofa.LinearAlgebra.Testing/SparseMatrixProduct_test.h>
-#include <sofa/linearalgebra/SparseMatrixProduct.inl>
+#include <sofa/simulation/ParallelSparseMatrixProduct.h>
 
 namespace sofa
 {
 
 using namespace sofa::linearalgebra::testing;
 
+template<class Lhs, class Rhs, class ResultType>
+struct SparseMatrixProductInit<
+    sofa::simulation::ParallelSparseMatrixProduct<Lhs, Rhs, ResultType>>
+{
+    static void init(sofa::simulation::ParallelSparseMatrixProduct<Lhs, Rhs, ResultType>& product)
+    {
+        product.taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+        product.taskScheduler->init();
+    };
+
+    static void cleanup(sofa::simulation::ParallelSparseMatrixProduct<Lhs, Rhs, ResultType>& product)
+    {
+        // simulation::MainTaskSchedulerRegistry::clear();
+    }
+};
+
 #define DEFINE_TEST_FOR_TYPE(scalar, StorageLHS, StorageRHS, StorageResult)\
-    sofa::linearalgebra::SparseMatrixProduct<\
+    sofa::simulation::ParallelSparseMatrixProduct<\
         Eigen::SparseMatrix<scalar, StorageLHS>,\
         Eigen::SparseMatrix<scalar, StorageRHS>,\
         Eigen::SparseMatrix<scalar, StorageResult>\
@@ -52,7 +70,7 @@ using TestSparseMatrixProductImplementations = ::testing::Types<
 #undef DEFINE_TEST_FOR_TYPE
 
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    TestSparseMatrixProduct,
+    TestParallelSparseMatrixProduct,
     TestSparseMatrixProduct,
     TestSparseMatrixProductImplementations
 );

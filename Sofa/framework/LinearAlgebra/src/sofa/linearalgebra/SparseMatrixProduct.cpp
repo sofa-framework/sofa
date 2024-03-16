@@ -19,25 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_LINEARAGEBRA_SPARSEMATRIXPRODUCT_COMPRESSEDROWSPARSEMATRIX_CPP
-#include <sofa/linearalgebra/SparseMatrixProduct[CompressedRowSparseMatrix].h>
+#define SOFA_LINEARALGEBRA_SPARSEMATRIXPRODUCT_DEFINITION
 
 namespace sofa::linearalgebra
 {
-
-template <>
-void SparseMatrixProduct<CompressedRowSparseMatrix<float> >::computeProductFromIntersection()
-{
-    matrixA->mul(matrixC, *matrixB);
 }
-
-template <>
-void SparseMatrixProduct<CompressedRowSparseMatrix<double> >::computeProductFromIntersection()
-{
-    matrixA->mul(matrixC, *matrixB);
-}
-
-template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<CompressedRowSparseMatrix<float> >;
-template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<CompressedRowSparseMatrix<double> >;
-
-} //namespace sofa::linearalgebra
