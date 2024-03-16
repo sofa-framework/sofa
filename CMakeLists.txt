@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 23)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 24)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -37,7 +37,7 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to allow some dependencies such as cxxopts to be fetched by cmake if
 # the package is not found
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
-  List of dependencies that can be fetched: cxxopts, gtest" ON)
+  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
 
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
@@ -91,6 +91,7 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )

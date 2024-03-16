@@ -114,6 +114,7 @@ check-all-deps() {
            echo "$dependencies" | grep --quiet "/libicu"   ||
            echo "$dependencies" | grep --quiet "/libGLEW"  ||
            echo "$dependencies" | grep --quiet "/libjpeg"  ||
+           echo "$dependencies" | grep --quiet "/libtinyxml2"  ||
            echo "$dependencies" | grep --quiet "/libpng"   ; then
             is_fixup_needed="true"
         fi
@@ -134,6 +135,8 @@ check-all-deps() {
                 libname="$libjpeg"
             elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
                 libname="$libpng"
+            elif libtinyxml2="$(echo $dep | egrep -o "/libtinyxml2[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtinyxml2" ]; then
+                libname="$libtinyxml2"
             elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
                 libname="$libtiff"
             else

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Sofa.LinearAlgebra.Testing/SparseMatrixProduct_test.h>
+#pragma once
 #include <sofa/linearalgebra/SparseMatrixProduct.inl>
+#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/TaskScheduler.h>
 
-namespace sofa
+
+namespace sofa::simulation
 {
 
-using namespace sofa::linearalgebra::testing;
+template<class Lhs, class Rhs, class ResultType>
+class ParallelSparseMatrixProduct
+    : public linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>
+{
+public:
+    using linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>::SparseMatrixProduct;
+    TaskScheduler* taskScheduler { nullptr };
 
-#define DEFINE_TEST_FOR_TYPE(scalar, StorageLHS, StorageRHS, StorageResult)\
-    sofa::linearalgebra::SparseMatrixProduct<\
-        Eigen::SparseMatrix<scalar, StorageLHS>,\
-        Eigen::SparseMatrix<scalar, StorageRHS>,\
-        Eigen::SparseMatrix<scalar, StorageResult>\
-    >
-#define DEFINE_TEST_FOR_STORAGE(StorageLHS, StorageRHS, StorageResult)\
-    DEFINE_TEST_FOR_TYPE(float, StorageLHS, StorageRHS, StorageResult),\
-    DEFINE_TEST_FOR_TYPE(double, StorageLHS, StorageRHS, StorageResult)
+    void computeProductFromIntersection() override
+    {
+        assert(this->m_intersectionAB.intersection.size() == this->m_productResult.nonZeros());
+        assert(taskScheduler);
 
-using TestSparseMatrixProductImplementations = ::testing::Types<
-    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::ColMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::ColMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::ColMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::ColMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::RowMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::RowMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::RowMajor),
-    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::RowMajor)
->;
+        auto* lhs_ptr = this->m_lhs->valuePtr();
+        auto* rhs_ptr = this->m_rhs->valuePtr();
+        auto* product_ptr = this->m_productResult.valuePtr();
 
-#undef DEFINE_TEST_FOR_STORAGE
-#undef DEFINE_TEST_FOR_TYPE
+        parallelForEachRange(*taskScheduler,
+            this->m_intersectionAB.intersection.begin(), this->m_intersectionAB.intersection.end(),
+            [lhs_ptr, rhs_ptr, product_ptr, this](const auto& range)
+            {
+                auto i = std::distance(this->m_intersectionAB.intersection.begin(), range.start);
+                auto* p = product_ptr + i;
 
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    TestSparseMatrixProduct,
-    TestSparseMatrixProduct,
-    TestSparseMatrixProductImplementations
-);
+                for (auto it = range.start; it != range.end; ++it)
+                {
+                    auto& value = *p++;
+                    value = 0;
+                    for (const auto& [lhsIndex, rhsIndex] : *it)
+                    {
+                        value += lhs_ptr[lhsIndex] * rhs_ptr[rhsIndex];
+                    }
+                }
+            });
+    }
+};
 
 }

@@ -37,12 +37,12 @@ void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPi
 
 // compat
 SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f& colour, sofa::gui::component::performer::BodyPicked& body ) = delete;
+void decodeCollisionElement( const sofa::type::Vec4f& colour, sofa::gui::component::performer::BodyPicked& body ) = delete;
 SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index) = delete;
 SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f& colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index) = delete;
 
 

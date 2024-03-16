@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,36 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_LINEARALGEBRA_SPARSEMATRIXPRODUCT_DEFINITION
 
-#include <sofa/component/haptics/config.h>
-#include <sofa/component/haptics/ForceFeedback.h>
-#include <sofa/simulation/fwd.h>
-
-namespace sofa::component::haptics
+namespace sofa::linearalgebra
 {
-
-template<class TDataTypes>
-class SOFA_COMPONENT_HAPTICS_API MechanicalStateForceFeedback : public ForceFeedback
-{
-
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),ForceFeedback);
-
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
-public:
-    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
-
-    void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
-    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
-    void computeWrench(const sofa::type::Transform<SReal> &, const sofa::type::SpatialVector<SReal> &, sofa::type::SpatialVector<SReal> & ) override = 0;
-    void setReferencePosition(sofa::type::Transform<SReal>& /*referencePosition*/) override {}
-
-protected:
-    MechanicalStateForceFeedback(void) {}
-};
-
-} // namespace sofa::component::haptics
+}

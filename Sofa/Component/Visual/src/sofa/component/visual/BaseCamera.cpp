@@ -29,7 +29,7 @@
 using Mat3 = sofa::type::Mat3x3;
 using Mat4 = sofa::type::Mat4x4;
 
-#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/type/Transform.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 #include <sofa/helper/rmath.h>
@@ -369,7 +369,7 @@ type::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
 
 void BaseCamera::getModelViewMatrix(double mat[16])
 {
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
     Mat3 rot = world_H_cam.inversed().getRotationMatrix();
 
     //rotation
@@ -392,7 +392,7 @@ void BaseCamera::getModelViewMatrix(double mat[16])
 
 void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
 {
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
@@ -548,10 +548,10 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
     rotation.quatToAxis(tempAxis, tempAngle);
     const Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
 
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(positionCam, orientationCam);
-    const defaulttype::SolidTypes<SReal>::Transform world_H_pivot(point, Quat());
-    const defaulttype::SolidTypes<SReal>::Transform pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
-    const defaulttype::SolidTypes<SReal>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
+    const sofa::type::Transform<SReal> world_H_cam(positionCam, orientationCam);
+    const sofa::type::Transform<SReal> world_H_pivot(point, Quat());
+    const sofa::type::Transform<SReal> pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
+    const sofa::type::Transform<SReal> camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
     //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
@@ -662,7 +662,7 @@ void BaseCamera::computeZ()
     if (p_computeZClip.getValue())
     {
         //modelview transform
-        defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+        sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
 
         //double distanceCamToCenter = fabs((world_H_cam.inversed().projectPoint(sceneCenter))[2]);
         const double distanceCamToCenter = (p_position.getValue() - sceneCenter).norm();
