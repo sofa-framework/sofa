@@ -23,55 +23,7 @@
 #define SOFA_SIMULATION_TREE_CACTUSSTACKSTORAGE_H
 
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/LocalStorage.h>
-#include <stack>
 
-SOFA_HEADER_DEPRECATED_LOCALSTORAGE()
-
-
-namespace sofa::simulation
-{
-
-
-/// Cactus Stack implementation of LocalStorage.
-/// See http://www.nist.gov/dads/HTML/cactusstack.html
-SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
-class SOFA_SIMULATION_CORE_API CactusStackStorage : public simulation::LocalStorage
-{
-protected:
-    CactusStackStorage* up; ///< This point to the parent stack
-    CactusStackStorage* down; ///< This point to the *array* of child stacks
-    std::stack<void*> stack;
-public:
-    CactusStackStorage()
-        : up(nullptr), down(nullptr)
-    {
-    }
-    void setParent(CactusStackStorage* parent)
-    {
-        up = parent;
-    }
-    void setChildren(CactusStackStorage* children)
-    {
-        down = children;
-    }
-    CactusStackStorage* getParent()
-    {
-        return up;
-    }
-    CactusStackStorage* getChildren()
-    {
-        return down;
-    }
-
-    void push(void* data) override;
-    void* pop() override;
-    void* top() const override;
-    bool empty() const override;
-    virtual const char* getClassName() const { return "CactusStackStorage"; }
-};
-
-} // namespace sofa::simulation
-
+SOFA_HEADER_DISABLED_LOCALSTORAGE()
 
 #endif

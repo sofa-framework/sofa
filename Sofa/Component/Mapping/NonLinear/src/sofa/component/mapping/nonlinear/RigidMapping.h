@@ -112,8 +112,6 @@ public:
     Data<bool> d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
     SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_globalToLocalCoords instead") DeprecatedAndRemoved globalToLocalCoords;
 
-    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_geometricStiffness instead") DeprecatedAndRemoved geometricStiffness;
-
 protected:
     RigidMapping();
     virtual ~RigidMapping() {}

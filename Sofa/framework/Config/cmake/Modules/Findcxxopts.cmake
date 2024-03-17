@@ -28,12 +28,12 @@ macro(_cxxopts_check_version)
   set(cxxopts_VERSION_OK TRUE)
   if(${cxxopts_VERSION} VERSION_LESS ${cxxopts_FIND_VERSION})
     set(cxxopts_VERSION_OK FALSE)
-    message(SEND_ERROR "cxxopts version ${cxxopts_VERSION} found in ${cxxopts_INCLUDE_DIR}/cxxopts.hpp, "
+    message(WARNING "cxxopts version ${cxxopts_VERSION} found in ${cxxopts_INCLUDE_DIR}/cxxopts.hpp, "
                         "but at least version ${cxxopts_FIND_VERSION} is required")
   endif()
   if(${cxxopts_FIND_VERSION_EXACT} AND NOT ${cxxopts_VERSION} VERSION_EQUAL ${cxxopts_FIND_VERSION})
     set(cxxopts_VERSION_OK FALSE)
-    message(SEND_ERROR "cxxopts version ${cxxopts_VERSION} found in ${cxxopts_INCLUDE_DIR}, "
+    message(WARNING "cxxopts version ${cxxopts_VERSION} found in ${cxxopts_INCLUDE_DIR}, "
                         "but exact version ${cxxopts_FIND_VERSION_EXACT} is required")
   endif()
 endmacro()
@@ -48,8 +48,12 @@ if(NOT TARGET cxxopts::cxxopts)
   endif()
 
   if(cxxopts_INCLUDE_DIR)
-    _cxxopts_check_version()
-    set(cxxopts_FOUND ${cxxopts_VERSION_OK})
+    if(cxxopts_FIND_VERSION)
+      _cxxopts_check_version()
+      set(cxxopts_FOUND ${cxxopts_VERSION_OK})
+    else()
+      set(cxxopts_FOUND TRUE)
+    endif()
   endif()
 
   if(cxxopts_FOUND)

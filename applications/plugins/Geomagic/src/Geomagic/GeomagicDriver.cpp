@@ -478,9 +478,9 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
         const GeomagicDriver::Coord& posDevice = d_posDevice.getValue();
 
         float glRadius = (float)d_scale.getValue()*0.1f;
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(2,0,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::red() );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(0,2,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::green() );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(0,0,2)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::blue() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(2,0,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::red() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(0,2,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::green() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(0,0,2)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::blue() );
     }
 
     if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
@@ -490,8 +490,11 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 }
 
 
-void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
+void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    if (!onlyVisible) return;
+
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 

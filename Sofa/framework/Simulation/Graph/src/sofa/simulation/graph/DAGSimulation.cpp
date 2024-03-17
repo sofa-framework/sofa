@@ -35,11 +35,6 @@ namespace sofa::simulation::graph
 using namespace sofa::defaulttype;
 
 
-Simulation* getSimulation()
-{
-    return simulation::getSimulation();
-}
-
 DAGSimulation::DAGSimulation()
 {
     // Safety check; it could be elsewhere, but here is a good place, I guess.
@@ -51,7 +46,6 @@ DAGSimulation::~DAGSimulation()
 {
 
 }
-
 
 Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
 {

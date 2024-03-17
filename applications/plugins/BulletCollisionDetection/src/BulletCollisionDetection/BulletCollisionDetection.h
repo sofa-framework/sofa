@@ -176,7 +176,7 @@ public:
     //Data<bool> useMultiSAP;
     //Data<bool> useBdvt;
 
-    Data< type::fixed_array<type::Vector3,2> > box; ///< box used if using sweep and prune
+    Data< type::fixed_array<type::Vec3,2> > box; ///< box used if using sweep and prune
 
 private:
     //sofa::set< > collisionModels;

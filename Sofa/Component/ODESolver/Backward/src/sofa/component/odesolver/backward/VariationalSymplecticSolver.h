@@ -52,8 +52,8 @@ public:
     Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
-    SOFA_ATTRIBUTE_DEPRECATED__ODESOLVER_BACKWARD_VERBOSEDATA()
-    Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
+    SOFA_ATTRIBUTE_DISABLED__ODESOLVER_BACKWARD_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     VariationalSymplecticSolver();
 

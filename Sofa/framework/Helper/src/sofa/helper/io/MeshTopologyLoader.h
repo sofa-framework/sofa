@@ -60,8 +60,8 @@ private:
 
     bool loadVtk(const char *filename);
 
-    SOFA_MESHTOPOLOGYLOADER_LOADMESHFUNCTION_DEPRECATED()
-    bool loadMesh(std::ifstream &file);
+    SOFA_MESHTOPOLOGYLOADER_LOADMESHFUNCTION_DISABLED()
+    bool loadMesh(std::ifstream &file) = delete;
 
     // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
     bool addMeshtoTopology();

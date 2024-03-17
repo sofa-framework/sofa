@@ -229,6 +229,7 @@ protected :
 
     void LDL_ordering(int n, int nnz, int* M_colptr, int* M_rowind, Real* M_values, int* perm, int* invperm)
     {
+        SOFA_UNUSED(M_values);
         core::behavior::BaseOrderingMethod::SparseMatrixPattern pattern;
         pattern.matrixSize = n;
         pattern.numberOfNonZeros = nnz;

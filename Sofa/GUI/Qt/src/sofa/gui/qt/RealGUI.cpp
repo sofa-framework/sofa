@@ -833,35 +833,6 @@ void RealGUI::setTitle ( std::string windowTitle )
 
 //------------------------------------
 
-void RealGUI::fileNew()
-{
-    std::string newScene("config/newScene.scn");
-    if (DataRepository.findFile (newScene))
-        fileOpen(DataRepository.getFile ( newScene ).c_str());
-}
-
-//------------------------------------
-
-void RealGUI::fileSave()
-{
-    const std::string filename(this->windowFilePath().toStdString());
-    const std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
-
-    if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
-        return;
-
-    fileSaveAs ( currentSimulation(), filename.c_str() );
-}
-
-//------------------------------------
-
-void RealGUI::fileSaveAs ( Node *node, const char* filename )
-{
-    sofa::simulation::node::exportGraph ( node, filename );
-}
-
-//------------------------------------
-
 void RealGUI::fileReload()
 {
     std::string filename(this->windowFilePath().toStdString());
@@ -1808,44 +1779,6 @@ void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
 void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 {
     node->setSleeping(sleeping);
-}
-
-//------------------------------------
-
-void RealGUI::fileSaveAs(Node *node)
-{
-    if (node == nullptr) node = currentSimulation();
-    const std::string filename(this->windowFilePath().toStdString());
-
-
-    QString filter( "Scenes (");
-
-    int nb=0;
-    SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
-    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
-    {
-        SceneLoader::ExtensionList extensions;
-        (*it)->getExtensionList(&extensions);
-        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
-        {
-            if( (*it)->canWriteFileExtension( itExt->c_str() ) )
-            {
-                if (nb!=0) filter +=" ";
-                filter += "*.";
-                filter += QString( itExt->c_str() );
-                ++nb;
-            }
-        }
-    }
-
-    filter += ")";
-
-
-    QString s = getSaveFileName ( this, filename.empty() ?nullptr:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
-    if (s.length() > 0) {
-        fileSaveAs(node, s.toStdString().c_str());
-    }
-
 }
 
 //------------------------------------

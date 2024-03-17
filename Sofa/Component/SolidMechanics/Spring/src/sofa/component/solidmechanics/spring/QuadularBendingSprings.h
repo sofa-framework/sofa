@@ -96,8 +96,8 @@ protected:
                         SReal restlength1 = 0_sreal, SReal restlength2 = 0_sreal,
                         const bool is_activated = false, const bool is_initialized = false)
             : springs{
-                Spring{ {m1, m2}, restlength1},
-                Spring{ {m3, m4}, restlength2}
+                  Spring{ {m1, m2}, restlength1, Mat()},
+                  Spring{ {m3, m4}, restlength2, Mat()}
             }, is_activated(is_activated), is_initialized(is_initialized)
         { }
 
