@@ -175,7 +175,6 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
 endif()
 sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
