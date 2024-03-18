@@ -63,6 +63,7 @@ public:
 
 protected:
 
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     DiscreteIntersection* intersection;
 
 };

@@ -123,12 +123,16 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
 
 bool RayNewProximityIntersection::testIntersection( Ray& /*rRay*/, RigidSphere&, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     return false;
 }
 
 
 int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     const Vec3 v3SphereCenter = rSphere.center( );
     const SReal fSphereRadii = rSphere.r();
 

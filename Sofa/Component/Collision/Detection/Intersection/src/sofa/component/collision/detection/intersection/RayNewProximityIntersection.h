@@ -57,6 +57,7 @@ public:
     int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*);
 protected:
 
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     NewProximityIntersection* intersection;
 };
 

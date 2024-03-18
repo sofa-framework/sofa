@@ -360,6 +360,7 @@ bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
+    SOFA_UNUSED(currentIntersection);
 
     msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
     return true;
@@ -387,6 +388,7 @@ bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangl
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
+    SOFA_UNUSED(currentIntersection);
 
     msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
     return true;

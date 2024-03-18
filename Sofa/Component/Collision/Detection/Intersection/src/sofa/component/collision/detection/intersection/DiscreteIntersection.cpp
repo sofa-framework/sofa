@@ -90,6 +90,7 @@ int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVe
     SOFA_UNUSED(cube1);
     SOFA_UNUSED(cube2);
     SOFA_UNUSED(contacts);
+    SOFA_UNUSED(currentIntersection);
 
     return 0;
 }

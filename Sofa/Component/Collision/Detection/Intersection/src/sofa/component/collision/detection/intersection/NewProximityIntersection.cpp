@@ -67,11 +67,15 @@ void NewProximityIntersection::init()
 
 bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     return BaseProximityIntersection::testIntersection(cube1, cube2);
 }
 
 int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
 }
 

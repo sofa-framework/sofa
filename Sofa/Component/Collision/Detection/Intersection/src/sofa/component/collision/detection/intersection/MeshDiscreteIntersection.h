@@ -58,6 +58,7 @@ public:
     template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*);
 
 protected:
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     DiscreteIntersection* intersection;
 
 };

@@ -44,6 +44,8 @@ TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteInterse
 
 bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     return true;
 }
 

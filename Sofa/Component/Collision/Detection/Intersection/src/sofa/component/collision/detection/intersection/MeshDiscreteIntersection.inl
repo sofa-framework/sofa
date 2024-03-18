@@ -31,6 +31,8 @@ namespace sofa::component::collision::detection::intersection
 template<class T>
 bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     const double EPSILON = 0.00001;
     //Vertices of the triangle:
     const type::Vec3 p0 = triangle.p1();
@@ -82,6 +84,8 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
 template<class T>
 int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     const double EPSILON = 0.00001;
     //Vertices of the triangle:
     const type::Vec3 p0 = triangle.p1();

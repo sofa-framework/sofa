@@ -96,6 +96,7 @@ public:
 
 protected:
 
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     MinProximityIntersection* intersection;
 };
 
@@ -196,7 +197,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
     }
     else
     {
-        msg_warning(intersection) << "Null distance between contact detected";
+        msg_warning(currentIntersection) << "Null distance between contact detected";
         detection->normal= type::Vec3(1,0,0);
     }
     detection->value -= contactDist;
@@ -335,7 +336,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphe
     }
     else
     {
-        msg_warning(intersection) << "Null distance between contact detected";
+        msg_warning(currentIntersection) << "Null distance between contact detected";
         detection->normal= type::Vec3(1,0,0);
     }
     detection->value -= contactDist;
