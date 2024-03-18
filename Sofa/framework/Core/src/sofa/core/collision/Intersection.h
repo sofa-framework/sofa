@@ -68,7 +68,6 @@ public:
     virtual ~ElementIntersector() {}
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = 0;
     virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) = 0;
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
@@ -76,13 +75,17 @@ public:
     virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts) = 0;
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
-    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts) = 0;
     virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) = 0;
     
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     virtual int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts) = 0;
 
     virtual std::string name() const = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+    virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) { return false; };
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts) { return 0; };
 };
 
 /// Table storing associations between types of collision models and intersectors implementing intersection tests

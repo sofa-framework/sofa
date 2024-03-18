@@ -36,19 +36,6 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshNewProximityInters
 
 public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
-
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&);
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*);
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&);
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*);
     
     bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
@@ -62,19 +49,6 @@ public:
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*, const core::collision::Intersection* currentIntersection);
-    
-    template <class T>
-    bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt);
-    template <class T> 
-    int computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, OutputVector*);
-    template <class T>
-    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&);
-    template <class T> 
-    int computeIntersection(collision::geometry::Line& line, collision::geometry::TSphere<T>& sph, OutputVector*);
-    template <class T>
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
-    template <class T> 
-    int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*);
     
     template <class T>
     bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, const core::collision::Intersection* currentIntersection);
@@ -93,6 +67,51 @@ public:
     static inline int doIntersectionLinePoint(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false);
     static inline int doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& n, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false, bool useNormal=false);
     static inline int doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& n, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false);
+
+
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*);
+    
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt);
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, OutputVector*);
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&);
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line& line, collision::geometry::TSphere<T>& sph, OutputVector*);
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
+    template <class T>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*);
 
 protected:
 

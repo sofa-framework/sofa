@@ -40,19 +40,21 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayNewProximityInterse
 public:
     RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-	bool testIntersection(collision::geometry::Ray & t1, collision::geometry::Triangle& t2);
-    int computeIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2, OutputVector*);
-
-    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-    bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere);
-    int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*);
-
     bool testIntersection(collision::geometry::Ray & t1, collision::geometry::Triangle& t2, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2, OutputVector*, const core::collision::Intersection* currentIntersection);
 
+    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
     bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*, const core::collision::Intersection* currentIntersection);
 
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*);
 protected:
 
     NewProximityIntersection* intersection;

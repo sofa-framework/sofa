@@ -71,31 +71,6 @@ protected:
 
 public:
     void init() override;
-
-    bool testIntersection(collision::geometry::Cube& ,collision::geometry::Cube&) override;
-
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
-    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Point&);
-    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&) override;
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Sphere&);
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&);
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Sphere&);
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&);
-
-    int computeIntersection(collision::geometry::Cube&, collision::geometry::Cube&, OutputVector*) override;
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
-    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Point&, OutputVector*);
-    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&, OutputVector*) override;
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Sphere&, OutputVector*);
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, OutputVector*);
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, OutputVector*);
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
     
     bool testIntersection(collision::geometry::Cube& ,collision::geometry::Cube&, const core::collision::Intersection* currentIntersection) override;
 
@@ -130,6 +105,52 @@ public:
     bool testValidity(collision::geometry::Point&, const type::Vec3&) const;
     bool testValidity(collision::geometry::Line&, const type::Vec3&) const;
     bool testValidity(collision::geometry::Triangle&, const type::Vec3&) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Cube&, collision::geometry::Cube&) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Sphere&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Sphere&);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&);
+
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Cube&, collision::geometry::Cube&, OutputVector*) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&, OutputVector*) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Sphere&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, OutputVector*);
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
 
 };
 

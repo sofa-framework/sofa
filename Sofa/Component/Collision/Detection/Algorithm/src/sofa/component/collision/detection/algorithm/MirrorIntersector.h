@@ -33,11 +33,6 @@ public:
     core::collision::ElementIntersector* intersector{ nullptr };
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
-    {
-        assert(intersector != nullptr);
-        return intersector->canIntersect(elem2, elem1);
-    }
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
     {
         assert(intersector != nullptr);
@@ -53,11 +48,6 @@ public:
     }
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts) override
-    {
-        assert(intersector != nullptr);
-        return intersector->intersect(elem2, elem1, contacts);
-    }
     int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
     {
         assert(intersector != nullptr);
@@ -75,6 +65,19 @@ public:
     {
         assert(intersector != nullptr);
         return intersector->name() + std::string("<SWAP>");
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
+    {
+        assert(intersector != nullptr);
+        return intersector->canIntersect(elem2, elem1);
+    }
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts) override
+    {
+        assert(intersector != nullptr);
+        return intersector->intersect(elem2, elem1, contacts);
     }
 };
 
