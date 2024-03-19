@@ -58,7 +58,6 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/FullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/FullVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
 )
