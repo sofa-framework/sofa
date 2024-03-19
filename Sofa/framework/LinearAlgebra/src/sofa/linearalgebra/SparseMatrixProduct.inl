@@ -285,7 +285,7 @@ void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeIntersection()
 template<class Lhs, class Rhs, class ResultType>
 void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeProductFromIntersection()
 {
-    assert(intersection.intersection.size() == product->nonZeros());
+    assert(m_intersectionAB.intersection.size() == m_productResult.nonZeros());
 
     auto* lhs_ptr = m_lhs->valuePtr();
     auto* rhs_ptr = m_rhs->valuePtr();
