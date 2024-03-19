@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AddRecordedCameraButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AttachBodyButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/FixPickedParticleButtonSetting.h
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/ConstraintAttachButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AddRecordedCameraPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.inl
@@ -37,6 +38,7 @@ set(SOURCE_FILES
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AddRecordedCameraButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AttachBodyButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/FixPickedParticleButtonSetting.cpp
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/ConstraintAttachButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AddRecordedCameraPerformer.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.cpp
