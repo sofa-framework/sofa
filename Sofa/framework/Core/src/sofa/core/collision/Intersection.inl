@@ -26,44 +26,42 @@
 
 namespace
 {
-    // primary type trait, is false
-    template<typename Type, typename = void> //this 3rd parameter defaults to void
-    struct has_canIntersect_with_Intersection
+    // SFINAE block of code to detect at compile time if
+    // - Intersector implements testIntersection(ModelElement1&, ModelElement2&, Intersection*)
+    // - Intersector implements computeIntersection(ModelElement1&, ModelElement2&, OutputVector*, Intersection*)
+
+    template<typename ModelElement1, typename ModelElement2, typename Intersector, typename = void>
+    struct has_testIntersection_with_Intersection
         : std::false_type
     { };
 
-    template<typename Type, typename = void> //this 3rd parameter defaults to void
-    struct has_intersect_with_Intersection
+    template<typename ModelElement1, typename ModelElement2, typename Intersector, typename = void>
+    struct has_computeIntersection_with_Intersection
         : std::false_type
     { };
 
-
-    //specializations for types where `t.foo(arg)` is valid
-    template<typename Type>
-    struct has_canIntersect_with_Intersection<Type,std::void_t<decltype(std::declval<Type>().canIntersect(
-        std::declval<sofa::core::CollisionElementIterator>(),
-        std::declval<sofa::core::CollisionElementIterator>(),
-        std::declval<const sofa::core::collision::Intersection*>()
+    // detect at compile time if Intersector implements testIntersection(ModelElement1&, ModelElement2&, Intersection*)
+    template<typename ModelElement1, typename ModelElement2, typename Intersector>
+    struct has_testIntersection_with_Intersection<ModelElement1, ModelElement2, Intersector,
+        std::void_t<decltype(std::declval<Intersector>().testIntersection(
+            std::declval<ModelElement1&>(),
+            std::declval<ModelElement2&>(),
+            std::declval<const sofa::core::collision::Intersection*>()
         ))>>
         : std::true_type
     { };
 
-    template<typename Type>
-    struct has_intersect_with_Intersection<Type, std::void_t<decltype(std::declval<Type>().intersect(
-        std::declval<sofa::core::CollisionElementIterator>(),
-        std::declval<sofa::core::CollisionElementIterator>(),
-        std::declval<sofa::core::collision::DetectionOutputVector*>(),
-        std::declval<const sofa::core::collision::Intersection*>()
-    ))>>
+    // detect at compile time if Intersector implements computeIntersection(ModelElement1&, ModelElement2&, OutputVector*, Intersection*)
+    template<typename ModelElement1, typename ModelElement2, typename Intersector>
+    struct has_computeIntersection_with_Intersection<ModelElement1, ModelElement2, Intersector,
+        std::void_t<decltype(std::declval<Intersector>().computeIntersection(
+            std::declval<ModelElement1&>(),
+            std::declval<ModelElement2&>(),
+            std::declval<sofa::core::collision::BaseIntersector::OutputVector*>(),
+            std::declval<const sofa::core::collision::Intersection*>()
+        ))>>
         : std::true_type
     { };
-
-    //c++17 helpers
-    template<typename Type>
-    constexpr bool has_canIntersect_with_Intersection_v = has_canIntersect_with_Intersection<Type>::value;
-    template<typename Type>
-    constexpr bool has_intersect_with_Intersection_v = has_intersect_with_Intersection<Type>::value;
-
 }
 
 namespace sofa::core::collision
@@ -89,7 +87,7 @@ public:
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        if constexpr (has_canIntersect_with_Intersection_v<T>)
+        if constexpr (has_testIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
         {
             return impl->testIntersection(e1, e2, currentIntersection);
         }
@@ -125,7 +123,7 @@ public:
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        if constexpr (has_intersect_with_Intersection_v<T>)
+        if constexpr (has_computeIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
         {
             return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
         }
