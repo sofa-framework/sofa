@@ -31,30 +31,35 @@
 
 namespace sofa::type
 {
-////class for 3*3 symmetric matrix only
 
-template <int D,class real=float>
-class MatSym : public VecNoInit<D*(D+1)/2,real>
-//class Mat : public Vec<L,Vec<C,real> >
+/**
+ * Dense symmetric matrix of size DxD storing only D*(D+1)/2 values
+ * \tparam D Size of the matrix
+ * \tparam real Type of scalar
+ */
+template <int D, class real = SReal>
+class MatSym : public VecNoInit<D * (D + 1) / 2, real>
 {
 public:
 
-    // enum { N = L*C };
-
     typedef real Real;
     typedef Vec<D,Real> Coord;
+    static constexpr auto NumberStoredValues = D * (D + 1) / 2;
 
-
-    MatSym()
+    constexpr MatSym()
     {
         clear();
     }
 
-    explicit MatSym(NoInit)
+    constexpr explicit MatSym(NoInit)
     {
     }
+
     /// Constructor from 6 elements
-    explicit MatSym(const real& v1,const real& v2,const real& v3,const real& v4,const real& v5,const real& v6)
+    template<sofa::Size TD = D, typename = std::enable_if_t<D == 3> >
+    constexpr MatSym(
+        const real& v1, const real& v2, const real& v3,
+        const real& v4, const real& v5, const real& v6)
     {
         this->elems[0] = v1;
         this->elems[1] = v2;
@@ -64,111 +69,113 @@ public:
         this->elems[5] = v6;
     }
 
-
     /// Constructor from an element
-    explicit MatSym(const int sizeM,const real& v)
+    constexpr MatSym(const int sizeM, const real& v)
     {
-        for( int i=0; i<sizeM*(sizeM+1)/2; i++ )
+        assert(sizeM <= D);
+        for (int i = 0; i < sizeM * (sizeM + 1) / 2; ++i)
+        {
             this->elems[i] = v;
+        }
     }
 
     /// Constructor from another matrix
     template<typename real2>
-    MatSym(const MatSym<D,real2>& m)
+    explicit MatSym(const MatSym<D, real2>& m)
     {
-        std::copy(m.begin(), m.begin()+D*(D+1)/2, this->begin());
+        std::copy(m.begin(), m.begin() + NumberStoredValues, this->begin());
     }
 
 
     /// Assignment from another matrix
-    template<typename real2> void operator=(const MatSym<D,real2>& m)
+    template<typename real2>
+    void operator=(const MatSym<D, real2>& m)
     {
-        std::copy(m.begin(), m.begin()+D*(D+1)/2, this->begin());
+        std::copy(m.begin(), m.begin() + NumberStoredValues, this->begin());
     }
-
 
     /// Sets each element to 0.
     void clear()
     {
-        for (int i=0; i<D*(D+1)/2; i++)
-            this->elems[i]=0;
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            this->elems[i] = 0;
+        }
     }
 
     /// Sets each element to r.
     void fill(real r)
     {
-        for (int i=0; i<D*(D+1)/2; i++)
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
             this->elems[i].fill(r);
+        }
     }
 
     /// Write access to element (i,j).
-    inline real& operator()(int i, int j)
+    inline real& operator()(const int i, const int j)
     {
-        if(i>=j)
-        {  return this->elems[(i*(i+1))/2+j];}
-        else
-        {return this->elems[(j*(j+1))/2+i];}
+        if (i >= j)
+        {
+            return this->elems[(i * (i + 1)) / 2 + j];
+        }
+        return this->elems[(j * (j + 1)) / 2 + i];
     }
 
     /// Read-only access to element (i,j).
     inline const real& operator()(int i, int j) const
     {
-        if(i>=j)
-        {  return this->elems[(i*(i+1))/2+j];}
-        else
-        {return this->elems[(j*(j+1))/2+i];}
-    }
-
-    //convert matrix to sym
-    //template<int D>
-    void Mat2Sym( const Mat<D,D,real>& M, MatSym<D,real>& W)
-    {
-        for (int j=0; j<D; j++)
-            for (int i=0; i <= j; i++)
-                W(i,j) = (Real)((M(i,j) + M(j,i))/2.0);
-    }
-
-    // convert to Voigt notation
-
-    inline Vec<D*(D+1)/2 ,real> getVoigt()
-    {
-        Vec<D*(D+1)/2 ,real> result;
-        if (D==2)
+        if (i >= j)
         {
-            result[0] = this->elems[0]; result[1] = this->elems[2]; result[2] = 2*this->elems[1];
+            return this->elems[(i * (i + 1)) / 2 + j];
         }
-        else
+        return this->elems[(j * (j + 1)) / 2 + i];
+    }
+
+    /// convert matrix to sym
+    static void Mat2Sym( const Mat<D, D, real>& M, MatSym<D, real>& W)
+    {
+        for (int j = 0; j < D; j++)
         {
-            result[0] = this->elems[0]; result[1] = this->elems[2]; result[2] = this->elems[5];
-            result[3]=2*this->elems[4]; result[4]=2*this->elems[3]; result[5]=2*this->elems[1];
+            for (int i = 0; i <= j; i++)
+            {
+                W(i, j) = (M(i, j) + M(j, i)) / 2;
+            }
+        }
+    }
+
+    /// convert to Voigt notation (supported only for D == 2 and D == 3)
+    template<sofa::Size TD = D, typename = std::enable_if_t<D == 3 || D == 2> >
+    inline Vec<NumberStoredValues, real> getVoigt() const
+    {
+        Vec<NumberStoredValues, real> result {NOINIT};
+        if constexpr (D == 2)
+        {
+            result[0] = this->elems[0];
+            result[1] = this->elems[2];
+            result[2] = 2 * this->elems[1];
+        }
+        else if constexpr (D == 3)
+        {
+            result[0] = this->elems[0];
+            result[1] = this->elems[2];
+            result[2] = this->elems[5];
+            result[3] = 2 * this->elems[4];
+            result[4] = 2 * this->elems[3];
+            result[5] = 2 * this->elems[1];
         }
         return result;
-
     }
 
-
-    //convert into 3*3 matrix
-
-    /*  Mat<D,D,real> convert() const
-    {
-      Mat<D,D,real> m;
-      for(int k=0; k<D;k++){
-    	for (int l=0;l<k;l++){
-    		m[k][l]=m[l][k]=(*this)(k,l);
-    	}
-    }
-      return m;
-    }
-     */
     /// Set matrix to identity.
-    void identity()
+    constexpr void identity()
     {
-        for (int i=0; i<D; i++)
+        for (int i = 0; i < D; i++)
         {
-            this->elems[i*(i+1)/2+i]=1;
-            for (int j=i+1; j<D; j++)
+            this->elems[i * (i + 1) / 2 + i] = 1;
+            for (int j = i + 1; j < D; j++)
             {
-                this->elems[i*(i+1)/2+j]=0;
+                this->elems[i * (i + 1) / 2 + j] = 0;
             }
         }
     }
@@ -176,77 +183,95 @@ public:
     /// @name Tests operators
     /// @{
 
-    bool operator==(const MatSym<D,real>& b) const
+    bool operator==(const MatSym<D, real>& b) const
     {
-        for (int i=0; i<D*(D+1)/2; i++)
-            if (this->elems[i] != b[i]) return false;
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            if (this->elems[i] != b[i])
+            {
+                return false;
+            }
+        }
         return true;
     }
 
-    bool operator!=(const MatSym< D,real>& b) const
+    bool operator!=(const MatSym<D, real>& b) const
     {
-        for (int i=0; i<D*(D+1)/2; i++)
-            if (this->elems[i]!=b[i]) return true;
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            if (this->elems[i] != b[i])
+            {
+                return true;
+            }
+        }
         return false;
     }
-
 
     /// @}
 
     // LINEAR ALGEBRA
 
     /// Matrix multiplication operator: product of two symmetric matrices
-    //template <int D>
-    Mat<D,D,real> SymSymMultiply(const MatSym<D,real>& m) const
+    [[nodiscard]] Mat<D, D, real> SymSymMultiply(const MatSym<D, real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D, D, real> r(NOINIT);
 
-        for(int i=0; i<D; i++)
+        for (int i = 0; i < D; i++)
         {
-            for(int j=0; j<D; j++)
+            for (int j = 0; j < D; j++)
             {
-                r[i][j]=(*this)(i,0) * m(0,j);
-                for(int k=1; k<D; k++) { r[i][j] += (*this)(i,k) * m(k,j);}
-            }
-        }
-        return r;
-    }
-
-    //Multiplication by a non symmetric matrix on the right
-
-    // template <int D>
-    Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
-    {
-        Mat<D,D,real> r(NOINIT);
-
-        for(int i=0; i<D; i++)
-        {
-            for(int j=0; j<D; j++)
-            {
-                r[i][j]=(*this)(i,0) * m[0][j];
-                for(int k=1; k<D; k++)
+                r[i][j] = (*this)(i, 0) * m(0, j);
+                for (int k = 1; k < D; k++)
                 {
-                    r[i][j] += (*this)(i,k) * m[k][j];
+                    r[i][j] += (*this)(i, k) * m(k, j);
                 }
             }
         }
         return r;
     }
-    //Multiplication by a non symmetric matrix on the left
 
-    // template <int D>
-    Mat<D,D,real> MatSymMultiply(const Mat<D,D,real>& m) const
+    Mat<D, D, real> operator*(const MatSym<D, real>& m) const
+    {
+        return SymSymMultiply(m);
+    }
+
+    //Multiplication by a non symmetric matrix on the right
+    [[nodiscard]] Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
     {
         Mat<D,D,real> r(NOINIT);
 
-        for(int i=0; i<D; i++)
+        for (int i = 0; i < D; i++)
         {
-            for(int j=0; j<D; j++)
+            for (int j = 0; j < D; j++)
             {
-                r[i][j]=m(i,0)* (*this)(0,j);
-                for(int k=1; k<D; k++)
+                r[i][j] = (*this)(i, 0) * m[0][j];
+                for (int k = 1; k < D; k++)
                 {
-                    r[i][j] += m(i,k) * (*this)(k,j);
+                    r[i][j] += (*this)(i, k) * m[k][j];
+                }
+            }
+        }
+        return r;
+    }
+
+    Mat<D,D,real> operator*(const Mat<D,D,real>& m) const
+    {
+        return SymMatMultiply(m);
+    }
+
+    //Multiplication by a non symmetric matrix on the left
+    Mat<D, D, real> MatSymMultiply(const Mat<D, D, real>& m) const
+    {
+        Mat<D, D, real> r(NOINIT);
+
+        for (int i = 0; i < D; i++)
+        {
+            for (int j = 0; j < D; j++)
+            {
+                r[i][j] = m(i, 0) * (*this)(0, j);
+                for (int k = 1; k < D; k++)
+                {
+                    r[i][j] += m(i, k) * (*this)(k, j);
                 }
             }
         }
@@ -255,136 +280,146 @@ public:
 
 
     /// Matrix addition operator with a symmetric matrix
-    MatSym< D,real> operator+(const MatSym<D,real>& m) const
+    MatSym<D, real> operator+(const MatSym<D, real>& m) const
     {
-        MatSym< D,real> r;
-        for(int i = 0; i < D*(D+1)/2; i++)
+        MatSym<D, real> r(NOINIT);
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
             r[i] = (*this)[i] + m[i];
+        }
         return r;
     }
 
     /// Matrix addition operator with a non-symmetric matrix
-    Mat<D,D,real> operator+(const Mat<D,D,real>& m) const
+    Mat<D, D, real> operator+(const Mat<D, D, real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
-        for(int i = 0; i < D; i++)
+        Mat<D, D, real> r(NOINIT);
+        for (int i = 0; i < D; i++)
         {
-            for(int j=0; j<D; j++)
+            for (int j = 0; j < D; j++)
             {
-                r[i][j]=(*this)(i,j)+m[i][j];
+                r[i][j] = (*this)(i, j) + m[i][j];
             }
         }
         return r;
-
     }
+
     /// Matrix substractor operator with a symmetric matrix
-    MatSym< D,real> operator-(const MatSym< D,real>& m) const
+    MatSym<D, real> operator-(const MatSym<D, real>& m) const
     {
-        MatSym<D,real> r;
-        for(int i = 0; i < D*(D+1)/2; i++)
+        MatSym<D, real> r(NOINIT);
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
             r[i] = (*this)[i] - m[i];
+        }
         return r;
     }
 
     /// Matrix substractor operator with a non-symmetric matrix
-    Mat<D,D,real> operator-(const Mat<D,D,real>& m) const
+    Mat<D, D, real> operator-(const Mat<D, D, real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
-        for(int i = 0; i < D; i++)
+        Mat<D, D, real> r(NOINIT);
+        for (int i = 0; i < D; i++)
         {
-            for(int j=0; j<D; j++)
+            for (int j = 0; j < D; j++)
             {
-                r[i][j]=(*this)(i,j)-m[i][j];
+                r[i][j] = (*this)(i, j) - m[i][j];
             }
         }
         return r;
-
     }
-
 
     /// Multiplication operator Matrix * Vector.
     Coord operator*(const Coord& v) const
     {
-
-
         Coord r(NOINIT);
-        for(int i=0; i<D; i++)
+        for (int i = 0; i < D; i++)
         {
-            r[i]=(*this)(i,0) * v[0];
-            for(int j=1; j<D; j++)
-                r[i] += (*this)(i,j) * v[j];
+            r[i] = (*this)(i, 0) * v[0];
+            for (int j = 1; j < D; j++)
+            {
+                r[i] += (*this)(i, j) * v[j];
+            }
         }
         return r;
     }
 
-
     /// Scalar multiplication operator.
-    MatSym<D,real> operator*(real f) const
+    MatSym<D, real> operator*(real f) const
     {
-        MatSym<D,real> r(NOINIT);
-        for(int i=0; i<D*(D+1)/2; i++)
+        MatSym<D, real> r(NOINIT);
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
             r[i] = (*this)[i] * f;
+        }
         return r;
     }
 
     /// Scalar matrix multiplication operator.
-    friend MatSym<D,real> operator*(real r, const MatSym< D,real>& m)
+    friend MatSym<D, real> operator*(real r, const MatSym<D, real>& m)
     {
-        return m*r;
+        return m * r;
     }
 
     /// Scalar division operator.
-    MatSym< D,real> operator/(real f) const
+    MatSym<D, real> operator/(real f) const
     {
-        MatSym< D,real> r(NOINIT);
-        for(int i=0; i<D*(D+1)/2; i++)
+        MatSym<D, real> r(NOINIT);
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
             r[i] = (*this)[i] / f;
+        }
         return r;
     }
 
     /// Scalar multiplication assignment operator.
     void operator *=(real r)
     {
-        for(int i=0; i<D*(D+1)/2; i++)
-            this->elems[i]*=r;
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            this->elems[i] *= r;
+        }
     }
 
     /// Scalar division assignment operator.
     void operator /=(real r)
     {
-        for(int i=0; i<D*(D+1)/2; i++)
-            this->elems[i]/=r;
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            this->elems[i] /= r;
+        }
     }
 
     /// Addition assignment operator.
     void operator +=(const MatSym< D,real>& m)
     {
-        for(int i=0; i<D*(D+1)/2; i++)
-            this->elems[i]+=m[i];
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            this->elems[i] += m[i];
+        }
     }
-
-
 
     /// Substraction assignment operator.
     void operator -=(const MatSym< D,real>& m)
     {
-        for(int i=0; i<D*(D+1)/2; i++)
-            this->elems[i]-=m[i];
+        for (int i = 0; i < NumberStoredValues; i++)
+        {
+            this->elems[i] -= m[i];
+        }
     }
 
     /// Invert matrix m
     bool invert(const MatSym<D,real>& m)
     {
-
         return invertMatrix((*this), m);
-
     }
-
-
-
 };
 
-
+template <int D, class real>
+Mat<D, D, real> operator*(const Mat<D, D, real>& a, const MatSym<D, real>& b)
+{
+    return b.MatSymMultiply(a);
+}
 
 /// Determinant of a 3x3 matrix.
 template<class real>
@@ -398,28 +433,27 @@ inline real determinant(const MatSym<3,real>& m)
             - m(2,0)*m(1,1)*m(0,2);
 }
 /// Determinant of a 2x2 matrix.
-template<class real>
-inline real determinant(const MatSym<2,real>& m)
+template <class real>
+inline real determinant(const MatSym<2, real>& m)
 {
-    //     m(0,0)*m(1,1) - m(1,0)*m(0,1);
-    return m(0,0)*m(1,1) - m(0,1)*m(0,1);
+    return m(0, 0) * m(1, 1) - m(0, 1) * m(0, 1);
 }
 
 #define MIN_DETERMINANT  1.0e-100
 
 
 /// Trace of a 3x3 matrix.
-template<class real>
-inline real trace(const MatSym<3,real>& m)
+template <class real>
+inline real trace(const MatSym<3, real>& m)
 {
-    return m(0,0)+m(1,1)+m(2,2);
-
+    return m(0, 0) + m(1, 1) + m(2, 2);
 }
+
 /// Trace of a 2x2 matrix.
-template<class real>
-inline real trace(const MatSym<2,real>& m)
+template <class real>
+inline real trace(const MatSym<2, real>& m)
 {
-    return m(0,0)+m(1,1);
+    return m(0, 0) + m(1, 1);
 }
 
 /// Matrix inversion (general case).
@@ -504,8 +538,8 @@ bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 }
 
 /// Matrix inversion (special case 3x3).
-template<class real>
-bool invertMatrix(MatSym<3,real>& dest, const MatSym<3,real>& from)
+template <class real>
+bool invertMatrix(MatSym<3, real>& dest, const MatSym<3, real>& from)
 {
     real det=determinant(from);
 
