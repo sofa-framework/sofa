@@ -37,7 +37,7 @@ namespace sofa::type
  * \tparam D Size of the matrix
  * \tparam real Type of scalar
  */
-template <int D, class real = SReal>
+template <sofa::Size D, class real = SReal>
 class MatSym : public VecNoInit<D * (D + 1) / 2, real>
 {
 public:
@@ -70,10 +70,10 @@ public:
     }
 
     /// Constructor from an element
-    constexpr MatSym(const int sizeM, const real& v)
+    constexpr MatSym(const sofa::Size sizeM, const real& v)
     {
         assert(sizeM <= D);
-        for (int i = 0; i < sizeM * (sizeM + 1) / 2; ++i)
+        for (sofa::Size i = 0; i < sizeM * (sizeM + 1) / 2; ++i)
         {
             this->elems[i] = v;
         }
@@ -97,7 +97,7 @@ public:
     /// Sets each element to 0.
     void clear()
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i] = 0;
         }
@@ -106,7 +106,7 @@ public:
     /// Sets each element to r.
     void fill(real r)
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i].fill(r);
         }
@@ -123,7 +123,7 @@ public:
     }
 
     /// Read-only access to element (i,j).
-    inline const real& operator()(int i, int j) const
+    inline const real& operator()(const int i, const int j) const
     {
         if (i >= j)
         {
@@ -170,10 +170,10 @@ public:
     /// Set matrix to identity.
     constexpr void identity()
     {
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
             this->elems[i * (i + 1) / 2 + i] = 1;
-            for (int j = i + 1; j < D; j++)
+            for (sofa::Size j = i + 1; j < D; j++)
             {
                 this->elems[i * (i + 1) / 2 + j] = 0;
             }
@@ -185,7 +185,7 @@ public:
 
     bool operator==(const MatSym<D, real>& b) const
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             if (this->elems[i] != b[i])
             {
@@ -197,7 +197,7 @@ public:
 
     bool operator!=(const MatSym<D, real>& b) const
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             if (this->elems[i] != b[i])
             {
@@ -216,12 +216,12 @@ public:
     {
         Mat<D, D, real> r(NOINIT);
 
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
-            for (int j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < D; j++)
             {
                 r[i][j] = (*this)(i, 0) * m(0, j);
-                for (int k = 1; k < D; k++)
+                for (sofa::Size k = 1; k < D; k++)
                 {
                     r[i][j] += (*this)(i, k) * m(k, j);
                 }
@@ -240,12 +240,12 @@ public:
     {
         Mat<D,D,real> r(NOINIT);
 
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
-            for (int j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < D; j++)
             {
                 r[i][j] = (*this)(i, 0) * m[0][j];
-                for (int k = 1; k < D; k++)
+                for (sofa::Size k = 1; k < D; k++)
                 {
                     r[i][j] += (*this)(i, k) * m[k][j];
                 }
@@ -264,12 +264,12 @@ public:
     {
         Mat<D, D, real> r(NOINIT);
 
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
-            for (int j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < D; j++)
             {
                 r[i][j] = m(i, 0) * (*this)(0, j);
-                for (int k = 1; k < D; k++)
+                for (sofa::Size k = 1; k < D; k++)
                 {
                     r[i][j] += m(i, k) * (*this)(k, j);
                 }
@@ -283,7 +283,7 @@ public:
     MatSym<D, real> operator+(const MatSym<D, real>& m) const
     {
         MatSym<D, real> r(NOINIT);
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             r[i] = (*this)[i] + m[i];
         }
@@ -294,9 +294,9 @@ public:
     Mat<D, D, real> operator+(const Mat<D, D, real>& m) const
     {
         Mat<D, D, real> r(NOINIT);
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
-            for (int j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < D; j++)
             {
                 r[i][j] = (*this)(i, j) + m[i][j];
             }
@@ -308,7 +308,7 @@ public:
     MatSym<D, real> operator-(const MatSym<D, real>& m) const
     {
         MatSym<D, real> r(NOINIT);
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             r[i] = (*this)[i] - m[i];
         }
@@ -319,9 +319,9 @@ public:
     Mat<D, D, real> operator-(const Mat<D, D, real>& m) const
     {
         Mat<D, D, real> r(NOINIT);
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
-            for (int j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < D; j++)
             {
                 r[i][j] = (*this)(i, j) - m[i][j];
             }
@@ -333,10 +333,10 @@ public:
     Coord operator*(const Coord& v) const
     {
         Coord r(NOINIT);
-        for (int i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < D; i++)
         {
             r[i] = (*this)(i, 0) * v[0];
-            for (int j = 1; j < D; j++)
+            for (sofa::Size j = 1; j < D; j++)
             {
                 r[i] += (*this)(i, j) * v[j];
             }
@@ -348,7 +348,7 @@ public:
     MatSym<D, real> operator*(real f) const
     {
         MatSym<D, real> r(NOINIT);
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             r[i] = (*this)[i] * f;
         }
@@ -365,7 +365,7 @@ public:
     MatSym<D, real> operator/(real f) const
     {
         MatSym<D, real> r(NOINIT);
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             r[i] = (*this)[i] / f;
         }
@@ -375,7 +375,7 @@ public:
     /// Scalar multiplication assignment operator.
     void operator *=(real r)
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i] *= r;
         }
@@ -384,7 +384,7 @@ public:
     /// Scalar division assignment operator.
     void operator /=(real r)
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i] /= r;
         }
@@ -393,7 +393,7 @@ public:
     /// Addition assignment operator.
     void operator +=(const MatSym< D,real>& m)
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i] += m[i];
         }
@@ -402,7 +402,7 @@ public:
     /// Substraction assignment operator.
     void operator -=(const MatSym< D,real>& m)
     {
-        for (int i = 0; i < NumberStoredValues; i++)
+        for (sofa::Size i = 0; i < NumberStoredValues; i++)
         {
             this->elems[i] -= m[i];
         }
@@ -415,7 +415,7 @@ public:
     }
 };
 
-template <int D, class real>
+template <sofa::Size D, class real>
 Mat<D, D, real> operator*(const Mat<D, D, real>& a, const MatSym<D, real>& b)
 {
     return b.MatSymMultiply(a);
@@ -457,10 +457,10 @@ inline real trace(const MatSym<2, real>& m)
 }
 
 /// Matrix inversion (general case).
-template<int S, class real>
+template<sofa::Size S, class real>
 bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 {
-    int i, j, k;
+    sofa::Size i, j, k;
     Vec<S,int> r, c, row, col;
 
     MatSym<S,real> m1 = from;
@@ -578,13 +578,13 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 }
 #undef MIN_DETERMINANT
 
-template<int D,class real>
+template<sofa::Size D,class real>
 std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
 {
     o << '[' ;
-    for(int i=0; i<D; i++)
+    for(sofa::Size i=0; i<D; i++)
     {
-        for(int j=0; j<D; j++)
+        for(sofa::Size j=0; j<D; j++)
         {
             o<<" "<<m(i,j);
         }
@@ -594,7 +594,7 @@ std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
     return o;
 }
 
-template<int D,class real>
+template<sofa::Size D,class real>
 std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
 {
     int c;
@@ -606,7 +606,7 @@ std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
         c = in.peek();
     }
     ///////////////////////////////////////////////
-    for(int i=0; i<D; i++)
+    for(sofa::Size i=0; i<D; i++)
     {
         c = in.peek();
         while (c==' ' || c==',')
@@ -614,7 +614,7 @@ std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
             in.get(); c = in.peek();
         }
 
-        for(int j=0; j<D; j++)
+        for(sofa::Size j=0; j<D; j++)
         {
             in >> m(i,j);
         }
@@ -633,32 +633,32 @@ std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
 }
 
 /// Compute the scalar product of two matrix (sum of product of all terms)
-template <int D, typename real>
+template <sofa::Size D, typename real>
 inline real scalarProduct(const MatSym<D,real>& left, const MatSym<D,real>& right)
 {
     real sympart(0.),dialpart(0.);
-    for(int i=0; i<D; i++)
-        for(int j=i+1; j<D; j++)
+    for(sofa::Size i=0; i<D; i++)
+        for(sofa::Size j=i+1; j<D; j++)
             sympart += left(i,j) * right(i,j);
 
-    for(int d=0; d<D; d++)
+    for(sofa::Size d=0; d<D; d++)
         dialpart += left(d,d) * right(d,d);
 
 
     return 2. * sympart  + dialpart ;
 }
 
-template <int D, typename real>
+template <sofa::Size D, typename real>
 inline real scalarProduct(const MatSym<D,real>& left, const Mat<D,D,real>& right)
 {
     real product(0.);
-    for(int i=0; i<D; i++)
-        for(int j=0; j<D; j++)
+    for(sofa::Size i=0; i<D; i++)
+        for(sofa::Size j=0; j<D; j++)
             product += left(i,j) * right(i,j);
     return product;
 }
 
-template <int D, typename real>
+template <sofa::Size D, typename real>
 inline real scalarProduct(const Mat<D,D,real>& left, const MatSym<D,real>& right)
 {
     return scalarProduct(right, left);

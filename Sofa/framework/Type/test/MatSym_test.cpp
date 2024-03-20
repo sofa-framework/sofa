@@ -29,7 +29,7 @@
 namespace sofa
 {
 
-template <int D, class _Real = SReal>
+template <sofa::Size D, class _Real = SReal>
 struct MatSymTestParameterPack
 {
     static constexpr auto Size = D;
@@ -60,9 +60,9 @@ public:
 
         const Eigen::Matrix<Real, Size, Size> W = convert<Eigen::Matrix<Real, Size, Size>>().inverse();
 
-        for (int i = 0; i < Size; ++i)
+        for (sofa::Size i = 0; i < Size; ++i)
         {
-            for (int j = 0; j < Size; ++j)
+            for (sofa::Size j = 0; j < Size; ++j)
             {
                 EXPECT_NEAR(W(i, j), M_inverse(i, j), testing::NumericTest<Real>::epsilon());
             }
@@ -105,9 +105,9 @@ protected:
     MatrixType convert() const
     {
         MatrixType result;
-        for (int i = 0; i < Size; ++i)
+        for (sofa::Size i = 0; i < Size; ++i)
         {
-            for (int j = 0; j < Size; ++j)
+            for (sofa::Size j = 0; j < Size; ++j)
             {
                 result(i, j) = m_symmetricMatrix(i, j);
             }
