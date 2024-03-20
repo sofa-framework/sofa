@@ -26,6 +26,12 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
+/**
+ * Stable Neo-Hookean material
+ * From:
+ * "Smith, Breannan, Fernando De Goes, and Theodore Kim. "Stable neo-hookean
+ * flesh simulation." ACM Transactions on Graphics (TOG) 37.2 (2018): 1-15.)"
+ */
 template <class DataTypes>
 class StableNeoHookean : public HyperelasticMaterial<DataTypes>
 {
@@ -34,6 +40,12 @@ public:
     typedef type::Mat<6, 6, Real> Matrix6;
     typedef type::MatSym<3, Real> MatrixSym;
 
+    /**
+     * Strain energy density function for a stable Neo-Hookean material.
+     * The regularized origin barrier is removed according to "Kim, Theodore,
+     * and David Eberle. "Dynamic deformables: implementation and production
+     * practicalities (now with code!)." ACM SIGGRAPH 2022 Courses. 2022. 1-259."
+     */
     Real getStrainEnergy(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param) override
     {
@@ -54,6 +66,10 @@ public:
             (mu * (I_C - 3) + (lambda + mu) * std::pow(J - alpha, 2));
     }
 
+    /**
+     * Compute the second Piola-Kirchhoff stress tensor in terms of the right
+     * Cauchy-Green deformation tensor
+     */
     void deriveSPKTensor(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param,
                          MatrixSym& SPKTensorGeneral) override
