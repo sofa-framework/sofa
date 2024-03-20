@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" ?>
+<Node name="root" dt="0.00005" showBoundingTree="0" gravity="0 0 0">
+    <VisualStyle displayFlags="showForceFields showBehaviorModels" />
+
+    <DefaultAnimationLoop/>
+
+    <Node name="StableNeoHookean">
+        <EulerImplicitSolver name="odesolver"/>
+        <SparseLDLSolver/>
+
+        <RegularGridTopology name="hexaGrid"     min="0 0 0" max="1 1 2.7" n="6 6 16" p0="0 0 0"/>
+        <RegularGridTopology name="hexaGridRest" min="0 0 0" max="1 1 -2.7"   n="6 6 16" p0="0 0 0"/>
+
+        <MechanicalObject name="mechObj" rest_position="@hexaGrid.position" position="@hexaGridRest.position"/>
+        <UniformMass/>
+
+        <Node name="tetras">
+            <TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../hexaGrid" output="@Container" printLog="0" />
+
+            <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1644295.30201342 33557.0469798658" materialName="StableNeoHookean"/>
+        </Node>
+
+        <BoxROI drawBoxes="1" box="0 0 0 1 1 0.05" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
+    </Node>
+
+</Node>
