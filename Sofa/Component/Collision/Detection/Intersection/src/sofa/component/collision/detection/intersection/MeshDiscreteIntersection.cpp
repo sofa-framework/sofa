@@ -95,12 +95,12 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
 
 bool MeshDiscreteIntersection::testIntersection(Triangle& t, Line& l)
 {
-    return testIntersection(t, l, {});
+    return testIntersection(t, l, intersection);
 }
 
 int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
-    return computeIntersection(e1, e2, contacts, {});
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

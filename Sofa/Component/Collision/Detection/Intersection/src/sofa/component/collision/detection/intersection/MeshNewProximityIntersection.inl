@@ -520,7 +520,7 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::TSphe
 template <class T>
 bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2)
 {
-    return testIntersection(e1, e2, {});
+    return testIntersection(e1, e2, intersection);
 }
 
 template<class T>
@@ -532,7 +532,7 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Line&
 template <class T>
 bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2)
 {
-    return testIntersection(e1, e2, {});
+    return testIntersection(e1, e2, intersection);
 }
 
 template<class T>

@@ -133,7 +133,7 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 
 int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
 {
-    return computeIntersection(cube1, cube2, contacts, {});
+    return computeIntersection(cube1, cube2, contacts, this);
 }
 
 bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)

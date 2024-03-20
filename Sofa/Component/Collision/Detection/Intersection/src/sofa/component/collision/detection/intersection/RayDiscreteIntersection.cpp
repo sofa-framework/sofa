@@ -100,12 +100,12 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
 
 bool RayDiscreteIntersection::testIntersection(Ray& r, Triangle& t)
 {
-    return testIntersection(r, t, {});
+    return testIntersection(r, t, intersection);
 }
 
 int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVector* contacts)
 {
-    return computeIntersection(e1, e2, contacts, {});
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } //namespace sofa::component::collision::detection::intersection

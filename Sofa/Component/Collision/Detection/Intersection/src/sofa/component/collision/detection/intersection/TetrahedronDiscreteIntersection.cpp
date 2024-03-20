@@ -170,22 +170,22 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
 
 bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron& t, Point& p)
 {
-    return testIntersection(t, p, {});
+    return testIntersection(t, p, intersection);
 }
 
 int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
 {
-    return computeIntersection(e1, e2, contacts, {});
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 bool TetrahedronDiscreteIntersection::testIntersection(Ray& r, Tetrahedron& t)
 {
-    return testIntersection(r, t, {});
+    return testIntersection(r, t, intersection);
 }
 
 int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
 {
-    return computeIntersection(e1, e2, contacts, {});
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

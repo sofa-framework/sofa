@@ -265,13 +265,13 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
 
 bool RayNewProximityIntersection::testIntersection( Ray& rRay, RigidSphere& rSphere)
 {
-    return testIntersection(rRay,rSphere, {});
+    return testIntersection(rRay,rSphere, intersection);
 }
 
 
 int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector* contacts)
 {
-    return computeIntersection(rRay,rSphere, contacts, {});
+    return computeIntersection(rRay,rSphere, contacts, intersection);
 }
 
 

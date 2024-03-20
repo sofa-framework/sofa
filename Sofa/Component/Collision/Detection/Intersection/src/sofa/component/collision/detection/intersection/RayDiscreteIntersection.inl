@@ -91,13 +91,13 @@ int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1,
 template<class T>
 bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, collision::geometry::TSphere<T>& sph2)
 {
-    return testIntersection(ray1, sph2, {});
+    return testIntersection(ray1, sph2, intersection);
 }
 
 template<class T>
 int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1, collision::geometry::TSphere<T>& sph2, OutputVector* contacts)
 {
-    return computeIntersection(ray1, sph2, contacts, {});
+    return computeIntersection(ray1, sph2, contacts, intersection);
 }
 
 } //namespace sofa::component::collision::detection::intersection

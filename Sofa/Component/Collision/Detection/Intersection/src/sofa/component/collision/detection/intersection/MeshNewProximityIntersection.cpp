@@ -353,32 +353,32 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
 bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
 {
-    return testIntersection(pt1, pt2, {});
+    return testIntersection(pt1, pt2, intersection);
 }
 
 bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
 {
-    return testIntersection(line, pt, {});
+    return testIntersection(line, pt, intersection);
 }
 
 bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
 {
-    return testIntersection(line1, line2, {});
+    return testIntersection(line1, line2, intersection);
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
 {
-    return testIntersection(tri, pt, {});
+    return testIntersection(tri, pt, intersection);
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
 {
-    return testIntersection(tri, line, {});
+    return testIntersection(tri, line, intersection);
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
 {
-    return testIntersection(tri1, tri2, {});
+    return testIntersection(tri1, tri2, intersection);
 }
 
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)

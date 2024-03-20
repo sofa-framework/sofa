@@ -87,7 +87,7 @@ bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
 
 int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
 {
-    return computeIntersection(cube1, cube2, contacts, {});
+    return computeIntersection(cube1, cube2, contacts, this);
 }
 
 

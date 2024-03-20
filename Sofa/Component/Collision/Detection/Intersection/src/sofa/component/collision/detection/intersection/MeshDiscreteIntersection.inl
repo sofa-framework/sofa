@@ -147,13 +147,13 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
 template<class T>
 bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
 {
-    return testIntersection(sph, triangle, {});
+    return testIntersection(sph, triangle, this);
 }
 
 template<class T>
 int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
 {
-    return computeIntersection(sph, triangle, contacts, {});
+    return computeIntersection(sph, triangle, contacts, this);
 }
 
 } // namespace sofa::component::collision::detection::intersection

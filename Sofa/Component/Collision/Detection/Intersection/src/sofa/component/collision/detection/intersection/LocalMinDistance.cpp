@@ -1373,16 +1373,6 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vec3 &PQ) const
     return n * PQ >= 0.0;
 }
 
-
-
-
-
-
-
-
-
-
-
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
 {
     return testIntersection(cube1, cube2, this);
@@ -1390,7 +1380,7 @@ bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
 
 int LocalMinDistance::computeIntersection(Cube& c1, Cube& c2, OutputVector* contacts)
 {
-    return computeIntersection(c1, c2, contacts, {});
+    return computeIntersection(c1, c2, contacts, this);
 }
 
 bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
@@ -1489,12 +1479,12 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
 
 bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
 {
-    return testIntersection(ray1, sph2, {});
+    return testIntersection(ray1, sph2, this);
 }
 
 int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector* contacts)
 {
-    return computeIntersection(ray1, sph2, contacts, {});
+    return computeIntersection(ray1, sph2, contacts, this);
 }
 
 } //namespace sofa::component::collision::detection::intersection

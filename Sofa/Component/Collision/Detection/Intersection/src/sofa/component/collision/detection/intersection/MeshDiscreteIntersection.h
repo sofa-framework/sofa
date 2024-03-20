@@ -49,13 +49,15 @@ public:
 
     SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&);
+    template<class T>
     SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    template<class T> bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&);
+    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&);
 
     SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     int computeIntersection(collision::geometry::Triangle& e1, collision::geometry::Line& e2, OutputVector* contacts);
+    template<class T> 
     SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*);
+    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*);
 
 protected:
     SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
