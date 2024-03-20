@@ -32,6 +32,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/STVenantKirchhoff.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/StableNeoHookean.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
@@ -96,10 +97,14 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::instantiateMaterial()
     {
         m_myMaterial = std::make_unique<Ogden<DataTypes>>();
     }
+    else if (material == "StableNeoHookean")
+    {
+        m_myMaterial = std::make_unique<StableNeoHookean<DataTypes>>();
+    }
     else
     {
         msg_error() << "material name " << material <<
-            " is not valid (should be ArrudaBoyce, StVenantKirchhoff, MooneyRivlin, VerondaWestman, Costa or Ogden)";
+            " is not valid (should be ArrudaBoyce, StVenantKirchhoff, NeoHookean, MooneyRivlin, VerondaWestman, Costa, Ogden or StableNeoHookean)";
     }
 
     if (m_myMaterial)
@@ -111,7 +116,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::instantiateMaterial()
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
     using namespace material;
-    msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
     this->Inherited::init();
 
@@ -159,7 +163,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
 
     auto tetrahedronInf = sofa::helper::getWriteAccessor(m_tetrahedronInfo);
 
-    /// prepare to store info in the triangle array
+    /// prepare to store info in the tetrahedron array
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
 
@@ -247,12 +251,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
     // store shape vectors at the rest configuration
     for (j = 0; j < 4; ++j)
     {
-        if (!(j % 2))
-            tinfo.m_shapeVector[j] = -cross(point[(j + 2) % 4] - point[(j + 1) % 4],
-                                            point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
-        else
-            tinfo.m_shapeVector[j] = cross(point[(j + 2) % 4] - point[(j + 1) % 4],
-                                           point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;;
+        const Real sign = j % 2 ? 1 : -1;
+        tinfo.m_shapeVector[j] = sign * cross(
+            point[(j + 2) % 4] - point[(j + 1) % 4],
+            point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
     }
 
     for (j = 0; j < 6; ++j)

@@ -131,6 +131,7 @@ public:
     VecCoord m_initialPoints;	/// the intial positions of the points
     bool m_updateMatrix;
 
+public:
     Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
     Data<std::string> d_materialName; ///< the name of the material
     Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
@@ -142,7 +143,6 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TetrahedronHyperelasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-public:
     void setMaterialName(std::string materialName);
 
     void setparameter(const SetParameterArray& param);
@@ -168,6 +168,7 @@ public:
     void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const override;
+    using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
