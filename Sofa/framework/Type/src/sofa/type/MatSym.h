@@ -46,17 +46,17 @@ public:
     typedef Vec<D,Real> Coord;
     static constexpr auto NumberStoredValues = D * (D + 1) / 2;
 
-    constexpr MatSym()
+    constexpr MatSym() noexcept
     {
         clear();
     }
 
-    constexpr explicit MatSym(NoInit)
+    constexpr explicit MatSym(NoInit) noexcept
     {
     }
 
     /// Constructor from 6 elements
-    template<sofa::Size TD = D, typename = std::enable_if_t<D == 3> >
+    template<sofa::Size TD = D, typename = std::enable_if_t<TD == 3> >
     constexpr MatSym(
         const real& v1, const real& v2, const real& v3,
         const real& v4, const real& v5, const real& v6)
