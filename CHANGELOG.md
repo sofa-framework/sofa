@@ -4,9 +4,10 @@
 
 ## [v23.12.00]( https://github.com/sofa-framework/sofa/tree/v23.12.00 )
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v23.06..v23.12)
+[Full log]( https://github.com/sofa-framework/sofa/compare/v23.06..v23.12 )
 
 ### Highlighted contributions
+
 - [Mass] Remove DiagonalMass and replace with MeshMatrixMass (with lumping) [#3001](https://github.com/sofa-framework/sofa/pull/3001)
 - [LinearAlgebra] Pull Insimo's CompressedRowSparseMatrix into the main branch [#3515](https://github.com/sofa-framework/sofa/pull/3515)
 - [plugins] Add fetchable SoftRobots [#3882](https://github.com/sofa-framework/sofa/pull/3882)
@@ -23,6 +24,7 @@
 
 
 ### Breaking
+
 - [Constraint.Lagrangian] Activate the export of lambda forces by default [#3857](https://github.com/sofa-framework/sofa/pull/3857)
 - [all] Change variable name supportOnlySymmetricMatrix in MParams  [#3861](https://github.com/sofa-framework/sofa/pull/3861)
 - [all] Unify how Animation/Visual loops are handling their "targetNode" [#3945](https://github.com/sofa-framework/sofa/pull/3945)
@@ -40,6 +42,7 @@
 
 
 ### Improvements
+
 - [all] Add namespaces in the factory and a python-like import mechanism [#2512](https://github.com/sofa-framework/sofa/pull/2512)
 - [IO][Tests] Add basic test for the MeshSTLLoader [#2999](https://github.com/sofa-framework/sofa/pull/2999)
 - [SofaCarving] Add an example written in python [#3457](https://github.com/sofa-framework/sofa/pull/3457)
@@ -111,6 +114,7 @@
 
 
 ### Bug Fixes
+
 - [test] Fix unit test on RestShapeSpringsForceField [#3864](https://github.com/sofa-framework/sofa/pull/3864)
 - [test] Fix failing unit test [#3876](https://github.com/sofa-framework/sofa/pull/3876)
 - [Constraint.Lagrangian.Solver] LCPConstraintSolver: Fix when mu=0 (no friction) [#3905](https://github.com/sofa-framework/sofa/pull/3905)
@@ -167,6 +171,7 @@
 - [Simulation.Common] Fix tinyXML2 install for windows [#4525](https://github.com/sofa-framework/sofa/pull/4525)
 - [all] Install FindTinyXML2  [#4545](https://github.com/sofa-framework/sofa/pull/4545)
 - [cmake] Remove error in Findcxxopt [#4554](https://github.com/sofa-framework/sofa/pull/4554)
+- [Visual] Fix cmake config  [#4555](https://github.com/sofa-framework/sofa/pull/4555)
 - [GUI.qt] Set link to tinyxml2 to PRIVATE and fix config file [#4558](https://github.com/sofa-framework/sofa/pull/4558)
 - [Config] Fix findcxxopt when version is not specified [#4564](https://github.com/sofa-framework/sofa/pull/4564)
 - [Config] Fix Findmetis module when using config mode [#4570](https://github.com/sofa-framework/sofa/pull/4570)
@@ -174,6 +179,7 @@
 
 
 ### Cleaning
+
 - [plugins] Remove fetching of SofaPython [#3855](https://github.com/sofa-framework/sofa/pull/3855)
 - [Constraint.Lagrangian] Add messages when no compliance is given [#3858](https://github.com/sofa-framework/sofa/pull/3858)
 - [all] include base class inl file [#3865](https://github.com/sofa-framework/sofa/pull/3865)
@@ -250,6 +256,7 @@
 
 
 ### Refactoring
+
 - [Sofa.Core] minor refactoring for Data::read() to move into BaseData the reading code [#3278](https://github.com/sofa-framework/sofa/pull/3278)
 - [all] Rename DefaultContactManager into CollisionResponse [#3891](https://github.com/sofa-framework/sofa/pull/3891)
 - [FEM.Elastic] Minor refactor of buildStiffnessMatrix in TetrahedronFEMForceField [#3983](https://github.com/sofa-framework/sofa/pull/3983)
