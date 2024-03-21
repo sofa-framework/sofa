@@ -346,6 +346,7 @@ void GeomagicDriver::initDevice()
     updatePosition();
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 #else
+    msg_error() << "GeomagicDriver initialization failed because the Geomagic plugin was built without OpenHaptics (HD/hd.h). If you build the plugin yourself, install OpenHaptics and specify OpenHaptics_DIR at CMake configure stage.";
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 #endif
 }
