@@ -24,30 +24,6 @@
 
 #include <sofa/simulation/config.h>
 
-SOFA_HEADER_DEPRECATED_LOCALSTORAGE()
-
-
-namespace sofa::simulation
-{
-
-
-class Visitor;
-
-/// Abstract class allowing actions to store local data as a stack while traversing the graph.
-SOFA_ATTRIBUTE_DEPRECATED_LOCALSTORAGE()
-class LocalStorage
-{
-protected:
-    virtual ~LocalStorage() {}
-
-public:
-    virtual void push(void* data) = 0;
-    virtual void* pop() = 0;
-    virtual void* top() const = 0;
-    virtual bool empty() const = 0;
-};
-
-} // namespace sofa::simulation
-
+SOFA_HEADER_DISABLED_LOCALSTORAGE()
 
 #endif

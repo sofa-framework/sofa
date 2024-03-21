@@ -24,6 +24,7 @@
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 #include <sofa/component/linearsystem/matrixaccumulators/SparsityPatternLocalMappedMatrix.h>
 #include <sofa/component/linearsystem/matrixaccumulators/ConstantLocalMappedMatrix.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::linearsystem
 {
@@ -387,7 +388,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
     if (this->getSystemMatrix())
     {
         Index nIndex = sofa::helper::narrow_cast<Index>(n);
-        if (nIndex != this->getSystemMatrix()->rowSize() || nIndex != this->getSystemMatrix()->colSize())
+        if (nIndex != sofa::helper::narrow_cast<Index>(this->getSystemMatrix()->rowSize()) || nIndex != sofa::helper::narrow_cast<Index>(this->getSystemMatrix()->colSize()))
         {
             this->getSystemMatrix()->resize(n, n);
         }

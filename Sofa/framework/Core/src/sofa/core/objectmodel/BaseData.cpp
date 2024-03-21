@@ -158,9 +158,9 @@ void BaseData::doDelInput(DDGNode* n)
 void BaseData::update()
 {
     cleanDirty();
-    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
+    for (DDGNode* input : inputs)
     {
-        (*it)->updateIfDirty();
+        input->updateIfDirty();
     }
 
     /// Check if there is a parent (so a predecessor in the DDG), if so
@@ -168,10 +168,6 @@ void BaseData::update()
     const auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
     {
-#ifdef SOFA_DDG_TRACE
-        if (m_owner)
-            dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
-#endif
         updateValueFromLink(parent);
         // If the value is dirty clean it
         if(this->isDirty())

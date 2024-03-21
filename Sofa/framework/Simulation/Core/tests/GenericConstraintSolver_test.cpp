@@ -34,16 +34,20 @@ struct GenericConstraintSolver_test : BaseSimulationTest
 {
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
-        sofa::simpleapi::importPlugin("SofaMiscCollision");
+        sofa::simpleapi::importPlugin("Sofa.Component");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Geometry");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Intersection");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Response.Contact");
     }
 
     void enableConstraintForce()
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <RequiredPlugin name='SofaComponentAll'/>"
-                    "   <RequiredPlugin name='SofaMiscCollision'/>"
+                    "   <RequiredPlugin name='Sofa.Component'/>"
+                    "   <RequiredPlugin name='Sofa.Component.Collision.Geometry'/>"
+                    "   <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection'/>"
+                    "   <RequiredPlugin name='Sofa.Component.Collision.Response.Contact'/>"
                     "   <FreeMotionAnimationLoop />\n"
                     "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"

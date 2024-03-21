@@ -46,8 +46,8 @@ public:
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
 
-    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_ITERATIVE_VERBOSEDATA()
-    Data<bool> f_verbose; ///< Dump system state at each iteration
+    SOFA_ATTRIBUTE_DISABLED__SOLVER_ITERATIVE_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 

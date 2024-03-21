@@ -58,19 +58,19 @@ public:
         : m_components{ r, g, b, a } {}
 
     // compat
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    RGBAColor(const type::fixed_array<float, NumberOfComponents>& c);
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    RGBAColor(const type::Vec4f& c);
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    RGBAColor(const type::fixed_array<float, NumberOfComponents>& c) = delete;
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    RGBAColor(const type::Vec4f& c) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    static RGBAColor fromVec4(const type::fixed_array<float, 4>& color);
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    static RGBAColor fromVec4(const type::fixed_array<double, 4>& color);
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    static RGBAColor fromVec4(const Vec4f& color);
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    static RGBAColor fromVec4(const Vec4d& color);
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const type::fixed_array<float, 4>& color) = delete;
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const type::fixed_array<double, 4>& color) = delete;
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4f& color) = delete;
+    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
+    static RGBAColor fromVec4(const Vec4d& color) = delete;
 
     static RGBAColor fromString(const std::string& str);
     static RGBAColor fromFloat(float r, float g, float b, float a);

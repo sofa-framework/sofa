@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,48 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskScheduler.h>
+#define SOFA_COMPONENT_LINEARSYSTEM_CONSTANTSPARSITYPROJECTIONMETHOD_CPP
+#include <sofa/component/linearsystem/ConstantSparsityProjectionMethod.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
-
-#include <thread>
-
-namespace sofa::simulation
+namespace sofa::component::linearsystem
 {
-unsigned TaskScheduler::GetHardwareThreadsCount()
-{
-    return std::thread::hardware_concurrency() / 2;
+template class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
+
+int ConstantSparsityProjectionMethodClass = core::RegisterObject("Matrix mapping computing the matrix projection taking advantage of the constant sparsity pattern")
+        .add< ConstantSparsityProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
+        ;
 }
-
-bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
-{
-    class CallableTask final : public Task
-    {
-    public:
-        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
-            : Task(scheduledThread)
-            , m_status(status)
-            , m_task(std::move(task))
-        {}
-        ~CallableTask() override = default;
-        sofa::simulation::Task::MemoryAlloc run() final
-        {
-            m_task();
-            return MemoryAlloc::Dynamic;
-        }
-
-        Task::Status* getStatus() const override
-        {
-            return &m_status;
-        }
-
-    private:
-        Task::Status& m_status;
-        std::function<void()> m_task;
-    };
-
-    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
-}
-
-} // namespace sofa::simulation

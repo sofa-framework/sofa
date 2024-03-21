@@ -389,39 +389,4 @@ void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r1, co
 
 }
 
-void Axis::draw(const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const double* mat, const type::Vec3& length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(mat, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(center, orient, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
-void Axis::draw(const double* mat, SReal length, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
-{
-    draw(mat, length, type::RGBAColor::fromVec4(colorX), type::RGBAColor::fromVec4(colorY), type::RGBAColor::fromVec4(colorZ));
-}
-
 } // namespace sofa::gl

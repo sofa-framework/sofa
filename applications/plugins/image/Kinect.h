@@ -59,7 +59,7 @@ namespace container
 
 using namespace cimg_library;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 
 void* globalKinectClassPointer;
 
@@ -106,7 +106,7 @@ public:
     Data<helper::OptionsGroup> depthMode; ///< depth mode
     Data<helper::OptionsGroup> ledMode; ///< led mode
     Data<int> tiltAngle; ///< tilt angle in [-30,30]
-    Data<type::Vector3> accelerometer; ///< Accelerometer data
+    Data<type::Vec3> accelerometer; ///< Accelerometer data
     Data<bool> drawBB; ///< draw bounding box
     Data<bool> drawGravity; ///< draw acceleration
     Data<float> showArrowSize; ///< size of the axis
@@ -126,7 +126,7 @@ public:
         , depthMode ( initData ( &depthMode,"depthMode","depth mode" ) )
         , ledMode ( initData ( &ledMode,"ledMode","led mode" ) )
         , tiltAngle(initData(&tiltAngle,0,"tiltAngle","tilt angle in [-30,30]"))
-        , accelerometer(initData(&accelerometer,Vector3(0,0,0),"accelerometer","Accelerometer data"))
+        , accelerometer(initData(&accelerometer,Vec3(0,0,0),"accelerometer","Accelerometer data"))
         , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
         , drawGravity(initData(&drawGravity,true,"drawGravity","draw acceleration"))
         , showArrowSize(initData(&showArrowSize,0.1f,"showArrowSize","size of the axis"))
@@ -460,7 +460,7 @@ protected:
             freenect_raw_tilt_state* state = freenect_get_tilt_state(f_dev);
             double dx,dy,dz;
             freenect_get_mks_accel(state, &dx, &dy, &dz);
-            this->accelerometer.setValue(Vector3(dx,dy,dz));
+            this->accelerometer.setValue(Vec3(dx,dy,dz));
         }
     }
 
@@ -472,20 +472,20 @@ protected:
     }
 
 
-    void getCorners(Vec<8,Vector3> &c) // get image corners
+    void getCorners(Vec<8,Vec3> &c) // get image corners
     {
         raDepth rimage(this->depthImage);
         const imCoord dim= rimage->getDimensions();
 
-        Vec<8,Vector3> p;
-        p[0]=Vector3(-0.5,-0.5,-0.5);
-        p[1]=Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        Vec<8,Vec3> p;
+        p[0]=Vec3(-0.5,-0.5,-0.5);
+        p[1]=Vec3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=Vec3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=Vec3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=Vec3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=Vec3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=Vec3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=Vec3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->depthTransform);
         for(unsigned int i=0; i<p.size(); i++) c[i]=rtransform->fromImage(p[i]);
@@ -494,7 +494,7 @@ protected:
     virtual void computeBBox(const core::ExecParams*  params )
     {
         if (!drawBB.getValue()) return;
-        Vec<8,Vector3> c;
+        Vec<8,Vec3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -527,7 +527,7 @@ protected:
             glColor4fv(color);
             glLineWidth(2.0);
 
-            Vec<8,Vector3> c;
+            Vec<8,Vec3> c;
             getCorners(c);
             glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
             glBegin(GL_LINE_LOOP);  glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
@@ -541,8 +541,8 @@ protected:
         {
             const Vec<4,float> col(0,1,0,1);
             raTransform rtransform(this->depthTransform);
-            Vector3 camCenter = rtransform->fromImage(Vector3(-0.5,-0.5,-0.5));
-            Vector3 acc = rtransform->qrotation.rotate(this->accelerometer.getValue());
+            Vec3 camCenter = rtransform->fromImage(Vec3(-0.5,-0.5,-0.5));
+            Vec3 acc = rtransform->qrotation.rotate(this->accelerometer.getValue());
             vparams->drawTool()->drawArrow(camCenter, camCenter+acc*showArrowSize.getValue(), showArrowSize.getValue()*0.1, col);
         }
 

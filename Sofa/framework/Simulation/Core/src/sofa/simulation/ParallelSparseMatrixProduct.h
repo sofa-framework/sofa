@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,48 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/linearalgebra/SparseMatrixProduct.inl>
+#include <sofa/simulation/ParallelForEach.h>
 #include <sofa/simulation/TaskScheduler.h>
 
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
-
-#include <thread>
 
 namespace sofa::simulation
 {
-unsigned TaskScheduler::GetHardwareThreadsCount()
-{
-    return std::thread::hardware_concurrency() / 2;
-}
 
-bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
+template<class Lhs, class Rhs, class ResultType>
+class ParallelSparseMatrixProduct
+    : public linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>
 {
-    class CallableTask final : public Task
+public:
+    using linearalgebra::SparseMatrixProduct<Lhs, Rhs, ResultType>::SparseMatrixProduct;
+    TaskScheduler* taskScheduler { nullptr };
+
+    void computeProductFromIntersection() override
     {
-    public:
-        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
-            : Task(scheduledThread)
-            , m_status(status)
-            , m_task(std::move(task))
-        {}
-        ~CallableTask() override = default;
-        sofa::simulation::Task::MemoryAlloc run() final
-        {
-            m_task();
-            return MemoryAlloc::Dynamic;
-        }
+        assert(this->m_intersectionAB.intersection.size() == this->m_productResult.nonZeros());
+        assert(taskScheduler);
 
-        Task::Status* getStatus() const override
-        {
-            return &m_status;
-        }
+        auto* lhs_ptr = this->m_lhs->valuePtr();
+        auto* rhs_ptr = this->m_rhs->valuePtr();
+        auto* product_ptr = this->m_productResult.valuePtr();
 
-    private:
-        Task::Status& m_status;
-        std::function<void()> m_task;
-    };
+        parallelForEachRange(*taskScheduler,
+            this->m_intersectionAB.intersection.begin(), this->m_intersectionAB.intersection.end(),
+            [lhs_ptr, rhs_ptr, product_ptr, this](const auto& range)
+            {
+                auto i = std::distance(this->m_intersectionAB.intersection.begin(), range.start);
+                auto* p = product_ptr + i;
 
-    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
+                for (auto it = range.start; it != range.end; ++it)
+                {
+                    auto& value = *p++;
+                    value = 0;
+                    for (const auto& [lhsIndex, rhsIndex] : *it)
+                    {
+                        value += lhs_ptr[lhsIndex] * rhs_ptr[rhsIndex];
+                    }
+                }
+            });
+    }
+};
+
 }
-
-} // namespace sofa::simulation

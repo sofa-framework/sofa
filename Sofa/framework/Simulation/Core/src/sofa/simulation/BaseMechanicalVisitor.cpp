@@ -197,21 +197,6 @@ Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* 
     return fwdConstraintSet(ctx->node, c);
 }
 
-
-Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, LocalStorage* stack)
-{
-    SOFA_UNUSED(stack);
-    return processNodeTopDown(node);
-}
-
-
-void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalStorage* stack)
-{
-    SOFA_UNUSED(stack);
-    return processNodeBottomUp(node);
-}
-
-
 #ifdef SOFA_DUMP_VISITOR_INFO
 
 void BaseMechanicalVisitor::printReadVectors(core::behavior::BaseMechanicalState* mm)

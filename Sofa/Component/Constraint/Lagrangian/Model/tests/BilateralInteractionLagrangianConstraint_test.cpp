@@ -69,11 +69,12 @@ struct BilateralInteractionLangrangianConstraint_test : public NumericTest<>
     /// Create the context for the tests.
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
-        sofa::simpleapi::importPlugin("SofaMiscCollision");
-        sofa::simpleapi::importPlugin("SofaOpenglVisual");
-        if(simulation==nullptr)
-            sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simpleapi::importPlugin("Sofa.Component");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Geometry");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Intersection");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Response.Contact");
+        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
+        assert(sofa::simulation::getSimulation());
     }
 
     void TearDown() override

@@ -68,12 +68,11 @@ struct SparseMatrixTest : public virtual NumericTest<TReal>
         eigenMatrix.setFromTriplets(first, last);
     }
 
-    static void copyFromEigen(Eigen::SparseMatrix<TReal>& dst, const Eigen::SparseMatrix<TReal>& src)
-    {
-        dst = src;
-    }
-
-    static void copyFromEigen(Eigen::SparseMatrix<TReal, Eigen::RowMajor>& dst, const Eigen::SparseMatrix<TReal, Eigen::RowMajor>& src)
+    template<
+        typename _DstScalar, int _DstOptions, typename _DstStorageIndex,
+        typename _SrcScalar, int _SrcOptions, typename _SrcStorageIndex
+    >
+    static void copyFromEigen(Eigen::SparseMatrix<_DstScalar, _DstOptions, _DstStorageIndex>& dst, const Eigen::SparseMatrix<_SrcScalar, _SrcOptions, _SrcStorageIndex>& src)
     {
         dst = src;
     }
@@ -93,44 +92,22 @@ struct SparseMatrixTest : public virtual NumericTest<TReal>
         }
     }
 
-    static bool compareSparseMatrix(const Eigen::SparseMatrix<TReal>& A, const Eigen::SparseMatrix<TReal>& B)
+    template<
+        typename _AScalar, int _AOptions, typename _AStorageIndex,
+        typename _BScalar, int _BOptions, typename _BStorageIndex
+    >
+    static bool compareSparseMatrix(const Eigen::SparseMatrix<_AScalar, _AOptions, _AStorageIndex>& A, const Eigen::SparseMatrix<_BScalar, _BOptions, _BStorageIndex>& B)
     {
         return compareEigenSparseMatrix(A, B);
     }
 
-    static bool compareEigenSparseMatrix(const Eigen::SparseMatrix<TReal>& A, const Eigen::SparseMatrix<TReal>& B)
+    template<
+        typename _AScalar, int _AOptions, typename _AStorageIndex,
+        typename _BScalar, int _BOptions, typename _BStorageIndex
+    >
+    static bool compareEigenSparseMatrix(const Eigen::SparseMatrix<_AScalar, _AOptions, _AStorageIndex>& A, const Eigen::SparseMatrix<_BScalar, _BOptions, _BStorageIndex>& B)
     {
-        if (A.outerSize() != B.outerSize())
-            return false;
-
-        for (int k = 0; k < A.outerSize(); ++k)
-        {
-            sofa::type::vector<Eigen::Triplet<TReal> > triplets_a, triplets_b;
-            for (typename Eigen::SparseMatrix<TReal>::InnerIterator it(A, k); it; ++it)
-            {
-                triplets_a.emplace_back(it.row(), it.col(), it.value());
-            }
-            for (typename Eigen::SparseMatrix<TReal>::InnerIterator it(B, k); it; ++it)
-            {
-                triplets_b.emplace_back(it.row(), it.col(), it.value());
-            }
-
-            if (triplets_a.size() != triplets_b.size())
-                return false;
-
-            for (size_t i = 0 ; i < triplets_a.size(); ++i)
-            {
-                const auto& a = triplets_a[i];
-                const auto& b = triplets_b[i];
-
-                if (a.row() != b.row() || a.col() != b.col() || !NumericTest<TReal>::isSmall(a.value() - b.value(), 1))
-                {
-                    // ret = false;
-                    return false;
-                }
-            }
-        }
-        return true;
+        return A.isApprox(B);
     }
 
 
