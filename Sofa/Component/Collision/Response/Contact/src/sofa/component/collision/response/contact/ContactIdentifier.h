@@ -24,6 +24,7 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <list>
+#include <atomic>
 
 
 namespace sofa::component::collision::response::contact
