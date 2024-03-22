@@ -57,8 +57,8 @@ TEST(QuaterTest, EulerAngles)
         // make sure the angles don't lead to a singularity
         for (const auto& angle : eulerAngles)
         {
-            ASSERT_TRUE(std::abs(angle - M_PI / 2) >= 1e-3);
-            ASSERT_TRUE(std::abs(angle + M_PI / 2) >= 1e-3);
+            ASSERT_GE(std::abs(angle - M_PI / 2), 1e-3);
+            ASSERT_GE(std::abs(angle + M_PI / 2), 1e-3);
         }
 
         // Transform Euler angles back to a quaternion (q1)

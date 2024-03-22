@@ -109,9 +109,9 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
         }
         else
         {
-            ASSERT_TRUE( fabs(pos.x()-rpos.x()) < 1 );
-            ASSERT_TRUE( fabs(pos.y()-rpos.y()) < 1 );
-            ASSERT_TRUE( fabs(pos.z()-rpos.z()) < 1 );
+            ASSERT_LT( fabs(pos.x()-rpos.x()), 1 );
+            ASSERT_LT( fabs(pos.y()-rpos.y()), 1 );
+            ASSERT_LT( fabs(pos.z()-rpos.z()), 1 );
         }
     }
 }
