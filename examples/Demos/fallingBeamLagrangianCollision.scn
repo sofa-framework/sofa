@@ -25,6 +25,8 @@
     </Node>
 
     <VisualStyle displayFlags="showForceFields"/>
+    <ConstraintAttachButtonSetting/>
+
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
