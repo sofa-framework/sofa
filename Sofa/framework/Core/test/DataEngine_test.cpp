@@ -91,21 +91,21 @@ struct DataEngine_test: public BaseTest
     void testTrackedData(T& engine)
     {
         // input did not change, it is not dirtied, so neither its associated DataTracker
-        ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
+        ASSERT_EQ(engine.output.getValue(), TestEngine::NO_CHANGED);
 
         // modifying input sets it as dirty, so its associated DataTracker too
         engine.input.setValue(true);
-        ASSERT_TRUE(engine.output.getValue()==TestEngine::CHANGED);
+        ASSERT_EQ(engine.output.getValue(), TestEngine::CHANGED);
 
         // nothing changes, no one is dirty
         engine.update();
-        ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
+        ASSERT_EQ(engine.output.getValue(), TestEngine::NO_CHANGED);
 
         // modifying input sets it as dirty, so its associated DataTracker too
         engine.input.setValue(true);
         // cleaning/accessing the input will not clean its associated DataTracker
         engine.input.cleanDirty();
-        ASSERT_TRUE(engine.output.getValue()==TestEngine::CHANGED);
+        ASSERT_EQ(engine.output.getValue(), TestEngine::CHANGED);
     }
 
 };
