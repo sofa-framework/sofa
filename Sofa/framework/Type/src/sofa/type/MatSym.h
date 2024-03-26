@@ -145,7 +145,7 @@ public:
     }
 
     /// convert to Voigt notation (supported only for D == 2 and D == 3)
-    template<sofa::Size TD = D, typename = std::enable_if_t<D == 3 || D == 2> >
+    template<sofa::Size TD = D, typename = std::enable_if_t<TD == 3 || TD == 2> >
     inline Vec<NumberStoredValues, real> getVoigt() const
     {
         Vec<NumberStoredValues, real> result {NOINIT};
