@@ -304,7 +304,7 @@ int main(int argc, char** argv)
         "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
     );
     argParser->addArgument(
-        cxxopts::value<std::vector<std::string> >(),
+        cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
         "argv",
         "forward extra args to the python interpreter"
     );
