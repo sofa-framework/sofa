@@ -41,7 +41,7 @@ NarrowPhaseDetection::~NarrowPhaseDetection()
 
 void NarrowPhaseDetection::beginNarrowPhase()
 {
-    for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
+    for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); ++it)
     {
         DetectionOutputVector *do_vec = (it->second);
 
@@ -71,7 +71,7 @@ void NarrowPhaseDetection::draw(const core::visual::VisualParams* vparams)
 
 void NarrowPhaseDetection::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
 {
-    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); ++it)
         addCollisionPair(*it);
 
     // m_outputsMap should just be filled in addCollisionPair function

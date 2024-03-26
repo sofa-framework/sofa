@@ -12,7 +12,7 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="Single">
-	<VariationalSymplecticSolver name="default0"  tags="meca" rayleighStiffness="0" rayleighMass="0" newtonError="1e-12" steps="4" verbose="0" file="energy.txt" saveEnergyInFile ="true"/>
+	<VariationalSymplecticSolver name="default0"  tags="meca" rayleighStiffness="0" rayleighMass="0" newtonError="1e-12" steps="4" file="energy.txt" saveEnergyInFile ="true"/>
         <CGLinearSolver template="GraphScattered" name="cGLinearSolver1" iterations="300"  tolerance="1e-09"  threshold="1e-9"/>
         <Node name="M1">
             <MechanicalObject />

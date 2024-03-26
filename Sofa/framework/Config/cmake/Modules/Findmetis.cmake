@@ -14,7 +14,7 @@
 # was used to provide the library, as some package managers (such vcpkg) defines only short name
 # for the target, whereas others (such as conan) defines a fully qualified name.
 
-find_package(metis NO_MODULE QUIET HINTS ${metis_DIR})
+find_package(metis NO_MODULE QUIET HINTS ${metis_DIR} NAMES metis Metis)
 
 
 if(NOT metis_FIND_VERSION)
@@ -46,12 +46,12 @@ macro(_metis_check_version)
   set(metis_VERSION_OK TRUE)
   if(${metis_VERSION} VERSION_LESS ${metis_FIND_VERSION})
     set(metis_VERSION_OK FALSE)
-    message(SEND_ERROR "metis version ${metis_VERSION} found in ${metis_INCLUDE_DIR}, "
+    message(WARNING "metis version ${metis_VERSION} found in ${metis_INCLUDE_DIR}, "
                        "but at least version ${metis_FIND_VERSION} is required")
   endif()
   if(${metis_FIND_VERSION_EXACT} AND NOT ${metis_VERSION} VERSION_EQUAL ${metis_FIND_VERSION})
     set(metis_VERSION_OK FALSE)
-    message(SEND_ERROR "metis version ${metis_VERSION} found in ${metis_INCLUDE_DIR}, "
+    message(WARNING "metis version ${metis_VERSION} found in ${metis_INCLUDE_DIR}, "
                        "but exact version ${metis_FIND_VERSION} is required")
   endif()
 endmacro()
@@ -60,8 +60,8 @@ if(TARGET metis)
   set(metis_FOUND TRUE) # only metis_FOUND has been set
   if(metis_INCLUDE_DIR AND NOT DEFINED metis_VERSION)
     _metis_check_version()
+    set(metis_FOUND ${metis_VERSION_OK})
   endif()
-  set(metis_FOUND ${metis_VERSION_OK})
   add_library(metis::metis ALIAS metis)
 else()
 

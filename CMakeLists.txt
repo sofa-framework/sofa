@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 23)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 24)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -91,6 +91,7 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
@@ -174,7 +175,6 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
 endif()
 sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)

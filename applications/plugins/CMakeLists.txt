@@ -14,7 +14,7 @@ sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF mas
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
-sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid)
+sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
@@ -26,7 +26,6 @@ sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL GIT_REF master)     # Depends on image
 sofa_add_subdirectory(plugin Registration Registration EXTERNAL GIT_REF master) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL GIT_REF master)
@@ -35,7 +34,6 @@ sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
 sofa_add_subdirectory(plugin SofaOpenCL SofaOpenCL)
 sofa_add_subdirectory(plugin Xitact Xitact)
 sofa_add_subdirectory(plugin Haption Haption)
-sofa_add_subdirectory(plugin ManualMapping ManualMapping)
 sofa_add_subdirectory(plugin PersistentContact PersistentContact)
 sofa_add_subdirectory(plugin Sensable Sensable)
 sofa_add_subdirectory(plugin SensableEmulation SensableEmulation)
