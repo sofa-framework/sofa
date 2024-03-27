@@ -40,9 +40,14 @@ Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(VisitorConte
         {
             VMultiOp ops2 = ops;
             const SReal fact = *ctx->nodeData;
-            for (VMultiOp::iterator it = ops2.begin(), itend = ops2.end(); it != itend; ++it)
-                for (unsigned int i = 1; i < it->second.size(); ++i)
-                    it->second[i].second *= fact;
+            for (auto& op : ops2)
+            {
+                auto& linearCombination = op.getLinearCombination();
+                for (std::size_t i = 1; i < op.getLinearCombination().size(); ++i)
+                {
+                    linearCombination[i].factor *= fact;
+                }
+            }
             mm->vMultiOp(this->params, ops2 );
         }
         else
@@ -61,29 +66,29 @@ std::string MechanicalVMultiOpVisitor::getInfos() const
     {
         if (it != ops.begin())
             out << " ;   ";
-        core::MultiVecId r = it->first;
+        core::MultiVecId r = it->getOutput();
         out << r.getName();
-        const type::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
-        const int nop = (int)operands.size();
+        const auto& operands = it->getLinearCombination();
+        const std::size_t nop = operands.size();
         if (nop==0)
         {
             out << " = 0";
         }
         else if (nop==1)
         {
-            if (operands[0].first.getName() == r.getName())
-                out << " *= " << operands[0].second;
+            if (operands[0].id.getName() == r.getName())
+                out << " *= " << operands[0].factor;
             else
             {
-                out << " = " << operands[0].first.getName();
-                if (operands[0].second != 1.0)
-                    out << "*"<<operands[0].second;
+                out << " = " << operands[0].id.getName();
+                if (operands[0].factor != 1.0)
+                    out << "*"<<operands[0].factor;
             }
         }
         else
         {
             int i;
-            if (operands[0].first.getName() == r.getName() && operands[0].second == 1.0)
+            if (operands[0].id.getName() == r.getName() && operands[0].factor == 1.0)
             {
                 out << " +=";
                 i = 1;
@@ -95,9 +100,9 @@ std::string MechanicalVMultiOpVisitor::getInfos() const
             }
             for (; i<nop; ++i)
             {
-                out << " " << operands[i].first.getName();
-                if (operands[i].second != 1.0)
-                    out << "*"<<operands[i].second;
+                out << " " << operands[i].id.getName();
+                if (operands[i].factor != 1.0)
+                    out << "*"<<operands[i].factor;
                 if (i < nop-1)
                     out << " +";
             }

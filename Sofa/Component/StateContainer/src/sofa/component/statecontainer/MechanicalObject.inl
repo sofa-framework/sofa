@@ -1989,24 +1989,24 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const
 {
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2
-            && ops[0].second.size() == 2
-            && ops[0].first.getId(this) == ops[0].second[0].first.getId(this)
-            && ops[0].first.getId(this).type == sofa::core::V_DERIV
-            && ops[0].second[1].first.getId(this).type == sofa::core::V_DERIV
-            && ops[1].second.size() == 2
-            && ops[1].first.getId(this) == ops[1].second[0].first.getId(this)
-            && ops[0].first.getId(this) == ops[1].second[1].first.getId(this)
-            && ops[1].first.getId(this).type == sofa::core::V_COORD)
+            && ops[0].getLinearCombination().size() == 2
+            && ops[0].getOutput().getId(this) == ops[0].getLinearCombination()[0].id.getId(this)
+            && ops[0].getOutput().getId(this).type == sofa::core::V_DERIV
+            && ops[0].getLinearCombination()[1].id.getId(this).type == sofa::core::V_DERIV
+            && ops[1].getLinearCombination().size() == 2
+            && ops[1].getOutput().getId(this) == ops[1].getLinearCombination()[0].id.getId(this)
+            && ops[0].getOutput().getId(this) == ops[1].getLinearCombination()[1].id.getId(this)
+            && ops[1].getOutput().getId(this).type == sofa::core::V_COORD)
     {
-        auto va = getReadAccessor<core::V_DERIV>(ops[0].second[1].first.getId(this));
-        auto vv = getWriteAccessor<core::V_DERIV>(ops[0].first.getId(this));
-        auto vx = getWriteAccessor<core::V_COORD>(ops[1].first.getId(this));
+        auto va = getReadAccessor<core::V_DERIV>(ops[0].getLinearCombination()[1].id.getId(this));
+        auto vv = getWriteAccessor<core::V_DERIV>(ops[0].getOutput().getId(this));
+        auto vx = getWriteAccessor<core::V_COORD>(ops[1].getOutput().getId(this));
 
         const auto n = vx.size();
-        const Real f_v_v = (Real)(ops[0].second[0].second);
-        const Real f_v_a = (Real)(ops[0].second[1].second);
-        const Real f_x_x = (Real)(ops[1].second[0].second);
-        const Real f_x_v = (Real)(ops[1].second[1].second);
+        const Real f_v_v = (Real)(ops[0].getLinearCombination()[0].factor);
+        const Real f_v_a = (Real)(ops[0].getLinearCombination()[1].factor);
+        const Real f_x_x = (Real)(ops[1].getLinearCombination()[0].factor);
+        const Real f_x_v = (Real)(ops[1].getLinearCombination()[1].factor);
 
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
@@ -2048,23 +2048,23 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const
         }
     }
     else if(ops.size()==2 //used in the ExplicitBDF solver only (Electrophysiology)
-            && ops[0].second.size()==1
-            && ops[0].second[0].second == 1.0
-            && ops[1].second.size()==3
+            && ops[0].getLinearCombination().size()==1
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[1].getLinearCombination().size()==3
             )
     {
-        auto v11 = getReadAccessor<core::V_COORD>(ops[0].second[0].first.getId(this));
-        auto v21 = getReadAccessor<core::V_COORD>(ops[1].second[0].first.getId(this));
-        auto v22 = getReadAccessor<core::V_COORD>(ops[1].second[1].first.getId(this));
-        auto v23 = getReadAccessor<core::V_DERIV>(ops[1].second[2].first.getId(this));
+        auto v11 = getReadAccessor<core::V_COORD>(ops[0].getLinearCombination()[0].id.getId(this));
+        auto v21 = getReadAccessor<core::V_COORD>(ops[1].getLinearCombination()[0].id.getId(this));
+        auto v22 = getReadAccessor<core::V_COORD>(ops[1].getLinearCombination()[1].id.getId(this));
+        auto v23 = getReadAccessor<core::V_DERIV>(ops[1].getLinearCombination()[2].id.getId(this));
 
-        auto previousPos = getWriteAccessor<core::V_COORD>(ops[0].first.getId(this));
-        auto newPos = getWriteAccessor<core::V_COORD>(ops[1].first.getId(this));
+        auto previousPos = getWriteAccessor<core::V_COORD>(ops[0].getOutput().getId(this));
+        auto newPos = getWriteAccessor<core::V_COORD>(ops[1].getOutput().getId(this));
 
         const auto n = v11.size();
-        const Real f_1 = (Real)(ops[1].second[0].second);
-        const Real f_2 = (Real)(ops[1].second[1].second);
-        const Real f_3 = (Real)(ops[1].second[2].second);
+        const Real f_1 = (Real)(ops[1].getLinearCombination()[0].factor);
+        const Real f_2 = (Real)(ops[1].getLinearCombination()[1].factor);
+        const Real f_3 = (Real)(ops[1].getLinearCombination()[2].factor);
 
         for (unsigned int i=0; i<n; ++i)
         {

@@ -36,7 +36,7 @@ namespace sofa::simulation::mechanicalvisitor
 class SOFA_SIMULATION_CORE_API MechanicalVMultiOpVisitor : public BaseMechanicalVisitor
 {
 public:
-    typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef sofa::core::behavior::VMultiOp VMultiOp;
     bool mapped;
     MechanicalVMultiOpVisitor(const sofa::core::ExecParams* params, const VMultiOp& o)
             : BaseMechanicalVisitor(params), mapped(false), ops(o)

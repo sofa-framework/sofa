@@ -50,15 +50,16 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 #else // single-operation optimization
-    typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp ops;
-    ops.resize(2);
-    ops[0].first = (MultiVecDerivId)x;
-    ops[0].second.push_back(std::make_pair((MultiVecDerivId)x,1.0));
-    ops[0].second.push_back(std::make_pair((MultiVecDerivId)p,alpha));
-    ops[1].first = (MultiVecDerivId)r;
-    ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
-    ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
+    using core::behavior::ScaledConstMultiVecId;
+
+    sofa::core::behavior::VMultiOp ops(2);
+    ops[0] = core::behavior::VMultiOpEntry{(MultiVecDerivId)x,
+        ScaledConstMultiVecId{x, 1_sreal} + ScaledConstMultiVecId{p, alpha}
+    };
+    ops[1] = core::behavior::VMultiOpEntry{(MultiVecDerivId)r,
+            ScaledConstMultiVecId{r, 1_sreal} + ScaledConstMultiVecId{q, -alpha}
+    };
+
     this->executeVisitor(MechanicalVMultiOpVisitor(params, ops));
 #endif
 }

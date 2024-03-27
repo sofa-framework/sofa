@@ -1152,55 +1152,55 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2
-        && ops[0].second.size() == 2
-        && ops[0].first.getId(m) == ops[0].second[0].first.getId(m)
-        && ops[0].first.getId(m).type == sofa::core::V_DERIV
-        && ops[0].second[1].first.getId(m).type == sofa::core::V_DERIV
-        && ops[1].second.size() == 2
-        && ops[1].first.getId(m) == ops[1].second[0].first.getId(m)
-        && ops[0].first.getId(m) == ops[1].second[1].first.getId(m)
-        && ops[1].first.getId(m).type == sofa::core::V_COORD)
+        && ops[0].getLinearCombination().size() == 2
+        && ops[0].getOutput().getId(m) == ops[0].getLinearCombination()[0].id.getId(m)
+        && ops[0].getOutput().getId(m).type == sofa::core::V_DERIV
+        && ops[0].getLinearCombination()[1].id.getId(m).type == sofa::core::V_DERIV
+        && ops[1].getLinearCombination().size() == 2
+        && ops[1].getOutput().getId(m) == ops[1].getLinearCombination()[0].id.getId(m)
+        && ops[0].getOutput().getId(m) == ops[1].getLinearCombination()[1].id.getId(m)
+        && ops[1].getOutput().getId(m).type == sofa::core::V_COORD)
     {
-        const Data<VecDeriv>* d_va = m->read(core::ConstVecDerivId(ops[0].second[1].first.getId(m)));
+        const Data<VecDeriv>* d_va = m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[1].id.getId(m)));
         const VecDeriv* va = &d_va->getValue();
-        Data<VecDeriv>* d_vv = m->write(core::VecDerivId(ops[0].first.getId(m)));
+        Data<VecDeriv>* d_vv = m->write(core::VecDerivId(ops[0].getOutput().getId(m)));
         VecDeriv* vv = d_vv->beginEdit();
-        Data<VecCoord>* d_vx = m->write(core::VecCoordId(ops[1].first.getId(m)));
+        Data<VecCoord>* d_vx = m->write(core::VecCoordId(ops[1].getOutput().getId(m)));
         VecDeriv* vx = d_vx->beginEdit();
         const unsigned int n = vx->size();
-        const double f_v_v = ops[0].second[0].second;
-        const double f_v_a = ops[0].second[1].second;
-        const double f_x_x = ops[1].second[0].second;
-        const double f_x_v = ops[1].second[1].second;
+        const double f_v_v = ops[0].getLinearCombination()[0].factor;
+        const double f_v_a = ops[0].getLinearCombination()[1].factor;
+        const double f_x_x = ops[1].getLinearCombination()[0].factor;
+        const double f_x_v = ops[1].getLinearCombination()[1].factor;
         Kernels::vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (Real)f_v_v, (Real)f_v_a, (Real)f_x_x, (Real)f_x_v);
         d_vv->endEdit();
         d_vx->endEdit();
     }
     // optimize common CG step: x += a*p, q -= a*v
-    else if (ops.size() == 2 && ops[0].second.size() == 2
-            && ops[0].first.getId(m) == ops[0].second[0].first.getId(m)
-            && ops[0].second[0].second == 1.0
-            && ops[0].first.getId(m).type == sofa::core::V_DERIV
-            && ops[0].second[1].first.getId(m).type == sofa::core::V_DERIV
-            && ops[1].second.size() == 2
-            && ops[1].first.getId(m) == ops[1].second[0].first.getId(m)
-            && ops[1].second[0].second == 1.0
-            && ops[1].first.getId(m).type == sofa::core::V_DERIV
-            && ops[1].second[1].first.getId(m).type == sofa::core::V_DERIV)
+    else if (ops.size() == 2 && ops[0].getLinearCombination().size() == 2
+            && ops[0].getOutput().getId(m) == ops[0].getLinearCombination()[0].id.getId(m)
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[0].getOutput().getId(m).type == sofa::core::V_DERIV
+            && ops[0].getLinearCombination()[1].id.getId(m).type == sofa::core::V_DERIV
+            && ops[1].getLinearCombination().size() == 2
+            && ops[1].getOutput().getId(m) == ops[1].getLinearCombination()[0].id.getId(m)
+            && ops[1].getLinearCombination()[0].factor == 1.0
+            && ops[1].getOutput().getId(m).type == sofa::core::V_DERIV
+            && ops[1].getLinearCombination()[1].id.getId(m).type == sofa::core::V_DERIV)
     {
-        const Data<VecDeriv>* d_vv1 = m->read(core::ConstVecDerivId(ops[0].second[1].first.getId(m)));
+        const Data<VecDeriv>* d_vv1 = m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[1].id.getId(m)));
         const VecDeriv* vv1 = &d_vv1->getValue();
-        const Data<VecDeriv>* d_vv2 = m->read(core::ConstVecDerivId(ops[1].second[1].first.getId(m)));
+        const Data<VecDeriv>* d_vv2 = m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[1].id.getId(m)));
         const VecDeriv* vv2 = &d_vv2->getValue();
 
-        Data<VecDeriv>* d_vres1 = m->write(core::VecDerivId(ops[0].first.getId(m)));
+        Data<VecDeriv>* d_vres1 = m->write(core::VecDerivId(ops[0].getOutput().getId(m)));
         VecDeriv* vres1 = d_vres1->beginEdit();
-        Data<VecDeriv>* d_vres2 = m->write(core::VecDerivId(ops[1].first.getId(m)));
+        Data<VecDeriv>* d_vres2 = m->write(core::VecDerivId(ops[1].getOutput().getId(m)));
         VecDeriv* vres2 = d_vres2->beginEdit();
 
         const unsigned int n = vres1->size();
-        const double f1 = ops[0].second[1].second;
-        const double f2 = ops[1].second[1].second;
+        const double f1 = ops[0].getLinearCombination()[1].factor;
+        const double f2 = ops[1].getLinearCombination()[1].factor;
         Kernels::vPEqBF2(n, vres1->deviceWrite(), vv1->deviceRead(), f1, vres2->deviceWrite(), vv2->deviceRead(), f2);
 
         d_vres1->endEdit();
@@ -1208,82 +1208,82 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     }
     // optimize a pair of generic vOps
     else if (ops.size()==2
-            && ops[0].second.size()==2
-            && ops[0].second[0].second == 1.0
-            && ops[1].second.size()==2
-            && ops[1].second[0].second == 1.0)
+            && ops[0].getLinearCombination().size()==2
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[1].getLinearCombination().size()==2
+            && ops[1].getLinearCombination()[0].factor == 1.0)
     {
         const unsigned int n = m->getSize();
 
         void* w0Ptr, *r0Ptr0, *r0Ptr1;
         void* w1Ptr, *r1Ptr0, *r1Ptr1;
 
-        w0Ptr  = (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].first.getId(m)))->beginEdit()->deviceWrite();
-        r0Ptr0 = (ops[0].second[0].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[0].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[0].first.getId(m)))->getValue().deviceRead();
-        r0Ptr1 = (ops[0].second[1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[1].first.getId(m)))->getValue().deviceRead();
-        w1Ptr  = (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].first.getId(m)))->beginEdit()->deviceWrite();
-        r1Ptr0 = (ops[1].second[0].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[0].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[0].first.getId(m)))->getValue().deviceRead();
-        r1Ptr1 = (ops[1].second[1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[1].first.getId(m)))->getValue().deviceRead();
+        w0Ptr  = (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r0Ptr0 = (ops[0].getLinearCombination()[0].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
+        r0Ptr1 = (ops[0].getLinearCombination()[1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead();
+        w1Ptr  = (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r1Ptr0 = (ops[1].getLinearCombination()[0].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
+        r1Ptr1 = (ops[1].getLinearCombination()[1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead();
 
-        Kernels::vOp2(n, w0Ptr, r0Ptr0, r0Ptr1,	ops[0].second[1].second, w1Ptr, r1Ptr0, r1Ptr1, ops[1].second[1].second);
+        Kernels::vOp2(n, w0Ptr, r0Ptr0, r0Ptr1,	ops[0].getLinearCombination()[1].factor, w1Ptr, r1Ptr0, r1Ptr1, ops[1].getLinearCombination()[1].factor);
 
-        (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].first.getId(m)))->endEdit();
-        (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].first.getId(m)))->endEdit();
+        (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->endEdit();
+        (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->endEdit();
     }
     // optimize a pair of 4-way accumulations (such as at the end of RK4)
     else if (ops.size()==2
-            && ops[0].second.size()==5
-            && ops[0].second[0].first.getId(m) == ops[0].first.getId(m)
-            && ops[0].second[0].second == 1.0
-            && ops[1].second.size()==5
-            && ops[1].second[0].first.getId(m) == ops[1].first.getId(m)
-            && ops[1].second[0].second == 1.0)
+            && ops[0].getLinearCombination().size()==5
+            && ops[0].getLinearCombination()[0].id.getId(m) == ops[0].getOutput().getId(m)
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[1].getLinearCombination().size()==5
+            && ops[1].getLinearCombination()[0].id.getId(m) == ops[1].getOutput().getId(m)
+            && ops[1].getLinearCombination()[0].factor == 1.0)
     {
         const unsigned int n = m->getSize();
 
         void* w0Ptr, *r0Ptr[4];
         void* w1Ptr, *r1Ptr[4];
 
-        w0Ptr  = (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].first.getId(m)))->beginEdit()->deviceWrite();
-        w1Ptr  = (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].first.getId(m)))->beginEdit()->deviceWrite();
+        w0Ptr  = (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        w1Ptr  = (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite();
 
         for(unsigned int i=0 ; i < 4 ; i++)
         {
-            r0Ptr[i] = (ops[0].second[i+1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[i+1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[i+1].first.getId(m)))->getValue().deviceRead();
-            r1Ptr[i] = (ops[1].second[i+1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[i+1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[i+1].first.getId(m)))->getValue().deviceRead();;
+            r0Ptr[i] = (ops[0].getLinearCombination()[i+1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[i+1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[i+1].id.getId(m)))->getValue().deviceRead();
+            r1Ptr[i] = (ops[1].getLinearCombination()[i+1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[i+1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[i+1].id.getId(m)))->getValue().deviceRead();;
 
         }
-        Kernels::vPEq4BF2(n, w0Ptr, r0Ptr[0], ops[0].second[1].second, r0Ptr[1], ops[0].second[2].second, r0Ptr[2], ops[0].second[3].second, r0Ptr[3], ops[0].second[4].second,
-                w1Ptr, r1Ptr[0], ops[1].second[1].second, r1Ptr[1], ops[1].second[2].second, r1Ptr[2], ops[1].second[3].second, r1Ptr[3], ops[1].second[4].second);
+        Kernels::vPEq4BF2(n, w0Ptr, r0Ptr[0], ops[0].getLinearCombination()[1].factor, r0Ptr[1], ops[0].getLinearCombination()[2].factor, r0Ptr[2], ops[0].getLinearCombination()[3].factor, r0Ptr[3], ops[0].getLinearCombination()[4].factor,
+                w1Ptr, r1Ptr[0], ops[1].getLinearCombination()[1].factor, r1Ptr[1], ops[1].getLinearCombination()[2].factor, r1Ptr[2], ops[1].getLinearCombination()[3].factor, r1Ptr[3], ops[1].getLinearCombination()[4].factor);
 
-        (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].first.getId(m)))->endEdit();
-        (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].first.getId(m)))->endEdit();
+        (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->endEdit();
+        (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->endEdit();
 
         //Kernels::vPEq4BF2(n,
-        //	(ops[0].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].first.index)->deviceWrite() : m->getVecDeriv(ops[0].first.index)->deviceWrite(),
-        //	(ops[0].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
-        //	ops[0].second[1].second,
-        //	(ops[0].second[2].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[2].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[2].first.index)->deviceRead(),
-        //	ops[0].second[2].second,
-        //	(ops[0].second[3].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[3].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[3].first.index)->deviceRead(),
-        //	ops[0].second[3].second,
-        //	(ops[0].second[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[4].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[4].first.index)->deviceRead(),
-        //	ops[0].second[4].second,
-        //	(ops[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].first.index)->deviceWrite() : m->getVecDeriv(ops[1].first.index)->deviceWrite(),
-        //	(ops[1].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
-        //	ops[1].second[1].second,
-        //	(ops[1].second[2].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[2].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[2].first.index)->deviceRead(),
-        //	ops[1].second[2].second,
-        //	(ops[1].second[3].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[3].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[3].first.index)->deviceRead(),
-        //	ops[1].second[3].second,
-        //	(ops[1].second[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[4].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[4].first.index)->deviceRead(),
-        //	ops[1].second[4].second);
+        //	(ops[0].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[0].getOutput().index)->deviceWrite(),
+        //	(ops[0].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[1].id.index)->deviceRead(),
+        //	ops[0].getLinearCombination()[1].factor,
+        //	(ops[0].getLinearCombination()[2].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[2].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[2].id.index)->deviceRead(),
+        //	ops[0].getLinearCombination()[2].factor,
+        //	(ops[0].getLinearCombination()[3].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[3].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[3].id.index)->deviceRead(),
+        //	ops[0].getLinearCombination()[3].factor,
+        //	(ops[0].getLinearCombination()[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[4].first.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[4].first.index)->deviceRead(),
+        //	ops[0].getLinearCombination()[4].second,
+        //	(ops[1].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[1].getOutput().index)->deviceWrite(),
+        //	(ops[1].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[1].id.index)->deviceRead(),
+        //	ops[1].getLinearCombination()[1].factor,
+        //	(ops[1].getLinearCombination()[2].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[2].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[2].id.index)->deviceRead(),
+        //	ops[1].getLinearCombination()[2].factor,
+        //	(ops[1].getLinearCombination()[3].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[3].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[3].id.index)->deviceRead(),
+        //	ops[1].getLinearCombination()[3].factor,
+        //	(ops[1].getLinearCombination()[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[4].first.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[4].first.index)->deviceRead(),
+        //	ops[1].getLinearCombination()[4].second);
     }
     // optimize a 3-way accumulation and a 1-way accumulation (BDF Explicit Solver) x1 = a1, x2 = a21*f21 + a22*f22 + a23*f23
     else if (ops.size()==2
-            && ops[0].second.size()==1
-            && ops[0].second[0].second == 1.0
-            && ops[1].second.size()==3
+            && ops[0].getLinearCombination().size()==1
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[1].getLinearCombination().size()==3
             )
     {
         const unsigned int n = m->getSize();
@@ -1291,36 +1291,36 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         void* w0Ptr, *r0Ptr0;
         void* w1Ptr, *r1Ptr[3];
 
-        w0Ptr  = (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].first.getId(m)))->beginEdit()->deviceWrite();
-        r0Ptr0 = (ops[0].second[0].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[0].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[0].first.getId(m)))->getValue().deviceRead();
+        w0Ptr  = (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r0Ptr0 = (ops[0].getLinearCombination()[0].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
 
-        w1Ptr  = (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].first.getId(m)))->beginEdit()->deviceWrite();
-        r1Ptr[0] = (ops[1].second[0].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[0].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[0].first.getId(m)))->getValue().deviceRead();
-        r1Ptr[1] = (ops[1].second[1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[1].first.getId(m)))->getValue().deviceRead();
-        r1Ptr[2] = (ops[1].second[2].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].second[2].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].second[2].first.getId(m)))->getValue().deviceRead();
+        w1Ptr  = (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r1Ptr[0] = (ops[1].getLinearCombination()[0].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
+        r1Ptr[1] = (ops[1].getLinearCombination()[1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead();
+        r1Ptr[2] = (ops[1].getLinearCombination()[2].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[1].getLinearCombination()[2].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[2].id.getId(m)))->getValue().deviceRead();
 
-        Kernels::vMultiOpA1B3(n, w0Ptr, r0Ptr0, w1Ptr, r1Ptr[0], ops[1].second[0].second, r1Ptr[1], ops[1].second[1].second, r1Ptr[2], ops[1].second[2].second);
+        Kernels::vMultiOpA1B3(n, w0Ptr, r0Ptr0, w1Ptr, r1Ptr[0], ops[1].getLinearCombination()[0].factor, r1Ptr[1], ops[1].getLinearCombination()[1].factor, r1Ptr[2], ops[1].getLinearCombination()[2].factor);
 
-        (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].first.getId(m)))->endEdit();
-        (ops[1].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].first.getId(m)))->endEdit();
+        (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->endEdit();
+        (ops[1].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[1].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->endEdit();
     }
     // optimize a 4-way accumulation x = a11*f11 + a12*f12 + a13*f13 + a14*f14
     else if (ops.size()==1
-            && ops[0].second.size()==4)
+            && ops[0].getLinearCombination().size()==4)
     {
         const unsigned int n = m->getSize();
 
         void* w0Ptr, *r0Ptr[4];
 
-        w0Ptr  = (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].first.getId(m)))->beginEdit()->deviceWrite();
-        r0Ptr[0] = (ops[0].second[0].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[0].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[0].first.getId(m)))->getValue().deviceRead();
-        r0Ptr[1] = (ops[0].second[1].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[1].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[1].first.getId(m)))->getValue().deviceRead();
-        r0Ptr[2] = (ops[0].second[2].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[2].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[2].first.getId(m)))->getValue().deviceRead();
-        r0Ptr[3] = (ops[0].second[3].first.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].second[3].first.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].second[3].first.getId(m)))->getValue().deviceRead();
+        w0Ptr  = (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r0Ptr[0] = (ops[0].getLinearCombination()[0].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
+        r0Ptr[1] = (ops[0].getLinearCombination()[1].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead();
+        r0Ptr[2] = (ops[0].getLinearCombination()[2].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[2].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[2].id.getId(m)))->getValue().deviceRead();
+        r0Ptr[3] = (ops[0].getLinearCombination()[3].id.getId(m).type == sofa::core::V_COORD) ? m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[3].id.getId(m)))->getValue().deviceRead() : m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[3].id.getId(m)))->getValue().deviceRead();
 
-        Kernels::vOp4(n, w0Ptr, r0Ptr[0], ops[0].second[0].second, r0Ptr[1], ops[0].second[1].second, r0Ptr[2], ops[0].second[2].second, r0Ptr[3], ops[0].second[3].second);
+        Kernels::vOp4(n, w0Ptr, r0Ptr[0], ops[0].getLinearCombination()[0].factor, r0Ptr[1], ops[0].getLinearCombination()[1].factor, r0Ptr[2], ops[0].getLinearCombination()[2].factor, r0Ptr[3], ops[0].getLinearCombination()[3].factor);
 
-        (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].first.getId(m)))->endEdit();
+        (ops[0].getOutput().getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].getOutput().getId(m)))->endEdit();
     }
     // optimize the solve for MCNAB sovler
     // 1) x += v*dt
@@ -1328,13 +1328,13 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     // 3) prevDiff=diff
 
     else if (ops.size()==3
-            && ops[0].second.size()==2
-            && ops[0].first.getId(m).type == sofa::core::V_COORD
-            && ops[0].first.getId(m) == ops[0].second[0].first.getId(m)
-            && ops[0].second[0].second == 1.0
-            && ops[0].second[1].first.getId(m).type == sofa::core::V_DERIV
-            && ops[1].second.size()==1
-            && ops[2].second.size()==1)
+            && ops[0].getLinearCombination().size()==2
+            && ops[0].getOutput().getId(m).type == sofa::core::V_COORD
+            && ops[0].getOutput().getId(m) == ops[0].getLinearCombination()[0].id.getId(m)
+            && ops[0].getLinearCombination()[0].factor == 1.0
+            && ops[0].getLinearCombination()[1].id.getId(m).type == sofa::core::V_DERIV
+            && ops[1].getLinearCombination().size()==1
+            && ops[2].getLinearCombination().size()==1)
     {
         const unsigned int n = m->getSize();
 
@@ -1343,38 +1343,38 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         void* w2Ptr, *r2Ptr;
 
 
-        w0Ptr    = m->write(core::VecCoordId(ops[0].first.getId(m)))->beginEdit()->deviceWrite();
-        r0Ptr[0] = m->read(core::ConstVecCoordId(ops[0].second[0].first.getId(m)))->getValue().deviceRead();
-        r0Ptr[1] = m->read(core::ConstVecDerivId(ops[0].second[1].first.getId(m)))->getValue().deviceRead();
+        w0Ptr    = m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r0Ptr[0] = m->read(core::ConstVecCoordId(ops[0].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
+        r0Ptr[1] = m->read(core::ConstVecDerivId(ops[0].getLinearCombination()[1].id.getId(m)))->getValue().deviceRead();
 
-        w1Ptr    = m->write(core::VecDerivId(ops[1].first.getId(m)))->beginEdit()->deviceWrite();
-        r1Ptr    = m->read(core::ConstVecDerivId(ops[1].second[0].first.getId(m)))->getValue().deviceRead();
+        w1Ptr    = m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r1Ptr    = m->read(core::ConstVecDerivId(ops[1].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
 
-        w2Ptr    = m->write(core::VecDerivId(ops[2].first.getId(m)))->beginEdit()->deviceWrite();
-        r2Ptr    = m->read(core::ConstVecDerivId(ops[2].second[0].first.getId(m)))->getValue().deviceRead();
+        w2Ptr    = m->write(core::VecDerivId(ops[2].getOutput().getId(m)))->beginEdit()->deviceWrite();
+        r2Ptr    = m->read(core::ConstVecDerivId(ops[2].getLinearCombination()[0].id.getId(m)))->getValue().deviceRead();
 
-        Kernels::vOpMCNAB(n, w0Ptr, r0Ptr[0], r0Ptr[1], ops[0].second[1].second, w1Ptr, r1Ptr, w2Ptr, r2Ptr);
+        Kernels::vOpMCNAB(n, w0Ptr, r0Ptr[0], r0Ptr[1], ops[0].getLinearCombination()[1].factor, w1Ptr, r1Ptr, w2Ptr, r2Ptr);
 
-        m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit();
-        m->write(core::VecDerivId(ops[1].first.getId(m)))->endEdit();
-        m->write(core::VecDerivId(ops[2].first.getId(m)))->endEdit();
+        m->write(core::VecCoordId(ops[0].getOutput().getId(m)))->endEdit();
+        m->write(core::VecDerivId(ops[1].getOutput().getId(m)))->endEdit();
+        m->write(core::VecDerivId(ops[2].getOutput().getId(m)))->endEdit();
     }
     else // no optimization for now for other cases
     {
-        dmsg_info(m) << "size ops"<< ops.size() << "size second0"<< ops[0].second.size() << "size second1"<< ops[1].second.size() ;
+        dmsg_info(m) << "size ops"<< ops.size() << "size second0"<< ops[0].getLinearCombination().size() << "size second1"<< ops[1].getLinearCombination().size() ;
         dmsg_info(m) << "CUDA: unoptimized vMultiOp:";
         for (unsigned int i=0; i<ops.size(); ++i)
         {
             std::stringstream ss;
-            ss << ops[i].first << " =";
-            if (ops[i].second.empty())
+            ss << ops[i].getOutput() << " =";
+            if (ops[i].getLinearCombination().empty())
                 ss << "0";
             else
             {
-                for (unsigned int j=0; j<ops[i].second.size(); ++j)
+                for (unsigned int j=0; j<ops[i].getLinearCombination().size(); ++j)
                 {
                     if (j) dmsg_info(m) << " + ";
-                    ss << ops[i].second[j].first << "*" << ops[i].second[j].second;
+                    ss << ops[i].getLinearCombination()[j].id << "*" << ops[i].getLinearCombination()[j].factor;
                 }
             }
             dmsg_info(m)<< ss.str();
@@ -1988,70 +1988,70 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vMultiO
     // TODO : make corresponding kernels
 
     // optimize common integration case: v += a*dt, x += v*dt
-//     if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == sofa::core::V_DERIV && ops[0].second[1].first.type == sofa::core::V_DERIV
-// 	                && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == sofa::core::V_COORD)
+//     if (ops.size() == 2 && ops[0].getLinearCombination().size() == 2 && ops[0].getOutput() == ops[0].getLinearCombination()[0].id && ops[0].getOutput().type == sofa::core::V_DERIV && ops[0].getLinearCombination()[1].id.type == sofa::core::V_DERIV
+// 	                && ops[1].getLinearCombination().size() == 2 && ops[1].getOutput() == ops[1].getLinearCombination()[0].id && ops[0].getOutput() == ops[1].getLinearCombination()[1].id && ops[1].getOutput().type == sofa::core::V_COORD)
 //     {
-// 	VecDeriv* va = m->getVecDeriv(ops[0].second[1].first.index);
-// 	VecDeriv* vv = m->getVecDeriv(ops[0].first.index);
-// 	VecCoord* vx = m->getVecCoord(ops[1].first.index);
+// 	VecDeriv* va = m->getVecDeriv(ops[0].getLinearCombination()[1].id.index);
+// 	VecDeriv* vv = m->getVecDeriv(ops[0].getOutput().index);
+// 	VecCoord* vx = m->getVecCoord(ops[1].getOutput().index);
 // 	const unsigned int n = vx->size();
-// 	const double f_v_v = ops[0].second[0].second;
-// 	const double f_v_a = ops[0].second[1].second;
-// 	const double f_x_x = ops[1].second[0].second;
-// 	const double f_x_v = ops[1].second[1].second;
+// 	const double f_v_v = ops[0].getLinearCombination()[0].factor;
+// 	const double f_v_a = ops[0].getLinearCombination()[1].factor;
+// 	const double f_x_x = ops[1].getLinearCombination()[0].factor;
+// 	const double f_x_v = ops[1].getLinearCombination()[1].factor;
 // 	Kernels::vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (Real)f_v_v, (Real)f_v_a, (Real)f_x_x, (Real)f_x_v);
 //     }
 //     // optimize common CG step: x += a*p, q -= a*v
-//     else if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].second[0].second == 1.0 && ops[0].first.type == sofa::core::V_DERIV && ops[0].second[1].first.type == sofa::core::V_DERIV
-//                              && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[1].second[0].second == 1.0 && ops[1].first.type == sofa::core::V_DERIV && ops[1].second[1].first.type == sofa::core::V_DERIV)
+//     else if (ops.size() == 2 && ops[0].getLinearCombination().size() == 2 && ops[0].getOutput() == ops[0].getLinearCombination()[0].id && ops[0].getLinearCombination()[0].factor == 1.0 && ops[0].getOutput().type == sofa::core::V_DERIV && ops[0].getLinearCombination()[1].id.type == sofa::core::V_DERIV
+//                              && ops[1].getLinearCombination().size() == 2 && ops[1].getOutput() == ops[1].getLinearCombination()[0].id && ops[1].getLinearCombination()[0].factor == 1.0 && ops[1].getOutput().type == sofa::core::V_DERIV && ops[1].getLinearCombination()[1].id.type == sofa::core::V_DERIV)
 //     {
-//         VecDeriv* vv1 = m->getVecDeriv(ops[0].second[1].first.index);
-//         VecDeriv* vres1 = m->getVecDeriv(ops[0].first.index);
-//         VecDeriv* vv2 = m->getVecDeriv(ops[1].second[1].first.index);
-//         VecDeriv* vres2 = m->getVecDeriv(ops[1].first.index);
+//         VecDeriv* vv1 = m->getVecDeriv(ops[0].getLinearCombination()[1].id.index);
+//         VecDeriv* vres1 = m->getVecDeriv(ops[0].getOutput().index);
+//         VecDeriv* vv2 = m->getVecDeriv(ops[1].getLinearCombination()[1].id.index);
+//         VecDeriv* vres2 = m->getVecDeriv(ops[1].getOutput().index);
 //         const unsigned int n = vres1->size();
-//         const double f1 = ops[0].second[1].second;
-//         const double f2 = ops[1].second[1].second;
+//         const double f1 = ops[0].getLinearCombination()[1].factor;
+//         const double f2 = ops[1].getLinearCombination()[1].factor;
 //         Kernels::vPEqBF2(n, vres1->deviceWrite(), vv1->deviceRead(), f1, vres2->deviceWrite(), vv2->deviceRead(), f2);
 //     }
 //     // optimize a pair of generic vOps
-//     else if (ops.size()==2 && ops[0].second.size()==2 && ops[0].second[0].second == 1.0 && ops[1].second.size()==2 && ops[1].second[0].second == 1.0)
+//     else if (ops.size()==2 && ops[0].getLinearCombination().size()==2 && ops[0].getLinearCombination()[0].factor == 1.0 && ops[1].getLinearCombination().size()==2 && ops[1].getLinearCombination()[0].factor == 1.0)
 //     {
 //         const unsigned int n = m->getSize();
 //         Kernels::vOp2(n,
-//             (ops[0].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].first.index)->deviceWrite() : m->getVecDeriv(ops[0].first.index)->deviceWrite(),
-//             (ops[0].second[0].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[0].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[0].first.index)->deviceRead(),
-//             (ops[0].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
-//             ops[0].second[1].second,
-//             (ops[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].first.index)->deviceWrite() : m->getVecDeriv(ops[1].first.index)->deviceWrite(),
-//             (ops[1].second[0].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[0].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[0].first.index)->deviceRead(),
-//             (ops[1].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
-//             ops[1].second[1].second);
+//             (ops[0].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[0].getOutput().index)->deviceWrite(),
+//             (ops[0].getLinearCombination()[0].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[0].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[0].id.index)->deviceRead(),
+//             (ops[0].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[1].id.index)->deviceRead(),
+//             ops[0].getLinearCombination()[1].factor,
+//             (ops[1].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[1].getOutput().index)->deviceWrite(),
+//             (ops[1].getLinearCombination()[0].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[0].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[0].id.index)->deviceRead(),
+//             (ops[1].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[1].id.index)->deviceRead(),
+//             ops[1].getLinearCombination()[1].factor);
 //     }
 //     // optimize a pair of 4-way accumulations (such as at the end of RK4)
-//     else if (ops.size()==2 && ops[0].second.size()==5 && ops[0].second[0].first == ops[0].first && ops[0].second[0].second == 1.0 &&
-//                               ops[1].second.size()==5 && ops[1].second[0].first == ops[1].first && ops[1].second[0].second == 1.0)
+//     else if (ops.size()==2 && ops[0].getLinearCombination().size()==5 && ops[0].getLinearCombination()[0].id == ops[0].getOutput() && ops[0].getLinearCombination()[0].factor == 1.0 &&
+//                               ops[1].getLinearCombination().size()==5 && ops[1].getLinearCombination()[0].id == ops[1].getOutput() && ops[1].getLinearCombination()[0].factor == 1.0)
 //     {
 //         const unsigned int n = m->getSize();
 //         Kernels::vPEq4BF2(n,
-//             (ops[0].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].first.index)->deviceWrite() : m->getVecDeriv(ops[0].first.index)->deviceWrite(),
-//             (ops[0].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
-//             ops[0].second[1].second,
-//             (ops[0].second[2].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[2].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[2].first.index)->deviceRead(),
-//             ops[0].second[2].second,
-//             (ops[0].second[3].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[3].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[3].first.index)->deviceRead(),
-//             ops[0].second[3].second,
-//             (ops[0].second[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].second[4].first.index)->deviceRead() : m->getVecDeriv(ops[0].second[4].first.index)->deviceRead(),
-//             ops[0].second[4].second,
-//             (ops[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].first.index)->deviceWrite() : m->getVecDeriv(ops[1].first.index)->deviceWrite(),
-//             (ops[1].second[1].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[1].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
-//             ops[1].second[1].second,
-//             (ops[1].second[2].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[2].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[2].first.index)->deviceRead(),
-//             ops[1].second[2].second,
-//             (ops[1].second[3].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[3].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[3].first.index)->deviceRead(),
-//             ops[1].second[3].second,
-//             (ops[1].second[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].second[4].first.index)->deviceRead() : m->getVecDeriv(ops[1].second[4].first.index)->deviceRead(),
-//             ops[1].second[4].second);
+//             (ops[0].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[0].getOutput().index)->deviceWrite(),
+//             (ops[0].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[1].id.index)->deviceRead(),
+//             ops[0].getLinearCombination()[1].factor,
+//             (ops[0].getLinearCombination()[2].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[2].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[2].id.index)->deviceRead(),
+//             ops[0].getLinearCombination()[2].factor,
+//             (ops[0].getLinearCombination()[3].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[3].id.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[3].id.index)->deviceRead(),
+//             ops[0].getLinearCombination()[3].factor,
+//             (ops[0].getLinearCombination()[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[0].getLinearCombination()[4].first.index)->deviceRead() : m->getVecDeriv(ops[0].getLinearCombination()[4].first.index)->deviceRead(),
+//             ops[0].getLinearCombination()[4].second,
+//             (ops[1].getOutput().type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getOutput().index)->deviceWrite() : m->getVecDeriv(ops[1].getOutput().index)->deviceWrite(),
+//             (ops[1].getLinearCombination()[1].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[1].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[1].id.index)->deviceRead(),
+//             ops[1].getLinearCombination()[1].factor,
+//             (ops[1].getLinearCombination()[2].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[2].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[2].id.index)->deviceRead(),
+//             ops[1].getLinearCombination()[2].factor,
+//             (ops[1].getLinearCombination()[3].id.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[3].id.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[3].id.index)->deviceRead(),
+//             ops[1].getLinearCombination()[3].factor,
+//             (ops[1].getLinearCombination()[4].first.type == sofa::core::V_COORD) ? m->getVecCoord(ops[1].getLinearCombination()[4].first.index)->deviceRead() : m->getVecDeriv(ops[1].getLinearCombination()[4].first.index)->deviceRead(),
+//             ops[1].getLinearCombination()[4].second);
 //     }
 //     else // no optimization for now for other cases
 //     {
