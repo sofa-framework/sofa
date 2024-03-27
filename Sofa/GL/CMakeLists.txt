@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL LANGUAGES CXX)
 
 set(SOFAGLSRC_ROOT "src/sofa/gl")

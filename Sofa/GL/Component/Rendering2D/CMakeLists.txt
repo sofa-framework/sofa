@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL.Component.Rendering2D LANGUAGES CXX)
 
 set(SOFAGLCOMPONENTRENDRING2D_SOURCE_DIR "src/sofa/gl/component/rendering2d")
