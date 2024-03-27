@@ -50,25 +50,114 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
     }
 }
 
+
+/// Instead of accumulating the matrix contributions in a matrix data structure, this class
+/// directly multiplies the contribution by the dx vector
+template<class DataTypes>
+class MatrixFreeAccumulator final : public StiffnessMatrixAccumulator
+{
+public:
+    using Deriv = typename DataTypes::Deriv;
+    using VecDeriv = typename DataTypes::VecDeriv;
+    using Real = typename DataTypes::Real;
+
+private:
+    const VecDeriv& m_dx;
+    VecDeriv& m_df;
+    const Real m_kFactor;
+
+    template<sofa::Size L, sofa::Size C, class real>
+    void blockAdd(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<L, C, real>& value)
+    {
+        const auto DerivSize = Deriv::total_size;
+        assert(row % DerivSize == 0);
+        assert(col % DerivSize == 0);
+        const auto dfId = row / DerivSize;
+        const auto dxId = col / DerivSize;
+        auto& df = m_df[dfId];
+        const auto& dx = m_dx[dxId];
+
+        for (sofa::Size i = 0; i < L; ++i)
+        {
+            for (sofa::Size j = 0; j < C; ++j)
+            {
+                df[i] += m_kFactor * static_cast<Real>(value(i, j)) * dx[j];
+            }
+        }
+    }
+
+    template<typename real>
+    void scalarAdd(sofa::SignedIndex row, sofa::SignedIndex col, real value)
+    {
+        const auto DerivSize = Deriv::total_size;
+        const auto dfId = row / DerivSize;
+        const auto dfDim = row - dfId * DerivSize;
+        const auto dxId = col / DerivSize;
+        const auto dxDim = col - dxId * DerivSize;
+        m_df[dfId][dfDim] += m_kFactor * static_cast<Real>(value) * m_dx[dxId][dxDim];
+    }
+
+public:
+    MatrixFreeAccumulator(const VecDeriv& dx, VecDeriv& df, const Real kFactor) : m_dx(dx), m_df(df), m_kFactor(kFactor) {}
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override
+    {
+        scalarAdd(row, col, value);
+    }
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override
+    {
+        scalarAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<1, 1, double>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<1, 1, float>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, double>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<2, 2, float>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, float>& value) override
+    {
+        blockAdd(row, col, value);
+    }
+};
+
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
     if (mparams && this->mstate)
     {
+        const auto dx = sofa::helper::getReadAccessor(*mparams->readDx(this->mstate.get()));
+        auto df = sofa::helper::getWriteOnlyAccessor(*dfId[this->mstate.get()].write());
+        const Real kFactor = static_cast<Real>(
+            sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
 
-#ifndef NDEBUG
-            mparams->setKFactorUsed(false);
-#endif
+        MatrixFreeAccumulator<DataTypes> acc(dx.ref(), df.wref(), kFactor);
 
-        addDForce(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate.get()));
-
-#ifndef NDEBUG
-        if (!mparams->getKFactorUsed())
-            msg_warning()  << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce";
-#endif
+        StiffnessMatrix matrix;
+        matrix.setMechanicalParams(mparams);
+        matrix.setMatrixAccumulator(&acc, this->mstate, this->mstate);
+        buildStiffnessMatrix(&matrix);
     }
 }
-
 
 template<class DataTypes>
 void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVecDerivId resId, MultiVecDerivId lambdaId, SReal cFactor )
