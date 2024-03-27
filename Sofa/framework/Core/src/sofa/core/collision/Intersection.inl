@@ -24,6 +24,11 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/Factory.h>
 
+#include <sofa/version.h>
+
+// remove the conent of this anonymous namespace once the compat layer is deleted
+// SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12")
+#if (SOFA_VERSION / 100) <= 2406
 namespace
 {
     // SFINAE block of code to detect at compile time if
@@ -63,6 +68,7 @@ namespace
         : std::true_type
     { };
 }
+#endif
 
 namespace sofa::core::collision
 {
@@ -85,15 +91,15 @@ public:
     
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
     {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        if constexpr (has_testIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
+        if constexpr (!has_testIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
         {
-            return impl->testIntersection(e1, e2, currentIntersection);
+            return canIntersect(elem1, elem2);
         }
         else
         {
-            return impl->testIntersection(e1, e2);
+            Elem1 e1(elem1);
+            Elem2 e2(elem2);
+            return impl->testIntersection(e1, e2, currentIntersection);
         }
     }
 
@@ -121,15 +127,15 @@ public:
     
     int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
     {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        if constexpr (has_computeIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
+        if constexpr (!has_computeIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
         {
-            return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
+            return intersect(elem1, elem2, contacts);
         }
         else
         {
-            return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
+            Elem1 e1(elem1);
+            Elem2 e2(elem2);
+            return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
         }
     }
 
