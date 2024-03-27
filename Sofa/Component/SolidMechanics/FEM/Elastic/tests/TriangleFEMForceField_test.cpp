@@ -122,8 +122,8 @@ public:
             createObject(m_root, "TriangularFEMForceFieldOptim", {
                 {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
         }
-        createObject(m_root, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","0.1"} });
+        createObject(m_root, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","0.1"}, {"lumping","1"} });
         /// Init simulation
         sofa::simulation::node::initRoot(m_root.get());
     }
@@ -211,8 +211,8 @@ public:
                 {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
         }
 
-        createObject(FEMNode, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","0.1"} });
+        createObject(FEMNode, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","0.1"}, {"lumping","1"} });
         createObject(FEMNode, "FixedProjectiveConstraint", {
             {"name","fix"}, {"indices", str(type::Vec2(0, fixP))} });
     }

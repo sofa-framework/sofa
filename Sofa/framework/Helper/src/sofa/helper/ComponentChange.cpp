@@ -30,6 +30,7 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
+    {"DiagonalMass", Deprecated("v23.12", "v24.06", "You can use the component MeshMatrixMass with lumping='1' instead.")},
 };
 
 const std::map<std::string, ComponentChange, std::less<> > movedComponents = {

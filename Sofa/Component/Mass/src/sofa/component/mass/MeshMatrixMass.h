@@ -56,7 +56,6 @@ public:
 template <class DataTypes, class TMassType>
 * @class    MeshMatrixMass
 * @brief    This component computes the integral of this mass density over the volume of the object geometry.
-* @remark   Similar to DiagonalMass which simplifies the Mass Matrix as diagonal.
 * @remark   https://www.sofa-framework.org/community/doc/components/masses/meshmatrixmass/
 * @tparam   DataTypes type of the state associated to this mass
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)

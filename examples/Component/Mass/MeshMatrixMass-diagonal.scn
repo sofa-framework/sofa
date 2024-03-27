@@ -32,7 +32,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../loader" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <DiagonalMass totalMass="60" name="diagonalMass" />
+        <MeshMatrixMass totalMass="60" name="diagonalMass" lumping="1"/>
         <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
         
