@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaGeneralDeformable LANGUAGES CXX)
 
 set(SOFAGENERALDEFORMABLE_SRC "src/${PROJECT_NAME}")

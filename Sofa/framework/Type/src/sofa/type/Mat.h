@@ -411,10 +411,6 @@ public:
         return s_identity;
     }
 
-    /// precomputed identity matrix of size (L,L)
-    SOFA_ATTRIBUTE_DISABLED__STATIC_MATRIX_IDENTITY()
-    static const Mat<L, L, real>& s_identity;
-
     template<Size S>
     static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs) noexcept
     {
@@ -866,9 +862,6 @@ public:
 
 };
 
-
-template <sofa::Size L, sofa::Size C, typename real>
-const Mat<L, L, real>& Mat<L, C, real>::s_identity = Mat<L, L, real>::Identity();
 
 /// Same as Mat except the values are not initialized by default
 template <sofa::Size L, sofa::Size C, typename real>

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaModeler VERSION 0.1)
 
 find_package(TinyXML2 REQUIRED)

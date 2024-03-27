@@ -63,29 +63,4 @@ bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& t
     return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
 }
 
-TaskScheduler* TaskScheduler::create(const char* name)
-{
-    return MainTaskSchedulerFactory::createInRegistry(name);
-}
-
-bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
-{
-    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
-}
-
-TaskScheduler* TaskScheduler::getInstance()
-{
-    return MainTaskSchedulerFactory::createInRegistry();
-}
-
-std::string TaskScheduler::getCurrentName()
-{
-    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
-    {
-        return lastCreated.value().first;
-    }
-
-    return {};
-}
-
 } // namespace sofa::simulation

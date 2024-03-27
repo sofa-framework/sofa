@@ -49,7 +49,7 @@ namespace misc
 
 using namespace cimg_library;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 
 
 template<class _ImageTypes>

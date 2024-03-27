@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 find_package(Sofa.Config REQUIRED)
 
@@ -26,7 +26,6 @@ sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL GIT_REF master)     # Depends on image
 sofa_add_subdirectory(plugin Registration Registration EXTERNAL GIT_REF master) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL GIT_REF master)
@@ -35,7 +34,6 @@ sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
 sofa_add_subdirectory(plugin SofaOpenCL SofaOpenCL)
 sofa_add_subdirectory(plugin Xitact Xitact)
 sofa_add_subdirectory(plugin Haption Haption)
-sofa_add_subdirectory(plugin ManualMapping ManualMapping)
 sofa_add_subdirectory(plugin PersistentContact PersistentContact)
 sofa_add_subdirectory(plugin Sensable Sensable)
 sofa_add_subdirectory(plugin SensableEmulation SensableEmulation)

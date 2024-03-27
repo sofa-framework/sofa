@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Core LANGUAGES CXX)
 
 set(SRC_ROOT "src/sofa/core")
@@ -345,12 +345,6 @@ endif()
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
-
-# SOFA-NG: make everybody be able to use Sofa.Component.Compat
-sofa_find_package(Sofa.Component.Compat QUIET)
-if(Sofa.Component.Compat_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder

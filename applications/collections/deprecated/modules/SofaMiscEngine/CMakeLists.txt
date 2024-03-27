@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaMiscEngine LANGUAGES CXX)
 
 sofa_find_package(SofaNonUniformFem REQUIRED)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.LinearSolver LANGUAGES CXX)
 
 set(SOFACOMPONENTLINEARSOLVER_SOURCE_DIR "src/sofa/component/linearsolver")

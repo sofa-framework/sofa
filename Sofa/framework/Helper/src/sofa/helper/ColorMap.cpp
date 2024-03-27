@@ -323,18 +323,4 @@ void ColorMap::reinit()
     }
 }
 
-// Color space conversion routines
-
-// Hue/Saturation/Value -> Red/Green/Blue
-// h,s,v ∈ [0,1]
-// r,g,b ∈ [0,1]
-// Ref: Alvy Ray Smith, Color Gamut Transform Pairs, SIGGRAPH '78
-type::Vec3f ColorMap::hsv2rgb(const type::Vec3f&hsv)
-{
-    auto rgba = type::RGBAColor::fromHSVA( hsv[0] * 360, hsv[1],hsv[2], 1.0f );
-
-    return { rgba[0], rgba[1], rgba[2] };
-}
-
-
-}
+} // namespace sofa::helper

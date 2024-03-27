@@ -35,10 +35,10 @@ class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
 
     /// @name Flags and parameters getters
     /// @{
@@ -91,50 +91,6 @@ public:
         return m_dx[state].read();
     }
 
-
-
-
-    /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
-    /// @{
-
-    /// Read access to the free (unconstrained) position
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readX(state.get())")
-    const Data<typename S::VecCoord>* readX(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get()].read();    }
-
-    /// Read access to the free (unconstrained) velocity vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readV(state.get())")
-    const Data<typename S::VecDeriv>* readV(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get()].read();    }
-
-    /// Read access to the constraint jacobian matrix
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readJ(state.get())")
-    const Data<typename S::MatrixDeriv>* readJ(const sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_j[state.get()].read();
-    }
-
-    /// Read access to the constraint force vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readLambda(state.get())")
-    const Data<typename S::VecDeriv>* readLambda(sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_lambda[state.get(this)].read();
-    }
-
-    /// Read access to the constraint corrective motion vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DISABLED__READX_PARAMS("To fix your code use readDx(state.get())")
-    const Data<typename S::VecDeriv>* readDx(sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_dx[state.get(this)].read();
-    }
-
-
-    /// @}
 
     /// @name Setup methods
     /// Called by the OdeSolver from which the mechanical computations originate.

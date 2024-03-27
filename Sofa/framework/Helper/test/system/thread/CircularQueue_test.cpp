@@ -85,7 +85,7 @@ protected:
         {
             while(!queue.pop(value)) 
                 std::this_thread::yield();
-            EXPECT_TRUE(lastValue < value);
+            EXPECT_LT(lastValue, value);
             lastValue = value;
         }
     }

@@ -164,8 +164,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        ASSERT_TRUE(x.size()==v.size());
-        ASSERT_TRUE(x.size()==ef.size());
+        ASSERT_EQ(x.size(), v.size());
+        ASSERT_EQ(x.size(), ef.size());
         std::size_t n = x.size();
 
         // copy the position and velocities to the scene graph
@@ -195,7 +195,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
             std::cout << "            expected f = " << ef << std::endl;
             std::cout << "            actual f = " <<  f.ref() << std::endl;
         }
-        ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
+        ASSERT_LT( this->vectorMaxDiff(f,ef), errorMax*this->epsilon() );
 
         if( !checkStiffness ) return;
 
