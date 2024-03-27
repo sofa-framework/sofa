@@ -60,3 +60,10 @@
 #define SOFA_ATTRIBUTE_DISABLED__CONSTORDER() \
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "ConstOrder is now a scoped enumeration. It must be used to access the values.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
+#endif

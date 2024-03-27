@@ -26,6 +26,8 @@
 #include <queue>
 #include <stack>
 
+#include <sofa/core/collision/Intersection.h>
+
 namespace sofa::core::collision
 {
     class ElementIntersector;
@@ -74,7 +76,6 @@ public:
      */
     void addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-
 protected:
 
     /// Return true if both collision models belong to the same object, false otherwise
@@ -114,21 +115,24 @@ protected:
                         const FinestCollision &finest,
                         std::queue<TestPair> &externalCells,
                         std::stack<TestPair> &internalCells,
-                        sofa::core::collision::DetectionOutputVector *&outputs);
+                        sofa::core::collision::DetectionOutputVector *&outputs,
+                        const sofa::core::collision::Intersection* currentIntersection);
 
     static void visitCollisionElements(const TestPair &root,
                                        core::collision::ElementIntersector *coarseIntersector,
                                        const FinestCollision &finest,
                                        std::queue<TestPair> &externalCells,
                                        std::stack<TestPair> &internalCells,
-                                       sofa::core::collision::DetectionOutputVector *&outputs);
+                                       sofa::core::collision::DetectionOutputVector *&outputs,
+                                       const sofa::core::collision::Intersection* currentIntersection);
 
     static void
     visitExternalChildren(const core::CollisionElementIterator &it1, const core::CollisionElementIterator &it2,
                           core::collision::ElementIntersector *coarseIntersector,
                           const FinestCollision &finest,
                           std::queue<TestPair> &externalCells,
-                          sofa::core::collision::DetectionOutputVector *&outputs);
+                          sofa::core::collision::DetectionOutputVector *&outputs,
+                          const sofa::core::collision::Intersection* currentIntersection);
 
     /// Test intersection between two ranges of CollisionElement's
     /// The provided TestPair contains ranges of external CollisionElement's, which means that
@@ -136,7 +140,8 @@ protected:
     static void finalCollisionPairs(const TestPair& pair,
                                     bool selfCollision,
                                     core::collision::ElementIntersector* intersector,
-                                    sofa::core::collision::DetectionOutputVector*& outputs);
+                                    sofa::core::collision::DetectionOutputVector*& outputs,
+                                    const sofa::core::collision::Intersection* currentIntersection);
 
 private:
 

@@ -43,13 +43,15 @@ MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object,
     }
 }
 
-bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
+bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&, const sofa::core::collision::Intersection*)
 {
     return true;
 }
 
-int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
     static_assert(Triangle::Coord::total_size == 3, "Must be a vec type");
 
@@ -88,6 +90,17 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     detection->elem.second = e2;
     detection->id = e2.getIndex();
     return 1;
+}
+
+
+bool MeshDiscreteIntersection::testIntersection(Triangle& t, Line& l)
+{
+    return testIntersection(t, l, intersection);
+}
+
+int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

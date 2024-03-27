@@ -90,24 +90,24 @@ void LocalMinDistance::init()
     BaseProximityIntersection::init();
 }
 
-bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
+bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2, const core::collision::Intersection* currentIntersection)
 {
-    return Inherit1::testIntersection(cube1, cube2);
+    return Inherit1::testIntersection(cube1, cube2, currentIntersection);
 }
 
-int LocalMinDistance::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
+int LocalMinDistance::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/, const core::collision::Intersection* )
 {
     return 0; /// \todo
 }
 
-bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
+bool LocalMinDistance::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
 {
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
     {
         return false;
     }
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Line::Coord AB = e1.p2()-e1.p1();
     const Line::Coord CD = e2.p2()-e2.p1();
@@ -157,7 +157,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     return false;
 }
 
-int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
 
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
@@ -167,7 +167,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         return 0;
     }
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     // E1 => A-->B
     // E2 => C-->D
@@ -258,7 +258,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
 #endif
 
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -272,12 +272,12 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     return 1;
 }
 
-bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
+bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1, const core::collision::Intersection* currentIntersection)
 {
     if(!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Vec3 AB = e2.p2()-e2.p1();
     const Vec3 AC = e2.p3()-e2.p1();
@@ -339,12 +339,12 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     if(!e1.isActive(e2.getCollisionModel()))
         return 0;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     static_assert(std::is_same_v<Triangle::Coord, Point::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
@@ -410,7 +410,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -424,12 +424,12 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 }
 
 
-bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
+bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1, const core::collision::Intersection* currentIntersection)
 {
     if (!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     static_assert(std::is_same_v<Triangle::Coord, Sphere::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
@@ -494,12 +494,12 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     if (!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     static_assert(std::is_same_v<Triangle::Coord, Sphere::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
@@ -564,7 +564,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -577,7 +577,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     return 1;
 }
 
-bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
+bool LocalMinDistance::testIntersection(Line& e2, Point& e1, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
@@ -585,7 +585,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return false;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Line::Coord AB = e2.p2()-e2.p1();
     const Line::Coord AP = e1.p()-e2.p1();
 
@@ -624,7 +624,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
@@ -632,7 +632,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return 0;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Line::Coord AB = e2.p2()-e2.p1();
     const Line::Coord AP = e1.p()-e2.p1();
 
@@ -684,7 +684,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -699,12 +699,12 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 }
 
 
-bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
+bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
 
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Line::Coord AB = e2.p2()-e2.p1();
     const Line::Coord AP = e1.p()-e2.p1();
 
@@ -742,12 +742,12 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
 
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Line::Coord AB = e2.p2()-e2.p1();
     const Line::Coord AP = e1.p()-e2.p1();
 
@@ -799,7 +799,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -813,12 +813,12 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     return 1;
 }
 
-bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
+bool LocalMinDistance::testIntersection(Point& e1, Point& e2, const core::collision::Intersection* currentIntersection)
 {
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return false;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Point::Coord PQ = e2.p()-e1.p();
 
@@ -845,12 +845,12 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return 0;
 
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Point::Coord& P = e1.p();
     const Point::Coord& Q = e2.p();
@@ -889,7 +889,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -902,9 +902,9 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     return 1;
 }
 
-bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
+bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     static_assert(std::is_same_v<Sphere::Coord, Point::Coord>, "Data mismatch");
     const auto PQ = e2.p()-e1.p();
@@ -932,9 +932,9 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     static_assert(std::is_same_v<Sphere::Coord, Point::Coord>, "Data mismatch");
 
     const Sphere::Coord& P = e1.p();
@@ -974,7 +974,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -987,9 +987,9 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
     return 1;
 }
 
-bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
+bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
     const Sphere::Coord PQ = e2.p()-e1.p();
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -1015,9 +1015,9 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
     const Sphere::Coord& P = e1.p();
     const Sphere::Coord& Q = e2.p();
@@ -1055,7 +1055,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
     }
 #endif
 
-    const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
+    const double contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -1069,11 +1069,11 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 }
 
 
-bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
+bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2, const core::collision::Intersection* currentIntersection)
 {
     type::Vec3 P,Q;
 
-    const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -1095,9 +1095,9 @@ bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
         return false;
 }
 
-int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
@@ -1136,7 +1136,7 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
 }
 
 
-bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
+bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2, const sofa::core::collision::Intersection*)
 {
     // Center of the sphere
     const Vec3 sph2Pos(sph2.center());
@@ -1153,7 +1153,7 @@ bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
     return (dist2 < (radius1*radius1));
 }
 
-int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector* contacts)
+int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector* contacts, const sofa::core::collision::Intersection*)
 {
     // Center of the sphere
     const Vec3 sph2Pos(sph2.center());
@@ -1371,6 +1371,120 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vec3 &PQ) const
     const Vec3 n = cross(pt2-pt1,pt3-pt1);
 
     return n * PQ >= 0.0;
+}
+
+bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
+{
+    return testIntersection(cube1, cube2, this);
+}
+
+int LocalMinDistance::computeIntersection(Cube& c1, Cube& c2, OutputVector* contacts)
+{
+    return computeIntersection(c1, c2, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
+{
+    return testIntersection(e1, e2, this);
+}
+
+int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
+{
+    return testIntersection(e2, e1, this);
+}
+
+int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
+{
+    return computeIntersection(e2, e1, contacts, this);
+}
+
+
+bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
+{
+    return testIntersection(e2, e1, this);
+}
+
+int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector* contacts)
+{
+    return computeIntersection(e2, e1, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
+{
+    return testIntersection(e2, e1, this);
+}
+
+int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
+{
+    return computeIntersection(e2, e1, contacts, this);
+}
+
+
+bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
+{
+    return testIntersection(e2, e1, this);
+}
+
+int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
+{
+    return computeIntersection(e2, e1, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
+{
+    return testIntersection(e1, e2, this);
+}
+
+int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
+{
+    return testIntersection(e1, e2, this);
+}
+
+int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, this);
+}
+
+bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
+{
+    return testIntersection(e2, e1, this);
+}
+
+int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, this);
+}
+
+
+bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
+{
+    return testIntersection(t1, t2, this);
+}
+
+int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
+{
+    return computeIntersection(t1, t2, contacts, this);
+}
+
+
+bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
+{
+    return testIntersection(ray1, sph2, this);
+}
+
+int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector* contacts)
+{
+    return computeIntersection(ray1, sph2, contacts, this);
 }
 
 } //namespace sofa::component::collision::detection::intersection
