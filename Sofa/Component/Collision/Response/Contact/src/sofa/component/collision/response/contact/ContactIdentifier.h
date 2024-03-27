@@ -24,6 +24,7 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <list>
+#include <atomic>
 
 
 namespace sofa::component::collision::response::contact
@@ -33,12 +34,11 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactIdentifier
 {
 public:
     ContactIdentifier();
-    virtual ~ContactIdentifier();
+    virtual ~ContactIdentifier() = default;
 
 protected:
-    inline static sofa::core::collision::DetectionOutput::ContactId cpt = 0;
+    inline static std::atomic<sofa::core::collision::DetectionOutput::ContactId> cpt = 0;
     sofa::core::collision::DetectionOutput::ContactId id;
-    inline static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
 };
 
 inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
