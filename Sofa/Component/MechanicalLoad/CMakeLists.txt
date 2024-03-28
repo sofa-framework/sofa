@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.MechanicalLoad LANGUAGES CXX)
 
 set(SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR "src/sofa/component/mechanicalload")

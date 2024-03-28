@@ -51,8 +51,8 @@ void ConstraintProblem::clear(int nbConstraints)
     dFree.resize(nbConstraints);
     f.resize(nbConstraints);
 
-    static unsigned int counter = 0;
-    problemId = ++counter;
+    static std::atomic<unsigned int> counter = 0;
+    problemId = counter.fetch_add(1, std::memory_order::memory_order_relaxed);
 }
 
 unsigned int ConstraintProblem::getProblemId()

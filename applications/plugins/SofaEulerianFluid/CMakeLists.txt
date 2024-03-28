@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaEulerianFluid VERSION 1.0)
 
 find_package(Sofa.Core REQUIRED)

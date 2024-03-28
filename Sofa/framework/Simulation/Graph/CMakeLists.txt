@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Simulation.Graph LANGUAGES CXX)
 
 set(SOFASIMULATIONGRAPH_SRC "src/sofa/simulation/graph")

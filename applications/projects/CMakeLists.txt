@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 sofa_add_subdirectory(application SceneChecking SceneChecking ON)
 sofa_add_subdirectory(application Modeler Modeler OFF)
