@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Constraint.Lagrangian.Model LANGUAGES CXX)
 
 set(SOFACOMPONENTCONSTRAINTLAGRANGIANMODEL_SOURCE_DIR "src/sofa/component/constraint/lagrangian/model")

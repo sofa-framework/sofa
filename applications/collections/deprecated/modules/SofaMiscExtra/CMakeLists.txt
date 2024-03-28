@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaMiscExtra LANGUAGES CXX)
 
 set(SOFAMISCEXTRA_SRC "src/${PROJECT_NAME}")

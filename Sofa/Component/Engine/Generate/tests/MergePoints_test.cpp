@@ -110,10 +110,10 @@ struct MergePoints_test : public BaseSimulationTest,
         ASSERT_EQ(points.size(),4);
         ASSERT_EQ(indices1.size(),2);
         ASSERT_EQ(indices2.size(),2);
-        ASSERT_TRUE( (Coord(0.0f, 0.0f, 0.0f)-points[0]).norm() < 0.000000001f);
-        ASSERT_TRUE( (Coord(1.0f, 0.0f, 0.0f)-points[1]).norm() < 0.000000001f);
-        ASSERT_TRUE( (Coord(0.0f, 1.0f, 0.0f)-points[2]).norm() < 0.000000001f);
-        ASSERT_TRUE( (Coord(0.0f, 0.0f, 1.0f)-points[3]).norm() < 0.000000001f);
+        ASSERT_LT( (Coord(0.0f, 0.0f, 0.0f)-points[0]).norm(), 0.000000001f);
+        ASSERT_LT( (Coord(1.0f, 0.0f, 0.0f)-points[1]).norm(), 0.000000001f);
+        ASSERT_LT( (Coord(0.0f, 1.0f, 0.0f)-points[2]).norm(), 0.000000001f);
+        ASSERT_LT( (Coord(0.0f, 0.0f, 1.0f)-points[3]).norm(), 0.000000001f);
         ASSERT_EQ(indices1[0],0);
         ASSERT_EQ(indices1[1],1);
         ASSERT_EQ(indices2[0],2);

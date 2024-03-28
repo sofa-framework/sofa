@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.LinearSolver.Direct LANGUAGES CXX)
 
 set(SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR "src/sofa/component/linearsolver/direct")
@@ -20,7 +20,6 @@ set(HEADER_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseLU.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseQR.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MatrixLinearSystem[BTDMatrix].h
-    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MetisOrderingMethod.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.inl
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SVDLinearSolver.h
@@ -51,28 +50,12 @@ set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseLU.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSparseQR.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MatrixLinearSystem[BTDMatrix].cpp
-    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/MetisOrderingMethod.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/PrecomputedLinearSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SVDLinearSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseCommon.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/SparseLDLSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/TypedMatrixLinearSystem[BTDMatrix].cpp
 )
-
-find_package(metis 5.1.0 EXACT QUIET)
-if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
-    message("Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
-    include(FetchContent)
-    FetchContent_Declare(metis
-            GIT_REPOSITORY https://github.com/sofa-framework/METIS
-            GIT_TAG v5.1.0-ModernInstall
-    )
-    FetchContent_MakeAvailable(metis)
-elseif (NOT metis_FOUND)
-    message(FATAL_ERROR "Sofa.Component.LinearSolver.Direct: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
-endif()
-
-sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
 
 # make sure you have threads for AsyncSparseLDLSolver
 sofa_find_package(Threads REQUIRED)
@@ -84,7 +67,6 @@ sofa_find_package(Sofa.Component.LinearSolver.Ordering REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
-target_link_libraries(${PROJECT_NAME} PRIVATE metis)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
