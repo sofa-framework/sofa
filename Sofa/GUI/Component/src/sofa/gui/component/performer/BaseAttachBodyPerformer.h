@@ -7,6 +7,7 @@ namespace sofa::gui::component::performer
 {
 struct BodyPicked;
 
+<<<<<<< HEAD
 
 /**
  * This class is a virtualization of attachment performer used to allow the blind use of either "AttachBodyPerformer" based on springs and "ConstraintAttachBodyPerformer" based on lagrangian
@@ -16,6 +17,11 @@ class BaseAttachBodyPerformer
 {
 public:
     virtual ~BaseAttachBodyPerformer() = default;
+=======
+class BaseAttachBodyPerformer
+{
+public:
+>>>>>>> c82a8f7fb0 (ADD Virtualization layer)
     virtual sofa::core::objectmodel::BaseObject* getInteractionObject() = 0;
     virtual void clear() = 0;
     virtual bool start_partial(const BodyPicked& picked) = 0;

@@ -55,7 +55,11 @@ void ConstraintAttachBodyPerformer<DataTypes>::start()
     this->interactor->setMouseAttached(true);
 }
 
-
+template <class DataTypes>
+sofa::core::objectmodel::BaseObject* ConstraintAttachBodyPerformer<DataTypes>::getInteractionObject()
+{
+    return m_constraint.get();
+}
 
 template <class DataTypes>
 void ConstraintAttachBodyPerformer<DataTypes>::execute()

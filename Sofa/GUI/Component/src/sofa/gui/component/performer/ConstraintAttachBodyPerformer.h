@@ -26,6 +26,8 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/gui/component/AttachBodyButtonSetting.h>
 #include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
+#include <sofa/gui/component/performer/BaseAttachBodyPerformer.h>
+
 
 #include <sofa/core/visual/DisplayFlags.h>
 
@@ -51,7 +53,7 @@ namespace sofa::gui::component::performer
 struct BodyPicked;
 
 template <class DataTypes>
-class ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>, public BaseAttachBodyPerformer
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -64,10 +66,13 @@ public:
     ConstraintAttachBodyPerformer(BaseMouseInteractor *i);
     virtual ~ConstraintAttachBodyPerformer();
 
+
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);
-    void clear();
+    virtual sofa::core::objectmodel::BaseObject* getInteractionObject() override;
+    virtual void clear() override;
+    virtual bool start_partial(const BodyPicked& picked) override;
 
     void setStiffness(SReal s) {stiffness=s;}
     void setArrowSize(float s) {size=s;}
@@ -88,7 +93,6 @@ protected:
     SReal size;
     SReal showFactorSize;
 
-    virtual bool start_partial(const BodyPicked& picked);
 
     MouseContactMapper  *mapper;
     sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint<defaulttype::Vec3Types>::SPtr m_constraint;

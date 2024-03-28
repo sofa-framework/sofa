@@ -90,6 +90,13 @@ AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
     flags.setShowInteractionForceFields(true);
 }
 
+
+template <class DataTypes>
+sofa::core::objectmodel::BaseObject* AttachBodyPerformer<DataTypes>::getInteractionObject()
+{
+    return m_forcefield.get();
+}
+
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::clear()
 {

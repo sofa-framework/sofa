@@ -23,6 +23,7 @@
 #include <sofa/gui/component/config.h>
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/gui/component/performer/BaseAttachBodyPerformer.h>
 #include <sofa/gui/component/AttachBodyButtonSetting.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
@@ -34,7 +35,7 @@ namespace sofa::gui::component::performer
 struct BodyPicked;
 
 template <class DataTypes>
-class AttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public BaseAttachBodyPerformer
 {
 public:
     typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
@@ -47,7 +48,14 @@ public:
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);
-    void clear();
+    virtual sofa::core::objectmodel::BaseObject* getInteractionObject() override;
+    virtual void clear() override;
+    virtual bool start_partial(const BodyPicked& picked) override;
+    /*
+    initialise MouseForceField according to template.
+    StiffSpringForceField for Vec3
+    JointSpringForceField for Rigid3
+    */
 
     void setStiffness(SReal s) {stiffness=s;}
     void setArrowSize(float s) {size=s;}
@@ -69,12 +77,7 @@ protected:
     SReal size;
     SReal showFactorSize;
 
-    virtual bool start_partial(const BodyPicked& picked);
-    /*
-    initialise MouseForceField according to template.
-    StiffSpringForceField for Vec3
-    JointSpringForceField for Rigid3
-    */
+
 
     MouseContactMapper  *mapper;
     MouseForceField::SPtr m_forcefield;
