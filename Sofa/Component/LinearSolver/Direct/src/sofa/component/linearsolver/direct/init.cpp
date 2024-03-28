@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
-#include <Eigen/MetisSupport>
 #include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa::component::linearsolver::direct
@@ -54,7 +53,6 @@ void registerOrderingMethods()
     EigenSolverFactory::template registerSolver<Eigen::AMDOrdering<int>, Scalar >("AMD");
     EigenSolverFactory::template registerSolver<Eigen::COLAMDOrdering<int>, Scalar >("COLAMD");
     EigenSolverFactory::template registerSolver<Eigen::NaturalOrdering<int>, Scalar >("Natural");
-    EigenSolverFactory::template registerSolver<Eigen::MetisOrdering<int>, Scalar >("Metis");
 }
 
 template<class Scalar>

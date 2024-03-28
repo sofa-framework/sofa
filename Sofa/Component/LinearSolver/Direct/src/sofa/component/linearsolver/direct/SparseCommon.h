@@ -42,10 +42,9 @@ SOFA_COMPONENT_LINEARSOLVER_DIRECT_API
 void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj, type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec );
 
 // compute the fill reducing permutation via METIS
-SOFA_ATTRIBUTE_DEPRECATED__SPARSECOMMON()
-SOFA_COMPONENT_LINEARSOLVER_DIRECT_API
+SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.06", "This function depends on Metis which has been removed as a dependency.")
 void fillReducingPermutation(int nbColumns, int *columns, int* rowIndices,
-    int * perm,int * invperm);
+    int * perm,int * invperm) = delete;
 
 // compare the shape of two matrix given in CSR format, return false if the matrices have the same shape and return true if their shapes are different
 inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {

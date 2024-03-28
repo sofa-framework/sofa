@@ -50,6 +50,7 @@ sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL GIT_
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin Sofa.Metis Sofa.Metis EXTERNAL GIT_REF master)
 
 
 sofa_add_subdirectory(plugin PSL PSL EXTERNAL GIT_REF master)
