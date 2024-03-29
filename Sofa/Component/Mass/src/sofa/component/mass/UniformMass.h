@@ -118,7 +118,6 @@ public:
     void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    void doUpdateInternal() override;
 
     /// @name Check and standard initialization functions from mass information
     /// @{

@@ -291,13 +291,6 @@ void UniformMass<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::doUpdateInternal()
-{
-    // function empty in #3927
-}
-
-
-template <class DataTypes>
 bool UniformMass<DataTypes>::checkVertexMass()
 {
     if(d_vertexMass.getValue() < 0.0 )
