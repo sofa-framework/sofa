@@ -106,7 +106,6 @@ UniformMass<DataTypes>::UniformMass()
             }
         }
 
-        //Info post-reinit
         msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
                       "vertexMass = " << d_vertexMass.getValue();
 
