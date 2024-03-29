@@ -38,7 +38,6 @@ class SOFA_GUI_COMPONENT_API ConstraintAttachButtonSetting: public sofa::compone
 {
 public:
     SOFA_CLASS(ConstraintAttachButtonSetting,MouseButtonSetting);
-public:
     std::string getOperationType() override {return "ConstraintAttach";}
 
 };
