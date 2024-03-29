@@ -74,36 +74,6 @@ MatrixLinearSystem<TMatrix, TVector>::MatrixLinearSystem()
 
 template <class TMatrix, class TVector>
 template <Contribution c>
-void MatrixLinearSystem<TMatrix, TVector>::contribute(const core::MechanicalParams* mparams)
-{
-    sofa::helper::ScopedAdvancedTimer buildTimer("build" + std::string(core::matrixaccumulator::GetContributionName<c>()));
-
-    for (auto* contributor : getContributors<c>())
-    {
-        if (Inherit1::template getContributionFactor<c>(mparams, contributor) != 0._sreal)
-        {
-            if constexpr (c == Contribution::STIFFNESS)
-            {
-                contributor->buildStiffnessMatrix(&m_stiffness[contributor]);
-            }
-            else if constexpr (c == Contribution::MASS)
-            {
-                contributor->buildMassMatrix(m_mass[contributor]);
-            }
-            else if constexpr (c == Contribution::DAMPING)
-            {
-                contributor->buildDampingMatrix(&m_damping[contributor]);
-            }
-            else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
-            {
-                contributor->buildGeometricStiffnessMatrix(&m_geometricStiffness[contributor]);
-            }
-        }
-    }
-}
-
-template <class TMatrix, class TVector>
-template <Contribution c>
 void MatrixLinearSystem<TMatrix, TVector>::contribute(
     const core::MechanicalParams* mparams,
     IndependentContributors& contributors)

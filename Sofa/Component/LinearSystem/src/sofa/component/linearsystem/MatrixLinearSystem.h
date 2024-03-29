@@ -124,13 +124,6 @@ protected:
     > > m_localMappedMatrices;
 
 
-
-    /**
-     * Asks all the matrix accumulators to accumulate the contribution of a specific type of contribution
-     */
-    template<Contribution c>
-    void contribute(const core::MechanicalParams* mparams);
-
     template<Contribution c>
     void contribute(const core::MechanicalParams* mparams, IndependentContributors& contributors);
 
