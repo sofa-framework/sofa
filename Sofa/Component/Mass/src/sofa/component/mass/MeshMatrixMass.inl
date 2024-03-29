@@ -90,7 +90,6 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
             }
         }
 
-        //Info post-init
         msg_info() << "mass information updated";
         printMass();
         return sofa::core::objectmodel::ComponentState::Valid;
