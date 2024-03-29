@@ -285,7 +285,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
 template <class DataTypes>
 void UniformMass<DataTypes>::reinit()
 {
-    // Now update is handled through the callack mechanism
+    // update is handled through the callback mechanism
     // called each time the componentState is checked
 }
 
