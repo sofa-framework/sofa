@@ -1551,13 +1551,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::reinit()
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::doUpdateInternal()
-{
-    // function empty in #3928
-}
-
-
-template <class DataTypes, class GeometricalTypes>
 bool MeshMatrixMass<DataTypes, GeometricalTypes>::checkTotalMass()
 {
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0

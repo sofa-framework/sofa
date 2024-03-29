@@ -137,7 +137,6 @@ public:
     void reinit() override;
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event *event) override;
-    void doUpdateInternal() override;
 
     sofa::geometry::ElementType getMassTopologyType() const
     {
