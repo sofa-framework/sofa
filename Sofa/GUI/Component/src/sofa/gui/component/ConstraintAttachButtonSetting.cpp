@@ -27,7 +27,7 @@
 namespace sofa::gui::component
 {
 
-int ConstraintAttachButtonSettingClass = core::RegisterObject("Fix a picked particle in space using lagrangian multiplier")
+int ConstraintAttachButtonSettingClass = core::RegisterObject("Attach an object to the mouse using lagrangian multiplier")
         .add< ConstraintAttachButtonSetting >();
 
 
