@@ -12,6 +12,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
+    ${SRC_ROOT}/CachedDataObservable.h
+    ${SRC_ROOT}/CachedDataObserver.h
     ${SRC_ROOT}/CategoryLibrary.h
     ${SRC_ROOT}/CollisionElement.h
     ${SRC_ROOT}/CollisionModel.h
@@ -201,6 +203,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BaseMapping.cpp
     ${SRC_ROOT}/BaseState.cpp
     ${SRC_ROOT}/BehaviorModel.cpp
+    ${SRC_ROOT}/CachedDataObservable.cpp
+    ${SRC_ROOT}/CachedDataObserver.cpp
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp

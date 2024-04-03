@@ -32,6 +32,7 @@
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
 #include <optional>
 #include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
+#include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
 
 
 namespace sofa::component::linearsystem
@@ -123,6 +124,13 @@ protected:
         std::shared_ptr<LocalMappedMatrixType<Real> >
     > > m_localMappedMatrices;
 
+    sofa::type::vector<MappedMassMatrixObserver<Real> > m_mappedMassMatrixObservers;
+
+    /**
+     * return a mass observer if there is any associated to the provided mass
+     */
+    const MappedMassMatrixObserver<Real>* getMassObserver(BaseMass* mass) const;
+
 
     template<Contribution c>
     void contribute(const core::MechanicalParams* mparams, IndependentContributors& contributors);
@@ -179,9 +187,9 @@ protected:
 
 
     /**
-     * Project the assembled matrices from mapped states to the global matrix
+     * Project the assembled matrices from mapped states a destination matrix
      */
-    virtual void projectMappedMatrices(const core::MechanicalParams* mparams);
+    virtual void projectMappedMatrices(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination);
 
     /**
      * Assemble the matrices under mappings into the global matrix
@@ -244,6 +252,18 @@ protected:
     std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
 
     virtual typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
+
+    /**
+     * Find a projection method in the scene graph given a pair of mechanical states
+     */
+    BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*
+    findProjectionMethod(const PairMechanicalStates& pair);
+
+    /**
+     * Assemble the precomputed mapped mass matrices
+     */
+    void assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams,
+                                             linearalgebra::BaseMatrix* destination);
 
 private:
     template<Contribution c>

@@ -73,6 +73,22 @@ MatrixLinearSystem<TMatrix, TVector>::MatrixLinearSystem()
 }
 
 template <class TMatrix, class TVector>
+auto MatrixLinearSystem<TMatrix, TVector>::getMassObserver(
+    BaseMass* mass) const -> const MappedMassMatrixObserver<Real>*
+{
+    const auto it = std::find_if(m_mappedMassMatrixObservers.begin(), m_mappedMassMatrixObservers.end(),
+        [mass, this](const MappedMassMatrixObserver<Real>& observer)
+        {
+            return observer.observedMass == mass;
+        });
+    if (it != m_mappedMassMatrixObservers.end())
+    {
+        return &*it;
+    }
+    return nullptr;
+}
+
+template <class TMatrix, class TVector>
 template <Contribution c>
 void MatrixLinearSystem<TMatrix, TVector>::contribute(
     const core::MechanicalParams* mparams,
@@ -92,9 +108,13 @@ void MatrixLinearSystem<TMatrix, TVector>::contribute(
     {
         for (auto& [component, massMatrix] : contributors.m_mass)
         {
-            if (Inherit1::template getContributionFactor<c>(mparams, component) != 0._sreal)
+            const auto* observer = getMassObserver(component);
+            if (observer && !observer->isCacheValid() || !observer)
             {
-                component->buildMassMatrix(massMatrix);
+                if (Inherit1::template getContributionFactor<c>(mparams, component) != 0._sreal)
+                {
+                    component->buildMassMatrix(massMatrix);
+                }
             }
         }
     }
@@ -115,7 +135,6 @@ void MatrixLinearSystem<TMatrix, TVector>::contribute(
             if (Inherit1::template getContributionFactor<c>(mparams, component) != 0._sreal)
             {
                 component->buildGeometricStiffnessMatrix(&geometricStiffnessMatrix);
-
             }
         }
     }
@@ -513,6 +532,16 @@ void MatrixLinearSystem<TMatrix, TVector>::makeLocalMatrixGroups(const core::Mec
             }
         }
     }
+
+    for (auto& observer : m_mappedMassMatrixObservers)
+    {
+        if (!observer.isCacheValid())
+        {
+            setSharedMatrix<Contribution::MASS>(observer.observedMass,
+                PairMechanicalStates{observer.mstate, observer.mstate},
+                observer.m_invariantMassMatrix);
+        }
+    }
 }
 
 template <class TMatrix, class TVector>
@@ -580,7 +609,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
     {
         const auto& mappedMatrices = getLocalMatrixMap<Contribution::MASS>().mappedLocalMatrix;
         if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
-            {
+        {
             //confirmation that this component is not mapped:
             if (m_mappingGraph.hasAnyMappingInput(component))
             {
@@ -589,7 +618,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
             }
 
             nonMappedContributors.m_mass.insert({component, localMatrix});
-            }
+        }
         else
         {
             mappedContributors.m_mass.insert({component, localMatrix});
@@ -655,8 +684,16 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
         this->resizeSystem(totalSize);
         const auto newRowSize = this->getSystemMatrix() ? this->getSystemMatrix()->rowSize() : 0;
         const auto newColSize = this->getSystemMatrix() ? this->getSystemMatrix()->colSize() : 0;
-        msg_info_when(newRowSize != rowSize || newColSize != colSize) <<
-            "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
+        if (newRowSize != rowSize || newColSize != colSize)
+        {
+            msg_info() <<
+                "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
+
+            for (auto& observer : m_mappedMassMatrixObservers)
+            {
+                observer.invalidCache();
+            }
+        }
     }
     {
         SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
@@ -812,6 +849,29 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             else if constexpr (c == Contribution::MASS)
             {
                 m_mass[component] = mat;
+
+                if (isAnyMapped)
+                {
+                    assert(mstate0 == mstate1);
+                    const auto parentMappings = m_mappingGraph.getBottomUpMappingsFrom(mstate0);
+                    if (!parentMappings.empty())
+                    {
+                        const bool isMappingChainLinear =
+                           std::all_of(parentMappings.begin(), parentMappings.end(),
+                               [](const core::BaseMapping* mapping){ return mapping->isLinear(); });
+
+                        if (isMappingChainLinear)
+                        {
+                            MappedMassMatrixObserver<Real> observer;
+                            observer.observedMass = component;
+                            observer.accumulator = mat;
+                            observer.m_invariantMassMatrix->resize(mstate0->getMatrixSize(), mstate0->getMatrixSize());
+                            observer.mstate = mstate0;
+                            m_mappedMassMatrixObservers.push_back(observer);
+                            component->subscribe(&m_mappedMassMatrixObservers.back());
+                        }
+                    }
+                }
             }
         }
 
@@ -949,8 +1009,78 @@ auto MatrixLinearSystem<TMatrix, TVector>::createMatrixMapping(
 }
 
 template <class TMatrix, class TVector>
-void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::MechanicalParams* mparams)
+auto MatrixLinearSystem<TMatrix, TVector>::findProjectionMethod(
+    const PairMechanicalStates& pair)
+-> BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*
 {
+    auto it = m_matrixMappings.find(pair);
+    if (it == m_matrixMappings.end())
+    {
+        //look in the scene graph
+        sofa::type::vector<BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*> allMatrixMappings;
+        this->getContext()->getObjects(allMatrixMappings, core::objectmodel::BaseContext::SearchDirection::SearchRoot);
+        for (auto* m : allMatrixMappings)
+        {
+            if (m->hasPairStates(pair))
+            {
+                msg_info() << "Found a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": " << m->getPathName();
+                const auto [insert_it, success] = m_matrixMappings.insert({pair, m});
+                it = insert_it;
+                break;
+            }
+        }
+
+        if (it == m_matrixMappings.end()) //it has not been found in the scene graph
+        {
+            msg_info() << "Cannot find a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": create one";
+            const auto createdMatrixMapping = createMatrixMapping(pair);
+            const auto resolvedName = this->getContext()->getNameHelper().resolveName(createdMatrixMapping->getClassName(), sofa::core::ComponentNameHelper::Convention::xml);
+            createdMatrixMapping->setName(resolvedName);
+            this->addSlave(createdMatrixMapping);
+            const auto [insert_it, success] = m_matrixMappings.insert({pair, createdMatrixMapping.get()});
+            it = insert_it;
+        }
+    }
+
+    return it->second;
+}
+
+template <class TMatrix, class TVector>
+void MatrixLinearSystem<TMatrix, TVector>::assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination)
+{
+    SCOPED_TIMER("precomputedMappedMassMatrix");
+    for (auto& observer : m_mappedMassMatrixObservers)
+    {
+        if (!observer.isCacheValid())
+        {
+            observer.m_invariantProjectedMassMatrix->resize(
+                this->getSystemMatrix()->rows(), this->getSystemMatrix()->cols());
+            observer.m_invariantProjectedMassMatrix->clear();
+
+            observer.m_invariantMassMatrix->compress();
+
+            auto* projectionMethod = findProjectionMethod({observer.mstate, observer.mstate});
+            if (projectionMethod != nullptr)
+            {
+                projectionMethod->reinit();
+                projectionMethod->projectMatrixToGlobalMatrix(mparams,
+                    this->getMappingGraph(), observer.m_invariantMassMatrix.get(), observer.m_invariantProjectedMassMatrix.get());
+                observer.m_invariantProjectedMassMatrix->compress();
+                observer.setCacheValid();
+                projectionMethod->reinit();
+            }
+        }
+
+        observer.m_invariantProjectedMassMatrix->addTo(destination);
+    }
+}
+
+template <class TMatrix, class TVector>
+void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination)
+{
+    assemblePrecomputedMappedMassMatrix(mparams, destination);
+
+    SCOPED_TIMER("projection");
     for (const auto& [pair, mappedMatrix] : m_localMappedMatrices)
     {
         if (!mappedMatrix)
@@ -967,38 +1097,10 @@ void MatrixLinearSystem<TMatrix, TVector>::projectMappedMatrices(const core::Mec
             continue;
         }
 
-        auto it = m_matrixMappings.find(pair);
-        if (it == m_matrixMappings.end())
+        auto projectionMethod = findProjectionMethod(pair);
+        if (projectionMethod != nullptr)
         {
-            //look in the scene graph
-            sofa::type::vector<BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*> allMatrixMappings;
-            this->getContext()->getObjects(allMatrixMappings, core::objectmodel::BaseContext::SearchDirection::SearchRoot);
-            for (auto* m : allMatrixMappings)
-            {
-                if (m->hasPairStates(pair))
-                {
-                    msg_info() << "Found a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": " << m->getPathName();
-                    const auto [insert_it, success] = m_matrixMappings.insert({pair, m});
-                    it = insert_it;
-                    break;
-                }
-            }
-
-            if (it == m_matrixMappings.end()) //it has not been found in the scene graph
-            {
-                msg_info() << "Cannot find a matrix projection method for pair " << pair[0]->getPathName() << " and " << pair[1]->getPathName() << ": create one";
-                const auto createdMatrixMapping = createMatrixMapping(pair);
-                const auto resolvedName = this->getContext()->getNameHelper().resolveName(createdMatrixMapping->getClassName(), sofa::core::ComponentNameHelper::Convention::xml);
-                createdMatrixMapping->setName(resolvedName);
-                this->addSlave(createdMatrixMapping);
-                const auto [insert_it, success] = m_matrixMappings.insert({pair, createdMatrixMapping.get()});
-                it = insert_it;
-            }
-        }
-
-        if (it != m_matrixMappings.end())
-        {
-            it->second->projectMatrixToGlobalMatrix(mparams, this->getMappingGraph(), crs, this->getSystemMatrix());
+            projectionMethod->projectMatrixToGlobalMatrix(mparams, this->getMappingGraph(), crs, destination);
         }
     }
 }
@@ -1013,7 +1115,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleMappedMatrices(const core::Me
     }
 
     SCOPED_TIMER_VARNAME(buildMappedMatricesTimer, "projectMappedMatrices");
-    projectMappedMatrices(mparams);
+    projectMappedMatrices(mparams, this->getSystemMatrix());
 }
 
 template <class TMatrix, class TVector>

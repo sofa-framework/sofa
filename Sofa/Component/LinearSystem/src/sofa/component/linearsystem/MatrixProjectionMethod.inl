@@ -42,6 +42,15 @@ MatrixProjectionMethod<TMatrix>::MatrixProjectionMethod()
 {}
 
 template <class TMatrix>
+void MatrixProjectionMethod<TMatrix>::reinit()
+{
+    Inherit1::reinit();
+
+    //cached jacobians are invalidated
+    m_mappingJacobians.reset();
+}
+
+template <class TMatrix>
 MatrixProjectionMethod<TMatrix>::MatrixProjectionMethod(
     const PairMechanicalStates& states) : MatrixProjectionMethod()
 {

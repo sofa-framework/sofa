@@ -55,6 +55,12 @@ DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)
 {
     this->addAlias(&d_fileMass,"fileMass");
+
+    sofa::core::objectmodel::Base::addUpdateCallback("invalidCache", {&d_massDensity, &d_vertexMass, &d_totalMass}, [this](const core::DataTracker&)
+    {
+        this->notifyObservers();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 template <class DataTypes, class GeometricalTypes>

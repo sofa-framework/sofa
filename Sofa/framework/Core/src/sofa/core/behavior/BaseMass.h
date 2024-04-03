@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/CachedDataObservable.h>
 #include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -39,7 +40,7 @@ class MassMatrix;
  *
  *  It is often also a ForceField, computing gravity-related forces.
  */
-class SOFA_CORE_API BaseMass : public virtual StateAccessor
+class SOFA_CORE_API BaseMass : public virtual StateAccessor, public CachedDataObservable
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMass, StateAccessor);

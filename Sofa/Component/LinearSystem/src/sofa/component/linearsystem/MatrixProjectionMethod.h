@@ -49,6 +49,8 @@ protected:
     explicit MatrixProjectionMethod(const PairMechanicalStates& states);
     MatrixProjectionMethod();
 
+    void reinit() override;
+
     virtual void computeMatrixProduct(const MappingGraph& mappingGraph,
                           TMatrix* matrixToProject,
                           linearalgebra::BaseMatrix* globalMatrix);

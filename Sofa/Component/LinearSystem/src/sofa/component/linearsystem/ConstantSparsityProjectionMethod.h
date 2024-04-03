@@ -43,6 +43,7 @@ public:
     Data<bool> d_parallelProduct;
 
     void init() override;
+    void reinit() override;
 
 protected:
     void computeProjection(
