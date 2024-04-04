@@ -79,39 +79,36 @@ UniformMass<DataTypes>::UniformMass()
 {
     constructor_message();
 
-    sofa::core::objectmodel::Base::addUpdateCallback("dataInternalUpdate", {&d_totalMass, &d_vertexMass}, [this](const core::DataTracker& tracker)
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
     {
-        if (tracker.hasChanged(d_totalMass))
+        if(m_isTotalMassUsed)
         {
-            if(checkTotalMass())
-            {
-                initFromTotalMass();
-            }
-            else
-            {
-                msg_error() << "dataInternalUpdate: incorrect update from totalMass";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
+            msg_info() << "dataInternalUpdate: data totalMass has changed";
+            return updateFromTotalMass();
         }
-        else if(tracker.hasChanged(d_vertexMass))
+        else
         {
-            if(checkVertexMass())
-            {
-                initFromVertexMass();
-            }
-            else
-            {
-                msg_error() << "dataInternalUpdate: incorrect update from vertexMass";
-                return sofa::core::objectmodel::ComponentState::Invalid;
-            }
+            msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
+            return updateFromVertexMass();
         }
 
-        msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
-                      "vertexMass = " << d_vertexMass.getValue();
-
-        return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 
+
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass}, [this](const core::DataTracker& )
+    {
+        if(!m_isTotalMassUsed)
+        {
+            msg_info() << "dataInternalUpdate: data vertexMass has changed";
+            return updateFromVertexMass();
+        }
+        else
+        {
+            msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
+            return updateFromTotalMass();
+        }
+    }, {});
 }
 
 template <class DataTypes>
@@ -235,45 +232,38 @@ void UniformMass<DataTypes>::initDefaultImpl()
         });
     }
 
-    //If user defines the vertexMass, use this as the mass
+    /// Check on data isSet()
     if (d_vertexMass.isSet())
     {
-        //Check double definition : both totalMass and vertexMass are user-defined
-        if (d_totalMass.isSet())
+        if(d_totalMass.isSet())
         {
             msg_warning(this) << "totalMass value overriding the value of the attribute vertexMass. \n"
                                  "vertexMass = totalMass / nb_dofs. \n"
                                  "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
-            checkTotalMassInit();
-            initFromTotalMass();
+
+            m_isTotalMassUsed = true;
+            d_vertexMass.setReadOnly(true);
         }
-        else
-        {
-            if(checkVertexMass())
-            {
-                initFromVertexMass();
-            }
-            else
-            {
-                checkTotalMassInit();
-                initFromTotalMass();
-            }
+        else {
+            m_isTotalMassUsed = false;
+            d_totalMass.setReadOnly(true);
+
+            msg_info() << "Input vertexMass is used for initialization";
         }
     }
-    //else totalMass is used
+    else if (d_totalMass.isSet())
+    {
+        m_isTotalMassUsed = true;
+        d_vertexMass.setReadOnly(true);
+
+        msg_info() << "Input totalForce is used for initialization";
+    }
     else
     {
-        if(!d_totalMass.isSet())
-        {
-            msg_info() << "No information about the mass is given. Default totatMass is used as reference.";
-        }
-
-        checkTotalMassInit();
-        initFromTotalMass();
+        msg_error() << "No input force has been set. Please define one of both Data: " << d_vertexMass.getName() << " or " << d_totalMass.getName();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
-
-    this->trackInternalData(d_vertexMass);
-    this->trackInternalData(d_totalMass);
 
     //Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
@@ -335,19 +325,6 @@ bool UniformMass<DataTypes>::checkTotalMass()
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::checkTotalMassInit()
-{
-    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
-    if(!checkTotalMass())
-    {
-        msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
-        d_totalMass.setValue(1.0) ;
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    }
-}
-
-
-template <class DataTypes>
 void UniformMass<DataTypes>::initFromTotalMass()
 {
     //If the totalMass attribute is set then the vertexMass is computed from it
@@ -355,15 +332,46 @@ void UniformMass<DataTypes>::initFromTotalMass()
 
     if(d_indices.getValue().size() > 0)
     {
-        MassType *m = d_vertexMass.beginEdit();
+        helper::WriteAccessor<Data<MassType>> m = d_vertexMass;
         *m = d_totalMass.getValue() / Real(d_indices.getValue().size());
-        d_vertexMass.endEdit();
 
         msg_info() << "totalMass information is used";
     }
     else
     {
         msg_warning() << "indices vector size is <= 0";
+    }
+}
+
+
+template <class DataTypes>
+sofa::core::objectmodel::ComponentState UniformMass<DataTypes>::updateFromTotalMass()
+{
+    if (checkTotalMass())
+    {
+        initFromTotalMass();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }
+    else
+    {
+        msg_error() << "dataInternalUpdate: incorrect update from totalMass";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+}
+
+
+template <class DataTypes>
+sofa::core::objectmodel::ComponentState UniformMass<DataTypes>::updateFromVertexMass()
+{
+    if(checkVertexMass())
+    {
+        initFromVertexMass();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }
+    else
+    {
+        msg_error() << "dataInternalUpdate: incorrect update from vertexMass";
+        return sofa::core::objectmodel::ComponentState::Invalid;
     }
 }
 
@@ -391,15 +399,10 @@ void UniformMass<DataTypes>::updateMassOnResize(sofa::Size newSize)
 
 // -- Mass interface
 template <class DataTypes>
-void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
-                                                DataVecDeriv& vres,
-                                                const DataVecDeriv& vdx,
-                                                SReal factor)
+void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
     if (!this->isComponentStateValid())
-    {
         return;
-    }
 
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
@@ -416,14 +419,10 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
-                                                  DataVecDeriv& va,
-                                                  const DataVecDeriv& vf )
+void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
 {
     if (!this->isComponentStateValid())
-    {
         return;
-    }
 
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
@@ -437,10 +436,7 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
-                                                        const VecDeriv* dx,
-                                                        SReal mFact,
-                                                        unsigned int& offset )
+void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset )
 {
     SOFA_UNUSED(resVect);
     SOFA_UNUSED(dx);
@@ -450,12 +446,11 @@ void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams,
-                                                     DataVecDeriv& d_v)
+void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if (mparams)
     {
-        VecDeriv& v = *d_v.beginEdit();
+        helper::WriteAccessor<DataVecDeriv> v = d_v;
 
         const SReal* g = getContext()->getGravity().ptr();
         Deriv theGravity;
@@ -468,8 +463,6 @@ void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams,
         {
             v[i] += hg;
         }
-
-        d_v.endEdit();
     }
 }
 
@@ -502,8 +495,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
 }
 
 template <class DataTypes>
-SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
-                                                           const DataVecDeriv& d_v  ) const
+SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params, const DataVecDeriv& d_v  ) const
 {
     SOFA_UNUSED(params);
 
@@ -520,8 +512,7 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
 }
 
 template <class DataTypes>
-SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* params,
-                                                             const DataVecCoord& d_x  ) const
+SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* params, const DataVecCoord& d_x  ) const
 {
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
@@ -546,9 +537,7 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes>
 type::Vec6
-UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params,
-                                                const DataVecCoord& d_x,
-                                                const DataVecDeriv& d_v  ) const
+UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params, const DataVecCoord& d_x, const DataVecDeriv& d_v  ) const
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(d_x);
@@ -563,13 +552,10 @@ UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params,
 
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes>
-void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
-                                                     const MultiMatrixAccessor* matrix)
+void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams, const MultiMatrixAccessor* matrix)
 {
     if (!this->isComponentStateValid())
-    {
         return;
-    }
 
     const MassType& m = d_vertexMass.getValue();
 
@@ -616,8 +602,7 @@ SReal UniformMass<DataTypes>::getElementMass (sofa::Index ) const
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::getElementMass (sofa::Index  index ,
-                                                        BaseMatrix *m ) const
+void UniformMass<DataTypes>::getElementMass (sofa::Index  index, BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
 
