@@ -100,6 +100,13 @@ public:
     /// @name Matrix operations using LinearSolver components
 /// @{
 
+    void resetSystem(core::behavior::LinearSolver* linearSolver);
+    void setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact, core::behavior::LinearSolver* linearSolver);
+    void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
+    void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
+    void solveSystem(core::behavior::LinearSolver* linearSolver);
+    void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
+
     void m_resetSystem();
     void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact);
     void m_setSystemRHVector(core::MultiVecDerivId v);
