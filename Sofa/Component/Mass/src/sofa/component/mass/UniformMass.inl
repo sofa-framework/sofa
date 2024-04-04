@@ -243,10 +243,13 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
             m_isTotalMassUsed = true;
             d_vertexMass.setReadOnly(true);
+            checkTotalMass();
         }
-        else {
+        else
+        {
             m_isTotalMassUsed = false;
             d_totalMass.setReadOnly(true);
+            checkVertexMass();
 
             msg_info() << "Input vertexMass is used for initialization";
         }
@@ -255,12 +258,13 @@ void UniformMass<DataTypes>::initDefaultImpl()
     {
         m_isTotalMassUsed = true;
         d_vertexMass.setReadOnly(true);
+        checkTotalMass();
 
         msg_info() << "Input totalForce is used for initialization";
     }
     else
     {
-        msg_error() << "No input force has been set. Please define one of both Data: " << d_vertexMass.getName() << " or " << d_totalMass.getName();
+        msg_error() << "No input mass information has been set. Please define one of both Data: " << d_vertexMass.getName() << " or " << d_totalMass.getName();
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -284,8 +288,8 @@ bool UniformMass<DataTypes>::checkVertexMass()
 {
     if(d_vertexMass.getValue() < 0.0 )
     {
-        msg_warning(this) << "vertexMass data can not have a negative value. \n"
-                             "To remove this warning, you need to set one single, non-zero and positive value to the vertexMass data";
+        msg_error(this) << "vertexMass data can not have a negative value. \n"
+                           "To remove this warning, you need to set one single, non-zero and positive value to the vertexMass data";
         return false;
     }
     else
@@ -313,8 +317,8 @@ bool UniformMass<DataTypes>::checkTotalMass()
 {
     if(d_totalMass.getValue() < 0.0)
     {
-        msg_warning(this) << "totalMass data can not have a negative value. \n"
-                             "To remove this warning, you need to set a non-zero positive value to the totalMass data";
+        msg_error(this) << "totalMass data can not have a negative value. \n"
+                           "To remove this warning, you need to set a non-zero positive value to the totalMass data";
         return false;
     }
     else
