@@ -92,7 +92,6 @@ UniformMass<DataTypes>::UniformMass()
             msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
             return updateFromVertexMass();
         }
-
     }, {});
 
 
@@ -173,6 +172,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
                              "UniformMass need to be used with an object also having a MechanicalState. \n"
                              "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
                              " containing this <UniformMass/>";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -206,6 +206,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
 
     BaseMeshTopology* meshTopology = l_topology.get();
+
     if (meshTopology != nullptr && dynamic_cast<sofa::core::topology::TopologyContainer*>(meshTopology) != nullptr)
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -243,13 +244,11 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
             m_isTotalMassUsed = true;
             d_vertexMass.setReadOnly(true);
-            checkTotalMass();
         }
         else
         {
             m_isTotalMassUsed = false;
             d_totalMass.setReadOnly(true);
-            checkVertexMass();
 
             msg_info() << "Input vertexMass is used for initialization";
         }
@@ -258,19 +257,25 @@ void UniformMass<DataTypes>::initDefaultImpl()
     {
         m_isTotalMassUsed = true;
         d_vertexMass.setReadOnly(true);
-        checkTotalMass();
 
         msg_info() << "Input totalForce is used for initialization";
     }
     else
     {
-        msg_error() << "No input mass information has been set. Please define one of both Data: " << d_vertexMass.getName() << " or " << d_totalMass.getName();
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        if(d_filenameMass.getValue() == "unused")
+        {
+            msg_error() << "No input mass information has been set. Please define one of both Data: "
+                        << d_vertexMass.getName() << " or " << d_totalMass.getName();
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
     }
 
-    //Info post-init
-    msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
+    /// Trigger callbacks (see constructor)
+    this->d_componentState.getValue();
+
+    /// Info post-init
+    msg_info() << "totalMass  = " << d_totalMass.getValue() << " | "
                   "vertexMass = " << d_vertexMass.getValue();
 }
 
@@ -461,7 +466,7 @@ void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams, Data
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * Real(sofa::core::mechanicalparams::dt(mparams));
 
-        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<sofa::core::mechanicalparams::dt(mparams)<<"="<<hg ;
+        dmsg_info()<< "addGravityToV hg = "<<theGravity<<"*"<<sofa::core::mechanicalparams::dt(mparams)<<"="<<hg ;
 
         for ( unsigned int i=0; i<v.size(); i++ )
         {
@@ -487,7 +492,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
     const MassType& m = d_vertexMass.getValue();
     Deriv mg = theGravity * m;
 
-    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
+    dmsg_info() <<"addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 

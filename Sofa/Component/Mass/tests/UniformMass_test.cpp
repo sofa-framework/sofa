@@ -164,13 +164,13 @@ struct UniformMassTest :  public BaseTest
     }
 
     /// totalMass is well defined
-    /// vertexMass will be computed from it using the formula:  vertexMass = totalMass / number of particules
+    /// vertexMass will be computed from it using the formula:  vertexMass = totalMass / number of dofs
     void checkVertexMassFromTotalMass(){
         const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='8.0'/>                             "
+                "   <UniformMass name='m_mass' totalMass='8.0'/>             "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -187,13 +187,13 @@ struct UniformMassTest :  public BaseTest
     }
 
     /// vertexMass is well defined
-    /// totalMass will be computed from it using the formula: totalMass = vertexMass * number of particules
+    /// totalMass will be computed from it using the formula: totalMass = vertexMass * number of dofs
     void checkTotalMassFromVertexMass(){
         const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' vertexMass='4.0' />                 "
+                "   <UniformMass name='m_mass' vertexMass='4.0' />           "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -216,7 +216,7 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='-8.0' />                 "
+                "   <UniformMass name='m_mass' totalMass='-8.0' />           "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -236,7 +236,7 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' vertexMass='-4.0' />                 "
+                "   <UniformMass name='m_mass' vertexMass='-4.0' />          "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -347,7 +347,7 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='18.0'/>   "
+                "   <UniformMass name='m_mass' totalMass='18.0'/>            "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -359,6 +359,7 @@ struct UniformMassTest :  public BaseTest
         EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
 
         mass->setTotalMass(3.0);
+        mass->updateFromTotalMass();
 
         if(mass!=nullptr)
         {
@@ -387,6 +388,7 @@ struct UniformMassTest :  public BaseTest
         EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
 
         mass->setMass(3.0);
+        mass->updateFromVertexMass();
 
         if(mass!=nullptr)
         {
@@ -403,7 +405,7 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
-                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -422,9 +424,10 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0'/>                     "
-                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
+        EXPECT_MSG_EMIT(Warning);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
@@ -433,10 +436,10 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0'/>                     "
-                "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
+                "   <UniformMass filename='invalid_uniformmatrix.txt'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
-        EXPECT_MSG_EMIT(Error, Warning);
+        EXPECT_MSG_EMIT(Warning);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
@@ -448,7 +451,7 @@ struct UniformMassTest :  public BaseTest
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
-        EXPECT_MSG_EMIT(Error, Warning);
+        EXPECT_MSG_EMIT(Warning);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
