@@ -23,6 +23,7 @@
 #include <sofa/component/odesolver/forward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
 namespace sofa::simulation::common
