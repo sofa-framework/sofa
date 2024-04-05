@@ -2,7 +2,7 @@
 	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  />
 	<MechanicalObject template="Rigid3" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1"/>
-	<UniformMass />
+	<UniformMass totalMass="1.0"/>
 	<Node name="VisualNode" tags="Visual">
 		<OglModel name="Visual" filename="file" color="gray" scale3d="1 1 1" />
 		<RigidMapping input="@.." output="@Visual" />

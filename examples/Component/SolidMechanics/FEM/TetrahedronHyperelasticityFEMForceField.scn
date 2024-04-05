@@ -31,7 +31,7 @@
 		<RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="0 0 0"/>
 		
 		<MechanicalObject name="mechObj"/>
-		<UniformMass/>
+		<UniformMass totalMass="1.0"/>
 		<TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.45" method="large" />
 		
 		<BoxROI drawBoxes="0" box="0 0 0 1 1 0.05" name="box"/>
@@ -46,7 +46,7 @@
 		<RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="2 0 0"/>
 		
 		<MechanicalObject name="mechObj"/>
-		<UniformMass/>
+		<UniformMass totalMass="1.0"/>
 		
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
@@ -69,7 +69,7 @@
 		<RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="4 0 0"/>
 		
 		<MechanicalObject name="mechObj"/>
-		<UniformMass/>
+		<UniformMass totalMass="1.0"/>
 		
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
@@ -93,7 +93,7 @@
 		<RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="6 0 0"/>
 		
 		<MechanicalObject name="mechObj"/>
-		<UniformMass/>
+		<UniformMass totalMass="1.0"/>
 		
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
@@ -117,7 +117,7 @@
 		<RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="8 0 0"/>
 		
 		<MechanicalObject name="mechObj"/>
-		<UniformMass/>
+		<UniformMass totalMass="1.0"/>
 		
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>

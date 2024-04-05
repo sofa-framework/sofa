@@ -26,7 +26,7 @@
 <RegularGridTopology />
 <MechanicalObject  translation="-2 0 0"/>
 <RegularGridSpringForceField />
-<UniformMass  />
+<UniformMass totalMass="1.0"/>
 <PlaneForceField normal="0 1 0" d="-5" stiffness="10000" />
 </Node>
 

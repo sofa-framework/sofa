@@ -35,7 +35,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../loader" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <UniformMass totalMass="60" name="uniformlyConstantMass" />
+        <UniformMass totalMass="60" name="uniformlyConstantMass" printLog="1"/>
         <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
         

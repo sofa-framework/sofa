@@ -17,7 +17,7 @@
         <RegularGridTopology p0="-2 0 0" />
         <MechanicalObject />
         <HexahedronFEMForceField poissonRatio="0" youngModulus="1000" />
-        <UniformMass />
+        <UniformMass totalMass="1.0"/>
         <PlaneForceField normal="0 1 0" d="-5" stiffness="10000" />
     </Node>
 
@@ -27,7 +27,7 @@
         <RegularGridTopology p0="2 0 0" />
         <MechanicalObject />
         <HexahedronFEMForceField poissonRatio="0" youngModulus="1000" />
-        <UniformMass />
+        <UniformMass totalMass="1.0"/>
         <PlaneForceField normal="0 1 0" d="-5" stiffness="10000" />
     </Node>
 </Node>
