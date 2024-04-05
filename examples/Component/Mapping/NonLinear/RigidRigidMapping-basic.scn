@@ -15,7 +15,7 @@
         <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" verbose="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid3" />
         <PartialFixedProjectiveConstraint fixedDirections="1 1 1 0 0 0" />
-        <UniformMass template="Rigid3" name="mass" />
+        <UniformMass template="Rigid3" name="mass" totalMass="1.0"/>
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Rigid3" name="endpoint coordinates" position="1 0 0 0 0 0 1"  />
             <RigidMapping name="angle-coord mapping" input="@.." output="@." index="0" />

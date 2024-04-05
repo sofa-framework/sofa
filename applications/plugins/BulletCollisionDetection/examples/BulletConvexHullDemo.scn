@@ -42,7 +42,7 @@
 		</Node>
 		<Node 	 name="Floor"  >
 			<MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 -20 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-			<UniformMass template="Rigid3d" name="uniformMass63" />
+			<UniformMass template="Rigid3d" name="uniformMass63" totalMass="1.0"/>
 			<FixedProjectiveConstraint template="Rigid3d" name="fixedProjectiveConstraint0"  indices="0" />
 			<Node 	 name="TRIANGLE"  >
 				<MeshOBJLoader name="loader"  filename="mesh/SaladBowl.obj" />
