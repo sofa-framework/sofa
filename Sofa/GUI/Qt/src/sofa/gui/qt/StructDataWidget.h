@@ -27,6 +27,7 @@
 #include <sofa/component/solidmechanics/spring/JointSpring.h>
 #include <sofa/component/solidmechanics/spring/JointSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
 
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/type/RGBAColor.h>
@@ -529,7 +530,7 @@ class data_widget_container < sofa::type::Material > : public struct_data_widget
 /// sofa::component::interactionforcefield::PenalityContactForceField Contact support
 ////////////////////////////////////////////////////////////////
 
-#define CLASS typename sofa::component::interactionforcefield::PenalityContact< T >
+#define CLASS typename sofa::component::collision::response::contact::PenalityContact< T >
 
 template<class T>
 class struct_data_trait < CLASS >
