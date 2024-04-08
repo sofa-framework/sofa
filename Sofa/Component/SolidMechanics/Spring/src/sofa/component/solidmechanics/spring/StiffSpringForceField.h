@@ -53,12 +53,14 @@ public:
     typedef type::vector<sofa::Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-
     typedef typename Inherit::Spring Spring;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     static constexpr auto N = DataTypes::spatial_dimensions;
     typedef type::Mat<N,N,Real> Mat;
+
+    core::objectmodel::lifecycle::DeprecatedData d_indices1{this, "v24.06", "v24.12", "indices1", "This data has been replaced by the data springsIndices1 "};
+    core::objectmodel::lifecycle::DeprecatedData d_indices2{this, "v24.06", "v24.12", "indices2", "This data has been replaced by the data springsIndices2"};
 
 
     core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
