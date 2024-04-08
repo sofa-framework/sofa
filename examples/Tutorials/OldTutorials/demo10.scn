@@ -96,7 +96,7 @@
 		<EulerImplicitSolver />
 		<CGLinearSolver iterations="20" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject dx="-4" dy="31.5" dz="-4"/>
-		<UniformMass mass="0.37"/>
+		<UniformMass vertexMass="0.37"/>
 		<RegularGridTopology
 			nx="7" ny="7" nz="7"
 			xmin="-3.5" xmax="3.5"

@@ -31,7 +31,7 @@
 				<MeshTopology name="meshTopology35"  edges="2 0  1 2  0 1 "  triangles="0 1 2 "  drawEdges="1"  drawTriangles="1" />
 				<!-- <MechanicalObject template="Vec3d" name="fix"  position="-2 0 -2 -2 0 2 2 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" reserve="0" /> -->
 				<MechanicalObject template="Vec3d" name="fix"  position="-2 -2 0 2 -2 0 0 2 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  scale3d="50 50 50" reserve="0" />
-				<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
+				<UniformMass template="Vec3d" name="Mass"  vertexMass="0.33333" />
 				<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@fix" />
 				<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="2"/>
 			</Node>

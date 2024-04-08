@@ -48,7 +48,7 @@
 				<MeshOBJLoader name="loader"  filename="mesh/SaladBowl.obj" />
 				<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 				<MechanicalObject template="Vec3d" name="the_bowl"  src="@loader" scale3d="100 100 100"/>
-				<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
+				<UniformMass template="Vec3d" name="Mass"  vertexMass="0.33333" />
 				<RigidMapping template="Rigid3d,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@the_bowl" />
 				<BulletTriangleModel template="Vec3d" name="tTriangleModel1"  selfCollision="0" margin="1"/>
 			</Node>
