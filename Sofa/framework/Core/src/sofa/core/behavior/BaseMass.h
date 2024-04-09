@@ -121,7 +121,7 @@ public:
 
     /// @}
 
-    Data <bool> d_recomputeCachedMassMatrix;
+    objectmodel::EmptyData d_recomputeCachedMassMatrix;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
