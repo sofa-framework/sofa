@@ -115,6 +115,16 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
     this->springs.endEdit();
 }
 
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
+{
+    sofa::helper::getWriteAccessor(this->d_springsIndices[0]).push_back(m1);
+    sofa::helper::getWriteAccessor(this->d_springsIndices[1]).push_back(m2);
+    sofa::helper::getWriteAccessor(this->d_lengths).push_back(initlen);
+    this->ks.setValue(ks);
+    this->kd.setValue(kd);
+
+}
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addSpringForce(

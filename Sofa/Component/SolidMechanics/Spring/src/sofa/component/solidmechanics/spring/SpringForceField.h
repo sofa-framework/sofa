@@ -153,7 +153,7 @@ public:
 
     void removeSpring(sofa::Index idSpring);
 
-    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen);
+    virtual void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen);
 
     void addSpring(const Spring & spring);
 

@@ -98,6 +98,7 @@ public:
     using Inherit::addKToMatrix;
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    virtual void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen) override;
 
 
 protected:
