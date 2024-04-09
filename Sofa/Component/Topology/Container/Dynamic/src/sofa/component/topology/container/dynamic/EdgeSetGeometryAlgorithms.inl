@@ -439,9 +439,13 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const E
 
     // Compute Coord of projection point H:
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
-    sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
-
-    return computeEdgeBarycentricCoordinates(h, theEdge[0], theEdge[1]);
+    if (intersected)
+    {
+        sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
+        return computeEdgeBarycentricCoordinates(h, theEdge[0], theEdge[1]);
+    }
+    else
+        return sofa::type::vector< SReal >();
 }
 
 template<class DataTypes>
