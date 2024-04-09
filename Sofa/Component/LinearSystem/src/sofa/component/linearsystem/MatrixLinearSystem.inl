@@ -77,13 +77,13 @@ auto MatrixLinearSystem<TMatrix, TVector>::getMassObserver(
     BaseMass* mass) const -> const MappedMassMatrixObserver<Real>*
 {
     const auto it = std::find_if(m_mappedMassMatrixObservers.begin(), m_mappedMassMatrixObservers.end(),
-        [mass, this](const MappedMassMatrixObserver<Real>& observer)
+        [mass, this](const std::shared_ptr<MappedMassMatrixObserver<Real> >& observer)
         {
-            return observer.observedMass == mass;
+            return observer->observedMass == mass;
         });
     if (it != m_mappedMassMatrixObservers.end())
     {
-        return &*it;
+        return it->get();
     }
     return nullptr;
 }
@@ -108,8 +108,8 @@ void MatrixLinearSystem<TMatrix, TVector>::contribute(
     {
         for (auto& [component, massMatrix] : contributors.m_mass)
         {
-            const auto* observer = getMassObserver(component);
-            if (observer && !observer->isCacheValid() || !observer)
+            // const auto* observer = getMassObserver(component);
+            // if (observer && !observer->isCacheValid() || !observer)
             {
                 if (Inherit1::template getContributionFactor<c>(mparams, component) != 0._sreal)
                 {
@@ -533,15 +533,15 @@ void MatrixLinearSystem<TMatrix, TVector>::makeLocalMatrixGroups(const core::Mec
         }
     }
 
-    for (auto& observer : m_mappedMassMatrixObservers)
-    {
-        if (!observer.isCacheValid())
-        {
-            setSharedMatrix<Contribution::MASS>(observer.observedMass,
-                PairMechanicalStates{observer.mstate, observer.mstate},
-                observer.m_invariantMassMatrix);
-        }
-    }
+    // for (auto& observer : m_mappedMassMatrixObservers)
+    // {
+    //     if (!observer.isCacheValid())
+    //     {
+    //         setSharedMatrix<Contribution::MASS>(observer.observedMass,
+    //             PairMechanicalStates{observer.mstate, observer.mstate},
+    //             observer.m_invariantMassMatrix);
+    //     }
+    // }
 }
 
 template <class TMatrix, class TVector>
@@ -688,11 +688,6 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
         {
             msg_info() <<
                 "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
-
-            for (auto& observer : m_mappedMassMatrixObservers)
-            {
-                observer.invalidCache();
-            }
         }
     }
     {
@@ -856,19 +851,22 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
                     const auto parentMappings = m_mappingGraph.getBottomUpMappingsFrom(mstate0);
                     if (!parentMappings.empty())
                     {
-                        const bool isMappingChainLinear =
-                           std::all_of(parentMappings.begin(), parentMappings.end(),
-                               [](const core::BaseMapping* mapping){ return mapping->isLinear(); });
+                        const bool isMappingChainLinear = true;
+                           // std::all_of(parentMappings.begin(), parentMappings.end(),
+                           //     [](const core::BaseMapping* mapping){ return mapping->isLinear(); });
 
                         if (isMappingChainLinear)
                         {
-                            MappedMassMatrixObserver<Real> observer;
-                            observer.observedMass = component;
-                            observer.accumulator = mat;
-                            observer.m_invariantMassMatrix->resize(mstate0->getMatrixSize(), mstate0->getMatrixSize());
-                            observer.mstate = mstate0;
+                            auto observer = std::make_shared<MappedMassMatrixObserver<Real>>();
+                            observer->observedMass = component;
+                            observer->accumulator = mat;
+
+                            observer->trackMatrixChangesFrom(&component->d_recomputeCachedMassMatrix);
+                            // observer.trackMatrixChangesFrom(mstate0->d_size);
+
+                            // observer.m_invariantMassMatrix->resize(mstate0->getMatrixSize(), mstate0->getMatrixSize());
+                            observer->mstate = mstate0;
                             m_mappedMassMatrixObservers.push_back(observer);
-                            component->subscribe(&m_mappedMassMatrixObservers.back());
                         }
                     }
                 }
@@ -1049,29 +1047,30 @@ template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination)
 {
     SCOPED_TIMER("precomputedMappedMassMatrix");
-    for (auto& observer : m_mappedMassMatrixObservers)
+    for (const auto& observer : m_mappedMassMatrixObservers)
     {
-        if (!observer.isCacheValid())
-        {
-            observer.m_invariantProjectedMassMatrix->resize(
-                this->getSystemMatrix()->rows(), this->getSystemMatrix()->cols());
-            observer.m_invariantProjectedMassMatrix->clear();
+        // if (!observer.isCacheValid())
+        // {
+        //     observer.m_invariantProjectedMassMatrix->resize(
+        //         this->getSystemMatrix()->rows(), this->getSystemMatrix()->cols());
+        //     observer.m_invariantProjectedMassMatrix->clear();
+        //
+        //     observer.m_invariantMassMatrix->compress();
+        //
+        //     auto* projectionMethod = findProjectionMethod({observer.mstate, observer.mstate});
+        //     if (projectionMethod != nullptr)
+        //     {
+        //         projectionMethod->reinit();
+        //         projectionMethod->projectMatrixToGlobalMatrix(mparams,
+        //             this->getMappingGraph(), observer.m_invariantMassMatrix.get(), observer.m_invariantProjectedMassMatrix.get());
+        //         observer.m_invariantProjectedMassMatrix->compress();
+        //         observer.setCacheValid();
+        //         projectionMethod->reinit();
+        //     }
+        // }
 
-            observer.m_invariantMassMatrix->compress();
-
-            auto* projectionMethod = findProjectionMethod({observer.mstate, observer.mstate});
-            if (projectionMethod != nullptr)
-            {
-                projectionMethod->reinit();
-                projectionMethod->projectMatrixToGlobalMatrix(mparams,
-                    this->getMappingGraph(), observer.m_invariantMassMatrix.get(), observer.m_invariantProjectedMassMatrix.get());
-                observer.m_invariantProjectedMassMatrix->compress();
-                observer.setCacheValid();
-                projectionMethod->reinit();
-            }
-        }
-
-        observer.m_invariantProjectedMassMatrix->addTo(destination);
+        // if the Data is dirty, it will trigger the recomputation of the projected mass matrix
+        observer->m_invariantProjectedMassMatrix.getValue().addTo(destination);
     }
 }
 

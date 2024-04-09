@@ -59,12 +59,6 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , m_massTopologyType(geometry::ElementType::UNKNOWN)
 {
     f_graph.setWidget("graph");
-
-    sofa::core::objectmodel::Base::addUpdateCallback("invalidCache", {&d_massDensity, &d_vertexMass, &d_totalMass, &d_lumping}, [this](const core::DataTracker&)
-    {
-        this->notifyObservers();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }, {});
 }
 
 template <class DataTypes, class GeometricalTypes>

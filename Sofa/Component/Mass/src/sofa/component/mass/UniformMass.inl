@@ -78,12 +78,6 @@ UniformMass<DataTypes>::UniformMass()
     , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
-
-    sofa::core::objectmodel::Base::addUpdateCallback("invalidCache", {&d_vertexMass, &d_totalMass, &d_indices}, [this](const core::DataTracker&)
-    {
-        this->notifyObservers();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }, {});
 }
 
 template <class DataTypes>

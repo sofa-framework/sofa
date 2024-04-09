@@ -25,11 +25,10 @@
 namespace sofa::component::linearsystem
 {
 
-template <class Real>
-void MappedMassMatrixObserver<Real>::postObservableDestroyed(
-    core::CachedDataObservable* observable)
+template<class Real>
+void MappedMassMatrixObserver<Real>::trackMatrixChangesFrom(core::objectmodel::DDGNode* input)
 {
-    observedMass = nullptr;
+    dataTracker.addInput(input);
 }
 
 }

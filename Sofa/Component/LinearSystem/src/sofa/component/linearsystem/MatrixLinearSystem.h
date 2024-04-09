@@ -124,7 +124,7 @@ protected:
         std::shared_ptr<LocalMappedMatrixType<Real> >
     > > m_localMappedMatrices;
 
-    sofa::type::vector<MappedMassMatrixObserver<Real> > m_mappedMassMatrixObservers;
+    sofa::type::vector<std::shared_ptr<MappedMassMatrixObserver<Real> > > m_mappedMassMatrixObservers;
 
     /**
      * return a mass observer if there is any associated to the provided mass

@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/CachedDataObserver.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/component/linearsystem/config.h>
 #include <sofa/component/linearsystem/matrixaccumulators/BaseAssemblingMatrixAccumulator.h>
@@ -35,20 +34,23 @@ namespace sofa::component::linearsystem
  * Support cache invalidation
  */
 template<class Real>
-struct MappedMassMatrixObserver : core::CachedDataObserver
+struct MappedMassMatrixObserver
 {
+    MappedMassMatrixObserver() = default;
+    MappedMassMatrixObserver(const MappedMassMatrixObserver&) = default;
+
     core::behavior::BaseMass* observedMass { nullptr };
     BaseAssemblingMatrixAccumulator<core::matrixaccumulator::Contribution::MASS>* accumulator { nullptr };
 
-    void postObservableDestroyed(core::CachedDataObservable* observable) override;
-
-    std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<Real> > m_invariantMassMatrix =
-        std::make_shared<linearalgebra::CompressedRowSparseMatrix<Real> >();
-
-    std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<Real> > m_invariantProjectedMassMatrix =
-        std::make_shared<linearalgebra::CompressedRowSparseMatrix<Real> >();
+    Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantMassMatrix;
+    Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantProjectedMassMatrix;
 
     core::behavior::BaseMechanicalState* mstate { nullptr };
+
+    void trackMatrixChangesFrom(core::objectmodel::DDGNode* input);
+
+protected:
+    core::DataTrackerCallback dataTracker;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_MAPPEDMASSMATRIXOBSERVER_CPP)
