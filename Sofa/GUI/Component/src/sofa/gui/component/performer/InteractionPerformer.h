@@ -59,6 +59,10 @@ public:
     }
     BaseMouseInteractor *m_interactor;
     bool m_freezePerformer;
+
+    SOFA_ATTRIBUTE_DISABLED__NAMING("v24.06", "v24.06", interactor,m_interactor);
+    SOFA_ATTRIBUTE_DISABLED__NAMING("v24.06", "v24.06", freezePerformer,m_freezePerformer);
+
 };
 
 
