@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 #include <sofa/type/SVector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Mat.h>
@@ -35,12 +36,12 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class SkinningMapping : public core::Mapping<TIn, TOut>
+class SkinningMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef SReal Real;
 

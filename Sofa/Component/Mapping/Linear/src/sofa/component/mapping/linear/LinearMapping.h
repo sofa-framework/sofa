@@ -20,44 +20,37 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/MultiMapping.h>
+#include <sofa/core/Multi2Mapping.h>
 
-namespace sofa::component::linearsystem
+namespace sofa::component::mapping::linear
 {
 
-template <class Real>
-MappedMassMatrixObserver<Real>::MappedMassMatrixObserver()
+namespace crtp
 {
-    dataTracker.addOutput(&this->m_invariantProjectedMassMatrix);
+
+template<class TMapping>
+class CRTPLinearMapping : public TMapping
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(CRTPLinearMapping, TMapping), TMapping);
+    using TMapping::TMapping;
+
+    virtual bool isLinear() const override { return true; }
+};
+
 }
 
-template <class Real>
-void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
-{
-    m_observedMass = mass;
-    this->trackMatrixChangesFrom(&m_observedMass->d_recomputeCachedMassMatrix);
-}
+template <class TIn, class TOut>
+using LinearMapping = crtp::CRTPLinearMapping<core::Mapping<TIn, TOut>>;
 
-template <class Real>
-core::behavior::BaseMass* MappedMassMatrixObserver<Real>::getObservableMass() const
-{
-    return m_observedMass;
-}
+template <class TIn, class TOut>
+using LinearMultiMapping = crtp::CRTPLinearMapping<core::MultiMapping<TIn, TOut>>;
 
-template<class Real>
-void MappedMassMatrixObserver<Real>::trackMatrixChangesFrom(core::objectmodel::DDGNode* input)
-{
-    if (input)
-    {
-        dataTracker.addInput(input);
-    }
-}
+template <class TIn1, class TIn2, class TOut>
+using LinearMulti2Mapping = crtp::CRTPLinearMapping<core::Multi2Mapping<TIn1, TIn2, TOut>>;
 
-template <class Real>
-void MappedMassMatrixObserver<Real>::setRecomputionMappedMassMatrix(
-    std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f)
-{
-    dataTracker.setCallback(f);
-}
+using LinearBaseMapping = crtp::CRTPLinearMapping<sofa::core::BaseMapping>;
 
 }

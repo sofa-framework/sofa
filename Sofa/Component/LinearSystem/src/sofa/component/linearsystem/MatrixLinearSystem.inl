@@ -838,9 +838,9 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
                     const auto parentMappings = m_mappingGraph.getBottomUpMappingsFrom(mstate0);
                     if (!parentMappings.empty())
                     {
-                        const bool isMappingChainLinear = true;
-                           // std::all_of(parentMappings.begin(), parentMappings.end(),
-                           //     [](const core::BaseMapping* mapping){ return mapping->isLinear(); });
+                        const bool isMappingChainLinear =
+                           std::all_of(parentMappings.begin(), parentMappings.end(),
+                               [](const core::BaseMapping* mapping){ return mapping->isLinear(); });
 
                         if (isMappingChainLinear)
                         {
@@ -849,15 +849,8 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
                             observer->accumulator = mat;
                             observer->mstate = mstate0;
 
-                            if (auto* sizeData = mstate0->findData("size"))
-                            {
-                                observer->trackMatrixChangesFrom(sizeData);
-                            }
-
-                            if (auto* dt = this->getContext()->findData("dt"))
-                            {
-                                observer->trackMatrixChangesFrom(dt);
-                            }
+                            observer->trackMatrixChangesFrom(mstate0->findData("size"));
+                            observer->trackMatrixChangesFrom(this->getContext()->findData("dt"));
 
                             // the lambda to call when a recomputation of the mapped mass matrix is required
                             observer->setRecomputionMappedMassMatrix(
