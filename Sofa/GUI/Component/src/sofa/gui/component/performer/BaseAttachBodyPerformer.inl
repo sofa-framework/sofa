@@ -52,21 +52,21 @@ void BaseAttachBodyPerformer<DataTypes>::start()
         clear();
         return;
     }
-    const BodyPicked picked=this->interactor->getBodyPicked();
+    const BodyPicked picked=this->m_interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
 
     if (!startPartial(picked)) return; //template specialized code is here
 
     double distanceFromMouse=picked.rayLength;
-    this->interactor->setDistanceFromMouse(distanceFromMouse);
-    sofa::component::collision::geometry::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
+    this->m_interactor->setDistanceFromMouse(distanceFromMouse);
+    sofa::component::collision::geometry::Ray ray = this->m_interactor->getMouseRayModel()->getRay(0);
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
+    this->m_interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
     m_interactionObject->init();
-    this->interactor->setMouseAttached(true);
+    this->m_interactor->setMouseAttached(true);
 }
 
 template <class DataTypes>
@@ -99,18 +99,18 @@ void BaseAttachBodyPerformer<DataTypes>::clear()
         m_mapper = nullptr;
     }
 
-    this->interactor->setDistanceFromMouse(0);
-    this->interactor->setMouseAttached(false);
+    this->m_interactor->setDistanceFromMouse(0);
+    this->m_interactor->setMouseAttached(false);
 }
 
 template <class DataTypes>
 void BaseAttachBodyPerformer<DataTypes>::execute()
 {
     sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
+    this->m_interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
-    this->interactor->setMouseAttached(true);
+    this->m_interactor->setMouseAttached(true);
 }
 
 template <class DataTypes>

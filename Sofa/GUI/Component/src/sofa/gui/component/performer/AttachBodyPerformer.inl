@@ -47,7 +47,7 @@ bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
         this->m_mapper = MouseContactMapper::Create(picked.body);
         if (!this->m_mapper)
         {
-            msg_warning(this->interactor) << "Problem with Mouse Mapper creation " ;
+            msg_warning(this->m_interactor) << "Problem with Mouse Mapper creation " ;
             return false;
         }
         const std::string name = "contactMouse";
@@ -83,14 +83,14 @@ bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            msg_warning(this->interactor) << "incompatible MState during Mouse Interaction " ;
+            msg_warning(this->m_interactor) << "incompatible MState during Mouse Interaction " ;
             return false;
         }
     }
 
     using sofa::component::solidmechanics::spring::StiffSpringForceField;
 
-    this->m_interactionObject = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    this->m_interactionObject = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->m_interactor->getMouseContainer()), mstateCollision);
     auto* stiffspringforcefield = dynamic_cast< StiffSpringForceField< DataTypes >* >(this->m_interactionObject.get());
     stiffspringforcefield->setName("Spring-Mouse-Contact");
     stiffspringforcefield->setArrowSize((float)this->m_size);

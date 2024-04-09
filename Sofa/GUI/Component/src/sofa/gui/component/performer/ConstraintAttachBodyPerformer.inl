@@ -46,7 +46,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
         this->m_mapper = MouseContactMapper::Create(picked.body);
         if (!(this->m_mapper))
         {
-            msg_error(this->interactor) << "Problem with Mouse Mapper creation.";
+            msg_error(this->m_interactor) << "Problem with Mouse Mapper creation.";
             return false;
         }
         const std::string name = "contactMouse";
@@ -81,12 +81,12 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            msg_error(this->interactor) << "incompatible MState during Mouse Interaction.";
+            msg_error(this->m_interactor) << "incompatible MState during Mouse Interaction.";
             return false;
         }
     }
 
-    m_mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
+    m_mstate1 = dynamic_cast<MouseContainer*>(this->m_interactor->getMouseContainer());
     m_mstate2 = mstateCollision;
 
     type::Vec3d point1;
