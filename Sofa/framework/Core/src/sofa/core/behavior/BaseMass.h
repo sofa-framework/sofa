@@ -121,6 +121,15 @@ public:
 
     /// @}
 
+    /// This empty Data must be set to dirty each time the mass matrix changes.
+    ///
+    /// For example, it can be set as an input of another Data. This way, a
+    /// change of this Data will trigger d_recomputeCachedMassMatrix set to be
+    /// dirty.
+    /// This empty Data can be used as a bridge to trigger a mass matrix change
+    /// outside of the mass component. In most cases, the mass matrix is
+    /// constant. This mechanism allows to cache the mass matrix, and invalidate
+    /// the cache depending on some events triggered by Data changes.
     objectmodel::EmptyData d_recomputeCachedMassMatrix;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
