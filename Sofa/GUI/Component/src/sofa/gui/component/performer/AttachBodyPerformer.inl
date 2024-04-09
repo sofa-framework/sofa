@@ -22,133 +22,45 @@
 #pragma once
 
 #include <sofa/gui/component/performer/AttachBodyPerformer.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
-#include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::gui::component::performer
 {
 
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::start()
-{
-    if (m_forcefield)
-    {
-        clear();
-        return;
-    }
-    const BodyPicked picked=this->interactor->getBodyPicked();
-    if (!picked.body && !picked.mstate) return;
-
-    if (!start_partial(picked)) return; //template specialized code is here
-
-    double distanceFromMouse=picked.rayLength;
-    this->interactor->setDistanceFromMouse(distanceFromMouse);
-    sofa::component::collision::geometry::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    m_forcefield->init();
-    this->interactor->setMouseAttached(true);
-}
-
-
-
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::execute()
-{
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    this->interactor->setMouseAttached(true);
-}
-
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (m_forcefield)
-    {
-        core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
-        const core::visual::DisplayFlags backup = vp->displayFlags();
-        vp->displayFlags() = flags;
-        m_forcefield->draw(vp);
-        vp->displayFlags() = backup;
-    }
-}
 
 template <class DataTypes>
 AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
-    TInteractionPerformer<DataTypes>(i),
-    mapper(nullptr)
-{
-    flags.setShowVisualModels(false);
-    flags.setShowInteractionForceFields(true);
-}
+  BaseAttachBodyPerformer<DataTypes>(i)
+{}
 
 
 template <class DataTypes>
-sofa::core::objectmodel::BaseObject* AttachBodyPerformer<DataTypes>::getInteractionObject()
-{
-    return m_forcefield.get();
-}
-
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::clear()
-{
-    if (m_forcefield)
-    {
-        m_forcefield->cleanup();
-        m_forcefield->getContext()->removeObject(m_forcefield);
-        m_forcefield.reset();
-    }
-
-    if (mapper)
-    {
-        mapper->cleanup();
-        delete mapper; mapper=nullptr;
-    }
-
-    this->interactor->setDistanceFromMouse(0);
-    this->interactor->setMouseAttached(false);
-}
-
-
-template <class DataTypes>
-AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
-{
-    clear();
-}
-
-template <class DataTypes>
-bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
+bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
 {
 
     core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {
-        mapper = MouseContactMapper::Create(picked.body);
-        if (!mapper)
+        this->mapper = MouseContactMapper::Create(picked.body);
+        if (!this->mapper)
         {
             msg_warning(this->interactor) << "Problem with Mouse Mapper creation " ;
             return false;
         }
         const std::string name = "contactMouse";
-        mstateCollision = mapper->createMapping(name.c_str());
-        mapper->resize(1);
+        mstateCollision = this->mapper->createMapping(name.c_str());
+        this->mapper->resize(1);
 
         const unsigned int idx=picked.indexCollisionElement;
         typename DataTypes::CPos pointPicked=(typename DataTypes::CPos)picked.point;
         typename DataTypes::Real r=0.0;
         typename DataTypes::Coord dofPicked;
         DataTypes::setCPos(dofPicked, pointPicked);
-        index = mapper->addPointB(dofPicked, idx, r);
-        mapper->update();
+        index = this->mapper->addPointB(dofPicked, idx, r);
+        this->mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -178,8 +90,8 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 
     using sofa::component::solidmechanics::spring::StiffSpringForceField;
 
-    m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
+    this->m_interactionObject = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    auto* stiffspringforcefield = dynamic_cast< StiffSpringForceField< DataTypes >* >(this->m_interactionObject.get());
     stiffspringforcefield->setName("Spring-Mouse-Contact");
     stiffspringforcefield->setArrowSize((float)this->size);
     stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0

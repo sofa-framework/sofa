@@ -22,10 +22,8 @@
 #pragma once
 #include <sofa/gui/component/config.h>
 
-#include <sofa/gui/component/performer/InteractionPerformer.h>
 #include <sofa/gui/component/performer/BaseAttachBodyPerformer.h>
 #include <sofa/gui/component/AttachBodyButtonSetting.h>
-#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
@@ -35,22 +33,18 @@ namespace sofa::gui::component::performer
 struct BodyPicked;
 
 template <class DataTypes>
-class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public BaseAttachBodyPerformer
+class AttachBodyPerformer: public BaseAttachBodyPerformer<DataTypes>
 {
 public:
+
     typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
     AttachBodyPerformer(BaseMouseInteractor *i);
-    virtual ~AttachBodyPerformer();
+    virtual ~AttachBodyPerformer() = default;
 
-    void start();
-    void execute();
-    void draw(const core::visual::VisualParams* vparams);
-    virtual sofa::core::objectmodel::BaseObject* getInteractionObject() override;
-    virtual void clear() override;
-    virtual bool start_partial(const BodyPicked& picked) override;
+    virtual bool startPartial(const BodyPicked& picked) override;
     /*
     initialise MouseForceField according to template.
     StiffSpringForceField for Vec3
@@ -59,7 +53,6 @@ public:
 
     void setStiffness(SReal s) {stiffness=s;}
     void setArrowSize(float s) {size=s;}
-    void setShowFactorSize(float s) {showFactorSize = s;}
 
     virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
     {
@@ -68,21 +61,12 @@ public:
         {
             setStiffness(s->stiffness.getValue());
             setArrowSize((float)s->arrowSize.getValue());
-            setShowFactorSize((float)s->showFactorSize.getValue());
         }
     }
 
 protected:
     SReal stiffness;
     SReal size;
-    SReal showFactorSize;
-
-
-
-    MouseContactMapper  *mapper;
-    MouseForceField::SPtr m_forcefield;
-
-    core::visual::DisplayFlags flags;
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)

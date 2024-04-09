@@ -23,126 +23,42 @@
 
 #include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::gui::component::performer
 {
 
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::start()
-{
-    if (m_constraint)
-    {
-        clear();
-        return;
-    }
-    const BodyPicked picked=this->interactor->getBodyPicked();
-    if (!picked.body && !picked.mstate) return;
-
-    if (!start_partial(picked)) return; //template specialized code is here
-
-    double distanceFromMouse=picked.rayLength;
-    this->interactor->setDistanceFromMouse(distanceFromMouse);
-    sofa::component::collision::geometry::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    m_constraint->init();
-    this->interactor->setMouseAttached(true);
-}
-
-template <class DataTypes>
-sofa::core::objectmodel::BaseObject* ConstraintAttachBodyPerformer<DataTypes>::getInteractionObject()
-{
-    return m_constraint.get();
-}
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::execute()
-{
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    this->interactor->setMouseAttached(true);
-}
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (m_constraint)
-    {
-        core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
-        const core::visual::DisplayFlags backup = vp->displayFlags();
-        vp->displayFlags() = flags;
-        m_constraint->draw(vp);
-        vp->displayFlags() = backup;
-    }
-}
 
 template <class DataTypes>
 ConstraintAttachBodyPerformer<DataTypes>::ConstraintAttachBodyPerformer(BaseMouseInteractor *i):
-    TInteractionPerformer<DataTypes>(i),
-    mapper(nullptr)
-{
-    flags.setShowVisualModels(false);
-    flags.setShowInteractionForceFields(true);
-}
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::clear()
-{
-    if (m_constraint)
-    {
-        m_constraint->cleanup();
-        m_constraint->getContext()->removeObject(m_constraint);
-        m_constraint.reset();
-    }
-
-    if (mapper)
-    {
-        mapper->cleanup();
-        delete mapper; mapper=nullptr;
-    }
-
-    this->interactor->setDistanceFromMouse(0);
-    this->interactor->setMouseAttached(false);
-}
+  BaseAttachBodyPerformer<DataTypes>(i)
+{}
 
 
 template <class DataTypes>
-ConstraintAttachBodyPerformer<DataTypes>::~ConstraintAttachBodyPerformer()
-{
-    clear();
-}
-
-template <class DataTypes>
-bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
+bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
 {
     core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {
-        mapper = MouseContactMapper::Create(picked.body);
-        if (!mapper)
+        this->mapper = MouseContactMapper::Create(picked.body);
+        if (!(this->mapper))
         {
             msg_error(this->interactor) << "Problem with Mouse Mapper creation.";
             return false;
         }
         const std::string name = "contactMouse";
-        mstateCollision = mapper->createMapping(name.c_str());
-        mapper->resize(1);
+        mstateCollision = this->mapper->createMapping(name.c_str());
+        this->mapper->resize(1);
 
         const typename DataTypes::Coord pointPicked=picked.point;
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
-        index = mapper->addPointB(pointPicked, idx, r);
-        mapper->update();
+        index = this->mapper->addPointB(pointPicked, idx, r);
+        this->mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -178,8 +94,11 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
 
     using sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint;
 
-    m_constraint = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
-    BilateralLagrangianConstraint< DataTypes >* bconstraint = static_cast< BilateralLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
+
+
+    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
+    auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(this->m_interactionObject.get());
+
     bconstraint->setName("Constraint-Mouse-Contact");
 
     type::Vec3d normal = point1-point2;

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 
+#include <sofa/gui/component/performer/BaseAttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/AttachBodyPerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
