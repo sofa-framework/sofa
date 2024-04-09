@@ -36,21 +36,26 @@ namespace sofa::component::linearsystem
 template<class Real>
 struct MappedMassMatrixObserver
 {
-    MappedMassMatrixObserver() = default;
+    MappedMassMatrixObserver();;
     MappedMassMatrixObserver(const MappedMassMatrixObserver&) = default;
 
-    core::behavior::BaseMass* observedMass { nullptr };
+    void observe(core::behavior::BaseMass* mass);
+    core::behavior::BaseMass* getObservableMass() const;
+
     BaseAssemblingMatrixAccumulator<core::matrixaccumulator::Contribution::MASS>* accumulator { nullptr };
 
-    Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantMassMatrix;
+    std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<Real> > m_invariantMassMatrix;
     Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantProjectedMassMatrix;
 
     core::behavior::BaseMechanicalState* mstate { nullptr };
 
     void trackMatrixChangesFrom(core::objectmodel::DDGNode* input);
+    void setRecomputionMappedMassMatrix(std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f);
 
 protected:
     core::DataTrackerCallback dataTracker;
+
+    core::behavior::BaseMass* m_observedMass { nullptr };
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_MAPPEDMASSMATRIXOBSERVER_CPP)

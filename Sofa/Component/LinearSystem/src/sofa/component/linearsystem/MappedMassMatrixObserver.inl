@@ -25,10 +25,36 @@
 namespace sofa::component::linearsystem
 {
 
+template <class Real>
+MappedMassMatrixObserver<Real>::MappedMassMatrixObserver()
+{
+    dataTracker.addOutput(&this->m_invariantProjectedMassMatrix);
+}
+
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
+{
+    m_observedMass = mass;
+    this->trackMatrixChangesFrom(&m_observedMass->d_recomputeCachedMassMatrix);
+}
+
+template <class Real>
+core::behavior::BaseMass* MappedMassMatrixObserver<Real>::getObservableMass() const
+{
+    return m_observedMass;
+}
+
 template<class Real>
 void MappedMassMatrixObserver<Real>::trackMatrixChangesFrom(core::objectmodel::DDGNode* input)
 {
     dataTracker.addInput(input);
+}
+
+template <class Real>
+void MappedMassMatrixObserver<Real>::setRecomputionMappedMassMatrix(
+    std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f)
+{
+    dataTracker.setCallback(f);
 }
 
 }

@@ -59,6 +59,10 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , m_massTopologyType(geometry::ElementType::UNKNOWN)
 {
     f_graph.setWidget("graph");
+
+    this->d_recomputeCachedMassMatrix.addInput(&d_edgeMass);
+    this->d_recomputeCachedMassMatrix.addInput(&d_vertexMass);
+    this->d_recomputeCachedMassMatrix.addInput(&d_lumping);
 }
 
 template <class DataTypes, class GeometricalTypes>

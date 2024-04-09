@@ -55,6 +55,10 @@ DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)
 {
     this->addAlias(&d_fileMass,"fileMass");
+
+    this->d_recomputeCachedMassMatrix.addInput(&d_vertexMass);
+    this->d_recomputeCachedMassMatrix.addInput(&d_massDensity);
+    this->d_recomputeCachedMassMatrix.addInput(&d_totalMass);
 }
 
 template <class DataTypes, class GeometricalTypes>

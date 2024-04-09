@@ -129,7 +129,7 @@ protected:
     /**
      * return a mass observer if there is any associated to the provided mass
      */
-    const MappedMassMatrixObserver<Real>* getMassObserver(BaseMass* mass) const;
+    MappedMassMatrixObserver<Real>* getMassObserver(BaseMass* mass);
 
 
     template<Contribution c>
@@ -264,6 +264,8 @@ protected:
      */
     void assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams,
                                              linearalgebra::BaseMatrix* destination);
+
+    void recomputeMappedMassMatrix(const core::MechanicalParams* mparams, BaseMass* mass);
 
 private:
     template<Contribution c>
