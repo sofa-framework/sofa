@@ -101,12 +101,12 @@ public:
     {}
     ~AttachOperation() override {}
 
-    void setStiffness(double s) {setting->stiffness.setValue(s);}
-    double getStiffness() const { return setting->stiffness.getValue();}
-    void setArrowSize(double s) {setting->arrowSize.setValue(s);}
-    double getArrowSize() const { return setting->arrowSize.getValue();}
-    void setShowFactorSize(double s) { setting->showFactorSize.setValue(s); }
-    double getShowFactorSize() const { return setting->showFactorSize.getValue(); }
+    void setStiffness(double s) {setting->d_stiffness.setValue(s);}
+    double getStiffness() const { return setting->d_stiffness.getValue();}
+    void setArrowSize(double s) {setting->d_arrowSize.setValue(s);}
+    double getArrowSize() const { return setting->d_arrowSize.getValue();}
+    void setShowFactorSize(double s) { setting->d_showFactorSize.setValue(s); }
+    double getShowFactorSize() const { return setting->d_showFactorSize.getValue(); }
 
     static std::string getDescription() {return "Attach an object to the Mouse using a spring force field";}
 

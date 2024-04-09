@@ -44,23 +44,23 @@ bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
     int index;
     if (picked.body)
     {
-        this->mapper = MouseContactMapper::Create(picked.body);
-        if (!this->mapper)
+        this->m_mapper = MouseContactMapper::Create(picked.body);
+        if (!this->m_mapper)
         {
             msg_warning(this->interactor) << "Problem with Mouse Mapper creation " ;
             return false;
         }
         const std::string name = "contactMouse";
-        mstateCollision = this->mapper->createMapping(name.c_str());
-        this->mapper->resize(1);
+        mstateCollision = this->m_mapper->createMapping(name.c_str());
+        this->m_mapper->resize(1);
 
         const unsigned int idx=picked.indexCollisionElement;
         typename DataTypes::CPos pointPicked=(typename DataTypes::CPos)picked.point;
         typename DataTypes::Real r=0.0;
         typename DataTypes::Coord dofPicked;
         DataTypes::setCPos(dofPicked, pointPicked);
-        index = this->mapper->addPointB(dofPicked, idx, r);
-        this->mapper->update();
+        index = this->m_mapper->addPointB(dofPicked, idx, r);
+        this->m_mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -93,11 +93,11 @@ bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
     this->m_interactionObject = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     auto* stiffspringforcefield = dynamic_cast< StiffSpringForceField< DataTypes >* >(this->m_interactionObject.get());
     stiffspringforcefield->setName("Spring-Mouse-Contact");
-    stiffspringforcefield->setArrowSize((float)this->size);
+    stiffspringforcefield->setArrowSize((float)this->m_size);
     stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
 
 
-    stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
+    stiffspringforcefield->addSpring(0,index, m_stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
         stiffspringforcefield->addTag(*it);

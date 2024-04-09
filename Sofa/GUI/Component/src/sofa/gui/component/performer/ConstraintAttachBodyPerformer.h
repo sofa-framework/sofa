@@ -48,7 +48,7 @@ public:
 
 protected:
 
-    sofa::core::behavior::MechanicalState<DataTypes> *mstate1, *mstate2;
+    sofa::core::behavior::MechanicalState<DataTypes> *m_mstate1, *m_mstate2;
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)

@@ -32,10 +32,10 @@ namespace sofa::gui::component::performer
 template <class DataTypes>
 BaseAttachBodyPerformer<DataTypes>::BaseAttachBodyPerformer(BaseMouseInteractor* i)
     : TInteractionPerformer<DataTypes>(i)
-    , mapper(nullptr)
+    , m_mapper(nullptr)
 {
-    this->flags.setShowVisualModels(false);
-    this->flags.setShowInteractionForceFields(true);
+    this->m_flags.setShowVisualModels(false);
+    this->m_flags.setShowInteractionForceFields(true);
 };
 
 template <class DataTypes>
@@ -76,7 +76,7 @@ void BaseAttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* 
     {
         core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
         const core::visual::DisplayFlags backup = vp->displayFlags();
-        vp->displayFlags() = flags;
+        vp->displayFlags() = m_flags;
         m_interactionObject->draw(vp);
         vp->displayFlags() = backup;
     }
@@ -92,11 +92,11 @@ void BaseAttachBodyPerformer<DataTypes>::clear()
         m_interactionObject.reset();
     }
 
-    if (mapper)
+    if (m_mapper)
     {
-        mapper->cleanup();
-        delete mapper;
-        mapper = nullptr;
+        m_mapper->cleanup();
+        delete m_mapper;
+        m_mapper = nullptr;
     }
 
     this->interactor->setDistanceFromMouse(0);

@@ -43,22 +43,22 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
     int index;
     if (picked.body)
     {
-        this->mapper = MouseContactMapper::Create(picked.body);
-        if (!(this->mapper))
+        this->m_mapper = MouseContactMapper::Create(picked.body);
+        if (!(this->m_mapper))
         {
             msg_error(this->interactor) << "Problem with Mouse Mapper creation.";
             return false;
         }
         const std::string name = "contactMouse";
-        mstateCollision = this->mapper->createMapping(name.c_str());
-        this->mapper->resize(1);
+        mstateCollision = this->m_mapper->createMapping(name.c_str());
+        this->m_mapper->resize(1);
 
         const typename DataTypes::Coord pointPicked=picked.point;
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
-        index = this->mapper->addPointB(pointPicked, idx, r);
-        this->mapper->update();
+        index = this->m_mapper->addPointB(pointPicked, idx, r);
+        this->m_mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -86,8 +86,8 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
         }
     }
 
-    mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
-    mstate2 = mstateCollision;
+    m_mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
+    m_mstate2 = mstateCollision;
 
     type::Vec3d point1;
     type::Vec3d point2;
@@ -96,7 +96,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
 
 
 
-    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
+    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(m_mstate1, m_mstate2);
     auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(this->m_interactionObject.get());
 
     bconstraint->setName("Constraint-Mouse-Contact");

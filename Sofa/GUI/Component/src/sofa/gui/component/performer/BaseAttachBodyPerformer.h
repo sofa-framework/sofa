@@ -62,7 +62,7 @@ public:
 protected:
 
     sofa::core::objectmodel::BaseObject::SPtr m_interactionObject;
-    MouseContactMapper  *mapper;
-    core::visual::DisplayFlags flags;
+    MouseContactMapper  *m_mapper;
+    core::visual::DisplayFlags m_flags;
 };
 }

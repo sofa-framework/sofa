@@ -51,22 +51,22 @@ public:
     JointSpringForceField for Rigid3
     */
 
-    void setStiffness(SReal s) {stiffness=s;}
-    void setArrowSize(float s) {size=s;}
+    void setStiffness(SReal s) {m_stiffness=s;}
+    void setArrowSize(float s) {m_size=s;}
 
     virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
     {
         const auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)
         {
-            setStiffness(s->stiffness.getValue());
-            setArrowSize((float)s->arrowSize.getValue());
+            setStiffness(s->d_stiffness.getValue());
+            setArrowSize((float)s->d_arrowSize.getValue());
         }
     }
 
 protected:
-    SReal stiffness;
-    SReal size;
+    SReal m_stiffness;
+    SReal m_size;
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
