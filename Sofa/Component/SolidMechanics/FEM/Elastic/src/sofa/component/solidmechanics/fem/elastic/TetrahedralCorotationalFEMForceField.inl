@@ -202,48 +202,34 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     const VecDeriv& dx = d_dx.getValue();
 
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const auto& tetraArray = m_topology->getTetrahedra();
 
     switch(method)
     {
     case SMALL :
     {
-        for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(Size tetraId = 0; tetraId<tetraArray.size(); ++tetraId)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
-
-            applyStiffnessSmall( df, dx, i, a,b,c,d, kFactor );
+            const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetraArray[tetraId];
+            applyStiffnessSmall( df, dx, tetraId, tetra[0], tetra[1], tetra[2], tetra[3], kFactor );
         }
         break;
     }
     case LARGE :
     {
-        for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(Size tetraId = 0; tetraId<tetraArray.size(); ++tetraId)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
-
-            applyStiffnessLarge( df, dx, i, a,b,c,d, kFactor );
+            const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetraArray[tetraId];
+            applyStiffnessLarge( df, dx, tetraId, tetra[0], tetra[1], tetra[2], tetra[3], kFactor );
         }
         break;
     }
     case POLAR :
     {
-        for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(Size tetraId = 0; tetraId<tetraArray.size(); ++tetraId)
         {
-            const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
-
-            applyStiffnessPolar( df, dx, i, a,b,c,d, kFactor );
+            const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetraArray[tetraId];
+            applyStiffnessPolar( df, dx, tetraId, tetra[0], tetra[1], tetra[2], tetra[3], kFactor );
         }
         break;
     }
