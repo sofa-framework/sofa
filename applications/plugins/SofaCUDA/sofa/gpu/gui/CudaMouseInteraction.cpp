@@ -10,6 +10,7 @@
 #include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
 #include <sofa/gui/component/performer/AttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/FixParticlePerformer.inl>
+#include <sofa/gui/component/performer/BaseAttachBodyPerformer.inl>
 
 #include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
