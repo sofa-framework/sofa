@@ -122,4 +122,7 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::JointSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorJointSpring3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::GearSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorGearSpring3f("default",true);
 
+Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::collision::response::contact::PenalityContact<defaulttype::Vec3Types> > > > DWClass_vectorPenalityContact("default",true);
+
+
 } //namespace sofa::gui::qt
