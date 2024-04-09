@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 # framework libraries
 if(NOT TARGET Sofa.Config)
@@ -13,6 +13,7 @@ sofa_add_subdirectory(library LinearAlgebra Sofa.LinearAlgebra ON)
 sofa_add_subdirectory(library DefaultType Sofa.DefaultType ON)
 sofa_add_subdirectory(library Core Sofa.Core ON)
 sofa_add_subdirectory(library Simulation Sofa.Simulation ON)
+sofa_add_subdirectory(library SimpleApi Sofa.SimpleApi ON)
 sofa_add_subdirectory(library Testing Sofa.Testing ON)
 
 # Library gathering all framework libraries

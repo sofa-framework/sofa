@@ -22,10 +22,8 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 template class Factory<std::string, io::Mesh, std::string>;
@@ -49,7 +47,7 @@ Mesh* Mesh::Create(const std::string& loader, const std::string& filename)
 
 } // namespace io
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+
 

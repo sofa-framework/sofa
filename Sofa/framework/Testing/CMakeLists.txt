@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Testing LANGUAGES CXX)
 
 # Enable testing features of cmake, like the add_test() command.
@@ -33,6 +33,9 @@ if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
         target_compile_options(gtest_main PRIVATE "-DGTEST_LINKED_AS_SHARED_LIBRARY=0")
         target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
+        install(DIRECTORY ${googletest_SOURCE_DIR}/googletest/include/gtest DESTINATION include/extlibs/GTest/ COMPONENT headers)
+        target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/>")
+        
         include(SofaMacros)
         sofa_create_package_with_targets(
             PACKAGE_NAME GTest
@@ -80,9 +83,10 @@ sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.SimpleApi REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph GTest::gtest SofaGTestMain )
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph Sofa.SimpleApi GTest::gtest SofaGTestMain )
 target_compile_options(${PROJECT_NAME} PUBLIC "-DGTEST_LINKED_AS_SHARED_LIBRARY=1")
 
 set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")

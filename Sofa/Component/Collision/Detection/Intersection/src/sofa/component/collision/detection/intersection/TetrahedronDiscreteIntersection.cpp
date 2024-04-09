@@ -42,12 +42,14 @@ TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteInterse
     intersection->intersectors.add<RayCollisionModel, TetrahedronCollisionModel,         TetrahedronDiscreteIntersection>  (this);
 }
 
-bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&)
+bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     return true;
 }
 
-int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
+int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts, const sofa::core::collision::Intersection*)
 {
     const Vec3 n = e2.n();
     if (n == Vec3()) return 0; // no normal on point -> either an internal points or normal is not available
@@ -102,12 +104,12 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
     return 1;
 }
 
-bool TetrahedronDiscreteIntersection::testIntersection(Ray&, Tetrahedron&)
+bool TetrahedronDiscreteIntersection::testIntersection(Ray&, Tetrahedron&, const sofa::core::collision::Intersection*)
 {
     return true;
 }
 
-int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
+int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts, const sofa::core::collision::Intersection*)
 {
     const Vec3 P = e1.origin();
     Vec3 PQ = e1.direction();
@@ -164,6 +166,26 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     detection->elem.second = e2;
     detection->id = e1.getIndex();
     return 1;
+}
+
+bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron& t, Point& p)
+{
+    return testIntersection(t, p, intersection);
+}
+
+int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
+}
+
+bool TetrahedronDiscreteIntersection::testIntersection(Ray& r, Tetrahedron& t)
+{
+    return testIntersection(r, t, intersection);
+}
+
+int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
+{
+    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

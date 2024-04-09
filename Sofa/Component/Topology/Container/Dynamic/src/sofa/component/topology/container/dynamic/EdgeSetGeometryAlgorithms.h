@@ -174,11 +174,11 @@ public:
 
 
     // compute barycentric coefficients
-    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates")
-    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates")
+    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
-    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
+    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const = delete;
 
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
     void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }

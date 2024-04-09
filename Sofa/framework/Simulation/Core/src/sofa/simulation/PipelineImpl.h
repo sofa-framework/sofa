@@ -25,10 +25,8 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/simulation/config.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API PipelineImpl : public sofa::core::collision::Pipeline
@@ -52,8 +50,7 @@ public:
 };
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

@@ -53,7 +53,7 @@ using sofa::simulation::SimulationInitDoneEvent;
 #include <sofa/simulation/PropagateEventVisitor.h>
 using sofa::simulation::PropagateEventVisitor;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 using ::testing::Types;
 

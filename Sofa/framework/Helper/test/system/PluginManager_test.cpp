@@ -270,7 +270,7 @@ TEST_F(PluginManager_test, testPluginAAsDependencyOfPluginB)
 
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
-    pm.loadPluginByName(pluginBFileName);
+    pm.loadPluginByName(pluginBName);
     const std::string pluginPath = pm.findPlugin(pluginBName);
     const sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
 

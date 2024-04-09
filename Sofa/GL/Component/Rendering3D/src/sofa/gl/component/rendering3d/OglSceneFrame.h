@@ -48,9 +48,6 @@ public:
     void reinit() override;
     void draw(const core::visual::VisualParams*) override;
 
-    SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
-    DeprecatedAndRemoved drawFrame, style, alignment;
-
 private:
     static void drawArrows(const core::visual::VisualParams* vparams);
     static void drawCylinders(const core::visual::VisualParams* vparams);

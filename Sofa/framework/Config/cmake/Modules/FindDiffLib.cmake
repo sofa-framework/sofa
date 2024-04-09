@@ -1,4 +1,4 @@
-find_path(DIFFLIB_INCLUDE_DIR difflib.h
+find_path(difflib_INCLUDE_DIR difflib.h
 		  HINTS ${difflib_ROOT}
 		  # If cross-compiling and typically use CMAKE_FIND_ROOT_PATH variable,
 		  # each of its directory entry will be prepended to PATHS locations, and
@@ -9,7 +9,7 @@ find_path(DIFFLIB_INCLUDE_DIR difflib.h
 
 include(FindPackageHandleStandardArgs)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(DIFFLIB
-		REQUIRED_VARS DIFFLIB_INCLUDE_DIR
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(DiffLib
+		REQUIRED_VARS difflib_INCLUDE_DIR
 )
 mark_as_advanced(difflib_INCLUDE_DIR)

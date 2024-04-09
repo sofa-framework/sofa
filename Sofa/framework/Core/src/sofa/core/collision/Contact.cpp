@@ -23,13 +23,8 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 using namespace sofa::defaulttype;
@@ -86,9 +81,9 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
     }
 }
 
-} // namespace collision
+} // namespace sofa::core::collision
 
-} // namespace core
 
-} // namespace sofa
+
+
 

@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 using namespace sofa::simpleapi;
 
 #include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>
@@ -109,9 +109,9 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
         }
         else
         {
-            ASSERT_TRUE( fabs(pos.x()-rpos.x()) < 1 );
-            ASSERT_TRUE( fabs(pos.y()-rpos.y()) < 1 );
-            ASSERT_TRUE( fabs(pos.z()-rpos.z()) < 1 );
+            ASSERT_LT( fabs(pos.x()-rpos.x()), 1 );
+            ASSERT_LT( fabs(pos.y()-rpos.y()), 1 );
+            ASSERT_LT( fabs(pos.z()-rpos.z()), 1 );
         }
     }
 }

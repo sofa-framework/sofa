@@ -27,13 +27,8 @@
 
 #include <cstdlib>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 using namespace sofa::defaulttype;
@@ -930,9 +925,9 @@ void MeshLoader::copyMeshToData(sofa::helper::io::Mesh& _mesh)
     d_highOrderQuadPositions.setValue(_mesh.getHighOrderQuadPositions());
 }
 
-} // namespace loader
+} // namespace sofa::core::loader
 
-} // namespace core
 
-} // namespace sofa
+
+
 

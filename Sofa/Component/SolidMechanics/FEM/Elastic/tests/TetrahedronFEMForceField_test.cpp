@@ -32,11 +32,11 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 #include <sofa/testing/BaseTest.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <limits>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>

@@ -55,7 +55,7 @@ using MeshSpringForceField3 = sofa::component::solidmechanics::spring::MeshSprin
 using RegularGridSpringForceField3 = sofa::component::solidmechanics::spring::RegularGridSpringForceField<Vec3Types>;
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<Vec3Types>;
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/component/init.h>
 
 using sofa::core::objectmodel::New;

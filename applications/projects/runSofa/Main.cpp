@@ -304,7 +304,7 @@ int main(int argc, char** argv)
         "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
     );
     argParser->addArgument(
-        cxxopts::value<std::vector<std::string> >(),
+        cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
         "argv",
         "forward extra args to the python interpreter"
     );
@@ -395,8 +395,10 @@ int main(int argc, char** argv)
     // Add Batch GUI (runSofa without any GUIs wont be useful)
     sofa::gui::batch::init();
 
-    for (unsigned int i=0; i<plugins.size(); i++)
-        PluginManager::getInstance().loadPlugin(plugins[i]);
+    for (const auto& plugin : plugins)
+    {
+        PluginManager::getInstance().loadPlugin(plugin);
+    }
 
     if (!noAutoloadPlugins)
     {

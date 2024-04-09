@@ -24,9 +24,73 @@
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 #include <sofa/component/linearsystem/matrixaccumulators/SparsityPatternLocalMappedMatrix.h>
 #include <sofa/component/linearsystem/matrixaccumulators/ConstantLocalMappedMatrix.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::linearsystem
 {
+
+/// Check that the incoming rows and columns are expected by the constant sparsity pattern
+struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVerificationStrategy
+{
+    using verify_index = std::true_type;
+    using skip_insertion_if_error = std::true_type;
+
+    sofa::core::objectmodel::BaseObject* m_messageComponent { nullptr };
+
+    [[nodiscard]]
+    helper::logging::MessageDispatcher::LoggerStream logger() const
+    {
+        return m_messageComponent
+           ? msg_error(m_messageComponent)
+           : msg_error("CheckNoChangeInInsertionOrder");
+    }
+
+    using Row = sofa::SignedIndex;
+    using Col = sofa::SignedIndex;
+
+    /// list of expected rows and columns
+    sofa::type::vector<std::pair<Row, Col> > pairInsertionOrderList;
+
+    std::size_t* currentId { nullptr };
+
+    bool checkRowColIndices(const sofa::SignedIndex row, const sofa::SignedIndex col) override
+    {
+        if (currentId)
+        {
+            if (*currentId < pairInsertionOrderList.size())
+            {
+                const auto& [expectedRow, expectedCol] = pairInsertionOrderList[*currentId];
+                const bool isRowExpected = expectedRow == row;
+                const bool isColExpected = expectedCol == col;
+                if (!isRowExpected || !isColExpected)
+                {
+                    logger() << "According to the constant sparsity pattern, the "
+                            "expected row and column are [" << expectedRow << ", " <<
+                            expectedCol << "], but " << "[" << row << ", " << col <<
+                            "] was received.";
+                    return false;
+                }
+            }
+            else
+            {
+                logger() <<
+                        "The constant sparsity pattern did not expect more"
+                        " incoming matrix values at this stage (current id = "
+                        << *currentId << ", insertion list size = " << pairInsertionOrderList.size() << ")";
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+/// The strategy used to check the incoming rows and columns is a combination of:
+/// 1) checking if the indices are in the authorized submatrix (range)
+/// 2) checking if the indices comply with the initial sparsity pattern
+using StrategyCheckerType = sofa::core::matrixaccumulator::CompositeIndexVerificationStrategy<
+    core::matrixaccumulator::RangeVerification,
+    CheckNoChangeInInsertionOrder
+>;
 
 template<class TMatrix, class TVector>
 ConstantSparsityPatternSystem<TMatrix, TVector>::ConstantSparsityPatternSystem()
@@ -65,10 +129,10 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixMapped(c
                 {
                     const auto id = std::distance(this->m_localMappedMatrices.begin(), it);
                     const auto& mapping = m_constantCRSMappingMappedMatrices[id];
-                    mat->insertionOrderList.reserve(insertionOrderList.size());
+                    mat->compressedInsertionOrderList.reserve(insertionOrderList.size());
                     for (const auto& [row, col] : insertionOrderList)
                     {
-                        mat->insertionOrderList.push_back(mapping.at(row + col * sharedMatrix->rows()));
+                        mat->compressedInsertionOrderList.push_back(mapping.at(row + col * sharedMatrix->rows()));
                     }
                 }
                 else
@@ -101,10 +165,96 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixMapped(c
             }
             else
             {
-                dmsg_error() << "not a sparsity pattern matrix";
+                dmsg_error() << "not a sparsity pattern matrix (SparsityPatternLocalMappedMatrix)";
             }
         }
     }
+}
+
+template <class TMatrix, class TVector>
+template<core::matrixaccumulator::Contribution c, class TStrategy>
+void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixNonMapped(
+    const core::MechanicalParams* mparams,
+    LocalMatrixMaps<c, Real>& matrixMaps,
+    sofa::core::matrixaccumulator::get_component_type<c>* component,
+    BaseAssemblingMatrixAccumulator<c>*& localMatrix,
+    const typename Inherit1::PairMechanicalStates& states,
+    SparsityPatternLocalMatrix<c, TStrategy>* sparsityPatternMatrix)
+{
+    const auto& insertionOrderList = sparsityPatternMatrix->getInsertionOrderList();
+
+    SReal factor = Inherit1::template getContributionFactor<c>(mparams, component);
+
+    auto mat = sofa::core::objectmodel::New<ConstantLocalMatrix<TMatrix, c, TStrategy>>();
+    configureCreatedMatrixComponent<c>(mat, component, factor, !this->notMuted());
+
+    msg_info() << "Replacing " << sparsityPatternMatrix->getPathName() << " (class "
+                << sparsityPatternMatrix->getClass()->className
+                << "[" << sparsityPatternMatrix->getTemplateName() << "]) by " << mat->getPathName() << " (class "
+                << mat->getClass()->className << ")";
+
+    mat->setMatrixSize(localMatrix->getMatrixSize());
+    mat->setGlobalMatrix(this->getSystemMatrix());
+    mat->setPositionInGlobalMatrix(localMatrix->getPositionInGlobalMatrix());
+
+    mat->compressedInsertionOrderList.reserve(insertionOrderList.size());
+
+    sofa::type::vector<std::pair<sofa::SignedIndex, sofa::SignedIndex> > pairInsertionOrderList;
+    pairInsertionOrderList.reserve(insertionOrderList.size());
+
+    const auto& posInGlobalMatrix = mat->getPositionInGlobalMatrix();
+
+    for (const auto& [row, col] : insertionOrderList)
+    {
+        // row and col are in global coordinates but the local coordinates will be checked
+        pairInsertionOrderList.push_back({row - posInGlobalMatrix[0], col - posInGlobalMatrix[1]});
+
+        const auto flatIndex = row + col * this->getSystemMatrix()->rows();
+        const auto it = m_constantCRSMapping->find(flatIndex);
+        if (it != m_constantCRSMapping->end())
+        {
+            mat->compressedInsertionOrderList.push_back(it->second);
+        }
+        else
+        {
+            msg_error() << "Could not find index " << flatIndex << " (row " << row <<
+                    ", col " << col << ") in the hash table";
+        }
+    }
+
+    // index checking strategy
+    auto& strategy = matrixMaps.indexVerificationStrategy[component];
+    if (auto insertionOrderStrategy = std::dynamic_pointer_cast<TStrategy>(strategy))
+    {
+        mat->indexVerificationStrategy = insertionOrderStrategy;
+    }
+    if (auto insertionOrderStrategy = std::dynamic_pointer_cast<CheckNoChangeInInsertionOrder>(strategy))
+    {
+        insertionOrderStrategy->pairInsertionOrderList = pairInsertionOrderList;
+        insertionOrderStrategy->currentId = &mat->currentId;
+    }
+
+    component->removeSlave(localMatrix);
+
+    const auto& [mstate0, mstate1] = states;
+    if constexpr (c == Contribution::STIFFNESS)
+    {
+        this->m_stiffness[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
+    }
+    else if constexpr (c == Contribution::DAMPING)
+    {
+        this->m_damping[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
+    }
+    else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
+    {
+        this->m_geometricStiffness[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
+    }
+    else if constexpr (c == Contribution::MASS)
+    {
+        this->m_mass[component] = mat.get();
+    }
+
+    localMatrix = mat.get();
 }
 
 template<class TMatrix, class TVector>
@@ -115,60 +265,24 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatricesNonMap
     {
         for (auto& [states, localMatrix] : localMatrixMap)
         {
-            if (auto* sparsityPatternMatrix = dynamic_cast<SparsityPatternLocalMatrix<c>*>(localMatrix))
+            const bool isMapped0 = this->getMappingGraph().hasAnyMappingInput(states[0]);
+            const bool isMapped1 = this->getMappingGraph().hasAnyMappingInput(states[1]);
+            if (const bool isAnyMapped = isMapped0 || isMapped1; !isAnyMapped)
             {
-                const auto& insertionOrderList = sparsityPatternMatrix->getInsertionOrderList();
-
-                SReal factor = Inherit1::template getContributionFactor<c>(mparams, component);
-
-                auto mat = sofa::core::objectmodel::New<ConstantLocalMatrix<TMatrix, c>>();
-                configureCreatedMatrixComponent<c>(mat, component, factor, !this->notMuted());
-
-                msg_info() << "Replacing " << sparsityPatternMatrix->getPathName() << " (class "
-                << sparsityPatternMatrix->getClass()->className << ") by " << mat->getPathName() << " (class "
-                << mat->getClass()->className << ")";
-
-                mat->setMatrixSize(localMatrix->getMatrixSize());
-                mat->setGlobalMatrix(this->getSystemMatrix());
-                mat->setPositionInGlobalMatrix(localMatrix->getPositionInGlobalMatrix());
-
-                mat->insertionOrderList.reserve(insertionOrderList.size());
-                for (const auto& [row, col] : insertionOrderList)
+                if (auto* sparsityPatternMatrix = dynamic_cast<SparsityPatternLocalMatrix<c>*>(localMatrix))
                 {
-                    const auto flatIndex = row + col * this->getSystemMatrix()->rows();
-                    const auto it = m_constantCRSMapping->find(flatIndex);
-                    if (it != m_constantCRSMapping->end())
-                    {
-                        mat->insertionOrderList.push_back(it->second);
-                    }
-                    else
-                    {
-                        msg_error() << "Could not find index " << flatIndex << " (row " << row <<
-                                ", col " << col << ") in the hash table";
-                    }
+                    replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrix);
                 }
-
-                component->removeSlave(localMatrix);
-
-                const auto& [mstate0, mstate1] = states;
-                if constexpr (c == Contribution::STIFFNESS)
+                else if (auto* sparsityPatternMatrixWithCheck = dynamic_cast<SparsityPatternLocalMatrix<c, StrategyCheckerType>*>(localMatrix))
                 {
-                    this->m_stiffness[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
+                    replaceLocalMatrixNonMapped(mparams, matrixMaps, component, localMatrix, states, sparsityPatternMatrixWithCheck);
                 }
-                else if constexpr (c == Contribution::DAMPING)
+                else
                 {
-                    this->m_damping[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
+                    dmsg_error() << "The component '" << localMatrix->getPathName()
+                            << "' was expected to be a sparsity pattern matrix "
+                            "(SparsityPatternLocalMatrix != " << localMatrix->getClassName() << ")";
                 }
-                else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
-                {
-                    this->m_geometricStiffness[component].setMatrixAccumulator(mat.get(), mstate0, mstate1);
-                }
-                else if constexpr (c == Contribution::MASS)
-                {
-                    this->m_mass[component] = mat.get();
-                }
-
-                localMatrix = mat.get();
             }
         }
     }
@@ -192,6 +306,10 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::reinitLocalMatrices(LocalM
         for (auto& [states, localMatrix] : localMatrixMap)
         {
             if (auto* local = dynamic_cast<ConstantLocalMatrix<TMatrix, c>* >(localMatrix))
+            {
+                local->currentId = 0;
+            }
+            if (auto* local = dynamic_cast<ConstantLocalMatrix<TMatrix, c, StrategyCheckerType>* >(localMatrix))
             {
                 local->currentId = 0;
             }
@@ -225,14 +343,20 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::applyProjectiveConstraints
         m_constantCRSMapping = std::make_unique<ConstantCRSMapping>();
 
         // build the hash table from the compressed matrix
-        buildHashTable(M, *m_constantCRSMapping);
-
-        m_constantCRSMappingMappedMatrices.resize(this->m_localMappedMatrices.size());
-        std::size_t i {};
-        for (const auto& mat : this->m_localMappedMatrices)
         {
-            mat.second->fullRows();
-            buildHashTable(*mat.second, m_constantCRSMappingMappedMatrices[i++]);
+            SCOPED_TIMER("buildHashTableMainMatrix");
+            buildHashTable(M, *m_constantCRSMapping);
+        }
+
+        {
+            SCOPED_TIMER("buildHashTableMappedMatrices");
+            m_constantCRSMappingMappedMatrices.resize(this->m_localMappedMatrices.size());
+            std::size_t i {};
+            for (const auto& mat : this->m_localMappedMatrices)
+            {
+                mat.second->fullRows();
+                buildHashTable(*mat.second, m_constantCRSMappingMappedMatrices[i++]);
+            }
         }
 
         //replace the local matrix components by new ones that use the hash table
@@ -264,7 +388,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
     if (this->getSystemMatrix())
     {
         Index nIndex = sofa::helper::narrow_cast<Index>(n);
-        if (nIndex != this->getSystemMatrix()->rowSize() || nIndex != this->getSystemMatrix()->colSize())
+        if (nIndex != sofa::helper::narrow_cast<Index>(this->getSystemMatrix()->rowSize()) || nIndex != sofa::helper::narrow_cast<Index>(this->getSystemMatrix()->colSize()))
         {
             this->getSystemMatrix()->resize(n, n);
         }
@@ -353,6 +477,17 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::makeCreateDispatcher()
     std::get<std::unique_ptr<CreateMatrixDispatcher<Contribution::GEOMETRIC_STIFFNESS>>>(this->m_createDispatcher) = makeCreateDispatcher<Contribution::GEOMETRIC_STIFFNESS>();
 }
 
+template <class TMatrix, class TVector>
+std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
+ConstantSparsityPatternSystem<TMatrix, TVector>::makeIndexVerificationStrategy(
+    sofa::core::objectmodel::BaseObject* component)
+{
+    auto strategy =  std::make_shared<StrategyCheckerType>();
+    strategy->core::matrixaccumulator::RangeVerification::m_messageComponent = component;
+    strategy->CheckNoChangeInInsertionOrder::m_messageComponent = component;
+    return strategy;
+}
+
 template<class TMatrix, class TVector>
 template <Contribution c>
 std::unique_ptr<CreateMatrixDispatcher<c>> ConstantSparsityPatternSystem<TMatrix, TVector>::makeCreateDispatcher()
@@ -376,7 +511,7 @@ std::unique_ptr<CreateMatrixDispatcher<c>> ConstantSparsityPatternSystem<TMatrix
         typename BaseAssemblingMatrixAccumulator<c>::SPtr
         createLocalMatrixWithIndexChecking() const override
         {
-            return sofa::core::objectmodel::New<SparsityPatternLocalMatrix<c, core::matrixaccumulator::RangeVerification>>();
+            return sofa::core::objectmodel::New<SparsityPatternLocalMatrix<c, StrategyCheckerType>>();
         }
     };
 

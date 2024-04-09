@@ -21,10 +21,6 @@
 ******************************************************************************/
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 
-extern "C" {
-#include <metis.h>
-}
-
 namespace sofa::component::linearsolver::direct
 {
 void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj , type::vector<int>& t_adj , type::vector<int>& t_xadj, type::vector<int>& tran_countvec)
@@ -87,14 +83,5 @@ void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, typ
         xadj[j+1] = adj.size();
     }
 }
-
-void fillReducingPermutation(int nbColumns, int *columns, int* rowIndices,
-    int * perm,int * invperm)
-{
-    sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
-    csrToAdj( nbColumns, columns , rowIndices , adj, xadj, t_adj, t_xadj, tran_countvec );
-    METIS_NodeND(&nbColumns, xadj.data(), adj.data(), nullptr, nullptr, perm, invperm);
-}
-
 
 }

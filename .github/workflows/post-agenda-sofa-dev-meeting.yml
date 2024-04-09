@@ -5,6 +5,9 @@ on:
     - cron: '30 8 * * 1'  # 9:30 am CET every Monday
     - cron: '30 7 * * 3'   # 8:00 am CET on Wednesdays
 
+env:
+  TZ: "Europe/Paris"
+
 jobs:
   run:
     runs-on: ubuntu-latest

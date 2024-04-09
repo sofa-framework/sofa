@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaGeneralLoader LANGUAGES CXX)
 
 set(SOFAGENERALLOADER_SRC "src/${PROJECT_NAME}")

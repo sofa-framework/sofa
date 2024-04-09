@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Simulation.Common LANGUAGES CXX)
 
 set(SOFA_SIMULATION_COMMON_SRC "src/sofa/simulation/common")
@@ -39,11 +39,17 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
-sofa_find_package(TinyXML REQUIRED)
+sofa_find_package(TinyXML2 REQUIRED)
+
+if(UNIX AND NOT APPLE)
+    sofa_install_libraries(PATHS ${TinyXML2_LIBRARY})
+else()
+    sofa_install_libraries(TARGETS tinyxml2::tinyxml2)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.Simulation.Core)
-target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml2::tinyxml2) # Private because not exported in API
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

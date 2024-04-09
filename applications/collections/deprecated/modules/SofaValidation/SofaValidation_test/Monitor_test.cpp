@@ -38,7 +38,7 @@ using sofa::simulation::Node;
 using sofa::simulation::SceneLoaderXML;
 using sofa::core::ExecParams;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <fstream>
 #include <streambuf>

@@ -25,10 +25,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API ExportVisualModelOBJVisitor : public Visitor
@@ -55,7 +53,7 @@ protected:
     int count;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

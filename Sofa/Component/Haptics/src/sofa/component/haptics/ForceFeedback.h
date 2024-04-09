@@ -25,7 +25,7 @@
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/type/Transform.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::haptics
@@ -48,11 +48,11 @@ public:
                               SReal u, SReal v, SReal w,
                               SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
 
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
-                               const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
-                               sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
+    virtual void computeWrench(const sofa::type::Transform<SReal> &,
+                               const sofa::type::SpatialVector<SReal> &,
+                               sofa::type::SpatialVector<SReal> & )=0;
 
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
+    virtual void setReferencePosition(sofa::type::Transform<SReal>& referencePosition);
     virtual bool isEnabled();
 
     /// Abstract method to lock or unlock the force feedback computation. To be implemented by child class if needed

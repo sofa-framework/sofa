@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Core LANGUAGES CXX)
 
 set(SRC_ROOT "src/sofa/core")
@@ -61,6 +61,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseMass.h
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
+    ${SRC_ROOT}/behavior/BaseOrderingMethod.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
@@ -232,6 +233,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
+    ${SRC_ROOT}/behavior/BaseOrderingMethod.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/Constraint.cpp
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
@@ -343,12 +345,6 @@ endif()
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
-
-# SOFA-NG: make everybody be able to use Sofa.Component.Compat
-sofa_find_package(Sofa.Component.Compat QUIET)
-if(Sofa.Component.Compat_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder

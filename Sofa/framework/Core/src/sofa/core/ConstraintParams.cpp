@@ -25,10 +25,8 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
@@ -62,6 +60,6 @@ const ConstraintParams* ConstraintParams::defaultInstance()
     return ptr;
 }
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
+

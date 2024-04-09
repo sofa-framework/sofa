@@ -21,10 +21,9 @@
 ******************************************************************************/
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/Node.h>
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 
@@ -40,7 +39,6 @@ void UpdateInternalDataVisitor::processUpdateInternalData(simulation::Node* , so
 }
 
 
+} // namespace sofa::simulation
 
-} // namespace simulation
 
-} // namespace sofa

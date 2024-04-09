@@ -45,9 +45,9 @@ void LCPForceFeedback< Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SR
 
 
 template <>
-void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
-        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
-        sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
+void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::type::Transform<SReal> &world_H_tool,
+        const sofa::type::SpatialVector<SReal> &/*V_tool_world*/,
+        sofa::type::SpatialVector<SReal> &W_tool_world )
 {
     if (!this->d_activate.getValue())
     {

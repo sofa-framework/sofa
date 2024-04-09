@@ -23,7 +23,7 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
-#include <sofa/component/linearsolver/direct/SimplicialLDLTTraits.h>
+#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -37,7 +37,7 @@ template<class TBlockType>
 class EigenSimplicialLDLT
     : public EigenDirectSparseSolver<
         TBlockType,
-        SimplicialLDLTTraits<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlockType>::Real>
+        MainSimplicialLDLTFactory
     >
 {
 public:
@@ -45,7 +45,7 @@ public:
     using Real = typename Matrix::Real;
     typedef sofa::linearalgebra::FullVector<Real> Vector;
 
-    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLDLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, SimplicialLDLTTraits<Real>));
+    SOFA_CLASS(SOFA_TEMPLATE(EigenSimplicialLDLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainSimplicialLDLTFactory));
 
 };
 

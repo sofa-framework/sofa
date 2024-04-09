@@ -26,10 +26,8 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Initialize a newly created (or modified) scene graph.
@@ -61,8 +59,7 @@ protected:
     Node *rootNode;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

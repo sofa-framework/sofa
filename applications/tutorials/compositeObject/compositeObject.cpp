@@ -38,7 +38,7 @@
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
@@ -106,18 +106,18 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     using MechanicalObjectRigid3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::RigidTypes>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::RigidTypes>;
+    using FixedProjectiveConstraintRigid3 = sofa::component::constraint::projective::FixedProjectiveConstraint<sofa::defaulttype::RigidTypes>;
     // The rigid object
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
     auto rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
     auto rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
-    auto rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    auto rigid_FixedProjectiveConstraint = addNew<FixedProjectiveConstraintRigid3>(rigidNode,"FixedProjectiveConstraint");
 
 
     using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Rigid3Types>;
+    using FixedProjectiveConstraintRigid3 = sofa::component::constraint::projective::FixedProjectiveConstraint<sofa::defaulttype::Rigid3Types>;
     // Particles mapped to the rigid object
     auto mappedParticles = rigidNode->createChild("mappedParticles");
     auto mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");

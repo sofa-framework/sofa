@@ -27,13 +27,7 @@
 #include <cassert>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_HELPER_API ImageDDS : public Image
@@ -52,10 +46,7 @@ public:
     bool save(std::string filename, int compression_level = -1) override;
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

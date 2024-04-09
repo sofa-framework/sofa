@@ -46,17 +46,24 @@
 #endif // SOFA_CORE_TOPOLOGY_ENABLE_DEPRECATION_MESSAGE
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__SYMMETRICMATRIX(msg)
+#define SOFA_ATTRIBUTE_DISABLED__SYMMETRICMATRIX(msg)
 #else
 
-#define SOFA_ATTRIBUTE_DEPRECATED__SYMMETRICMATRIX(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED("v23.12 (PR#3861)", "v24.06", msg)
+#define SOFA_ATTRIBUTE_DISABLED__SYMMETRICMATRIX(msg) \
+    SOFA_ATTRIBUTE_DISABLED("v23.12 (PR#3861)", "v24.06", msg)
 
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER()
+#define SOFA_ATTRIBUTE_DISABLED__CONSTORDER()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__CONSTORDER() \
-    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "ConstOrder is now a scoped enumeration. It must be used to access the values.")
+#define SOFA_ATTRIBUTE_DISABLED__CONSTORDER() \
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "ConstOrder is now a scoped enumeration. It must be used to access the values.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
 #endif

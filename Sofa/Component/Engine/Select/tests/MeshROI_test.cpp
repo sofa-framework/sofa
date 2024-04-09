@@ -44,7 +44,7 @@ using sofa::simulation::SceneLoaderXML ;
 using std::vector;
 using std::string;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 
 namespace sofa

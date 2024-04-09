@@ -262,9 +262,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::ty
 
     int last = (int)pointSourceData.size() -1;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (const unsigned int index_i : index)
     {
-        swapOutputPoints( index[i], last );
+        swapOutputPoints( index_i, last );
         const int source = pointSourceData[last];
         if (source > 0)
         {
@@ -330,9 +330,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
     type::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
     Index last = tetraSourceData.size() -1;
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (const unsigned int index_i : index)
     {
-        swapOutputTetrahedra( index[i], last );
+        swapOutputTetrahedra( index_i, last );
         Index source = tetraSourceData[last];
         if (source != sofa::InvalidID)
         {
@@ -467,9 +467,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::typ
 
     Index last = pointMappedFromPointData.size() -1;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (const unsigned int index_i : index)
     {
-        swapInputPoints( index[i], last );
+        swapInputPoints( index_i, last );
         const Index map = pointMappedFromPointData[last];
         if (map != sofa::InvalidID)
             pointSourceData[map] = 0;
@@ -516,9 +516,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::type
 
     Index last = pointMappedFromEdgeData.size() -1;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (const unsigned int index_i : index)
     {
-        swapInputEdges( index[i], last );
+        swapInputEdges( index_i, last );
         const Index map = pointMappedFromEdgeData[last];
         if (map != sofa::InvalidID)
             pointSourceData[map] = 0;
@@ -556,9 +556,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa:
 
     Index last = (int)tetrahedraMappedFromTetraData.size() -1;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (const unsigned int index_i : index)
     {
-        swapInputTetrahedra( index[i], last );
+        swapInputTetrahedra( index_i, last );
         const fixed_array<Index, 8>& map = tetrahedraMappedFromTetraData[last];
         for (int j=0; j<8; ++j)
             if (map[j] != sofa::InvalidID)

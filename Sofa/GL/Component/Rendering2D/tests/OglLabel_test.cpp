@@ -48,7 +48,7 @@ using sofa::gl::component::rendering2d::OglLabel ;
 #include <sofa/type/RGBAColor.h>
 using sofa::type::RGBAColor ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 class OglLabelTest : public BaseTest
 {

@@ -195,8 +195,8 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
             std::cout << "          expected fc = " << fc << std::endl;
             std::cout << "            actual fc = " << actualfc.ref() << std::endl;
         }
-        ASSERT_TRUE( this->vectorMaxDiff(fp,actualfp)< this->errorMax*this->epsilon() );
-        ASSERT_TRUE( this->vectorMaxDiff(fc,actualfc)< this->errorMax*this->epsilon() );
+        ASSERT_LT( this->vectorMaxDiff(fp,actualfp), this->errorMax*this->epsilon() );
+        ASSERT_LT( this->vectorMaxDiff(fc,actualfc), this->errorMax*this->epsilon() );
     }
 
     ///@}

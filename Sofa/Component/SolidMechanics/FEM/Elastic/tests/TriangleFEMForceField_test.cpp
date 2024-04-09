@@ -26,7 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
@@ -656,7 +656,7 @@ public:
             return;
 
         const int nbrTest = 10;
-        double diffTimeMs = 0;
+        //double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
@@ -675,7 +675,7 @@ public:
             if (timeMax < diffTimed)
                 timeMax = diffTimed;
 
-            diffTimeMs += diffTimed;
+            //diffTimeMs += diffTimed;
             sofa::simulation::node::reset(m_root.get());
         }
 

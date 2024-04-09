@@ -28,10 +28,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 namespace _basesimulationexporter_
@@ -78,12 +76,10 @@ protected:
     unsigned int m_stepCounter {0};
 };
 
-} /// namespace _baseexporter_
+}
 
 using _basesimulationexporter_::BaseSimulationExporter;
 
-} /// namespace simulation
-
-} /// namespace sofa
+}
 
 #endif /// SOFA_CORE_EXPORTER_BASEEXPORTER_H

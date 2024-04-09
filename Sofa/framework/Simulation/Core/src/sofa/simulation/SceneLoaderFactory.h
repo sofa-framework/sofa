@@ -29,10 +29,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -145,9 +143,7 @@ public:
 
 };
 
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation
 
 
 #endif // SOFA_SIMULATION_SCENELOADERFACTORY_H

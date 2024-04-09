@@ -27,7 +27,7 @@
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/utility/TopologyChecker.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
 using sofa::testing::BaseSimulationTest;

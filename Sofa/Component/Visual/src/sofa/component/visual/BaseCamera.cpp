@@ -29,14 +29,14 @@
 using Mat3 = sofa::type::Mat3x3;
 using Mat4 = sofa::type::Mat4x4;
 
-#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/type/Transform.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 #include <sofa/helper/rmath.h>
 using sofa::helper::isEqual;
 
 #include <cmath>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 using sofa::type::RGBAColor ;
 
@@ -369,7 +369,7 @@ type::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
 
 void BaseCamera::getModelViewMatrix(double mat[16])
 {
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
     Mat3 rot = world_H_cam.inversed().getRotationMatrix();
 
     //rotation
@@ -392,7 +392,7 @@ void BaseCamera::getModelViewMatrix(double mat[16])
 
 void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
 {
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    const sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
@@ -548,10 +548,10 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
     rotation.quatToAxis(tempAxis, tempAngle);
     const Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
 
-    const defaulttype::SolidTypes<SReal>::Transform world_H_cam(positionCam, orientationCam);
-    const defaulttype::SolidTypes<SReal>::Transform world_H_pivot(point, Quat());
-    const defaulttype::SolidTypes<SReal>::Transform pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
-    const defaulttype::SolidTypes<SReal>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
+    const sofa::type::Transform<SReal> world_H_cam(positionCam, orientationCam);
+    const sofa::type::Transform<SReal> world_H_pivot(point, Quat());
+    const sofa::type::Transform<SReal> pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
+    const sofa::type::Transform<SReal> camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
     //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
@@ -662,7 +662,7 @@ void BaseCamera::computeZ()
     if (p_computeZClip.getValue())
     {
         //modelview transform
-        defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+        sofa::type::Transform<SReal> world_H_cam(p_position.getValue(), this->getOrientation());
 
         //double distanceCamToCenter = fabs((world_H_cam.inversed().projectPoint(sceneCenter))[2]);
         const double distanceCamToCenter = (p_position.getValue() - sceneCenter).norm();
@@ -782,13 +782,13 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
     computeZ();
 }
 
-void BaseCameraXMLExportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, const std::string& comment)
 {
-    TiXmlElement* node = new TiXmlElement( data.getName().c_str() );
+    tinyxml2::XMLElement* node = root->GetDocument()->NewElement( data.getName().c_str() );
     node->SetAttribute("value", data.getValueString().c_str() );
     if(!comment.empty())
     {
-        TiXmlComment* com = new TiXmlComment( comment.c_str() );
+        tinyxml2::XMLComment* com = root->GetDocument()->NewComment( comment.c_str() );
         root->LinkEndChild(com);
     }
     root->LinkEndChild(node);
@@ -796,11 +796,11 @@ void BaseCameraXMLExportSingleParameter(TiXmlElement* root, core::objectmodel::B
 
 bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
 {
-    TiXmlDocument doc;
-    TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLDeclaration* decl = doc.NewDeclaration();
     doc.LinkEndChild( decl );
 
-    TiXmlElement* root = new TiXmlElement( "Camera" );
+    tinyxml2::XMLElement* root = doc.NewElement( "Camera" );
     root->SetAttribute("version", "1.0" );
     doc.LinkEndChild( root );
 
@@ -816,14 +816,14 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
     return doc.SaveFile( viewFilename.c_str() );
 }
 
-bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
+bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
 {
     if(root)
     {
-        TiXmlNode* node = root->FirstChild( data.getName().c_str() );
+        tinyxml2::XMLNode* node = root->FirstChildElement( data.getName().c_str() );
         if(node)
         {
-            const TiXmlElement* element = node->ToElement();
+            const tinyxml2::XMLElement* element = node->ToElement();
             if(element)
             {
                 const char* attrValue;
@@ -862,16 +862,14 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     bool result = true;
 
     msg_info() << "Reading " << viewFilename << " for view parameters.";
-    TiXmlDocument doc(viewFilename.c_str());
-    if (!doc.LoadFile())
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(viewFilename.c_str()) != tinyxml2::XML_SUCCESS)
     {
         result = false;
     }
 
-    const TiXmlHandle hDoc(&doc);
-    TiXmlElement* root;
-
-    root = hDoc.FirstChildElement().ToElement();
+    tinyxml2::XMLHandle hDoc(&doc);
+    tinyxml2::XMLElement* root = hDoc.FirstChildElement().ToElement();
 
     if (!root)
         result = false;

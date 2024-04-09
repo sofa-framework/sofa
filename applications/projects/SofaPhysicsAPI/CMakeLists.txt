@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaPhysicsAPI LANGUAGES CXX)
 
 set(SOFAPHYSICSAPI_SRC_DIR "src/SofaPhysicsAPI")
@@ -19,6 +19,7 @@ set(SOURCE_FILES
 )
 
 find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.SimpleApi REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
 sofa_find_package(SofaValidation QUIET)
@@ -38,7 +39,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.GUI.Common)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.GUI.Common Sofa.SimpleApi)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component)
 
 if(SofaValidation_FOUND)

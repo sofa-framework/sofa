@@ -96,9 +96,10 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
             ws->d_writeX.setValue(recordX);
             ws->d_writeV.setValue(recordV);
             ws->d_writeF.setValue(recordF);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                ws->addTag(*it);
-
+            for (const auto& subset : this->subsetsToManage)
+            {
+                ws->addTag(subset);
+            }
         }
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;

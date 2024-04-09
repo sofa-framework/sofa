@@ -152,7 +152,7 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         }
 
         QTableWidgetItem *itemColor = new QTableWidgetItem();
-        itemColor->setBackgroundColor(color);
+        itemColor->setBackground(color);
         QTableWidgetItem *item = new QTableWidgetItem();
         QTableWidgetItem *itemTime = new QTableWidgetItem();
         table->setItem(i,0, itemColor);
@@ -161,9 +161,9 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         itemTime->setText(time);
         table->setItem(i,2, itemTime);
         table->resizeColumnToContents(1);
-        itemColor->setFlags(0);
-        item->setFlags(0);
-        itemTime->setFlags(0);
+        itemColor->setFlags(QFlag(0));
+        item->setFlags(QFlag(0));
+        itemTime->setFlags(QFlag(0));
 
     }
     pie->repaint();

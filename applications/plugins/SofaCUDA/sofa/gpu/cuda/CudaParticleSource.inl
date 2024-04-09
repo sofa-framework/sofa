@@ -28,10 +28,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -49,14 +47,10 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace misc
+namespace component::misc
 {
 
 using namespace gpu::cuda;
@@ -136,9 +130,8 @@ using namespace gpu::cuda;
 
 // #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace misc
+} // namespace component::misc
 
-} // namespace component
 
 } // namespace sofa
 

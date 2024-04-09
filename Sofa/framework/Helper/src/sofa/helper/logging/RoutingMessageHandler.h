@@ -30,11 +30,8 @@
 #include <sofa/helper/logging/Message.h>
 #include <vector>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+
+namespace sofa::helper::logging
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
@@ -99,9 +96,7 @@ public:
 using routingmessagehandler::RoutingMessageHandler ;
 using routingmessagehandler::MainRoutingMessageHandler ;
 
-} // logging
-} // helper
-} // sofa
+}
 
 #endif // TESTMESSAGEHANDLER_H
 

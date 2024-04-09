@@ -29,10 +29,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class real>
@@ -47,14 +45,10 @@ struct GPURepulsion
 typedef GPURepulsion<float> GPURepulsion3f;
 typedef GPURepulsion<double> GPURepulsion3d;
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace component::forcefield
 {
 
 template <>
@@ -73,9 +67,8 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const co
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace forcefield
+} // namespace component::forcefield
 
-} // namespace component
 
 } // namespace sofa
 

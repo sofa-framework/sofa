@@ -26,16 +26,8 @@
 #include <thread>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
@@ -339,10 +331,10 @@ unsigned ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity,
     return outsize;
 }
 
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
 
-} // namespace helper
 
-} // namespace sofa
+
+
+

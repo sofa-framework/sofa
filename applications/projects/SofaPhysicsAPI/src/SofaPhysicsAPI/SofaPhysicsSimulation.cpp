@@ -50,7 +50,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/component/init.h>
 

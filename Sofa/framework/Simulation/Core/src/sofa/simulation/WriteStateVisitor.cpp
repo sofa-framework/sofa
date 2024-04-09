@@ -23,10 +23,9 @@
 #include <sofa/type/Vec.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 
@@ -46,7 +45,7 @@ Visitor::Result WriteStateVisitor::processNodeTopDown( simulation::Node* gnode )
     return Visitor::RESULT_CONTINUE;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

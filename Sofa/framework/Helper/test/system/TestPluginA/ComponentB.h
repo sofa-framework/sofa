@@ -26,10 +26,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
 
-namespace test
+namespace sofa::test
 {
 
 template<class T>
@@ -52,9 +50,7 @@ extern template class SOFA_TESTPLUGINA_API ComponentB<defaulttype::Rigid3Types>;
 
 #endif //  !defined(TESTPLUGINA_COMPONENT_B_CPP)
 
-} // namespace test
-
-} // namespace sofa
+} // namespace sofa::test
 
 
 #endif // TESTPLUGINA_COMPONENT_B_H

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Compat LANGUAGES CXX)
 
 set(SOFACOMPATSRC_ROOT "src")
@@ -7,6 +7,7 @@ set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
+    ${SOFACOMPATSRC_ROOT}/sofa/simulation/graph/SimpleApi.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/BlocMatrixWriter.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CRSMultiMatrixAccessor.h

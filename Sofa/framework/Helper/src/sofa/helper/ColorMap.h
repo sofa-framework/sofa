@@ -32,10 +32,7 @@
 //#include <sofa/helper/OptionsGroup.h>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
     
 class SOFA_HELPER_API ColorMap 
@@ -108,9 +105,6 @@ public:
         }
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RGBACOLOR_AS_FIXEDARRAY()
-    type::Vec3f hsv2rgb(const type::Vec3f& hsv);
-
     inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
     {
         out << m.entries;
@@ -125,9 +119,7 @@ public:
 };
 
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 
 #endif
