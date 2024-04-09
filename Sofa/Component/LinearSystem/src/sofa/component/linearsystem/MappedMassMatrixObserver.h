@@ -36,20 +36,28 @@ namespace sofa::component::linearsystem
 template<class Real>
 struct MappedMassMatrixObserver
 {
-    MappedMassMatrixObserver();;
+    MappedMassMatrixObserver();
     MappedMassMatrixObserver(const MappedMassMatrixObserver&) = default;
 
+    /// The provided mass is observed to track cache invalidation
     void observe(core::behavior::BaseMass* mass);
+
+    /// Return the observable mass
     core::behavior::BaseMass* getObservableMass() const;
 
+    /// The mass accumulator associated to the observable mass
     BaseAssemblingMatrixAccumulator<core::matrixaccumulator::Contribution::MASS>* accumulator { nullptr };
 
     std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<Real> > m_invariantMassMatrix;
     Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantProjectedMassMatrix;
 
+    /// The state associated to the observable mass
     core::behavior::BaseMechanicalState* mstate { nullptr };
 
+    /// A change in the provided input triggers cache invalidation
     void trackMatrixChangesFrom(core::objectmodel::DDGNode* input);
+
+    /// Define what happens when cache is invalid and the projected mass matrix is requested
     void setRecomputionMappedMassMatrix(std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f);
 
 protected:
