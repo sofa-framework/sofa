@@ -78,9 +78,6 @@ UniformMass<DataTypes>::UniformMass()
     , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
-
-    this->d_recomputeCachedMassMatrix.addInput(&d_vertexMass);
-    this->d_recomputeCachedMassMatrix.addInput(&d_totalMass);
 }
 
 template <class DataTypes>

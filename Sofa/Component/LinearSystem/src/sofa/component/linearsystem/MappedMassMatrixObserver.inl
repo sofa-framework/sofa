@@ -26,16 +26,19 @@ namespace sofa::component::linearsystem
 {
 
 template <class Real>
-MappedMassMatrixObserver<Real>::MappedMassMatrixObserver()
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
 {
-    dataTracker.addOutput(&this->m_invariantProjectedMassMatrix);
+    m_newObservables |= (mass != m_observedMass);
+    m_observedMass = mass;
+    m_dataTracker.trackData(m_observedMass->d_componentState);
 }
 
 template <class Real>
-void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMechanicalState* mstate)
 {
-    m_observedMass = mass;
-    this->trackMatrixChangesFrom(&m_observedMass->d_recomputeCachedMassMatrix);
+    m_newObservables |= (mstate != m_mstate);
+    m_mstate = mstate;
+    m_dataTracker.trackData(m_mstate->d_componentState);
 }
 
 template <class Real>
@@ -44,20 +47,20 @@ core::behavior::BaseMass* MappedMassMatrixObserver<Real>::getObservableMass() co
     return m_observedMass;
 }
 
-template<class Real>
-void MappedMassMatrixObserver<Real>::trackMatrixChangesFrom(core::objectmodel::DDGNode* input)
+template <class Real>
+core::behavior::BaseMechanicalState* MappedMassMatrixObserver<Real>::getObservableState() const
 {
-    if (input)
-    {
-        dataTracker.addInput(input);
-    }
+    return m_mstate;
 }
 
 template <class Real>
-void MappedMassMatrixObserver<Real>::setRecomputionMappedMassMatrix(
-    std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f)
+bool MappedMassMatrixObserver<Real>::hasObservableChanged()
 {
-    dataTracker.setCallback(f);
+    const bool hasChanged = m_dataTracker.hasChanged();
+    const bool newObservables = m_newObservables;
+    m_dataTracker.clean();
+    m_newObservables = false;
+    return newObservables || hasChanged;
 }
 
 }

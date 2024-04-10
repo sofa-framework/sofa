@@ -36,34 +36,38 @@ namespace sofa::component::linearsystem
 template<class Real>
 struct MappedMassMatrixObserver
 {
-    MappedMassMatrixObserver();
-    MappedMassMatrixObserver(const MappedMassMatrixObserver&) = default;
-
     /// The provided mass is observed to track cache invalidation
     void observe(core::behavior::BaseMass* mass);
 
-    /// Return the observable mass
-    core::behavior::BaseMass* getObservableMass() const;
+    /// The provided state (associated to the mass) is observed to track cache invalidation
+    void observe(core::behavior::BaseMechanicalState* mstate);
 
     /// The mass accumulator associated to the observable mass
     BaseAssemblingMatrixAccumulator<core::matrixaccumulator::Contribution::MASS>* accumulator { nullptr };
 
+    /// Return the observable mass
+    core::behavior::BaseMass* getObservableMass() const;
+
+    /// Return the observable state
+    core::behavior::BaseMechanicalState* getObservableState() const;
+
+    /// Return true if the tracking of the observables noticed a change since the last call
+    [[nodiscard]] bool hasObservableChanged();
+
+
     std::shared_ptr<linearalgebra::CompressedRowSparseMatrix<Real> > m_invariantMassMatrix;
     Data<linearalgebra::CompressedRowSparseMatrix<Real>> m_invariantProjectedMassMatrix;
 
-    /// The state associated to the observable mass
-    core::behavior::BaseMechanicalState* mstate { nullptr };
-
-    /// A change in the provided input triggers cache invalidation
-    void trackMatrixChangesFrom(core::objectmodel::DDGNode* input);
-
-    /// Define what happens when cache is invalid and the projected mass matrix is requested
-    void setRecomputionMappedMassMatrix(std::function<sofa::core::objectmodel::ComponentState(const core::DataTracker&)> f);
-
 protected:
-    core::DataTrackerCallback dataTracker;
+
+    core::DataTracker m_dataTracker;
 
     core::behavior::BaseMass* m_observedMass { nullptr };
+
+    /// The state associated to the observable mass
+    core::behavior::BaseMechanicalState* m_mstate { nullptr };
+
+    bool m_newObservables = true;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_MAPPEDMASSMATRIXOBSERVER_CPP)

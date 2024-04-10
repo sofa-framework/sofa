@@ -33,7 +33,6 @@ BaseMass::BaseMass()
     : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
     , rayleighMass (initData(&rayleighMass , 0_sreal, "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
 {
-    d_recomputeCachedMassMatrix.addInput(&rayleighMass);
 }
 
 bool BaseMass::insertInNode( objectmodel::BaseNode* node )

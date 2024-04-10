@@ -846,19 +846,8 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
                         {
                             auto observer = std::make_shared<MappedMassMatrixObserver<Real>>();
                             observer->observe(component);
+                            observer->observe(mstate0);
                             observer->accumulator = mat;
-                            observer->mstate = mstate0;
-
-                            observer->trackMatrixChangesFrom(mstate0->findData("size"));
-                            observer->trackMatrixChangesFrom(this->getContext()->findData("dt"));
-
-                            // the lambda to call when a recomputation of the mapped mass matrix is required
-                            observer->setRecomputionMappedMassMatrix(
-                                [this, component, mparams](const core::DataTracker&)
-                                {
-                                    this->recomputeMappedMassMatrix(mparams, component);
-                                    return sofa::core::objectmodel::ComponentState::Valid;
-                                });
 
                             m_mappedMassMatrixObservers.push_back(observer);
                         }
@@ -1046,11 +1035,11 @@ void MatrixLinearSystem<TMatrix, TVector>::recomputeMappedMassMatrix(const core:
         msg_info(this) << "Recompute mapped mass matrix for mass " << observer->getObservableMass()->getPathName();
 
         observer->m_invariantMassMatrix = std::make_shared<linearalgebra::CompressedRowSparseMatrix<Real>>();
-        observer->m_invariantMassMatrix->resize(observer->mstate->getMatrixSize(), observer->mstate->getMatrixSize());
+        observer->m_invariantMassMatrix->resize(observer->getObservableState()->getMatrixSize(), observer->getObservableState()->getMatrixSize());
         observer->m_invariantMassMatrix->clear();
 
         setSharedMatrix<Contribution::MASS>(observer->getObservableMass(),
-            PairMechanicalStates{observer->mstate, observer->mstate},
+            PairMechanicalStates{observer->getObservableState(), observer->getObservableState()},
             observer->m_invariantMassMatrix);
         observer->getObservableMass()->buildMassMatrix(observer->accumulator);
 
@@ -1058,7 +1047,7 @@ void MatrixLinearSystem<TMatrix, TVector>::recomputeMappedMassMatrix(const core:
         invariantProjectedMassMatrix->resize(this->getSystemMatrix()->rows(), this->getSystemMatrix()->cols());
         invariantProjectedMassMatrix->clear();
 
-        auto* projectionMethod = findProjectionMethod({observer->mstate, observer->mstate});
+        auto* projectionMethod = findProjectionMethod({observer->getObservableState(), observer->getObservableState()});
         if (projectionMethod != nullptr)
         {
             projectionMethod->reinit();
@@ -1076,7 +1065,10 @@ void MatrixLinearSystem<TMatrix, TVector>::assemblePrecomputedMappedMassMatrix(c
     SCOPED_TIMER("precomputedMappedMassMatrix");
     for (const auto& observer : m_mappedMassMatrixObservers)
     {
-        // if the Data is dirty, it will trigger the recomputation of the projected mass matrix
+        if (observer->hasObservableChanged())
+        {
+            recomputeMappedMassMatrix(mparams, observer->getObservableMass());
+        }
         observer->m_invariantProjectedMassMatrix.getValue().addTo(destination);
     }
 }
