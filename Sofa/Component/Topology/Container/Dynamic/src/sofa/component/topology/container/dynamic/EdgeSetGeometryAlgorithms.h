@@ -169,7 +169,7 @@ public:
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
 
-    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "Use the method computeEdgeSegmentIntersection returning a Coord")
+    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Use the method computeEdgeSegmentIntersection returning a Coord")
     bool computeEdgeSegmentIntersection(EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, Real &baryCoef);
 
 
