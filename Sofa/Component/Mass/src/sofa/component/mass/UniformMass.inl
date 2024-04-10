@@ -271,8 +271,9 @@ void UniformMass<DataTypes>::initDefaultImpl()
         }
     }
 
-    /// Trigger callbacks (see constructor)
-    this->d_componentState.getValue();
+    /// Trigger callbacks to update data (see constructor)
+    if(!this->isComponentStateValid())
+        msg_error() << "Initialization process is invalid";
 
     /// Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " | "
