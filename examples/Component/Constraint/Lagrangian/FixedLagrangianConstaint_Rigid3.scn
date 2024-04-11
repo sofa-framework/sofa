@@ -17,7 +17,6 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
-    <RequiredPlugin name="CSparseSolvers"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="   showForceFields "/>
     <AttachBodyButtonSetting stiffness="5" /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
@@ -27,7 +26,7 @@
 
     <Node name="Needle">
         <EulerImplicitSolver  />
-        <SparseLUSolver name="LU" />
+        <BTDLinearSolver name="BTD" />
         <EdgeSetTopologyContainer name="Container" position=" 0 0 0  0.010 0  0 0.020 0 0   0.030 0 0   0.040 0 0  0.050 0 0   0.060 0 0  0.070 0 0  0.080 0 0  0.090 0 0  0.100 0 0  0.110 0 0  0.120 0 0  0.130 0 0." edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13" />
         <EdgeSetTopologyModifier name="modifier" />
         <MechanicalObject name="mstate" template="Rigid3d" />
@@ -51,7 +50,7 @@
             </Node>
         </Node>
 
-        <LinearSolverConstraintCorrection printLog="false" linearSolver="@LU" />
+        <LinearSolverConstraintCorrection printLog="false" linearSolver="@BTD" />
     </Node>
 
 </Node>

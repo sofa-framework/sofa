@@ -54,8 +54,8 @@ public:
 
 protected:
 
-    std::vector<unsigned int> m_cid;
-    std::vector<Deriv> m_prevForces;
+    sofa::type::vector<unsigned int> m_cid;
+    sofa::type::vector<Deriv> m_prevForces;
 
     SetIndex d_indices;
     Data<bool> d_fixAll;
