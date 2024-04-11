@@ -1399,11 +1399,11 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     }
     init(); //init data member from RealGUI for the viewer initialisation in the GUI
 
-    // Is our viewer embedded or not ?
+    // Is our viewer not a qt::viewer::SofaViewer ?
     sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(_viewer);
     if( sofaViewer == nullptr )
     {
-        std::cout<<"initViewer: The viewer isn't embedded in the GUI"<<std::endl;
+        msg_error("RealGUI") << "initViewer failed as given _viewer is not of type sofa::gui::qt::viewer::SofaViewer*";
     }
     else
     {
