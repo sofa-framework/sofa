@@ -951,7 +951,7 @@ void RealGUI::setViewerResolution ( int w, int h )
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 #else
-    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();// QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
 #endif
     QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
     if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
@@ -977,7 +977,7 @@ void RealGUI::setFullScreen (bool enable)
 
     if (enable)
     {
-        std::cout << "Set Full Screen Mode" << std::endl;
+        msg_info("RealGUI") << "Set Full Screen Mode";
         showFullScreen();
         m_fullScreen = true;
 
@@ -986,7 +986,7 @@ void RealGUI::setFullScreen (bool enable)
     }
     else
     {
-        std::cout << "Set Windowed Mode" << std::endl;
+        msg_info("RealGUI") << "Set Windowed Mode";
         showNormal();
         m_fullScreen = false;
         dockWidget->setVisible(true);
