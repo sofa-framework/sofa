@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLAGRANGIANCONSTRAINT_CPP
 #include <sofa/component/constraint/lagrangian/model/FixedLagrangianConstraint.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -32,32 +33,29 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-// Vec3D specialization
+// Vec3 specialization
 template<>
-void FixedLagrangianConstraint<Vec3Types>::doBuildConstraintLine( MatrixDeriv &c, unsigned int &cIndex, unsigned int lineNumber)
+void FixedLagrangianConstraint<Vec3Types>::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
 {
     constexpr Coord cx(1,0,0), cy(0,1,0), cz(0,0,1);
-    unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+    const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
 
-    cIndex += 3;
-
-    MatrixDerivRowIterator c_it = c.writeLine(m_cid[lineNumber]);
+    MatrixDerivRowIterator c_it = c->writeLine(m_cid[lineNumber]);
     c_it.setCol(dofIdx, cx);
 
-    c_it = c.writeLine(m_cid[lineNumber] + 1);
+    c_it = c->writeLine(m_cid[lineNumber] + 1);
     c_it.setCol(dofIdx, cy);
 
-    c_it = c.writeLine(m_cid[lineNumber] + 2);
+    c_it = c->writeLine(m_cid[lineNumber] + 2);
     c_it.setCol(dofIdx, cz);
 
 }
 
 template<>
-void FixedLagrangianConstraint<Vec3Types>::doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePose, const DataVecCoord * restPose,unsigned int lineNumber)
+void FixedLagrangianConstraint<Vec3Types>::doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePos, const DataVecCoord * restPos,unsigned int lineNumber)
 {
     unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
-
-    Coord dfree = freePose->getValue()[dofIdx] - restPose->getValue()[dofIdx];
+    const Coord dfree = freePos->getValue()[dofIdx] - restPos->getValue()[dofIdx];
 
     resV->set(m_cid[lineNumber]  , dfree[0]);
     resV->set(m_cid[lineNumber]+1, dfree[1]);
@@ -73,31 +71,29 @@ void FixedLagrangianConstraint<Vec3Types>::doGetSingleConstraintResolution(std::
 }
 
 
-// Rigid3D specialization
+// Rigid3 specialization
 template<>
-void FixedLagrangianConstraint<Rigid3Types>::doBuildConstraintLine( MatrixDeriv &c, unsigned int &cIndex, unsigned int lineNumber)
+void FixedLagrangianConstraint<Rigid3Types>::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
 {
     constexpr type::Vec3 cx(1,0,0), cy(0,1,0), cz(0,0,1), zero(0,0,0);
-    unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+    const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
 
-    cIndex += 6;
-
-    MatrixDerivRowIterator c_it = c.writeLine(m_cid[lineNumber]);
+    MatrixDerivRowIterator c_it = c->writeLine(m_cid[lineNumber]);
     c_it.setCol(dofIdx, Deriv(cx, zero));
 
-    c_it = c.writeLine(m_cid[lineNumber] + 1);
+    c_it = c->writeLine(m_cid[lineNumber] + 1);
     c_it.setCol(dofIdx, Deriv(cy, zero));
 
-    c_it = c.writeLine(m_cid[lineNumber] + 2);
+    c_it = c->writeLine(m_cid[lineNumber] + 2);
     c_it.setCol(dofIdx, Deriv(cz, zero));
 
-    c_it = c.writeLine(m_cid[lineNumber] + 3);
+    c_it = c->writeLine(m_cid[lineNumber] + 3);
     c_it.setCol(dofIdx, Deriv(zero, cx));
 
-    c_it = c.writeLine(m_cid[lineNumber] + 4);
+    c_it = c->writeLine(m_cid[lineNumber] + 4);
     c_it.setCol(dofIdx, Deriv(zero, cy));
 
-    c_it = c.writeLine(m_cid[lineNumber] + 5);
+    c_it = c->writeLine(m_cid[lineNumber] + 5);
     c_it.setCol(dofIdx, Deriv(zero, cz));
 
 }
@@ -108,8 +104,8 @@ void FixedLagrangianConstraint<Rigid3Types>::doGetSingleConstraintViolation(line
     unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
 
 
-    sofa::type::Vec3 pfree = (freePose->getValue()[dofIdx].getCenter()  - restPose->getValue()[dofIdx].getCenter());
-    sofa::type::Vec3 ofree =  ( freePose->getValue()[dofIdx].getOrientation()*restPose->getValue()[dofIdx].getOrientation().inverse()).toEulerVector();
+    const sofa::type::Vec3 pfree = (freePose->getValue()[dofIdx].getCenter()  - restPose->getValue()[dofIdx].getCenter());
+    const sofa::type::Vec3 ofree =  ( freePose->getValue()[dofIdx].getOrientation()*restPose->getValue()[dofIdx].getOrientation().inverse()).toEulerVector();
 
 
     resV->set(m_cid[lineNumber]  , pfree[0]);

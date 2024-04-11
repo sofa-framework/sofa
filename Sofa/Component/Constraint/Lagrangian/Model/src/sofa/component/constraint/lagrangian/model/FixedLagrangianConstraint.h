@@ -42,7 +42,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename core::behavior::Constraint<DataTypes> Inherit;
 
@@ -53,7 +52,6 @@ public:
 
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-
 protected:
 
     std::vector<unsigned int> m_cid;
@@ -62,11 +60,8 @@ protected:
     SetIndex d_indices;
     Data<bool> d_fixAll;
 
-
-
     FixedLagrangianConstraint(MechanicalState* object = nullptr);
     virtual ~FixedLagrangianConstraint() {}
-
 
     virtual type::vector<std::string> getConstraintIdentifiers() override final
     {
@@ -77,8 +72,6 @@ protected:
 
     virtual type::vector<std::string> getFixedIdentifiers(){ return {}; }
 
-
-
 public:
     void init() override;
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
@@ -86,11 +79,15 @@ public:
     void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
 
 private:
-    void doBuildConstraintLine(MatrixDeriv &c, unsigned int &cIndex, unsigned int lineNumber);
-    void doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePose, const DataVecCoord * restPose,unsigned int lineNumber);
+    void doBuildConstraintLine(helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber);
+    void doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePos, const DataVecCoord * restPos,unsigned int lineNumber);
     void doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber);
 
 };
 
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLAGRANGIANCONSTRAINT_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Rigid3Types >;
+#endif
 
 } //namespace sofa::component::constraint::lagrangian::model

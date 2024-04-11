@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/FixedLagrangianConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/accessor/WriteAccessor.h>
 
 #include <sofa/type/Vec.h>
 
@@ -38,14 +39,11 @@ FixedLagrangianConstraint<DataTypes>::FixedLagrangianConstraint(MechanicalState*
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::init()
 {
-    if(!this->mstate.get())
-    {
-        this->mstate.setPath("@.");
-    }
+
+    Inherit1::init();
 
     if(this->mstate.get())
     {
-        msg_warning(this)<<"Data \'mstate\' not specified, defaulting to the mechanical state of the current context";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
     else
@@ -65,12 +63,14 @@ void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::Con
     else
         m_cid.resize(d_indices.getValue().size());
 
-    MatrixDeriv& c = *c_d.beginEdit();
+    helper::WriteAccessor<DataMatrixDeriv> c = c_d;
 
     for(unsigned i=0; i<m_cid.size(); ++i)
     {
         m_cid[i] = cIndex;
-        doBuildConstraintLine(c,cIndex,i);
+        cIndex += Deriv::total_size;
+
+        doBuildConstraintLine(c,i);
     }
     c_d.endEdit();
 }
@@ -78,12 +78,12 @@ void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::Con
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
-    const DataVecCoord * freePose = this->getMState()->read(sofa::core::VecId::freePosition());
-    const DataVecCoord * restPose = this->getMState()->read(sofa::core::VecId::restPosition());
+    const DataVecCoord * freePos = this->getMState()->read(sofa::core::VecId::freePosition());
+    const DataVecCoord * restPos = this->getMState()->read(sofa::core::VecId::restPosition());
 
     for(unsigned i=0; i<m_cid.size(); ++i)
     {
-        doGetSingleConstraintViolation(resV,freePose, restPose, i);
+        doGetSingleConstraintViolation(resV,freePos, restPos, i);
     }
 }
 
