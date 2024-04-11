@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINTSET_STOPPERLAGRANGIANCONSTRAINT_CPP
 #include <sofa/component/constraint/lagrangian/model/FixedLagrangianConstraint.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -138,6 +137,7 @@ int FixedLagrangianConstraintClass = core::RegisterObject("Lagrangian-based fixa
         .add< FixedLagrangianConstraint<Rigid3Types> >();
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Rigid3Types>;
 
 
 } //namespace sofa::component::constraint::lagrangian::model
