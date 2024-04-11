@@ -71,12 +71,12 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const auto& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
     const auto& tetraArray = m_topology->getTetrahedra();
 
-    for (Index tetraId : tetrahedronAdded)
+    for (const Index tetraId : tetrahedronAdded)
     {
         /// get a reference on the edge set of the ith added tetrahedron
         const EdgesInTetrahedron& te = m_topology->getEdgesInTetrahedron(tetraId);

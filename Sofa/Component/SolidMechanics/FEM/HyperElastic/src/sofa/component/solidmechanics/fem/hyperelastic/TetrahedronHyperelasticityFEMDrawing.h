@@ -38,11 +38,8 @@ void drawHyperelasticTets(const core::visual::VisualParams* vparams, const VecCo
         p.reserve(3 * topology->getNbTetrahedra());
     }
 
-    const auto& tetraArray = topology->getTetrahedra();
-    for(core::topology::Topology::TetrahedronID i = 0 ; i < tetraArray.size();++i)
+    for(const auto& t : topology->getTetrahedra())
     {
-        const auto t = tetraArray[i];
-
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
