@@ -109,15 +109,16 @@ void FixedLagrangianConstraint<Rigid3Types>::doGetSingleConstraintViolation(line
     unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
 
 
-    //TODO
-    Deriv dfree;// = freePose->getValue()[dofIdx] - restPose->getValue()[dofIdx];
+    sofa::type::Vec3 pfree = (freePose->getValue()[dofIdx].getCenter()  - restPose->getValue()[dofIdx].getCenter());
+    sofa::type::Vec3 ofree =  ( freePose->getValue()[dofIdx].getOrientation()*restPose->getValue()[dofIdx].getOrientation().inverse()).toEulerVector();
 
-    resV->set(m_cid[lineNumber]  , dfree[0]);
-    resV->set(m_cid[lineNumber]+1, dfree[1]);
-    resV->set(m_cid[lineNumber]+2, dfree[2]);
-    resV->set(m_cid[lineNumber]+3, dfree[3]);
-    resV->set(m_cid[lineNumber]+4, dfree[4]);
-    resV->set(m_cid[lineNumber]+5, dfree[5]);
+
+    resV->set(m_cid[lineNumber]  , pfree[0]);
+    resV->set(m_cid[lineNumber]+1, pfree[1]);
+    resV->set(m_cid[lineNumber]+2, pfree[2]);
+    resV->set(m_cid[lineNumber]+3, ofree[0]);
+    resV->set(m_cid[lineNumber]+4, ofree[1]);
+    resV->set(m_cid[lineNumber]+5, ofree[2]);
 
 }
 
@@ -132,7 +133,7 @@ void FixedLagrangianConstraint<Rigid3Types>::doGetSingleConstraintResolution(std
 
 
 
-int FixedLagrangianConstraintClass = core::RegisterObject("TODO-FixedLagrangianConstraint")
+int FixedLagrangianConstraintClass = core::RegisterObject("Lagrangian-based fixation of DOFs of the model")
         .add< FixedLagrangianConstraint<Vec3Types> >()
         .add< FixedLagrangianConstraint<Rigid3Types> >();
 

@@ -33,13 +33,26 @@ FixedLagrangianConstraint<DataTypes>::FixedLagrangianConstraint(MechanicalState*
     : Inherit(object)
     , d_indices(initData(&d_indices,  "indices", "Indices of points to fix"))
     , d_fixAll(initData(&d_fixAll, false,  "fixAll", "If true, fix all points"))
-{
-}
+{}
 
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::init()
 {
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    if(!this->mstate.get())
+    {
+        this->mstate.setPath("@.");
+    }
+
+    if(this->mstate.get())
+    {
+        msg_warning(this)<<"Data \'mstate\' not specified, defaulting to the mechanical state of the current context";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
+    else
+    {
+        msg_error(this)<<"Data \'mstate\' not specified, unable to find a compatible mechanical state in the current context";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 
@@ -47,22 +60,15 @@ void FixedLagrangianConstraint<DataTypes>::init()
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
-    std::cout<<"TOTO"<<std::endl;
     if(d_fixAll.getValue())
-    {
         m_cid.resize(this->getMState()->getSize());
-    }
     else
-    {
         m_cid.resize(d_indices.getValue().size());
-    }
-    std::cout<<"TOTO"<<std::endl;
 
     MatrixDeriv& c = *c_d.beginEdit();
 
     for(unsigned i=0; i<m_cid.size(); ++i)
     {
-        std::cout<<"TOTO"<<std::endl;
         m_cid[i] = cIndex;
         doBuildConstraintLine(c,cIndex,i);
     }

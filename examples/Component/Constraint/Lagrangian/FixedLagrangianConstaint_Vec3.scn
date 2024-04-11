@@ -30,10 +30,6 @@
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
-    <BruteForceBroadPhase name="BroadPhase" />
-    <BVHNarrowPhase name="NarrowPhase" listening="true"/>
-    <CollisionResponse name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0.5" />
-    <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.001" />
 
 
     <!-- $$$$$$$$$$$$$$$$$$$$$$ TOPOLOGY 1 $$$$$$$$$$$$$$$$$$$$$$ -->
@@ -47,7 +43,6 @@
 
     <Node name="FEM">
         <EulerImplicitSolver firstOrder="false" rayleighMass="0.1" rayleighStiffness="0.1"/>
-
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
 
         <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position"
