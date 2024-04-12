@@ -53,9 +53,11 @@ void BaseAttachBodyPerformer<DataTypes>::start()
         return;
     }
     const BodyPicked picked=this->m_interactor->getBodyPicked();
-    if (!picked.body && !picked.mstate) return;
+    if (!picked.body && !picked.mstate)
+        return;
 
-    if (!startPartial(picked)) return; //template specialized code is here
+    if (!startPartial(picked)) //template specialized code is here
+        return;
 
     double distanceFromMouse=picked.rayLength;
     this->m_interactor->setDistanceFromMouse(distanceFromMouse);
