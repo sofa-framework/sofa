@@ -75,7 +75,7 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
             {
                 if (springForce)
                 {
-                    const StiffSpringForce* stiffSpringForce = static_cast<const StiffSpringForce*>(springForce.get());
+                    const SpringForce* stiffSpringForce = static_cast<const SpringForce*>(springForce.get());
 
                     sofa::Index a = springs[i].m1;
                     sofa::Index b = springs[i].m2;

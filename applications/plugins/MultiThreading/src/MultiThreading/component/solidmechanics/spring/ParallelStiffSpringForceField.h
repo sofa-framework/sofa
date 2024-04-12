@@ -51,7 +51,6 @@ public:
 
     using Spring = typename Inherit1::Spring;
     using SpringForce = typename Inherit1::SpringForce;
-    using StiffSpringForce = typename Inherit1::StiffSpringForce;
 
     void init() override;
 
