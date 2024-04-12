@@ -90,19 +90,11 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
-    this->addUpdateCallback("updateSprings", { &d_springsIndices[0], &d_springsIndices[1], &d_lengths}, [this](const core::DataTracker& t)
-                            {
-                                SOFA_UNUSED(t);
-                                updateSpringsFromTopologyIndices();
-                                return sofa::core::objectmodel::ComponentState::Valid;
-                            }, {&this->springs});
-
-    this->addUpdateCallback("updateIndices", { &springs, &ks, &kd}, [this](const core::DataTracker& t)
-                            {
-                                SOFA_UNUSED(t);
-                                updateTopologyIndicesFromSprings();
-                                return sofa::core::objectmodel::ComponentState::Valid;
-                            }, {&d_springsIndices[0],&d_springsIndices[1], &d_lengths});
+    c_inputCallBack.addInputs({ &d_springsIndices[0], &d_springsIndices[1], &d_lengths});
+    c_inputCallBack.addCallback([this]()
+                                {
+                                    areSpringIndicesDirty = true;
+                                });
 
     // Load
     if (!fileSprings.getValue().empty())
@@ -111,7 +103,11 @@ void SpringForceField<DataTypes>::init()
 
     initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
     initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
-//    updateTopologyIndicesFromSprings();
+
+    if (springs.isSet())
+        updateTopologyIndicesFromSprings();
+    else
+        updateSpringsFromTopologyIndices();
 }
 
 template <class DataTypes>

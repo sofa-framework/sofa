@@ -30,6 +30,7 @@
 #include <sofa/helper/accessor.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
@@ -80,7 +81,7 @@ public:
     Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::type::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
     core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
-
+    core::objectmodel::DataCallback c_inputCallBack;
 
     void init() override;
     void reinit() override;
