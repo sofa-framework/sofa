@@ -56,18 +56,7 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     this->addAlias(&fileSprings, "fileSprings");
     this->addAlias(&d_lengths, "length");
 
-    this->addUpdateCallback("updateSprings", { &d_springsIndices[0], &d_springsIndices[1], &d_lengths}, [this](const core::DataTracker& t)
-                            {
-                                SOFA_UNUSED(t);
-                                updateSpringsFromTopologyIndices();
-                                return sofa::core::objectmodel::ComponentState::Valid;
-                            }, {&this->springs});
-    this->addUpdateCallback("updateIndices", { &springs, &this->ks, &this->kd}, [this](const core::DataTracker& t)
-                            {
-                                SOFA_UNUSED(t);
-                                updateTopologyIndicesFromSprings();
-                                return sofa::core::objectmodel::ComponentState::Valid;
-                            }, {&this->springs});
+
 }
 
 template <class DataTypes>
@@ -99,6 +88,33 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::init()
+{
+    this->addUpdateCallback("updateSprings", { &d_springsIndices[0], &d_springsIndices[1], &d_lengths}, [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                updateSpringsFromTopologyIndices();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {&this->springs});
+
+    this->addUpdateCallback("updateIndices", { &springs, &ks, &kd}, [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                updateTopologyIndicesFromSprings();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {&d_springsIndices[0],&d_springsIndices[1], &d_lengths});
+
+    // Load
+    if (!fileSprings.getValue().empty())
+        load(fileSprings.getFullPath().c_str());
+    this->Inherit::init();
+
+    initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
+    initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
+//    updateTopologyIndicesFromSprings();
+}
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
     for (sofa::Index i=0; i<springs.getValue().size(); ++i)
@@ -113,12 +129,15 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 {
     auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
-    indices1.clear();
-    indices2.clear();
+    auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
+    indices1.resize(sofa::helper::getReadAccessor(springs).size());
+    indices2.resize(sofa::helper::getReadAccessor(springs).size());
+    lengths.resize(sofa::helper::getReadAccessor(springs).size());
     for (const auto& spring : sofa::helper::getReadAccessor(springs))
     {
         indices1.push_back(spring.m1);
         indices2.push_back(spring.m2);
+        lengths.push_back(spring.initpos);
     }
     areSpringIndicesDirty = false;
 }
@@ -126,6 +145,7 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 template <class DataTypes>
 void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
 {
+
     const auto& indices1 = d_springsIndices[0].getValue();
     const auto& indices2 = d_springsIndices[1].getValue();
 
@@ -304,18 +324,6 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     }
 }
 
-template <class DataTypes>
-void SpringForceField<DataTypes>::init()
-{
-    // Load
-    if (!fileSprings.getValue().empty())
-        load(fileSprings.getFullPath().c_str());
-    this->Inherit::init();
-
-    initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
-    initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
-
-}
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices,
