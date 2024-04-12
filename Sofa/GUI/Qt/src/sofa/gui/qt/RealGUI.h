@@ -125,6 +125,7 @@ public:
 protected:
     QLabel* fpsLabel;
     QLabel* timeLabel;
+    QLabel* sofaVersionLabel;
 
 
 private:

@@ -127,6 +127,7 @@ using sofa::gui::qt::DocBrowser;
 using sofa::core::ExecParams;
 
 #include <sofa/gui/common/ArgumentParser.h>
+#include <sofa/gui/qt/VersionChecker.h>
 
 
 using namespace sofa::gui::common;
@@ -415,8 +416,18 @@ RealGUI::RealGUI ( const char* viewername)
     timeLabel = new QLabel ( "Time: 999.9999", statusBar() );
     timeLabel->setMinimumSize ( timeLabel->sizeHint() );
     timeLabel->clear();
+
+    sofaVersionLabel = new QLabel ("v27.12 is available");
+    sofaVersionLabel->setMinimumSize ( sofaVersionLabel->sizeHint() );
+    // sofaVersionLabel->clear();
+
+    VersionChecker* versionChecker = new VersionChecker;
+    versionChecker->checkLatestVersion("sofa-framework", "sofa");
+
     statusBar()->addWidget ( fpsLabel );
     statusBar()->addWidget ( timeLabel );
+    statusBar()->addPermanentWidget ( sofaVersionLabel );
+
 
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->addWidget(statWidget);
