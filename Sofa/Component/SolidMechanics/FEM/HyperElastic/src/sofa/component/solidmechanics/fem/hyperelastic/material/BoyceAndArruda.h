@@ -45,6 +45,9 @@ the determinant of the deformation gradient J and the right Cauchy Green deforma
 template<class DataTypes>
 class BoyceAndArruda : public HyperelasticMaterial<DataTypes>{
 
+public:
+    static constexpr std::string_view Name = "ArrudaBoyce";
+
     typedef typename DataTypes::Coord::value_type Real;
     typedef type::Mat<3,3,Real> Matrix3;
     typedef type::Mat<6,6,Real> Matrix6;
