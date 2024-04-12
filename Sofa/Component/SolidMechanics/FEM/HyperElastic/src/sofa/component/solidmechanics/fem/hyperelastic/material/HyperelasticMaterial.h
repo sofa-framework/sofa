@@ -77,7 +77,6 @@ public:
   }
 
   /** computes the Elasticity Tensor of the current configuration */
-
   virtual void applyElasticityTensor(StrainInformation<DataTypes>*,
                                      const MaterialParameters<DataTypes>&, const MatrixSym&,
                                      MatrixSym&)
