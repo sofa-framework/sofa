@@ -59,12 +59,15 @@ void BaseAttachBodyPerformer<DataTypes>::start()
 
     double distanceFromMouse=picked.rayLength;
     this->m_interactor->setDistanceFromMouse(distanceFromMouse);
+    
     sofa::component::collision::geometry::Ray ray = this->m_interactor->getMouseRayModel()->getRay(0);
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
+    
     sofa::core::BaseMapping *mapping;
     this->m_interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
+    
     m_interactionObject->init();
     this->m_interactor->setMouseAttached(true);
 }
