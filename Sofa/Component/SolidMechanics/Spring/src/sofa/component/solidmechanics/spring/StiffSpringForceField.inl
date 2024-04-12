@@ -20,34 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/solidmechanics/spring/SpringForceField.inl")
 
-#include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
-
-namespace sofa::component::solidmechanics::spring
-{
-
-template<class DataTypes>
-StiffSpringForceField<DataTypes>::StiffSpringForceField(SReal ks, SReal kd)
-    : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
-{
-}
-
-template<class DataTypes>
-StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, SReal ks, SReal kd)
-    : SpringForceField<DataTypes>(object1, object2, ks, kd)
-{
-
-}
-
-
-
-
-} // namespace sofa::component::solidmechanics::spring

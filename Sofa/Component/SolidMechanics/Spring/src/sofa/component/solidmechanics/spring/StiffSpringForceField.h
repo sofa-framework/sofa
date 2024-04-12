@@ -20,64 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/spring/config.h>
-
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/type/Mat.h>
-#include <sofa/core/topology/TopologySubsetIndices.h>
 
+SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/solidmechanics/spring/SpringForceField.h")
 
 namespace sofa::component::solidmechanics::spring
 {
-
-/** SpringForceField able to evaluate and apply its stiffness.
-This allows to perform implicit integration.
-Stiffness is evaluated and stored by the addForce method.
-When explicit integration is used, SpringForceField is slightly more efficient.
-*/
-
-template<class DataTypes>
-class StiffSpringForceField : public SpringForceField<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(StiffSpringForceField,DataTypes), SOFA_TEMPLATE(SpringForceField,DataTypes));
-
-    typedef SpringForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-
-    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
-    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
-    typedef type::vector<sofa::Index> SetIndexArray;
-    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
-
-
-    typedef typename Inherit::Spring Spring;
-
-    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-    static constexpr auto N = DataTypes::spatial_dimensions;
-    typedef type::Mat<N,N,Real> Mat;
-
-protected:
-
-
-    StiffSpringForceField(SReal ks=100.0, SReal kd=5.0);
-    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, SReal ks=100.0, SReal kd=5.0);
-
-    /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
-
-
-};
-
-#if !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<defaulttype::Rigid3Types>;
-#endif
-
-} // namespace sofa::component::solidmechanics::spring
+template<class T>
+using StiffSpringForceField SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "StiffSpringForceField has been merged with to SpringForceField") = SpringForceField<T>;
+}
