@@ -55,7 +55,8 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
 {
     this->addAlias(&fileSprings, "fileSprings");
     this->addAlias(&d_lengths, "length");
-
+    this->addAlias(&d_springsIndices[0], "indices1");
+    this->addAlias(&d_springsIndices[1], "indices2");
 
 }
 
