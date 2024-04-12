@@ -401,28 +401,11 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		VecDeriv& f2 = *d_f2.beginEdit(); \
 		const VecCoord& x2 = d_x2.getValue(); \
 		const VecDeriv& v2 = d_v2.getValue(); \
-		data.addForce(this, false, f1, f2, x1, x2, v1, v2);\
-		d_f1.endEdit(); \
-		d_f2.endEdit(); \
-	} \
-    template<> void StiffSpringForceField< T >::init() \
-    { \
-	    this->PairInteractionForceField< T >::init(); \
-        data.init(this, true); \
-    } \
-    template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
-    { \
-		VecDeriv& f1 = *d_f1.beginEdit(); \
-		const VecCoord& x1 = d_x1.getValue(); \
-		const VecDeriv& v1 = d_v1.getValue(); \
-		VecDeriv& f2 = *d_f2.beginEdit(); \
-		const VecCoord& x2 = d_x2.getValue(); \
-		const VecDeriv& v2 = d_v2.getValue(); \
 		data.addForce(this, true, f1, f2, x1, x2, v1, v2); \
 		d_f1.endEdit(); \
 		d_f2.endEdit(); \
 	} \
-    template<> void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) \
+    template<> void SpringForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) \
     { \
 		VecDeriv& df1 = *d_df1.beginEdit(); \
 		const VecDeriv& dx1 = d_dx1.getValue(); \

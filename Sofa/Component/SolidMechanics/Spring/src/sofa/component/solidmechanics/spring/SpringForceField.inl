@@ -50,9 +50,24 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
     , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
     , maskInUse(false)
 {
     this->addAlias(&fileSprings, "fileSprings");
+    this->addAlias(&d_lengths, "length");
+
+    this->addUpdateCallback("updateSprings", { &d_springsIndices[0], &d_springsIndices[1], &d_lengths}, [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                updateSpringsFromTopologyIndices();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {&this->springs});
+    this->addUpdateCallback("updateIndices", { &springs, &this->ks, &this->kd}, [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                updateTopologyIndicesFromSprings();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {&this->springs});
 }
 
 template <class DataTypes>
@@ -105,6 +120,53 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
         indices1.push_back(spring.m1);
         indices2.push_back(spring.m2);
     }
+    areSpringIndicesDirty = false;
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
+{
+    const auto& indices1 = d_springsIndices[0].getValue();
+    const auto& indices2 = d_springsIndices[1].getValue();
+
+    if (indices1.size() != indices2.size())
+    {
+        msg_error() << "Inputs indices sets sizes are different: d_indices1: " << indices1.size()
+                    << " | d_indices2 " << indices2.size()
+                    << " . No springs will be created";
+        return;
+    }
+
+    if (indices1.empty())
+        return;
+
+    auto lengths = sofa::helper::getWriteAccessor(d_lengths);
+    if (lengths.empty())
+    {
+        lengths.push_back({});
+    }
+
+    if (lengths.size() != indices1.size())
+    {
+        msg_warning() << "Lengths list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+        lengths->resize(indices1.size(), lengths->back());
+    }
+
+    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
+
+    type::vector<Spring>& _springs = *this->springs.beginEdit();
+    _springs.clear();
+
+
+
+    const SReal& _ks = this->ks.getValue();
+    const SReal& _kd = this->kd.getValue();
+    for (sofa::Index i = 0; i<indices1.size(); ++i)
+        _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));
+
+    // By not calling this->springs.endEdit() I avoid going inside the other callback.
+
+
     areSpringIndicesDirty = false;
 }
 
@@ -253,7 +315,6 @@ void SpringForceField<DataTypes>::init()
     initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
     initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
 
-    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>

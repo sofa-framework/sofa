@@ -79,6 +79,8 @@ public:
     Data<float> showArrowSize; ///< size of the axis
     Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::type::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+    core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+
 
     void init() override;
     void reinit() override;
@@ -160,6 +162,7 @@ protected:
     virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring);
     void initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices, core::topology::BaseMeshTopology* topology, sofa::Index mstateId);
     void updateTopologyIndicesFromSprings();
+    void updateSpringsFromTopologyIndices();
     void applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId);
     void applyRemovedEdges(const sofa::core::topology::EdgesRemoved* edgesRemoved, sofa::Index mstateId);
 
