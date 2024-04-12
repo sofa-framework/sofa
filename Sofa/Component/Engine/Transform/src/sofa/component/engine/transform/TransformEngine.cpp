@@ -32,7 +32,7 @@ int TransformEngineClass = core::RegisterObject("Transform position of 3d points
         .add< TransformEngine<defaulttype::Vec2Types> >()
         .add< TransformEngine<defaulttype::Rigid2Types> >()
         .add< TransformEngine<defaulttype::Rigid3Types> >()
-
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/transformengine/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec1Types>;

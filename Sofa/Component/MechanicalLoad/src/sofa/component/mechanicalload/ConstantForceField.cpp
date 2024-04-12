@@ -40,6 +40,7 @@ SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const cor
 
 
 int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/forcefields/constantforcefield/")
         .add< ConstantForceField<Vec3Types> >()
         .add< ConstantForceField<Vec2Types> >()
         .add< ConstantForceField<Vec1Types> >()

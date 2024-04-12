@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 int Vertex2FrameClass = core::RegisterObject("")
         .add< Vertex2Frame<Rigid3Types> >()
- 
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/vertex2frame/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API Vertex2Frame<Rigid3Types>;

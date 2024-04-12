@@ -322,6 +322,7 @@ void BilateralLagrangianConstraint<defaulttype::Rigid3Types>::addContact(Deriv n
 int BilateralLagrangianConstraintClass = core::RegisterObject("BilateralLagrangianConstraint defining an holonomic equality constraint (attachment)")
         .add< BilateralLagrangianConstraint<Vec3Types> >()
         .add< BilateralLagrangianConstraint<Rigid3Types> >()
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/constraints-lagrange/bilaterallagrangianconstraint/")
         ;
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint<Vec3Types>;

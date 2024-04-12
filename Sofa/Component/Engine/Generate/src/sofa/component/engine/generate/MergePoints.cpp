@@ -32,7 +32,7 @@ int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
         .add< MergePoints<defaulttype::Vec2Types> >()
         .add< MergePoints<defaulttype::Rigid2Types> >()
         .add< MergePoints<defaulttype::Rigid3Types> >()
- 
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/mergepoints/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergePoints<defaulttype::Vec1Types>;

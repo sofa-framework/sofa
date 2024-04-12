@@ -86,6 +86,7 @@ public:
         std::string description;
         std::string authors;
         std::string license;
+        std::string documentationURL;
         std::string defaultTemplate;
         CreatorMap creatorMap;
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
@@ -308,6 +309,9 @@ public:
 
     /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
+
+    /// Specify a documentation URL
+    RegisterObject& addDocumentationURL(std::string url);
 
     /// Add a creator able to instance this class with the given templatename.
     ///

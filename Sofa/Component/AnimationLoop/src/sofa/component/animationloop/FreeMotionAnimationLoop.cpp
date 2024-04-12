@@ -407,6 +407,7 @@ int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
 The animation loop to use with constraints.
 You must add this loop at the beginning of the scene if you are using constraints.")")
                                    .add< FreeMotionAnimationLoop >()
-                                   .addAlias("FreeMotionMasterSolver");
+                                   .addAlias("FreeMotionMasterSolver")
+                                   .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/animationloops/freemotionanimationloop/");
 
 } //namespace sofa::component::animationloop

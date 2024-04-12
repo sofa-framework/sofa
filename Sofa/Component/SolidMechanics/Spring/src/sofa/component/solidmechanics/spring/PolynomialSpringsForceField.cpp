@@ -37,6 +37,7 @@ SOFA_DECL_CLASS(PolynomialSpringsForceField)
 
 int PolynomialSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
         .add< PolynomialSpringsForceField<Vec3Types> >()
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/forcefields/polynomialspringsforcefield/")
         ;
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API PolynomialSpringsForceField<Vec3Types>;

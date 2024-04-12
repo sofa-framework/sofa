@@ -467,6 +467,8 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
             out << "  license : " << entry->license << "\n";
+        if (!entry->documentationURL.empty())
+            out << "  documentation : " << entry->documentationURL << "\n";
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "  template instance : " << itc->first << "\n";
@@ -507,6 +509,8 @@ void ObjectFactory::dumpXML(std::ostream& out)
             out << "<authors>"<<entry->authors<<"</authors>\n";
         if (!entry->license.empty())
             out << "<license>"<<entry->license<<"</license>\n";
+        if (!entry->documentationURL.empty())
+            out << "<documentation>"<<entry->documentationURL<<"</documentation>\n";
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "<creator";
@@ -539,6 +543,8 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Authors: <i>"<<entry->authors<<"</i></li>\n";
         if (!entry->license.empty())
             out << "<li>License: <i>"<<entry->license<<"</i></li>\n";
+        if (!entry->documentationURL.empty())
+            out << "<li>Documentation: <i>"<<entry->documentationURL<<"</i></li>\n";
         if (entry->creatorMap.size()>2 || (entry->creatorMap.size()==1 && !entry->creatorMap.begin()->first.empty()))
         {
             out << "<li>Template instances:<i>";
@@ -591,6 +597,12 @@ RegisterObject& RegisterObject::addLicense(std::string val)
     return *this;
 }
 
+RegisterObject& RegisterObject::addDocumentationURL(std::string url)
+{
+    entry.documentationURL += url;
+    return *this;
+}
+
 RegisterObject& RegisterObject::addCreator(std::string classname,
                                            std::string templatename,
                                            ObjectFactory::Creator::SPtr creator)
@@ -624,6 +636,7 @@ RegisterObject::operator int()
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
+        reg.documentationURL += entry.documentationURL;
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())

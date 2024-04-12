@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
         .add< PointsFromIndices<Vec3Types> >()
 // .add< PointsFromIndices<Rigid3Types> >()
- 
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/pointsfromindices/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PointsFromIndices<Vec3Types>;

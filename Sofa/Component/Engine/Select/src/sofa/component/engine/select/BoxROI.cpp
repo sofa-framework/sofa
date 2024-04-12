@@ -35,7 +35,7 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
         .add< BoxROI<Vec1Types> >()
         .add< BoxROI<Rigid3Types> >()
         .add< BoxROI<Vec6Types> >()
- 
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/roi-selection/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec3Types>;

@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
         .add< PlaneROI<Vec3Types> >()
         .add< PlaneROI<Rigid3Types> >()
- 
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/roi-selection/")
         ;
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<Vec3Types>;

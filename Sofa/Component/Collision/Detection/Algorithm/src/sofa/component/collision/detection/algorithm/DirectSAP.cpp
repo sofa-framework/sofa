@@ -26,7 +26,8 @@
 namespace sofa::component::collision::detection::algorithm
 {
     int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAP >();
+        .add< DirectSAP >()
+        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/collisions/detection-sweep-and-prune/");
 
 
 void DirectSAP::init()
