@@ -23,7 +23,6 @@
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 
 
@@ -91,7 +90,7 @@ namespace sofa::component::solidmechanics::spring
             int nbVertex; ///< number of vertices to process to compute all springs
             int nbSpringPerVertex; ///< max number of springs connected to a vertex
             gpu::cuda::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per bloc of NBLOC vertices, with first spring of each vertex, then second spring, etc)
-            gpu::cuda::CudaVector<Real> dfdx; ///< only used for StiffSpringForceField
+            gpu::cuda::CudaVector<Real> dfdx;
             GPUSpringSet() : vertex0(0), nbVertex(0), nbSpringPerVertex(0) {}
             void init(int v0, int nbv, int nbsperv)
             {
@@ -121,9 +120,9 @@ namespace sofa::component::solidmechanics::spring
         SpringForceFieldInternalData()
         {}
 
-        static void init(Main* m, bool stiff);
-        static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-        static void addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal bFactor);
+        static void init(Main* m);
+        static void addForce(Main* m, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+        static void addDForce(Main* m, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal bFactor);
     };
 
     //
