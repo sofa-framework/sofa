@@ -1072,6 +1072,14 @@ void SpringForceFieldCuda3f1_addExternalDForce(unsigned int size, unsigned int n
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+void SpringForceFieldCuda3d_addForce(unsigned int size, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
+{
+    //setX(x);
+    //setV(v);
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {SpringForceFieldCuda3t_addForce_kernel<double><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (double*)f, (const double*)x, (const double*)v, (double*)dfdx); mycudaDebugError("SpringForceFieldCuda3t_addForce_kernel<double>");}
+}
 
 void SpringForceFieldCuda3d1_addForce(unsigned int size, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
 {
