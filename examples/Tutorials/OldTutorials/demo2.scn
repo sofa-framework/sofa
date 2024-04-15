@@ -8,7 +8,7 @@
         <Node name="M1">
             <MechanicalObject src="@../loader" showObject="1"/>
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
-            <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
+            <SpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <FixedProjectiveConstraint indices="0 3 6 9 12 15 18 21 24" />
         </Node>
         <Node name="M2">
@@ -22,7 +22,7 @@
         <Node name="M3">
             <MechanicalObject src="@../loader" dz="21" showObject="1"/>
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
-            <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
+            <SpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M4">
             <MechanicalObject template="Rigid3" dz="31.5" showObject="1"/>
@@ -35,12 +35,12 @@
         <Node name="M5">
             <MechanicalObject src="@../loader" dz="42" showObject="1"/>
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
-            <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
+            <SpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@M2/Points" />
-        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@M2/Points" object2="@M3" />
-        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@M4/Points" />
-        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@M4/Points" object2="@M5" />
+        <SpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@M2/Points" />
+        <SpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@M2/Points" object2="@M3" />
+        <SpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@M4/Points" />
+        <SpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@M4/Points" object2="@M5" />
         <!--
 		-->
     </Node>
