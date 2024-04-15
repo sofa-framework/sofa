@@ -999,7 +999,7 @@ void SpringForceFieldCuda3f_addForce(unsigned int size, unsigned int nbSpringPer
     //setV(v);
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {SpringForceFieldCuda3t_addForce_kernel<float><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (float*)f, (const float*)x, (const float*)v, (float*)dfdx); mycudaDebugError("StiffSpringForceFieldCuda3t_addForce_kernel<float>");}
+    {SpringForceFieldCuda3t_addForce_kernel<float><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (float*)f, (const float*)x, (const float*)v, (float*)dfdx); mycudaDebugError("SpringForceFieldCuda3t_addForce_kernel<float>");}
 }
 
 void SpringForceFieldCuda3f1_addForce(unsigned int size, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
