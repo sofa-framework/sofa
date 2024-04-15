@@ -37,10 +37,10 @@ using sofa::helper::ReadAccessor;
 using sofa::Data;
 
 /// Test suite for RestShapeSpringsForceField
-class RestStiffSpringsForceField_test : public BaseTest
+class RestSpringsForceField_test : public BaseTest
 {
 public:
-    ~RestStiffSpringsForceField_test() override;
+    ~RestSpringsForceField_test() override;
     sofa::simulation::Node::SPtr createScene(const std::string& type);
 
     template<class Type>
@@ -50,11 +50,11 @@ public:
     void checkDifference(MechanicalObject<Type>& mo, bool isFixed);
 };
 
-RestStiffSpringsForceField_test::~RestStiffSpringsForceField_test()
+RestSpringsForceField_test::~RestSpringsForceField_test()
 {
 }
 
-sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
+sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::string& type)
 {
     const auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
@@ -92,7 +92,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 }
 
 template<class Type>
-void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, bool isFixed)
+void RestSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, bool isFixed)
 {
     ReadAccessor< Data<typename Type::VecCoord> > positions = mo.x;
     ReadAccessor< Data<typename Type::VecCoord> > rest_positions = mo.x0;
@@ -117,7 +117,7 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
 }
 
 template<class Type>
-void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
+void RestSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
 {
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
@@ -130,12 +130,12 @@ void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node
 }
 
 
-TEST_F(RestStiffSpringsForceField_test, defaultBehaviorVec3)
+TEST_F(RestSpringsForceField_test, defaultBehaviorVec3)
 {
     this->testDefaultBehavior<Vec3Types>(this->createScene("Vec3"));
 }
 
-TEST_F(RestStiffSpringsForceField_test, defaultBehaviorRigid3)
+TEST_F(RestSpringsForceField_test, defaultBehaviorRigid3)
 {
     this->testDefaultBehavior<sofa::defaulttype::Rigid3Types>(this->createScene("Rigid3"));
 }

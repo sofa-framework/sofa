@@ -24,7 +24,7 @@
 #include <sofa/gui/component/performer/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
@@ -169,21 +169,21 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         }
     }
 
-    using sofa::component::solidmechanics::spring::StiffSpringForceField;
+    using sofa::component::solidmechanics::spring::SpringForceField;
 
-    m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
-    stiffspringforcefield->setName("Spring-Mouse-Contact");
-    stiffspringforcefield->setArrowSize((float)this->size);
-    stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
+    m_forcefield = sofa::core::objectmodel::New< SpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    SpringForceField< DataTypes >* Springforcefield = static_cast< SpringForceField< DataTypes >* >(m_forcefield.get());
+    Springforcefield->setName("Spring-Mouse-Contact");
+    Springforcefield->setArrowSize((float)this->size);
+    Springforcefield->setDrawMode(2); //Arrow mode if size > 0
 
 
-    stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
+    Springforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        stiffspringforcefield->addTag(*it);
+        Springforcefield->addTag(*it);
 
-    mstateCollision->getContext()->addObject(stiffspringforcefield);
+    mstateCollision->getContext()->addObject(Springforcefield);
     return true;
 }
 

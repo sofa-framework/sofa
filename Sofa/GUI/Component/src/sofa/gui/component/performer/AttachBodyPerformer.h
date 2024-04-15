@@ -72,7 +72,7 @@ protected:
     virtual bool start_partial(const BodyPicked& picked);
     /*
     initialise MouseForceField according to template.
-    StiffSpringForceField for Vec3
+    SpringForceField for Vec3
     JointSpringForceField for Rigid3
     */
 

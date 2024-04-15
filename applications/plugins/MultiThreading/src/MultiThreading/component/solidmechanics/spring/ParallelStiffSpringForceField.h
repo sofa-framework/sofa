@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 #include <MultiThreading/TaskSchedulerUser.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
 namespace sofa::simulation
 {
@@ -34,14 +34,14 @@ namespace multithreading::component::solidmechanics::spring
 {
 
 template <class DataTypes>
-using StiffSpringForceField = sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes>;
+using SpringForceField = sofa::component::solidmechanics::spring::SpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>, public TaskSchedulerUser
+class ParallelStiffSpringForceField : public virtual SpringForceField<DataTypes>, public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes),
-               SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+               SOFA_TEMPLATE(SpringForceField, DataTypes));
 
     using VecCoord = typename DataTypes::VecCoord;
     using VecDeriv = typename DataTypes::VecDeriv;
