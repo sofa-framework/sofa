@@ -24,6 +24,8 @@ set(HEADER_FILES
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.inl
     src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h
     src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl
+    src/MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h
+    src/MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.inl
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.h
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl
     src/MultiThreading/SceneCheckMultithreading.h
@@ -42,7 +44,7 @@ set(SOURCE_FILES
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_mt.cpp
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.cpp
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.cpp
-    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.cpp
+    src/MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.cpp
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.cpp
     src/MultiThreading/SceneCheckMultithreading.cpp
     src/MultiThreading/ParallelImplementationsRegistry.cpp

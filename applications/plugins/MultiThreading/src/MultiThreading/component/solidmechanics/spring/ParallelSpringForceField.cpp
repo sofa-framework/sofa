@@ -19,23 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl>
+#include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace multithreading::component::solidmechanics::spring
 {
 
-int ParallelStiffSpringForceFieldClass = sofa::core::RegisterObject("Parallel stiff springs")
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec3Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec2Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec1Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec6Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Rigid3Types> >();
+int ParallelSpringForceFieldClass = sofa::core::RegisterObject("Parallel stiff springs")
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec3Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec2Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec1Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec6Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Rigid3Types> >();
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec1Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec6Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Rigid3Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec3Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec2Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec1Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec6Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Rigid3Types>;
 
 }

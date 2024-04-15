@@ -20,12 +20,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h")
+#include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
+
+namespace sofa::simulation
+{
+class TaskScheduler;
+}
 
 namespace multithreading::component::solidmechanics::spring
 {
-template<class T>
-using ParallelStiffSpringForceField SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "ParallelStiffSpringForceField has been merged with to SpringForceField") = ParallelSpringForceField<T>;
+
+template <class DataTypes>
+using SpringForceField = sofa::component::solidmechanics::spring::SpringForceField<DataTypes>;
+
+template <class DataTypes>
+class ParallelSpringForceField : public virtual SpringForceField<DataTypes>, public TaskSchedulerUser
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParallelSpringForceField, DataTypes),
+               SOFA_TEMPLATE(SpringForceField, DataTypes));
+
+    using VecCoord = typename DataTypes::VecCoord;
+    using VecDeriv = typename DataTypes::VecDeriv;
+    using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
+    using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
+    using Real = typename Inherit1::Real;
+
+    using Spring = typename Inherit1::Spring;
+    using SpringForce = typename Inherit1::SpringForce;
+
+    void init() override;
+
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+};
+
 }

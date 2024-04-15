@@ -757,7 +757,8 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
-    {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")}
+    {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
+    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")}
 
 };
 
