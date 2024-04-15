@@ -280,11 +280,12 @@ MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
     // this clears the matrix identified by mappingJacobian() among others
     simulation::mechanicalvisitor::MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());
 
-    // optimisation to build only the relevent entries of the jacobian matrices
-    // The relevent entries are the ones that have a influence on the result
+    // optimisation to build only the relevant entries of the jacobian matrices
+    // The relevant entries are the ones that have an influence on the result
     // of the product J^T * K * J.
     // J does not need to be fully computed if K is sparse.
     {
+        crs->compress();
         const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
 
         if (listAffectedDoFs.empty())

@@ -671,11 +671,8 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
         this->resizeSystem(totalSize);
         const auto newRowSize = this->getSystemMatrix() ? this->getSystemMatrix()->rowSize() : 0;
         const auto newColSize = this->getSystemMatrix() ? this->getSystemMatrix()->colSize() : 0;
-        if (newRowSize != rowSize || newColSize != colSize)
-        {
-            msg_info() <<
-                "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
-        }
+        msg_info_when(newRowSize != rowSize || newColSize != colSize) <<
+            "System matrix is resized from " << rowSize << " x " << colSize << " to " << newRowSize << " x " << newColSize;
     }
     {
         SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
@@ -1056,20 +1053,33 @@ void MatrixLinearSystem<TMatrix, TVector>::recomputeMappedMassMatrix(const core:
             invariantProjectedMassMatrix->compress();
             projectionMethod->reinit();
         }
+        else
+        {
+            msg_error() << "Cannot find a projection method to project the matrix";
+        }
     }
 }
 
 template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination)
 {
-    SCOPED_TIMER("precomputedMappedMassMatrix");
-    for (const auto& observer : m_mappedMassMatrixObservers)
     {
-        if (observer->hasObservableChanged())
+        SCOPED_TIMER("recomputeMappedMassMatrix");
+        for (const auto& observer : m_mappedMassMatrixObservers)
         {
-            recomputeMappedMassMatrix(mparams, observer->getObservableMass());
+            if (observer->hasObservableChanged())
+            {
+                recomputeMappedMassMatrix(mparams, observer->getObservableMass());
+            }
         }
-        observer->m_invariantProjectedMassMatrix.getValue().addTo(destination);
+    }
+
+    {
+        SCOPED_TIMER("accumulatePrecomputedMassMatrix");
+        for (const auto& observer : m_mappedMassMatrixObservers)
+        {
+            observer->m_invariantProjectedMassMatrix.getValue().addTo(destination);
+        }
     }
 }
 
