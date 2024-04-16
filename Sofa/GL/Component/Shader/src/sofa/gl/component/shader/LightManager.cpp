@@ -45,10 +45,10 @@ namespace sofa::gl::component::shader
 
 //Register LightManager in the Object Factory
 int LightManagerClass = RegisterObject
-        ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
-         "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
-        .add< LightManager >()
-        ;
+                        ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
+                         "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
+                        .add< LightManager >()
+                        ;
 
 LightManager::LightManager()
     : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
@@ -59,11 +59,32 @@ LightManager::LightManager()
     //listen by default, in order to get the keys to activate shadows
     if(!f_listening.isSet())
         f_listening.setValue(true);
+
+    addUpdateCallback("activateShadows",
+                      {&d_shadowsEnabled},
+                      [this](const core::DataTracker& tracker)
+    {
+        const bool b = d_shadowsEnabled.getValue();
+        if (b && !m_shadowShaders.empty())
+        {
+            for (unsigned int i=0 ; i < m_shadowShaders.size() ; ++i)
+            {
+                m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
+                m_shadowShaders[i]->updateVisual();
+            }
+            for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
+            {
+                (*itl)->updateVisual();
+            }
+            updateVisual();
+        }
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 LightManager::~LightManager()
 {
-    //restoreDefaultLight();
 }
 
 void LightManager::init()
@@ -120,7 +141,7 @@ void LightManager::initVisual()
 
         /// if given unit is available and correct
         if(shadowTextureUnit < maxTextureUnits &&
-                availableUnitTextures[shadowTextureUnit] == true)
+           availableUnitTextures[shadowTextureUnit] == true)
         {
             availableUnitTextures[shadowTextureUnit] = false;
         }
@@ -200,7 +221,6 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 void LightManager::fwdDraw(core::visual::VisualParams* vp)
 {
-
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().data());
     unsigned int id = 0;
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
@@ -406,6 +426,21 @@ void LightManager::preDrawScene(VisualParams* vp)
 {
     if(d_shadowsEnabled.getValue())
     {
+        if (!m_shadowShaders.empty())
+        {
+            for (unsigned int i=0 ; i < m_shadowShaders.size() ; ++i)
+            {
+                m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
+                m_shadowShaders[i]->updateVisual();
+            }
+            for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
+            {
+                (*itl)->updateVisual();
+            }
+            updateVisual();
+        }
+
+
         for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
         {
             (*itl)->preDrawShadow(vp);
@@ -487,29 +522,12 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
         const sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         switch(ev->getKey())
         {
-
         case 'l':
         case 'L':
-            if (!m_shadowShaders.empty())
-            {
-                const bool b = d_shadowsEnabled.getValue();
-                d_shadowsEnabled.setValue(!b);
-                if (!m_shadowShaders.empty())
-                {
-                    for (unsigned int i=0 ; i < m_shadowShaders.size() ; ++i)
-                    {
-                        m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
-                        m_shadowShaders[i]->updateVisual();
-                    }
-                    for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
-                    {
-                        (*itl)->updateVisual();
-                    }
-                    this->updateVisual();
-                }
-
-                msg_info() << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED");
-            }
+            msg_deprecated() << "This component was implemented with hard coded user interactions. This behavior was deprecated in PR#4163. "
+                                "If you need the old behavior, you need to re-implement with a controller. This can be done in"
+                                " c++ or python (see the example named LightManagerController.py)"
+                                "If you see this message  and are unable implement a controller on your own, please report at https://github.com/sofa-framework/sofa/pull/4163";
             break;
         }
     }
