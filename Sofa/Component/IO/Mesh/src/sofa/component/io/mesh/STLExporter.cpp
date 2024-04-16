@@ -26,11 +26,9 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/core/visual/VisualModel.h>
 
-using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::GUIEvent ;
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::objectmodel::BaseData ;

@@ -26,9 +26,6 @@
 #include <sofa/simulation/ExportVisualModelOBJVisitor.h>
 using sofa::simulation::ExportVisualModelOBJVisitor ;
 
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-using sofa::core::objectmodel::KeypressedEvent ;
-
 namespace sofa::component::_visualmodelobjexporter_
 {
 

@@ -25,7 +25,6 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
 
 namespace sofa::component::visual
 {

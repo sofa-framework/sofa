@@ -23,7 +23,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
