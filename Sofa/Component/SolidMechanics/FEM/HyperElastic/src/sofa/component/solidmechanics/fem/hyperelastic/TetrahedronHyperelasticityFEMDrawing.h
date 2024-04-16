@@ -43,7 +43,7 @@ void drawHyperelasticTets(const core::visual::VisualParams* vparams,
                           core::topology::BaseMeshTopology* topology,
                           const std::string& materialName)
 {
-    sofa::type::vector<core::topology::Topology::TetrahedronID> allIndices;
+    sofa::type::vector<core::topology::Topology::TetrahedronID> allIndices(topology->getNbTetrahedra());
     std::iota(allIndices.begin(), allIndices.end(), static_cast<core::topology::Topology::TetrahedronID>(0));
     drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, allIndices);
 }
