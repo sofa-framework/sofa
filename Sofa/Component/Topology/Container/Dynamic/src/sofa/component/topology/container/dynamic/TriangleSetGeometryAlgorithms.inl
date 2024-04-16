@@ -4428,8 +4428,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
 
                     auto new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
-                    if (!intersected)
-                        msg_error() << "Orthogonal projection failed";
+                    if (!intersected){
+                        // Orthogonal projection failed, not possible to snap this point on the ith edge of the triangle
+                        continue;
+                    }
 
                     topoPath_list[0] = geometry::ElementType::EDGE;
 
@@ -4532,8 +4534,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
                     auto new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
-                    if (!intersected)
-                        msg_error() << "Orthogonal projection failed";
+                    if (!intersected){
+                        // Orthogonal projection failed, not possible to snap this point on the ith edge of the triangle
+                        continue;
+                    }
 
                     topoPath_list.back() = geometry::ElementType::EDGE;
                     indices_list.back() = theEdge;

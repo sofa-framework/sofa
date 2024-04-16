@@ -39,6 +39,8 @@ BaseAnimationLoop::~BaseAnimationLoop()
 
 void BaseAnimationLoop::init()
 {
+    Inherit1::init();
+
     if(!l_node)
         l_node = dynamic_cast<sofa::core::objectmodel::BaseNode*>(getContext());
 }

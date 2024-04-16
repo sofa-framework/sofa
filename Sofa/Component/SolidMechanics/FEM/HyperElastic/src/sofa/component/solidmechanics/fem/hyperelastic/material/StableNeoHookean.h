@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,35 +21,30 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
-
-
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-#include <string>
-
 
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 /**
- * Compressible Neo-Hookean material
+ * Stable Neo-Hookean material
+ * From:
+ * "Smith, Breannan, Fernando De Goes, and Theodore Kim. "Stable neo-hookean
+ * flesh simulation." ACM Transactions on Graphics (TOG) 37.2 (2018): 1-15.)"
  */
 template <class DataTypes>
-class NeoHookean : public HyperelasticMaterial<DataTypes>
+class StableNeoHookean : public HyperelasticMaterial<DataTypes>
 {
 public:
     typedef typename DataTypes::Coord::value_type Real;
-    typedef type::Mat<3, 3, Real> Matrix3;
     typedef type::Mat<6, 6, Real> Matrix6;
     typedef type::MatSym<3, Real> MatrixSym;
 
     /**
-     * Strain energy density function for a compressible Neo-Hookean material,
-     * taken from:
-     * "Javier Bonet and Richard D Wood. 2008. Nonlinear continuum mechanics for
-     * finite element analysis. Cambridge University Press"
+     * Strain energy density function for a stable Neo-Hookean material.
+     * The regularized origin barrier is removed according to "Kim, Theodore,
+     * and David Eberle. "Dynamic deformables: implementation and production
+     * practicalities (now with code!)." ACM SIGGRAPH 2022 Courses. 2022. 1-259."
      */
     Real getStrainEnergy(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param) override
@@ -58,15 +53,17 @@ public:
         const Real mu = param.parameterArray[0];
         const Real lambda = param.parameterArray[1];
 
-        //trace(C) -> first invariant
-        const Real IC = sinfo->trC;
+        //rest stabilization term
+        const Real alpha = 1 + mu / (lambda + mu);
 
-        //det(F) = J
+        //First Right Cauchy-Green invariant
+        const Real I_C = sinfo->trC;
+
+        //Relative volume change -> J = det(F)
         const Real J = sinfo->J;
 
-        return 0.5 * mu * (IC - 3)
-            - mu * std::log(J)
-            + 0.5 * lambda * std::pow(std::log(J), 2);
+        return static_cast<Real>(0.5) *
+            (mu * (I_C - 3) + (lambda + mu) * std::pow(J - alpha, 2));
     }
 
     /**
@@ -77,22 +74,27 @@ public:
                          const MaterialParameters<DataTypes>& param,
                          MatrixSym& SPKTensorGeneral) override
     {
-        // inverse of the right Cauchy-Green deformation tensor
-        MatrixSym inverse_C;
-        sofa::type::invertMatrix(inverse_C, sinfo->deformationTensor);
+        // right Cauchy-Green deformation tensor
+        const auto& C = sinfo->deformationTensor;
+
+        // Inverse of C
+        MatrixSym C_1;
+        invertMatrix(C_1, C);
 
         //Lamé constants
         const Real mu = param.parameterArray[0];
         const Real lambda = param.parameterArray[1];
 
-        //det(F) = J
+        //rest stabilization term
+        const Real alpha = 1 + mu / (lambda + mu);
+
+        //Relative volume change -> J = det(F)
         const Real J = sinfo->J;
 
-        //second Piola-Kirchhoff stress tensor
-        SPKTensorGeneral = mu * ID
-            + (lambda * std::log(J) - mu) * inverse_C;
+        //Second Piola-Kirchoff stress tensor is written in terms of C:
+        // PK2 = 2 * dW/dC
+        SPKTensorGeneral = mu * ID + ((lambda + mu) * J * (J - alpha)) * C_1;
     }
-
 
     void applyElasticityTensor(StrainInformation<DataTypes>* sinfo,
                                const MaterialParameters<DataTypes>& param,
@@ -101,6 +103,12 @@ public:
         //Lamé constants
         const Real mu = param.parameterArray[0];
         const Real lambda = param.parameterArray[1];
+
+        //rest stabilization term
+        const Real alpha = 1 + mu / (lambda + mu);
+
+        //Relative volume change -> J = det(F)
+        const Real J = sinfo->J;
 
         // inverse of the right Cauchy-Green deformation tensor
         MatrixSym inverse_C;
@@ -115,8 +123,8 @@ public:
         MatrixSym Firstmatrix;
         MatrixSym::Mat2Sym(inverse_C * (inputTensor * inverse_C), Firstmatrix);
 
-        outputTensor = Firstmatrix * (mu - lambda * log(sinfo->J))
-            + inverse_C * (lambda * trHC / 2);
+        outputTensor = 0.5 * (lambda + mu) * (Firstmatrix * (-2 * J * (J - alpha))
+            + inverse_C * (J * (2 * J - alpha) * trHC));
     }
 
     void ElasticityTensor(StrainInformation<DataTypes>* sinfo,
@@ -125,6 +133,9 @@ public:
         //Lamé constants
         const Real mu = param.parameterArray[0];
         const Real lambda = param.parameterArray[1];
+
+        //rest stabilization term
+        const Real alpha = 1 + mu / (lambda + mu);
 
         MatrixSym inverse_C;
         invertMatrix(inverse_C, sinfo->deformationTensor);
@@ -175,8 +186,11 @@ public:
         trC_HC_[4] = inverse_C[4] * CC;
         trC_HC_[5] = inverse_C[5] * CC;
 
-        outputTensor =
-            (C_H_C * (mu - lambda * std::log(sinfo->J)) * 2 + trC_HC_ * lambda) ;
+        //Relative volume change -> J = det(F)
+        const Real J = sinfo->J;
+
+        outputTensor = (lambda + mu) *
+            (C_H_C * (-2 * J * (J - alpha)) + trC_HC_ * (J * (2 * J-alpha))) ;
     }
 
 private:
@@ -188,4 +202,5 @@ private:
         return id;
     }();
 };
-} // namespace sofa::component::solidmechanics::fem::hyperelastic::material
+
+}

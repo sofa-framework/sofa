@@ -22,10 +22,11 @@
         <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping,Tetra2TriangleTopologicalMapping] -->
         <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
     </Node>
 
     <VisualStyle displayFlags="showForceFields"/>
-    <ConstraintAttachButtonSetting/> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
+    <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
