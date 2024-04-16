@@ -38,18 +38,6 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
 template <class DataTypes>
-void drawHyperelasticTets(const core::visual::VisualParams* vparams,
-                          const typename DataTypes::VecCoord& x,
-                          core::topology::BaseMeshTopology* topology,
-                          const std::string& materialName)
-{
-    sofa::type::vector<core::topology::Topology::TetrahedronID> allIndices(topology->getNbTetrahedra());
-    std::iota(allIndices.begin(), allIndices.end(), static_cast<core::topology::Topology::TetrahedronID>(0));
-    drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, allIndices);
-}
-
-
-template <class DataTypes>
 void selectColors(const std::string& materialName, sofa::type::RGBAColor& color1, sofa::type::RGBAColor& color2, sofa::type::RGBAColor& color3, sofa::type::RGBAColor& color4)
 {
     if (materialName == material::BoyceAndArruda<DataTypes>::Name)
@@ -157,17 +145,25 @@ void drawHyperelasticTets(const core::visual::VisualParams* vparams,
         points[3].push_back(pb);
     }
 
-    sofa::type::RGBAColor color1;
-    sofa::type::RGBAColor color2;
-    sofa::type::RGBAColor color3;
-    sofa::type::RGBAColor color4;
+    std::array<sofa::type::RGBAColor, 4> colors;
+    selectColors<DataTypes>(materialName, colors[0], colors[1], colors[2], colors[3]);
 
-    selectColors<DataTypes>(materialName, color1, color2, color3, color4);
-
-    vparams->drawTool()->drawTriangles(points[0], color1);
-    vparams->drawTool()->drawTriangles(points[1], color2);
-    vparams->drawTool()->drawTriangles(points[2], color3);
-    vparams->drawTool()->drawTriangles(points[3], color4);
+    vparams->drawTool()->drawTriangles(points[0], colors[0]);
+    vparams->drawTool()->drawTriangles(points[1], colors[1]);
+    vparams->drawTool()->drawTriangles(points[2], colors[2]);
+    vparams->drawTool()->drawTriangles(points[3], colors[3]);
 }
+
+template <class DataTypes>
+void drawHyperelasticTets(const core::visual::VisualParams* vparams,
+                          const typename DataTypes::VecCoord& x,
+                          core::topology::BaseMeshTopology* topology,
+                          const std::string& materialName)
+{
+    sofa::type::vector<core::topology::Topology::TetrahedronID> allIndices(topology->getNbTetrahedra());
+    std::iota(allIndices.begin(), allIndices.end(), static_cast<core::topology::Topology::TetrahedronID>(0));
+    drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, allIndices);
+}
+
 
 }
