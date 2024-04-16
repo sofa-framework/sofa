@@ -88,7 +88,7 @@ void BilateralLagrangianConstraint<DataTypes>::init()
     {
         m1.createTopologyHandler(_topology1);
         m1.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
-            [this](const core::topology::TopologyChange* change)
+                                    [this](const core::topology::TopologyChange* change)
         {
             const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
             removeContact(0, pointsRemoved->getArray());
@@ -99,7 +99,7 @@ void BilateralLagrangianConstraint<DataTypes>::init()
     {
         m2.createTopologyHandler(_topology2);
         m2.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
-            [this](const core::topology::TopologyChange* change)
+                                    [this](const core::topology::TopologyChange* change)
         {
             const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
             removeContact(1, pointsRemoved->getArray());
@@ -116,7 +116,7 @@ void BilateralLagrangianConstraint<DataTypes>::reinit()
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
-                                                                      , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
+                                                                     , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     if (!d_activate.getValue())
         return;
@@ -169,9 +169,9 @@ void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const Const
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                       BaseVector *v,
-                                                                       const DataVecCoord &d_x1, const DataVecCoord &d_x2
-                                                                       , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
+                                                                      BaseVector *v,
+                                                                      const DataVecCoord &d_x1, const DataVecCoord &d_x2
+                                                                      , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
 {
     if (!d_activate.getValue()) return;
 
@@ -209,10 +209,10 @@ void BilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const Cons
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::getVelocityViolation(BaseVector *v,
-                                                                     const DataVecCoord &d_x1,
-                                                                     const DataVecCoord &d_x2,
-                                                                     const DataVecDeriv &d_v1,
-                                                                     const DataVecDeriv &d_v2)
+                                                                    const DataVecCoord &d_x1,
+                                                                    const DataVecCoord &d_x2,
+                                                                    const DataVecDeriv &d_v1,
+                                                                    const DataVecDeriv &d_v2)
 {
     const SubsetIndices& m1Indices = m1.getValue();
     const SubsetIndices& m2Indices = m2.getValue();
@@ -252,8 +252,8 @@ void BilateralLagrangianConstraint<DataTypes>::getVelocityViolation(BaseVector *
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
-                                                                        std::vector<ConstraintResolution*>& resTab,
-                                                                        unsigned int& offset)
+                                                                       std::vector<ConstraintResolution*>& resTab,
+                                                                       unsigned int& offset)
 {
     SOFA_UNUSED(cParams);
     const unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
@@ -268,9 +268,9 @@ void BilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const Con
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q,
-                                                           Real /*contactDistance*/, int m1, int m2,
-                                                           Coord /*Pfree*/, Coord /*Qfree*/,
-                                                           long /*id*/, PersistentID /*localid*/)
+                                                          Real /*contactDistance*/, int m1, int m2,
+                                                          Coord /*Pfree*/, Coord /*Qfree*/,
+                                                          long /*id*/, PersistentID /*localid*/)
 {
     WriteAccessor<Data<SubsetIndices> > wm1 = this->m1;
     WriteAccessor<Data<SubsetIndices> > wm2 = this->m2;
@@ -283,10 +283,10 @@ void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord 
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Coord P, Coord Q, Real
-                                                           contactDistance, int m1, int m2,
-                                                           long id, PersistentID localid)
+                                                          contactDistance, int m1, int m2,
+                                                          long id, PersistentID localid)
 {
-   addContact(norm, P, Q, contactDistance, m1, m2,
+    addContact(norm, P, Q, contactDistance, m1, m2,
                this->getMState2()->read(ConstVecCoordId::freePosition())->getValue()[m2],
                this->getMState1()->read(ConstVecCoordId::freePosition())->getValue()[m1],
                id, localid);
@@ -294,7 +294,7 @@ void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Coord P, C
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Real contactDistance,
-                                                           int m1, int m2, long id, PersistentID localid)
+                                                          int m1, int m2, long id, PersistentID localid)
 {
     addContact(norm,
                this->getMState2()->read(ConstVecCoordId::position())->getValue()[m2],
@@ -320,7 +320,7 @@ void BilateralLagrangianConstraint<DataTypes>::removeContact(int objectId, Subse
     {
         const Index elemId = indices[i];
         Index posId = sofa::InvalidID;
-            
+
         if (objectId == 0)
             posId = indexOfElemConstraint(cIndices1, elemId);
         else if (objectId == 1)
@@ -364,7 +364,7 @@ Index BilateralLagrangianConstraint<DataTypes>::indexOfElemConstraint(const Subs
 
     if (it != cIndices.end())
         return Index(std::distance(cIndices.begin(), it));
-    else    
+    else
         return sofa::InvalidID;
 }
 
@@ -409,6 +409,8 @@ void BilateralLagrangianConstraint<DataTypes>::handleEvent(Event *event)
         const KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
         switch(ev->getKey())
         {
+        case 'a':
+        case 'A':
             msg_deprecated() << "This component was implemented with hard coded user interactions. This behavior was deprecated in PR#4163. "
                                 "If you need the old behavior, you need to re-implement with a controller. This can be done in"
                                 " c++ or python (see the example named BilateralLagrangianConstraint.py)"
