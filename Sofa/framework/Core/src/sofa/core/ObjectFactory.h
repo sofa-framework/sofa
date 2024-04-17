@@ -24,6 +24,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
+#include <sofa/helper/Utils.h>
+
 
 namespace sofa::core
 {
@@ -330,6 +332,19 @@ public:
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
+
+        if (entry.documentationURL.empty())
+        {
+            const std::string target = sofa_tostring(SOFA_TARGET);
+            const auto modulePaths = sofa::helper::split(target, '.');
+            if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
+            {
+                entry.documentationURL = "https://www.sofa-framework.org/community/doc/components/";
+                entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
+                    [](const std::string& m){ return sofa::helper::Utils::downcaseString(m);}, "/");
+                entry.documentationURL += "/" + sofa::helper::Utils::downcaseString(classname);
+            }
+        }
 
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }

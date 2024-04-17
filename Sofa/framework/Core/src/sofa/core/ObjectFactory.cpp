@@ -610,7 +610,7 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 
     if (!entry.className.empty() && entry.className != classname)
     {
-        msg_error("ObjectFactory") << "Template already instanciated with a different classname: " << entry.className << " != " << classname;
+        msg_error("ObjectFactory") << "Template already instantiated with a different classname: " << entry.className << " != " << classname;
     }
     else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
     {
