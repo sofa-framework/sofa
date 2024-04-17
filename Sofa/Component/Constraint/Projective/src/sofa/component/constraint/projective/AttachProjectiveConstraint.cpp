@@ -36,7 +36,6 @@ int AttachProjectiveConstraintClass = core::RegisterObject("Attach given pair of
         .add< AttachProjectiveConstraint<Vec1Types> >()
         .add< AttachProjectiveConstraint<Rigid3Types> >()
         .add< AttachProjectiveConstraint<Rigid2Types> >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/constraints-projective/attachprojectiveconstraint/")
         ;
 
 template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API

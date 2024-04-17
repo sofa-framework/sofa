@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 int SubsetTopologyClass = core::RegisterObject("Engine used to create subset topology given box, sphere, plan, ...")
         .add< SubsetTopology<Vec3Types> >()
         .add< SubsetTopology<Rigid3Types> >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/subsettopology/")
+ 
         ;
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<Vec3Types>;

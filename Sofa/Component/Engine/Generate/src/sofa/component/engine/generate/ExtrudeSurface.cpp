@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
         .add< ExtrudeSurface<Vec3Types> >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/extrudesurface/")
+ 
         ;
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeSurface<Vec3Types>;

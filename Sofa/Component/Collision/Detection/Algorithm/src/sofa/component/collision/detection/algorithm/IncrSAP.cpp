@@ -791,7 +791,6 @@ int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using inc
         .addAlias( "IncrementalSAP" )
         .addAlias( "IncrementalSweepAndPrune" )
         .add< IncrSAP >( true )
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/collisions/detection-sap-incremental/")
         ;
 
 } // namespace sofa::component::collision::detection::algorithm

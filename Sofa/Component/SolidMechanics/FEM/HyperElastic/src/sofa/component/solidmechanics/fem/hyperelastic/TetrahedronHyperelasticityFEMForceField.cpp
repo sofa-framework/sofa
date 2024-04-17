@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 int TetrahedronHyperelasticityFEMForceFieldClass = core::RegisterObject("Generic Tetrahedral finite elements")
 .add< TetrahedronHyperelasticityFEMForceField<Vec3Types> >()
-.addDocumentationURL("https://www.sofa-framework.org/community/doc/components/forcefields/tetrahedronhyperelasticityfemforcefield/")
+
 ;
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;

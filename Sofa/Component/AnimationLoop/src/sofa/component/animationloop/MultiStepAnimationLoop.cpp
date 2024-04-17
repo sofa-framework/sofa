@@ -45,7 +45,6 @@ namespace sofa::component::animationloop
 
 int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
         .add< MultiStepAnimationLoop >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/animationloops/multistepanimationloop/")
         .addAlias("MultiStepMasterSolver")
         ;
 

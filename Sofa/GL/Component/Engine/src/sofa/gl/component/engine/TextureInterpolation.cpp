@@ -33,7 +33,7 @@ int TextureInterpolationClass = core::RegisterObject("Create texture coordinate 
         .add< TextureInterpolation <Vec1Types> >()
         .add< TextureInterpolation <Vec2Types> >()
         .add< TextureInterpolation <Vec3Types> >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/engines/textureinterpolation/")
+ 
         ;
 
 template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec1Types>;

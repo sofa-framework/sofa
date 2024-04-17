@@ -41,7 +41,6 @@ using namespace helper;
 
 int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")
         .add< MinProximityIntersection >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/collisions/intersectiondetections/minproximityintersection/")
         ;
 
 MinProximityIntersection::MinProximityIntersection()

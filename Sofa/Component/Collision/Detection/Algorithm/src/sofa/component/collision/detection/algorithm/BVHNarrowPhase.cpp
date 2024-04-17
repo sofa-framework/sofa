@@ -31,7 +31,6 @@ namespace sofa::component::collision::detection::algorithm
 
 int BVHNarrowPhaseClass = core::RegisterObject("Narrow phase collision detection based on boundary volume hierarchy")
         .add< BVHNarrowPhase >()
-        .addDocumentationURL("https://www.sofa-framework.org/community/doc/components/collisions/narrowphases/bvhnarrowphase/")
 ;
 
 BVHNarrowPhase::BVHNarrowPhase() : core::collision::NarrowPhaseDetection()
