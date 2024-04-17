@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
 #include <sofa/helper/Utils.h>
+#include <sofa/url.h>
 
 
 namespace sofa::core
@@ -339,7 +340,7 @@ public:
             const auto modulePaths = sofa::helper::split(target, '.');
             if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
             {
-                entry.documentationURL = "https://www.sofa-framework.org/community/doc/components/";
+                entry.documentationURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
                 entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
                     [](const std::string& m){ return sofa::helper::Utils::downcaseString(m);}, "/");
                 entry.documentationURL += "/" + sofa::helper::Utils::downcaseString(classname);
