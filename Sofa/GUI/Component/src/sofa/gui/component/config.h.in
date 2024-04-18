@@ -31,6 +31,13 @@
 #  define SOFA_GUI_COMPONENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#define SOFA_ATTRIBUTE_DISABLED__NAMING( deprecationDate, disableDate, oldName, newName) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        deprecationDate, disableDate, \
+        "The attribute " sofa_tostring(oldName) " has been renamed to \'" sofa_tostring(newName) "\' to fit naming policy ") \
+        DeprecatedAndRemoved oldName
+
+
 namespace sofa::gui::component
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

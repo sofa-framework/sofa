@@ -19,24 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/gui/component/AttachBodyButtonSetting.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/gui/component/config.h>
+
+#include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::gui::component
+
+namespace sofa::gui::component::performer
 {
+struct BodyPicked;
 
-int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
-        .add< AttachBodyButtonSetting >()
-        .addAlias("AttachBodyButton")
-        ;
 
-AttachBodyButtonSetting::AttachBodyButtonSetting():
-    d_stiffness(initData(&d_stiffness, 1000.0_sreal, "stiffness", "Stiffness of the spring to attach a particule"))
-    , d_arrowSize(initData(&d_arrowSize, 0.0_sreal, "arrowSize", "Size of the drawn spring: if >0 an arrow will be drawn"))
-    , d_showFactorSize(initData(&d_showFactorSize, 1.0_sreal, "showFactorSize", "Show factor size of the JointSpringForcefield  when interacting with rigids"))
+/**
+ * This class is a virtualization of attachment performer used to allow the blind use of either "AttachBodyPerformer" based on springs and "ConstraintAttachBodyPerformer" based on lagrangian
+ * constraints. An example of use can be found in the external plugin Sofa.IGTLink in the component "iGTLinkMouseInteractor"
+ */
+template <class DataTypes>
+class BaseAttachBodyPerformer :  public TInteractionPerformer<DataTypes>
 {
+public:
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
+    typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
+
+    explicit BaseAttachBodyPerformer(BaseMouseInteractor* i);
+    virtual ~BaseAttachBodyPerformer();
+
+    virtual void start();
+    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void clear();
+    virtual void execute();
+    sofa::core::objectmodel::BaseObject::SPtr getInteractionObject();
+
+    virtual bool startPartial(const BodyPicked& picked) = 0;
+
+
+protected:
+
+    sofa::core::objectmodel::BaseObject::SPtr m_interactionObject;
+    MouseContactMapper  *m_mapper;
+    core::visual::DisplayFlags m_flags;
+};
 }
-
-} // namespace sofa::gui::component

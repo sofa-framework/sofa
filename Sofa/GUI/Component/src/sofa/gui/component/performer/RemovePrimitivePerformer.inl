@@ -57,7 +57,7 @@ template <class DataTypes>
 void RemovePrimitivePerformer<DataTypes>::execute()
 {
     // - STEP 1: Get body picked and Mstate associated
-    picked=this->interactor->getBodyPicked();
+    picked=this->m_interactor->getBodyPicked();
     if (!picked.body) return;
 
     mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*    >(picked.body->getContext()->getMechanicalState());
@@ -81,7 +81,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             topologyChangeManager.removeItemsFromCollisionModel(model, (int)picked.indexCollisionElement);
 
         picked.body=nullptr;
-        this->interactor->setBodyPicked(picked);
+        this->m_interactor->setBodyPicked(picked);
     }
     else // second case remove a zone of element
     {
@@ -124,7 +124,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             // Handle Removing of topological element (from any type of topology)
             if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model.get(),ElemList_int );
             picked.body=nullptr;
-            this->interactor->setBodyPicked(picked);
+            this->m_interactor->setBodyPicked(picked);
 
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
