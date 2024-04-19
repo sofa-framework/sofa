@@ -59,6 +59,8 @@ protected:
     Constraint(MechanicalState<DataTypes> *mm = nullptr);
 
     ~Constraint() override;
+
+    virtual void init() override;
 public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing

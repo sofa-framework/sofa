@@ -39,18 +39,7 @@ FixedLagrangianConstraint<DataTypes>::FixedLagrangianConstraint(MechanicalState*
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::init()
 {
-
     Inherit1::init();
-
-    if(this->mstate.get())
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-    }
-    else
-    {
-        msg_error(this)<<"Data \'mstate\' not specified, unable to find a compatible mechanical state in the current context";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    }
 }
 
 
