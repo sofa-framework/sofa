@@ -35,7 +35,7 @@ namespace sofa::gui::component::performer
 
     void StartNavigationPerformer::start()
     {
-        const sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
+        const sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( m_interactor->getContext()->getRootContext() );
         if(root)
         {
             sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();

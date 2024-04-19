@@ -98,6 +98,8 @@ type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
+    Inherit1::init();
+
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();

@@ -94,11 +94,11 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_hapticData.buttonState);
 
 
-    Vector3 currentForce;
+    Vec3 currentForce;
     if (driver->m_forceFeedback)
     {
-        Vector3 pos(driver->m_hapticData.transform[12+0]*0.1,driver->m_hapticData.transform[12+1]*0.1,driver->m_hapticData.transform[12+2]*0.1);
-        Vector3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
+        Vec3 pos(driver->m_hapticData.transform[12+0]*0.1,driver->m_hapticData.transform[12+1]*0.1,driver->m_hapticData.transform[12+2]*0.1);
+        Vec3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
 
         driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
         driver->m_isInContact = false;
@@ -111,7 +111,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
     else
     {
-        Vector3 inputForceFeedback = driver->d_inputForceFeedback.getValue();
+        Vec3 inputForceFeedback = driver->d_inputForceFeedback.getValue();
         double normValue = inputForceFeedback.norm();
         double maxInputForceFeedback = driver->d_maxInputForceFeedback.getValue();
 
@@ -135,7 +135,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         }
     }
 
-    Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
+    Vec3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
 
     GeomagicDriver::SHDdouble omni_force[3];
     omni_force[0] = force_in_omni[0];

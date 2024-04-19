@@ -246,6 +246,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     }
     edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
 }
+
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const EdgeID i) const
 {
@@ -438,9 +439,13 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const E
 
     // Compute Coord of projection point H:
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
-    sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
-
-    return computeEdgeBarycentricCoordinates(h, theEdge[0], theEdge[1]);
+    if (intersected)
+    {
+        sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
+        return computeEdgeBarycentricCoordinates(h, theEdge[0], theEdge[1]);
+    }
+    else
+        return sofa::type::vector< SReal >();
 }
 
 template<class DataTypes>
@@ -493,73 +498,43 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (Edg
 
 }
 
+
 template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected)
 {
+    auto a0 = type::Vec3(DataTypes::getCPos(edge1[0]));
+    auto a1 = type::Vec3(DataTypes::getCPos(edge1[1]));
+    auto b0 = type::Vec3(DataTypes::getCPos(edge2[0]));
+    auto b1 = type::Vec3(DataTypes::getCPos(edge2[1]));
 
-    // Creating director vectors:
-    Coord vec1 = edge1[1] - edge1[0];
-    Coord vec2 = edge2[1] - edge2[0];
-    Coord X;
-    for (unsigned int i=0; i<Coord::spatial_dimensions; i++)
-        X[i] = 0;
+    type::Vec2 baryCoords(type::NOINIT);
+    intersected = sofa::geometry::Edge::intersectionWithEdge(a0, a1, b0, b1, baryCoords);
 
-    int ind1 = -1;
-    int ind2 = -1;
-    constexpr Real epsilon = static_cast<Real>(0.0001);
-    Real lambda = 0.0;
-    Real alpha = 0.0;
+    type::vector< Coord > ancestors = {edge1[0], edge1[1]};
+    type::vector< Real > coefs = { static_cast<Real>(baryCoords[0]), static_cast<Real>(baryCoords[1])};
 
-    // Searching vector composante not null:
-    for (unsigned int i=0; i<Coord::spatial_dimensions; i++)
-    {
-        if ( (vec1[i] > epsilon) || (vec1[i] < -epsilon) )
-        {
-            ind1 = i;
+    return DataTypes::interpolate(ancestors, coefs);
+}
 
-            for (unsigned int j = 0; j<Coord::spatial_dimensions; j++)
-                if ( (vec2[j] > epsilon || vec2[j] < -epsilon) && (j != i))
-                {
-                    ind2 = j;
 
-                    // Solving system:
-                    Real coef_lambda = vec1[ind1] - ( vec1[ind2]*vec2[ind1]/vec2[ind2] );
+template<class DataTypes>
+typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(const EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, bool& intersected)
+{
+    const Edge& theEdge = this->m_topology->getEdge(edgeID);
+    const VecCoord& pos = (this->object->read(core::ConstVecCoordId::position())->getValue());
 
-                    if (coef_lambda < epsilon && coef_lambda > -epsilon)
-                        break;
+    const typename DataTypes::Coord& e0 = pos[theEdge[0]];
+    const typename DataTypes::Coord& e1 = pos[theEdge[1]];
+    auto p0 = type::Vec3(DataTypes::getCPos(e0));
+    auto p1 = type::Vec3(DataTypes::getCPos(e1));
 
-                    lambda = ( edge2[0][ind1] - edge1[0][ind1] + (edge1[0][ind2] - edge2[0][ind2])*vec2[ind1]/vec2[ind2]) * 1/coef_lambda;
-                    alpha = (edge1[0][ind2] + lambda * vec1[ind2] - edge2[0][ind2]) * 1 /vec2[ind2];
-                    break;
-                }
-        }
+    type::Vec2 baryCoords(type::NOINIT);
+    intersected = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
 
-        if (lambda != 0.0)
-            break;
-    }
+    type::vector< Coord > ancestors = {e0, e1};
+    type::vector< Real > coefs = { static_cast<Real>(baryCoords[0]), static_cast<Real>(baryCoords[1]) };
 
-    if ((ind1 == -1) || (ind2 == -1))
-    {
-        msg_error() << "Vector director is null." ;
-        intersected = false;
-        return X;
-    }
-
-    // Compute X coords:
-    for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
-        X[i] = edge1[0][i] + (float)lambda * vec1[i];
-
-    intersected = true;
-
-    // Check if lambda found is really a solution
-    for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
-        if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
-        {
-            msg_error() << "Edges don't intersect themself." ;
-            intersected = false;
-        }
-
-    return X;
+    return DataTypes::interpolate(ancestors, coefs);
 }
 
 
@@ -770,44 +745,22 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
 
 template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID edgeID,
-    const sofa::type::Vec<3, Real>& a,
-    const sofa::type::Vec<3, Real>& b,
+    const type::Vec3& a,
+    const type::Vec3& b,
     Real &baryCoef)
 {
-    bool is_intersect = false;
-    
-    const Edge& e = this->m_topology->getEdge(edgeID);
-    const VecCoord& p = (this->object->read(core::ConstVecCoordId::position())->getValue());
-    const typename DataTypes::Coord& c0 = p[e[0]];
-    const typename DataTypes::Coord& c1 = p[e[1]];
-    
-    sofa::type::Vec<3, Real> p0{ c0[0],c0[1],c0[2] };
-    sofa::type::Vec<3, Real> p1{ c1[0],c1[1],c1[2] };
-    sofa::type::Vec<3, Real> pa{ a[0],a[1],a[2] };
-    sofa::type::Vec<3, Real> pb{ b[0],b[1],b[2] };
-  
-    sofa::type::Vec<3, Real> v_0a = p0 - pa;
-    sofa::type::Vec<3, Real> v_ba = pb - pa;
-    sofa::type::Vec<3, Real> v_10 = p1 - p0;
-  
-    Real d0aba, dba10, d0a10, dbaba, d1010;
+    const Edge& theEdge = this->m_topology->getEdge(edgeID);
+    const VecCoord& pos = (this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    d0aba = v_0a * v_ba;
-    dba10 = v_ba * v_ba;
-    d0a10 = v_0a * v_10;
-    dbaba = v_ba * v_ba;
-    d1010 = v_10 * v_10;
+    const typename DataTypes::Coord& e0 = pos[theEdge[0]];
+    const typename DataTypes::Coord& e1 = pos[theEdge[1]];
+    auto p0 = type::Vec3(DataTypes::getCPos(e0));
+    auto p1 = type::Vec3(DataTypes::getCPos(e1));
 
-    Real deno, num;
-    deno = d1010 * dbaba - dba10 * dba10;
-    
-    if (abs(deno) > std::numeric_limits<Real>::epsilon())
-    {
-        num = d0aba * dba10 - d0a10 * dbaba;
+    type::Vec2 baryCoords(type::NOINIT);
+    bool is_intersect = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
+    baryCoef = baryCoords[0];
 
-        baryCoef = num / deno;
-        is_intersect = true;
-    }
     return is_intersect;
 }
 

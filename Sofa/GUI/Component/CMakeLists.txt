@@ -14,6 +14,8 @@ set(HEADER_FILES
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AddRecordedCameraPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.inl
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/BaseAttachBodyPerformer.h
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/BaseAttachBodyPerformer.inl
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.inl
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ConstraintAttachBodyPerformer.h

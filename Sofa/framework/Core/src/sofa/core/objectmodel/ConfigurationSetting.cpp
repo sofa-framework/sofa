@@ -41,6 +41,8 @@ ConfigurationSetting::~ConfigurationSetting()
 
 void ConfigurationSetting::init()
 {
+    Inherit1::init();
+
     //Set all the Data in read only mode:
     for (VecData::const_iterator it = m_vecData.begin(); it!=m_vecData.end(); ++it)
     {

@@ -33,7 +33,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPa
 
 void InciseAlongPathPerformer::start()
 {
-    startBody=this->interactor->getBodyPicked();
+    startBody=this->m_interactor->getBodyPicked();
 
     if (startBody.body == 0)
         return;
@@ -50,10 +50,10 @@ void InciseAlongPathPerformer::start()
 void InciseAlongPathPerformer::execute()
 {
 
-    if (freezePerformer) // This performer has been freezed
+    if (m_freezePerformer) // This performer has been freezed
     {
         if (currentMethod == 1)
-            startBody=this->interactor->getBodyPicked();
+            startBody=this->m_interactor->getBodyPicked();
 
         return;
     }
@@ -85,12 +85,12 @@ void InciseAlongPathPerformer::execute()
         firstBody = secondBody;
         secondBody.body = nullptr;
 
-        this->interactor->setBodyPicked(secondBody);
+        this->m_interactor->setBodyPicked(secondBody);
     }
     else
     {
 
-        BodyPicked currentBody=this->interactor->getBodyPicked();
+        BodyPicked currentBody=this->m_interactor->getBodyPicked();
         if (currentBody.body == nullptr || startBody.body == nullptr) return;
 
         if (currentBody.indexCollisionElement == startBody.indexCollisionElement) return;
@@ -109,14 +109,14 @@ void InciseAlongPathPerformer::execute()
         firstBody = currentBody;
 
         currentBody.body=nullptr;
-        this->interactor->setBodyPicked(currentBody);
+        this->m_interactor->setBodyPicked(currentBody);
     }
 
 }
 
 void InciseAlongPathPerformer::setPerformerFreeze()
 {
-    freezePerformer = true;
+    m_freezePerformer = true;
     if (fullcut)
         this->PerformCompleteIncision();
 
@@ -207,14 +207,14 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     if (firstIncisionBody.body)
         firstIncisionBody.body = nullptr;
 
-    this->interactor->setBodyPicked(firstIncisionBody);
+    this->m_interactor->setBodyPicked(firstIncisionBody);
 }
 
 void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
     if (firstBody.body == nullptr) return;
 
-    BodyPicked currentBody=this->interactor->getBodyPicked();
+    BodyPicked currentBody=this->m_interactor->getBodyPicked();
 
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* topoGeo;
     firstBody.body->getContext()->get(topoGeo);
