@@ -37,19 +37,22 @@ namespace sofa::component::collision::detection::algorithm
  * In this algorithm, all possible pairs of objects are tested (brute force test). If there are n objects, there will be
  * n^2/2 tests. The tests are based on the bounding volume of the objects, usually an axis-aligned bounding box.
  */
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BruteForceBroadPhase : public core::collision::BroadPhaseDetection
-{
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BruteForceBroadPhase : public core::collision::BroadPhaseDetection {
 public:
     SOFA_CLASS(BruteForceBroadPhase, core::collision::BroadPhaseDetection);
 
 protected:
     BruteForceBroadPhase();
+
     ~BruteForceBroadPhase() override = default;
 
 private:
-
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
-    Data< type::fixed_array<sofa::type::Vec3,2> > box;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<type::fixed_array<sofa::type::Vec3, 2> > box;
+
+    Data<type::fixed_array<sofa::type::Vec3, 2> > d_box;
+
 
 public:
     void init() override;

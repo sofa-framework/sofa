@@ -24,7 +24,7 @@ SOFA's advanced software architecture allows:
 
 SOFA is often presented as a standalone software (runSofa) and a simulation tool, but the project is most importantly a bundle of libraries and thus can be used/integrated in any project.  
 
-SOFA provides a plugin system allowing the coupling of additional codes to add functionalities. A lot of plugins are already referenced in the [source code](https://github.com/sofa-framework/sofa/tree/master/applications/plugins), under [sofa-framework organisation](https://github.com/orgs/sofa-framework/repositories?q=plugin&sort=name), and on the [Marketplace](https://www.sofa-framework.org/applications/marketplace/). Feel free to contact us to get your own plugins referenced!
+SOFA provideqtcreators a plugin system allowing the coupling of additional codes to add functionalities. A lot of plugins are already referenced in the [source code](https://github.com/sofa-framework/sofa/tree/master/applications/plugins), under [sofa-framework organisation](https://github.com/orgs/sofa-framework/repositories?q=plugin&sort=name), and on the [Marketplace](https://www.sofa-framework.org/applications/marketplace/). Feel free to contact us to get your own plugins referenced!
 
 
 ## How to download and install

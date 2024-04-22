@@ -207,11 +207,18 @@ private:
      * Used in initialisation of IncrSAP. It clears all the IncrSAP fields.
      */
     void purge();
-
-
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> bDraw; ///< enable/disable display of results
 
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+
+
+
+    Data<bool> d_bDraw; ///< enable/disable display of results
+
+    Data< type::fixed_array<type::Vec3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     collision::geometry::CubeCollisionModel::SPtr boxModel;
 
@@ -248,7 +255,7 @@ protected:
     ~IncrSAP() override;
 
 public:
-    void setDraw(bool val) { bDraw.setValue(val); }
+    void setDraw(bool val) { d_bDraw.setValue(val); }
 
     void init() override;
     void reinit() override;
