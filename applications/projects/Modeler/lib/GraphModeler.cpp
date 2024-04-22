@@ -33,10 +33,10 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaSimulationCommon/xml/ObjectElement.h>
-#include <SofaSimulationCommon/xml/AttributeElement.h>
-#include <SofaSimulationCommon/xml/DataElement.h>
-#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/AttributeElement.h>
+#include <sofa/simulation/common/xml/DataElement.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -69,6 +69,7 @@ GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f)
     setWindowFlags(f);
 
     graphListener = new GraphListenerQListView(this);
+    graphListener->widget->unLock();
     //addColumn("Graph");
     header()->hide();
     setSortingEnabled(false);
@@ -97,7 +98,7 @@ GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f)
 GraphModeler::~GraphModeler()
 {
     delete historyManager;
-    simulation::getSimulation()->unload(getRoot());
+    simulation::node::unload(getRoot());
     //delete getRoot();
     graphRoot.reset();
     delete graphListener;
@@ -126,7 +127,10 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     {
         std::ostringstream oss;
         oss << Node::shortName(child.get()) << numNode++;
-        child = Node::create(oss.str() );
+        sofa::core::objectmodel::BaseObjectDescription arg;
+        arg.setName(oss.str());
+        child = Node::create<sofa::simulation::Node>(parent.get(),&arg);
+//        child = Node::create(oss.str() );
         if (!parent)
             child->setName("Root");
     }
@@ -134,6 +138,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     if (parent != nullptr)
     {
         parent->addChild(child);
+        graphListener->onBeginAddChild(parent.get(),child.get());
 
         if (saveHistory)
         {
@@ -146,7 +151,8 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     {
         graphListener->onBeginAddChild(nullptr, child.get());
         //Set up the root
-        this->topLevelItem(0)->setExpanded(true);
+        if(this->topLevelItem(0) != nullptr)
+            this->topLevelItem(0)->setExpanded(true);
 
         if (saveHistory) historyManager->graphClean();
         graphRoot = child;
@@ -283,15 +289,27 @@ void GraphModeler::dropEvent(QDropEvent* event)
     if (text == QString("ComponentCreation"))
     {
         BaseObject::SPtr newComponent = addComponent(getNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
+        graphListener->onBeginAddObject(getNode(event->pos()),newComponent.get());
         if (newComponent)
         {
-//            QTreeWidgetItem *after = graphListener->items[newComponent.get()];
+            std::cerr << __FUNCTION__ << ":newComponent name : " << newComponent->getName() << std::endl;
+            QTreeWidgetItem *after = graphListener->items[newComponent.get()];
+            for(std::map<core::objectmodel::Base*, QTreeWidgetItem* > ::const_iterator cit = graphListener->items.begin() ; cit != graphListener->items.end() ; cit++)
+            {
+                core::objectmodel::Base* bNode = cit->first;
+                QTreeWidgetItem* bItem = cit->second;
+                if(bNode && bItem)
+                {
+                    std::cerr << __FUNCTION__ << ":Base Node Name : " << bNode->getName() << std::endl;
+                    std::cerr << __FUNCTION__ << ":item name : " << bItem->text(0).toStdString() << std::endl;
+                }
+            }
 
-//            std::ostringstream oss;
-//            oss << newComponent->getClassName() << " " << newComponent->getName();
-//            after->setText(0, QString(oss.str().c_str()));
-//            QTreeWidgetItem *item = itemAt(event->pos());
-//            if (getObject(item)) initItem(after, item);
+            std::ostringstream oss;
+            oss << newComponent->getClassName() << " " << newComponent->getName();
+            after->setText(0, QString(oss.str().c_str()));
+            QTreeWidgetItem *item = itemAt(event->pos());
+            if (getObject(item)) initItem(after, item);
         }
     }
     else
@@ -299,20 +317,40 @@ void GraphModeler::dropEvent(QDropEvent* event)
         if (text == QString("Node"))
         {
             Node* node=getNode(event->pos());
-
+            std::cerr << __FUNCTION__ << ":event pos node name : " << node->getName() << std::endl;
             if (node)
             {
                 Node::SPtr newNode=addNode(node);
+                std::cerr << __FUNCTION__ << ":newNode name : " << newNode->getName() << std::endl;
                 if (newNode)
                 {
                     QTreeWidgetItem *after = graphListener->items[newNode.get()];
                     QTreeWidgetItem *item = itemAt(event->pos());
-                    if (getObject(item)) initItem(after,item);
+
+                    for(std::map<core::objectmodel::Base*, QTreeWidgetItem* > ::const_iterator cit = graphListener->items.begin() ; cit != graphListener->items.end() ; cit++)
+                    {
+                        core::objectmodel::Base* bNode = cit->first;
+                        QTreeWidgetItem* bItem = cit->second;
+                        if(bNode && bItem)
+                        {
+                            std::cerr << __FUNCTION__ << ":Base Node Name : " << bNode->getName() << std::endl;
+                            std::cerr << __FUNCTION__ << ":item name : " << bItem->text(0).toStdString() << std::endl;
+                        }
+                    }
+
+                    if(after)
+                        std::cerr << __FUNCTION__ << ":after name : " << after->text(0).toStdString() << std::endl;
+                    if(item)
+                        std::cerr << __FUNCTION__ << ":item name : " << item->text(0).toStdString() << std::endl;
+                    if (getObject(item))
+                        initItem(after,item);
                 }
             }
         }
     }
 }
+
+
 
 
 Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
@@ -332,7 +370,12 @@ Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
 BaseObject *GraphModeler::getObject(QTreeWidgetItem *item) const
 {
     Base* component=getComponent(item);
-    return dynamic_cast<BaseObject*>(component);
+    std::cerr << "Component Class Name :: " << component->getClassName() << std::endl;
+    std::cerr << "Component Name :: " << component->getName() << std::endl;
+    std::cerr << "Component Template Name :: " << component->getTemplateName() << std::endl;
+    std::cerr << "Component Type Name :: " << component->getTypeName() << std::endl;
+    BaseObject* ComponentBaseObject = component->toBaseObject();
+    return ComponentBaseObject;
 }
 
 
@@ -678,7 +721,10 @@ void GraphModeler::linkComponent()
 Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseElement *elem, bool saveHistory)
 {
     const bool displayWarning=true;
-    Node::SPtr newNode = Node::create("");
+    sofa::core::objectmodel::BaseObjectDescription arg;
+    arg.setName("");
+    Node::SPtr newNode = Node::create<sofa::simulation::Node>(node.get(),&arg);
+//    Node::SPtr newNode = Node::create("");
     //Configure the new Node
     configureElement(newNode.get(), elem);
 
@@ -913,7 +959,7 @@ bool GraphModeler::getSaveFilename(std::string &filename)
 void GraphModeler::save(const std::string &filename)
 {
     Node *node = getNode(this->topLevelItem(0));
-    simulation::getSimulation()->exportXML(node, filename.c_str());
+    simulation::node::exportInXML(node, filename.c_str());
     emit graphClean();
 }
 
@@ -968,6 +1014,7 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
 
         }
         getNode(item)->removeObject(getObject(item));
+        graphListener->onBeginRemoveObject(parent,object);
     }
     else
     {
@@ -985,7 +1032,10 @@ void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
         if (!parent)
             graphListener->onBeginRemoveChild(parent, node);
         else
+        {
             parent->removeChild(dynamic_cast<Node*>(node));
+            graphListener->onBeginRemoveChild(nullptr,node);
+        }
         if (!parent && this->children().size() == 0) addNode(nullptr);
     }
 

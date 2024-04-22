@@ -112,7 +112,7 @@ protected:
     /// This can happen if the graph has been freezed (i.e. not graphically updated) for performance
     /// reason while simulating complex scenes.
     bool m_isDirty;
-    bool m_isLocked;
+    bool m_isLocked = false;
 };
 
 } //namespace sofa::gui::qt
