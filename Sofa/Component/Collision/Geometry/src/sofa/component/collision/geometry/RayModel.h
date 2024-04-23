@@ -93,7 +93,13 @@ protected:
     sofa::type::vector<SReal> length;
     sofa::type::vector<type::Vec3> direction;
 
-    Data<SReal> defaultLength; ///< TODO
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> defaultLength;
+
+
+
+
+    Data<SReal> d_defaultLength; ///< TODO
 
     std::set<response::contact::BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
