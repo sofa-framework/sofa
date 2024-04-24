@@ -108,6 +108,9 @@ public:
     virtual void onGUIEvent(core::objectmodel::GUIEvent *) {}
 
 protected:
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data < bool > handleEventTriggersUpdate;
+
 
     Data< bool > d_handleEventTriggersUpdate; ///< Event reception triggers object update ?
 
