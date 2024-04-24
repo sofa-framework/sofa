@@ -68,19 +68,55 @@ public:
 
     void doUpdate() override;
 
-    Data< type::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
-    Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
-    Data<SeqPoints> inputPoints; ///< Input surface mesh points
-    Data<SeqTriangles> inputTriangles; ///< Input surface mesh triangles
-    Data<SeqQuads> inputQuads; ///< Input surface mesh quads
-    Data<SeqPoints> outputPoints; ///< Output volume mesh points
-    Data<SeqTetrahedra> outputTetrahedra; ///< Output volume mesh tetrahedra
 
-    Data< Real > alphaLong; ///< Minimum alpha values on long edges when snapping points
-    Data< Real > alphaShort; ///< Minimum alpha values on short edges when snapping points
-    Data< bool > bSnapPoints; ///< Snap points to the surface if intersections on edges are closed to given alpha values
-    Data< bool > bSplitTetrahedra; ///< Split tetrahedra crossing the surface
-    Data< bool > bDraw; ///< Activate rendering of internal datasets
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< type::fixed_array<Point,2> > vbbox;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SeqPoints> inputPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SeqTriangles> inputTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SeqQuads> inputQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SeqPoints> outputPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SeqTetrahedra> outputTetrahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< Real > alphaLong;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<Real> alphaShort;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> bSnapPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< bool > bSplitTetrahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< bool > bDraw;
+
+
+
+    Data< type::fixed_array<Point,2> > d_vbbox; ///< BBox to restrict the volume to
+    Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
+    Data<SeqPoints> d_inputPoints; ///< Input surface mesh points
+    Data<SeqTriangles> d_inputTriangles; ///< Input surface mesh triangles
+    Data<SeqQuads> d_inputQuads; ///< Input surface mesh quads
+    Data<SeqPoints> d_outputPoints; ///< Output volume mesh points
+    Data<SeqTetrahedra> d_outputTetrahedra; ///< Output volume mesh tetrahedra
+
+    Data< Real > d_alphaLong; ///< Minimum alpha values on long edges when snapping points
+    Data< Real > d_alphaShort; ///< Minimum alpha values on short edges when snapping points
+    Data< bool > d_bSnapPoints; ///< Snap points to the surface if intersections on edges are closed to given alpha values
+    Data< bool > d_bSplitTetrahedra; ///< Split tetrahedra crossing the surface
+    Data< bool > d_bDraw; ///< Activate rendering of internal datasets
 
     Real cellsize;
     int gsize[3];

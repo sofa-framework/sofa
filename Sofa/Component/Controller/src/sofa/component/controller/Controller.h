@@ -109,7 +109,7 @@ public:
 
 protected:
 
-    Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
+    Data< bool > d_handleEventTriggersUpdate; ///< Event reception triggers object update ?
 
 public:
 
