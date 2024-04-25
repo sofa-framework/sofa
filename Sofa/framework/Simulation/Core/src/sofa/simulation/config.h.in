@@ -165,7 +165,7 @@ SOFA_ATTRIBUTE_DISABLED( \
 #else
 #define SOFA_ATTRIBUTE_DISABLED_SIMULATION_DUMPSTATE() \
 SOFA_ATTRIBUTE_DISABLED( \
-"v23.12", "v24.06", "Use sofa::simulation::node::dumpState")
+"v23.12", "v24.06", "Use sofa::simulation::node::d_dumpState")
 #endif // SOFA_BUILD_SOFA_SIMULATION_CORE
 
 #ifdef SOFA_BUILD_SOFA_SIMULATION_CORE

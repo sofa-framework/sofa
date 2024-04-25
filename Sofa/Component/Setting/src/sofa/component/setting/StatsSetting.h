@@ -39,15 +39,26 @@ protected:
      * @brief Default constructor.
      *
      * By default :
-     *  - @ref dumpState is set to false.
+     *  - @ref d_dumpState is set to false.
      *  - @ref logTime is set to false.
-     *  - @ref exportState is set to false.
+     *  - @ref d_exportState is set to false.
      */
     StatsSetting();
 public:
-    Data<bool> dumpState;       ///< If true, dump state vectors at each time step of the simulation.
-    Data<bool> logTime;         ///< If true, output in the console an average of the time spent during different stages of the simulation.
-    Data<bool> exportState;     ///< If true, create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene.
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> dumpState;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> logTime;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> exportState;
+
+
+    Data<bool> d_dumpState;       ///< If true, dump state vectors at each time step of the simulation.
+    Data<bool> d_logTime;         ///< If true, output in the console an average of the time spent during different stages of the simulation.
+    Data<bool> d_exportState;     ///< If true, create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene.
 #ifdef SOFA_DUMP_VISITOR_INFO
     Data<bool> traceVisitors;   ///< If true, trace the time spent by each visitor, and allows to profile precisely one step of a simulation.
 #endif
