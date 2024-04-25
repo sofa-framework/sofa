@@ -43,7 +43,7 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     , resolution ( initData ( &resolution, type::Vec3i ( 0, 0, 0 ), "resolution", "voxel grid resolution" ) )
     , valuesIndexedInRegularGrid( initData ( &valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
     , valuesIndexedInTopology( initData(&valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
-    , idxInRegularGrid( initData ( &idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
+    , idxInRegularGrid( initData ( &idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "d_idxInRegularGrid", "indices in the Regular Grid" ) )
     , idInRegularGrid2IndexInTopo( initData ( &idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
     , voxelSize( initData(&voxelSize, type::Vec3(1_sreal,1_sreal,1_sreal), "voxelSize", "Size of the Voxels"))
 {

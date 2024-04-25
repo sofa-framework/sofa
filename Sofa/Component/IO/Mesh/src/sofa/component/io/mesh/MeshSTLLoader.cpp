@@ -43,10 +43,13 @@ static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file fo
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
-    , _headerSize(initData(&_headerSize, 80u, "headerSize","Size of the header binary file (just before the number of facet)."))
-    , _forceBinary(initData(&_forceBinary, false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
+    , d_headerSize(initData(&d_headerSize, 80u, "d_headerSize", "Size of the header binary file (just before the number of facet)."))
+    , d_forceBinary(initData(&d_forceBinary, false, "forceBinary", "Force reading in binary mode. Even in first keyword of the file is solid."))
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
+    headerSize.setParent(&d_headerSize);
+    forceBinary.setParent(&d_forceBinary);
+
 }
 
 
@@ -69,7 +72,7 @@ bool MeshSTLLoader::doLoad()
     }
 
     bool ret = false;
-    if( _forceBinary.getValue() )
+    if( d_forceBinary.getValue() )
         ret = this->readBinarySTL(filename); // -- Reading binary file
     else
     {
@@ -134,7 +137,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     // Skipping header file
     char buffer[256];
-    dataFile.read(buffer, _headerSize.getValue());
+    dataFile.read(buffer, d_headerSize.getValue());
 
     uint32_t nbrFacet;
     dataFile.read(reinterpret_cast<char*>(&nbrFacet), 4);
@@ -153,7 +156,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // restore pos in file
     dataFile.seekg(pos);
     // check for length
-    assert( length >= _headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
+    assert(length >= d_headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
     }
 #endif
 

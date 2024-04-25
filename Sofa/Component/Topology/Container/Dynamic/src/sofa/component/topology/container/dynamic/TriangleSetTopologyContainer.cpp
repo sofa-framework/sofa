@@ -597,7 +597,7 @@ const sofa::type::vector<TriangleSetTopologyContainer::EdgeID>& TriangleSetTopol
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
-        dmsg_warning() << "getEdgesOnBorder: edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
+        dmsg_warning() << "getEdgesOnBorder: d_edgesOnBorder array is empty. Be sure to call createElementsOnBorder first.";
         createElementsOnBorder();
     }
 

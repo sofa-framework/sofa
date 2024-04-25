@@ -633,7 +633,7 @@ namespace sofa::helper
                                     type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
                                     bool propagate ) const
     {
-        //    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
+        //    Vec3i gridSize = Vec3i ( d_dataResolution[0]/cubeStep, d_dataResolution[1]/cubeStep, d_dataResolution[2]/cubeStep );
         std::set<type::Vec3i> generatedCubes;
 
         const size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
