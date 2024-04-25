@@ -102,10 +102,13 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< bool > bDraw;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< Real > size;
+
 
 
     Data< type::fixed_array<Point,2> > d_vbbox; ///< BBox to restrict the volume to
-    Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
+    Data< Real > d_size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
     Data<SeqPoints> d_inputPoints; ///< Input surface mesh points
     Data<SeqTriangles> d_inputTriangles; ///< Input surface mesh triangles
     Data<SeqQuads> d_inputQuads; ///< Input surface mesh quads

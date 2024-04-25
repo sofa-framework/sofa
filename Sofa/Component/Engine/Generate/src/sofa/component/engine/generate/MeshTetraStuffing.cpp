@@ -40,8 +40,7 @@ int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume m
 
 MeshTetraStuffing::MeshTetraStuffing()
     : d_vbbox(initData(&d_vbbox, "d_vbbox", "BBox to restrict the volume to"))
-    /// TODO
-    , size(initData(&size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
+    , d_size(initData(&d_size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
     , d_inputPoints(initData(&d_inputPoints, "inputPoints", "Input surface mesh points"))
     , d_inputTriangles(initData(&d_inputTriangles, "inputTriangles", "Input surface mesh triangles"))
     , d_inputQuads(initData(&d_inputQuads, "inputQuads", "Input surface mesh quads"))
@@ -68,6 +67,7 @@ MeshTetraStuffing::MeshTetraStuffing()
     //addOutput(&outputTetrahedra);
 
     vbbox.setParent(&d_vbbox);
+    size.setParent(&d_size);
     inputPoints.setParent(&d_inputPoints);
     inputTriangles.setParent(&d_inputTriangles);
     inputQuads.setParent(&d_inputQuads);
@@ -140,7 +140,7 @@ void MeshTetraStuffing::doUpdate()
     }
     d_vbbox.endEdit();
 
-    cellsize = size.getValue();
+    cellsize = d_size.getValue();
     if (cellsize < 0)
     {
         Point b = bb[1]-bb[0];
@@ -736,7 +736,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         const bool flip1 = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
         const bool flip2 = flipDiag(outP, ppos[1],ppos[2],cut3,cut2,pneg[0]);
         bool flip3 = flipDiag(outP, ppos[2],ppos[0],cut1,cut3,pneg[0]);
-        if (flip1 == flip2 && flip2 == flip3)
+         if (flip1 == flip2 && flip2 == flip3)
         {
             msg_error() << "Invalid tetra split";
             flip3 = !flip1;
