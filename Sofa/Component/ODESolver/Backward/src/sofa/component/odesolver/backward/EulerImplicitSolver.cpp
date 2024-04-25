@@ -154,7 +154,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     if (firstOrder)
         matrix.setSystemMBKMatrix(MechanicalMatrix(1,0,-h*tr)); //MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
     else
-        matrix.setSystemMBKMatrix(MechanicalMatrix(1+tr*h*f_rayleighMass.getValue(),-tr*h,-tr*h*(h+f_rayleighStiffness.getValue()))); // MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
+        matrix.setSystemMBKMatrix(MechanicalMatrix(1+tr*h*f_rayleighMass.getValue(),-tr*h,-tr*h*(h+f_rayleighStiffness.getValue()))); // MechanicalMatrix::K * (-tr*h*(h+d_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*d_rayleighMass.getValue());
 
     msg_info() << "EulerImplicitSolver, matrix = " << (MechanicalMatrix::K * (-h * (h + f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1 + h * f_rayleighMass.getValue())) << " = " << matrix;
     msg_info() << "EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K;
