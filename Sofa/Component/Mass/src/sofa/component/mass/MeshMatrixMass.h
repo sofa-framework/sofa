@@ -91,6 +91,15 @@ public:
     Data< MassType > d_totalMass;
     /// @}
 
+    /// Enumeration specifying which data was used for initialization
+    enum InitMethod {
+        totalMass,
+        massDensity,
+        vertexMass,
+        vertexAndEdgeMass
+    };
+
+    InitMethod m_initMethod = totalMass;
 
     /// Values of the particles masses stored on vertices
     core::topology::PointData<type::vector<MassType> >  d_vertexMass;
@@ -137,6 +146,7 @@ public:
     void reinit() override;
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event *event) override;
+
 
     sofa::geometry::ElementType getMassTopologyType() const
     {
@@ -186,19 +196,23 @@ public:
     virtual void initFromMassDensity();
 
     virtual bool checkTotalMass();
-    virtual void checkTotalMassInit();
     virtual void initFromTotalMass();
 
     bool checkEdgeMass();
     void initFromVertexAndEdgeMass();
     /// @}
 
+    /// Functions updating data
+    sofa::core::objectmodel::ComponentState updateFromTotalMass();
+    sofa::core::objectmodel::ComponentState updateFromMassDensity();
+    sofa::core::objectmodel::ComponentState updateFromVertexAndEdgeMass();
+    sofa::core::objectmodel::ComponentState updateFromVertexMass();
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
     void copyVertexMass();
 
 
-    // -- Mass interface
+    /// Mass APInterface
     void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
     void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
