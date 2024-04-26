@@ -75,8 +75,12 @@ public:
     // just to remember
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> _finestConnectivity;
+    
+
     // Does the connectivity test have to be done at the finest level? (more precise but slow)
-    Data<bool> _finestConnectivity; ///< Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)
+    Data<bool> d_finestConnectivity; ///< Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)
 
 
     /// a connexion corresponds to a connexe component in each regular hexa (each non-void hexa has at less one connexion)
@@ -92,7 +96,7 @@ public:
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 
-        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
+        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::d_seqHexahedra
         Index _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
 
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number

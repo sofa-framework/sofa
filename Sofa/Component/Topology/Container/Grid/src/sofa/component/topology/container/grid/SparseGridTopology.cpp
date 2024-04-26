@@ -130,8 +130,8 @@ void SparseGridTopology::init()
     else
         buildAsFinest();
 
-    _nodeAdjacency.resize(seqPoints.getValue().size() );
-    for(unsigned i=0; i<seqPoints.getValue().size(); ++i)
+    _nodeAdjacency.resize(d_seqPoints.getValue().size() );
+    for(unsigned i=0; i < d_seqPoints.getValue().size(); ++i)
         _nodeAdjacency[i].assign(InvalidID);
 
     if (_nodeAdjacency.empty())
@@ -140,7 +140,7 @@ void SparseGridTopology::init()
         return;
     }
 
-    const auto& hexahedra = seqHexahedra.getValue();
+    const auto& hexahedra = d_seqHexahedra.getValue();
 
     for(unsigned i=0; i<hexahedra.size(); ++i)
     {
@@ -179,7 +179,7 @@ void SparseGridTopology::init()
 
 
     //	_nodeCubesAdjacency.clear();
-    _nodeCubesAdjacency.resize(seqPoints.getValue().size() );
+    _nodeCubesAdjacency.resize(d_seqPoints.getValue().size() );
 
     for(unsigned i=0; i<hexahedra.size(); ++i)
     {
@@ -219,7 +219,7 @@ void SparseGridTopology::buildAsFinest(  )
         else // given surface
         {
             helper::io::Mesh* mesh = nullptr;
-            if (seqPoints.getValue().size() == 0 && _filename.empty())
+            if (d_seqPoints.getValue().size() == 0 && _filename.empty())
             {
                 msg_warning() << "no filename specified nor vertices given as parameters.";
                 return;
@@ -229,11 +229,11 @@ void SparseGridTopology::buildAsFinest(  )
                 if (_filename.empty())
                 {
                     mesh = new sofa::helper::io::Mesh();
-                    for (unsigned int i = 0; i < seqPoints.getValue().size(); ++i)
-                        mesh->getVertices().push_back(seqPoints.getValue()[i]);
+                    for (unsigned int i = 0; i < d_seqPoints.getValue().size(); ++i)
+                        mesh->getVertices().push_back(d_seqPoints.getValue()[i]);
                     const auto& facets = this->facets.getValue();
-                    const SeqTriangles& triangles = this->seqTriangles.getValue();
-                    const SeqQuads& quads = this->seqQuads.getValue();
+                    const SeqTriangles& triangles = this->d_seqTriangles.getValue();
+                    const SeqQuads& quads = this->d_seqQuads.getValue();
                     mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
                     for (size_t i = 0; i < facets.size(); ++i)
                         mesh->getFacets()[i].push_back(facets[i]);
@@ -435,7 +435,7 @@ void SparseGridTopology::buildFromData( type::Vec3i numPoints, type::BoundingBox
 
     std::stringstream tmp;
     tmp << "regularGrid  has " << _regularGrid->getNbHexahedra() << " hexahedra, "
-        << "hexahedra = " << this->seqHexahedra.getValue() ;
+        << "hexahedra = " << this->d_seqHexahedra.getValue() ;
     msg_info() << tmp.str() ;
 }
 
@@ -940,7 +940,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         }
     }
 
-    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->d_seqPoints.beginEdit(); seqPoints.clear();
     // compute corner indices
     int cornerCounter=0;
 
@@ -951,7 +951,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         seqPoints.push_back( (*it).first );
     }
 
-    this->seqPoints.beginEdit();
+    this->d_seqPoints.beginEdit();
     nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
@@ -1104,13 +1104,13 @@ void SparseGridTopology::buildFromFiner()
 
     // compute corner indices
     int cornerCounter=0;
-    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->d_seqPoints.beginEdit(); seqPoints.clear();
     for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
     {
         (*it).second = cornerCounter;
         seqPoints.push_back( (*it).first );
     }
-    this->seqPoints.endEdit();
+    this->d_seqPoints.endEdit();
     nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
@@ -1126,10 +1126,10 @@ void SparseGridTopology::buildFromFiner()
 
 
     // for interpolation and restriction
-    _hierarchicalPointMap.resize(this->seqPoints.getValue().size());
-    _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->seqPoints.getValue().size());
-    _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->seqPoints.getValue().size()); _finerSparseGrid->_inversePointMap.fill(InvalidID);
-    _pointMap.resize(this->seqPoints.getValue().size()); _pointMap.fill(InvalidID);
+    _hierarchicalPointMap.resize(this->d_seqPoints.getValue().size());
+    _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->d_seqPoints.getValue().size());
+    _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->d_seqPoints.getValue().size()); _finerSparseGrid->_inversePointMap.fill(InvalidID);
+    _pointMap.resize(this->d_seqPoints.getValue().size()); _pointMap.fill(InvalidID);
 
     for( unsigned w=0; w<seqHexahedra.getValue().size(); ++w)
     {
@@ -1187,7 +1187,7 @@ void SparseGridTopology::buildFromFiner()
     }
 
     _finerSparseGrid->_coarserSparseGrid = this;
-    _finerSparseGrid->_inverseHierarchicalCubeMap.resize( _finerSparseGrid->seqHexahedra.getValue().size(), InvalidID);
+    _finerSparseGrid->_inverseHierarchicalCubeMap.resize(_finerSparseGrid->d_seqHexahedra.getValue().size(), InvalidID);
     for( unsigned i=0; i<_hierarchicalCubeMap.size(); ++i)
     {
         for(int w=0; w<8; ++w)
@@ -1241,10 +1241,10 @@ void SparseGridTopology::buildVirtualFinerLevels()
     const std::string& fileTopology = this->fileTopology.getValue();
     if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
     {
-        _virtualFinerLevels[0]->seqPoints.setParent(&this->seqPoints);
+        _virtualFinerLevels[0]->d_seqPoints.setParent(&this->d_seqPoints);
         _virtualFinerLevels[0]->facets.setParent(&this->facets);
-        _virtualFinerLevels[0]->seqTriangles.setParent(&this->seqTriangles);
-        _virtualFinerLevels[0]->seqQuads.setParent(&this->seqQuads);
+        _virtualFinerLevels[0]->d_seqTriangles.setParent(&this->d_seqTriangles);
+        _virtualFinerLevels[0]->d_seqQuads.setParent(&this->d_seqQuads);
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());

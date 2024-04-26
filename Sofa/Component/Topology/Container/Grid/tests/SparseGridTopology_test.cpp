@@ -92,8 +92,8 @@ bool SparseGridTopology_test::buildFromMeshParams()
     EXPECT_NE(sparseGrid1, nullptr);
 
     //Pyramid centered on 0 0 0
-    sparseGrid1->seqPoints.setValue({ {0, 0, 1}, {-1, 0, -1}, {0, 1, -1}, {1, 0, -1}, {0, -1, -1} });
-    sparseGrid1->seqTriangles.setValue({ {0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1}, {1, 2, 3}, {3, 4, 1} });
+    sparseGrid1->d_seqPoints.setValue({{0, 0, 1}, {-1, 0, -1}, {0, 1, -1}, {1, 0, -1}, {0, -1, -1} });
+    sparseGrid1->d_seqTriangles.setValue({{0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1}, {1, 2, 3}, {3, 4, 1} });
     sparseGrid1->setN({ 10,10,10 });
     sparseGrid1->init();
 
@@ -112,9 +112,9 @@ bool SparseGridTopology_test::buildFromMeshParams()
     EXPECT_EQ(stlLoader->d_positions.getValue().size(), 505);
     EXPECT_EQ(stlLoader->d_triangles.getValue().size(), 968);
 
-    sparseGrid2->seqPoints.setParent(&stlLoader->d_positions);
-    sparseGrid2->seqTriangles.setParent(&stlLoader->d_triangles);
-    sparseGrid2->seqQuads.setParent(&stlLoader->d_quads);
+    sparseGrid2->d_seqPoints.setParent(&stlLoader->d_positions);
+    sparseGrid2->d_seqTriangles.setParent(&stlLoader->d_triangles);
+    sparseGrid2->d_seqQuads.setParent(&stlLoader->d_quads);
     sparseGrid2->setN({ 10,10,10 });
     sparseGrid2->init();
 

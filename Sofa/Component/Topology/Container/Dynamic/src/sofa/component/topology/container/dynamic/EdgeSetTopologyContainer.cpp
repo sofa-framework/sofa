@@ -45,8 +45,9 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
-    , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
+    , d_checkConnexity(initData(&d_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
+    m_checkConnexity.setParent(&d_checkConnexity);
 }
 
 
@@ -130,7 +131,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         m_edgesAroundVertex[ edge[1] ].push_back(edgeId);
     }
 
-    if (m_checkConnexity.getValue())
+    if (d_checkConnexity.getValue())
         this->checkConnexity();
 }
 
@@ -140,7 +141,7 @@ void EdgeSetTopologyContainer::reinit()
 
     createEdgesAroundVertexArray();
 
-    if (m_checkConnexity.getValue())
+    if (d_checkConnexity.getValue())
         this->checkConnexity();
 }
 

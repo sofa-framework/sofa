@@ -46,7 +46,7 @@ VoxelGridLoader::VoxelGridLoader()
       roi ( initData ( &roi, Vec6i ( 0,0,0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
       headerSize ( initData ( &headerSize, 0, "header", "Header size in bytes" ) ),
       segmentationHeaderSize ( initData ( &segmentationHeaderSize, 0, "segmentationHeader", "Header size in bytes" ) ),
-      idxInRegularGrid(initData(&idxInRegularGrid,"idxInRegularGrid","indices of the hexa in the grid.")),
+      idxInRegularGrid(initData(&idxInRegularGrid,"d_idxInRegularGrid","indices of the hexa in the grid.")),
       backgroundValue ( initData ( &backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
       activeValue ( initData ( &activeValue, "dataValue", "Active data values" ) ),
       generateHexa( initData ( &generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),

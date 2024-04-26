@@ -34,62 +34,67 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 
 SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : SparseGridRamificationTopology(_isVirtual),
-    _fileTopologies(initData(&_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames")),
-    _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-    _dataMassCoefs(initData(&_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
-    _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
-    _erasePreviousCoef(initData(&_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
+                                                                            d_fileTopologies(initData(&d_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames")),
+                                                                            d_dataStiffnessCoefs(initData(&d_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
+                                                                            d_dataMassCoefs(initData(&d_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
+                                                                            d_computeRamifications(initData(&d_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
+                                                                            d_erasePreviousCoef(initData(&d_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
+    _fileTopologies.setParent(&d_fileTopologies);
+    _dataStiffnessCoefs.setParent(&d_dataStiffnessCoefs);
+    _dataMassCoefs.setParent(&d_dataMassCoefs);
+    _computeRamifications.setParent(&d_computeRamifications);
+    _erasePreviousCoef.setParent(&d_erasePreviousCoef);
 }
 
 
 void SparseGridMultipleTopology::buildAsFinest()
 {
-    if (_fileTopologies.getValue().empty())
+    if (d_fileTopologies.getValue().empty())
     {
         msg_error() << "No file topology provided";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
+    if(d_dataStiffnessCoefs.getValue().size() < d_fileTopologies.getValue().size() )
     {
         msg_warning() << "SparseGridMultipleTopology: not enough stiffnessCoefs";
-        for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
-            _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
+        for(unsigned i=d_dataStiffnessCoefs.getValue().size(); i < d_fileTopologies.getValue().size(); ++i)
+            d_dataStiffnessCoefs.beginEdit()->push_back(1.0 );
         //           return;
     }
 
-    if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
+    if(d_dataMassCoefs.getValue().size() < d_fileTopologies.getValue().size() )
     {
         msg_warning() << "SparseGridMultipleTopology: not enough massCoefs\n";
-        for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
-            _dataMassCoefs.beginEdit()->push_back( 1.0 );
+        for(unsigned i=d_dataMassCoefs.getValue().size(); i < d_fileTopologies.getValue().size(); ++i)
+            d_dataMassCoefs.beginEdit()->push_back(1.0 );
         // 			return;
     }
 
     const unsigned regularGridsSize = _regularGrids.size();
 
-    if (regularGridsSize < _fileTopologies.getValue().size())
+    if (regularGridsSize < d_fileTopologies.getValue().size())
     {
-        for (unsigned int i = 0; i < _fileTopologies.getValue().size() - regularGridsSize; ++i)
+        for (unsigned int i = 0; i < d_fileTopologies.getValue().size() - regularGridsSize; ++i)
         {
             _regularGrids.push_back(sofa::core::objectmodel::New< RegularGridTopology >());
         }
     }
     else
     {
-        for (unsigned int i = 0; i < regularGridsSize - _fileTopologies.getValue().size(); ++i)
+        for (unsigned int i = 0; i < regularGridsSize - d_fileTopologies.getValue().size(); ++i)
         {
             _regularGrids[i + _regularGrids.size()].reset();
         }
 
-        _regularGrids.resize(_fileTopologies.getValue().size());
+        _regularGrids.resize(d_fileTopologies.getValue().size());
     }
 
-    _regularGridTypes.resize(_fileTopologies.getValue().size());
+    _regularGridTypes.resize(d_fileTopologies.getValue().size());
 
-    type::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
+    type::vector< helper::io::Mesh*> meshes(d_fileTopologies.getValue().size());
 
 
     SReal xMing = std::numeric_limits<SReal>::max();
@@ -99,10 +104,10 @@ void SparseGridMultipleTopology::buildAsFinest()
     SReal zMing = std::numeric_limits<SReal>::max();
     SReal zMaxg = std::numeric_limits<SReal>::lowest();
 
-    for(unsigned i=0; i<_fileTopologies.getValue().size(); ++i)
+    for(unsigned i=0; i < d_fileTopologies.getValue().size(); ++i)
     {
 
-        std::string filename = _fileTopologies.getValue()[i];
+        std::string filename = d_fileTopologies.getValue()[i];
 
         msg_info() << "SparseGridMultipleTopology open " << filename;
 
@@ -143,7 +148,7 @@ void SparseGridMultipleTopology::buildAsFinest()
         _max.setValue(type::Vec3( xMaxg + diff[0], yMaxg + diff[1], zMaxg + diff[2] ));
     }
 
-    for(unsigned i=0; i<_fileTopologies.getValue().size(); ++i)
+    for(unsigned i=0; i < d_fileTopologies.getValue().size(); ++i)
     {
         if(meshes[i]) buildFromTriangleMesh(meshes[i],i);
     }
@@ -165,16 +170,16 @@ void SparseGridMultipleTopology::buildAsFinest()
         _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
     }
 
-    if(_computeRamifications.getValue())
+    if(d_computeRamifications.getValue())
     {
 
-        if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
+        if(d_finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
         {
             // find the connexion graph between the finest hexahedra
             findConnexionsAtFinestLevel();
         }
 
-        if( _finestConnectivity.getValue() )
+        if( d_finestConnectivity.getValue() )
         {
 
             buildRamifiedFinestLevel();
@@ -211,15 +216,15 @@ void SparseGridMultipleTopology::assembleRegularGrids(type::vector<Type>& regula
             if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->_fillWeighted.getValue()) )
             {
                 regularGridTypes[w] = INSIDE;
-                regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i];
-                regularMassCoefs[w] = _dataMassCoefs.getValue()[i];
+                regularStiffnessCoefs[w] = d_dataStiffnessCoefs.getValue()[i];
+                regularMassCoefs[w] = d_dataMassCoefs.getValue()[i];
             }
             else if(  _regularGridTypes[i][w] == BOUNDARY && this->_fillWeighted.getValue() )
             {
                 if( regularGridTypes[w] != INSIDE ) regularGridTypes[w] = BOUNDARY;
 
-                regularStiffnessCoefs[w] = (float)(_erasePreviousCoef.getValue()?_dataStiffnessCoefs.getValue()[i]:(regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5f);
-                regularMassCoefs[w] = (float)(_erasePreviousCoef.getValue()?_dataMassCoefs.getValue()[i]:(regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5f);
+                regularStiffnessCoefs[w] = (float)(d_erasePreviousCoef.getValue() ? d_dataStiffnessCoefs.getValue()[i] : (regularStiffnessCoefs[w] + d_dataStiffnessCoefs.getValue()[i]) * .5f);
+                regularMassCoefs[w] = (float)(d_erasePreviousCoef.getValue() ? d_dataMassCoefs.getValue()[i] : (regularMassCoefs[w] + d_dataMassCoefs.getValue()[i]) * .5f);
             }
         }
     }
@@ -252,12 +257,12 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     std::stringstream nameg; nameg << "virtual grid "<< 0;
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext() );
-    sgmt->_erasePreviousCoef.setValue(_erasePreviousCoef.getValue());
+    sgmt->d_erasePreviousCoef.setValue(d_erasePreviousCoef.getValue());
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
-    sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
-    sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
-    sgmt->_dataMassCoefs.setValue(this->_dataMassCoefs.getValue());
-    sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
+    sgmt->d_fileTopologies.setValue(this->d_fileTopologies.getValue());
+    sgmt->d_dataStiffnessCoefs.setValue(this->d_dataStiffnessCoefs.getValue());
+    sgmt->d_dataMassCoefs.setValue(this->d_dataMassCoefs.getValue());
+    sgmt->d_finestConnectivity.setValue(d_finestConnectivity.getValue() );
     _virtualFinerLevels[0]->init();
 
     std::stringstream tmpStr;

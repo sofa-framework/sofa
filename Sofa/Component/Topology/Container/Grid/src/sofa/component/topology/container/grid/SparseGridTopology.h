@@ -173,7 +173,7 @@ public:
     type::vector< Index > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     type::vector< Index > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
-    type::Vec3 getPointPos(Index i ) { return type::Vec3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
+    type::Vec3 getPointPos(Index i ) { return type::Vec3(d_seqPoints.getValue()[i][0], d_seqPoints.getValue()[i][1], d_seqPoints.getValue()[i][2] ); }
 
     void getMesh( sofa::helper::io::Mesh &m);
 
