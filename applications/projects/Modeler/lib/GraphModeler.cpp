@@ -129,7 +129,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
         oss << Node::shortName(child.get()) << numNode++;
         sofa::core::objectmodel::BaseObjectDescription arg;
         arg.setName(oss.str());
-        child = Node::create<sofa::simulation::Node>(parent.get(),&arg);
+        child = Node::create(&arg);
 //        child = Node::create(oss.str() );
         if (!parent)
             child->setName("Root");
@@ -723,7 +723,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
     const bool displayWarning=true;
     sofa::core::objectmodel::BaseObjectDescription arg;
     arg.setName("");
-    Node::SPtr newNode = Node::create<sofa::simulation::Node>(node.get(),&arg);
+    Node::SPtr newNode = Node::create(&arg);
 //    Node::SPtr newNode = Node::create("");
     //Configure the new Node
     configureElement(newNode.get(), elem);

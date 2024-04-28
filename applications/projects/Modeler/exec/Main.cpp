@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 #endif
     if (!binaryName.empty() && binaryName[binaryName.size()-1] == 'd') sofaModeler->setDebugBinary(true);
 
-    std::cerr << "DataRep :: " << sofa::helper::system::DataRepository.getFirstPath() <<std::endl;
+//    std::cerr << "DataRep :: " << sofa::helper::system::DataRepository.getFirstPath() <<std::endl;
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));

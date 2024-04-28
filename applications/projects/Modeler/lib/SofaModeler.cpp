@@ -680,13 +680,10 @@ void SofaModeler::fileOpen(const QUrl &u)
 
 void SofaModeler::fileOpen(std::string filename)
 {
-    std::cerr << __FUNCTION__ << ": input file name = " << filename << std::endl;
     if ( sofa::helper::system::DataRepository.findFile ( filename ) )
     {
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-        std::cerr << __FUNCTION__ << ": openPath = " << openPath << std::endl;
-        std::cerr << __FUNCTION__ << ": filename = " << filename << std::endl;
         Node::SPtr root = sofa::simulation::node::load(filename.c_str()).get();
         if (root)
         {
@@ -705,7 +702,6 @@ void SofaModeler::fileOpen(std::string filename)
         }
     }
     displayHelpModeler();
-    std::cerr << __FUNCTION__ << " -> Finished" << std::endl;
 }
 
 void SofaModeler::fileRecentlyOpened(QAction* act)
