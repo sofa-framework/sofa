@@ -27,5 +27,5 @@ SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/solidmechanics/spring
 namespace sofa::component::solidmechanics::spring
 {
 template<class T>
-using StiffSpringForceField SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "StiffSpringForceField has been merged with to SpringForceField") = SpringForceField<T>;
+using StiffSpringForceField SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "StiffSpringForceField has been merged with SpringForceField") = SpringForceField<T>;
 }
