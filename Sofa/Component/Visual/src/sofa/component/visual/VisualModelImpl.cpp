@@ -136,7 +136,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_translationTex  (initData   (&d_translationTex, TexCoord(0.f, 0.f), "translationTex", "Translation of the texture"))
     , d_material			(initData	(&d_material, "material", "Material")) // tex(nullptr)
     , d_putOnlyTexCoords	(initData	(&d_putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
-    , d_srgbTexturing		(initData	(&d_srgbTexturing, (bool) false, "d_srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
+    , d_srgbTexturing		(initData	(&d_srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
     , d_materials			(initData	(&d_materials, "materials", "List of materials"))
     , d_groups			(initData	(&d_groups, "groups", "Groups of triangles and quads using a given material"))
     , l_topology        (initLink   ("topology", "link to the topology container"))
