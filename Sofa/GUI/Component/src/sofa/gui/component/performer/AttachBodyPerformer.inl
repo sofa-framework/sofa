@@ -92,17 +92,17 @@ bool AttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
     using sofa::component::solidmechanics::spring::SpringForceField;
 
     this->m_interactionObject = sofa::core::objectmodel::New< SpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->m_interactor->getMouseContainer()), mstateCollision);
-    auto* Springforcefield = dynamic_cast< SpringForceField< DataTypes >* >(this->m_interactionObject.get());
-    Springforcefield->setName("Spring-Mouse-Contact");
-    Springforcefield->setArrowSize((float)this->m_size);
-    Springforcefield->setDrawMode(2); //Arrow mode if size > 0
-    Springforcefield->addSpring(0,index, m_stiffness, 0.0, picked.dist);
+    auto* springforcefield = dynamic_cast< SpringForceField< DataTypes >* >(this->m_interactionObject.get());
+    springforcefield->setName("Spring-Mouse-Contact");
+    springforcefield->setArrowSize((float)this->m_size);
+    springforcefield->setDrawMode(2); //Arrow mode if size > 0
+    springforcefield->addSpring(0,index, m_stiffness, 0.0, picked.dist);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        Springforcefield->addTag(*it);
+        springforcefield->addTag(*it);
 
-    mstateCollision->getContext()->addObject(Springforcefield);
+    mstateCollision->getContext()->addObject(springforcefield);
     return true;
 }
 
