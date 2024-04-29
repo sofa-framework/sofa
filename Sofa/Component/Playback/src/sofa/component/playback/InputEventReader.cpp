@@ -39,7 +39,7 @@ int InputEventReaderClass = core::RegisterObject("Read events from file")
 
 InputEventReader::InputEventReader()
     : d_filename(initData(&d_filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
-    , d_inverseSense(initData(&d_inverseSense, false, "d_inverseSense", "inverse the sense of the mouvement"))
+    , d_inverseSense(initData(&d_inverseSense, false, "inverseSense", "inverse the sense of the mouvement"))
     , d_printEvent(initData(&d_printEvent, false, "printEvent", "Print event informations"))
 //, timeout( initData(&timeout, 0, "timeout", "time out to get an event from file" ))
     , d_key1(initData(&d_key1, '0', "key1", "Key event generated when the left pedal is pressed"))
