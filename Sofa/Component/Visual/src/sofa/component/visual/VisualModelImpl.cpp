@@ -121,7 +121,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_vertices2       (initData   (&d_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
     , d_vtexcoords      (initData   (&d_vtexcoords, "texcoords", "coordinates of the texture"))
     , d_vtangents       (initData   (&d_vtangents, "tangents", "tangents for normal mapping"))
-    , m_vtangents (initData   (&d_vtangents, "tangents", "tangents for normal mapping"))
     , d_vbitangents     (initData   (&d_vbitangents, "bitangents", "tangents for normal mapping"))
     , d_edges           (initData   (&d_edges, "edges", "edges of the model"))
     , d_triangles       (initData   (&d_triangles, "triangles", "triangles of the model"))
