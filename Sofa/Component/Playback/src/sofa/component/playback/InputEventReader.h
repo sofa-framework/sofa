@@ -91,7 +91,7 @@ private:
     Data<bool> p_writeEvents;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<std::string> p_outputFilename;
+    sofa::core::objectmodel::DataFileName p_outputFilename;
 
     sofa::core::objectmodel::DataFileName d_filename; ///< file in which the events are read.
     Data<bool> d_inverseSense; ///< inverse the sense of the mouvement
