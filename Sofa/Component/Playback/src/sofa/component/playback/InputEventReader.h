@@ -73,7 +73,7 @@ public:
 
 private:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<std::string> filename;
+    sofa::core::objectmodel::DataFileName filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> inverseSense;
