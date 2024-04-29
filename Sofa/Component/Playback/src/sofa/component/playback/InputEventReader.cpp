@@ -57,7 +57,7 @@ InputEventReader::InputEventReader()
     inverseSense.setParent(&d_inverseSense);
     p_key1.setParent(&d_key1);
     p_key2.setParent(&d_key2);
-    d_writeEvents.setParent(&d_writeEvents);
+    p_writeEvents.setParent(&d_writeEvents);
     p_outputFilename.setParent(&d_outputFilename);
 
 
