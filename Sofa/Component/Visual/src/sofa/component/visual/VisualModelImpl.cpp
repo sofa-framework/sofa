@@ -123,7 +123,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_vtangents       (initData   (&d_vtangents, "tangents", "tangents for normal mapping"))
     , m_vtangents (initData   (&d_vtangents, "tangents", "tangents for normal mapping"))
     , d_vbitangents     (initData   (&d_vbitangents, "bitangents", "tangents for normal mapping"))
-    , m_vbitangents(initData   (&d_vbitangents, "bitangents", "tangents for normal mapping"))
     , d_edges           (initData   (&d_edges, "edges", "edges of the model"))
     , m_edges(initData   (&d_edges, "edges", "edges of the model"))
     , d_triangles       (initData   (&d_triangles, "triangles", "triangles of the model"))
