@@ -294,7 +294,7 @@ void SkeletalMotionProjectiveConstraint<DataTypes>::applyConstraint(const core::
     if( !active.getValue() ) return;
 
     /*const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -314,7 +314,7 @@ void SkeletalMotionProjectiveConstraint<DataTypes>::applyConstraint(const core::
 
     /*const unsigned int N = Deriv::size();
 
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
     	for (unsigned int c=0;c<N;++c)

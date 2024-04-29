@@ -39,18 +39,18 @@ public:
 
     template<class T>
     static void bwdInit(BilateralLagrangianConstraint<T>& self) {
-        if (!self.keepOrientDiff.getValue())
+        if (!self.d_keepOrientDiff.getValue())
             return;
 
-        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::VecDeriv > > wrest = self.restVector;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::VecDeriv > > wrest = self.d_restVector;
 
         if (wrest.size() > 0) {
             msg_warning("BilateralLagrangianConstraintSpecialization") << "keepOrientationDifference is activated, rest_vector will be ignored! " ;
             wrest.resize(0);
         }
 
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.d_m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.d_m2.getValue();
 
         const unsigned minp = std::min(m1Indices.size(),m2Indices.size());
 
@@ -89,8 +89,8 @@ public:
                                         unsigned int& offset, double tolerance)
     {
         SOFA_UNUSED(cParams);
-        const unsigned minp=std::min(self.m1.getValue().size(),
-                                     self.m2.getValue().size());
+        const unsigned minp=std::min(self.d_m1.getValue().size(),
+                                     self.d_m2.getValue().size());
         for (unsigned pid=0; pid<minp; pid++)
         {
             resTab[offset] = new BilateralConstraintResolution3Dof();
@@ -113,8 +113,8 @@ public:
                                       const typename BilateralLagrangianConstraint<T>::DataVecCoord &/*x2*/)
     {
         SOFA_UNUSED(cParams) ;
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.d_m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.d_m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
         self.cid.resize(minp);
@@ -186,11 +186,11 @@ public:
                                 const  typename BilateralLagrangianConstraint<T>::DataVecDeriv &/*v1*/,
                                 const  typename BilateralLagrangianConstraint<T>::DataVecDeriv &/*v2*/)
     {
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
-        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m1Indices = self.d_m1.getValue();
+        const typename BilateralLagrangianConstraint<T>::SubsetIndices& m2Indices = self.d_m2.getValue();
 
         unsigned min = std::min(m1Indices.size(), m2Indices.size());
-        const  typename BilateralLagrangianConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
+        const  typename BilateralLagrangianConstraint<T>::VecDeriv& restVector = self.d_restVector.getValue();
         self.dfree.resize(min);
 
         const  typename BilateralLagrangianConstraint<T>::VecCoord &x1 = d_x1.getValue();
@@ -202,7 +202,7 @@ public:
             //typename BilateralLagrangianConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
             typename BilateralLagrangianConstraint<T>::Coord dof1;
 
-             if (self.keepOrientDiff.getValue()) {
+             if (self.d_keepOrientDiff.getValue()) {
                  const typename BilateralLagrangianConstraint<T>::Coord dof1c = x1[m1Indices[pid]];
 
                  typename BilateralLagrangianConstraint<T>::Coord corr=self.initialDifference[pid];
@@ -235,9 +235,9 @@ public:
                            typename MyClass::Real /*contactDistance*/, int m1, int m2,
                            typename MyClass::Coord /*Pfree*/, typename MyClass::Coord /*Qfree*/, long /*id*/, typename MyClass::PersistentID /*localid*/)
     {
-        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm1 = self.m1;
-        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm2 = self.m2;
-        helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.restVector;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm1 = self.d_m1;
+        helper::WriteAccessor<Data<typename BilateralLagrangianConstraint<T>::SubsetIndices > > wm2 = self.d_m2;
+        helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.d_restVector;
         wm1.push_back(m1);
         wm2.push_back(m2);
 
