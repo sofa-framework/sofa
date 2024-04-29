@@ -16,6 +16,9 @@ set(SOFA_GUI_QT_HAVE_QT5_WEBENGINE @SOFA_GUI_QT_HAVE_QT5_WEBENGINE@)
 set(SOFA_GUI_QT_HAVE_NODEEDITOR @SOFA_GUI_QT_HAVE_NODEEDITOR@)
 set(SOFA_GUI_QT_HAVE_TINYXML @SOFA_GUI_QT_HAVE_TINYXML@)
 
+set(SOFA_GUI_QT_HAVE_QT6_CHARTS @SOFA_GUI_QT_HAVE_QT6_CHARTS@)
+set(SOFA_GUI_QT_HAVE_QT6_WEBENGINECORE @SOFA_GUI_QT_HAVE_QT6_WEBENGINECORE@)
+
 # This is needed to be able to find plugins/SofaGuiQt/lib/cmake/QGLViewer
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/..")
 
@@ -36,6 +39,15 @@ if(SOFA_GUI_QT_HAVE_QT5)
     endif()
 elseif(SOFA_GUI_QT_HAVE_QT6)
     find_package(Qt6 COMPONENTS Widgets OpenGLWidgets QUIET REQUIRED)
+    if(SOFA_GUI_QT_HAVE_QT6_CHARTS)
+        find_package(Qt6 QUIET REQUIRED Charts)
+    endif()
+    if(SOFA_GUI_QT_HAVE_QT6_WEBENGINECORE)
+        find_package(Qt6 QUIET REQUIRED Positioning WebChannel WebEngineCore WebEngineWidgets)
+    endif()
+    if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
+        find_package(QGLViewer QUIET REQUIRED)
+    endif()
 endif()
 
 if(SOFA_GUI_QT_HAVE_NODEEDITOR)
