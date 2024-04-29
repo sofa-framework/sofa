@@ -78,22 +78,48 @@ protected:
     friend class AffineMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-    /// indices of the DOFs of the mesh
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     SetIndex m_meshIndices;
-     /// indices of the DOFs the constraint is applied to
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     SetIndex m_indices;
-    /// data begin time when the constraint is applied
-    Data <SReal> m_beginConstraintTime;
-    /// data end time when the constraint is applied
-    Data <SReal> m_endConstraintTime;
-    /// Rotation Matrix of affine transformation
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> m_beginConstraintTime;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> m_endConstraintTime;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<RotationMatrix> m_rotation;
-    /// Quaternion of affine transformation (for rigid)
-    Data<Quat> m_quaternion;
-    /// Translation Matrix of affine transformation
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<Quat>  m_quaternion;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<Vec3> m_translation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> m_drawConstrainedPoints;
+
+
+    /// indices of the DOFs of the mesh
+    SetIndex d_meshIndices;
+     /// indices of the DOFs the constraint is applied to
+    SetIndex d_indices;
+    /// data begin time when the constraint is applied
+    Data <SReal> d_beginConstraintTime;
+    /// data end time when the constraint is applied
+    Data <SReal> d_endConstraintTime;
+    /// Rotation Matrix of affine transformation
+    Data<RotationMatrix> d_rotation;
+    /// Quaternion of affine transformation (for rigid)
+    Data<Quat> d_quaternion;
+    /// Translation Matrix of affine transformation
+    Data<Vec3> d_translation;
     /// Draw constrained points
-    Data <bool> m_drawConstrainedPoints;
+    Data <bool> d_drawConstrainedPoints;
     /// initial constrained DOFs position
     VecCoord x0;
     /// final constrained DOFs position

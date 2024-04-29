@@ -103,6 +103,7 @@ template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)    
     , d_compliance(initData(&d_compliance, "compliance", "compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
+    , compliance(initData(&d_compliance, "compliance", "compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
     , d_defaultCompliance(initData(&d_defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , d_verbose(initData(&d_verbose, false, "verbose", "Dump the constraint matrix at each iteration") )
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
