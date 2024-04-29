@@ -42,7 +42,7 @@ PartialLinearMovementProjectiveConstraint<DataTypes>::PartialLinearMovementProje
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
-    , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , showMovement( initData(&showMovement, (bool)false, "d_showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , linearMovementBetweenNodesInIndices( initData(&linearMovementBetweenNodesInIndices, (bool)false, "linearMovementBetweenNodesInIndices", "Take into account the linear movement between the constrained points"))
     , mainIndice( initData(&mainIndice, "mainIndice", "The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes "))
     , minDepIndice( initData(&minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacment "))

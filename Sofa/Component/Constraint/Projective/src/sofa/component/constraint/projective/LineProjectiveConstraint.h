@@ -82,10 +82,23 @@ protected:
     virtual ~LineProjectiveConstraint();
 
 public:
-    IndexSubsetData f_indices;  ///< the particles to project
-    Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
-    Data<CPos> f_origin;       ///< A point on the line
-    Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    IndexSubsetData f_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> f_drawSize;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<CPos> f_origin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<CPos> f_direction;
+
+    IndexSubsetData d_indices;  ///< the particles to project
+    Data<SReal> d_drawSize;    ///< The size of the square used to display the constrained particles
+    Data<CPos> d_origin;       ///< A point on the line
+    Data<CPos> d_direction;    ///< The direction of the line. Will be normalized by init()
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

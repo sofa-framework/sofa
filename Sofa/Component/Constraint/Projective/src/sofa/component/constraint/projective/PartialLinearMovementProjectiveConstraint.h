@@ -82,7 +82,7 @@ public :
     core::objectmodel::Data<VecDeriv > m_keyMovements;
 
     /// attributes to precise display
-    /// if showMovement is true we display the expected movement
+    /// if d_showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
     core::objectmodel::Data< bool > showMovement;
 
