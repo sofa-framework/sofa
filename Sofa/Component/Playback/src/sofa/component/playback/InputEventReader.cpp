@@ -58,7 +58,7 @@ InputEventReader::InputEventReader()
     p_key1.setParent(&d_key1);
     p_key2.setParent(&d_key2);
     d_writeEvents.setParent(&d_writeEvents);
-    d_outputFilename.setParent(&d_outputFilename);
+    p_outputFilename.setParent(&d_outputFilename);
 
 
 }
