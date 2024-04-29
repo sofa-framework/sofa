@@ -2069,7 +2069,7 @@ void RealGUI::dumpState ( bool value )
     m_dumpState = value;
     if ( m_dumpState )
     {
-        m_dumpStateStream = new std::ofstream ( "d_dumpState.data" );
+        m_dumpStateStream = new std::ofstream ( "dumpState.data" );
     }
     else if ( m_dumpStateStream!=nullptr )
     {
