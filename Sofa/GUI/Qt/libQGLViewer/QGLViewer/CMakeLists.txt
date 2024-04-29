@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 3.22)
 project(QGLViewer VERSION 2.8.0)
 
 # Same checks as Sofa.GUI.Qt
-# i.e find Qt5, then if not, Qt6, then if not error
-find_package(Qt5 COMPONENTS Core QUIET)
-if (NOT Qt5Core_FOUND)
-    if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
-        find_package(Qt6 COMPONENTS Core CoreTools QUIET)
-    endif()
+# i.e find Qt6, then if not, Qt5, then if not error
+find_package(Qt6 COMPONENTS Core CoreTools QUIET)
+if (NOT Qt6Core_FOUND)
+    find_package(Qt5 COMPONENTS Core QUIET)
 endif()
 
 if (Qt5Core_FOUND)
