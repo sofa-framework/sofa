@@ -844,6 +844,10 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
                             auto observer = std::make_shared<MappedMassMatrixObserver<Real>>();
                             observer->observe(component);
                             observer->observe(mstate0);
+                            for (auto* parentMapping : parentMappings)
+                            {
+                                observer->observe(parentMapping);
+                            }
                             observer->accumulator = mat;
 
                             m_mappedMassMatrixObservers.push_back(observer);

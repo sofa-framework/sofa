@@ -39,6 +39,8 @@ struct MappedMassMatrixObserver
     /// The provided mass is observed to track cache invalidation
     void observe(core::behavior::BaseMass* mass);
 
+    void observe(core::BaseMapping* mapping);
+
     /// The provided state (associated to the mass) is observed to track cache invalidation
     void observe(core::behavior::BaseMechanicalState* mstate);
 

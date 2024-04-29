@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
+#include <sofa/core/BaseMapping.h>
+
 
 namespace sofa::component::linearsystem
 {
@@ -31,6 +33,12 @@ void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
     m_newObservables |= (mass != m_observedMass);
     m_observedMass = mass;
     m_dataTracker.trackData(m_observedMass->d_componentState);
+}
+
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::BaseMapping* mapping)
+{
+    m_dataTracker.trackData(mapping->d_componentState);
 }
 
 template <class Real>
