@@ -62,15 +62,6 @@ template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3d
 namespace sofa::gpu::cuda
 {
 
-//int SpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-//.add< component::interactionforcefield::SpringForceField<CudaVec3fTypes> >()
-//.add< component::interactionforcefield::SpringForceField<CudaVec3f1Types> >()
-//#ifdef SOFA_GPU_CUDA_DOUBLE
-//.add< component::interactionforcefield::SpringForceField<CudaVec3dTypes> >()
-//.add< component::interactionforcefield::SpringForceField<CudaVec3d1Types> >()
-//#endif // SOFA_GPU_CUDA_DOUBLE
-//;
-
 int SpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3f1Types> >()
