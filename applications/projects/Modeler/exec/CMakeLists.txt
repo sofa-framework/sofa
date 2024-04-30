@@ -3,7 +3,7 @@ project(Modeler)
 
 ###################################
 # Generate plugin_list.conf.default
-#include(cmake/GeneratePluginConfig.cmake)
+include(cmake/GeneratePluginConfig.cmake)
 if(MSVC)
     # plugins are located in bin/
     set(_pluginLocation "bin")
@@ -14,10 +14,11 @@ endif()
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
 set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/${_pluginLocation}/${_defaultConfigPluginFileName}")
-#sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
+sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
 message("Write Plugin list at ${_defaultConfigPluginFilePath}")
 configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultConfigPluginFileName} COPYONLY)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
+
 ###################################
 set(QT_TARGETS "")
 
