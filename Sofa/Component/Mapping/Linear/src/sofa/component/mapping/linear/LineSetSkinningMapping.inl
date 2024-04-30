@@ -141,8 +141,8 @@ void LineSetSkinningMapping<TIn, TOut>::init()
                     }
                     lines[lineInfluencedIndex].lineIndex = lineIndex;
                     lines[lineInfluencedIndex].weight = _weight;
-                    lines[lineInfluencedIndex].
-                    position = xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
+                    lines[lineInfluencedIndex].position =
+                            xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
                     break;
                 }
             }

@@ -47,8 +47,8 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
     , d_forceBinary(initData(&d_forceBinary, false, "forceBinary", "Force reading in binary mode. Even in first keyword of the file is solid."))
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
-    headerSize.setParent(&d_headerSize);
-    forceBinary.setParent(&d_forceBinary);
+    _headerSize.setParent(&d_headerSize);
+    _forceBinary.setParent(&d_forceBinary);
 
 }
 
