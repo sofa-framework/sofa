@@ -32,7 +32,7 @@ template <class DataTypes>
 HermiteSplineProjectiveConstraint<DataTypes>::HermiteSplineProjectiveConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
     , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
-    , m_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , m_indices(initData(&m_indices, "indices", "Indices of the constrained points") )
     , d_tBegin(initData(&d_tBegin, "BeginTime", "Begin Time of the motion") )
     , d_tEnd(initData(&d_tEnd, "EndTime", "End Time of the motion") )
     , d_x0(initData(&d_x0, "X0", "first control point") )
