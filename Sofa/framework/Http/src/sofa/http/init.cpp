@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/http/init.h>
+#include <sofa/http/Server.h>
+#include <sofa/http/VersionChecker.h>
 
 
 namespace sofa::http
@@ -30,6 +32,7 @@ SOFA_HTTP_API void init()
     static bool first = true;
     if (first)
     {
+        checkLatestSOFARelease();
     }
 }
 

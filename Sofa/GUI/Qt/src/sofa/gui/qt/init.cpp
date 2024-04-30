@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/http/init.h>
+
 #include <sofa/gui/qt/init.h>
 
 #include <sofa/gui/common/GUIManager.h>
@@ -54,6 +56,9 @@ namespace sofa::gui::qt
         static bool first = true;
         if (first)
         {
+            sofa::http::init();
+
+
 #if SOFA_GUI_QT_ENABLE_QGLVIEWER
             sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
 #endif

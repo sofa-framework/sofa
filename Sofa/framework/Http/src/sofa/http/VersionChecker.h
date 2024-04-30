@@ -1,5 +1,5 @@
-/******************************************************************************
-*                 SOFA,  Open-Framework Architecture                *
+﻿/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -20,21 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#define SOFA_HTTP_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_SOFA_HTTP
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_HTTP_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HTTP_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <optional>
+#include <string>
+#include <sofa/http/config.h>
 
 namespace sofa::http
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::http
+
+SOFA_HTTP_API std::optional<std::string> getLatestSOFARelease();
+SOFA_HTTP_API void checkLatestSOFARelease();
+
+
+}
