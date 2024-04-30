@@ -72,7 +72,7 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
 void CollisionResponse::init()
 {
     Inherit1::init();
-    if (d_response.getValue().empty())
+    if (d_response.getValue().size() == 0)
     {
         d_response.setValue(initializeResponseOptions(getContext()));
     }
@@ -98,7 +98,7 @@ void CollisionResponse::reset()
 
 void CollisionResponse::setDefaultResponseType(const std::string &responseT)
 {
-    if (d_response.getValue().empty())
+    if (d_response.getValue().size() == 0)
     {
         const type::vector<std::string> listResponse(1,responseT);
         const sofa::helper::OptionsGroup responseOptions(listResponse);
