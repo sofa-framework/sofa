@@ -55,7 +55,7 @@ protected:
 
 public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    [Data< std::string >](sofa::core::objectmodel::DataFileName) vtkFilename;
+    sofa::core::objectmodel::DataFileName vtkFilename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< bool > fileFormat;
