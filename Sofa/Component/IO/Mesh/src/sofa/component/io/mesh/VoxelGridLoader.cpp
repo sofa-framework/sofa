@@ -49,7 +49,7 @@ VoxelGridLoader::VoxelGridLoader()
       d_idxInRegularGrid(initData(&d_idxInRegularGrid, "d_idxInRegularGrid", "indices of the hexa in the grid.")),
       d_backgroundValue (initData (&d_backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
       d_activeValue (initData (&d_activeValue, "dataValue", "Active data values" ) ),
-      d_generateHexa(initData (&d_generateHexa, true, "d_generateHexa", "Interpret voxel as either hexa or points")),
+      d_generateHexa(initData (&d_generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),
       image(nullptr),
       segmentation(nullptr),
       bpp(8) // bits per pixel
