@@ -48,7 +48,7 @@ namespace sofa::component::collision::detection::intersection
  * - Line/Sphere (if d_useSphereTriangle is true)
  * - Line/RigidSphere (if d_useSphereTriangle is true)
  * Note that MeshMinProximityIntersection ignores Triangle/Line and Triangle/Triangle intersections.
- * Datas can be set to ignore some pairs of collision models (d_useSphereTriangle, usePointPoint, etc).
+ * Datas can be set to ignore some pairs of collision models (d_useSphereTriangle, d_usePointPoint, etc).
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersection : public BaseProximityIntersection
 {
