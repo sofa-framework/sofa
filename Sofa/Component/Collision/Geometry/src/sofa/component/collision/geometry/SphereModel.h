@@ -116,7 +116,7 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    const VecReal& getR() const { return this->radius.getValue(); }
+    const VecReal& getR() const { return this->d_radius.getValue(); }
 
     Real getRadius(const sofa::Index i) const;
 
@@ -158,9 +158,15 @@ public:
         return obj;
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< VecReal > radius;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> defaultRadius;
+
     //TODO(dmarchal) guideline de sofa.
-    Data< VecReal > radius; ///< Radius of each sphere
-    Data< SReal > defaultRadius; ///< Default Radius
+    Data< VecReal > d_radius; ///< Radius of each sphere
+    Data< SReal > d_defaultRadius; ///< Default Radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 

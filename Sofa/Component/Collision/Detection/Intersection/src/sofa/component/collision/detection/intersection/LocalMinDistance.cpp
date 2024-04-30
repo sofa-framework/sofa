@@ -1230,7 +1230,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
     {
         /// validity test with nMean, except if bothSide
         const PointCollisionModel<sofa::defaulttype::Vec3Types> *pM = p.getCollisionModel();
-        const bool bothSide_computation = pM->bothSide.getValue();
+        const bool bothSide_computation = pM->d_bothSide.getValue();
         nMean.normalize();
         if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
         {
@@ -1262,7 +1262,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
         return true;
 
     const LineCollisionModel<sofa::defaulttype::Vec3Types> *lM = l.getCollisionModel();
-    const bool bothSide_computation = lM->bothSide.getValue();
+    const bool bothSide_computation = lM->d_bothSide.getValue();
 
     Vec3 n1;
 
