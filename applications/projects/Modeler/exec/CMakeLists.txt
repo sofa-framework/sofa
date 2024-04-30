@@ -57,7 +57,7 @@ set(RESOURCE_FILES
     ${PROJECT_BINARY_DIR}/${_defaultConfigPluginFileName}
     )
 if(APPLE)
-    set(RC_FILES "../${CMAKE_CURRENT_SOURCE_DIR}/Modeler.icns")
+    set(RC_FILES "../${CMAKE_CURRENT_SOURCE_DIR}/Modeler.ispc")
     set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 else()
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sofa.rc")
