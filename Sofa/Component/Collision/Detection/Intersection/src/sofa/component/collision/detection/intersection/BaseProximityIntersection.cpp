@@ -30,8 +30,8 @@ BaseProximityIntersection::BaseProximityIntersection()
     : d_alarmDistance(initData(&d_alarmDistance, 1.0_sreal, "alarmDistance", "Proximity detection distance"))
     , d_contactDistance(initData(&d_contactDistance, 0.5_sreal, "contactDistance", "Distance below which a contact is created"))
 {
-	d_alarmDistance.setRequired(true);
-	d_contactDistance.setRequired(true);
+    d_alarmDistance.setRequired(true);
+    d_contactDistance.setRequired(true);
 
     alarmDistance.setParent(&d_alarmDistance);
     contactDistance.setParent(&d_contactDistance);
