@@ -49,7 +49,7 @@ private:
 public:
     //Add Data here
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data <bool> forceBinary;
+    Data <bool> _forceBinary;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data <unsigned int> headerSize;
