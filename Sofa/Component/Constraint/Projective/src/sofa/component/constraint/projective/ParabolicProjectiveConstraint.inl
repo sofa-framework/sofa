@@ -32,6 +32,7 @@ template <class DataTypes>
 ParabolicProjectiveConstraint<DataTypes>::ParabolicProjectiveConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
     , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , m_indices(initData(&d_indices, "indices", "Indices of the constrained points"))
     , d_P1(initData(&d_P1, "P1", "first point of the parabol") )
     , d_P2(initData(&d_P2, "P2", "second point of the parabol") )
     , d_P3(initData(&d_P3, "P3", "third point of the parabol") )
