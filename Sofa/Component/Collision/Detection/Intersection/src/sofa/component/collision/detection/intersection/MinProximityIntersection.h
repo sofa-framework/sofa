@@ -39,7 +39,7 @@ namespace sofa::component::collision::detection::intersection
  * MeshMinProximityIntersection adds support for:
  * - Point/Point (if d_usePointPoint is true)
  * - Line/Point (if d_useLinePoint is true)
- * - Line/Line (if useLineLine is true)
+ * - Line/Line (if d_useLineLine is true)
  * - Triangle/Point
  * - Sphere/Point (if d_useSphereTriangle is true)
  * - RigidSphere/Point (if d_useSphereTriangle is true)
