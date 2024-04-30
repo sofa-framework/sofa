@@ -207,16 +207,12 @@ private:
      * Used in initialisation of IncrSAP. It clears all the IncrSAP fields.
      */
     void purge();
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<bool> bDraw; ///< enable/disable display of results
 
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
+    core::objectmodel::lifecycle::DeprecatedData bDraw {this, "v24.06", "v24.12", "draw", "This Data was not used"};
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
-
-
-
-    Data<bool> d_bDraw; ///< enable/disable display of results
 
     Data< type::fixed_array<type::Vec3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
@@ -255,7 +251,9 @@ protected:
     ~IncrSAP() override;
 
 public:
-    void setDraw(bool val) { d_bDraw.setValue(val); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
+    void setDraw(bool) {}
 
     void init() override;
     void reinit() override;
