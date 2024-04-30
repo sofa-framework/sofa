@@ -68,7 +68,7 @@ public:
     Data<double> angleCone;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<bool> coneFactor;
+    Data<double> coneFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> useLMDFilters;
