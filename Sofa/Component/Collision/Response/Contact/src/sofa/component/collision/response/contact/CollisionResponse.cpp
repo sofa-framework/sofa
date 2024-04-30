@@ -98,7 +98,7 @@ void CollisionResponse::reset()
 
 void CollisionResponse::setDefaultResponseType(const std::string &responseT)
 {
-    if (d_response.getValue().size() == 0)
+    if (d_response.getValue().empty())
     {
         const type::vector<std::string> listResponse(1,responseT);
         const sofa::helper::OptionsGroup responseOptions(listResponse);
