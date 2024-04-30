@@ -65,7 +65,7 @@ public:
     Data<bool> filterIntersection;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<bool> angleCone;
+    Data<double> angleCone;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> coneFactor;
