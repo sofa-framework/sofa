@@ -54,7 +54,7 @@ protected:
 public:
     //Add specific Data here:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data <bool> trian2;
+    Data <bool> p_trian2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data <type::vector< type::fixed_array <int,3> > > neighborTable;
