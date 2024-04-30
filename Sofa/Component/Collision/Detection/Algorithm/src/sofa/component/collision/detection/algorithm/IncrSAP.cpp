@@ -129,10 +129,12 @@ inline const core::CollisionElementIterator ISAPBox::finalElement()const{
 
 
 IncrSAP::IncrSAP()
-    :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
+    : d_bDraw(initData(&d_bDraw, false, "draw", "enable/disable display of results"))
+    , d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
     box.setParent ( &d_box);
+    bDraw.setParent(&d_bDraw);
 }
 
 
