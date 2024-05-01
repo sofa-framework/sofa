@@ -370,10 +370,6 @@ Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
 BaseObject *GraphModeler::getObject(QTreeWidgetItem *item) const
 {
     Base* component=getComponent(item);
-    std::cerr << "Component Class Name :: " << component->getClassName() << std::endl;
-    std::cerr << "Component Name :: " << component->getName() << std::endl;
-    std::cerr << "Component Template Name :: " << component->getTemplateName() << std::endl;
-    std::cerr << "Component Type Name :: " << component->getTypeName() << std::endl;
     BaseObject* ComponentBaseObject = component->toBaseObject();
     return ComponentBaseObject;
 }

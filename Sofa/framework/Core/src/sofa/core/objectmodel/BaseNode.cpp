@@ -99,16 +99,16 @@ std::string BaseNode::internalGetPathName() const {
         // no smarter choice without breaking the "Node" heritage
         str = parents[0]->internalGetPathName();
         str += '/';
-        bool strIsFine = false;
-        for(unsigned int i=0 ; i < str.length() ; i++)
-        {
-            if(str[i] != '/')
-            {
-                strIsFine = true;
-            }
-        }
-        if(strIsFine)
-            str += getName();
+//        bool strIsFine = false;
+//        for(unsigned int i=0 ; i < str.length() ; i++)
+//        {
+//            if(str[i] != '/')
+//            {
+//                strIsFine = true;
+//            }
+//        }
+//        if(strIsFine)
+        str += getName();
     }
     return str;
 }

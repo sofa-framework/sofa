@@ -687,7 +687,7 @@ void SofaModeler::fileOpen(std::string filename)
         Node::SPtr root = sofa::simulation::node::load(filename.c_str()).get();
         if (root)
         {
-            sofa::simulation::node::initRoot(root.get());
+//            sofa::simulation::node::initRoot(root.get());
             createTab();
             fileNew(root.get());
             sceneTab->setCurrentIndex(sceneTab->count()-1);
@@ -1208,11 +1208,13 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
 //    argv << "-t";
 
-    argv << QString(filename.c_str());
+    argv << QString::fromStdString(filename);
+
+    messageLaunch += (" "+QString(filename.c_str()));
 
     std::cerr << __FUNCTION__ << ": messageLaunch :: " << messageLaunch.toStdString() << std::endl;
 
-    qDebug() << "argv :: " << argv;
+//    qDebug() << "argv :: " << argv;
 
 
     QProcess *p = new QProcess(this);
@@ -1223,7 +1225,6 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
 
     connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
-    QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
     connect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
     connect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
 

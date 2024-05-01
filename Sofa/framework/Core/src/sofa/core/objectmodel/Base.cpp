@@ -637,20 +637,21 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         const BaseData* field = *iData;
-        std::string linkPath = field->getLinkPath();
-        std::cerr << __FUNCTION__ << ": Link Path From Data :: " << linkPath << std::endl;
-//        if (!field->getLinkPath().empty() )
-//        {
-//            out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
-//        }
-//        else
+
+        if (field->getParent())
+        {
+//            out << separator << field->getName() << "=\"" << xmlencode(field->getLinkPath()) << "\" ";
+            std::string linkPath = field->getParent()->getLinkPath();
+            if(!linkPath.empty())
+                out << separator << field->getName() << "=\"" << xmlencode(linkPath) << "\" ";
+        }
+        else
         {
             std::string val = field->getValueString();
             std::string fieldname = field->getName();
-//            bool isPer = field->isPersistent();
             bool isFullTrim = false;
             bool isset = field->isSet();
-            if(/*isPer &&*/ isset && fieldname != "parents")
+            if(isset && fieldname != "parents")
             {
                 std::string checkSpace = field->getValueString();
                 checkSpace.erase(remove_if(checkSpace.begin(), checkSpace.end(), isspace), checkSpace.end());

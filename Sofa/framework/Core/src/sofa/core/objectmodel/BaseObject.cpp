@@ -369,16 +369,16 @@ std::string BaseObject::getPathName() const {
         }
 
     }
-    bool strIsFine = false;
-    for(unsigned int i=0 ; i < result.length() ; i++)
-    {
-        if(result[i] != '/')
-        {
-            strIsFine = true;
-        }
-    }
-    if(strIsFine)
-        result += getName();
+//    bool strIsFine = false;
+//    for(unsigned int i=0 ; i < result.length() ; i++)
+//    {
+//        if(result[i] != '/')
+//        {
+//            strIsFine = true;
+//        }
+//    }
+//    if(strIsFine)
+    result += getName();
     return result;
 }
 
