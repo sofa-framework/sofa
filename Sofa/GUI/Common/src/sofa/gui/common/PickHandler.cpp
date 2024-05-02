@@ -387,7 +387,7 @@ BodyPicked PickHandler::findCollisionUsingPipeline()
 
     const type::Vec3 origin          = mouseCollision->getRay(0).origin();
     const type::Vec3 direction       = mouseCollision->getRay(0).direction();
-    const double maxLength              = mouseCollision->getRay(0).l();
+    const double maxLength           = mouseCollision->getRay(0).l();
     
     const auto &contacts = mouseCollision->getContacts();
     for (auto it=contacts.cbegin(); it != contacts.cend(); ++it)
@@ -440,7 +440,7 @@ BodyPicked PickHandler::findCollisionUsingBruteForce()
 {
     const type::Vec3 origin          = mouseCollision->getRay(0).origin();
     const type::Vec3 direction       = mouseCollision->getRay(0).direction();
-    const double maxLength                     = mouseCollision->getRay(0).l();
+    const double maxLength           = mouseCollision->getRay(0).l();
 
     return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
 }
