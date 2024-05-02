@@ -47,7 +47,7 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     showGradientMap ( initData ( &showGradientMap, false, "showGradients","show gradients for each point of the target point set." ) ),
     showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.1, "showGradientsScaleFactor","scale for the gradients displayed." ) ),
     offset ( initData ( &offset, Coord(), "offset","translation offset between the topology and the point set." ) ),
-    distanceType ( initData ( &distanceType, TYPE_GEODESIC, "distanceType","type of distance to compute for inserted frames." ) ),
+    distanceType ( initData ( &distanceType, {"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness"}, "distanceType","type of distance to compute for inserted frames." ) ),
     initTarget ( initData ( &initTarget, false, "initTarget","initialize the target MechanicalObject from the grid." ) ),
     initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
     zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
@@ -60,10 +60,6 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
 {
     this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
-
-    sofa::helper::OptionsGroup distanceTypeOptions{"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness"};
-    distanceTypeOptions.setSelectedItem(TYPE_GEODESIC);
-    distanceType.setValue(distanceTypeOptions);
 
     this->f_printLog.setValue(true);
 }
