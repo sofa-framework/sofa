@@ -24,6 +24,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
+#include <sofa/helper/Utils.h>
+#include <sofa/url.h>
+
 
 namespace sofa::core
 {
@@ -86,6 +89,7 @@ public:
         std::string description;
         std::string authors;
         std::string license;
+        std::string documentationURL;
         std::string defaultTemplate;
         CreatorMap creatorMap;
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
@@ -309,6 +313,9 @@ public:
     /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
 
+    /// Specify a documentation URL
+    RegisterObject& addDocumentationURL(std::string url);
+
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
@@ -326,6 +333,19 @@ public:
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
+
+        if (entry.documentationURL.empty())
+        {
+            const std::string target = sofa_tostring(SOFA_TARGET);
+            const auto modulePaths = sofa::helper::split(target, '.');
+            if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
+            {
+                entry.documentationURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
+                entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
+                    [](const std::string& m){ return sofa::helper::Utils::downcaseString(m);}, "/");
+                entry.documentationURL += "/" + sofa::helper::Utils::downcaseString(classname);
+            }
+        }
 
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }

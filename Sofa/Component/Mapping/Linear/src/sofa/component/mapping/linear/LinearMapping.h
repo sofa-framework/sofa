@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,28 +20,37 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/Mapping.h>
+#include <sofa/core/MultiMapping.h>
+#include <sofa/core/Multi2Mapping.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::engine::generate
+namespace sofa::component::mapping::linear
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::engine::generate
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.06", "v24.12", \
-        "Data renamed according to the guidelines")
-#endif
+namespace crtp
+{
+
+template<class TMapping>
+class CRTPLinearMapping : public TMapping
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(CRTPLinearMapping, TMapping), TMapping);
+    using TMapping::TMapping;
+
+    virtual bool isLinear() const override { return true; }
+};
+
+}
+
+template <class TIn, class TOut>
+using LinearMapping = crtp::CRTPLinearMapping<core::Mapping<TIn, TOut>>;
+
+template <class TIn, class TOut>
+using LinearMultiMapping = crtp::CRTPLinearMapping<core::MultiMapping<TIn, TOut>>;
+
+template <class TIn1, class TIn2, class TOut>
+using LinearMulti2Mapping = crtp::CRTPLinearMapping<core::Multi2Mapping<TIn1, TIn2, TOut>>;
+
+using LinearBaseMapping = crtp::CRTPLinearMapping<sofa::core::BaseMapping>;
+
+}

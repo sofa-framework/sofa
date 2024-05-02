@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,28 +20,55 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
+#include <sofa/core/BaseMapping.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::engine::generate
+namespace sofa::component::linearsystem
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::engine::generate
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.06", "v24.12", \
-        "Data renamed according to the guidelines")
-#endif
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
+{
+    m_newObservables |= (mass != m_observedMass);
+    m_observedMass = mass;
+    m_dataTracker.trackData(m_observedMass->d_componentState);
+}
+
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::BaseMapping* mapping)
+{
+    m_dataTracker.trackData(mapping->d_componentState);
+}
+
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMechanicalState* mstate)
+{
+    m_newObservables |= (mstate != m_mstate);
+    m_mstate = mstate;
+    m_dataTracker.trackData(m_mstate->d_componentState);
+}
+
+template <class Real>
+core::behavior::BaseMass* MappedMassMatrixObserver<Real>::getObservableMass() const
+{
+    return m_observedMass;
+}
+
+template <class Real>
+core::behavior::BaseMechanicalState* MappedMassMatrixObserver<Real>::getObservableState() const
+{
+    return m_mstate;
+}
+
+template <class Real>
+bool MappedMassMatrixObserver<Real>::hasObservableChanged()
+{
+    const bool hasChanged = m_dataTracker.hasChanged();
+    const bool newObservables = m_newObservables;
+    m_dataTracker.clean();
+    m_newObservables = false;
+    return newObservables || hasChanged;
+}
+
+}
