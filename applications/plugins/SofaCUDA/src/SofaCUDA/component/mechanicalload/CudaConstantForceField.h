@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,48 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP
-#include <SofaCUDA/component/mapping/linear/CudaBeamLinearMapping.h>
-#include <sofa/component/mapping/linear/BeamLinearMapping.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
+#pragma once
+
+#include <SofaCUDA/config.h>
+#include <sofa/component/mechanicalload/ConstantForceField.h>
+
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CUDACONSTANTFORCEFIELD_CPP)
+
 #include <sofa/gpu/cuda/CudaTypes.h>
 
-namespace sofa::gpu::cuda
+namespace sofa::component::mechanicalload
 {
 
-using namespace sofa::component::mapping::linear;
-using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
+using namespace sofa::gpu::cuda;
 
-
-// Register in the Factory
-int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-
-        .add< BeamLinearMapping<Rigid3Types, CudaVec3Types> >()
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec3Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2Types>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< BeamLinearMapping<Rigid3Types, CudaVec3dTypes> >()
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2dTypes>;
 #endif
-        ;
 
-} // namespace sofa::gpu::cuda
-
-namespace sofa::component::mapping::linear
-{
-
-using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
-
-template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
-
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
+} // namespace sofa::component::mechanicalload
 #endif
 
 
-} // namespace sofa::component::mapping::linear
+
