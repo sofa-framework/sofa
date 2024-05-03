@@ -24,40 +24,29 @@
 
 
 #include <sofa/helper/map.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/fwd.h>
-#include <sofa/linearalgebra/FullMatrix.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/simulation/fwd.h>
 
 #include <vector>
 
+namespace sofa::component::constraint::lagrangian::solver
+{
+    class MechanicalGetConstraintResolutionVisitor;
+}
+
 namespace sofa::component::animationloop
 {
 
-class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
-        : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset), _cparams(params)
-    {}
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-private:
-    std::vector<core::behavior::ConstraintResolution*>& _res;
-    unsigned int _offset;
-    const sofa::core::ConstraintParams *_cparams;
-};
-
+using MechanicalGetConstraintResolutionVisitor = sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
 
 class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
