@@ -164,7 +164,6 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<SReal> defaultRadius;
 
-    //TODO(dmarchal) guideline de sofa.
     Data< VecReal > d_radius; ///< Radius of each sphere
     Data< SReal > d_defaultRadius; ///< Default Radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
