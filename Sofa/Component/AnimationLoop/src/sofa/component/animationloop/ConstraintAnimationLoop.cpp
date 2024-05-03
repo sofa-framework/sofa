@@ -74,6 +74,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 
 /// Change that to true if you want to print extra message on this component.
 /// You can eventually link that to an object attribute.
@@ -110,28 +111,6 @@ bool MechanicalSetConstraint::isThreadSafe() const
 }
 
 bool MechanicalSetConstraint::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-{
-    return false; // !map->isMechanical();
-}
-
-void MechanicalAccumulateConstraint2::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    const ctime_t t0 = begin(node, map);
-    map->applyJT(cparams, res, res);
-    end(node, map, t0);
-}
-
-const char* MechanicalAccumulateConstraint2::getClassName() const
-{
-    return "MechanicalAccumulateConstraint2";
-}
-
-bool MechanicalAccumulateConstraint2::isThreadSafe() const
-{
-    return false;
-}
-
-bool MechanicalAccumulateConstraint2::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
 {
     return false; // !map->isMechanical();
 }

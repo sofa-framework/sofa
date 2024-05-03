@@ -38,6 +38,11 @@
 
 #include <vector>
 
+namespace sofa::simulation::mechanicalvisitor
+{
+    class MechanicalAccumulateMatrixDeriv;
+}
+
 namespace sofa::component::constraint::lagrangian::solver
 {
     class MechanicalGetConstraintResolutionVisitor;
@@ -47,7 +52,7 @@ namespace sofa::component::animationloop
 {
 
 using MechanicalGetConstraintResolutionVisitor
-SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR()
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor instead.")
 = sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
 
 class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
@@ -75,30 +80,9 @@ protected:
     const sofa::core::ConstraintParams *cparams;
 };
 
-
-class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , cparams(_cparams)
-    {}
-
-    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-protected:
-    core::MultiMatrixDerivId res;
-    const sofa::core::ConstraintParams *cparams;
-};
-
+using MechanicalAccumulateConstraint2
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv instead.")
+= sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
 
 class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
