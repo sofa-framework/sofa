@@ -19,23 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
-#include <CollisionOBBCapsule/geometry/CapsuleModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace collisionobbcapsule::geometry
+namespace sofa
 {
-
-using namespace sofa::defaulttype;
-
-int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-        .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
-        ;
-
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Vec3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Vec3Types>;
-
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Rigid3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
-
-} // namespace collisionobbcapsule::geometry
+constexpr const char* SOFA_URL = "@SOFA_URL@";
+constexpr const char* SOFA_DOCUMENTATION_URL = "@SOFA_URL@community/doc/";
+}

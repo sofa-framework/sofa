@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
-project(Sofa) # Cannot use VERSION with patch like "00"
+project(Sofa
+    HOMEPAGE_URL https://www.sofa-framework.org/
+) # Cannot use VERSION with patch like "00"
 
 include(CMakeDependentOption)
 
@@ -8,6 +10,8 @@ set(Sofa_VERSION_MAJOR 24)
 set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
+
+set(SOFA_URL "${CMAKE_PROJECT_HOMEPAGE_URL}")
 
 set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
 set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
