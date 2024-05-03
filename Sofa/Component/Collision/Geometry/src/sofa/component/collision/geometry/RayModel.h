@@ -99,7 +99,7 @@ protected:
 
 
 
-    Data<SReal> d_defaultLength; ///< TODO
+    Data<SReal> d_defaultLength;
 
     std::set<response::contact::BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
