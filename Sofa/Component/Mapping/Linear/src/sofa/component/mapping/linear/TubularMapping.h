@@ -27,16 +27,18 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
+#include <sofa/component/mapping/linear/LinearMapping.h>
+
 
 namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class TubularMapping : public core::Mapping<TIn, TOut>
+class TubularMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(TubularMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
-    typedef core::Mapping<TIn, TOut> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE2(TubularMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
 
