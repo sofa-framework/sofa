@@ -11,6 +11,7 @@
         <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
         <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
         <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
         <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -21,7 +22,6 @@
         <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
-        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
     </Node>
     
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->

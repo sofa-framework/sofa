@@ -76,6 +76,8 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
         description += std::string("<li><b>Authors: </b>")+entry->authors +std::string("</li>");
     if (!entry->license.empty())
         description += std::string("<li><b>License: </b>") + entry->license + std::string("</li>");
+    if (!entry->documentationURL.empty())
+        description += std::string("<li><b>Documentation: </b>") + entry->documentationURL + std::string("</li>");
 
     if (possiblePaths.size() != 0)
     {

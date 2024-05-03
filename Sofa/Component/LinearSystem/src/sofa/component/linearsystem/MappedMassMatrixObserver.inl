@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,23 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
-#include <CollisionOBBCapsule/geometry/CapsuleModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
+#include <sofa/core/BaseMapping.h>
 
-namespace collisionobbcapsule::geometry
+
+namespace sofa::component::linearsystem
 {
 
-using namespace sofa::defaulttype;
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMass* mass)
+{
+    m_newObservables |= (mass != m_observedMass);
+    m_observedMass = mass;
+    m_dataTracker.trackData(m_observedMass->d_componentState);
+}
 
-int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-        .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
-        ;
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::BaseMapping* mapping)
+{
+    m_dataTracker.trackData(mapping->d_componentState);
+}
 
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Vec3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+template <class Real>
+void MappedMassMatrixObserver<Real>::observe(core::behavior::BaseMechanicalState* mstate)
+{
+    m_newObservables |= (mstate != m_mstate);
+    m_mstate = mstate;
+    m_dataTracker.trackData(m_mstate->d_componentState);
+}
 
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Rigid3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+template <class Real>
+core::behavior::BaseMass* MappedMassMatrixObserver<Real>::getObservableMass() const
+{
+    return m_observedMass;
+}
 
-} // namespace collisionobbcapsule::geometry
+template <class Real>
+core::behavior::BaseMechanicalState* MappedMassMatrixObserver<Real>::getObservableState() const
+{
+    return m_mstate;
+}
+
+template <class Real>
+bool MappedMassMatrixObserver<Real>::hasObservableChanged()
+{
+    const bool hasChanged = m_dataTracker.hasChanged();
+    const bool newObservables = m_newObservables;
+    m_dataTracker.clean();
+    m_newObservables = false;
+    return newObservables || hasChanged;
+}
+
+}
