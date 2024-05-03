@@ -48,6 +48,7 @@ public:
 private:
     /// Constraint parameters
     const sofa::core::ConstraintParams *cparams;
+    const DeprecatedAndRemoved _cparams{};
 
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;

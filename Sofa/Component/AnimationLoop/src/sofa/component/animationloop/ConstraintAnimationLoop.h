@@ -46,7 +46,9 @@ namespace sofa::component::constraint::lagrangian::solver
 namespace sofa::component::animationloop
 {
 
-using MechanicalGetConstraintResolutionVisitor = sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
+using MechanicalGetConstraintResolutionVisitor
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR()
+= sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
 
 class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
