@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1" showBoundingTree="0" gravity="0 0 0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedPlaneProjectiveConstraint LineProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedPlaneProjectiveConstraint FixedProjectiveConstraint LineProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [GenerateGrid] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
