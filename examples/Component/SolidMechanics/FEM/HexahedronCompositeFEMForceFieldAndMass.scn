@@ -16,7 +16,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridMultipleTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
 
     <!-- A soft gelatin object contains 2 bead, one stiff and one soft. Even using large embedding mesh, the
 	  HexahedronCompositeFEM permits to well simulate the global behavior, and the HexahedronCompositeFEMMapping
