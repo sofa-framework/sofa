@@ -45,7 +45,7 @@ int MinProximityIntersectionClass = core::RegisterObject("A set of methods to co
 
 MinProximityIntersection::MinProximityIntersection()
     : BaseProximityIntersection()
-    , d_useSphereTriangle(initData(&d_useSphereTriangle, true, "d_useSphereTriangle", "activate Sphere-Triangle intersection tests"))
+    , d_useSphereTriangle(initData(&d_useSphereTriangle, true, "useSphereTriangle", "activate Sphere-Triangle intersection tests"))
     , d_usePointPoint(initData(&d_usePointPoint, true, "usePointPoint", "activate Point-Point intersection tests"))
     , d_useSurfaceNormals(initData(&d_useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
     , d_useLinePoint(initData(&d_useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
