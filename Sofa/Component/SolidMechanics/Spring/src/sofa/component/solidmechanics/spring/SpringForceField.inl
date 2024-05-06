@@ -91,12 +91,6 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
-    c_inputCallBack.addInputs({ &d_springsIndices[0], &d_springsIndices[1], &d_lengths});
-    c_inputCallBack.addCallback([this]()
-                                {
-                                    areSpringIndicesDirty = true;
-                                });
-
     // Load
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
@@ -105,10 +99,20 @@ void SpringForceField<DataTypes>::init()
     initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
     initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
 
+
     if (springs.isSet())
         updateTopologyIndicesFromSprings();
     else
         updateSpringsFromTopologyIndices();
+
+
+    this->addUpdateCallback("TopoCallBack",{ &d_springsIndices[0], &d_springsIndices[1], &d_lengths},
+                      [this](const sofa::core::DataTracker& ) -> sofa::core::objectmodel::ComponentState
+                      {
+                          updateSpringsFromTopologyIndices();
+                          return sofa::core::objectmodel::ComponentState::Valid;
+                      },
+                      {&springs});
 }
 
 template <class DataTypes>
@@ -142,7 +146,6 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 template <class DataTypes>
 void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
 {
-
     const auto& indices1 = d_springsIndices[0].getValue();
     const auto& indices2 = d_springsIndices[1].getValue();
 
@@ -356,7 +359,8 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 if (areSpringIndicesDirty)
                 {
                     msg_info(this) << "Update topology indices from springs";
-                    updateTopologyIndicesFromSprings();
+                    springs.updateIfDirty();
+                    areSpringIndicesDirty = false;
                 }
             });
     }

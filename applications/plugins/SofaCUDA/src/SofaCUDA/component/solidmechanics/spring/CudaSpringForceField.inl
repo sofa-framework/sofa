@@ -132,7 +132,14 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     Data& data = m->data;
     m->Inherit::init();
+
+    if(!m->springs.isSet())
+    {
+        m->updateSpringsFromTopologyIndices();
+    }
+
     const sofa::type::vector<Spring>& springs = m->springs.getValue();
+
     if (!springs.empty())
     {
         const bool external = (m->mstate1!=m->mstate2);
@@ -214,7 +221,14 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 template<class TCoord, class TDeriv, class TReal>
 void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
+
     Data& data = m->data;
+
+    if(m->areSpringIndicesDirty)
+    {
+        m->springs.updateIfDirty();
+        data.init(m);
+    }
 
     if (m->mstate1 == m->mstate2)
     {
@@ -272,6 +286,13 @@ template<class TCoord, class TDeriv, class TReal>
 void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal /*bFactor*/)
 {
     Data& data = m->data;
+
+    if(m->areSpringIndicesDirty)
+    {
+        m->springs.updateIfDirty();
+        data.init(m);
+    }
+
     if (m->mstate1 == m->mstate2)
     {
         VecDeriv& df = df1;

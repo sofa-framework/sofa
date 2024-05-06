@@ -123,6 +123,8 @@ namespace sofa::component::solidmechanics::spring
         static void init(Main* m);
         static void addForce(Main* m, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
         static void addDForce(Main* m, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal bFactor);
+
+
     };
 
     //
@@ -131,8 +133,6 @@ namespace sofa::component::solidmechanics::spring
 
     // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_DeclMethods(T) \
-    template<> inline void SpringForceField< T >::init(); \
-    template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
     template<> inline void SpringForceField< T >::init(); \
     template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
     template<> inline void SpringForceField< T >::addDForce(const core::MechanicalParams*, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2 );

@@ -65,8 +65,8 @@
         <RegularGridTopology name="grid" n="1 16 16" min="0 6 -2" max="0 10 2" />
         <PointSetTopologyContainer name="BeamTopo" src="@grid" />
 
+        <MechanicalObject  name="Volume" template="CudaVec3f"/>
         <BoxROI name="ROI1" position="@BeamTopo.position" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
-        <MechanicalObject position="@grid.position" name="Volume" template="CudaVec3f"/>
 
     </Node>
 
@@ -75,9 +75,10 @@
                       object2="@base/Volume"
                       indices1="@TetrahedronFEMForceField-GPU-Green/ROI1.indices"
                       indices2="@base/ROI1.indices"
-                      stiffness="1"
+                      stiffness="100"
                       damping="0"
-                      length="1"/>
+                      length="0"/>
+
 
 
     <Node name="Floor">
