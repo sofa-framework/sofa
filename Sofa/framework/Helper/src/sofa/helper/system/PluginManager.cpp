@@ -222,6 +222,12 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
         }
     }
 
+    const auto unloadedIt = std::find(m_unloadedPlugins.begin(), m_unloadedPlugins.end(), p.getModuleName());
+    if (unloadedIt != m_unloadedPlugins.end())
+    {
+        m_unloadedPlugins.erase(unloadedIt);
+    }
+
     return PluginLoadStatus::SUCCESS;
 }
 
@@ -295,10 +301,19 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     }
     else
     {
-        m_pluginMap.erase(m_pluginMap.find(pluginPath));
+        const auto it = m_pluginMap.find(pluginPath);
+        m_unloadedPlugins.push_back(it->second.getModuleName());
+
+        m_pluginMap.erase(it);
         removeOnPluginLoadedCallback(pluginPath);
+
         return true;
     }
+}
+
+const sofa::type::vector<std::string>& PluginManager::unloadedPlugins() const
+{
+    return m_unloadedPlugins;
 }
 
 Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
