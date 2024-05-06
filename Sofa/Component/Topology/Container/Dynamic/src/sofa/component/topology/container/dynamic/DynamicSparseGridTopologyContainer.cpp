@@ -41,12 +41,12 @@ int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron
 DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     : HexahedronSetTopologyContainer()
     , d_resolution (initData (&d_resolution, type::Vec3i (0, 0, 0 ), "resolution", "voxel grid resolution" ) )
-    , d_valuesIndexedInRegularGrid(initData (&d_valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "d_valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
-    , d_valuesIndexedInTopology(initData(&d_valuesIndexedInTopology, "d_valuesIndexedInTopology", "values indexed in the topology"))
+    , d_valuesIndexedInRegularGrid(initData (&d_valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
+    , d_valuesIndexedInTopology(initData(&d_valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
     /// deprecated
     ,valuesIndexedInTopology(initData(&valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
-    , d_idxInRegularGrid(initData (&d_idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "d_idxInRegularGrid", "indices in the Regular Grid" ) )
-    , d_idInRegularGrid2IndexInTopo(initData (&d_idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "d_idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
+    , d_idxInRegularGrid(initData (&d_idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
+    , d_idInRegularGrid2IndexInTopo(initData (&d_idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
     , d_voxelSize(initData(&d_voxelSize, type::Vec3(1_sreal, 1_sreal, 1_sreal), "voxelSize", "Size of the Voxels"))
 {
     d_valuesIndexedInRegularGrid.setDisplayed(false);
