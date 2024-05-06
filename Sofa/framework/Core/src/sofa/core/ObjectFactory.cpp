@@ -26,6 +26,8 @@
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/DiffLib.h>
+#include <sofa/helper/system/PluginManager.h>
+
 
 namespace sofa::core
 {
@@ -165,7 +167,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     const auto previous_errors = arg->getErrors();
     arg->clearErrors();
 
-    // For every classes in the registery
+    // For every classes in the registry
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
@@ -178,11 +180,22 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if (it2 != entry->creatorMap.end())
         {
             Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg)) {
-                creators.push_back(*it2);
-            } else {
-                creators_errors[templatename] = arg->getErrors();
+            const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
+            const auto creatorTarget = c->getTarget();
+            if (std::find(unloadedPlugins.begin(), unloadedPlugins.end(), creatorTarget) != unloadedPlugins.end())
+            {
+                creators_errors[templatename].emplace_back(
+                    "The object was previously registered, but its module has been unloaded.");
                 arg->clearErrors();
+            }
+            else
+            {
+                if (c->canCreate(context, arg)) {
+                    creators.push_back(*it2);
+                } else {
+                    creators_errors[templatename] = arg->getErrors();
+                    arg->clearErrors();
+                }
             }
         }
 
@@ -196,11 +209,22 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                     continue; // We already tried to create the object with the specified (or default) template
 
                 Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg)){
-                    creators.push_back(*it3);
-                } else {
-                    creators_errors[it3->first] = arg->getErrors();
+                const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
+                const auto creatorTarget = c->getTarget();
+                if (std::find(unloadedPlugins.begin(), unloadedPlugins.end(), creatorTarget) != unloadedPlugins.end())
+                {
+                    creators_errors[templatename].emplace_back(
+                        "The object was previously registered, but its module has been unloaded.");
                     arg->clearErrors();
+                }
+                else
+                {
+                    if (c->canCreate(context, arg)){
+                        creators.push_back(*it3);
+                    } else {
+                        creators_errors[it3->first] = arg->getErrors();
+                        arg->clearErrors();
+                    }
                 }
             }
         }
