@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -47,12 +48,12 @@ public:
  * @brief Compute a subset of input points
  */
 template <class TIn, class TOut>
-class SubsetMapping : public core::Mapping<TIn, TOut>
+class SubsetMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 

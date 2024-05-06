@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/SubsetMapping.h>
+#include <sofa/core/Mapping.inl>
 
 namespace sofa::component::mapping::linear
 {

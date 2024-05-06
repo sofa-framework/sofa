@@ -2,7 +2,7 @@
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
-    <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [CompositeLinearSystem ConstantSparsityPatternSystem] -->
+    <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [CompositeLinearSystem MatrixLinearSystem] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->

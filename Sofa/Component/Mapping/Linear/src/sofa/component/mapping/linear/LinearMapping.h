@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,23 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
-#include <CollisionOBBCapsule/geometry/CapsuleModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/core/Mapping.h>
+#include <sofa/core/MultiMapping.h>
+#include <sofa/core/Multi2Mapping.h>
 
-namespace collisionobbcapsule::geometry
+namespace sofa::component::mapping::linear
 {
 
-using namespace sofa::defaulttype;
+namespace crtp
+{
 
-int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-        .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
-        ;
+template<class TMapping>
+class CRTPLinearMapping : public TMapping
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(CRTPLinearMapping, TMapping), TMapping);
+    using TMapping::TMapping;
 
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Vec3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+    virtual bool isLinear() const override { return true; }
+};
 
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Rigid3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+}
 
-} // namespace collisionobbcapsule::geometry
+template <class TIn, class TOut>
+using LinearMapping = crtp::CRTPLinearMapping<core::Mapping<TIn, TOut>>;
+
+template <class TIn, class TOut>
+using LinearMultiMapping = crtp::CRTPLinearMapping<core::MultiMapping<TIn, TOut>>;
+
+template <class TIn1, class TIn2, class TOut>
+using LinearMulti2Mapping = crtp::CRTPLinearMapping<core::Multi2Mapping<TIn1, TIn2, TOut>>;
+
+using LinearBaseMapping = crtp::CRTPLinearMapping<sofa::core::BaseMapping>;
+
+}

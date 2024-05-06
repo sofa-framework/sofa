@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
@@ -32,12 +33,13 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class CenterOfMassMultiMapping : public core::MultiMapping<TIn, TOut>
+class CenterOfMassMultiMapping : public LinearMultiMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMultiMapping, TIn, TOut),
+        SOFA_TEMPLATE2(LinearMultiMapping, TIn, TOut));
 
-    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef LinearMultiMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 

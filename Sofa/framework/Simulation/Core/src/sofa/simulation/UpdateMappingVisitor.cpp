@@ -29,14 +29,18 @@
 namespace sofa::simulation
 {
 
-void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
+void UpdateMappingVisitor::processMapping(simulation::Node* n, core::BaseMapping* obj)
 {
+    SOFA_UNUSED(n);
     obj->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
     obj->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
-{}
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* n, core::BaseMapping* obj)
+{
+    SOFA_UNUSED(n);
+    SOFA_UNUSED(obj);
+}
 
 Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
 {

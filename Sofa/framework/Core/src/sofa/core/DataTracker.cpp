@@ -41,9 +41,12 @@ bool DataTracker::hasChanged( const objectmodel::BaseData& data ) const
 
 bool DataTracker::hasChanged() const
 {
-    for( DataTrackers::const_iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        if( it->second != it->first->getCounter() ) return true;
-    return false;
+    return std::any_of(m_dataTrackers.begin(), m_dataTrackers.end(),
+        [](const auto& dataTracker)
+        {
+            const auto& [data, counter] = dataTracker;
+            return counter != data->getCounter();
+        });
 }
 
 void DataTracker::clean( const objectmodel::BaseData& data )
@@ -53,8 +56,10 @@ void DataTracker::clean( const objectmodel::BaseData& data )
 
 void DataTracker::clean()
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second = it->first->getCounter();
+    for (auto& [data, counter] : m_dataTrackers)
+    {
+        counter = data->getCounter();
+    }
 }
 
 ////////////////////
