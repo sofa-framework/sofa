@@ -59,6 +59,10 @@ public:
     Data<bool> f_mapMasses; ///< Are masses mapped ?
     Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
+    /// Return true if the mapping is linear, i.e. the derivative of the mapping
+    /// function is constant.
+    virtual bool isLinear() const { return false; }
+
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
@@ -34,12 +35,12 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class IdentityMapping : public core::Mapping<TIn, TOut>
+class IdentityMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(IdentityMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(IdentityMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 

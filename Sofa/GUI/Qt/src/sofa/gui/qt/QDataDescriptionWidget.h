@@ -42,6 +42,9 @@ public:
 
     void addRow(QGridLayout* grid, const std::string& title,
                 const std::string& value, unsigned int row, unsigned int minimumWidth =0);
+
+    void addRowHyperLink(QGridLayout* grid, const std::string& title,
+                const std::string& value, unsigned int row, unsigned int minimumWidth =0);
 };
 
 

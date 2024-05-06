@@ -77,7 +77,7 @@ public:
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string>        d_filename        ; ///< Name of the file into which the message will be saved in.
-    helper::logging::MessageHandler*     m_handler         ;
+    helper::logging::MessageHandler*     m_handler { nullptr };
 
 
     bool                m_isValid    ;

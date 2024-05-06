@@ -291,8 +291,8 @@ void SparseMatrixProduct<Lhs, Rhs, ResultType>::computeProductFromIntersection()
     auto* rhs_ptr = m_rhs->valuePtr();
     auto* product_ptr = m_productResult.valuePtr();
 
-    const auto lhsNonZeros = m_lhs->nonZeros();
-    const auto rhsNonZeros = m_rhs->nonZeros();
+    [[maybe_unused]] const auto lhsNonZeros = m_lhs->nonZeros();
+    [[maybe_unused]] const auto rhsNonZeros = m_rhs->nonZeros();
 
     for (const auto& pairs : m_intersectionAB.intersection)
     {
