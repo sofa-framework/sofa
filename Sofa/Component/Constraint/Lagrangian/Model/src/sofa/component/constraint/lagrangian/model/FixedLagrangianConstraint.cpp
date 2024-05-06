@@ -32,10 +32,59 @@ namespace sofa::component::constraint::lagrangian::model
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
+// Vec6 specialization
+template <>
+void FixedLagrangianConstraint< Vec6Types >::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
+{
+    constexpr Coord c0(1,0,0,0,0,0), c1(0,1,0,0,0,0), c2(0,0,1,0,0,0), c3(0,0,0,1,0,0), c4(0,0,0,0,1,0), c5(0,0,0,0,0,1);
+    const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+
+    MatrixDerivRowIterator c_it = c->writeLine(m_cid[lineNumber]);
+    c_it.setCol(dofIdx, c0);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 1);
+    c_it.setCol(dofIdx, c1);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 2);
+    c_it.setCol(dofIdx, c2);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 3);
+    c_it.setCol(dofIdx, c3);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 4);
+    c_it.setCol(dofIdx, c4);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 5);
+    c_it.setCol(dofIdx, c5);
+
+
+}
+
+template<>
+void FixedLagrangianConstraint<Vec6Types>::doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePos, const DataVecCoord * restPos,unsigned int lineNumber)
+{
+    unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+    const Coord dfree = freePos->getValue()[dofIdx] - restPos->getValue()[dofIdx];
+
+    resV->set(m_cid[lineNumber]  , dfree[0]);
+    resV->set(m_cid[lineNumber]+1, dfree[1]);
+    resV->set(m_cid[lineNumber]+2, dfree[2]);
+    resV->set(m_cid[lineNumber]+3, dfree[3]);
+    resV->set(m_cid[lineNumber]+4, dfree[4]);
+    resV->set(m_cid[lineNumber]+5, dfree[5]);
+
+}
+
+template<>
+void FixedLagrangianConstraint<Vec6Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
+{
+    resTab[offset] = new BilateralConstraintResolutionNDof(6);
+    offset += 6;
+}
 
 // Vec3 specialization
-template<>
-void FixedLagrangianConstraint<Vec3Types>::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
+template <>
+void FixedLagrangianConstraint< Vec3Types >::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
 {
     constexpr Coord cx(1,0,0), cy(0,1,0), cz(0,0,1);
     const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
@@ -70,6 +119,65 @@ void FixedLagrangianConstraint<Vec3Types>::doGetSingleConstraintResolution(std::
     offset += 3;
 }
 
+
+// Vec2 specialization
+template <>
+void FixedLagrangianConstraint< Vec2Types >::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
+{
+    constexpr Coord cx(1, 0), cy(0, 1);
+    const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+
+    MatrixDerivRowIterator c_it = c->writeLine(m_cid[lineNumber]);
+    c_it.setCol(dofIdx, cx);
+
+    c_it = c->writeLine(m_cid[lineNumber] + 1);
+    c_it.setCol(dofIdx, cy);
+}
+
+template<>
+void FixedLagrangianConstraint<Vec2Types>::doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePos, const DataVecCoord * restPos,unsigned int lineNumber)
+{
+    unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+    const Coord dfree = freePos->getValue()[dofIdx] - restPos->getValue()[dofIdx];
+
+    resV->set(m_cid[lineNumber]  , dfree[0]);
+    resV->set(m_cid[lineNumber]+1, dfree[1]);
+
+}
+
+template<>
+void FixedLagrangianConstraint<Vec2Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
+{
+    resTab[offset] = new BilateralConstraintResolutionNDof(2);
+    offset += 2;
+}
+
+// Vec1 specialization
+template <>
+void FixedLagrangianConstraint< Vec1Types >::doBuildConstraintLine( helper::WriteAccessor<DataMatrixDeriv> &c, unsigned int lineNumber)
+{
+    constexpr Coord cx(1);
+    const unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+
+    MatrixDerivRowIterator c_it = c->writeLine(m_cid[lineNumber]);
+    c_it.setCol(dofIdx, cx);
+}
+
+template<>
+void FixedLagrangianConstraint<Vec1Types>::doGetSingleConstraintViolation(linearalgebra::BaseVector *resV, const DataVecCoord * freePos, const DataVecCoord * restPos,unsigned int lineNumber)
+{
+    unsigned dofIdx = d_fixAll.getValue() ? lineNumber : d_indices.getValue()[lineNumber];
+    const Coord dfree = freePos->getValue()[dofIdx] - restPos->getValue()[dofIdx];
+
+    resV->set(m_cid[lineNumber]  , dfree[0]);
+}
+
+template<>
+void FixedLagrangianConstraint<Vec1Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
+{
+    resTab[offset] = new BilateralConstraintResolutionNDof(1);
+    offset += 1;
+}
 
 // Rigid3 specialization
 template<>
@@ -129,10 +237,16 @@ void FixedLagrangianConstraint<Rigid3Types>::doGetSingleConstraintResolution(std
 
 
 int FixedLagrangianConstraintClass = core::RegisterObject("Lagrangian-based fixation of DOFs of the model")
+        .add< FixedLagrangianConstraint<Vec6Types> >()
         .add< FixedLagrangianConstraint<Vec3Types> >()
+        .add< FixedLagrangianConstraint<Vec2Types> >()
+        .add< FixedLagrangianConstraint<Vec1Types> >()
         .add< FixedLagrangianConstraint<Rigid3Types> >();
 
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec6Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec1Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Rigid3Types>;
 
 

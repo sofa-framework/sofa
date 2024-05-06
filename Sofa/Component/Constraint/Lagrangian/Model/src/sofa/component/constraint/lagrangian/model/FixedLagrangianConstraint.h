@@ -86,7 +86,10 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLAGRANGIANCONSTRAINT_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Vec6Types >;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Vec2Types >;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint< defaulttype::Rigid3Types >;
 #endif
 

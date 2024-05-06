@@ -134,6 +134,7 @@ private:
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;
