@@ -77,6 +77,16 @@ void ConstantSparsityProjectionMethod<TMatrix>::init()
 }
 
 template <class TMatrix>
+void ConstantSparsityProjectionMethod<TMatrix>::reinit()
+{
+    Inherit1::reinit();
+
+    //cached products are invalidated
+    m_matrixProductKJ->invalidateIntersection();
+    m_matrixProductJTKJ->invalidateIntersection();
+}
+
+template <class TMatrix>
 void ConstantSparsityProjectionMethod<TMatrix>::computeProjection(
     const Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor>> KMap,
     const sofa::type::fixed_array<std::shared_ptr<TMatrix>, 2> J,

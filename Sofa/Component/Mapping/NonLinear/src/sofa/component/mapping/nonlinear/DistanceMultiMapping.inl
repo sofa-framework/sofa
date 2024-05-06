@@ -112,8 +112,11 @@ void DistanceMultiMapping<TIn, TOut>::init()
                 const type::Vec2i& pair0 = pairs[ links[i][0] ];
                 const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-                const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-                const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+                auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+                auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+                const InCoord& pos0 = posPair0[pair0[1]];
+                const InCoord& pos1 = posPair1[pair1[1]];
 
                 restLengths[i] = (pos0 - pos1).norm();
 
@@ -268,7 +271,8 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     if( !geometricStiffness ) return;
 
     const SReal kfactor = mparams->kFactor();
-    const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
+    auto childForceRa = this->getToModels()[0]->readForces();
+    const OutVecDeriv& childForce = childForceRa.ref();
     const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
@@ -481,8 +485,11 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
             const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-            const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-            const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+            auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+            auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+            const InCoord& pos0 = posPair0[pair0[1]];
+            const InCoord& pos1 = posPair1[pair1[1]];
 
             points.push_back( type::Vec3( TIn::getCPos(pos0) ) );
             points.push_back( type::Vec3( TIn::getCPos(pos1) ) );
@@ -496,8 +503,11 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
             const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-            const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-            const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+            auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+            auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+            const InCoord& pos0 = posPair0[pair0[1]];
+            const InCoord& pos1 = posPair1[pair1[1]];
 
             type::Vec3 p0 = TIn::getCPos(pos0);
             type::Vec3 p1 = TIn::getCPos(pos1);

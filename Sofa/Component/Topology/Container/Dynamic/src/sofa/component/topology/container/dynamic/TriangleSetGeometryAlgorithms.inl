@@ -944,11 +944,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         const typename DataTypes::Coord& p3,
         const typename DataTypes::Coord& p4)
 {
-    // use formula with angles
-    // A----B     p1----p2
-    //   \   \     \     \
-    //    D----C    p4----p3
-    // if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+    /* use formula with angles
+     * A----B     p1----p2
+     *   \   \     \     \
+     *    D----C    p4----p3
+     * if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+     */
     sofa::type::Vec<3, Real> AB = { p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2] };
     sofa::type::Vec<3, Real> AD = { p4[0] - p1[0], p4[1] - p1[1], p4[2] - p1[2] };
     
