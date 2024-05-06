@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 namespace sofa
 {
@@ -49,12 +49,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Image Plugin GUI";
+    return image_gui::MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "0.1";
+    return image_gui::MODULE_VERSION;
 }
 
 const char* getModuleLicense()
