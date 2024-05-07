@@ -47,7 +47,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionCo
     , m_constraint(nullptr)
     , parent(nullptr)
     , d_mu (initData(&d_mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
-    , d_tol (initData(&d_tol, 0.0, "d_tol", "tolerance for the constraints resolution (0 for default tolerance)"))
+    , d_tol (initData(&d_tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
