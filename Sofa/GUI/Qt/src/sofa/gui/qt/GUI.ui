@@ -517,7 +517,7 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
             <item>
              <widget class="QCheckBox" name="dumpStateCheckBox">
               <property name="toolTip">
-               <string comment="This is used to plut curves fter a simulation">Record the state at each time step in file &quot;d_dumpState.data&quot;</string>
+               <string comment="This is used to plut curves fter a simulation">Record the state at each time step in file &quot;dumpState.data&quot;</string>
               </property>
               <property name="text">
                <string>Dump State</string>
