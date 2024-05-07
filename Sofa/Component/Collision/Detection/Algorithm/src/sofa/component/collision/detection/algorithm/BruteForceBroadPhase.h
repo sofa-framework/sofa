@@ -44,12 +44,16 @@ public:
 
 protected:
     BruteForceBroadPhase();
+
     ~BruteForceBroadPhase() override = default;
 
 private:
-
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
-    Data< type::fixed_array<sofa::type::Vec3,2> > box;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<type::fixed_array<sofa::type::Vec3, 2> > box;
+
+    Data<type::fixed_array<sofa::type::Vec3, 2> > d_box;
+
 
 public:
     void init() override;
