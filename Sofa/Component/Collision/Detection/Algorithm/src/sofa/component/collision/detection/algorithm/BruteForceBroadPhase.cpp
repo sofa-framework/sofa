@@ -33,8 +33,12 @@ int BruteForceBroadPhaseClass = core::RegisterObject("Broad phase collision dete
 ;
 
 BruteForceBroadPhase::BruteForceBroadPhase()
-        : box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
-{}
+        : d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
+{
+
+    box.setParent (&d_box);
+
+}
 
 void BruteForceBroadPhase::init()
 {
@@ -43,7 +47,7 @@ void BruteForceBroadPhase::init()
 
 void BruteForceBroadPhase::reinit()
 {
-    if (box.getValue()[0][0] >= box.getValue()[1][0])
+    if (d_box.getValue()[0][0] >= d_box.getValue()[1][0])
     {
         boxModel.reset();
     }
@@ -51,7 +55,7 @@ void BruteForceBroadPhase::reinit()
     {
         if (!boxModel) boxModel = sofa::core::objectmodel::New<collision::geometry::CubeCollisionModel>();
         boxModel->resize(1);
-        boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
+        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
     }
 }
 

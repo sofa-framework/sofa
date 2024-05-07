@@ -129,10 +129,10 @@ inline const core::CollisionElementIterator ISAPBox::finalElement()const{
 
 
 IncrSAP::IncrSAP()
-    : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
-    , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
+    :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
+    box.setParent ( &d_box);
 }
 
 
@@ -167,7 +167,7 @@ void IncrSAP::init()
 void IncrSAP::reinit()
 {
 
-    if (box.getValue()[0][0] >= box.getValue()[1][0])
+    if (d_box.getValue()[0][0] >= d_box.getValue()[1][0])
     {
         boxModel.reset();
     }
@@ -175,7 +175,7 @@ void IncrSAP::reinit()
     {
         if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
-        boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
+        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
     }
 
     purge();
