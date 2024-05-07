@@ -54,7 +54,7 @@ generatePositiveDefiniteMatrix(sofa::testing::LinearCongruentialRandomGenerator&
 
     // Making the matrix positive definite
     const Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real, 3, 3> > eigensolver(A);
-    const Eigen::Vector<Real, 3>& eigenvalues = eigensolver.eigenvalues();
+    const Eigen::Matrix<Real, 3, 1>& eigenvalues = eigensolver.eigenvalues();
     const Real min_eigval = eigenvalues.minCoeff();
     if (min_eigval <= 0)
     {
