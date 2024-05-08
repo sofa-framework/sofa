@@ -65,10 +65,14 @@ public:
         createObject(root, "TetrahedronSetTopologyModifier");
         createObject(root, "Hexa2TetraTopologicalMapping", {{"input", "@grid"}, {"output", "@mechanical_topology"}});
         createObject(root, "TetrahedronHyperelasticityFEMForceField", {
+            {"name", "FEM"},
             {"materialName", "StVenantKirchhoff"},
             {"ParameterSet", std::to_string(mu) + " " + std::to_string(l)},
             {"topology", "@mechanical_topology"}
         });
+        ASSERT_NE(root->getObject("FEM"), nullptr);
+        ASSERT_NE(root->getObject("FEM")->findData("materialName"), nullptr);
+        ASSERT_EQ(root->getObject("FEM")->findData("materialName")->getValueString(), "StVenantKirchhoff");
 
         createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}});
         createObject(root, "FixedProjectiveConstraint", {{"indices", "@top_roi.indices"}});
