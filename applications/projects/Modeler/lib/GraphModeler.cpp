@@ -292,19 +292,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
         graphListener->onBeginAddObject(getNode(event->pos()),newComponent.get());
         if (newComponent)
         {
-            std::cerr << __FUNCTION__ << ":newComponent name : " << newComponent->getName() << std::endl;
             QTreeWidgetItem *after = graphListener->items[newComponent.get()];
-            for(std::map<core::objectmodel::Base*, QTreeWidgetItem* > ::const_iterator cit = graphListener->items.begin() ; cit != graphListener->items.end() ; cit++)
-            {
-                core::objectmodel::Base* bNode = cit->first;
-                QTreeWidgetItem* bItem = cit->second;
-                if(bNode && bItem)
-                {
-                    std::cerr << __FUNCTION__ << ":Base Node Name : " << bNode->getName() << std::endl;
-                    std::cerr << __FUNCTION__ << ":item name : " << bItem->text(0).toStdString() << std::endl;
-                }
-            }
-
             std::ostringstream oss;
             oss << newComponent->getClassName() << " " << newComponent->getName();
             after->setText(0, QString(oss.str().c_str()));
@@ -317,31 +305,13 @@ void GraphModeler::dropEvent(QDropEvent* event)
         if (text == QString("Node"))
         {
             Node* node=getNode(event->pos());
-            std::cerr << __FUNCTION__ << ":event pos node name : " << node->getName() << std::endl;
             if (node)
             {
                 Node::SPtr newNode=addNode(node);
-                std::cerr << __FUNCTION__ << ":newNode name : " << newNode->getName() << std::endl;
                 if (newNode)
                 {
                     QTreeWidgetItem *after = graphListener->items[newNode.get()];
                     QTreeWidgetItem *item = itemAt(event->pos());
-
-                    for(std::map<core::objectmodel::Base*, QTreeWidgetItem* > ::const_iterator cit = graphListener->items.begin() ; cit != graphListener->items.end() ; cit++)
-                    {
-                        core::objectmodel::Base* bNode = cit->first;
-                        QTreeWidgetItem* bItem = cit->second;
-                        if(bNode && bItem)
-                        {
-                            std::cerr << __FUNCTION__ << ":Base Node Name : " << bNode->getName() << std::endl;
-                            std::cerr << __FUNCTION__ << ":item name : " << bItem->text(0).toStdString() << std::endl;
-                        }
-                    }
-
-                    if(after)
-                        std::cerr << __FUNCTION__ << ":after name : " << after->text(0).toStdString() << std::endl;
-                    if(item)
-                        std::cerr << __FUNCTION__ << ":item name : " << item->text(0).toStdString() << std::endl;
                     if (getObject(item))
                         initItem(after,item);
                 }

@@ -1083,7 +1083,6 @@ void SofaModeler::runInSofa()
 {
     if (sceneTab->count() == 0) return;
     Node* root=graph->getRoot();
-    std::cerr << __FUNCTION__ << ": Graph File Name :: " << graph->getFilename() << std::endl;
     runInSofa(graph->getFilename(), root);
 }
 void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
@@ -1092,14 +1091,12 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     // Init the scene
     sofa::gui::common::GUIManager::Init("Modeler");
 
-    //Saving the scene in a temporary file ==> doesn't modify the current Node of the simulation
     std::string path;
     if (sceneFilename.empty()) path=presetPath;
     else path = sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str())+std::string("/");
 
 
-    std::string filename=/*path + std::string("temp") + (++count) + std::string(".scn")*/sceneFilename;
-//    sofa::simulation::node::exportInXML(root,filename.c_str());
+    std::string filename=sceneFilename;
 
     //Make a copy of the .view if it exists for the current viewer
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());
@@ -1139,7 +1136,6 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             viewerExtension = ".view";
         }
 
-        // msg_error("SofaModeler") << "viewFile = " << viewFile ;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
@@ -1179,20 +1175,18 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             + QString(" ");
 
     //Setting the GUI
-    argv << "-g" << "qt";
-    messageLaunch += QString("-g ") + QString("qt");
-//    for (unsigned int i=0; i<listActionGUI.size(); ++i)
-//    {
-//        if (listActionGUI[i]->isChecked())
-//        {
-//            if (std::string(listActionGUI[i]->text().toStdString()) != "default")
-//            {
-//                argv << "-g" << listActionGUI[i]->text();
-//                messageLaunch += QString("-g ") + QString(listActionGUI[i]->text());
-//            }
-//            break;
-//        }
-//    }
+    for (unsigned int i=0; i<listActionGUI.size(); ++i)
+    {
+        if (listActionGUI[i]->isChecked())
+        {
+            if (std::string(listActionGUI[i]->text().toStdString()) != "default")
+            {
+                argv << "-g" << listActionGUI[i]->text();
+                messageLaunch += QString("-g ") + QString(listActionGUI[i]->text());
+            }
+            break;
+        }
+    }
 
     //retrive plugins
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
@@ -1205,20 +1199,11 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
         messageLaunch += QString(" -l ") + QString((it->first).c_str());
     }
 
-
-//    argv << "-t";
-
     argv << QString::fromStdString(filename);
 
     messageLaunch += (" "+QString(filename.c_str()));
 
-    std::cerr << __FUNCTION__ << ": messageLaunch :: " << messageLaunch.toStdString() << std::endl;
-
-//    qDebug() << "argv :: " << argv;
-
-
     QProcess *p = new QProcess(this);
-
 
     p->setWorkingDirectory(QString(binPath.c_str()) );
     p->setObjectName(QString(filename.c_str()) );

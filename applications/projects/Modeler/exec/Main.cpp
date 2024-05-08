@@ -108,9 +108,9 @@ int main(int argc, char** argv)
 #endif
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
-    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
-    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
+    msg_info("Modeler") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info("Modeler") << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info("Modeler") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
@@ -127,17 +127,17 @@ int main(int argc, char** argv)
 
     if (PluginRepository.findFile(configPluginPath, "", nullptr))
     {
-        msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
+        msg_info("Modeler") << "Loading automatically plugin list in " << configPluginPath;
         PluginManager::getInstance().readFromIniFile(configPluginPath);
     }
     else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
     {
-        msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+        msg_info("Modeler") << "Loading automatically plugin list in " << defaultConfigPluginPath;
         PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
     }
     else
     {
-        msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+        msg_info("Modeler") << "No plugin list found. No plugin will be automatically loaded.";
     }
 
     PluginManager::getInstance().init();
@@ -146,10 +146,8 @@ int main(int argc, char** argv)
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
-//    Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
-//    application->setMainWidget(sofaModeler);
     sofaModeler->show();
 
     std::string binaryName=argv[0];
@@ -158,8 +156,6 @@ int main(int argc, char** argv)
     if (binaryName.size() > exe.size()) binaryName = binaryName.substr(0, binaryName.size()-exe.size());
 #endif
     if (!binaryName.empty() && binaryName[binaryName.size()-1] == 'd') sofaModeler->setDebugBinary(true);
-
-//    std::cerr << "DataRep :: " << sofa::helper::system::DataRepository.getFirstPath() <<std::endl;
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
@@ -173,6 +169,5 @@ int main(int argc, char** argv)
 
     int appReturnCode = application->exec();
     delete application;
-    application = nullptr;
     return appReturnCode;
 }
