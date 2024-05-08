@@ -59,6 +59,8 @@ protected:
     Constraint(MechanicalState<DataTypes> *mm = nullptr);
 
     ~Constraint() override;
+
+    virtual void init() override;
 public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
@@ -132,6 +134,7 @@ private:
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;
