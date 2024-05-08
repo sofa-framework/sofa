@@ -81,7 +81,10 @@ class SOFA_GUI_QT_API SofaSceneGraphWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    SofaSceneGraphWidget(QWidget* parent) : QTreeWidget(parent){}
+    SofaSceneGraphWidget(QWidget* parent) : QTreeWidget(parent)
+    {
+        m_isLocked = false;
+    }
     ~SofaSceneGraphWidget(){}
 
     void lock();
@@ -112,7 +115,7 @@ protected:
     /// This can happen if the graph has been freezed (i.e. not graphically updated) for performance
     /// reason while simulating complex scenes.
     bool m_isDirty;
-    bool m_isLocked = false;
+    bool m_isLocked;
 };
 
 } //namespace sofa::gui::qt
