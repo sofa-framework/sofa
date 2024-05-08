@@ -37,19 +37,29 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 VariationalSymplecticSolver::VariationalSymplecticSolver()
-    : f_newtonError( initData(&f_newtonError,0.01_sreal,"newtonError","Error tolerance for Newton iterations") )
-    , f_newtonSteps( initData(&f_newtonSteps,(unsigned int)5,"steps","Maximum number of Newton steps") )
-    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
-    , f_saveEnergyInFile( initData(&f_saveEnergyInFile,false,"saveEnergyInFile","If kinetic and potential energies should be dumped in a CSV file at each iteration") )
-    , f_explicit( initData(&f_explicit,false,"explicitIntegration","Use explicit integration scheme") )
-    , f_fileName(initData(&f_fileName,"file","File name where kinetic and potential energies are saved in a CSV file"))
-    , f_computeHamiltonian( initData(&f_computeHamiltonian,true,"computeHamiltonian","Compute hamiltonian") )
-    , f_hamiltonianEnergy( initData(&f_hamiltonianEnergy,0.0_sreal,"hamiltonianEnergy","hamiltonian energy") )
-    , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"useIncrementalPotentialEnergy","use real potential energy, if false use approximate potential energy"))
+    : d_newtonError(initData(&d_newtonError, 0.01_sreal, "newtonError", "Error tolerance for Newton iterations") )
+    , d_newtonSteps(initData(&d_newtonSteps, (unsigned int)5, "steps", "Maximum number of Newton steps") )
+    , d_rayleighStiffness(initData(&d_rayleighStiffness, (SReal)0.0, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
+    , d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+    , d_saveEnergyInFile(initData(&d_saveEnergyInFile, false, "saveEnergyInFile", "If kinetic and potential energies should be dumped in a CSV file at each iteration") )
+    , d_explicit(initData(&d_explicit, false, "explicitIntegration", "Use explicit integration scheme") )
+    , d_fileName(initData(&d_fileName, "file", "File name where kinetic and potential energies are saved in a CSV file"))
+    , d_computeHamiltonian(initData(&d_computeHamiltonian, true, "computeHamiltonian", "Compute hamiltonian") )
+    , d_hamiltonianEnergy(initData(&d_hamiltonianEnergy, 0.0_sreal, "hamiltonianEnergy", "hamiltonian energy") )
+    , d_useIncrementalPotentialEnergy(initData(&d_useIncrementalPotentialEnergy, true, "useIncrementalPotentialEnergy", "use real potential energy, if false use approximate potential energy"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
+    f_newtonError.setParent(&d_newtonError);
+    f_newtonSteps.setParent(&d_newtonSteps);
+    f_rayleighStiffness.setParent(&d_rayleighStiffness);
+    f_rayleighMass.setParent(&d_rayleighMass);
+    f_saveEnergyInFile.setParent(&d_saveEnergyInFile);
+    f_explicit.setParent(&d_explicit);
+    f_fileName.setParent(&d_fileName);
+    f_computeHamiltonian.setParent(&d_computeHamiltonian);
+    f_hamiltonianEnergy.setParent(&d_hamiltonianEnergy);
+    f_useIncrementalPotentialEnergy.setParent(&d_useIncrementalPotentialEnergy);
 }
 
 void VariationalSymplecticSolver::init()
@@ -65,7 +75,7 @@ void VariationalSymplecticSolver::init()
         msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :" << tmp.str();
     }
     sofa::core::behavior::OdeSolver::init();
-    energies.open((f_fileName.getValue()).c_str(),std::ios::out);
+    energies.open((d_fileName.getValue()).c_str(), std::ios::out);
 }
 
 void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -86,8 +96,8 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     const SReal& h = dt;
-    const SReal rM = f_rayleighMass.getValue();
-    const SReal rK = f_rayleighStiffness.getValue();
+    const SReal rM = d_rayleighMass.getValue();
+    const SReal rK = d_rayleighStiffness.getValue();
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {
@@ -102,10 +112,10 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
         mop.computeEnergy(KineticEnergy,potentialEnergy);
 
         // Compute incremental potential energy
-        if (f_computeHamiltonian.getValue() && f_useIncrementalPotentialEnergy.getValue())
+        if (d_computeHamiltonian.getValue() && d_useIncrementalPotentialEnergy.getValue())
             m_incrementalPotentialEnergy = potentialEnergy;
 
-		if (f_saveEnergyInFile.getValue()) {
+		if (d_saveEnergyInFile.getValue()) {
 			// header of csv file
             energies << "time,kinetic energy,potential energy, hamiltonian energy"<<std::endl;
 		}
@@ -117,7 +127,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
  
-	if (f_explicit.getValue()) {
+	if (d_explicit.getValue()) {
 		mop->setImplicit(false); // this solver is explicit only
 
         MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
@@ -169,7 +179,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		MultiVecDeriv b(&vop);
 		MultiVecDeriv res(&vop);
 		MultiVecCoord x_0(&vop);
-		unsigned int nbMaxIterNewton = f_newtonSteps.getValue();
+		unsigned int nbMaxIterNewton = d_newtonSteps.getValue();
 		unsigned int i_newton=0;
 		double err_newton =0; // initialisation
 
@@ -178,7 +188,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		x_0.eq(pos); // this is the previous estimate of the mid-point state
 		res.clear(); 
 		resi.clear();
-		while(((i_newton < nbMaxIterNewton)&&(err_newton>f_newtonError.getValue()))||(i_newton==0)){
+		while(((i_newton < nbMaxIterNewton)&&(err_newton > d_newtonError.getValue())) || (i_newton == 0)){
 
 			b.clear();
 			f.clear();
@@ -250,7 +260,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		}//end of i iterations
 
         // Compute incremental potential energy
-        if (f_computeHamiltonian.getValue() && f_useIncrementalPotentialEnergy.getValue())
+        if (d_computeHamiltonian.getValue() && d_useIncrementalPotentialEnergy.getValue())
         {
             // Compute delta potential Energy
             double deltaPotentialEnergy = -(2.0)*(f.dot(res));
@@ -294,7 +304,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		vop.v_multiop(opsx);
 
         // Compute hamiltonian energy
-        if (f_computeHamiltonian.getValue())
+        if (d_computeHamiltonian.getValue())
         {
             // Compute hamiltonian kinetic energy = 0.5*(newp.dot(Minv*newp))
             MultiVecDeriv b(&vop);
@@ -309,19 +319,19 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             double hamiltonianKineticEnergy = 0.5*(newp.dot(b));
 
             // Hamiltonian energy with incremental potential energy
-            if (f_useIncrementalPotentialEnergy.getValue())
+            if (d_useIncrementalPotentialEnergy.getValue())
             {
                 // Hamiltonian energy
-                f_hamiltonianEnergy.setValue(hamiltonianKineticEnergy + m_incrementalPotentialEnergy);
+                d_hamiltonianEnergy.setValue(hamiltonianKineticEnergy + m_incrementalPotentialEnergy);
 
                 // Write energy in file
-                if (f_saveEnergyInFile.getValue())
+                if (d_saveEnergyInFile.getValue())
                     energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<m_incrementalPotentialEnergy<<","<<hamiltonianKineticEnergy + m_incrementalPotentialEnergy <<std::endl;
 
             }
 
             // Hamiltonian energy with approximate potential energy
-            else if (!f_useIncrementalPotentialEnergy.getValue())
+            else if (!d_useIncrementalPotentialEnergy.getValue())
             {
                 // Compute approximate potential energy
                 SReal potentialEnergy;
@@ -329,10 +339,10 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
                 mop.computeEnergy(KineticEnergy,potentialEnergy);
 
                 // Hamiltonian energy
-                f_hamiltonianEnergy.setValue(hamiltonianKineticEnergy + potentialEnergy);
+                d_hamiltonianEnergy.setValue(hamiltonianKineticEnergy + potentialEnergy);
 
                 // Write energy in file
-                if (f_saveEnergyInFile.getValue())
+                if (d_saveEnergyInFile.getValue())
                     energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<potentialEnergy<<","<<hamiltonianKineticEnergy+potentialEnergy<<std::endl;
             }
         }

@@ -167,12 +167,12 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
 
 
             // Check if hamiltonian energy is constant when there is no damping
-            if(checkEnergyConservation && fabs(variationalSolver->f_hamiltonianEnergy.getValue() -totalEnergy) > toleranceEnergy )
+            if(checkEnergyConservation && fabs(variationalSolver->d_hamiltonianEnergy.getValue() - totalEnergy) > toleranceEnergy )
             {
-                ADD_FAILURE() << "Hamiltonian energy at time " << time << " is wrong: "  << std::endl
-                    <<" expected Energy is " << totalEnergy << std::endl
-                    <<" actual Energy is   " << variationalSolver->f_hamiltonianEnergy.getValue() << std::endl
-                    << "absolute error     = " << fabs(variationalSolver->f_hamiltonianEnergy.getValue() -totalEnergy) << std::endl;
+                ADD_FAILURE() << "Hamiltonian energy at time " << time << " is wrong: " << std::endl
+                              << " expected Energy is " << totalEnergy << std::endl
+                              << " actual Energy is   " << variationalSolver->d_hamiltonianEnergy.getValue() << std::endl
+                              << "absolute error     = " << fabs(variationalSolver->d_hamiltonianEnergy.getValue() - totalEnergy) << std::endl;
                 return false;
             }
 
