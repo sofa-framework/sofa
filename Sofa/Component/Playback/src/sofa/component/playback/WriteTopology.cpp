@@ -92,8 +92,8 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
         {
             wt = sofa::core::objectmodel::New<WriteTopology>();
             gnode->addObject(wt);
-            wt->f_writeContainers.setValue(recordContainers);
-            wt->f_writeShellContainers.setValue(recordShellContainers);
+            wt->d_writeContainers.setValue(recordContainers);
+            wt->d_writeShellContainers.setValue(recordShellContainers);
             for (const auto& subset : this->subsetsToManage)
             {
                 wt->addTag(subset);
@@ -103,7 +103,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        wt->f_filename.setValue(ofilename.str()); wt->init(); wt->f_listening.setValue(true);  //Activated at init
+        wt->d_filename.setValue(ofilename.str()); wt->init(); wt->f_listening.setValue(true);  //Activated at init
 
         ++counterWriteTopology;
 

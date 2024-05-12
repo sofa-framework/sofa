@@ -19,38 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
-#include <sofa/simulation/BaseMechanicalVisitor.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+#include <SofaCUDA/config.h>
+#include <sofa/component/mapping/linear/BeamLinearMapping.h>
+
+#if !defined(SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP)
+
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
 {
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset = 0);
+extern template class SOFA_GPU_CUDA_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
 
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override { }
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
-private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
 
-    std::vector<core::behavior::ConstraintResolution*>& _res;
-    unsigned int _offset;
-};
+} // namespace sofa::component::mapping::linear
+#endif
 
-}
+
+

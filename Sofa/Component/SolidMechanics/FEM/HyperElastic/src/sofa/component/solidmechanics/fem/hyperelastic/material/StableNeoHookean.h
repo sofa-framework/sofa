@@ -36,6 +36,8 @@ template <class DataTypes>
 class StableNeoHookean : public HyperelasticMaterial<DataTypes>
 {
 public:
+    static constexpr std::string_view Name = "StableNeoHookean";
+
     typedef typename DataTypes::Coord::value_type Real;
     typedef type::Mat<6, 6, Real> Matrix6;
     typedef type::MatSym<3, Real> MatrixSym;

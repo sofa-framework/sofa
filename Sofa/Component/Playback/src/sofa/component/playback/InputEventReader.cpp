@@ -38,14 +38,14 @@ int InputEventReaderClass = core::RegisterObject("Read events from file")
         .add< InputEventReader >();
 
 InputEventReader::InputEventReader()
-    : filename( initData(&filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
-    , inverseSense(initData(&inverseSense, false, "inverseSense", "inverse the sense of the mouvement"))
-    , p_printEvent(initData(&p_printEvent, false, "printEvent", "Print event informations"))
+    : d_filename(initData(&d_filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
+    , d_inverseSense(initData(&d_inverseSense, false, "inverseSense", "inverse the sense of the mouvement"))
+    , d_printEvent(initData(&d_printEvent, false, "printEvent", "Print event informations"))
 //, timeout( initData(&timeout, 0, "timeout", "time out to get an event from file" ))
-    , p_key1(initData(&p_key1, '0', "key1","Key event generated when the left pedal is pressed"))
-    , p_key2(initData(&p_key2, '1', "key2","Key event generated when the right pedal is pressed"))
-    , p_writeEvents(initData(&p_writeEvents, false , "writeEvents","If true, write incoming events ; if false, read events from that file (if an output filename is provided)"))
-    , p_outputFilename(initData(&p_outputFilename, "outputFilename","Other filename where events will be stored (or read)"))
+    , d_key1(initData(&d_key1, '0', "key1", "Key event generated when the left pedal is pressed"))
+    , d_key2(initData(&d_key2, '1', "key2", "Key event generated when the right pedal is pressed"))
+    , d_writeEvents(initData(&d_writeEvents, false , "writeEvents", "If true, write incoming events ; if false, read events from that file (if an output filename is provided)"))
+    , d_outputFilename(initData(&d_outputFilename, "outputFilename", "Other filename where events will be stored (or read)"))
     , inFile(nullptr), outFile(nullptr)
     , fd(-1)
     , deplX(0), deplY(0)
@@ -53,33 +53,41 @@ InputEventReader::InputEventReader()
     , currentPedalState(NO_PEDAL)
     , oldPedalState(NO_PEDAL)
 {
+    filename.setParent(&d_filename);
+    inverseSense.setParent(&d_inverseSense);
+    p_key1.setParent(&d_key1);
+    p_key2.setParent(&d_key2);
+    p_writeEvents.setParent(&d_writeEvents);
+    p_outputFilename.setParent(&d_outputFilename);
+
+
 }
 void InputEventReader::init()
 {
 #ifdef __linux__
-    if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)
-        msg_error() << "Impossible to open the file: " << filename.getValue();
+    if((fd = open(d_filename.getFullPath().c_str(), O_RDONLY)) < 0)
+        msg_error() << "Impossible to open the file: " << d_filename.getValue();
 #endif
 
-    if(p_outputFilename.isSet())
+    if(d_outputFilename.isSet())
     {
-        if (p_writeEvents.getValue())
+        if (d_writeEvents.getValue())
         {
             outFile = new std::ofstream();
-            outFile->open(p_outputFilename.getFullPath().c_str());
+            outFile->open(d_outputFilename.getFullPath().c_str());
             if( !outFile->is_open() )
             {
-                msg_error() << "File " <<p_outputFilename.getFullPath() << " not writable";
+                msg_error() << "File " << d_outputFilename.getFullPath() << " not writable";
                 delete outFile;
                 outFile = nullptr;
             }
         }
         else
         {
-            inFile = new std::ifstream(p_outputFilename.getFullPath().c_str(), std::ifstream::in | std::ifstream::binary);
+            inFile = new std::ifstream(d_outputFilename.getFullPath().c_str(), std::ifstream::in | std::ifstream::binary);
             if( !inFile->is_open() )
             {
-                msg_error() << "File " <<p_outputFilename.getFullPath() << " not readable";
+                msg_error() << "File " << d_outputFilename.getFullPath() << " not readable";
                 delete inFile;
                 inFile = nullptr;
             }
@@ -101,7 +109,7 @@ void InputEventReader::manageEvent(const input_event &ev)
     (void)ev;
 #endif
 #ifdef __linux__
-    if (p_printEvent.getValue())
+    if (d_printEvent.getValue())
         msg_error() << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value;
 
     if (ev.type == EV_REL)
@@ -109,7 +117,7 @@ void InputEventReader::manageEvent(const input_event &ev)
         switch (ev.code)
         {
         case REL_X:
-            if (inverseSense.getValue())
+            if (d_inverseSense.getValue())
             {
                 deplX -= ev.value; break;
             }
@@ -118,7 +126,7 @@ void InputEventReader::manageEvent(const input_event &ev)
                 deplX += ev.value; break;
             }
         case REL_Y:
-            if (inverseSense.getValue())
+            if (d_inverseSense.getValue())
             {
                 deplY -= ev.value; break;
             }
@@ -182,7 +190,7 @@ void InputEventReader::getInputEvents()
 
             manageEvent(ev);
 
-            if (p_writeEvents.getValue())
+            if (d_writeEvents.getValue())
             {
                 if(outFile->good())
                 {
@@ -190,7 +198,7 @@ void InputEventReader::getInputEvents()
                 }
             }
         }
-        if (p_writeEvents.getValue())
+        if (d_writeEvents.getValue())
         {
             if(outFile->good())
             {
@@ -240,12 +248,12 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
             {
                 if (currentPedalState == LEFT_PEDAL)
                 {
-                    sofa::core::objectmodel::KeypressedEvent ev(p_key1.getValue());
+                    sofa::core::objectmodel::KeypressedEvent ev(d_key1.getValue());
                     this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
                 else
                 {
-                    sofa::core::objectmodel::KeypressedEvent ev(p_key2.getValue());
+                    sofa::core::objectmodel::KeypressedEvent ev(d_key2.getValue());
                     this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
             }
@@ -256,12 +264,12 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
             {
                 if (oldPedalState == LEFT_PEDAL)
                 {
-                    sofa::core::objectmodel::KeyreleasedEvent ev(p_key1.getValue());
+                    sofa::core::objectmodel::KeyreleasedEvent ev(d_key1.getValue());
                     this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
                 else
                 {
-                    sofa::core::objectmodel::KeyreleasedEvent ev(p_key2.getValue());
+                    sofa::core::objectmodel::KeyreleasedEvent ev(d_key2.getValue());
                     this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
             }
