@@ -131,15 +131,18 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
     auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
-    indices1.resize(sofa::helper::getReadAccessor(springs).size());
-    indices2.resize(sofa::helper::getReadAccessor(springs).size());
-    lengths.resize(sofa::helper::getReadAccessor(springs).size());
-    for (const auto& spring : sofa::helper::getReadAccessor(springs))
+    const auto& springValues = *sofa::helper::getReadAccessor(springs);
+
+    indices1.resize(springValues.size());
+    indices2.resize(springValues.size());
+    lengths.resize(springValues.size());
+    for (unsigned i=0; i<springValues.size(); ++i)
     {
-        indices1.push_back(spring.m1);
-        indices2.push_back(spring.m2);
-        lengths.push_back(spring.initpos);
+        indices1[i] = springValues[i].m1;
+        indices2[i] = springValues[i].m2;
+        lengths[i] = springValues[i].initpos;
     }
+
     areSpringIndicesDirty = false;
 }
 
@@ -254,6 +257,7 @@ void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::
     for (auto it = springIdsToDelete.rbegin(); it != springIdsToDelete.rend(); ++it) // delete accumulated springs to be removed
     {
         springsValue.erase(springsValue.begin() + (*it));
+        areSpringIndicesDirty = true;
     }
 }
 
@@ -319,7 +323,6 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
                 id = pntId;
             }
         }
-
         areSpringIndicesDirty = true;
     }
 }
@@ -341,6 +344,7 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
 
+
         if (topology->getTopologyType() == sofa::geometry::ElementType::EDGE)
         {
             indices.linkToEdgeDataArray();  
@@ -352,6 +356,7 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                     applyRemovedEdges(edgesRemoved, mstateId);
                 });
         }
+
         
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
@@ -359,7 +364,14 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 if (areSpringIndicesDirty)
                 {
                     msg_info(this) << "Update topology indices from springs";
-                    springs.updateIfDirty();
+                    //We know that changes have been performed on the indices data from the topological changes,
+                    //the springs are up-to-date thanks to our callbacks, but not the un-changed indices list,
+                    //so we clean dirty on the springs to avoid call to the datacallback when accessing the data
+                    springs.cleanDirty();
+                    //Clean the indices list of the unmodified topology to match the size of the newly modified one
+                    updateTopologyIndicesFromSprings();
+                    //Clean dirtyness of springs because we just updated the indices lists from the spring data itself
+                    springs.cleanDirty();
                     areSpringIndicesDirty = false;
                 }
             });
