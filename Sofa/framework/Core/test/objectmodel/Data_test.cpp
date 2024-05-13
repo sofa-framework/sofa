@@ -79,6 +79,18 @@ TEST_F(Data_test, validInfo)
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Triangle> >::ValidInfo);
 }
 
+TEST_F(Data_test, dataTypeName)
+{
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Edge> >::name(), "Edge");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Hexahedron> >::name(), "Hexahedron");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pentahedron> >::name(), "Pentahedron");
+    // EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Point> >::name(), "Point");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pyramid> >::name(), "Pyramid");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Quad> >::name(), "Quad");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Tetrahedron> >::name(), "Tetrahedron");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Triangle> >::name(), "Triangle");
+}
+
 TEST_F(Data_test, getValueTypeString)
 {
     EXPECT_EQ(dataInt.getValueTypeString(), "i");
