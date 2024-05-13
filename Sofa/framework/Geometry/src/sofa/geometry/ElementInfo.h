@@ -41,11 +41,13 @@ struct ElementInfo
 {
     static ElementType type()
     {
+        static_assert(false, "Unknown type");
         return ElementType();
     }
 
     static const char* name()
     {
+        static_assert(false, "Unknown type");
         return "";
     }
 };
