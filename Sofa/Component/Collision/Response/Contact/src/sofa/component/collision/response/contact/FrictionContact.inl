@@ -46,14 +46,17 @@ FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionCo
     , intersectionMethod(intersectionMethod)
     , m_constraint(nullptr)
     , parent(nullptr)
-    , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
-    , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
+    , d_mu (initData(&d_mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
+    , d_tol (initData(&d_tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
     if (!selfCollision) mapper2.setCollisionModel(model2);
     contacts.clear();
     mappedContacts.clear();
+
+    mu.setParent(&d_mu);
+    tol.setParent(&d_tol);
 
 }
 
@@ -147,7 +150,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::UnilateralLagrangianConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
         setInteractionTags(mmodel1, mmodel2);
-        m_constraint->setCustomTolerance( tol.getValue() );
+        m_constraint->setCustomTolerance(d_tol.getValue() );
     }
 
     int size = contacts.size();
@@ -204,7 +207,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
 {
 
     activateMappers();
-    const double mu_ = this->mu.getValue();
+    const double mu_ = this->d_mu.getValue();
     // Checks if friction is considered
     if ( mu_ < 0.0 )
         msg_error() << "mu has to take positive values";
