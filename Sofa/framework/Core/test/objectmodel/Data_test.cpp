@@ -66,6 +66,19 @@ public:
 
 };
 
+
+TEST_F(Data_test, validInfo)
+{
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Edge> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Hexahedron> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pentahedron> >::ValidInfo);
+    // EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Point> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pyramid> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Tetrahedron> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Triangle> >::ValidInfo);
+}
+
 TEST_F(Data_test, getValueTypeString)
 {
     EXPECT_EQ(dataInt.getValueTypeString(), "i");
