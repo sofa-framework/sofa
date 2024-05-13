@@ -49,13 +49,25 @@ protected:
     ViewerSetting();
 public:
 
-    Data<sofa::type::Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
-    Data<bool> fullscreen;                                  ///< True if viewer should be fullscreen.
-    Data<sofa::helper::OptionsGroup> cameraMode;                          ///< Camera mode.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<sofa::type::Vec<2,int> > resolution;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> fullscreen;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<sofa::helper::OptionsGroup> cameraMode;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<sofa::helper::OptionsGroup> objectPickingMethod;
+
+    Data<sofa::type::Vec<2,int> > d_resolution;                           ///< Screen resolution (width, height).
+    Data<bool> d_fullscreen;                                  ///< True if viewer should be fullscreen.
+    Data<sofa::helper::OptionsGroup> d_cameraMode;                          ///< Camera mode.
                                                             /**<    \arg Perspective.
                                                              *      \arg Orthographic.
                                                              */
-    Data<sofa::helper::OptionsGroup> objectPickingMethod;                 ///< Picking Method.
+    Data<sofa::helper::OptionsGroup> d_objectPickingMethod;                 ///< Picking Method.
                                                             /**<    \arg Ray casting.
                                                              *      \arg Selection Buffer.
                                                              */
