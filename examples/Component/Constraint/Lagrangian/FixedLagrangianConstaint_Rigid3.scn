@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.01" gravity="0 0 -9.81">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [FixedLagrangianConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BeamLinearMapping,IdentityMapping,TubularMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [BeamFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer,EdgeSetTopologyModifier,QuadSetGeometryAlgorithms,QuadSetTopologyContainer,QuadSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Edge2QuadTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
+
+    <VisualStyle displayFlags="   showForceFields "/>
+    <AttachBodyButtonSetting stiffness="5" /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
+
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
+
+    <Node name="Needle">
+        <EulerImplicitSolver  />
+        <BTDLinearSolver name="BTD" />
+        <EdgeSetTopologyContainer name="Container" position=" 0 0 0  0.010 0  0 0.020 0 0   0.030 0 0   0.040 0 0  0.050 0 0   0.060 0 0  0.070 0 0  0.080 0 0  0.090 0 0  0.100 0 0  0.110 0 0  0.120 0 0  0.130 0 0." edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13" />
+        <EdgeSetTopologyModifier name="modifier" />
+        <MechanicalObject name="mstate" template="Rigid3d" />
+
+        <UniformMass totalMass="0.001" />
+        <BeamFEMForceField name="FEM" radius="0.000723"  youngModulus="2e11" poissonRatio="0.3"/>
+        <FixedLagrangianConstraint indices="0"/>
+
+        <Node name="VM">
+            <MechanicalObject name="VisualDOFs"/>
+            <QuadSetTopologyContainer name="ContainerCath" />
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" input="@../Container" output="@ContainerCath"/>
+            <TubularMapping nbPointsOnEachCircle="10" radius="0.000723" input="@../mstate" output="@VisualDOFs" />
+
+            <Node name="VisuOgl">
+                <OglModel position="@../ContainerCath.position" vertices="@../ContainerCath.position" quads="@../ContainerCath.quads"
+                          color="0.4 0.34 0.34" material="texture Ambient 1 0.4 0.34 0.34 1.0 Diffuse 0 0.4 0.34 0.34 1.0 Specular 1 0.4 0.34 0.34 0.1 Emissive 1 0.5 0.54 0.54 .01 Shininess 1 20" name="VisualCatheter"/>
+                <IdentityMapping />
+            </Node>
+        </Node>
+
+        <LinearSolverConstraintCorrection printLog="false" linearSolver="@BTD" />
+    </Node>
+
+</Node>
+
+

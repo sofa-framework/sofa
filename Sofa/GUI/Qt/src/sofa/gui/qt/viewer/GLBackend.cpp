@@ -43,7 +43,7 @@ GLBackend::~GLBackend()
 
 void GLBackend::setPickingMethod(sofa::gui::common::PickHandler* pick, sofa::component::setting::ViewerSetting* viewerConf)
 {
-    if ( viewerConf->objectPickingMethod.getValue().getSelectedId() == gui::common::PickHandler::RAY_CASTING)
+    if (viewerConf->d_objectPickingMethod.getValue().getSelectedId() == gui::common::PickHandler::RAY_CASTING)
         pick->setPickingMethod( gui::common::PickHandler::RAY_CASTING );
     else
         pick->setPickingMethod( gui::common::PickHandler::SELECTION_BUFFER);

@@ -41,17 +41,17 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
 {
     if (addSelf)
     {
-        if (intersection->usePointPoint.getValue())
+        if (intersection->d_usePointPoint.getValue())
             intersection->intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
             intersection->intersectors.ignore<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
-        if(intersection->useLinePoint.getValue())
+        if(intersection->d_useLinePoint.getValue())
             intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
             intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
 
-        if(intersection->useLineLine.getValue())
+        if(intersection->d_useLineLine.getValue())
             intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         else
             intersection->intersectors.ignore<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
@@ -60,7 +60,7 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
 
-        if (intersection->useSphereTriangle.getValue())
+        if (intersection->d_useSphereTriangle.getValue())
         {
             intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
             intersection->intersectors.add<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);

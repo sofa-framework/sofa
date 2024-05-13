@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_CUDASUBSETMULTIMAPPING_CPP
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMultiMapping.h>
 #include <sofa/component/mapping/linear/SubsetMultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gpu/cuda/CudaTypes.h>

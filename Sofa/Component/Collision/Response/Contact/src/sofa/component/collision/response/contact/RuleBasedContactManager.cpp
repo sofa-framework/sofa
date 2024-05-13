@@ -34,11 +34,12 @@ int RuleBasedContactManagerClass = core::RegisterObject("Create different respon
 
 RuleBasedContactManager::RuleBasedContactManager()
     : d_variables(initData(&d_variables, "variables", "Define a list of variables to be used inside the rules"))
-    , rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
+    , d_rules(initData(&d_rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
             "The first two define either the name of the collision model, its group number, or * meaning any model.\n"
             "The last string define the response algorithm to use for contacts matched by this rule.\n"
             "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
 {
+    rules.setParent(&d_rules);
 }
 
 RuleBasedContactManager::~RuleBasedContactManager()
@@ -123,7 +124,7 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     if (!response1.empty()) return response1;
     else if (!response2.empty()) return response2;
 
-    const type::vector<Rule>& rulesValue = rules.getValue();
+    const type::vector<Rule>& rulesValue = d_rules.getValue();
     for (const auto& rule : rulesValue)
     {
         if (rule.match(model1, model2) || rule.match(model2, model1))

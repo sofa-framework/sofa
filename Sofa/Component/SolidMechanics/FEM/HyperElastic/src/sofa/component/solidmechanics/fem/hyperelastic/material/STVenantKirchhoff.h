@@ -43,6 +43,8 @@ class STVenantKirchhoff : public HyperelasticMaterial<DataTypes>
     typedef type::MatSym<3, Real> MatrixSym;
 
 public:
+    static constexpr std::string_view Name = "StVenantKirchhoff";
+
     Real getStrainEnergy(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param) override
     {

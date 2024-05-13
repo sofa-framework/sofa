@@ -72,7 +72,7 @@ void CompareTopology::processCompareTopology()
         return;
     }
 
-    double time = getContext()->getTime() + f_shift.getValue();
+    double time = getContext()->getTime() + d_shift.getValue();
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
@@ -353,7 +353,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterCompareTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        ct->f_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Deactivated only called by extern functions
+        ct->d_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) ct->init();
 
         ++counterCompareTopology;

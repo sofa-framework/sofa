@@ -48,4 +48,10 @@
 #  define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+namespace image
+{
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace image
+
 #endif
