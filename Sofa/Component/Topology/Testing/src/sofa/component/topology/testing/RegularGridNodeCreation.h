@@ -81,8 +81,8 @@ PatchTestStruct<DataTypes> createRegularGridScene(
 
     // Euler implicit solver and cglinear solver
     const component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
-    solver->f_rayleighStiffness.setValue(0.5);
-    solver->f_rayleighMass.setValue(0.5);
+    solver->d_rayleighStiffness.setValue(0.5);
+    solver->d_rayleighMass.setValue(0.5);
     const CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
     cgLinearSolver->d_maxIter.setValue(25);
     cgLinearSolver->d_tolerance.setValue(1e-5);

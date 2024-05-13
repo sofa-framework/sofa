@@ -40,6 +40,15 @@
         "Data renamed according to the guidelines")
 #endif
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ANIMATIONLOOP
+#define SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR(msg)
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        msg)
+#endif
+
 namespace sofa::component::animationloop
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

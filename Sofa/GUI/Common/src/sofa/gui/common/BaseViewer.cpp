@@ -96,7 +96,7 @@ void BaseViewer::wait()
 void BaseViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 {
     using namespace core::visual;
-    if (viewerConf->cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)
+    if (viewerConf->d_cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)
         setCameraMode(VisualParams::ORTHOGRAPHIC_TYPE);
     else
         setCameraMode(VisualParams::PERSPECTIVE_TYPE);

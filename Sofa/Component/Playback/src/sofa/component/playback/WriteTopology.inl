@@ -33,12 +33,12 @@ namespace sofa::component::playback
 {
 
 WriteTopology::WriteTopology()
-    : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_writeContainers( initData(&f_writeContainers, true, "writeContainers", "flag enabling output of common topology containers."))
-    , f_writeShellContainers( initData(&f_writeShellContainers, false, "writeShellContainers", "flag enabling output of specific shell topology containers."))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
-    , f_time( initData(&f_time, type::vector<double>(0), "time", "set time to write outputs"))
-    , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
+    : d_filename(initData(&d_filename, "filename", "output file name"))
+    , d_writeContainers(initData(&d_writeContainers, true, "writeContainers", "flag enabling output of common topology containers."))
+    , d_writeShellContainers(initData(&d_writeShellContainers, false, "writeShellContainers", "flag enabling output of specific shell topology containers."))
+    , d_interval(initData(&d_interval, 0.0, "interval", "time duration between outputs"))
+    , d_time(initData(&d_time, type::vector<double>(0), "time", "set time to write outputs"))
+    , d_period(initData(&d_period, 0.0, "period", "period between outputs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , outfile(nullptr)
@@ -49,6 +49,13 @@ WriteTopology::WriteTopology()
     , lastTime(0)
 {
     this->f_listening.setValue(true);
+
+    f_filename.setParent(&d_filename);
+    f_writeContainers.setParent(&d_writeContainers);
+    f_writeShellContainers.setParent(&d_writeShellContainers);
+    f_interval.setParent(&d_interval);
+    f_time.setParent(&d_time);
+    f_period.setParent(&d_period);
 }
 
 
@@ -81,7 +88,7 @@ void WriteTopology::init()
         return;
     }
 
-    const std::string& filename = f_filename.getFullPath();
+    const std::string& filename = d_filename.getFullPath();
 
     if (filename.empty())
         return;
@@ -130,10 +137,10 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
         const SReal time = getContext()->getTime();
 
         bool writeCurrent = false;
-        if (nextTime<f_time.getValue().size())
+        if (nextTime < d_time.getValue().size())
         {
             // store the actual time instant
-            lastTime = f_time.getValue()[nextTime];
+            lastTime = d_time.getValue()[nextTime];
             if (time >= lastTime) // if the time simulation is >= that the actual time instant
             {
                 writeCurrent = true;
@@ -143,10 +150,10 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
         else
         {
             // write the topology using a period
-            if (time >= (lastTime + f_period.getValue()))
+            if (time >= (lastTime + d_period.getValue()))
             {
                 writeCurrent = true;
-                lastTime += f_period.getValue();
+                lastTime += d_period.getValue();
             }
         }
 
@@ -160,7 +167,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
                 str << "T= "<< time << "\n";
 
                 // write the common containers:
-                if (f_writeContainers.getValue())
+                if (d_writeContainers.getValue())
                 {
                     // - Points are already tested by mstate.
 
@@ -201,7 +208,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
                 }
 
                 // write the shell containers:
-                if (f_writeShellContainers.getValue())
+                if (d_writeShellContainers.getValue())
                 {
                     str << "  Writing shell not handle yet.\n";
                 }
@@ -216,7 +223,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
                     (*outfile) << "T= "<< time << "\n";
 
                     // write the common containers:
-                    if (f_writeContainers.getValue())
+                    if (d_writeContainers.getValue())
                     {
                         // - Points are already tested by mstate.
 
@@ -257,7 +264,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
                     }
 
                     // write the shell containers:
-                    if (f_writeShellContainers.getValue())
+                    if (d_writeShellContainers.getValue())
                     {
                         (*outfile) << "  Writing shell not handle yet.\n";
                     }
