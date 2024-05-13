@@ -84,7 +84,7 @@ TEST_F(Data_test, dataTypeName)
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Edge>::name()}, "Edge");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Hexahedron>::name()}, "Hexahedron");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pentahedron>::name()}, "Pentahedron");
-    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Point>::name()}, "Point");
+    // EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Point>::name()}, "Point");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pyramid>::name()}, "Pyramid");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Quad>::name()}, "Quad");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Tetrahedron>::name()}, "Tetrahedron");

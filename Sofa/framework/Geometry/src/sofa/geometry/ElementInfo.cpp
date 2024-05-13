@@ -35,109 +35,13 @@
 namespace sofa::geometry
 {
 
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Point>::type()
-{
-    return ElementType::POINT;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Point>::name()
-{
-    return "Point";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Edge>::type()
-{
-    return ElementType::EDGE;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Edge>::name()
-{
-    return "Edge";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Triangle>::type()
-{
-    return ElementType::TRIANGLE;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Triangle>::name()
-{
-    return "Triangle";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Quad>::type()
-{
-    return ElementType::QUAD;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Quad>::name()
-{
-    return "Quad";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Tetrahedron>::type()
-{
-    return ElementType::TETRAHEDRON;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Tetrahedron>::name()
-{
-    return "Tetrahedron";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Pyramid>::type()
-{
-    return ElementType::PYRAMID;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Pyramid>::name()
-{
-    return "Pyramid";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Pentahedron>::type()
-{
-    return ElementType::PENTAHEDRON;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Pentahedron>::name()
-{
-    return "Pentahedron";
-}
-
-template<>
-SOFA_GEOMETRY_API ElementType ElementInfo<Hexahedron>::type()
-{
-    return ElementType::HEXAHEDRON;
-}
-
-template<>
-SOFA_GEOMETRY_API const char* ElementInfo<Hexahedron>::name()
-{
-    return "Hexahedron";
-}
-
-template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
-template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<Point>;
-template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
-template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
-template struct SOFA_GEOMETRY_API ElementInfo<Tetrahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<Triangle>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Edge>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Hexahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Pentahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Point>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Pyramid>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Quad>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Tetrahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Triangle>;
 
 } // namespace sofa::geometry
