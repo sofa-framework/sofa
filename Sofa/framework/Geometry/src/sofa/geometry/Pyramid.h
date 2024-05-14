@@ -31,7 +31,6 @@ struct Pyramid
 {
     static constexpr sofa::Size NumberOfNodes = 5;
     static constexpr ElementType Element_type = ElementType::PYRAMID;
-    static constexpr const char* Name = "Pyramid";
 
     Pyramid() = delete;
 };
