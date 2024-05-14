@@ -23,8 +23,6 @@
 
 #include <sofa/geometry/ElementType.h>
 
-#include <sofa/geometry/config.h>
-
 #include <sofa/geometry/Edge.h>
 #include <sofa/geometry/Hexahedron.h>
 #include <sofa/geometry/Pentahedron.h>
@@ -40,129 +38,27 @@ namespace sofa::geometry
 template<typename GeometryElement>
 struct ElementInfo
 {
-    static ElementType type();
+    static ElementType type()
+    {
+        return GeometryElement::Element_type;
+    }
 
-    static const char* name();
+    static const char* name()
+    {
+        static const char* n = elementTypeToString(type());
+        return n;
+    }
 };
 
-
-template <typename GeometryElement>
-ElementType ElementInfo<GeometryElement>::type()
-{
-    return ElementType();
-}
-
-template <typename GeometryElement>
-const char* ElementInfo<GeometryElement>::name()
-{
-    return "";
-}
-
-template<>
-inline ElementType ElementInfo<Point>::type()
-{
-    return ElementType::POINT;
-}
-
-template<>
-inline const char* ElementInfo<Point>::name()
-{
-    return "Point";
-}
-
-template<>
-inline ElementType ElementInfo<Edge>::type()
-{
-    return ElementType::EDGE;
-}
-
-template<>
-inline const char* ElementInfo<Edge>::name()
-{
-    return "Edge";
-}
-
-template<>
-inline ElementType ElementInfo<Triangle>::type()
-{
-    return ElementType::TRIANGLE;
-}
-
-template<>
-inline const char* ElementInfo<Triangle>::name()
-{
-    return "Triangle";
-}
-
-template<>
-inline ElementType ElementInfo<Quad>::type()
-{
-    return ElementType::QUAD;
-}
-
-template<>
-inline const char* ElementInfo<Quad>::name()
-{
-    return "Quad";
-}
-
-template<>
-inline ElementType ElementInfo<Tetrahedron>::type()
-{
-    return ElementType::TETRAHEDRON;
-}
-
-template<>
-inline const char* ElementInfo<Tetrahedron>::name()
-{
-    return "Tetrahedron";
-}
-
-template<>
-inline ElementType ElementInfo<Pyramid>::type()
-{
-    return ElementType::PYRAMID;
-}
-
-template<>
-inline const char* ElementInfo<Pyramid>::name()
-{
-    return "Pyramid";
-}
-
-template<>
-inline ElementType ElementInfo<Pentahedron>::type()
-{
-    return ElementType::PENTAHEDRON;
-}
-
-template<>
-inline const char* ElementInfo<Pentahedron>::name()
-{
-    return "Pentahedron";
-}
-
-template<>
-inline ElementType ElementInfo<Hexahedron>::type()
-{
-    return ElementType::HEXAHEDRON;
-}
-
-template<>
-inline const char* ElementInfo<Hexahedron>::name()
-{
-    return "Hexahedron";
-}
-
 #if !defined(SOFA_GEOMETRY_ELEMENTINFO_DEFINITION)
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Edge>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Hexahedron>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Pentahedron>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Point>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Pyramid>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Quad>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Tetrahedron>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<::sofa::geometry::Triangle>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Point>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Tetrahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Triangle>;
 #endif
 
 } // namespace sofa::geometry

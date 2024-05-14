@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/geometry/ElementType.h>
 
 namespace sofa::geometry
 {
@@ -29,6 +30,8 @@ namespace sofa::geometry
 struct Pyramid
 {
     static constexpr sofa::Size NumberOfNodes = 5;
+    static constexpr ElementType Element_type = ElementType::PYRAMID;
+    static constexpr const char* Name = "Pyramid";
 
     Pyramid() = delete;
 };

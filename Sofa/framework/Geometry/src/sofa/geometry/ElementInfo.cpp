@@ -23,25 +23,16 @@
 
 #include <sofa/geometry/ElementInfo.h>
 
-#include <sofa/geometry/Edge.h>
-#include <sofa/geometry/Hexahedron.h>
-#include <sofa/geometry/Pentahedron.h>
-#include <sofa/geometry/Point.h>
-#include <sofa/geometry/Pyramid.h>
-#include <sofa/geometry/Quad.h>
-#include <sofa/geometry/Tetrahedron.h>
-#include <sofa/geometry/Triangle.h>
-
 namespace sofa::geometry
 {
 
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Edge>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Hexahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Pentahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Point>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Pyramid>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Quad>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Tetrahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<sofa::geometry::Triangle>;
+template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
+template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<Point>;
+template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
+template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
+template struct SOFA_GEOMETRY_API ElementInfo<Tetrahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<Triangle>;
 
 } // namespace sofa::geometry
