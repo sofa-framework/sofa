@@ -21,8 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMultiMapping_CPP
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa::component::mapping::nonlinear
 {
