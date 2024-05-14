@@ -128,10 +128,10 @@ void SpringForceField<DataTypes>::reinit()
 template <class DataTypes>
 void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 {
+    const auto& springValues = *sofa::helper::getReadAccessor(springs);
     auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
-    const auto& springValues = *sofa::helper::getReadAccessor(springs);
 
     indices1.resize(springValues.size());
     indices2.resize(springValues.size());
@@ -871,10 +871,14 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 template <class DataTypes>
 void SpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
-    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
-    springs.clear();
-    if (reserve) springs.reserve(reserve);
+    sofa::type::vector<Spring>& _springs = *this->springs.beginEdit();
+    _springs.clear();
+    if (reserve) _springs.reserve(reserve);
+
     this->springs.endEdit();
+    this->springs.cleanDirty();
+
+    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>
@@ -886,6 +890,9 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
     sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
     springs.erase(springs.begin() +idSpring );
     this->springs.endEdit();
+    this->springs.cleanDirty();
+
+    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>
@@ -893,9 +900,9 @@ void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SRea
 {
     springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
     springs.endEdit();
+    springs.cleanDirty();
 
-    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(m1);
-    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(m2);
+    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>
@@ -903,9 +910,9 @@ void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
     springs.beginEdit()->push_back(spring);
     springs.endEdit();
+    springs.cleanDirty();
 
-    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(spring.m1);
-    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(spring.m2);
+    updateTopologyIndicesFromSprings();
 }
 
 template<class DataTypes>
