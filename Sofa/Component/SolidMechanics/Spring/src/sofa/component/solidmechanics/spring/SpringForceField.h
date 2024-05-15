@@ -71,7 +71,7 @@ public:
     Data<SReal> ks; ///< uniform stiffness for the all springs
     Data<SReal> kd; ///< uniform damping for the all springs
     Data<float> showArrowSize; ///< size of the axis
-    Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<int> drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
     Data<sofa::type::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
 
 protected:

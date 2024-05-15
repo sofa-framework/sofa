@@ -169,7 +169,7 @@ public:
 
 /// Topology Data
     core::topology::QuadData<sofa::type::vector<QuadInformation> > quadInfo;
-    core::topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    core::topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal node data
     core::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /** Method to initialize @sa QuadInformation when a new Quad is created.

@@ -44,7 +44,7 @@ public :
 
 
     Data<sofa::helper::OptionsGroup> d_response; ///< contact response class
-    Data<std::string> d_responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
+    Data<std::string> d_responseParams; ///< contact response parameters (syntax: name1=value1&name2=value2&...)
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems

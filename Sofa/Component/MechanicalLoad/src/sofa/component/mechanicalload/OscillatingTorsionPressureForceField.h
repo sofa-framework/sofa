@@ -81,16 +81,16 @@ protected:
     std::ofstream file;
 
 public:
-    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between triangle indices and their pressure    
+    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
 
-    Data<Real> moment;   ///< total moment/torque applied
+    Data<Real> moment; ///< Moment force applied on the entire surface
     Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
-    Data<Deriv> axis;    ///< axis of rotation and normal used to define the edge subjected to the pressure force
-    Data<Coord> center;  ///< center of rotation
-    Data<Real> penalty;  ///< strength of penalty force
-    Data<Real> frequency; ///< frequency of change
-    Data<Real> dmin;     ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;     ///< coordinates max of the plane for the vertex selection
+    Data<Deriv> axis; ///< Axis of rotation and normal direction for the plane selection of triangles
+    Data<Coord> center; ///< Center of rotation
+    Data<Real> penalty; ///< Strength of the penalty force
+    Data<Real> frequency; ///< frequency of oscillation
+    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
 
     /// Link to be set to the topology container in the component graph.

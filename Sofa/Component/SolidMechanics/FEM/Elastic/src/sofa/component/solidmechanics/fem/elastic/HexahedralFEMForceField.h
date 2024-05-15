@@ -185,7 +185,7 @@ protected:
 
 public:
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
+    Data<std::string> f_method; ///< "large" or "polar" displacements
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
     /// container that stotes all requires information for each hexahedron

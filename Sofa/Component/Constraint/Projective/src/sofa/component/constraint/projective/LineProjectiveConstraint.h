@@ -96,9 +96,9 @@ public:
     Data<CPos> f_direction;
 
     IndexSubsetData d_indices;  ///< the particles to project
-    Data<SReal> d_drawSize;    ///< The size of the square used to display the constrained particles
-    Data<CPos> d_origin;       ///< A point on the line
-    Data<CPos> d_direction;    ///< The direction of the line. Will be normalized by init()
+    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    Data<CPos> d_origin; ///< A point in the line
+    Data<CPos> d_direction; ///< Direction of the line
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

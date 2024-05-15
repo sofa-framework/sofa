@@ -148,9 +148,9 @@ protected:
     const bool& isPointTopologyDirty() const {return m_pointTopologyDirty;}
 
 public:
-    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
 
-    Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods 
+    Data<bool> d_checkTopology; ///< Parameter to activate internal topology checks (might slow down the simulation)
 
 protected:
     /// Boolean used to know if the topology Data of this container is dirty

@@ -75,7 +75,7 @@ public:
     typedef linearalgebra::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 protected:
-    Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
+    Data<OutVecCoord> f_initPos; ///< initial child coordinates in the world reference frame.
 
     // data for linear blending
     type::vector<type::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
@@ -84,7 +84,7 @@ protected:
 
     // data for dual quat blending
     Data< type::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
-    Data< type::vector<sofa::type::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
+    Data< type::vector<sofa::type::SVector<unsigned int> > > f_index; ///< parent indices for each child.
     Data< type::vector<sofa::type::SVector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 

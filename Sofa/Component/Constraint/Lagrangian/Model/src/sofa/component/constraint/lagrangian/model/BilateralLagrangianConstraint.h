@@ -113,7 +113,7 @@ protected:
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<bool> d_activate; ///< bool to control constraint activation
+    Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 

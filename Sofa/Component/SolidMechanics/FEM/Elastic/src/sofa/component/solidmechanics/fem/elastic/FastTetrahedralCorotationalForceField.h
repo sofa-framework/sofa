@@ -119,7 +119,7 @@ public:
     core::topology::TetrahedronData<VecTetrahedronRestInformation > tetrahedronInfo; ///< Internal tetrahedron data
 
     VecCoord  _initialPoints;///< the intial positions of the points
-    Data<std::string> f_method; ///< the computation method of the displacements
+    Data<std::string> f_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic) 
     RotationDecompositionMethod m_decompositionMethod;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law

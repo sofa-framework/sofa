@@ -57,7 +57,7 @@ public:
     Data < bool > d_writeX0; ///< flag enabling output of X0 vector
     Data < bool > d_writeV; ///< flag enabling output of V vector
     Data < bool > d_writeF; ///< flag enabling output of F vector
-    Data < type::vector<double> > d_time; ///< set time to write outputs
+    Data < type::vector<double> > d_time; ///< set time to write outputs (by default export at t=0)
     Data < double > d_period; ///< period between outputs
     Data < type::vector<unsigned int> > d_DOFsX; ///< set the position DOFs to write
     Data < type::vector<unsigned int> > d_DOFsV; ///< set the velocity DOFs to write

@@ -58,7 +58,7 @@ protected:
     sofa::type::vector<Deriv> m_prevForces;
 
     SetIndex d_indices;
-    Data<bool> d_fixAll;
+    Data<bool> d_fixAll; ///< If true, fix all points
 
     FixedLagrangianConstraint(MechanicalState* object = nullptr);
     virtual ~FixedLagrangianConstraint() {}

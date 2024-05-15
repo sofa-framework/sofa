@@ -75,9 +75,9 @@ public:
     Data< Real > fixedweight; ///< weight of fixed particles.
     Data< VecCoord > fixedPosition0; ///< rest positions of non mechanical particles.
     Data< VecCoord > fixedPosition; ///< current (fixed) positions of non mechanical particles.
-    Data< VecCoord > position; ///< input (current mstate position)
-    Data< VVI > cluster; ///< input2 (clusters)
-    Data< VecCoord > targetPosition;       ///< result
+    Data< VecCoord > position; ///< Input positions.
+    Data< VVI > cluster; ///< Input clusters.
+    Data< VecCoord > targetPosition; ///< Computed target positions.
 
 private:
     sofa::core::topology::BaseMeshTopology* topo;

@@ -201,7 +201,7 @@ public:
 
     Data< type::vector< unsigned char > >     d_dataVoxels;
 
-    Data<bool> d_fillWeighted; ///< is quantity of matter inside a cell taken into account?
+    Data<bool> d_fillWeighted; ///< Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)
 
     Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
 

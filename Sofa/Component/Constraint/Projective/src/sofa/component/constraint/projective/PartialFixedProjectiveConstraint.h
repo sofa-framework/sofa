@@ -64,8 +64,8 @@ public:
 public:
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
-    Data<VecBool> d_fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
-    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity to zero
+    Data<VecBool> d_fixedDirections; ///< for each direction, 1 if fixed, 0 if free
+    Data<bool> d_projectVelocity; ///< project velocity to ensure no drift of the fixed point
 
 protected:
     PartialFixedProjectiveConstraint();

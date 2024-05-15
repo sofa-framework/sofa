@@ -90,8 +90,8 @@ public:
 
 
     SetIndex d_indices;    ///< the indices of the points to project to the target
-    Data<Coord> d_point;    ///< the target of the projection
-    Data<bool> d_fixAll;    ///< to project all the points, rather than those listed in d_indices
+    Data<Coord> d_point; ///< Target of the projection
+    Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
     Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     /// Link to be set to the topology container in the component graph.

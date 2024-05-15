@@ -90,7 +90,7 @@ public:
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
 
-    Data< type::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
+    Data< type::vector<unsigned> > indexPairs; ///< list of couples (parent index + index in the parent)
 
 protected :
 

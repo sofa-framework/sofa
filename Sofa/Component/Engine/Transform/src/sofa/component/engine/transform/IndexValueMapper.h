@@ -51,9 +51,9 @@ public:
     void doUpdate() override;
 
     //Input
-    Data<sofa::type::vector<Real> > f_inputValues; ///< Already existing values (can be empty)
-    Data<sofa::type::vector<Index> > f_indices; ///< Indices to map value on
-    Data<Real> f_value; ///< Value to map indices on
+    Data<sofa::type::vector<Real> > f_inputValues; ///< Already existing values (can be empty) 
+    Data<sofa::type::vector<Index> > f_indices; ///< Indices to map value on 
+    Data<Real> f_value; ///< Value to map indices on 
 
     //Output
     Data<sofa::type::vector<Real> > f_outputValues; ///< New map between indices and values

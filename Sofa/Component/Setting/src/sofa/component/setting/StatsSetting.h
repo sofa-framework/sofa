@@ -56,11 +56,11 @@ public:
     Data<bool> exportState;
 
 
-    Data<bool> d_dumpState;       ///< If true, dump state vectors at each time step of the simulation.
-    Data<bool> d_logTime;         ///< If true, output in the console an average of the time spent during different stages of the simulation.
-    Data<bool> d_exportState;     ///< If true, create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene.
+    Data<bool> d_dumpState; ///< Dump state vectors at each time step of the simulation
+    Data<bool> d_logTime; ///< Output in the console an average of the time spent during different stages of the simulation
+    Data<bool> d_exportState; ///< Create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene
 #ifdef SOFA_DUMP_VISITOR_INFO
-    Data<bool> traceVisitors;   ///< If true, trace the time spent by each visitor, and allows to profile precisely one step of a simulation.
+    Data<bool> traceVisitors; ///< Trace the time spent by each visitor, and allows to profile precisely one step of a simulation
 #endif
 
 };

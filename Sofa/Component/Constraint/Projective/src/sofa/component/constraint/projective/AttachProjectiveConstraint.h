@@ -59,9 +59,9 @@ public:
     Data<type::Vec3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
     Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
     Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
-    Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
-    Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
-    Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
+    Data< Real > d_positionFactor; ///< IN: Factor applied to projection of position
+    Data< Real > d_velocityFactor; ///< IN: Factor applied to projection of velocity
+    Data< Real > d_responseFactor; ///< IN: Factor applied to projection of force/acceleration
     Data< type::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
 
     type::vector<bool> activeFlags;

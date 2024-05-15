@@ -48,8 +48,8 @@ public:
 
 
 
-    Data< type::Vec2i > d_resolution;  ///< Number of vertices in each direction
-    Data< int > d_trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
+    Data< type::Vec2i > d_resolution; ///< Number of vertices in each direction
+    Data< int > d_trianglePattern; ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles
 
 protected:
     GridMeshCreator();

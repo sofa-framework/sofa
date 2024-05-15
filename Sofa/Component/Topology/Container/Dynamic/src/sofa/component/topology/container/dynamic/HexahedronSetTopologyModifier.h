@@ -64,7 +64,7 @@ protected:
 public:
     void init() override;
 
-    Data< bool > removeIsolated; ///< Controlled DOF index.
+    Data< bool > removeIsolated; ///< remove Isolated dof
 
     /** \brief add a set of hexahedra
     @param hexahedra an array of vertex indices describing the hexahedra to be created

@@ -356,7 +356,7 @@ public:
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
-    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles.
+    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw edges.
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
     Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
     Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.

@@ -61,13 +61,13 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     Data<sofa::helper::OptionsGroup> objectPickingMethod;
 
-    Data<sofa::type::Vec<2,int> > d_resolution;                           ///< Screen resolution (width, height).
-    Data<bool> d_fullscreen;                                  ///< True if viewer should be fullscreen.
-    Data<sofa::helper::OptionsGroup> d_cameraMode;                          ///< Camera mode.
+    Data<sofa::type::Vec<2,int> > d_resolution; ///< resolution of the Viewer
+    Data<bool> d_fullscreen; ///< Fullscreen mode
+    Data<sofa::helper::OptionsGroup> d_cameraMode; ///< Camera mode
                                                             /**<    \arg Perspective.
                                                              *      \arg Orthographic.
                                                              */
-    Data<sofa::helper::OptionsGroup> d_objectPickingMethod;                 ///< Picking Method.
+    Data<sofa::helper::OptionsGroup> d_objectPickingMethod; ///< The method used to pick objects
                                                             /**<    \arg Ray casting.
                                                              *      \arg Selection Buffer.
                                                              */

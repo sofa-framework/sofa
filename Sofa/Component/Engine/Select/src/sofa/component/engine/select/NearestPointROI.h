@@ -64,15 +64,15 @@ public:
 
     SetIndex d_inputIndices1; ///< Only these indices are considered in the first model
     SetIndex d_inputIndices2; ///< Only these indices are considered in the second model
-    Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
-    Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
+    Data<Real> f_radius; ///< Radius to search corresponding fixed point
+    Data<bool> d_useRestPosition; ///< If true will use restPosition only at init
 
     /// Output Data
     ///@{
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
-    Data< sofa::type::vector<sofa::topology::Edge> > d_edges; ///< List of edges. The indices point to a list composed as an interleaved fusion of output degrees of freedom. It could be used to fuse two mechanical objects and create a topology from the fusion.
-    Data< type::vector<unsigned> > d_indexPairs;        ///< Two indices per child: the parent, and the index within the parent. Could be used with a SubsetMultiMapping
+    Data< sofa::type::vector<sofa::topology::Edge> > d_edges; ///< List of edge indices
+    Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
     Data< type::vector<Real> > d_distances; ///< List of distances between pairs of points
     ///@}
 

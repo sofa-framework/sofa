@@ -107,7 +107,7 @@ public:
 
 public:
     //Input
-    Data<vector<type::Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
+    Data<vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
     /// Rest position coordinates of the degrees of freedom.
     /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.
@@ -123,7 +123,7 @@ public:
     Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeHexahedra; ///< If true, will compute hexahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeQuad; ///< If true, will compute quad list and index list inside the ROI. (default = true)
-    Data<bool> d_strict; ///< If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
+    Data<bool> d_strict; ///< If true, an element is inside the box iif all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
 
     //Output
     Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
