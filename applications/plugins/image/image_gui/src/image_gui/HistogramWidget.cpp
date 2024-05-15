@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_IMAGE_HISTOGRAMWIDGET_CPP
 
-#include "HistogramWidget.h"
+#include <image_gui/HistogramWidget.h>
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 

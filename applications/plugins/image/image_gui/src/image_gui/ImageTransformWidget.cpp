@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_IMAGE_IMAGETRANSFORMWIDGET_CPP
 
-#include "ImageTransformWidget.h"
+#include <image_gui/ImageTransformWidget.h>
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 

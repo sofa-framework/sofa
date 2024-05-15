@@ -36,7 +36,7 @@
 
 #include <image/ImageTypes.h>
 #include "imagetoolboxdata.h"
-#include "../image_gui/ImagePlaneWidget.h"
+#include <image_gui/ImagePlaneWidget.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>

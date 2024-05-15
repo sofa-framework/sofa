@@ -34,7 +34,7 @@
 #include <QGraphicsScene>
 
 
-#include "../ImageTypes.h"
+#include <image/ImageTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>

@@ -26,8 +26,8 @@
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#include "../ImageTypes.h"
-#include "../ImageViewer.h"
+#include <image/ImageTypes.h>
+#include <image/ImageViewer.h>
 
 #include <QLabel>
 #include <QVBoxLayout>

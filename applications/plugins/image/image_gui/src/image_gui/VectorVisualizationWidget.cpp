@@ -1,6 +1,6 @@
 #define SOFA_IMAGE_VECTORVISWIDGET_CPP
 
-#include "VectorVisualizationWidget.h"
+#include <image_gui/VectorVisualizationWidget.h>
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 
