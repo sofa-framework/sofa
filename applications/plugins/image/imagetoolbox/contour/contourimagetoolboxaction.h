@@ -1,7 +1,7 @@
 #ifndef CONTOURIMAGETOOLBOXACTION_H
 #define CONTOURIMAGETOOLBOXACTION_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 #include <QPushButton>
 #include <QSpinBox>

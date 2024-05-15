@@ -22,7 +22,7 @@
 #ifndef SOFA_IMAGE_CATCHALLVECTOR_H
 #define SOFA_IMAGE_CATCHALLVECTOR_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
