@@ -167,6 +167,7 @@ void TopologySubsetData <ElementType, VecT>::remove(const sofa::type::vector<Ind
     Index lastTopoElemId = this->getLastElementIndex();
     
     // check for each element index to remove if it concern this subsetData
+    // The index vector is supposed to be sorted in descendent index order
     for (Index elemId : index)
     {
         if (data.size() == 0)

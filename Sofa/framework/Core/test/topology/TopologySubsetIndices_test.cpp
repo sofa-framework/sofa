@@ -30,12 +30,22 @@ class SimplePointTopology: public BaseMeshTopology
 {
    public:
     SimplePointTopology(unsigned size)
+    : m_data(initData(&m_data,"topologoSI",""))
     {
+        sofa::core::topology::BaseTopologyData<type::vector<Index>>::InitData initData ;
+        (initData);
+
         m_points.reserve(size);
         for(unsigned i=0; i<size; ++i)
         {
             m_points.push_back(i);
         }
+    }
+
+    virtual void init()
+    {
+        BaseMeshTopology::init();
+        m_data.createTopologyHandler(this);
     }
 
     virtual const SeqEdges& getEdges() {}
@@ -52,26 +62,62 @@ class SimplePointTopology: public BaseMeshTopology
 
     virtual Size getNbPoints() const { return m_points.size(); }
 
+
+    TopologySubsetIndices m_data;
     type::vector<sofa::Index> m_points;
 };
 
 TEST(TopologySubsetIndices_test, removePoints)
 {
-    const EdgeSetTopologyContainer::SPtr edgeContainer = sofa::core::objectmodel::New< EdgeSetTopologyContainer >();
-
-
-    sofa::core::topology::BaseTopologyData<type::vector<Index>>::InitData initData ;
-    TopologySubsetIndices data(initData);
-
-    data.setValue({0,2,3,1,0,2});
+    SimplePointTopology PointContainer(4);
+    PointContainer.init();
+    PointContainer.m_data.setValue({0,2,3,1,0,2});
 
     type::vector<Index> indexToRemove{1,0};
-    data.remove(indexToRemove);
+    PointContainer.m_data.remove(indexToRemove);
 
-    EXPECT_EQ(0,data.getValue()[0]);
-    EXPECT_EQ(1,data.getValue()[1]);
-    EXPECT_EQ(0,data.getValue()[2]);
+    EXPECT_EQ(3,PointContainer.m_data.getValue().size());
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[0]);
+    EXPECT_EQ(1,PointContainer.m_data.getValue()[1]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[2]);
 
 }
+
+
+TEST(TopologySubsetIndices_test, swapPoints)
+{
+    SimplePointTopology PointContainer(4);
+    PointContainer.init();
+    PointContainer.m_data.setValue({0,2,3,1,0,2});
+
+    PointContainer.m_data.swap(0,5);
+
+    EXPECT_EQ(6,PointContainer.m_data.getValue().size());
+    EXPECT_EQ(2,PointContainer.m_data.getValue()[0]);
+    EXPECT_EQ(2,PointContainer.m_data.getValue()[1]);
+    EXPECT_EQ(3,PointContainer.m_data.getValue()[2]);
+    EXPECT_EQ(1,PointContainer.m_data.getValue()[3]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[4]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[5]);
+}
+
+TEST(TopologySubsetIndices_test, renumber)
+{
+    SimplePointTopology PointContainer(4);
+    PointContainer.init();
+    PointContainer.m_data.setValue({0,2,3,1,0,2});
+
+    PointContainer.m_data.renumber({5,2,3,4,1,0});
+
+    EXPECT_EQ(6,PointContainer.m_data.getValue().size());
+    EXPECT_EQ(2,PointContainer.m_data.getValue()[0]);
+    EXPECT_EQ(3,PointContainer.m_data.getValue()[1]);
+    EXPECT_EQ(1,PointContainer.m_data.getValue()[2]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[3]);
+    EXPECT_EQ(2,PointContainer.m_data.getValue()[4]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[5]);
+
+}
+
 
 }
