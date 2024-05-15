@@ -65,7 +65,7 @@ public:
 protected:
     Data<VecCoord> f_inputX; ///< input array of 3d points
     Data<VecCoord> f_outputX; ///< output array of projected 3d points
-    Data<ProjMat> proj_mat; ///< projection matrix 
+    Data<ProjMat> proj_mat; ///< projection matrix
     Data<Real> focal_distance; ///< focal distance 
 };
 

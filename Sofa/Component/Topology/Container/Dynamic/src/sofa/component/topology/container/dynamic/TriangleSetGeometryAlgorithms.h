@@ -71,10 +71,10 @@ protected:
         ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw triangles"))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
-        , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
+        , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals"))
         , p_flipNormals(initData(&p_flipNormals, false, "flipNormals","if true, will flip normal of the first triangle used to recompute triangle orientation."))
     {
     }
@@ -356,11 +356,11 @@ public:
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
-    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw edges.
+    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
-    Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
-    Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.
-    Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation.
+    Data <SReal> _drawNormalLength; ///< Fiber length visualisation
+    Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals
+    Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 

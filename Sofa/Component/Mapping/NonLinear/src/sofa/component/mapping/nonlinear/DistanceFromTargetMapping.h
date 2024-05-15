@@ -85,7 +85,7 @@ public:
 
     Data<type::vector<unsigned>> f_indices; ///< Indices of the parent points
     Data<InVecCoord> f_targetPositions; ///< Positions to compute the distances from
-    Data<type::vector<Real>> f_restDistances; ///< Rest lengths of the connections.
+    Data<type::vector<Real>> f_restDistances; ///< Rest lengths of the connections
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);

@@ -68,7 +68,7 @@ public:
 
     using Index = sofa::Index;
 
-    Data<SReal> d_bendingStiffness; ///< bending stiffness of the material
+    Data<SReal> d_bendingStiffness; ///< Bending stiffness of the material
     Data<SReal> d_minDistValidity; ///< Distance under which a spring is not valid
 
     /// Link to be set to the topology container in the component graph. 

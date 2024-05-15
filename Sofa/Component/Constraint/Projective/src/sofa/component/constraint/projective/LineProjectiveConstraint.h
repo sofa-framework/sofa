@@ -96,7 +96,7 @@ public:
     Data<CPos> f_direction;
 
     IndexSubsetData d_indices;  ///< the particles to project
-    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
     Data<CPos> d_origin; ///< A point in the line
     Data<CPos> d_direction; ///< Direction of the line
 

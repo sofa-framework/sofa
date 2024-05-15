@@ -91,8 +91,8 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<CPos>f_direction;
 
-    IndexSubsetData d_indices;  ///< the particles to project
-    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    IndexSubsetData d_indices;  ///< Indices the particles to project
+    Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
     Data<CPos> d_direction; ///< Direction of the line
 
     /// Link to be set to the topology container in the component graph.

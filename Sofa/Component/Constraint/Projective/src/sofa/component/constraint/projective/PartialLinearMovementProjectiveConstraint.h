@@ -146,7 +146,7 @@ public :
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<VecBool> movedDirections;
 
-    core::objectmodel::Data<VecBool> d_movedDirections; ///< for each direction, 1 if moved, 0 if free
+    core::objectmodel::Data<VecBool> movedDirections; ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PartialLinearMovementProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

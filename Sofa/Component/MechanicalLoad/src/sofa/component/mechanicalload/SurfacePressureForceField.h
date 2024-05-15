@@ -70,8 +70,8 @@ public:
     enum State { INCREASE, DECREASE };
 
     Data<Real> m_pressure; ///< Pressure force per unit area
-    Data<Coord> m_min; ///< Lower bond of the selection box
-    Data<Coord> m_max; ///< Upper bond of the selection box
+    Data<Coord> m_min; ///< Lower bound of the selection box
+    Data<Coord> m_max; ///< Upper bound of the selection box
     Data<VecIndex> m_triangleIndices; ///< Indices of affected triangles
     Data<VecIndex> m_quadIndices; ///< Indices of affected quads
     Data<bool> m_pulseMode; ///< Cyclic pressure application

@@ -52,7 +52,7 @@ public:
     Data<VecCellData> f_quadData; ///< Data associated with quads
     Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
-    Data<sofa::type::RGBAColor> f_colorNaN; ///< Color used for NaN values.(default=[0.0,0.0,0.0,1.0])
+    Data<sofa::type::RGBAColor> f_colorNaN; ///< Color used for NaN values (default=[0.0,0.0,0.0,1.0])
     Data<type::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range

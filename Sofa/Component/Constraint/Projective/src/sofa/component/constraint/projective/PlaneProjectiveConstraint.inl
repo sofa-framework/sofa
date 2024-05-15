@@ -35,10 +35,10 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 PlaneProjectiveConstraint<DataTypes>::PlaneProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , d_indices(initData(&d_indices, "indices", "Indices of the fixed points") )
-    , d_origin(initData(&d_origin, CPos(), "origin", "A point in the plane"))
-    , d_normal(initData(&d_normal, CPos(), "normal", "Normal vector to the plane"))
-    , d_drawSize(initData(&d_drawSize, (SReal)0.0, "drawSize", "0 -> point based rendering, >0 -> radius of spheres") )
+    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
+    , d_origin( initData(&d_origin,CPos(),"origin","A point in the plane"))
+    , d_normal( initData(&d_normal,CPos(),"normal","Normal vector to the plane"))
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new PlaneProjectiveConstraintInternalData<DataTypes>())    
 {

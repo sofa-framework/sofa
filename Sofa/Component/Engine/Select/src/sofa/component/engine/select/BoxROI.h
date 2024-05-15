@@ -123,7 +123,7 @@ public:
     Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeHexahedra; ///< If true, will compute hexahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeQuad; ///< If true, will compute quad list and index list inside the ROI. (default = true)
-    Data<bool> d_strict; ///< If true, an element is inside the box iif all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
+    Data<bool> d_strict; ///< If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
 
     //Output
     Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
@@ -141,7 +141,7 @@ public:
     Data< sofa::Size > d_nbIndices; ///< Number of selected indices
 
     //Parameter
-    Data<bool> d_drawBoxes; ///< Draw Boxes. (default = false)
+    Data<bool> d_drawBoxes; ///< Draw bounding box (default = false)
     Data<bool> d_drawPoints; ///< Draw Points. (default = false)
     Data<bool> d_drawEdges; ///< Draw Edges. (default = false)
     Data<bool> d_drawTriangles; ///< Draw Triangles. (default = false)

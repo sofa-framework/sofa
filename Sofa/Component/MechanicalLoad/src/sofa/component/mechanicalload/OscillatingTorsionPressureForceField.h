@@ -81,7 +81,7 @@ protected:
     std::ofstream file;
 
 public:
-    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
+    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap; ///< Map between triangle indices and their pressure
 
     Data<Real> moment; ///< Moment force applied on the entire surface
     Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
