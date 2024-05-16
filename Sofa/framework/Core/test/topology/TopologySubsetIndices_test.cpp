@@ -61,6 +61,20 @@ class SimplePointTopology: public BaseMeshTopology
 
 
     virtual Size getNbPoints() const { return m_points.size(); }
+    void removePoints(const unsigned nb)
+    {
+        if(nb >= m_points.size())
+            m_points.clear();
+        else
+            m_points.resize(m_points.size() - nb);
+    }
+
+    void addPoints(const unsigned nb)
+    {
+        m_points.reserve(m_points.size() + nb);
+        for(unsigned i=m_points.size(); i<(m_points.size() + nb);++i)
+            m_points.push_back(i);
+    }
 
 
     TopologySubsetIndices m_data;
@@ -78,8 +92,8 @@ TEST(TopologySubsetIndices_test, removePoints)
 
     EXPECT_EQ(3,PointContainer.m_data.getValue().size());
     EXPECT_EQ(0,PointContainer.m_data.getValue()[0]);
-    EXPECT_EQ(1,PointContainer.m_data.getValue()[1]);
-    EXPECT_EQ(0,PointContainer.m_data.getValue()[2]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[1]);
+    EXPECT_EQ(1,PointContainer.m_data.getValue()[2]);
 
 }
 
