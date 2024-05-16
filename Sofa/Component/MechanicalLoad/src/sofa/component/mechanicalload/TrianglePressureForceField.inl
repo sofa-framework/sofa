@@ -48,7 +48,14 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     , l_topology(initLink("topology", "link to the topology container"))
     , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
     , m_topology(nullptr)
-{}
+{
+    this->addUpdateCallback("pressure", { &pressure }, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        updateTriangleInformation();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+}
 
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
