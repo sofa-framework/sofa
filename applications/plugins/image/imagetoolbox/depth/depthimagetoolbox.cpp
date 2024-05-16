@@ -1,8 +1,9 @@
 #define DEPTHIMAGETOOLBOX_CPP
 
+#include "depthimagetoolbox.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include "depthimagetoolbox.h"
+
 #include <image/ImageTypes.h>
 
 
