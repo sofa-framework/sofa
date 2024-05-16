@@ -33,7 +33,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -49,7 +48,6 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>

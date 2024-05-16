@@ -27,7 +27,7 @@ namespace sofa::component::collision::detection::intersection
 using namespace sofa::component::collision::geometry;
 
 BaseProximityIntersection::BaseProximityIntersection()
-    : d_alarmDistance(initData(&d_alarmDistance, 1.0_sreal, "alarmDistance", "Proximity detection distance"))
+    : d_alarmDistance(initData(&d_alarmDistance, 1.0_sreal, "alarmDistance", "Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broadphase to reduce the search area"))
     , d_contactDistance(initData(&d_contactDistance, 0.5_sreal, "contactDistance", "Distance below which a contact is created"))
 {
     d_alarmDistance.setRequired(true);

@@ -62,7 +62,7 @@ public:
     Data< Real > d_positionFactor; ///< IN: Factor applied to projection of position
     Data< Real > d_velocityFactor; ///< IN: Factor applied to projection of velocity
     Data< Real > d_responseFactor; ///< IN: Factor applied to projection of force/acceleration
-    Data< type::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
+    Data< type::vector<Real> > d_constraintFactor; ///< Vector of factors adapting the application of the constraint per pair of points (0 -> the constraint is released. 1 -> the constraint is fully constrained)
 
     type::vector<bool> activeFlags;
     type::vector<bool> constraintReleased;
