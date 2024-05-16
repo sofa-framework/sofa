@@ -32,9 +32,6 @@ class SimplePointTopology: public BaseMeshTopology
     SimplePointTopology(unsigned size)
     : m_data(initData(&m_data,"topologoSI",""))
     {
-        sofa::core::topology::BaseTopologyData<type::vector<Index>>::InitData initData ;
-        (initData);
-
         m_points.reserve(size);
         for(unsigned i=0; i<size; ++i)
         {
@@ -48,11 +45,11 @@ class SimplePointTopology: public BaseMeshTopology
         m_data.createTopologyHandler(this);
     }
 
-    virtual const SeqEdges& getEdges() {}
-    virtual const SeqTriangles& getTriangles() {}
-    virtual const SeqQuads& getQuads() {}
-    virtual const SeqTetrahedra& getTetrahedra() {}
-    virtual const SeqHexahedra& getHexahedra() {}
+    virtual const SeqEdges& getEdges() { return m_edges; }
+    virtual const SeqTriangles& getTriangles() { return m_triangles; }
+    virtual const SeqQuads& getQuads() { return m_quads; }
+    virtual const SeqTetrahedra& getTetrahedra() { return m_tetra; }
+    virtual const SeqHexahedra& getHexahedra() { return m_hexa; }
 
     virtual sofa::geometry::ElementType getTopologyType() const
     {
@@ -76,6 +73,11 @@ class SimplePointTopology: public BaseMeshTopology
             m_points.push_back(i);
     }
 
+    sofa::type::vector<Edge> m_edges;
+    sofa::type::vector<Triangle> m_triangles;
+    sofa::type::vector<Quad> m_quads;
+    sofa::type::vector<Tetra> m_tetra;
+    sofa::type::vector<Hexa> m_hexa;
 
     TopologySubsetIndices m_data;
     type::vector<sofa::Index> m_points;
