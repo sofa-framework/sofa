@@ -25,42 +25,7 @@ echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+clean_default_plugins "INSTALL_DIR"
 
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then

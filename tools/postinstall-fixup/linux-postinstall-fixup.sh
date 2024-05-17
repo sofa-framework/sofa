@@ -4,6 +4,9 @@ usage() {
     echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
+source common.sh
+
+
 if [ "$#" -ge 2 ]; then
     BUILD_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
@@ -18,42 +21,7 @@ if [ -d "$INSTALL_DIR/packages/Runtime/data" ]; then
     INSTALL_DIR="$INSTALL_DIR/packages/Runtime/data"
 fi
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+clean_default_plugins "INSTALL_DIR"
 
 echo "Fixing up libs..."
 

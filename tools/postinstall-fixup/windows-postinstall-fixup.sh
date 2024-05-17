@@ -22,42 +22,7 @@ echo "BUILD_DIR = $BUILD_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR_BIN/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR_BIN/plugin_list.conf.default" >> "$INSTALL_DIR_BIN/plugin_list.conf"
+clean_default_plugins "INSTALL_DIR"
 
 # Copy all plugin libs in install/bin to make them easily findable
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
