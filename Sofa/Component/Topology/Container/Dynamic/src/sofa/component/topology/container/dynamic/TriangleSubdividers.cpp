@@ -25,11 +25,20 @@ namespace sofa::component::topology::container::dynamic
 {
 
 
+TriangleSubdivider::~TriangleSubdivider()
+{}
+
+
 TriangleSubdivider::TriangleSubdivider(TriangleID triangleId, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
     : m_triangleId(triangleId)
     , m_triangle(triangle)
 {
 
+}
+
+void TriangleSubdivider::addPoint(PointToAdd* pTA)
+{
+    m_points.push_back(pTA);
 }
 
 

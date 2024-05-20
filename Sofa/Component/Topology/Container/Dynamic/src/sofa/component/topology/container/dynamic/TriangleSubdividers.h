@@ -40,7 +40,7 @@ using PointID = core::topology::BaseMeshTopology::PointID;
 * triangle structure with vertex indices
 * This structure also store all the ancestors and coefficient to efficently add this triangle with the area ratio into the current mesh.
 */
-class TriangleToAdd
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleToAdd
 {
 public:
     TriangleToAdd(TriangleID uniqueID, sofa::core::topology::BaseMeshTopology::Triangle _triangle,
@@ -68,16 +68,20 @@ public:
 * Depending on the configuration, 2 or 3 new triangle will be computed as well as new points.
 * All info to create the new elements are computed and will be generated using a TriangleSetModifier component.
 */
-class TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider
 {
 public:
-    TriangleSubdivider(TriangleID triangleId, const Triangle& triangle);
+    explicit TriangleSubdivider(TriangleID triangleId, const Triangle& triangle);
+    ~TriangleSubdivider();
 
     virtual bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
     {
         SOFA_UNUSED(triCoords);
         return false;
     }
+
+    void addPoint(PointToAdd* pTA);
+    const type::vector<TriangleToAdd*>& getTrianglesToAdd() { return m_trianglesToAdd; }
 
 protected:
     PointID localVertexId(PointID vertexIndex);
@@ -97,7 +101,7 @@ protected:
 * Specialisation of TriangleSubdivider to compute configuration where 1 Node is added in inside of the Triangle
 * In this case 3 new Triangles and 1 Point will be created.
 */
-class TriangleSubdivider_1Node : public TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_1Node : public TriangleSubdivider
 {
 public:
     TriangleSubdivider_1Node(TriangleID triangleId, const Triangle& triangle) 
@@ -112,7 +116,7 @@ public:
 * Specialisation of TriangleSubdivider to compute configuration where 1 Node is added on one edge of the Triangle
 * In this case 2 new Triangles and 1 Point will be created.
 */
-class TriangleSubdivider_1Edge : public TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_1Edge : public TriangleSubdivider
 {
 public:
     TriangleSubdivider_1Edge(TriangleID triangleId, const Triangle& triangle)
@@ -127,7 +131,7 @@ public:
 * Specialisation of TriangleSubdivider to compute configuration where 2 Nodes are added on 2 different edges of the Triangle
 * In this case 3 new Triangles and 2 Points will be created.
 */
-class TriangleSubdivider_2Edge : public TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_2Edge : public TriangleSubdivider
 {
 public:
     TriangleSubdivider_2Edge(TriangleID triangleId, const Triangle& triangle)
@@ -142,7 +146,7 @@ public:
 * Specialisation of TriangleSubdivider to compute configuration where 3 Nodes are added on 3 different edges of the Triangle
 * In this case 4 new Triangles and 3 Points will be created.
 */
-class TriangleSubdivider_3Edge : public TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_3Edge : public TriangleSubdivider
 {
 public:
     TriangleSubdivider_3Edge(TriangleID triangleId, const Triangle& triangle)
@@ -157,7 +161,7 @@ public:
 * Specialisation of TriangleSubdivider to compute configuration where 2 Nodes are added, 1 on edge and 1 inside of the Triangle
 * In this case 4 new Triangles and 2 Points will be created.
 */
-class TriangleSubdivider_2Node : public TriangleSubdivider
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_2Node : public TriangleSubdivider
 {
 public:
     TriangleSubdivider_2Node(TriangleID triangleId, const Triangle& triangle)

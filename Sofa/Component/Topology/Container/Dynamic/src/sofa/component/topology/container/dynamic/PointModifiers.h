@@ -36,7 +36,7 @@ using PointID = core::topology::BaseMeshTopology::PointID;
 * id of duplicated point if this point will be splitted due to a cut.
 * This structure also store all the ancestors and coefficient to efficently add this point into the current mesh.
 */
-class PointToAdd
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointToAdd
 {
 public:
     PointToAdd(PointID uniqueID, PointID idPoint, const sofa::type::vector<PointID>& ancestors, const sofa::type::vector<SReal>& coefs)
