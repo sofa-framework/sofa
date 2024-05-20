@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/container/dynamic/TriangleModifiers.h>
+#include <sofa/component/topology/container/dynamic/TriangleSubdividers.h>
 
 namespace sofa::component::topology::container::dynamic
 {
