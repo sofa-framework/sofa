@@ -107,7 +107,7 @@ public:
 
 public:
     //Input
-    Data<vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
     /// Rest position coordinates of the degrees of freedom.
     /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.

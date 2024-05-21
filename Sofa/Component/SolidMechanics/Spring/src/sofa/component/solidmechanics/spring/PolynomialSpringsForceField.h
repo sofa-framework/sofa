@@ -73,12 +73,12 @@ public:
     Data<VecReal> d_zeroLength; ///< initial length for springs
     Data<bool> d_recomputeIndices; ///< Recompute indices (should be false for BBOX)
 
-    Data <bool> d_compressible; ///< Indicates if object compresses without reactio force
+    Data <bool> d_compressible; ///< Indicates if object compresses without any reaction force
 
     Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
     Data<float> d_showArrowSize; ///< size of the axis
     Data<sofa::type::RGBAColor> d_springColor; ///< spring color
-    Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
+    Data<float> d_showIndicesScale; ///< Scale for indices display (default=0.02)
 
 
     // data to compute spring derivatives

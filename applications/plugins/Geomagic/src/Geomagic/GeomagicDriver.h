@@ -105,7 +105,7 @@ public:
     Data<Quat> d_orientationBase; ///< Orientation of the device base in the SOFA scene world coordinates
     Data<Quat> d_orientationTool; ///< Orientation of the tool in the SOFA scene world coordinates
     Data<SReal> d_scale; ///< Default scale applied to the Device coordinates
-    Data<SReal> d_forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<SReal> d_forceScale; ///< Default forceScale applied to the force feedback
     Data<SReal> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
     Data<Vec3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
 

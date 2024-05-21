@@ -102,7 +102,7 @@ protected:
 
 public:
     //Input
-    Data< type::vector<Vec10> > planes; ///< Plane defined by 3 points and a depth distance
+    Data< type::vector<Vec10> > planes; ///< List of planes defined by 3 points and a depth distance
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     Data<type::vector<Edge> > f_edges; ///< Edge Topology
     Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology

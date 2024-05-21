@@ -77,7 +77,7 @@ public:
     Data<bool> d_filterIntersection; ///< Activate LMD filter
     Data<double> d_angleCone; ///< Filtering cone extension angle
     Data<double> d_coneFactor; ///< Factor for filtering cone angle computation
-    Data<bool> d_useLMDFilters; ///< Use external cone computation (Work in Progress)
+    Data<bool> d_useLMDFilters; ///< Use external cone computation
 
 protected:
     LocalMinDistance();

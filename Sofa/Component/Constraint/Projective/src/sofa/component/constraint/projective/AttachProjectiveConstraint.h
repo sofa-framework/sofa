@@ -51,7 +51,7 @@ public:
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
-    Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
+    Data<bool> f_twoWay; ///< if true, projects the constraint vertices of both object1 and object2 towards their average degrees of freedom and derivatives. If false, the position of the object1 are projected onto the object2. Therefore, object2 only follows object1 without affecting the motion of object1
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
     Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
     Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)

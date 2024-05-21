@@ -358,9 +358,9 @@ protected:
     Data<bool> _draw; ///< if true, draw the triangles in the topology
     Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
-    Data <SReal> _drawNormalLength; ///< Fiber length visualisation
+    Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
     Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals
-    Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation
+    Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 

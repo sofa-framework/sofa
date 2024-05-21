@@ -61,9 +61,9 @@ protected:
 
     Data<VecCoord> f_inputX; ///< input array of 3d points
     Data<VecCoord> f_outputX; ///< output array of 3d points
-    Data<type::Vec3> translation; ///< translation vector 
-    Data<type::Vec3> rotation; ///< rotation vector 
-    Data<type::Quat<SReal>> quaternion; ///< rotation quaternion 
+    Data<type::Vec3> translation; ///< translation vector (x,y,z)
+    Data<type::Vec3> rotation; ///< rotation vector (x,y,z)
+    Data<type::Quat<SReal>> quaternion; ///< rotation quaternion (qx,qy,qz,qw)
     Data<type::Vec3> scale; ///< scale factor
     Data<bool> inverse; ///< true to apply inverse transformation
 };
