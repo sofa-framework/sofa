@@ -28,7 +28,7 @@ echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
 source $SCRIPT_DIR/common.sh
-clean_default_plugins "INSTALL_DIR"
+clean_default_plugins "$INSTALL_DIR"
 
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then
