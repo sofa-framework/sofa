@@ -28,7 +28,7 @@ if [ -d "$INSTALL_DIR/packages/Runtime/data" ]; then
 fi
 
 source $SCRIPT_DIR/common.sh
-clean_default_plugins "$INSTALL_DIR"
+clean_default_plugins "$INSTALL_DIR/lib"
 
 echo "Fixing up libs..."
 
