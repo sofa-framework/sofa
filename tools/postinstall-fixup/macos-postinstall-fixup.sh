@@ -2,14 +2,15 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <script-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
-    INSTALL_DIR="$(cd $1 && pwd)"
-    QT_LIB_DIR="$2"
-    QT_DATA_DIR="$3"
-    MACDEPLOYQT_EXE="$4"
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    INSTALL_DIR="$(cd $2 && pwd)"
+    QT_LIB_DIR="$3"
+    QT_DATA_DIR="$4"
+    MACDEPLOYQT_EXE="$5"
 else
     usage; exit 1
 fi
@@ -19,12 +20,14 @@ if [[ $INSTALL_DIR == *".app" ]]; then
     INSTALL_DIR=$INSTALL_DIR/Contents/MacOS
 fi
 
+echo "SCRIPT_DIR = $SCRIPT_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
+source $SCRIPT_DIR/common.sh
 clean_default_plugins "INSTALL_DIR"
 
 # Make sure the bin folder exists and contains runSofa

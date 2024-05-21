@@ -1,26 +1,33 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <script-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
-source common.sh
-
-
 if [ "$#" -ge 2 ]; then
-    BUILD_DIR="$(cd $1 && pwd)"
-    INSTALL_DIR="$(cd $2 && pwd)"
-    QT_LIB_DIR="$3"
-    QT_DATA_DIR="$4"
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    BUILD_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
+    QT_LIB_DIR="$4"
+    QT_DATA_DIR="$5"
 else
     usage; exit 1
 fi
+
+
+echo "SCRIPT_DIR = $SCRIPT_DIR"
+echo "BUILD_DIR = $BUILD_DIR"
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
+
 
 # Adapt INSTALL_DIR to IFW install
 if [ -d "$INSTALL_DIR/packages/Runtime/data" ]; then
     INSTALL_DIR="$INSTALL_DIR/packages/Runtime/data"
 fi
 
+source $SCRIPT_DIR/common.sh
 clean_default_plugins "INSTALL_DIR"
 
 echo "Fixing up libs..."
