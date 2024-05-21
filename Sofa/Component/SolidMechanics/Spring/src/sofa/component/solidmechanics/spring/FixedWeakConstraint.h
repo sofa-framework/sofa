@@ -31,13 +31,6 @@
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
-namespace sofa::core::behavior
-{
-
-template< class T > class MechanicalState;
-
-} // namespace sofa::core::behavior
-
 namespace sofa::component::solidmechanics::spring
 {
 

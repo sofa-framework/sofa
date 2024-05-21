@@ -36,19 +36,6 @@
 namespace sofa::component::solidmechanics::spring
 {
 
-using helper::WriteAccessor;
-using helper::ReadAccessor;
-using core::behavior::BaseMechanicalState;
-using core::behavior::MultiMatrixAccessor;
-using core::behavior::ForceField;
-using linearalgebra::BaseMatrix;
-using core::VecCoordId;
-using core::MechanicalParams;
-using type::Vec3;
-using type::Vec4f;
-using type::vector;
-using core::visual::VisualParams;
-
 template<class DataTypes>
 FixedWeakConstraint<DataTypes>::FixedWeakConstraint()
     : d_indices(initData(&d_indices, "indices", "points controlled by the rest shape springs"))
@@ -116,13 +103,13 @@ SReal FixedWeakConstraint<DataTypes>::getPotentialEnergy(const core::MechanicalP
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
+void FixedWeakConstraint<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
 {
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
 
-    WriteAccessor< DataVecDeriv > f1 = f;
-    ReadAccessor< DataVecCoord > p1 = x;
+    helper::WriteAccessor< DataVecDeriv > f1 = f;
+    helper::ReadAccessor< DataVecCoord > p1 = x;
 
     const DataVecCoord * restPosition = this->mstate->read(sofa::core::VecId::resetPosition());
     if (!restPosition)
@@ -131,7 +118,7 @@ void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams ,
         return;
     }
 
-    ReadAccessor< DataVecCoord > p0 = *restPosition;
+    helper::ReadAccessor< DataVecCoord > p0 = *restPosition;
 
     const Real& stiffness = d_stiffness.getValue();
     const Real& angularStiffness = d_angularStiffness.getValue();
@@ -176,10 +163,10 @@ void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams ,
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+void FixedWeakConstraint<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    WriteAccessor< DataVecDeriv > df1 = df;
-    ReadAccessor< DataVecDeriv > dx1 = dx;
+    helper::WriteAccessor< DataVecDeriv > df1 = df;
+    helper::ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const Real& stiffness = d_stiffness.getValue();
     const Real& angularStiffness = d_angularStiffness.getValue();
@@ -203,7 +190,7 @@ void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, 
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
+void FixedWeakConstraint<DataTypes>::draw(const  core::visual::VisualParams *vparams)
 {
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;
@@ -219,19 +206,19 @@ void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
     }
 
 
-    ReadAccessor< DataVecCoord > p0 = *restPosition;
-    ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
+    helper::ReadAccessor< DataVecCoord > p0 = *restPosition;
+    helper::ReadAccessor< DataVecCoord > p  = this->mstate->read(core::VecCoordId::position());
 
     const VecIndex& indices = d_indices.getValue();
 
-    std::vector<Vec3> vertices;
+    std::vector<type::Vec3> vertices;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
         const sofa::Index index = indices[i];
 
-        Vec3 v0(0.0, 0.0, 0.0);
-        Vec3 v1(0.0, 0.0, 0.0);
+        type::Vec3 v0(0.0, 0.0, 0.0);
+        type::Vec3 v1(0.0, 0.0, 0.0);
         for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
         {
             v0[j] = (DataTypes::getCPos(p[index]))[j];
@@ -246,10 +233,10 @@ void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
+void FixedWeakConstraint<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const core::behavior::MultiMatrixAccessor* matrix )
 {
-    const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    BaseMatrix* mat = mref.matrix;
+    const core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    linearalgebra::BaseMatrix* mat = mref.matrix;
     const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
