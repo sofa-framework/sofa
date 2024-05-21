@@ -36,9 +36,9 @@ namespace sofa::component::linearsolver::iterative
 
 template<class TMatrix, class TVector>
 ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioner") )
+    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
+    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
+    , f_use_precond( initData(&f_use_precond,true,"use_precond","Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )

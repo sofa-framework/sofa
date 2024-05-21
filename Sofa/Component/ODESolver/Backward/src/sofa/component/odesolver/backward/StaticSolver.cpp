@@ -45,29 +45,29 @@ StaticSolver::StaticSolver()
     : d_newton_iterations(initData(&d_newton_iterations,
             (unsigned) 1,
             "newton_iterations",
-            "Number of newton iterations between each load increments (normally, one load increment per simulation time-step."))
+            "Number of Netwon iterations between each load increments (normally, one load increment per simulation time-step."))
     , d_absolute_correction_tolerance_threshold(initData(&d_absolute_correction_tolerance_threshold,
             1e-5_sreal,
             "absolute_correction_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold."))
+            "Convergence criterion of the norm |du| under which the Netwon iterations stop"))
     , d_relative_correction_tolerance_threshold(initData(&d_relative_correction_tolerance_threshold,
             1e-5_sreal,
             "relative_correction_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold."))
+            "Convergence criterion regarding the ratio |du| / |U| under which the Netwon iterations stop"))
     , d_absolute_residual_tolerance_threshold( initData(&d_absolute_residual_tolerance_threshold,
             1e-5_sreal,
             "absolute_residual_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the norm |R| is smaller than this threshold. "
-            "Use a negative value to disable this criterion."))
+            "Convergence criterion of the norm |R| under which the Netwon iterations stop."
+            "Use a negative value to disable this criterion"))
     , d_relative_residual_tolerance_threshold( initData(&d_relative_residual_tolerance_threshold,
             1e-5_sreal,
             "relative_residual_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. "
-            "Use a negative value to disable this criterion."))
+            "Convergence criterion regarding the ratio |R|/|R0| under which the Netwon iterations stop."
+            "Use a negative value to disable this criterion"))
     , d_should_diverge_when_residual_is_growing( initData(&d_should_diverge_when_residual_is_growing,
             false,
             "should_diverge_when_residual_is_growing",
-            "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))
+            "Boolean stopping Netwon iterations when the residual is greater than the one from the previous iteration"))
 {}
 
 void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)

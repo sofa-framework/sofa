@@ -48,7 +48,7 @@ using type::vector ;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
-    : d_alignedBoxes( initData(&d_alignedBoxes, "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    : d_alignedBoxes( initData(&d_alignedBoxes, "box", "List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax") )
     , d_orientedBoxes( initData(&d_orientedBoxes, "orientedBox", "List of boxes defined by 3 points (p0, p1, p2) and a depth distance \n"
                                 "A parallelogram will be defined by (p0, p1, p2, p3 = p0 + (p2-p1)). \n"
                                 "The box will finaly correspond to the parallelogram extrusion of depth/2 \n"
