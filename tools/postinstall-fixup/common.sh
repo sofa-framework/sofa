@@ -6,12 +6,36 @@ function clean_default_plugins()
   echo "" > "$1/plugin_list.conf"
   disabled_plugins='plugins_ignored_by_default'
   for plugin in \
+          ArticulatedSystemPlugin   \
           Geomagic                  \
-          image                     \
-          CImgPlugin                \
-          PluginExample             \
-          SofaCUDA                  \
+          BeamAdapter               \
           CGALPlugin                \
+          CImgPlugin                \
+          CollisionOBBCapsule       \
+          CSparseSolvers            \
+          DiffusionSolver           \
+          image                     \
+          InvertibleFVM             \
+          ManifoldTopologies        \
+          ModelOrderReduction       \
+          PluginExample             \
+          Registration              \
+          SceneCreator              \
+          SensableEmulation         \
+          ShapeMatchingPlugin       \
+          SofaAssimp                \
+          SofaCarving               \
+          SofaCUDA                  \
+          SofaDistanceGrid          \
+          SofaEulerianFluid         \
+          SofaImplicitField         \
+          SofaMatrix                \
+          SoftRobots                \
+          SofaSimpleGUI             \
+          SofaSphFluid              \
+          SofaValidation            \
+          STLIB                     \
+          VolumetricRendering       \
       ; do
       disabled_plugins=$disabled_plugins'\|'$plugin
   done
