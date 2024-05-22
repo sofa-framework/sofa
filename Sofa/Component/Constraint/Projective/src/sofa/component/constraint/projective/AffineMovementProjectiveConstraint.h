@@ -80,10 +80,10 @@ protected:
 public :
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    SetIndex m_meshIndices;
+    Data<sofa::type::vector<sofa::Index> > m_meshIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    SetIndex m_indices;
+    Data<sofa::type::vector<sofa::Index> > m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<SReal> m_beginConstraintTime;
