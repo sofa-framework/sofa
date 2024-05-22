@@ -22,12 +22,12 @@
 #ifndef SOFA_IMAGE_IMAGEPLANEWIDGET_H
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#include "../ImageTypes.h"
-#include "../ImageViewer.h"
+#include <image/ImageTypes.h>
+#include <image/ImageViewer.h>
 
 #include <QLabel>
 #include <QVBoxLayout>

@@ -1,0 +1,8 @@
+# CMake package configuration file for the image_gui plugin
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(Sofa.GUI.Qt QUIET REQUIRED)
+
+check_required_components(image_gui)

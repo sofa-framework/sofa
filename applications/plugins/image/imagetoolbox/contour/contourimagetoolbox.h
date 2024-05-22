@@ -1,7 +1,7 @@
 #ifndef CONTOURIMAGETOOLBOX_H
 #define CONTOURIMAGETOOLBOX_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 #include "contourimagetoolboxaction.h"
 
