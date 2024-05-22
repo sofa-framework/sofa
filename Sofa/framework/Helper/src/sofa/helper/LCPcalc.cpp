@@ -778,7 +778,7 @@ struct listSortAscending
    Classe
    - NLCP {dim , dfree, W , f
 
-    void NLCPSolve( int numIteration, const SReal &tol, bool convergenceTest)
+    void NLCPSolve( int numIteration, const SReal &d_tol, bool convergenceTest)
     }
 
 

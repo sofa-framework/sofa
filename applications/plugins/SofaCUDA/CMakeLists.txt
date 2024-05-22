@@ -39,12 +39,14 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.h
 
 
     ### Mass
@@ -71,6 +73,7 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.inl
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.h

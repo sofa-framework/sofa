@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,64 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <image/image_gui/config.h>
+#pragma once
 
-namespace sofa
+#include <SofaCUDA/config.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
+
+#if !defined(SOFA_COMPONENT_MAPPING_CUDASUBSETMULTIMAPPING_CPP)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
 {
 
-namespace component
-{
+using namespace sofa::gpu::cuda;
 
-//Here are just several convenient functions to help user to know what contains the plugin
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3Types, CudaVec3Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1Types, CudaVec1Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
 
-extern "C" {
-    SOFA_IMAGE_GUI_API void initExternalModule();
-    SOFA_IMAGE_GUI_API const char* getModuleName();
-    SOFA_IMAGE_GUI_API const char* getModuleVersion();
-    SOFA_IMAGE_GUI_API const char* getModuleLicense();
-    SOFA_IMAGE_GUI_API const char* getModuleDescription();
-    SOFA_IMAGE_GUI_API const char* getModuleComponentList();
-}
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3dTypes, CudaVec3dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1dTypes, CudaVec1dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes >;
+#endif
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+} // namespace sofa::component::mapping::linear
+#endif
 
-const char* getModuleName()
-{
-    return "Image Plugin GUI";
-}
-
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Image GUI";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-} // namespace image
-
-} // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
 
 

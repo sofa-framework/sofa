@@ -68,7 +68,7 @@ public:
 
     virtual unsigned char * getSegmentID() = 0;
 
-    // fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
+    // fill the texture by 'image' only where there is the 'segmentation' of 'd_activeValue' and give the 3D texture sizes
     virtual void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) = 0;
 };
 

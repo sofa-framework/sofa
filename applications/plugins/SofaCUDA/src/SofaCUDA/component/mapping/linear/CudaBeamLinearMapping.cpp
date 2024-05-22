@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP
+#include <SofaCUDA/component/mapping/linear/CudaBeamLinearMapping.h>
 #include <sofa/component/mapping/linear/BeamLinearMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>

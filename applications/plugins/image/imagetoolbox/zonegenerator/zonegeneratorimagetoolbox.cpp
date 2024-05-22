@@ -1,8 +1,8 @@
 #define ZONEGENERATORIMAGETOOLBOX_CPP
 
+#include "zonegeneratorimagetoolbox.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include "zonegeneratorimagetoolbox.h"
 #include <image/ImageTypes.h>
 
 

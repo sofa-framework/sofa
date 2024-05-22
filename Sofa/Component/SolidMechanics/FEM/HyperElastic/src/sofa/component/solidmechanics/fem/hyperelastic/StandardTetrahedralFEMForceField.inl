@@ -612,7 +612,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    drawHyperelasticTets(vparams, x, m_topology, f_materialName.getValue());
+    drawHyperelasticTets<DataTypes>(vparams, x, m_topology, f_materialName.getValue());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);

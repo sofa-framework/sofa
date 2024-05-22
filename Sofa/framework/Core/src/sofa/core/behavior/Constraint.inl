@@ -47,6 +47,13 @@ bool Constraint<DataTypes>::isActive() const
     return endTime.getValue()>getContext()->getTime();
 }
 
+template <class DataTypes>
+void Constraint<DataTypes>::init()
+{
+    Inherit1::init();
+    Inherit2::init();
+}
+
 template<class DataTypes>
 void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {

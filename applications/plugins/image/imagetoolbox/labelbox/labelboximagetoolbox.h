@@ -12,7 +12,7 @@
 #include "../labelimagetoolbox.h"
 
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 
 

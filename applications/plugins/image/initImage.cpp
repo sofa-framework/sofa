@@ -87,12 +87,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Image Plugin";
+    return image::MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "0.1";
+    return image::MODULE_VERSION;
 }
 
 const char* getModuleLicense()

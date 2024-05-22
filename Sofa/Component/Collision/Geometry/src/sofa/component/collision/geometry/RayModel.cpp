@@ -37,9 +37,10 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 RayCollisionModel::RayCollisionModel(SReal length)
-    : defaultLength(initData(&defaultLength, length, "", "TODO"))
+    : d_defaultLength(initData(&d_defaultLength, length, "defaultLength", "The default length for all rays in this collision model"))
 {
     this->contactResponse.setValue("RayContact"); // use RayContact response class
+    defaultLength.setParent(&d_defaultLength);
 }
 
 void RayCollisionModel::resize(sofa::Size size)
@@ -50,7 +51,7 @@ void RayCollisionModel::resize(sofa::Size size)
     {
         length.reserve(size);
         while (length.size() < size)
-            length.push_back(defaultLength.getValue());
+            length.push_back(d_defaultLength.getValue());
         direction.reserve(size);
         while (direction.size() < size)
             direction.push_back(Vec3());

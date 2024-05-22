@@ -164,16 +164,16 @@ void PickHandler::unload()
 
 Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSetting* setting)
 {
-    if (operations[setting->button.getValue().getSelectedId()])
+    if (operations[setting->d_button.getValue().getSelectedId()])
     {
-        delete operations[setting->button.getValue().getSelectedId()];
-        operations[setting->button.getValue().getSelectedId()] = nullptr;
+        delete operations[setting->d_button.getValue().getSelectedId()];
+        operations[setting->d_button.getValue().getSelectedId()] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
     if (mouseOp)
     {
         mouseOp->configure(this,setting);
-        operations[setting->button.getValue().getSelectedId()]=mouseOp;
+        operations[setting->d_button.getValue().getSelectedId()]=mouseOp;
     }
 
     return mouseOp;
