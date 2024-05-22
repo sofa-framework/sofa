@@ -44,8 +44,6 @@ class BaseTopologyData : public sofa::core::objectmodel::Data <T>
 {
 public:
 
-    using sofa::core::objectmodel::Data<T>::Data;
-
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit BaseTopologyData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
         : Data<T>(init)

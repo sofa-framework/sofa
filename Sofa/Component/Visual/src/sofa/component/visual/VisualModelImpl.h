@@ -110,22 +110,22 @@ public:
     Data<VecCoord> m_vertices2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::PointData< VecTexCoord > m_vtexcoords;
+    Data< VecTexCoord > m_vtexcoords;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::PointData< VecCoord > m_vtangents;
+    Data< VecCoord > m_vtangents;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::PointData< VecCoord > m_vbitangents;
+    Data< VecCoord > m_vbitangents;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::EdgeData< VecVisualEdge > m_edges;
+    Data< VecVisualEdge > m_edges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::TriangleData< VecVisualTriangle >  m_triangles;
+    Data< VecVisualTriangle >  m_triangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::QuadData< VecVisualQuad > m_quads;
+    Data< VecVisualQuad > m_quads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< type::vector<visual_index_type> > m_vertPosIdx;

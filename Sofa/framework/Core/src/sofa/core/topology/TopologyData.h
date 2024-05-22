@@ -62,8 +62,6 @@ public:
     typedef typename sofa::core::topology::TopologyDataHandler< ElementType, VecT>  TopologyDataElementHandler;
     typedef typename TopologyDataElementHandler::TopologyChangeCallback TopologyChangeCallback;
 
-    using sofa::core::topology::BaseTopologyData<VecT>::BaseTopologyData;
-
     /// Constructor
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
