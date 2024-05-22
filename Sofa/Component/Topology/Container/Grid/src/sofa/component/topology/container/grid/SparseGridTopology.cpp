@@ -954,7 +954,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
     this->d_seqPoints.beginEdit();
     nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
-    SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
+    SeqHexahedra& hexahedra = *d_seqHexahedra.beginEdit();
 
     for( unsigned w=0; w<cubeCorners.size(); ++w)
     {
@@ -965,7 +965,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         hexahedra.push_back(c);
     }
 
-    seqHexahedra.endEdit();
+    d_seqHexahedra.endEdit();
 }
 
 
@@ -1113,7 +1113,7 @@ void SparseGridTopology::buildFromFiner()
     this->d_seqPoints.endEdit();
     nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
-    SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
+    SeqHexahedra& hexahedra = *d_seqHexahedra.beginEdit();
     for( unsigned w=0; w<cubeCorners.size(); ++w)
     {
         Hexa c;
@@ -1122,7 +1122,7 @@ void SparseGridTopology::buildFromFiner()
 
         hexahedra.push_back(c);
     }
-    seqHexahedra.endEdit();
+    d_seqHexahedra.endEdit();
 
 
     // for interpolation and restriction
@@ -1131,7 +1131,7 @@ void SparseGridTopology::buildFromFiner()
     _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->d_seqPoints.getValue().size()); _finerSparseGrid->_inversePointMap.fill(InvalidID);
     _pointMap.resize(this->d_seqPoints.getValue().size()); _pointMap.fill(InvalidID);
 
-    for( unsigned w=0; w<seqHexahedra.getValue().size(); ++w)
+    for( unsigned w=0; w<d_seqHexahedra.getValue().size(); ++w)
     {
         const fixed_array<Index, 8>& child = _hierarchicalCubeMap[w];
 
@@ -1159,7 +1159,7 @@ void SparseGridTopology::buildFromFiner()
             {
                 if( fineCorners[fineVertexLocalIndice] == InvalidID ) continue; // this fine vertex is not in any fine cube
 
-                Index coarseCornerGlobalIndice = seqHexahedra.getValue()[w][coarseCornerLocalIndice];
+                Index coarseCornerGlobalIndice = d_seqHexahedra.getValue()[w][coarseCornerLocalIndice];
                 Index fineVertexGlobalIndice = fineCorners[fineVertexLocalIndice];
 
                 if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
@@ -1286,7 +1286,7 @@ SparseGridTopology::Index SparseGridTopology::findCube(const type::Vec3& pos, SR
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 SparseGridTopology::Index SparseGridTopology::findNearestCube(const type::Vec3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    const auto& hexahedra = seqHexahedra.getValue();
+    const auto& hexahedra = d_seqHexahedra.getValue();
     if (hexahedra.size() == 0) return InvalidID;
     Index indice = 0;
     float lgmin = 99999999.0f;
@@ -1371,9 +1371,9 @@ void SparseGridTopology::updateEdges()
 {
     using IndexPair = pair<Index, Index>;
     std::map<IndexPair,bool> edgesMap;
-    for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
+    for(unsigned i=0; i<d_seqHexahedra.getValue().size(); ++i)
     {
-        Hexa c = seqHexahedra.getValue()[i];
+        Hexa c = d_seqHexahedra.getValue()[i];
 
         // horizontal
         edgesMap[IndexPair(c[0],c[1])]=0;
@@ -1404,9 +1404,9 @@ void SparseGridTopology::updateEdges()
 void SparseGridTopology::updateQuads()
 {
     std::map<fixed_array<Index,4>,bool> quadsMap;
-    for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
+    for(unsigned i=0; i<d_seqHexahedra.getValue().size(); ++i)
     {
-        Hexa c = seqHexahedra.getValue()[i];
+        Hexa c = d_seqHexahedra.getValue()[i];
         fixed_array<Index,4> v;
 
         v[0]=c[0]; v[1]=c[1]; v[2]=c[2]; v[3]=c[3];

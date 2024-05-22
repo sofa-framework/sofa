@@ -96,7 +96,6 @@ protected:
             return 0;
 
         contacts->resize(contacts->size() + 1);
-
         core::collision::DetectionOutput* detection = &*(contacts->end() - 1);
         const SReal distSph1Sph2 = helper::rsqrt(norm2);
         detection->normal = dist / distSph1Sph2;
