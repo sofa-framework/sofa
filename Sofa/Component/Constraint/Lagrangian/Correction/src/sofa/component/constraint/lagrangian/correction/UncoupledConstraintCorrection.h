@@ -111,7 +111,7 @@ public:
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    core::topology::PointData< VecReal >  compliance;
+    Data< VecReal >  compliance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<Real> defaultCompliance;
