@@ -131,3 +131,25 @@ SOFA_CORE_API extern const unsigned int quadsOrientationInHexahedronArray[6][4];
 SOFA_CORE_API extern const unsigned int verticesInHexahedronArray[2][2][2];
 
 } // namespace sofa::core::topology
+
+namespace sofa::geometry
+{
+
+// Specialization required because Topology::Point is not an alias of
+// sofa::topology::Element, compared to the other aliases such as
+// Edge, Triangle...
+template<>
+struct ElementInfo<sofa::core::topology::Topology::Point>
+{
+    static geometry::ElementType type()
+    {
+        return geometry::ElementType::POINT;
+    }
+
+    static const char* name()
+    {
+        static const char* n = elementTypeToString(type());
+        return n;
+    }
+};
+}
