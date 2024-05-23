@@ -194,7 +194,7 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
     {
         if(! getPluginEntry(p.initExternalModule,d))
         {
-            const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
+            const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found. dlsym output following error : "+ DynamicLibrary::getLastError();
             msg_error("PluginManager") << msg;
             if (errlog) (*errlog) << msg << std::endl;
             return PluginLoadStatus::MISSING_SYMBOL;
