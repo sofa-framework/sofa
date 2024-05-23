@@ -59,7 +59,7 @@ public:
 protected:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    SetIndex m_indices;
+    Data< sofa::type::vector<sofa::Index> > m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<Vec3R> m_P1;

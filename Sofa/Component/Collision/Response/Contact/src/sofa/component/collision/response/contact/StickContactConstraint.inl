@@ -44,11 +44,12 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     , intersectionMethod(intersectionMethod)
     , m_constraint(nullptr)
     , parent(nullptr)
-    , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
+    , d_keepAlive(initData(&d_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
+    f_keepAlive.setParent(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >

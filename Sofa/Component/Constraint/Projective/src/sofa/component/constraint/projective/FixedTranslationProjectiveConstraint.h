@@ -63,7 +63,7 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    SetIndex f_indices;
+    Data< sofa::type::vector<sofa::Index> > f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> f_fixAll;
@@ -72,7 +72,7 @@ public:
     Data<SReal> _drawSize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    SetIndex f_coordinates;
+    Data< sofa::type::vector<sofa::Index> > f_coordinates;
 
     SetIndex d_indices; ///< Indices of the fixed points
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object

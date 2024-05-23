@@ -37,12 +37,15 @@ using core::topology::BaseMeshTopology;
 
 template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
-    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
     , mstate(nullptr), topology(nullptr), meshRevision(-1)
 {
     enum_type = LINE_TYPE;
+
+    bothSide.setParent(&d_bothSide);
+    m_displayFreePosition.setParent(&d_displayFreePosition);
 }
 
 
@@ -330,7 +333,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         const auto c = getColor4f();
         vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-        if (m_displayFreePosition.getValue())
+        if (d_displayFreePosition.getValue())
         {
             std::vector< type::Vec3 > pointsFree;
             for (sofa::Size i=0; i<size; i++)

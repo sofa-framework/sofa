@@ -84,7 +84,7 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    IndexSubsetData f_indices;
+    Data< sofa::type::vector< sofa::Index > > f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<SReal> f_drawSize;

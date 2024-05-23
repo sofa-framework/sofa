@@ -205,9 +205,9 @@ template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
     SOFA_UNUSED(cparams);
-    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
-    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
+    auto childMatRa = sofa::helper::getReadAccessor(in);
+    auto parentMatWa = sofa::helper::getWriteAccessor(out);
+    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
 }
 
 

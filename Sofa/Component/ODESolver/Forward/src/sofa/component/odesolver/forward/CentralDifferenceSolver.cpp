@@ -33,9 +33,10 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
-    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    : d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
+    f_rayleighMass.setParent(&d_rayleighMass);
 }
 
 /**
@@ -85,7 +86,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
-    const SReal r = f_rayleighMass.getValue();
+    const SReal r = d_rayleighMass.getValue();
 
     mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 

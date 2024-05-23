@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_CPP
 
-#include "ImagePlaneWidget.h"
+#include <image_gui/ImagePlaneWidget.h>
 #include <sofa/helper/Factory.h>
 #include <iostream>
 

@@ -41,6 +41,8 @@ public:
     {
         Inherit1::init();
 
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
         if (!mstate.get())
         {
             mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
@@ -48,6 +50,7 @@ public:
             msg_error_when(!mstate) << "No compatible MechanicalState found in the current context. "
                 "This may be because there is no MechanicalState in the local context, "
                 "or because the type is not compatible.";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
 
         l_mechanicalStates.clear();

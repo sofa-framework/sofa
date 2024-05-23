@@ -208,7 +208,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
     n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, e2.getIndex(), false);
     n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, e2.getIndex(), false);
 
-    if (intersection->useLineLine.getValue())
+    if (intersection->d_useLineLine.getValue())
     {
         if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
             n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex());
@@ -303,7 +303,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, false, useNormal);
 
-    if (intersection->useLineLine.getValue())
+    if (intersection->d_useLineLine.getValue())
     {
         if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
         {

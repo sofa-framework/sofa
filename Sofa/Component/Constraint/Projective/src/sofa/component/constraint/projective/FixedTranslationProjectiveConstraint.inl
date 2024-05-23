@@ -34,10 +34,8 @@ template< class DataTypes>
 FixedTranslationProjectiveConstraint<DataTypes>::FixedTranslationProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , d_indices(initData(&d_indices, "indices", "Indices of the fixed points") )
-    , f_indices(initData(&f_indices, "fixedIndices", "Fixed indices of the fixed points"))
     , d_fixAll(initData(&d_fixAll, false, "fixAll", "filter all the DOF to implement a fixed object") )
     , d_drawSize(initData(&d_drawSize, (SReal)0.0, "drawSize", "0 -> point based rendering, >0 -> radius of spheres") )
-     , f_coordinates(initData(&f_coordinates, "fixedCoordinates", "Fixed coordinates of the fixed points"))
     , d_coordinates(initData(&d_coordinates, "coordinates", "Coordinates of the fixed points") )
     , l_topology(initLink("topology", "link to the topology container"))
 {

@@ -84,6 +84,7 @@ set(SOFACONFIGSRC_ROOT "src/sofa")
 set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
     ${SOFACONFIGSRC_ROOT}/version.h.in
+    ${SOFACONFIGSRC_ROOT}/url.h.in
 )
 set(SOURCE_FILES
     ${SOFACONFIGSRC_ROOT}/initSofaConfig.cpp # necessary to build a library
@@ -350,6 +351,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE fo
 set_target_properties(${PROJECT_NAME} PROPERTIES Sofa_VERSION "${Sofa_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION_STR "${SOFA_VERSION_STR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION "${SOFA_VERSION}")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_URL "${SOFA_URL}")
 
 # CMakeParseLibraryList.cmake
 configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/CMakeParseLibraryList.cmake COPYONLY)

@@ -29,7 +29,7 @@
 
 #include "imagetoolboxbasicactionwidget.h"
 #include "imagetoolboxlabelactionwidget.h"
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <typeinfo>
 
 #include <QDockWidget>

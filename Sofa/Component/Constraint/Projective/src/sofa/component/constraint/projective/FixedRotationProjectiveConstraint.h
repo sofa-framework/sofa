@@ -74,9 +74,9 @@ protected :
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data< bool > FixedZRotation;
 
-    Data< bool > d_FixedXRotation; ///< Prevent Rotation around X axis
-    Data< bool > d_FixedYRotation; ///< Prevent Rotation around Y axis
-    Data< bool > d_FixedZRotation; ///< Prevent Rotation around Z axis
+    Data< bool > d_fixedXRotation; ///< Prevent Rotation around X axis
+    Data< bool > d_fixedYRotation; ///< Prevent Rotation around Y axis
+    Data< bool > d_fixedZRotation; ///< Prevent Rotation around Z axis
     type::vector<type::Quat<SReal>> previousOrientation;
 };
 

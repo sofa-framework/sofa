@@ -34,13 +34,17 @@ namespace sofa::component::collision::geometry
 
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
+    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
-    , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
+    , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
+
+    bothSide.setParent(&d_bothSide);
+    computeNormals.setParent(&d_computeNormals);
+    m_displayFreePosition.setParent(&d_displayFreePosition);
 }
 
 template<class DataTypes>
@@ -69,7 +73,7 @@ void PointCollisionModel<DataTypes>::init()
 
     const int npoints = mstate->getSize();
     resize(npoints);
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 }
 
 
@@ -125,7 +129,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (updated) cubeModel->resize(0);
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 
     cubeModel->resize(size);
     if (!empty())
@@ -155,7 +159,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
     }
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 
     type::Vec3 minElem, maxElem;
 
@@ -362,7 +366,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         vparams->drawTool()->drawPoints(pointsP, 3, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->drawLines(pointsL, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-        if (m_displayFreePosition.getValue())
+        if (d_displayFreePosition.getValue())
         {
             std::vector< type::Vec3 > pointsPFree;
 

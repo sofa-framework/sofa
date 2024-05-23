@@ -36,7 +36,6 @@ template <class DataTypes>
 LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , d_indices(initData(&d_indices, "indices", "Indices of the fixed points") )
-    , f_indices(initData(&d_indices, "indices", "Indices of the fixed points"))
     , d_drawSize(initData(&d_drawSize, (SReal)0.0, "drawSize", "0 -> point based rendering, >0 -> radius of spheres") )
     , d_origin(initData(&d_origin, CPos(), "origin", "A point in the line"))
     , d_direction(initData(&d_direction, CPos(), "direction", "Direction of the line"))

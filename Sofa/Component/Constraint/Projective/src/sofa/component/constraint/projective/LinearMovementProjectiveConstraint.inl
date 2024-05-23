@@ -38,11 +38,10 @@ LinearMovementProjectiveConstraint<DataTypes>::LinearMovementProjectiveConstrain
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new LinearMovementProjectiveConstraintInternalData<DataTypes>)
     , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
-    , m_indices(initData(&m_indices, "indices", "Indices of the constrained points") )
     , d_keyTimes(initData(&d_keyTimes, "keyTimes", "key times for the movements") )
     , d_keyMovements(initData(&d_keyMovements, "movements", "movements corresponding to the key times") )
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
-    , d_showMovement(initData(&d_showMovement, bool(false), "d_showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , d_showMovement(initData(&d_showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
     , finished(false)
 {

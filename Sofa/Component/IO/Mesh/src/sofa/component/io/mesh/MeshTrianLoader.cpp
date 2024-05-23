@@ -39,14 +39,20 @@ int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian 
         ;
 
 MeshTrianLoader::MeshTrianLoader() : MeshLoader()
-    , p_trian2(initData(&p_trian2,(bool)false,"trian2","Set to true if the mesh is a trian2 format."))
-    , neighborTable(initData(&neighborTable,"neighborTable","Table of neighborhood triangle indices for each triangle."))
-    , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","List of edges which are on the border of the mesh loaded."))
-    , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","List of triangle indices which are on the border of the mesh loaded."))
+    , d_trian2(initData(&d_trian2, (bool)false, "trian2", "Set to true if the mesh is a trian2 format."))
+    , d_neighborTable(initData(&d_neighborTable, "neighborTable", "Table of neighborhood triangle indices for each triangle."))
+    , d_edgesOnBorder(initData(&d_edgesOnBorder, "edgesOnBorder", "List of edges which are on the border of the mesh loaded."))
+    , d_trianglesOnBorderList(initData(&d_trianglesOnBorderList, "trianglesOnBorderList", "List of triangle indices which are on the border of the mesh loaded."))
 {
-    neighborTable.setPersistent(false);
-    edgesOnBorder.setPersistent(false);
-    trianglesOnBorderList.setPersistent(false);
+    d_neighborTable.setPersistent(false);
+    d_edgesOnBorder.setPersistent(false);
+    d_trianglesOnBorderList.setPersistent(false);
+
+    p_trian2.setParent(&d_trian2);
+    neighborTable.setParent(&d_neighborTable);
+    edgesOnBorder.setParent(&d_edgesOnBorder);
+    trianglesOnBorderList.setParent(&d_trianglesOnBorderList);
+
 }
 
 
@@ -68,7 +74,7 @@ bool MeshTrianLoader::doLoad()
     }
 
     // -- Reading file
-    if (p_trian2.getValue())
+    if (d_trian2.getValue())
         fileRead = this->readTrian2 (filename);
     else
         fileRead = this->readTrian (filename);
@@ -79,12 +85,12 @@ bool MeshTrianLoader::doLoad()
 
 void MeshTrianLoader::doClearBuffers()
 {
-    neighborTable.beginEdit()->clear();
-    neighborTable.endEdit();
-    edgesOnBorder.beginEdit()->clear();
-    edgesOnBorder.endEdit();
-    trianglesOnBorderList.beginEdit()->clear();
-    trianglesOnBorderList.endEdit();
+    d_neighborTable.beginEdit()->clear();
+    d_neighborTable.endEdit();
+    d_edgesOnBorder.beginEdit()->clear();
+    d_edgesOnBorder.endEdit();
+    d_trianglesOnBorderList.beginEdit()->clear();
+    d_trianglesOnBorderList.endEdit();
 }
 
 
@@ -119,9 +125,9 @@ bool MeshTrianLoader::readTrian (const char* filename)
     dataFile >> nbTriangles; //Loading number of Triangle
 
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
-    auto my_neighborTable = getWriteOnlyAccessor(neighborTable);
-    auto my_edgesOnBorder = getWriteOnlyAccessor(edgesOnBorder);
-    auto my_trianglesOnBorderList = getWriteOnlyAccessor(trianglesOnBorderList);
+    auto my_neighborTable = getWriteOnlyAccessor(d_neighborTable);
+    auto my_edgesOnBorder = getWriteOnlyAccessor(d_edgesOnBorder);
+    auto my_trianglesOnBorderList = getWriteOnlyAccessor(d_trianglesOnBorderList);
 
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
