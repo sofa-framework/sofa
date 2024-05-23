@@ -126,7 +126,7 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
                     path = path.parent_path() / symlinkHandlePath;
                 }
             }
-            return absolute(path);
+            return std::filesystem::absolute(path);
         };
 
         Dl_info dli;
