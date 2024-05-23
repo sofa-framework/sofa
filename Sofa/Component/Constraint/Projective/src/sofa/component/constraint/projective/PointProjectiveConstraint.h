@@ -77,7 +77,7 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    Data<std::vector<int>> f_indices;
+    Data<sofa::type::vector<int>> f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<Coord> f_point;
