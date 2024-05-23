@@ -33,13 +33,13 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 FixedRotationProjectiveConstraint<DataTypes>::FixedRotationProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr),
-      d_FixedXRotation(initData(&d_FixedXRotation, false, "FixedXRotation", "Prevent Rotation around X axis")),
-      d_FixedYRotation(initData(&d_FixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
-      d_FixedZRotation(initData(&d_FixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
+      d_fixedXRotation(initData(&d_fixedXRotation, false, "FixedXRotation", "Prevent Rotation around X axis")),
+      d_fixedYRotation(initData(&d_fixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
+      d_fixedZRotation(initData(&d_fixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
 {
-          FixedXRotation.setParent(&d_FixedXRotation);
-          FixedYRotation.setParent(&d_FixedYRotation);
-          FixedZRotation.setParent(&d_FixedZRotation);
+          FixedXRotation.setParent(&d_fixedXRotation);
+          FixedYRotation.setParent(&d_fixedYRotation);
+          FixedZRotation.setParent(&d_fixedZRotation);
 
 }
 
