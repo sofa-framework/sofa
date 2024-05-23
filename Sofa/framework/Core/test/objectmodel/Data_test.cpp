@@ -45,7 +45,61 @@ public:
     Data<SReal> dataSReal;
     Data<sofa::type::Vec3> dataVec3;
     Data<sofa::type::vector<sofa::type::Vec3>> dataVectorVec3;
+
+    Data<sofa::topology::Element<sofa::geometry::Edge> > dataEdge;
+    Data<sofa::topology::Element<sofa::geometry::Hexahedron> > dataHexahedron;
+    Data<sofa::topology::Element<sofa::geometry::Pentahedron> > dataPentahedron;
+    Data<sofa::topology::Element<sofa::geometry::Point> > dataPoint;
+    Data<sofa::topology::Element<sofa::geometry::Pyramid> > dataPyramid;
+    Data<sofa::topology::Element<sofa::geometry::Quad> > dataQuad;
+    Data<sofa::topology::Element<sofa::geometry::Tetrahedron> > dataTetrahedron;
+    Data<sofa::topology::Element<sofa::geometry::Triangle> > dataTriangle;
+
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Edge> > > dataVecEdge;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Hexahedron> > > dataVecHexahedron;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Pentahedron> > > dataVecPentahedron;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Point> > > dataVecPoint;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Pyramid> > > dataVecPyramid;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Quad> > > dataVecQuad;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Tetrahedron> > > dataVecTetrahedron;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Triangle> > > dataVecTriangle;
+
 };
+
+
+TEST_F(Data_test, validInfo)
+{
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Edge> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Hexahedron> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pentahedron> >::ValidInfo);
+    // EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Point> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pyramid> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Tetrahedron> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Triangle> >::ValidInfo);
+}
+
+TEST_F(Data_test, dataTypeName)
+{
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Edge>::name()}, "Edge");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Hexahedron>::name()}, "Hexahedron");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pentahedron>::name()}, "Pentahedron");
+    // EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Point>::name()}, "Point");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pyramid>::name()}, "Pyramid");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Quad>::name()}, "Quad");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Tetrahedron>::name()}, "Tetrahedron");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Triangle>::name()}, "Triangle");
+
+
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Edge> >::name(), "Edge");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Hexahedron> >::name(), "Hexahedron");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pentahedron> >::name(), "Pentahedron");
+    // EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Point> >::name(), "Point");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pyramid> >::name(), "Pyramid");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Quad> >::name(), "Quad");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Tetrahedron> >::name(), "Tetrahedron");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Triangle> >::name(), "Triangle");
+}
 
 TEST_F(Data_test, getValueTypeString)
 {
@@ -67,6 +121,24 @@ TEST_F(Data_test, getValueTypeString)
         EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3f");
         EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3f>");
     }
+
+    EXPECT_EQ(dataEdge.getValueTypeString(), "Edge");
+    EXPECT_EQ(dataHexahedron.getValueTypeString(), "Hexahedron");
+    EXPECT_EQ(dataPentahedron.getValueTypeString(), "Pentahedron");
+    // EXPECT_EQ(dataPoint.getValueTypeString(), "Point");
+    EXPECT_EQ(dataPyramid.getValueTypeString(), "Pyramid");
+    EXPECT_EQ(dataQuad.getValueTypeString(), "Quad");
+    EXPECT_EQ(dataTetrahedron.getValueTypeString(), "Tetrahedron");
+    EXPECT_EQ(dataTriangle.getValueTypeString(), "Triangle");
+
+    EXPECT_EQ(dataVecEdge.getValueTypeString(), "vector<Edge>");
+    EXPECT_EQ(dataVecHexahedron.getValueTypeString(), "vector<Hexahedron>");
+    EXPECT_EQ(dataVecPentahedron.getValueTypeString(), "vector<Pentahedron>");
+    // EXPECT_EQ(dataVecPoint.getValueTypeString(), "vector<Point>");
+    EXPECT_EQ(dataVecPyramid.getValueTypeString(), "vector<Pyramid>");
+    EXPECT_EQ(dataVecQuad.getValueTypeString(), "vector<Quad>");
+    EXPECT_EQ(dataVecTetrahedron.getValueTypeString(), "vector<Tetrahedron>");
+    EXPECT_EQ(dataVecTriangle.getValueTypeString(), "vector<Triangle>");
 }
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
