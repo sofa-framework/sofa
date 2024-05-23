@@ -124,7 +124,7 @@ void FixedRotationProjectiveConstraint<DataTypes>::projectPosition(const core::M
             to_keep = twist * to_keep;
         };
 
-        if (d_FixedXRotation.getValue() == true){
+        if (d_fixedXRotation.getValue() == true){
             remove_rotation(vx);
         }
         if (d_FixedYRotation.getValue() == true){
