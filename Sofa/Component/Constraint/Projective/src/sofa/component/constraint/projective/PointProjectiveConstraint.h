@@ -75,10 +75,24 @@ protected:
     virtual ~PointProjectiveConstraint();
 
 public:
-    SetIndex f_indices;    ///< the indices of the points to project to the target
-    Data<Coord> f_point;    ///< the target of the projection
-    Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in d_indices
-    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<std::vector<int>> f_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<Coord> f_point;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> f_fixAll;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> f_drawSize;
+
+
+    SetIndex d_indices;    ///< the indices of the points to project to the target
+    Data<Coord> d_point;    ///< the target of the projection
+    Data<bool> d_fixAll;    ///< to project all the points, rather than those listed in d_indices
+    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -114,7 +128,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
+    bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
 protected :
 
