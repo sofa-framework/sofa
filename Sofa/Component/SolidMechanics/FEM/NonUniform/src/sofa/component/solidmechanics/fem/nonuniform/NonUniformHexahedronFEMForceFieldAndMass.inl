@@ -144,7 +144,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     //////////////////////
 
 
-    // compute mechanichal matrices (mass and stiffness) by condensating from _nbVirtualFinerLevels
+    // compute mechanichal matrices (mass and stiffness) by condensating from d_nbVirtualFinerLevels
     computeMechanicalMatricesByCondensation( );
     // hack to use true mass matrices or masses concentrated in particules
     if(d_useMass.getValue() )

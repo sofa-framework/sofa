@@ -220,7 +220,7 @@ private:
     type::Vec3i     dataResolution;
     type::Vec3     dataVoxelSize;
     BoundingBox bbox; //bbox used to remesh
-    BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to dataResolution by default but can be changed for ROI)
+    BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to d_dataResolution by default but can be changed for ROI)
     unsigned int verticesIndexOffset;
     type::Vec3 verticesTranslation;
 };

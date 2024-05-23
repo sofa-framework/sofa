@@ -138,14 +138,14 @@ void SparseGridMultipleTopology::buildAsFinest()
         }
     }
 
-    if( _min.getValue()== type::Vec3() && _max.getValue()== type::Vec3())
+    if(d_min.getValue() == type::Vec3() && d_max.getValue() == type::Vec3())
     {
         // increase the box a little
         type::Vec3 diff ( xMaxg-xMing, yMaxg - yMing, zMaxg - zMing );
         diff /= 100.0;
 
-        _min.setValue(type::Vec3( xMing - diff[0], yMing - diff[1], zMing - diff[2] ));
-        _max.setValue(type::Vec3( xMaxg + diff[0], yMaxg + diff[1], zMaxg + diff[2] ));
+        d_min.setValue(type::Vec3(xMing - diff[0], yMing - diff[1], zMing - diff[2] ));
+        d_max.setValue(type::Vec3(xMaxg + diff[0], yMaxg + diff[1], zMaxg + diff[2] ));
     }
 
     for(unsigned i=0; i < d_fileTopologies.getValue().size(); ++i)
@@ -173,7 +173,7 @@ void SparseGridMultipleTopology::buildAsFinest()
     if(d_computeRamifications.getValue())
     {
 
-        if(d_finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
+        if(d_finestConnectivity.getValue() || this->isVirtual || d_nbVirtualFinerLevels.getValue() > 0 )
         {
             // find the connexion graph between the finest hexahedra
             findConnexionsAtFinestLevel();
@@ -213,13 +213,13 @@ void SparseGridMultipleTopology::assembleRegularGrids(type::vector<Type>& regula
     {
         for(size_t w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
         {
-            if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->_fillWeighted.getValue()) )
+            if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->d_fillWeighted.getValue()) )
             {
                 regularGridTypes[w] = INSIDE;
                 regularStiffnessCoefs[w] = d_dataStiffnessCoefs.getValue()[i];
                 regularMassCoefs[w] = d_dataMassCoefs.getValue()[i];
             }
-            else if(  _regularGridTypes[i][w] == BOUNDARY && this->_fillWeighted.getValue() )
+            else if(  _regularGridTypes[i][w] == BOUNDARY && this->d_fillWeighted.getValue() )
             {
                 if( regularGridTypes[w] != INSIDE ) regularGridTypes[w] = BOUNDARY;
 
@@ -233,11 +233,11 @@ void SparseGridMultipleTopology::assembleRegularGrids(type::vector<Type>& regula
 
 void SparseGridMultipleTopology::buildVirtualFinerLevels()
 {
-    int nb = _nbVirtualFinerLevels.getValue();
+    int nb = d_nbVirtualFinerLevels.getValue();
 
     _virtualFinerLevels.resize(nb);
 
-    int newnx=n.getValue()[0],newny=n.getValue()[1],newnz=n.getValue()[2];
+    int newnx=d_n.getValue()[0],newny=d_n.getValue()[1],newnz=d_n.getValue()[2];
     for( int i=0; i<nb; ++i)
     {
         newnx = (newnx-1)*2+1;
@@ -251,9 +251,9 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-    _virtualFinerLevels[0]->setMin( _min.getValue() );
-    _virtualFinerLevels[0]->setMax( _max.getValue() );
-    _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
+    _virtualFinerLevels[0]->setMin(d_min.getValue() );
+    _virtualFinerLevels[0]->setMax(d_max.getValue() );
+    _virtualFinerLevels[0]->d_fillWeighted.setValue(d_fillWeighted.getValue() );
     std::stringstream nameg; nameg << "virtual grid "<< 0;
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext() );
