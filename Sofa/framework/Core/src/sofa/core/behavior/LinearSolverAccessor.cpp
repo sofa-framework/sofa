@@ -31,7 +31,7 @@ void LinearSolverAccessor::init()
 
     if (!l_linearSolver.get())
     {
-        l_linearSolver.set(getContext()->get<LinearSolver>());
+        l_linearSolver.set(getContext()->get<LinearSolver>(getContext()->getTags(), objectmodel::BaseContext::SearchDown));
 
         if (!l_linearSolver)
         {
