@@ -58,19 +58,20 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
-    , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
+    , d_nbPoints (initData(&d_nbPoints, npoints, "nbPoints", "Number of points"))
 {
     addAlias(&d_initPoints,"points");
+    nbPoints.setParent(&d_nbPoints);
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)
 {
-    nbPoints.setValue(n);  
+    d_nbPoints.setValue(n);
 }
 
 Size PointSetTopologyContainer::getNumberOfElements() const
 {
-    return nbPoints.getValue();
+    return d_nbPoints.getValue();
 }
 
 bool PointSetTopologyContainer::checkTopology() const
@@ -80,7 +81,7 @@ bool PointSetTopologyContainer::checkTopology() const
 
 void PointSetTopologyContainer::clear()
 {
-    nbPoints.setValue(sofa::Size(0));
+    d_nbPoints.setValue(sofa::Size(0));
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
 }
@@ -93,7 +94,7 @@ void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
 
     auto initPoints = sofa::helper::getWriteAccessor(d_initPoints);
     initPoints.push_back(InitTypes::Coord(px, py, pz));
-    if (initPoints.size() > nbPoints.getValue())
+    if (initPoints.size() > d_nbPoints.getValue())
     {
         setNbPoints(Size(initPoints.size()));
     }
@@ -146,23 +147,23 @@ void PointSetTopologyContainer::init()
 
 void PointSetTopologyContainer::addPoints(const Size nPoints)
 {
-    setNbPoints( nbPoints.getValue() + nPoints );
+    setNbPoints(d_nbPoints.getValue() + nPoints );
 }
 
 void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
-    setNbPoints( nbPoints.getValue() - nPoints );
+    setNbPoints(d_nbPoints.getValue() - nPoints );
 }
 
 void PointSetTopologyContainer::addPoint()
 {
-    setNbPoints( nbPoints.getValue() + 1 );
+    setNbPoints(d_nbPoints.getValue() + 1 );
 }
 
 void PointSetTopologyContainer::removePoint()
 {
     //nbPoints.setValue(nbPoints.getValue()-1);
-    setNbPoints( nbPoints.getValue() - 1 );
+    setNbPoints(d_nbPoints.getValue() - 1 );
 }
 
 void PointSetTopologyContainer::setPointTopologyToDirty()
