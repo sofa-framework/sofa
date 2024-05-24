@@ -184,7 +184,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
             pointIndex++;
         }
 
-        // points mapped from facets
+        // points mapped from d_facets
         bool insertFacetsResultSuccessful = pointMappedFromFacet.insert({ {h[0], h[1], h[2], h[3]}, pointIndex }).second;
         if (insertFacetsResultSuccessful)
         {
