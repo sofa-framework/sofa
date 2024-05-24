@@ -128,7 +128,7 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
         }
         catch(std::filesystem::filesystem_error& error)
         {
-            oss << "An exception was catch when trying to find real path of the library with the following message " << error.what();
+            oss << "An exception was caught when trying to find the real path of the library with the following message : " << error.what();
 
             // paths are broken, we cannot check if this symbol comes from this lib
             symbolAddress = nullptr;
