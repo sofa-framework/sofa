@@ -83,12 +83,12 @@ void HexahedronSetTopologyContainer::init()
     }
 
     if (!m_hexahedron.empty())
-        initTopology();
+        computeCrossElementArrays();
 }
 
-void HexahedronSetTopologyContainer::initTopology()
+void HexahedronSetTopologyContainer::computeCrossElementArrays()
 {
-    QuadSetTopologyContainer::initTopology();
+    QuadSetTopologyContainer::computeCrossElementArrays();
 
     // Create tetrahedron cross element buffers.
     createQuadsInHexahedronArray();

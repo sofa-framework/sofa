@@ -23,7 +23,6 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-
 namespace sofa::core::topology
 {
 
