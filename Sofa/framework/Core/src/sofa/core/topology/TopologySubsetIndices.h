@@ -57,7 +57,7 @@ public:
 protected:
     void swapPostProcess(Index i1, Index i2) override;
 
-    void removePostProcess(sofa::Size nbElements) override;
+    void removePostProcess(sofa::Index elemId) override;
 
     void addPostProcess(sofa::Index dataLastId) override;
 

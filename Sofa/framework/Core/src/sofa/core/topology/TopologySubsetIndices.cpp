@@ -79,10 +79,10 @@ void TopologySubsetIndices::swapPostProcess(Index i1, Index i2)
 }
 
 
-void TopologySubsetIndices::removePostProcess(sofa::Size nbElements)
+void TopologySubsetIndices::removePostProcess(sofa::Index elemId)
 {
     // nothing to do here
-    SOFA_UNUSED(nbElements);
+    SOFA_UNUSED(elemId);
 }
 
 

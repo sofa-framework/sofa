@@ -137,7 +137,7 @@ protected:
     * Internal method called at the end of @sa remove method to apply internal mechanism, such as updating the map size
     * @param nbElements Number of element removed.
     */
-    virtual void removePostProcess(sofa::Size nbElements);
+    virtual void removePostProcess(sofa::Index elemId);
 
     /**
     * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.

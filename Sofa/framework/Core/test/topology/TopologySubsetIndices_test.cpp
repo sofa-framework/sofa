@@ -94,8 +94,8 @@ TEST(TopologySubsetIndices_test, removePoints)
 
     EXPECT_EQ(3,PointContainer.m_data.getValue().size());
     EXPECT_EQ(0,PointContainer.m_data.getValue()[0]);
-    EXPECT_EQ(0,PointContainer.m_data.getValue()[1]);
-    EXPECT_EQ(1,PointContainer.m_data.getValue()[2]);
+    EXPECT_EQ(1,PointContainer.m_data.getValue()[1]);
+    EXPECT_EQ(0,PointContainer.m_data.getValue()[2]);
 
 }
 

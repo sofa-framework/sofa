@@ -185,21 +185,19 @@ void TopologySubsetData<ElementType, VecT>::remove(const sofa::type::vector<Inde
 
         // Check if this element is inside the subset map
         auto dataIds = this->indicesOfElement(elemId);
+        //Need to delete in descendent order to guarantee that indices of elements to delete are kept constant after the deletion.
+        std::sort(dataIds.begin(),dataIds.end(),std::greater<>());
         for(const Index & id : dataIds)
         {
-
             // if in the map, apply callback if set
             if (this->p_onDestructionCallback)
             {
                 this->p_onDestructionCallback(id, data[id]);
             }
-            // Like in topological change, will swap before poping back
-            Index lastDataId = data.size() - 1;
-            this->swap(id, lastDataId);
 
-            // Remove last subsetData element and update the map
-            data.resize(lastDataId);
-            removePostProcess(lastDataId);
+            //Erase instead of swap to keep the list order
+            data.erase(data.begin() + id);
+            removePostProcess(id);
         }
 
         // Need to check if last element index is in the map. If yes need to replace that value to follow topological changes
@@ -247,9 +245,9 @@ void TopologySubsetData <ElementType, VecT>::swapPostProcess(Index i1, Index i2)
 
 
 template <typename ElementType, typename VecT>
-void TopologySubsetData <ElementType, VecT>::removePostProcess(sofa::Size nbElements)
+void TopologySubsetData <ElementType, VecT>::removePostProcess(sofa::Index elemId)
 {
-    m_map2Elements.resize(nbElements);
+        m_map2Elements.erase(m_map2Elements.begin() + elemId);
 }
 
 
