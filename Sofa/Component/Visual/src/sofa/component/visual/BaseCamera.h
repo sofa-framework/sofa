@@ -134,7 +134,7 @@ public:
     Data<sofa::helper::OptionsGroup> d_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
 
     Data<bool> d_activated; ///< Camera activated ?
-	Data<bool> d_fixedLookAtPoint; ///< keep the lookAt point always fixed
+    Data<bool> d_fixedLookAtPoint; ///< keep the lookAt point always fixed
 
     Data<type::vector<SReal> > d_modelViewMatrix; ///< ModelView Matrix
     Data<type::vector<SReal> > d_projectionMatrix; ///< Projection Matrix
