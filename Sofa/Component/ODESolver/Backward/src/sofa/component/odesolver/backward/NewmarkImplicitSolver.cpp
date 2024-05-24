@@ -22,7 +22,6 @@
 #include <sofa/component/odesolver/backward/NewmarkImplicitSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -127,12 +126,14 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // 3. Solve system of equations on a_{t+h}
 
-    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
+    const SReal mFact = 1 + h * gamma * rM;
+    const SReal bFact = (-h) * gamma;
+    const SReal kFact = -h * h * beta - h * rK * gamma;
 
-    matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM));
-
-    msg_info()<<"matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix;
-    matrix.solve(aResult, b);
+    mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+    l_linearSolver->setSystemLHVector(aResult);
+    l_linearSolver->setSystemRHVector(b);
+    l_linearSolver->solveSystem();
     msg_info() << "a1 = " << aResult;
 
 

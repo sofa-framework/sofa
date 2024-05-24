@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -56,10 +57,12 @@ using sofa::core::objectmodel::Data;
  *     \vec{x}_{n+1}^{i+1} &= \vec{x}_{n+1}^{i} + \Delta \vec{x}_{n+1}^{i+1}
  * \f}
  */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API StaticSolver
+    : public sofa::core::behavior::OdeSolver
+    , public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(StaticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
     StaticSolver();
 
 public:

@@ -24,6 +24,8 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <fstream>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
+
 
 namespace sofa::component::odesolver::backward
 {
@@ -35,9 +37,13 @@ namespace sofa::component::odesolver::backward
  * several Newton steps to estimate the velocity
  *
 */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver
+    : public sofa::core::behavior::OdeSolver
+    , public sofa::core::behavior::LinearSolverAccessor
 {
 public:
+    SOFA_CLASS2(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
+
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<SReal> f_newtonError;
 
@@ -67,7 +73,6 @@ public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<bool> f_useIncrementalPotentialEnergy;
-    SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
 
     Data<SReal>       d_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> d_newtonSteps; ///< Maximum number of Newton steps

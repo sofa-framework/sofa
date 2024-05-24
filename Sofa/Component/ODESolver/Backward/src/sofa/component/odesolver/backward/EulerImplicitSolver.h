@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
@@ -93,10 +94,12 @@ namespace sofa::component::odesolver::backward
  *   \f$ ( M + h/2 K ) v_{t+h} = f_{ext} \f$
  *
  */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver :
+    public sofa::core::behavior::OdeSolver,
+    public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(EulerImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
     Data<SReal> f_rayleighStiffness;
