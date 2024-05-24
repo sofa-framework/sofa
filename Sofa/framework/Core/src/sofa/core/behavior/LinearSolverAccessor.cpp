@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,29 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::topology::container::dynamic
+namespace sofa::core::behavior
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::topology::container::dynamic
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.06", "v24.12", \
-        "Data renamed according to the guidelines")
-#endif
+void LinearSolverAccessor::init()
+{
+    Inherit1::init();
+
+    if (!l_linearSolver.get())
+    {
+        l_linearSolver.set(getContext()->get<LinearSolver>(getContext()->getTags(), objectmodel::BaseContext::SearchDown));
+
+        if (!l_linearSolver)
+        {
+            msg_error() << "A linear solver is required by this component but has not been found.";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
+}
+
+LinearSolverAccessor::LinearSolverAccessor(LinearSolver* linearSolver)
+    : l_linearSolver(initLink("linearSolver", "Linear solver used by this component"), linearSolver)
+{}
+
+}

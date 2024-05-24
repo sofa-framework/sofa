@@ -33,7 +33,7 @@ namespace sofa::component::engine::transform
 {
 
 /**
- * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position
+ * This class gets as inputs the vertices, texCoords, normals and d_facets of any mesh and returns as output a rigid position
  */
 template <class DataTypes>
 class Vertex2Frame : public  core::DataEngine

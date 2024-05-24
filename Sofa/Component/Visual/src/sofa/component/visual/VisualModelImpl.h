@@ -76,7 +76,7 @@ public:
     typedef DataTypes::VecDeriv VecDeriv;
 
 
-    bool useTopology; ///< True if list of facets should be taken from the attached topology
+    bool useTopology; ///< True if list of d_facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
     bool castShadow; ///< True if object cast shadows
 

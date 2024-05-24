@@ -26,7 +26,6 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 
@@ -62,9 +61,12 @@ void EulerImplicitSolver::init()
         type::vector<core::objectmodel::BaseObject*> objs;
         this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
         for (const auto* obj : objs)
+        {
             msg_info() << "  " << obj->getClassName() << ' ' << obj->getName();
+        }
     }
     sofa::core::behavior::OdeSolver::init();
+    sofa::core::behavior::LinearSolverAccessor::init();
 }
 
 void EulerImplicitSolver::cleanup()
@@ -155,15 +157,20 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
 
-    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-
+    SReal mFact, kFact, bFact;
     if (firstOrder)
-        matrix.setSystemMBKMatrix(MechanicalMatrix(1,0,-h*tr)); //MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
+    {
+        mFact = 1;
+        bFact = 0;
+        kFact = -h * tr;
+    }
     else
-        matrix.setSystemMBKMatrix(MechanicalMatrix(1+ tr * h * d_rayleighMass.getValue(), -tr * h, -tr * h * (h + d_rayleighStiffness.getValue()))); // MechanicalMatrix::K * (-tr*h*(h+d_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*d_rayleighMass.getValue());
-
-    msg_info() << "EulerImplicitSolver, matrix = " << (MechanicalMatrix::K * (-h * (h + d_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1 + h * d_rayleighMass.getValue())) << " = " << matrix;
-    msg_info() << "EulerImplicitSolver, Matrix K = " << MechanicalMatrix::K;
+    {
+        mFact = 1 + tr * h * d_rayleighMass.getValue();
+        bFact = -tr * h;
+        kFact = -tr * h * (h + d_rayleighStiffness.getValue());
+    }
+    mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
@@ -171,7 +178,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
     {
         SCOPED_TIMER("MBKSolve");
-        matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system}
+
+        l_linearSolver->setSystemLHVector(x);
+        l_linearSolver->setSystemRHVector(b);
+        l_linearSolver->solveSystem();
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");

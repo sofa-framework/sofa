@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,27 +21,28 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::topology::container::dynamic
+namespace sofa::core::behavior
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::topology::container::dynamic
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.06", "v24.12", \
-        "Data renamed according to the guidelines")
-#endif
+/**
+ * Base class for components requiring access to a linear solver
+ */
+class SOFA_CORE_API LinearSolverAccessor : public virtual objectmodel::BaseObject
+{
+public:
+    SOFA_ABSTRACT_CLASS(LinearSolverAccessor, objectmodel::BaseObject)
+
+    void init() override;
+
+protected:
+
+    explicit LinearSolverAccessor(LinearSolver* linearSolver = nullptr);
+
+    SingleLink<LinearSolverAccessor, LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
+};
+
+}

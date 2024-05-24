@@ -77,6 +77,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
+    ${SRC_ROOT}/behavior/LinearSolverAccessor.h
     ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
@@ -242,6 +243,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
+    ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
     ${SRC_ROOT}/behavior/MechanicalMatrix.cpp
     ${SRC_ROOT}/behavior/MechanicalState.cpp

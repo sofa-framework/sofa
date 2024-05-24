@@ -164,7 +164,7 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    /* Get number of facets */
+    /* Get number of d_facets */
     const int nbt = vecTri.size();
 
     // Sets the floatfield format flag for the str stream to fixed
@@ -266,11 +266,11 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     strcpy(buffer, "Exported from Sofa");
     outfile.write(buffer,80);
 
-    /* Number of facets */
+    /* Number of d_facets */
     const unsigned int nbt = vecTri.size();
     outfile.write((char*)&nbt,4);
 
-    // Parsing facets
+    // Parsing d_facets
     for(unsigned long i=0;i<nbt;i++)
     {
         /* normal */
