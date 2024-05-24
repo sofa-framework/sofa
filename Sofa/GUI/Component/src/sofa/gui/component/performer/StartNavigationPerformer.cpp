@@ -43,7 +43,7 @@ namespace sofa::gui::component::performer
             if(currentCamera)
             {
                 // The navigation mode of Recorded Camera is set to true
-                currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
+                currentCamera->d_navigationMode.setValue(!currentCamera->d_navigationMode.getValue());
             }
         }
     }
