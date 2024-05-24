@@ -924,8 +924,8 @@ void QtViewer::calcProjection(int width, int height)
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
     currentCamera->computeZ();
-    currentCamera->p_widthViewport.setValue(sofa::Size(width));
-    currentCamera->p_heightViewport.setValue(sofa::Size(height));
+    currentCamera->d_widthViewport.setValue(sofa::Size(width));
+    currentCamera->d_heightViewport.setValue(sofa::Size(height));
 
     GLdouble projectionMatrix[16];
     currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
