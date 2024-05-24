@@ -151,7 +151,7 @@ protected:
     /** Pointer to the triangle array of this collision model.
      * Will point directly to the topology triangle buffer if only triangles are present. If topology is using/mixing quads and triangles,
      * This pointer will target \sa m_internalTriangles
-     * @brief d_triangles
+     * @brief m_triangles
      */
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* m_triangles;
 
