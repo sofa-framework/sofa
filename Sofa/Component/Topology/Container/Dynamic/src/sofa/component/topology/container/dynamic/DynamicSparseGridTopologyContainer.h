@@ -43,22 +43,22 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data<sofa::type::Vec3i> resolution;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     core::topology::HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data< std::map< unsigned int, BaseMeshTopology::HexaID> >  idInRegularGrid2IndexInTopo;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data< type::Vec3 > voxelSize;
 
 

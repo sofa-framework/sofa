@@ -157,7 +157,7 @@ protected:
     bool m_pointTopologyDirty = false;
 
 private:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data<Size> nbPoints;
 
     Data<Size> d_nbPoints; ///< Number of points

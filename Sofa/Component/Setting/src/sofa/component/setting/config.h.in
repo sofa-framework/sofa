@@ -38,9 +38,9 @@ namespace sofa::component::setting
 } // namespace sofa::component::setting
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_SETTING
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()\
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v24.06", "v24.12", \
         "Data renamed according to the guidelines")

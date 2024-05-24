@@ -36,10 +36,10 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API CollisionResponse : public c
 public :
     SOFA_CLASS(CollisionResponse,sofa::core::collision::ContactManager);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
     Data<sofa::helper::OptionsGroup> response;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
     Data<std::string> responseParams;
 
 

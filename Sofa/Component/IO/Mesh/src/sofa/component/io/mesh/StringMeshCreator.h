@@ -36,7 +36,7 @@ namespace sofa::component::io::mesh
 class SOFA_COMPONENT_IO_MESH_API StringMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< unsigned > resolution;
 
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);

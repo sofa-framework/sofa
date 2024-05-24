@@ -225,7 +225,7 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data <bool> m_checkConnexity;
 
     Data< sofa::type::vector<Edge> > d_edge; ///< List of edge indices

@@ -43,7 +43,7 @@ public:
     void init() override;
 
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
     Data<bool> m_solveVelocityConstraintFirst;
 
     Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
