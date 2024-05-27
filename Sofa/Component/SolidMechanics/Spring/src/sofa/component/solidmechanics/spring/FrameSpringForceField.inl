@@ -194,7 +194,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     for ( unsigned int i=0; i<springs.size(); i++ )
     {
         const double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
-        Real d = ( p2[springs[i].m2].getCenter()-p1[springs[i].m1].getCenter()).norm();
+        Real d = (p2[springs[i].m2].getCenter() - p1[springs[i].m1].getCenter()).norm();
         if ( external )
         {
             if ( d < restLength *0.9999 )

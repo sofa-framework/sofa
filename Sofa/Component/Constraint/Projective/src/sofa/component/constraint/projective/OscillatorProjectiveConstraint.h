@@ -81,7 +81,10 @@ protected:
         }
     };
 
-    Data< type::vector< Oscillator > > constraints; ///< constrained particles
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< type::vector< Oscillator > >  constraints;
+
+    Data< type::vector< Oscillator > > d_constraints; ///< constrained particles
 
 
 public:

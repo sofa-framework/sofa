@@ -51,7 +51,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
             const unsigned int localRowNodeIdx = colIt.index();
 
             sofa::type::Quat<SReal> q;
-            if (m_restRotations.getValue())
+            if (d_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
@@ -93,7 +93,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
         sofa::type::Quat<SReal> q;
-        if (m_restRotations.getValue())
+        if (d_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();
