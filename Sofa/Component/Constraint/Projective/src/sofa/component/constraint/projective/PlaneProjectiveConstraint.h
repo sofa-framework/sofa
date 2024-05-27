@@ -82,10 +82,22 @@ protected:
     virtual ~PlaneProjectiveConstraint();
 
 public:
-    IndexSubsetData f_indices;  ///< the particles to project
-    Data<CPos> f_origin;       ///< A point in the plane
-    Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
-    Data<SReal> f_drawSize;    ///< The size of the display of the constrained particles
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data< sofa::type::vector< sofa::Index > >  f_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<CPos> f_origin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<CPos> f_normal;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SReal> f_drawSize;
+
+    IndexSubsetData d_indices;  ///< the particles to project
+    Data<CPos> d_origin;       ///< A point in the plane
+    Data<CPos> d_normal;       ///< The normal to the plane. Will be normalized by init().
+    Data<SReal> d_drawSize;    ///< The size of the display of the constrained particles
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PlaneProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

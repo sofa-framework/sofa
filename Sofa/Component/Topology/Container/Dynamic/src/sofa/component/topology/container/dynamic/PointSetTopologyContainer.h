@@ -60,7 +60,7 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    Size getNbPoints() const override { return nbPoints.getValue(); }
+    Size getNbPoints() const override { return d_nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
@@ -157,7 +157,10 @@ protected:
     bool m_pointTopologyDirty = false;
 
 private:
-    Data<Size> nbPoints; ///< Number of points
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<Size> nbPoints;
+
+    Data<Size> d_nbPoints; ///< Number of points
 };
 
 } //namespace sofa::component::topology::container::dynamic

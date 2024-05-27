@@ -50,24 +50,78 @@ protected:
     ~SubsetTopologicalMapping() override;
 public:
 
-    Data<bool> samePoints; ///< True if the same set of points is used in both topologies
-    Data<bool> handleEdges; ///< True if edges events and mapping should be handled
-    Data<bool> handleTriangles; ///< True if triangles events and mapping should be handled
-    Data<bool> handleQuads; ///< True if quads events and mapping should be handled
-    Data<bool> handleTetrahedra; ///< True if tetrahedra events and mapping should be handled
-    Data<bool> handleHexahedra; ///< True if hexahedra events and mapping should be handled
-    Data<SetIndex> pointS2D; ///< Internal source -> destination topology points map
-    Data<SetIndex> pointD2S; ///< Internal destination -> source topology points map (link to SubsetMapping::indices to handle the mechanical-side of the mapping
-    Data<SetIndex> edgeS2D; ///< Internal source -> destination topology edges map
-    Data<SetIndex> edgeD2S; ///< Internal destination -> source topology edges map
-    Data<SetIndex> triangleS2D; ///< Internal source -> destination topology triangles map
-    Data<SetIndex> triangleD2S; ///< Internal destination -> source topology triangles map
-    Data<SetIndex> quadS2D; ///< Internal source -> destination topology quads map
-    Data<SetIndex> quadD2S; ///< Internal destination -> source topology quads map
-    Data<SetIndex> tetrahedronS2D; ///< Internal source -> destination topology tetrahedra map
-    Data<SetIndex> tetrahedronD2S; ///< Internal destination -> source topology tetrahedra map
-    Data<SetIndex> hexahedronS2D; ///< Internal source -> destination topology hexahedra map
-    Data<SetIndex> hexahedronD2S; ///< Internal destination -> source topology hexahedra map
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> samePoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> handleEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> handleTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> handleQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> handleTetrahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> handleHexahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> pointS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> pointD2S;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> edgeS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> edgeD2S;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> triangleS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> triangleD2S;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> quadS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> quadD2S;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> tetrahedronS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> tetrahedronD2S;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> hexahedronS2D;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<SetIndex> hexahedronD2S;
+
+    Data<bool> d_samePoints; ///< True if the same set of points is used in both topologies
+    Data<bool> d_handleEdges; ///< True if edges events and mapping should be handled
+    Data<bool> d_handleTriangles; ///< True if triangles events and mapping should be handled
+    Data<bool> d_handleQuads; ///< True if quads events and mapping should be handled
+    Data<bool> d_handleTetrahedra; ///< True if tetrahedra events and mapping should be handled
+    Data<bool> d_handleHexahedra; ///< True if hexahedra events and mapping should be handled
+    Data<SetIndex> d_pointS2D; ///< Internal source -> destination topology points map
+    Data<SetIndex> d_pointD2S; ///< Internal destination -> source topology points map (link to SubsetMapping::indices to handle the mechanical-side of the mapping
+    Data<SetIndex> d_edgeS2D; ///< Internal source -> destination topology edges map
+    Data<SetIndex> d_edgeD2S; ///< Internal destination -> source topology edges map
+    Data<SetIndex> d_triangleS2D; ///< Internal source -> destination topology triangles map
+    Data<SetIndex> d_triangleD2S; ///< Internal destination -> source topology triangles map
+    Data<SetIndex> d_quadS2D; ///< Internal source -> destination topology quads map
+    Data<SetIndex> d_quadD2S; ///< Internal destination -> source topology quads map
+    Data<SetIndex> d_tetrahedronS2D; ///< Internal source -> destination topology tetrahedra map
+    Data<SetIndex> d_tetrahedronD2S; ///< Internal destination -> source topology tetrahedra map
+    Data<SetIndex> d_hexahedronS2D; ///< Internal source -> destination topology hexahedra map
+    Data<SetIndex> d_hexahedronD2S; ///< Internal destination -> source topology hexahedra map
 
     void init() override;
 

@@ -2,14 +2,15 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <script-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
-    INSTALL_DIR="$(cd $1 && pwd)"
-    QT_LIB_DIR="$2"
-    QT_DATA_DIR="$3"
-    MACDEPLOYQT_EXE="$4"
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    INSTALL_DIR="$(cd $2 && pwd)"
+    QT_LIB_DIR="$3"
+    QT_DATA_DIR="$4"
+    MACDEPLOYQT_EXE="$5"
 else
     usage; exit 1
 fi
@@ -19,48 +20,15 @@ if [[ $INSTALL_DIR == *".app" ]]; then
     INSTALL_DIR=$INSTALL_DIR/Contents/MacOS
 fi
 
+echo "SCRIPT_DIR = $SCRIPT_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+source $SCRIPT_DIR/common.sh
+clean_default_plugins "$INSTALL_DIR/lib"
 
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then

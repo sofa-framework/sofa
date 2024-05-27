@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -47,12 +48,12 @@ public:
  * @brief Compute a subset of input points
  */
 template <class TIn, class TOut>
-class SubsetMapping : public core::Mapping<TIn, TOut>
+class SubsetMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -88,7 +89,7 @@ public:
     Data < Index > f_first; ///< first index (use if indices are sequential)
     Data < Index > f_last; ///< last index (use if indices are sequential)
     Data < Real > f_radius; ///< search radius to find corresponding points in case no indices are given
-    Data < bool > f_handleTopologyChange; ///< Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)
+    Data < bool > f_handleTopologyChange; ///< Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::d_pointD2S)
     Data < bool > f_ignoreNotFound; ///< True to ignore points that are not found in the input model, they will be treated as fixed points
     Data < bool > f_resizeToModel; ///< True to resize the output MechanicalState to match the size of indices
     SubsetMappingInternalData<In, Out> data;

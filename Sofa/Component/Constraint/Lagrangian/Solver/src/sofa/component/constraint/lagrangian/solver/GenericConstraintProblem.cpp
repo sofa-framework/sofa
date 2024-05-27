@@ -133,17 +133,17 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
     sofa::type::vector<SReal>* graph_residuals = nullptr;
     std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
 
-    showGraphs = solver->computeGraphs.getValue();
+    showGraphs = solver->d_computeGraphs.getValue();
 
     if(showGraphs)
     {
-        graph_forces = solver->graphForces.beginEdit();
+        graph_forces = solver->d_graphForces.beginEdit();
         graph_forces->clear();
 
-        graph_violations = solver->graphViolations.beginEdit();
+        graph_violations = solver->d_graphViolations.beginEdit();
         graph_violations->clear();
 
-        graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+        graph_residuals = &(*solver->d_graphErrors.beginEdit())["Error"];
         graph_residuals->clear();
     }
 
@@ -222,9 +222,9 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
 
     if(showGraphs)
     {
-        solver->graphErrors.endEdit();
+        solver->d_graphErrors.endEdit();
 
-        sofa::type::vector<SReal>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<SReal>& graph_constraints = (*solver->d_graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(int j=0; j<dimension; )
@@ -240,9 +240,9 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
 
             j += nbDofs;
         }
-        solver->graphConstraints.endEdit();
+        solver->d_graphConstraints.endEdit();
 
-        solver->graphForces.endEdit();
+        solver->d_graphForces.endEdit();
     }
 }
 
@@ -301,17 +301,17 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
     sofa::type::vector<SReal> tabErrors;
 
 
-    showGraphs = solver->computeGraphs.getValue();
+    showGraphs = solver->d_computeGraphs.getValue();
 
     if(showGraphs)
     {
-        graph_forces = solver->graphForces.beginEdit();
+        graph_forces = solver->d_graphForces.beginEdit();
         graph_forces->clear();
 
-        graph_violations = solver->graphViolations.beginEdit();
+        graph_violations = solver->d_graphViolations.beginEdit();
         graph_violations->clear();
 
-        graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+        graph_residuals = &(*solver->d_graphErrors.beginEdit())["Error"];
         graph_residuals->clear();
     }
 
@@ -476,9 +476,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     if(showGraphs)
     {
-        solver->graphErrors.endEdit();
+        solver->d_graphErrors.endEdit();
 
-        sofa::type::vector<SReal>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<SReal>& graph_constraints = (*solver->d_graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(int j=0; j<dimension; )
@@ -494,9 +494,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
             j += nb;
         }
-        solver->graphConstraints.endEdit();
+        solver->d_graphConstraints.endEdit();
 
-        solver->graphForces.endEdit();
+        solver->d_graphForces.endEdit();
     }
 }
 

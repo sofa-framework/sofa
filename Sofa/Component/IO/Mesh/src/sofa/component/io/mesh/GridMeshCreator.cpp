@@ -39,8 +39,8 @@ int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-di
 
 
 GridMeshCreator::GridMeshCreator(): MeshLoader()
-    , resolution( initData(&resolution,Vec2i(2,2),"resolution","Number of vertices in each direction"))
-    , trianglePattern( initData(&trianglePattern,2,"trianglePattern","0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
+    , d_resolution(initData(&d_resolution, Vec2i(2, 2), "resolution", "Number of vertices in each direction"))
+    , d_trianglePattern(initData(&d_trianglePattern, 2, "trianglePattern", "0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
 {
     // doLoad() is called only if d_filename is modified
     // but this loader in particular does not require a filename (refactoring would be needed)
@@ -48,6 +48,9 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     d_filename.setDirtyValue();
 
     d_filename.setReadOnly(true);
+
+    resolution.setParent(&d_resolution);
+    trianglePattern.setParent(&d_trianglePattern);
 }
 
 void GridMeshCreator::doClearBuffers()
@@ -87,7 +90,7 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 bool GridMeshCreator::doLoad()
 {
     auto my_positions = getWriteOnlyAccessor(d_positions);
-    const unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
+    const unsigned numX = d_resolution.getValue()[0], numY=d_resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
     for(unsigned y=0; y<numY; y++)
@@ -100,7 +103,7 @@ bool GridMeshCreator::doLoad()
 
     uniqueEdges.clear();
 
-    if( trianglePattern.getValue()==0 ) // quads
+    if(d_trianglePattern.getValue() == 0 ) // quads
         for(unsigned y=0; y<numY-1; y++ )
         {
             for(unsigned x=0; x<numX-1; x++ )
@@ -108,7 +111,7 @@ bool GridMeshCreator::doLoad()
                 insertQuad( vert(x,y), vert(x+1,y), vert(x+1,y+1), vert(x,y+1) );
             }
         }
-    else if( trianglePattern.getValue()==1 ) // alternate
+    else if(d_trianglePattern.getValue() == 1 ) // alternate
         for(unsigned y=0; y<numY-1; y++ )
         {
             for(unsigned x=0; x<numX-1; x++ )
@@ -125,7 +128,7 @@ bool GridMeshCreator::doLoad()
                 }
             }
         }
-    else if( trianglePattern.getValue()==2 ) // upward
+    else if(d_trianglePattern.getValue() == 2 ) // upward
         for(unsigned y=0; y<numY-1; y++ )
         {
             for(unsigned x=0; x<numX-1; x++ )
@@ -134,7 +137,7 @@ bool GridMeshCreator::doLoad()
                 insertTriangle( vert(x,y), vert(x+1,y+1), vert(x,y+1)   ) ;
             }
         }
-    else if( trianglePattern.getValue()==3 ) // downward
+    else if(d_trianglePattern.getValue() == 3 ) // downward
         for(unsigned y=0; y<numY-1; y++ )
         {
             for(unsigned x=0; x<numX-1; x++ )

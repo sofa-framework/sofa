@@ -24,7 +24,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <QObject>
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <image/ImageTypes.h>
 #include "sofa/defaulttype/config.h"
 #include "sofa/defaulttype/VecTypes.h"

@@ -81,8 +81,8 @@ PatchTestStruct<DataTypes> createRegularGridScene(
 
     // Euler implicit solver and cglinear solver
     const component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
-    solver->f_rayleighStiffness.setValue(0.5);
-    solver->f_rayleighMass.setValue(0.5);
+    solver->d_rayleighStiffness.setValue(0.5);
+    solver->d_rayleighMass.setValue(0.5);
     const CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
     cgLinearSolver->d_maxIter.setValue(25);
     cgLinearSolver->d_tolerance.setValue(1e-5);
@@ -115,8 +115,8 @@ PatchTestStruct<DataTypes> createRegularGridScene(
 
     //Affine constraint
     patchStruct.affineConstraint  = modeling::addNew<AffineMovementProjectiveConstraint>(SquareNode,"affineConstraint");
-    modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
-    modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
+    modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->d_meshIndices);
+    modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->d_indices);
 
     patchStruct.SquareNode = SquareNode;
     return patchStruct;

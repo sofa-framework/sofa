@@ -115,9 +115,11 @@ FileMessageHandlerComponent::FileMessageHandlerComponent() :
 
 FileMessageHandlerComponent::~FileMessageHandlerComponent()
 {
-    MessageDispatcher::rmHandler(m_handler) ;
-
-    delete m_handler ;
+    if (m_handler)
+    {
+        MessageDispatcher::rmHandler(m_handler) ;
+        delete m_handler ;
+    }
 }
 
 void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )

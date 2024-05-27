@@ -1038,9 +1038,9 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 void RealGUI::setViewerConfiguration(sofa::component::setting::ViewerSetting* viewerConf)
 {
-    const type::Vec<2,int> &res=viewerConf->resolution.getValue();
+    const type::Vec<2,int> &res=viewerConf->d_resolution.getValue();
 
-    if (viewerConf->fullscreen.getValue())
+    if (viewerConf->d_fullscreen.getValue())
         setFullScreen();
     else
         setViewerResolution(res[0], res[1]);
@@ -1231,7 +1231,7 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
         root->get(visualStyle);
         if(visualStyle)
         {
-            displayFlag = new DisplayFlagsDataWidget(tabView,"displayFlagwidget",&visualStyle->displayFlags, true);
+            displayFlag = new DisplayFlagsDataWidget(tabView, "displayFlagwidget", &visualStyle->d_displayFlags, true);
             displayFlag->createWidgets();
             displayFlag->updateWidgetValue();
             connect( displayFlag, SIGNAL( WidgetDirty(bool) ), this, SLOT(showhideElements() ));

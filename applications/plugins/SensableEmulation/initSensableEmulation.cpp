@@ -49,7 +49,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Plugin Sensable Emulation";
+    return "SensableEmulation";
 }
 
 const char* getModuleVersion()

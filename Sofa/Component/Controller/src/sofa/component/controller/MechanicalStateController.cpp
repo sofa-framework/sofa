@@ -130,7 +130,7 @@ void MechanicalStateController<Vec1Types>::onMouseEvent(core::objectmodel::Mouse
     default :
         break;
     }
-    if (handleEventTriggersUpdate.getValue())
+    if (d_handleEventTriggersUpdate.getValue())
         applyController();
 
 }
@@ -175,7 +175,7 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
         break;
 
     case sofa::core::objectmodel::MouseEvent::Move :
-        if (handleEventTriggersUpdate.getValue())
+        if (d_handleEventTriggersUpdate.getValue())
             applyController();
         break;
 

@@ -176,6 +176,8 @@ void CompareState::processCompareState()
 //-------------------------------- processCompareState------------------------------------
 void CompareState::draw(const core::visual::VisualParams* vparams)
 {
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;

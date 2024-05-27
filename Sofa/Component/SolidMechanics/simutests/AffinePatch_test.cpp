@@ -121,7 +121,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
             quat.normalize();
             quat.toMatrix(testedRotation);
         }
-        patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
+        patchStruct.affineConstraint->d_rotation.setValue(testedRotation);
 
         // Random Translation
         if(randomTranslation)
@@ -133,7 +133,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
                     testedTranslation[i]=0;
             }
         }
-        patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
+        patchStruct.affineConstraint->d_translation.setValue(testedTranslation);
 
     }
 
@@ -176,7 +176,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
             quat.normalize();
             quat.toMatrix(testedRotation);
         }
-        patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
+        patchStruct.affineConstraint->d_rotation.setValue(testedRotation);
 
         // Random Translation
         if(randomTranslation)
@@ -186,7 +186,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
                 testedTranslation[i] = helper::drand(2);
             }
         }
-        patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
+        patchStruct.affineConstraint->d_translation.setValue(testedTranslation);
 
     }
 

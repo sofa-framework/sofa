@@ -29,7 +29,7 @@
 namespace sofa::component::solidmechanics::fem::nonuniform
 {
 
-/** Need a SparseGridTopology with _sparseGrid->_nbVirtualFinerLevels >= this->_nbVirtualFinerLevels
+/** Need a SparseGridTopology with _sparseGrid->d_nbVirtualFinerLevels >= this->d_nbVirtualFinerLevels
 
 @InProceedings{NPF06,
 author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",

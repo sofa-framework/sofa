@@ -53,17 +53,24 @@ namespace sofa::component::constraint::lagrangian::correction
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
-    , m_rotations(initData(&m_rotations, false, "rotations", ""))
-    , m_restRotations(initData(&m_restRotations, false, "restDeformations", ""))
-    , recompute(initData(&recompute, false, "recompute", "if true, always recompute the compliance"))
-    , debugViewFrameScale(initData(&debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
-    , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
-    , fileDir(initData(&fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
+    , d_rotations(initData(&d_rotations, false, "rotations", ""))
+    , d_restRotations(initData(&d_restRotations, false, "restDeformations", ""))
+    , d_recompute(initData(&d_recompute, false, "recompute", "if true, always recompute the compliance"))
+    , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
+    , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
+    , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
-    this->addAlias(&f_fileCompliance, "filePrefix");
+    this->addAlias(&d_fileCompliance, "filePrefix");
+
+    m_rotations.setParent(&d_rotations);
+    m_restRotations.setParent(&d_restRotations);
+    recompute.setParent(&d_recompute);
+    debugViewFrameScale.setParent(&d_debugViewFrameScale);
+    f_fileCompliance.setParent(&d_fileCompliance);
+    fileDir.setParent(&d_fileDir);
 }
 
 template<class DataTypes>
@@ -131,7 +138,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         // Try to load from file
         msg_info() << "Try to load compliance from : " << fileName ;
 
-        std::string dir = fileDir.getValue();
+        std::string dir = d_fileDir.getValue();
         if (!dir.empty())
         {
             const std::string path = helper::system::FileSystem::append(dir, fileName);
@@ -150,7 +157,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             else
                 return false;
         }
-        else if (recompute.getValue() == false)
+        else if (d_recompute.getValue() == false)
         {
             std::stringstream ss;
             if (sofa::helper::system::DataRepository.findFile(fileName, "", &ss))
@@ -185,7 +192,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {    
     std::string filePathInSofaShare;
-    const std::string dir = fileDir.getValue();
+    const std::string dir = d_fileDir.getValue();
     if (!dir.empty())
     {
         filePathInSofaShare = helper::system::FileSystem::append(dir, fileName);
@@ -230,7 +237,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     const SReal dt = this->getContext()->getDt();
 
-    invName = f_fileCompliance.getFullPath();
+    invName = d_fileCompliance.getFullPath();
     bool complianceLoaded = false;
     if (!invName.empty())
     {
@@ -435,7 +442,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
 
     /////////// The constraints are modified using a rotation value at each node/////
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateConstraints(false);
 
 
@@ -614,7 +621,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -644,7 +651,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -670,7 +677,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -758,7 +765,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
     force.clear();
     force.resize(x_free.size());
 
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -800,7 +807,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels() || !m_rotations.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() || !d_rotations.getValue())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
@@ -838,7 +845,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
         sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::type::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::type::Vec3f(this->d_debugViewFrameScale.getValue(), this->d_debugViewFrameScale.getValue(), this->d_debugViewFrameScale.getValue()));
 
     }
 
@@ -959,7 +966,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
 #endif
 
     /////////// The constraints are modified using a rotation value at each node/////
-    if (m_rotations.getValue())
+    if (d_rotations.getValue())
         rotateConstraints(false);
 
     unsigned int nbConstraints = 0;

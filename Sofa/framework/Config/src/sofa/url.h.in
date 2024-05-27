@@ -19,64 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <image/image_gui/config.h>
+#pragma once
 
 namespace sofa
 {
-
-namespace component
-{
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_GUI_API void initExternalModule();
-    SOFA_IMAGE_GUI_API const char* getModuleName();
-    SOFA_IMAGE_GUI_API const char* getModuleVersion();
-    SOFA_IMAGE_GUI_API const char* getModuleLicense();
-    SOFA_IMAGE_GUI_API const char* getModuleDescription();
-    SOFA_IMAGE_GUI_API const char* getModuleComponentList();
+constexpr const char* SOFA_URL = "@SOFA_URL@";
+constexpr const char* SOFA_DOCUMENTATION_URL = "@SOFA_URL@community/doc/";
 }
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "Image Plugin GUI";
-}
-
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Image GUI";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-} // namespace image
-
-} // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-
-

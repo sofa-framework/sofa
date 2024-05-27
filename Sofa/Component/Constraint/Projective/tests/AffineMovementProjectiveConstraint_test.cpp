@@ -110,7 +110,7 @@ struct AffineMovementProjectiveConstraint_test : public BaseSimulationTest, Nume
         quat.normalize();
         quat.toMatrix(testedRotation);
 
-        patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
+        patchStruct.affineConstraint->d_rotation.setValue(testedRotation);
 
         // Random Translation
         for(size_t i=0;i<Coord::total_size;++i)
@@ -120,8 +120,8 @@ struct AffineMovementProjectiveConstraint_test : public BaseSimulationTest, Nume
                 testedTranslation[i]=0;
         }
 
-        patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
-        patchStruct.affineConstraint->m_endConstraintTime.setValue(0.1);
+        patchStruct.affineConstraint->d_translation.setValue(testedTranslation);
+        patchStruct.affineConstraint->d_endConstraintTime.setValue(0.1);
     }
 
      // After simulation compare the positions of points to the theoretical positions.

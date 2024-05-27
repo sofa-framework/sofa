@@ -101,11 +101,11 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
         if (auto* lcp2 = dynamic_cast<constraint::lagrangian::solver::LCPConstraintSolver*>(csolver2))
         {
             constraint::lagrangian::solver::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
-            newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
-            newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
-            newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );
-            newSolver->maxIt.setValue(lcp1->maxIt.getValue() > lcp2->maxIt.getValue() ? lcp1->maxIt.getValue() : lcp2->maxIt.getValue() );
-            newSolver->mu.setValue((lcp1->mu.getValue() + lcp2->mu.getValue())*0.5);
+            newSolver->d_initial_guess.setValue(lcp1->d_initial_guess.getValue() | lcp2->d_initial_guess.getValue());
+            newSolver->d_build_lcp.setValue(lcp1->d_build_lcp.getValue() | lcp2->d_build_lcp.getValue());
+            newSolver->d_tol.setValue(lcp1->d_tol.getValue() < lcp2->d_tol.getValue() ? lcp1->d_tol.getValue() : lcp2->d_tol.getValue() );
+            newSolver->d_maxIt.setValue(lcp1->d_maxIt.getValue() > lcp2->d_maxIt.getValue() ? lcp1->d_maxIt.getValue() : lcp2->d_maxIt.getValue() );
+            newSolver->d_mu.setValue((lcp1->d_mu.getValue() + lcp2->d_mu.getValue()) * 0.5);
             return newSolver;
         }
     }
@@ -168,9 +168,9 @@ BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2
 SolverSet createSolverEulerImplicitEulerImplicit(odesolver::backward::EulerImplicitSolver& solver1, odesolver::backward::EulerImplicitSolver& solver2)
 {
     odesolver::backward::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::backward::EulerImplicitSolver>();
-    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
-    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
-    solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
+    solver->d_rayleighStiffness.setValue(solver1.d_rayleighStiffness.getValue() < solver2.d_rayleighStiffness.getValue() ? solver1.d_rayleighStiffness.getValue() : solver2.d_rayleighStiffness.getValue() );
+    solver->d_rayleighMass.setValue(solver1.d_rayleighMass.getValue() < solver2.d_rayleighMass.getValue() ? solver1.d_rayleighMass.getValue() : solver2.d_rayleighMass.getValue() );
+    solver->d_velocityDamping.setValue(solver1.d_velocityDamping.getValue() > solver2.d_velocityDamping.getValue() ? solver1.d_velocityDamping.getValue() : solver2.d_velocityDamping.getValue());
     return SolverSet(solver,
             createLinearSolver(&solver1, &solver2),
             createConstraintSolver(&solver1, &solver2));

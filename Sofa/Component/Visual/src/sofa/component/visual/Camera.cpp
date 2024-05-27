@@ -31,7 +31,7 @@ int CameraClass = core::RegisterObject("A Camera that render the scene from a gi
 
 Camera::Camera()
 {
-    p_computeZClip.setValue(false) ;
+    d_computeZClip.setValue(false) ;
 }
 
 Camera::~Camera()

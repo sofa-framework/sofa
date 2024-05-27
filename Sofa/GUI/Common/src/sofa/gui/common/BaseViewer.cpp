@@ -96,7 +96,7 @@ void BaseViewer::wait()
 void BaseViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 {
     using namespace core::visual;
-    if (viewerConf->cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)
+    if (viewerConf->d_cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)
         setCameraMode(VisualParams::ORTHOGRAPHIC_TYPE);
     else
         setCameraMode(VisualParams::PERSPECTIVE_TYPE);
@@ -211,8 +211,8 @@ bool BaseViewer::load()
             currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
-            //currentCamera->p_position.forceSet();
-            //currentCamera->p_orientation.forceSet();
+            //currentCamera->d_position.forceSet();
+            //currentCamera->d_orientation.forceSet();
             currentCamera->bwdInit();
         }
         sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
@@ -222,9 +222,9 @@ bool BaseViewer::load()
             visualStyle = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
             visualStyle->setName(groot->getNameHelper().resolveName(visualStyle->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
 
-            core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
+            core::visual::DisplayFlags* displayFlags = visualStyle->d_displayFlags.beginEdit();
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
-            visualStyle->displayFlags.endEdit();
+            visualStyle->d_displayFlags.endEdit();
 
             groot->addObject(visualStyle);
             visualStyle->init();

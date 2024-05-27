@@ -22,7 +22,7 @@
 #ifndef SOFA_IMAGE_HISTOGRAMWIDGET_H
 #define SOFA_IMAGE_HISTOGRAMWIDGET_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
@@ -34,7 +34,7 @@
 #include <QGraphicsScene>
 
 
-#include "../ImageTypes.h"
+#include <image/ImageTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>

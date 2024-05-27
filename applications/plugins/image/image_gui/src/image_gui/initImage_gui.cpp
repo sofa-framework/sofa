@@ -19,17 +19,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef IMAGE_GUI_CONFIG_H
-#define IMAGE_GUI_CONFIG_H
+#include <image_gui/config.h>
 
-#include <sofa/config.h>
+namespace sofa
+{
 
-#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
+namespace component
+{
 
-#ifdef SOFA_BUILD_IMAGE_GUI
-#  define SOFA_IMAGE_GUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_IMAGE_GUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+//Here are just several convenient functions to help user to know what contains the plugin
 
-#endif
+extern "C" {
+    SOFA_IMAGE_GUI_API void initExternalModule();
+    SOFA_IMAGE_GUI_API const char* getModuleName();
+    SOFA_IMAGE_GUI_API const char* getModuleVersion();
+    SOFA_IMAGE_GUI_API const char* getModuleLicense();
+    SOFA_IMAGE_GUI_API const char* getModuleDescription();
+    SOFA_IMAGE_GUI_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return image_gui::MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return image_gui::MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Image GUI";
+}
+
+const char* getModuleComponentList()
+{
+    return "";
+}
+
+} // namespace image
+
+} // namespace sofa
+
+////////// BEGIN CLASS LIST //////////
+
+

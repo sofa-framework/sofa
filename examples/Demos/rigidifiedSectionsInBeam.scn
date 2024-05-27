@@ -19,6 +19,7 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [NormEngine] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [ValuesFromIndices] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [DifferenceEngine] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
