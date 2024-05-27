@@ -44,7 +44,7 @@ class PartialLinearMovementProjectiveConstraintInternalData
 };
 
 /** impose a motion to given DOFs (translation and rotation) in some directions only.
-  The moved and free directioons are the same for all the particles, defined  in the d_movedDirections attribute.
+  The moved and free directioons are the same for all the particles, defined  in the movedDirections attribute.
     The motion between 2 key times is linearly interpolated
 */
 template <class TDataTypes>
@@ -119,7 +119,7 @@ public :
     core::objectmodel::Data<VecDeriv > d_keyMovements;
 
     /// attributes to precise display
-    /// if d_showMovement is true we display the expected movement
+    /// if showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
     core::objectmodel::Data< bool > d_showMovement;
 
