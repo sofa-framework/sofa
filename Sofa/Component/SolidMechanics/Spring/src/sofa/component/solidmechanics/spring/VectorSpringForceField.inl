@@ -232,7 +232,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     {
         springArrayData[i].ks=Real(m_stiffness.getValue());
         springArrayData[i].kd=Real(m_viscosity.getValue());
-        springArrayData[i].restVector = x0[m_topology->getEdge(i)[1]]-x0[m_topology->getEdge(i)[0]];
+        springArrayData[i].restVector = x0[m_topology->getEdge(i)[1]] - x0[m_topology->getEdge(i)[0]];
     }
 
     springArray.endEdit();

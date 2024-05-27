@@ -43,7 +43,7 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-//    f_graph.setReadOnly(true);
+//    d_graph.setReadOnly(true);
 
 	f_maxIter.setRequired(true);
 	f_tolerance.setRequired(true);
@@ -238,7 +238,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             const SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
 
             //See if any of the stopping criteria is satisfied
-            if( test1 <= 0. ||  //This test work if tol < eps
+            if( test1 <= 0. ||  //This test work if d_tol < eps
                 test2 <= 0.||
                 itn >= max_iter-1||
                 /*Acond*/ gmax/gmin >= .1/eps||

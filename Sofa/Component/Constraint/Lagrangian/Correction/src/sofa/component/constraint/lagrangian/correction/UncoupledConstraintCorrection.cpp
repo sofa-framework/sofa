@@ -38,7 +38,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 {
     Inherit::init();
 
-    const VecReal& comp = compliance.getValue();
+    const VecReal& comp = d_compliance.getValue();
 
     double  odeFactor = 1.0;
 
@@ -72,10 +72,10 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         const Node *node = dynamic_cast< Node * >(getContext());
         Rigid3Mass massValue;
 
-        if (defaultCompliance.isSet())
+        if (d_defaultCompliance.isSet())
         {
-            msg_info() << "\'defaultCompliance\' data is used: " << defaultCompliance.getValue();
-            usedComp.push_back(defaultCompliance.getValue());
+            msg_info() << "\'defaultCompliance\' data is used: " << d_defaultCompliance.getValue();
+            usedComp.push_back(d_defaultCompliance.getValue());
         }
         else
         {
@@ -107,13 +107,13 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][1]);
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][2]);
         usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[2][2]);
-        compliance.setValue(usedComp);
+        d_compliance.setValue(usedComp);
 
-        msg_info() << "\'compliance\' equals: " << compliance.getValue();
+        msg_info() << "\'compliance\' equals: " << d_compliance.getValue();
     }
     else
     {
-        msg_info() << "\'compliance\' data is used: " << compliance.getValue();
+        msg_info() << "\'compliance\' data is used: " << d_compliance.getValue();
     }
 }
 
@@ -121,7 +121,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 template<>
 SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
-    const VecReal& comp = compliance.getValue();
+    const VecReal& comp = d_compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     const unsigned int numDofs = comp.size() / 7;
 

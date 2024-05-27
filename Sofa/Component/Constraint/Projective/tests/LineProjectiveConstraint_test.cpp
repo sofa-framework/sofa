@@ -91,9 +91,9 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
 
 
         origin = CPos(0,0,0);
-        projection->f_origin.setValue(origin);
+        projection->d_origin.setValue(origin);
         direction = CPos(1,1,1);
-        projection->f_direction.setValue(direction);
+        projection->d_direction.setValue(direction);
 
     }
 
@@ -109,7 +109,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
         indices.clear();
         indices.push_back(1);
         std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
-        projection->f_indices.setValue(indices);
+        projection->d_indices.setValue(indices);
 
         /// Init
         sofa::simulation::node::initRoot(root.get());
@@ -122,7 +122,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
         indices.clear();
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
-         projection->f_indices.setValue(indices);
+         projection->d_indices.setValue(indices);
 
          /// Init
          sofa::simulation::node::initRoot(root.get());

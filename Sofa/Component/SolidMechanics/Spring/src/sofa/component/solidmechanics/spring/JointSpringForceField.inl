@@ -386,7 +386,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     {
         sofa::type::RGBAColor color;
 
-        Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
+        Real d = (p2[springs[i].m2] - p1[springs[i].m1]).getCenter().norm();
         if (external)
         {
             if (d<springs[i].initTrans.norm()*0.9999)
@@ -445,7 +445,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         }
         if (d_showExtraTorsion.getValue())
         {
-            Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
+            Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion - springs[i].lawfulTorsion);
             v1 = Vec3(vtemp[0], vtemp[1], vtemp[2]);
 
             vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );
