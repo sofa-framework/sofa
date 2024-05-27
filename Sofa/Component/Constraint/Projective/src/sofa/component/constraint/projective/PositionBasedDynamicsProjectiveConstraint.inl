@@ -36,7 +36,7 @@ PositionBasedDynamicsProjectiveConstraint<DataTypes>::PositionBasedDynamicsProje
     , d_stiffness(initData(&d_stiffness, (Real)1.0, "stiffness", "Blending between current pos and target pos."))
     , d_position(initData(&d_position, "position", "Target positions."))
     , d_velocity(initData(&d_velocity, "velocity", "Velocities."))
-    , d_old_position(initData(&d_old_position, "d_old_position", "Old positions."))
+    , d_old_position(initData(&d_old_position, "old_position", "Old positions."))
 {
     stiffness.setParent(&d_stiffness);
     position.setParent(&d_position);
