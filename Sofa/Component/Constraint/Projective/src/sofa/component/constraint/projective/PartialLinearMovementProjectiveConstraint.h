@@ -44,7 +44,7 @@ class PartialLinearMovementProjectiveConstraintInternalData
 };
 
 /** impose a motion to given DOFs (translation and rotation) in some directions only.
-  The moved and free directioons are the same for all the particles, defined  in the movedDirections attribute.
+  The moved and free directions are the same for all the particles, defined  in the movedDirections attribute.
     The motion between 2 key times is linearly interpolated
 */
 template <class TDataTypes>
