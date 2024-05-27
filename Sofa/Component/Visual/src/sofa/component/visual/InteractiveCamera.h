@@ -44,15 +44,12 @@ public:
     enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_zoomSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_panSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<int> p_pivot;
 
     Data<double> d_zoomSpeed; ///< Zoom Speed

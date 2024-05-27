@@ -73,64 +73,48 @@ public:
     Data<Quat> p_orientation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<type::Vec3> p_lookAt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_distance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_fieldOfView;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_zNear;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<double> p_zFar;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<bool> p_computeZClip;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<type::Vec3> p_minBBox;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<type::Vec3> p_maxBBox;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<unsigned int> p_widthViewport;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<unsigned int> p_heightViewport;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<sofa::helper::OptionsGroup> p_type;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<bool> p_activated;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<bool> p_fixedLookAtPoint;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<type::vector<SReal> > p_modelViewMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-
     Data<type::vector<SReal> > p_projectionMatrix;
 
 
