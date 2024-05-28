@@ -58,22 +58,6 @@ set(SOURCE_FILES
     ${SOFAGUICOMMON_ROOT}/ArgumentParser.cpp
 )
 
-# Compatibility files
-set (COMPATSOFAGUICOMMON_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ArgumentParser.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BaseGUI.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BatchGUI.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BaseViewer.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ColourPickingVisitor.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/FilesRecentlyOpenedManager.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/GuiDataRepository.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/GUIManager.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/MouseOperations.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/OperationFactory.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/PickHandler.h
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ViewerFactory.h
-)
 
 sofa_find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.Component.Setting REQUIRED)
@@ -87,16 +71,12 @@ else()
     message(WARNING "-- ${PROJECT_NAME}: Sofa.GL dependent features disabled.")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Setting)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Component)
 target_link_libraries(${PROJECT_NAME} PUBLIC cxxopts::cxxopts)
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSOFAGUICOMMON_ROOT}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}/${PROJECT_NAME}/compat>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
