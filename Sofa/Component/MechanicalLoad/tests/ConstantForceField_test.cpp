@@ -87,7 +87,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
-                 "   <UniformMass/>                                                                    \n"
+                 "   <UniformMass totalMass='1.0'/>                                                                    \n"
                  "   <ConstantForceField name='myForceField' indices='0' totalForce='"<< defaultValueForces << "'/>        \n"
                  "</Node>                                                                                                                                                               \n" ;
 

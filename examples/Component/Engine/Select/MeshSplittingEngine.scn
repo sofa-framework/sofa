@@ -32,7 +32,7 @@
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" printLog="0" />
             
             <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
-            <UniformMass  />
+            <UniformMass totalMass="1.0"/>
             <FixedProjectiveConstraint indices="0"/>
             
             <Node name="rigidmapped points">

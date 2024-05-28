@@ -17,20 +17,20 @@
 
     <Node name="noDamping (white)"  >
         <MechanicalObject name="mObject2"  position="0 0 0"  velocity="1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="1" />
-        <UniformMass template="Vec3" name="uniformMass3" />
+        <UniformMass template="Vec3" name="uniformMass3" totalMass="1.0"/>
         <TrailRenderer template="Vec3" position="@mObject2.position" color="1 1 1 1"/>
     </Node>
 
     <Node name="uniform (green)"  >
         <MechanicalObject template="Vec3" name="mObject2"  position="0 0 0 0 0 0"  velocity="1 1 1 1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="3" />
-        <UniformMass name="uniformMass3" />
+        <UniformMass name="uniformMass3" totalMass="1.0"/>
         <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" />
         <TrailRenderer template="Vec3" position="@mObject2.position" color="0 1 0 1"/>
     </Node>
 
     <Node name="diagonal (red)"  >
         <MechanicalObject template="Vec3" name="mObject2"  position="0 0 0 0 0 0"  velocity="1 1 1 1 1 1"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1"  drawMode="2" />
-        <UniformMass name="uniformMass3" />
+        <UniformMass name="uniformMass3" totalMass="1.0"/>
         <DiagonalVelocityDampingForceField template="Vec3" name="diagonalVelocityDampingFF1"  dampingCoefficient="0.5 0.2 0.2 1 1 1" />
         <TrailRenderer template="Vec3" position="@mObject2.position" color="1 0 0 1"/>
     </Node>

@@ -23,6 +23,6 @@
 		<BoxROI box="0 0.75 0 1 1 1"  position="@[-2].rest_position"   />
 		<FixedProjectiveConstraint indices="@[-1].indices" />
 		<ConstantForceField indices="0 1 4 5"  totalForce="0 -1000 0" />
-		<UniformMass  />
+		<UniformMass totalMass="1.0"/>
 	</Node>
 </Node>

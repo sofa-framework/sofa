@@ -149,8 +149,8 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_mechanicalObj->x.setValue(points);
 
         typename TypedUniformMass::SPtr uniformMass = New<TypedUniformMass>();
-        m_root->addObject(uniformMass);
         uniformMass->d_totalMass.setValue(1);
+        m_root->addObject(uniformMass);
 
         /*Create the plane force field*/
         m_planeForceFieldSPtr = New<PlaneForceFieldType>();

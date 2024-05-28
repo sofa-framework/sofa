@@ -33,7 +33,7 @@
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="2.5" />
-            <UniformMass />
+            <UniformMass totalMass="1.0"/>
             <Node name="Visu">
                 <MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_3" color="gray" />
@@ -51,7 +51,7 @@
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="5" />
-            <UniformMass />
+            <UniformMass totalMass="1.0"/>
             <Node name="Visu">
                 <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_0" color="gray" />
@@ -69,7 +69,7 @@
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="7.5" />
-            <UniformMass />
+            <UniformMass totalMass="1.0"/>
             <Node name="Visu">
                 <MeshOBJLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_1" color="gray" />
@@ -87,7 +87,7 @@
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="10" />
-            <UniformMass />
+            <UniformMass totalMass="1.0"/>
             <Node name="Visu">
                 <MeshOBJLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_2" color="gray" />

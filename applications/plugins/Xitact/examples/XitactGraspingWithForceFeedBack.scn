@@ -25,7 +25,7 @@
 		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighMass="30"  rayleighStiffness="0.001"/>
     <CGLinearSolver iterations="25" threshold="1.0e-15"  tolerance="1.0e-9" />
     <MechanicalObject template="Rigid3d" scale="5.0"  dx="40.0" dy="0.0" dz="-70.0"/>
-		<UniformMass mass="0.01"/>
+		<UniformMass vertexMass="0.01"/>
     <!--<LinearSolverConstraintCorrection />-->
     <UncoupledConstraintCorrection />
 		<Node name="Visu">
@@ -103,7 +103,7 @@
 
     <Node name="Grasper">
       <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0 0" rest_position="0 0 0 0 0 0"/>
-      <!--	<UniformMass mass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
+      <!--	<UniformMass vertexMass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
       <IHPDriver Scale="1000" toolIndex="0" permanent="1"/>
@@ -112,7 +112,7 @@
 
       <Node name="Jaws">
         <MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
-        <!--	<UniformMass mass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
+        <!--	<UniformMass vertexMass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
 
         <Node name="Tool1VM">
           <OglModel name="VM" fileMesh="dt/aspi.trian" scale="1" rx="90.0" />

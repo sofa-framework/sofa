@@ -45,7 +45,9 @@ using core::objectmodel::New;
 template<typename DataTypes>
 void createUniformMass(simulation::Node::SPtr node, component::statecontainer::MechanicalObject<DataTypes>& /*dofs*/)
 {
-    node->addObject(New<component::mass::UniformMass<DataTypes> >());
+    typename component::mass::UniformMass<DataTypes>::SPtr uniformMass = New<component::mass::UniformMass<DataTypes> >();
+    uniformMass->d_totalMass.setValue(1.0);
+    node->addObject(uniformMass);
 }
 
 template <typename _DataTypes>
