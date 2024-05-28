@@ -96,7 +96,7 @@ public:
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 
-        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::d_seqHexahedra
+        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
         Index _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
 
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number

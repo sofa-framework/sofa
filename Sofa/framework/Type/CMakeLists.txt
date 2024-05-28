@@ -7,7 +7,6 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/config.h.in
     ${SOFATYPESRC_ROOT}/init.h
     ${SOFATYPESRC_ROOT}/BoundingBox.h
-    ${SOFATYPESRC_ROOT}/Color.h
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
