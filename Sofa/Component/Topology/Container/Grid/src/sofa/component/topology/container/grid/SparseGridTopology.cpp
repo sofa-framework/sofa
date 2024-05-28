@@ -88,7 +88,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     , d_voxelSize(initData(&d_voxelSize, type::Vec3(1_sreal, 1_sreal, 1_sreal), "voxelSize", "Dimension of one voxel"))
     , d_marchingCubeStep(initData(&d_marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
     , d_convolutionSize(initData(&d_convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
-    , d_facets(initData(&d_facets, "facets", "Input mesh d_facets"))
+    , d_facets(initData(&d_facets, "facets", "Input mesh facets"))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
