@@ -65,11 +65,16 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
         DataTypes::set( v[2], 0,0,0);
 
         //Force
-         f.resize(3);
+        f.resize(3);
         Vec3 f0(0,0,0.1);
         DataTypes::set( f[0],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[1],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[2],  f0[0], f0[1], f0[2]);
+
+        // Set the properties of the force field
+        sofa::type::vector<Index> indices = {0};
+        Inherited::force->triangleList.setValue(indices);
+        Inherited::force->pressure=Coord(0,0,0.6);
     }
 
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
