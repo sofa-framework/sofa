@@ -63,6 +63,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
+    using Vec3 = sofa::type::Vec<3, Real>;
+
 protected:
     bool initializedCubatureTables;
     void defineTetrahedronCubaturePoints();

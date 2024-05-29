@@ -1932,18 +1932,18 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     }
 
 
-    msg_info() << "*********************************" << msgendl
-            << "* computeIntersectedPointsList * " << msgendl
-            << "ind_t_current: " << ind_t_current << msgendl
-            << "p_current: " << p_current << msgendl
-            << "coord_t: " << coord_t << msgendl
-            << "coord_k: " << coord_k << msgendl
-            << "indices: " << indices << msgendl
-            << "last_point: " << last_point << msgendl
-            << "a: " << a << msgendl
-            << "b: " << b << msgendl
-            << "is_intersected: "<< is_intersected << msgendl
-            << "*********************************" ;
+    dmsg_info() << "*********************************" << msgendl
+                << "* computeIntersectedPointsList * " << msgendl
+                << "ind_t_current: " << ind_t_current << msgendl
+                << "p_current: " << p_current << msgendl
+                << "coord_t: " << coord_t << msgendl
+                << "coord_k: " << coord_k << msgendl
+                << "indices: " << indices << msgendl
+                << "last_point: " << last_point << msgendl
+                << "a: " << a << msgendl
+                << "b: " << b << msgendl
+                << "is_intersected: "<< is_intersected << msgendl
+                << "*********************************" ;
     
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -2168,17 +2168,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if(is_reached)
     {
-        msg_info() << "TriangleSetTopology.inl : Cut is reached" ;
+        dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
     }
 
     if(is_on_boundary)
     {
-        msg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
+        dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
     }
 
     if(!is_reached && !is_on_boundary)
     {
-        msg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
+        dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
@@ -2203,8 +2203,8 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     sofa::type::vector< Real > edge_barycoefs_list;
     bool is_on_boundary = false;
     // using old function:
-    bool pathOK = this->computeIntersectedPointsList2(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
-    msg_info() << "*********************************" << msgendl
+    bool pathOK = this->computeIntersectedPointsList(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
+    dmsg_info() << "*********************************" << msgendl
                 << "* computeIntersectedObjectsList *" << msgendl
                 << "last_point: " << last_point << msgendl
                 << "pointA: " << pointA << msgendl
@@ -2404,7 +2404,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
         }
 
 
-        msg_info() << "_neighTri: "<< _neighTri << msgendl
+        dmsg_info() << "_neighTri: "<< _neighTri << msgendl
                     << "_neighTri2: "<< _neighTri2 <<msgendl
                     << "buffk: "<< buffK <<msgendl
                     << "buffkk: "<< buffKK <<msgendl ;
