@@ -43,6 +43,17 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
   List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
 
+set(SOFA_CONFIGURATION "Standard" CACHE STRING "Configuration type defining default compilation set. Three possible values Core/Standard/Full")
+set_property(CACHE SOFA_CONFIGURATION PROPERTY STRINGS Core Standard Full)
+
+if(SOFA_CONFIGURATION STREQUAL Standard OR SOFA_CONFIGURATION STREQUAL Full)
+    set(SOFA_BUILD_STANDARD ON)
+endif ()
+if( SOFA_CONFIGURATION STREQUAL Full)
+    set(SOFA_BUILD_FULL ON)
+endif()
+
+
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
@@ -147,7 +158,7 @@ if(MSVC)
 endif()
 
 ### Testing
-option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
+option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ${SOFA_BUILD_STANDARD})
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
@@ -174,7 +185,7 @@ sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 add_subdirectory(extlibs)
 
 ### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." OFF)
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
 endif()
@@ -191,7 +202,7 @@ add_subdirectory(Sofa)
 add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." ${SOFA_BUILD_STANDARD})
 
 # SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
