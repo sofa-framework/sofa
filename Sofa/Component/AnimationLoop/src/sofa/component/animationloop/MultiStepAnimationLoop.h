@@ -41,10 +41,10 @@ protected:
 public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
     Data<int> collisionSteps;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
     Data<int> integrationSteps;
 
     Data<int> d_collisionSteps; ///< number of collision steps between each frame rendering

@@ -71,31 +71,31 @@ public:
 
     // fill the texture by 'image' only where there is the 'segmentation' of 'd_activeValue' and give the 3D texture sizes
     void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) override;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< type::Vec3 > voxelSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< Vec3i > dataResolution;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< Vec6i > roi;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< int > headerSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< int > segmentationHeaderSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< type::vector<unsigned int> > idxInRegularGrid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< type::vector<int> > backgroundValue;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< type::vector<int> > activeValue;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data<bool> generateHexa;
 
 

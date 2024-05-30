@@ -44,16 +44,16 @@ class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseOb
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName f_filename;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < double > f_interval;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < double > f_shift;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < bool > f_loop;
 
     sofa::core::objectmodel::DataFileName d_filename;

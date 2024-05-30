@@ -49,16 +49,16 @@ protected:
     ViewerSetting();
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     Data<sofa::type::Vec<2,int> > resolution;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     Data<bool> fullscreen;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     Data<sofa::helper::OptionsGroup> cameraMode;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     Data<sofa::helper::OptionsGroup> objectPickingMethod;
 
     Data<sofa::type::Vec<2,int> > d_resolution;                           ///< Screen resolution (width, height).

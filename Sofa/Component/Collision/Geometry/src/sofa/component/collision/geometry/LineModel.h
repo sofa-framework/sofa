@@ -141,7 +141,7 @@ public:
 
     int getLineFlags(sofa::Index i);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> bothSide;
 
 
@@ -168,7 +168,7 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> m_displayFreePosition;
 
 

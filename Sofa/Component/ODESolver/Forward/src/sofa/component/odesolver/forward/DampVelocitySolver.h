@@ -34,10 +34,10 @@ This is not an ODE solver, but it can be used as a post-process after a real ODE
 class SOFA_COMPONENT_ODESOLVER_FORWARD_API DampVelocitySolver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_FORWARD()
     Data<SReal> rate;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_FORWARD()
     Data<SReal> threshold;
 
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);

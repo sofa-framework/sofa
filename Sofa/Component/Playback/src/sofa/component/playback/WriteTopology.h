@@ -55,22 +55,22 @@ class SOFA_COMPONENT_PLAYBACK_API WriteTopology: public core::objectmodel::BaseO
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName f_filename;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < bool > f_writeContainers;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < bool > f_writeShellContainers;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA ()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < double > f_interval;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < type::vector<double> > f_time;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     Data < double > f_period;
 
 
