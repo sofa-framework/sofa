@@ -101,7 +101,7 @@ public:
 
     const Deriv& velocity(sofa::Index index) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> bothSide;
 
 
@@ -133,10 +133,10 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> computeNormals;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> m_displayFreePosition;
 
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)

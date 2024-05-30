@@ -81,7 +81,7 @@ protected:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data< type::vector< Oscillator > >  constraints;
 
     Data< type::vector< Oscillator > > d_constraints; ///< constrained particles

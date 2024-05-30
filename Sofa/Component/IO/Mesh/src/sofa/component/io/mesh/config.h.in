@@ -50,9 +50,9 @@ namespace sofa::component::io::mesh
 #endif
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_IO_MESH
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA() \
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v24.06", "v24.12", \
         "Data renamed according to the guidelines")
