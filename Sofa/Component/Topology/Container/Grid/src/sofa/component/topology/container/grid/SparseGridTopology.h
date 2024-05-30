@@ -105,7 +105,7 @@ public:
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
-    type::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf d_nbVirtualFinerLevels)
+    type::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf nbVirtualFinerLevels)
     int getNbVirtualFinerLevels() const { return d_nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {d_nbVirtualFinerLevels.setValue(n);}
 
@@ -255,7 +255,7 @@ public:
     Data< unsigned int >    d_marchingCubeStep; ///< Step of the Marching Cube algorithm
     Data< unsigned int >    d_convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< type::vector< type::vector<Index> > >d_facets; ///< Input mesh d_facets
+    Data< type::vector< type::vector<Index> > >d_facets; ///< Input mesh facets
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions
