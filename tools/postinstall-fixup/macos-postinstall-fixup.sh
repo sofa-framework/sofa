@@ -73,7 +73,10 @@ check-all-deps() {
         libglew=""
         libjpeg=""
         libpng=""
+        libtinyxml2=""
         libtiff=""
+        libzstd=""
+        liblzma=""
         dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
         is_fixup_needed="false"
@@ -82,8 +85,11 @@ check-all-deps() {
            echo "$dependencies" | grep --quiet "/libicu"   ||
            echo "$dependencies" | grep --quiet "/libGLEW"  ||
            echo "$dependencies" | grep --quiet "/libjpeg"  ||
+           echo "$dependencies" | grep --quiet "/libpng"   ||
            echo "$dependencies" | grep --quiet "/libtinyxml2"  ||
-           echo "$dependencies" | grep --quiet "/libpng"   ; then
+           echo "$dependencies" | grep --quiet "/libtiff"  ||
+           echo "$dependencies" | grep --quiet "/libzstd"  ||
+           echo "$dependencies" | grep --quiet "/liblzma"  ; then
             is_fixup_needed="true"
         fi
         if [[ "$is_fixup_needed" == "false" ]]; then
@@ -107,9 +113,13 @@ check-all-deps() {
                 libname="$libtinyxml2"
             elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
                 libname="$libtiff"
+            elif libzstd="$(echo $dep | egrep -o "/libzstd[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libzstd" ]; then
+                libname="$libzstd"
+            elif liblzma="$(echo $dep | egrep -o "/liblzma[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$liblzma" ]; then
+                libname="$liblzma"
             else
                 if [[ "$dep" == "/usr/local/"* ]]; then
-                    echo "WARNING: no fixup rule set for: $lib"
+                    echo "WARNING: no fixup rule set for: $dep"
                 fi
                 # this dep is not a lib to fixup
                 continue
