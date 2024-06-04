@@ -165,7 +165,7 @@ public:
     Data<SReal> defaultRadius;
 
     Data< VecReal > d_radius; ///< Radius of each sphere
-    Data< SReal > d_defaultRadius; ///< Default radius (default=1.0)
+    Data< SReal > d_defaultRadius; ///< Default radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 
