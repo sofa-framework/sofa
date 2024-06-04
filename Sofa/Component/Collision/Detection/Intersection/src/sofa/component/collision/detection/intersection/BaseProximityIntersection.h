@@ -44,7 +44,7 @@ public:
     Data<SReal> contactDistance;
 
 
-    Data<SReal> d_alarmDistance; ///< Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broadphase to reduce the search area
+    Data<SReal> d_alarmDistance; ///< Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broad phase algorithms to reduce the search area
     Data<SReal> d_contactDistance; ///< Distance below which a contact is created
 protected:
     BaseProximityIntersection();
