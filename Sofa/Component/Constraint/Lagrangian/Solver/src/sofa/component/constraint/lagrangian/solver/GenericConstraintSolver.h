@@ -61,7 +61,7 @@ public:
     Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-Data<int> maxIt;
+    Data<int> maxIt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> tolerance;
