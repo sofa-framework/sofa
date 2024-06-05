@@ -48,8 +48,7 @@ void UniformLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::c
     auto& jacobian = sofa::helper::getWriteAccessor(c).wref();
     auto  xVec     = sofa::helper::getReadAccessor(x);
 
-    auto constraintIndex = sofa::helper::getWriteAccessor(this->m_constraintIndex);
-    constraintIndex.wref() = cIndex;
+    auto constraintIndex = sofa::helper::getReadAccessor(this->m_constraintIndex);
 
     for (std::size_t i = 0; i < xVec.size(); ++i)
     {

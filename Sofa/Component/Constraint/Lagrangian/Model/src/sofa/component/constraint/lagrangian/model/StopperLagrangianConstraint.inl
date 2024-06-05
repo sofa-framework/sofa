@@ -57,8 +57,7 @@ void StopperLagrangianConstraint<DataTypes>::init()
 template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
-    auto constraintIndex = sofa::helper::getWriteAccessor(this->m_constraintIndex);
-    constraintIndex.wref() = cIndex;
+    auto constraintIndex = sofa::helper::getReadAccessor(this->m_constraintIndex);
 
     MatrixDeriv& c = *c_d.beginEdit();
 
