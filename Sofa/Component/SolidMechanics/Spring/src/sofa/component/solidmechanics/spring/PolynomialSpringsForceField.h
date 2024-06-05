@@ -69,16 +69,16 @@ public:
     /// Describe set of polynomial degrees fro every spring
     Data< type::vector<unsigned int> > d_polynomialDegree;
 
-    Data<int> d_computeZeroLength;                    ///< Flag to verify if initial length has to be computed during the first iteration
-    Data<VecReal> d_zeroLength;                       ///< Springs initial lengths
+    Data<int> d_computeZeroLength; ///< flag to compute initial length for springs
+    Data<VecReal> d_zeroLength; ///< initial length for springs
     Data<bool> d_recomputeIndices; ///< Recompute indices (should be false for BBOX)
 
-    Data <bool> d_compressible;                       ///< flag to put compressible springs
+    Data <bool> d_compressible; ///< Indicates if object compresses without any reaction force
 
-    Data<int> d_drawMode;                             ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<float> d_showArrowSize;                      ///< size of the axis
+    Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
+    Data<float> d_showArrowSize; ///< size of the axis
     Data<sofa::type::RGBAColor> d_springColor; ///< spring color
-    Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
+    Data<float> d_showIndicesScale; ///< Scale for indices display (default=0.02)
 
 
     // data to compute spring derivatives

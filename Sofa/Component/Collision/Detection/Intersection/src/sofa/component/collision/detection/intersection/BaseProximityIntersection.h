@@ -37,14 +37,14 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API BaseProximityIntersect
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
     Data<SReal> alarmDistance;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
     Data<SReal> contactDistance;
 
 
-    Data<SReal> d_alarmDistance; ///< Proximity detection distance
+    Data<SReal> d_alarmDistance; ///< Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broad phase algorithms to reduce the search area
     Data<SReal> d_contactDistance; ///< Distance below which a contact is created
 protected:
     BaseProximityIntersection();

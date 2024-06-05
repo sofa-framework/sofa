@@ -67,7 +67,7 @@ public:
     void fwdDraw(VisualParams* ) override;
     void bwdDraw(VisualParams* ) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
     Data<DisplayFlags> displayFlags;
 
     Data<DisplayFlags> d_displayFlags; ///< Display Flags

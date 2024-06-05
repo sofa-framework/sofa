@@ -394,7 +394,7 @@ public:
 
     Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
+    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< The state of the component among (Dirty, Valid, Undefined, Loading, Invalid).
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};

@@ -94,31 +94,31 @@ public:
     void setSplitNormals(bool b) {d_splitNormals.setValue(b);}
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<int> nx;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<int> ny;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<int> nz;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<bool> internalPoints;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<bool> splitNormals;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<Vec3> min;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
     Data<Vec3> max;
 
 
-    Data<int> d_nx; ///< z grid resolution
-    Data<int> d_ny;
-    Data<int> d_nz;
+    Data<int> d_nx; ///< x grid resolution
+    Data<int> d_ny; ///< y grid resolution
+    Data<int> d_nz; ///< z grid resolution
     Data<bool> d_internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
     Data<bool> d_splitNormals; ///< split corner points to have planar normals
 

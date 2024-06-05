@@ -49,16 +49,16 @@ public:
 
     using Index = sofa::Index;
 
-    Data<Deriv> pressure; ///< pressure is a vector with specified direction
-  	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
+    Data<Deriv> pressure; ///< Pressure force per unit area
+  	Data<MatSym3> cauchyStress; ///< Cauchy Stress applied on the normal of each triangle
 
     Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
+    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
     Data<bool> p_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
 
@@ -101,7 +101,7 @@ protected:
         }
     };
 
-    core::topology::TriangleSubsetData<sofa::type::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between triangle indices and their pressure
+    core::topology::TriangleSubsetData<sofa::type::vector<TrianglePressureInformation> > trianglePressureMap; ///< Map between triangle indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

@@ -66,7 +66,7 @@ using namespace sofa::core::topology;
 template <class DataTypes>
 QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   : quadInfo(initData(&quadInfo,"quadInfo", "Internal quad data"))
-  , vertexInfo(initData(&vertexInfo,"vertexInfo", "Internal node data"))
+  , vertexInfo(initData(&vertexInfo,"vertexInfo", "Internal point data"))
   , edgeInfo(initData(&edgeInfo,"edgeInfo", "Internal edge data"))
   , m_topology(nullptr)
   , method(SMALL)

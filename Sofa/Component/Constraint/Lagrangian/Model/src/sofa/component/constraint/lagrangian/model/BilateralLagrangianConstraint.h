@@ -95,16 +95,16 @@ protected:
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
     Data<unsigned int> m1;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
     Data<unsigned int> m2;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
     Data<Vec3Types::VecCoord> restVector;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
     Data<bool> keepOrientDiff;
 
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
@@ -113,7 +113,7 @@ protected:
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<bool> d_activate; ///< bool to control constraint activation
+    Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 

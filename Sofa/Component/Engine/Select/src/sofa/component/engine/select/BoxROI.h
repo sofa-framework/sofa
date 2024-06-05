@@ -107,7 +107,7 @@ public:
 
 public:
     //Input
-    Data<vector<type::Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
+    Data<vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
     /// Rest position coordinates of the degrees of freedom.
     /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.
@@ -141,7 +141,7 @@ public:
     Data< sofa::Size > d_nbIndices; ///< Number of selected indices
 
     //Parameter
-    Data<bool> d_drawBoxes; ///< Draw Boxes. (default = false)
+    Data<bool> d_drawBoxes; ///< Draw bounding box (default = false)
     Data<bool> d_drawPoints; ///< Draw Points. (default = false)
     Data<bool> d_drawEdges; ///< Draw Edges. (default = false)
     Data<bool> d_drawTriangles; ///< Draw Triangles. (default = false)

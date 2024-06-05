@@ -105,7 +105,7 @@ public:
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
-    type::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf d_nbVirtualFinerLevels)
+    type::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf nbVirtualFinerLevels)
     int getNbVirtualFinerLevels() const { return d_nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {d_nbVirtualFinerLevels.setValue(n);}
 
@@ -189,19 +189,19 @@ public:
     {
         return d_dataVoxels.getValue()[index] == 1;
     }
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<bool> _fillWeighted;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<bool> bOnlyInsideCells;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data< type::vector< unsigned char > >     dataVoxels;
 
 
     Data< type::vector< unsigned char > >     d_dataVoxels;
 
-    Data<bool> d_fillWeighted; ///< is quantity of matter inside a cell taken into account?
+    Data<bool> d_fillWeighted; ///< Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)
 
     Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
 
@@ -209,19 +209,19 @@ public:
 protected:
 
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data< sofa::type::Vec< 3, int > >  n;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<type::Vec3> _min;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<type::Vec3> _max;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<SReal> _cellWidth;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<int> _nbVirtualFinerLevels;
 
 
@@ -235,19 +235,19 @@ protected:
 
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<type::Vec3i> dataResolution;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<type::Vec3> voxelSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<unsigned int> marchingCubeStep;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data<unsigned int> convolutionSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
     Data< type::vector< type::vector<Index> > > facets;
 
     Data< type::Vec3i >			d_dataResolution; ///< Dimension of the voxel File
@@ -255,7 +255,7 @@ public:
     Data< unsigned int >    d_marchingCubeStep; ///< Step of the Marching Cube algorithm
     Data< unsigned int >    d_convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< type::vector< type::vector<Index> > >d_facets; ///< Input mesh d_facets
+    Data< type::vector< type::vector<Index> > >d_facets; ///< Input mesh facets
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions

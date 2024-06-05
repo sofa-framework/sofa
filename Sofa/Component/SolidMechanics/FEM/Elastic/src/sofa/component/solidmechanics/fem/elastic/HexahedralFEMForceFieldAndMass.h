@@ -125,11 +125,11 @@ protected:
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
-    core::topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    core::topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< total mass per element
+    core::topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< Mass matrices per element (M_i)
+    core::topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< Total mass per element
 
-    core::topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
-    core::topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    core::topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< Mass per particle
+    core::topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< Lumped masses
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

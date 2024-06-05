@@ -82,10 +82,10 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
 public :
-	Data<VecId> m_indices;		///< indices of the selected nodes.
-	Data<Real> m_torque;		///< torque to be applied.
-	Data<Pos> m_axis;			///< direction of the axis.
-	Data<Pos> m_origin;			///< origin of the axis.
+	Data<VecId> m_indices; ///< indices of the selected points
+	Data<Real> m_torque; ///< torque to apply
+	Data<Pos> m_axis; ///< direction of the axis (will be normalized)
+	Data<Pos> m_origin; ///< origin of the axis
 
 protected :
 	Pos m_u;					///< normalized axis

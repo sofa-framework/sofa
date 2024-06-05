@@ -50,10 +50,10 @@ public:
     void doDrawVisual(const sofa::core::visual::VisualParams* vparams) override;
     void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
     Data<Coord> transform;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
     Data<bool> recursive;
 
     Data<Coord> d_transform; ///< Transformation to apply

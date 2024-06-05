@@ -34,7 +34,7 @@ namespace sofa::component::collision::geometry
 template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
-    , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default Radius"))
+    , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(nullptr)
 {
@@ -47,7 +47,7 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
 template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
-    , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default Radius. (default=1.0)"))
+    , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(_mstate)
 {

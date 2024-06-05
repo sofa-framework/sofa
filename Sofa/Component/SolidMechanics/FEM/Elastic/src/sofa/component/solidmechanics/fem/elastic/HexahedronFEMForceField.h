@@ -113,13 +113,13 @@ public:
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<std::string> f_method; ///< "large" or "polar" or "small" displacements
+    Data<Real> f_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<Real> f_youngModulus; ///< FEM Young's modulus in Hooke's law
     Data<bool> f_updateStiffnessMatrix;
-    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
-    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
+    Data<bool> f_drawing; ///< draw the forcefield if true
     Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
@@ -182,7 +182,7 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
     topology::container::grid::SparseGridTopology* _sparseGrid;
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< Initial Position
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 
