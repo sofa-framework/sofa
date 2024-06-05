@@ -94,20 +94,21 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
     m_dirOrtho = cross(m_dirProj, m_dirAxe);
     m_dirOrtho.normalize();
 
-    m_cid = cIndex;
+    auto constraintIndex = sofa::helper::getWriteAccessor(this->m_constraintIndex);
+    constraintIndex.wref() = cIndex;
     cIndex += 2;
 
-    MatrixDerivRowIterator c1_it = c1.writeLine(m_cid);
+    MatrixDerivRowIterator c1_it = c1.writeLine(constraintIndex);
     c1_it.addCol(tm1, m_dirProj);
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(m_cid);
+    MatrixDerivRowIterator c2_it = c2.writeLine(constraintIndex);
     c2_it.addCol(tm2a, -m_dirProj * (1-r2));
     c2_it.addCol(tm2b, -m_dirProj * r2);
 
-    c1_it = c1.writeLine(m_cid + 1);
+    c1_it = c1.writeLine(constraintIndex + 1);
     c1_it.setCol(tm1, m_dirOrtho);
 
-    c2_it = c2.writeLine(m_cid + 1);
+    c2_it = c2.writeLine(constraintIndex + 1);
     c2_it.addCol(tm2a, -m_dirOrtho * (1-r2));
     c2_it.addCol(tm2b, -m_dirOrtho * r2);
 
@@ -118,10 +119,10 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
         m_thirdConstraint = r;
         cIndex++;
 
-        c1_it = c1.writeLine(m_cid + 2);
+        c1_it = c1.writeLine(constraintIndex + 2);
         c1_it.setCol(tm1, m_dirAxe);
 
-        c2_it = c2.writeLine(m_cid + 2);
+        c2_it = c2.writeLine(constraintIndex + 2);
         c2_it.addCol(tm2a, -m_dirAxe);
     }
     else if (r > ab)
@@ -129,10 +130,10 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
         m_thirdConstraint = r - ab;
         cIndex++;
 
-        c1_it = c1.writeLine(m_cid + 2);
+        c1_it = c1.writeLine(constraintIndex + 2);
         c1_it.setCol(tm1, -m_dirAxe);
 
-        c2_it = c2.writeLine(m_cid + 2);
+        c2_it = c2.writeLine(constraintIndex + 2);
         c2_it.addCol(tm2b, m_dirAxe);
     }
 
@@ -145,15 +146,17 @@ template<class DataTypes>
 void SlidingLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
-    v->set(m_cid, m_dist);
-    v->set(m_cid+1, 0.0);
+    const auto constraintIndex = this->m_constraintIndex.getValue();
+
+    v->set(constraintIndex, m_dist);
+    v->set(constraintIndex+1, 0.0);
 
     if(m_thirdConstraint)
     {
         if(m_thirdConstraint>0)
-            v->set(m_cid+2, -m_thirdConstraint);
+            v->set(constraintIndex+2, -m_thirdConstraint);
         else
-            v->set(m_cid+2, m_thirdConstraint);
+            v->set(constraintIndex+2, m_thirdConstraint);
     }
 }
 
@@ -176,12 +179,14 @@ void SlidingLagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams*
 {
     Real lamb1,lamb2, lamb3;
 
-    lamb1 = lambda->element(m_cid);
-    lamb2 = lambda->element(m_cid+1);
+    const auto constraintIndex = this->m_constraintIndex.getValue();
+
+    lamb1 = lambda->element(constraintIndex);
+    lamb2 = lambda->element(constraintIndex+1);
 
     if(m_thirdConstraint)
     {
-        lamb3 = lambda->element(m_cid+2);
+        lamb3 = lambda->element(constraintIndex+2);
         d_force.setValue( m_dirProj* lamb1 + m_dirOrtho * lamb2 + m_dirAxe * lamb3);
     }
     else
