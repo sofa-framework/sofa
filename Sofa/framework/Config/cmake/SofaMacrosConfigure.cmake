@@ -92,10 +92,16 @@ endmacro()
 
 
 macro(sofa_add_generic directory name type)
-    set(optionArgs)
+    set(optionArgs "FORCE")
     set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN BINARY_DIR)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(ARG_FORCE)
+        set(ARG_FORCE "FORCE")
+    else()
+        set(ARG_FORCE "")
+    endif()
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         string(TOUPPER ${type}_${name} option)
@@ -129,10 +135,14 @@ macro(sofa_add_generic directory name type)
             endforeach()
         endif()
 
-        if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
-            cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+        if(ARG_FORCE)
+            set(${option} ${active} CACHE BOOL "Build the ${name} ${type_lower}." FORCE)
         else()
-            option(${option} "Build the ${name} ${type_lower}." ${active})
+            if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
+                cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+            else()
+                option(${option} "Build the ${name} ${type_lower}." ${active})
+            endif()
         endif()
 
         if(${option})
@@ -186,10 +196,16 @@ endmacro()
 # See plugins/SofaHighOrder for example
 #
 function(sofa_add_generic_external directory name type)
-    set(optionArgs FETCH_ONLY)
+    set(optionArgs FETCH_ONLY "FORCE")
     set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(ARG_FORCE)
+        set(ARG_FORCE "FORCE")
+    else()
+        set(ARG_FORCE "")
+    endif()
 
     # Make directory absolute
     if(NOT IS_ABSOLUTE "${directory}")
@@ -210,10 +226,15 @@ function(sofa_add_generic_external directory name type)
 
     # Create option
     string(TOUPPER ${PROJECT_NAME}_FETCH_${name} fetch_enabled)
-    if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
-        cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+
+    if(ARG_FORCE)
+        set(${fetch_enabled} ${active} CACHE BOOL "Fetch/update ${name} repository." FORCE)
     else()
-        option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
+        if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
+            cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+        else()
+            option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
+        endif()
     endif()
 
     # Setup fetch directory
@@ -274,17 +295,23 @@ function(sofa_add_generic_external directory name type)
         if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
             add_subdirectory("${directory}")
         elseif(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*plugin.*")
-            sofa_add_subdirectory(plugin "${name}" "${name}" ${active})
+            sofa_add_subdirectory(plugin "${name}" "${name}" ${active} ${ARG_FORCE})
         endif()
     endif()
 endfunction()
 
 
 macro(sofa_add_subdirectory type directory name)
-    set(optionArgs EXTERNAL EXPERIMENTAL)
+    set(optionArgs EXTERNAL EXPERIMENTAL "FORCE")
     set(oneValueArgs GIT_REF)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(ARG_FORCE)
+        set(ARG_FORCE "FORCE")
+    else()
+        set(ARG_FORCE "")
+    endif()
 
     set(valid_types "application" "project" "plugin" "module" "library" "collection" "directory")
 
@@ -298,11 +325,10 @@ macro(sofa_add_subdirectory type directory name)
         set(default_value ON)
     endif()
 
-
     if(ARG_EXTERNAL)
-        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value}  ${ARGN})
+        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value} ${ARG_FORCE} ${ARGN})
     else()
-        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
+        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARG_FORCE} ${ARGN})
     endif()
 
     if(ARG_EXPERIMENTAL)
@@ -492,3 +518,8 @@ function(sofa_add_plugin_external directory name)
     message(WARNING "Deprecated macro 'sofa_add_plugin_external'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${name} EXTERNAL)' instead.")
     sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
 endfunction()
+
+macro(sofa_configuration_option name helpstring configuration_scope)
+    string(TOUPPER ${configuration_scope} UPSCOPE )
+    set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
+endmacro()

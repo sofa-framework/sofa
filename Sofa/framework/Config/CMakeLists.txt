@@ -56,7 +56,7 @@ endif()
 # Options
 option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
 option(SOFA_NO_UPDATE_BBOX "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
-option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." ${SOFA_BUILD_STANDARD})
+sofa_configuration_option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." STANDARD)
 if(MSVC)
     option(SOFA_VECTORIZE "(deprecated) Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
     option(SOFA_ENABLE_SIMD "Enable the use of SIMD instructions by the compiler (AVX/AVX2 for msvc, march=native for gcc/clang)." OFF)

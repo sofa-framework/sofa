@@ -43,13 +43,25 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
   List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
 
-set(SOFA_CONFIGURATION "Standard" CACHE STRING "Configuration type defining default compilation set. Three possible values Core/Standard/Full")
-set_property(CACHE SOFA_CONFIGURATION PROPERTY STRINGS Core Standard Full)
 
-if(SOFA_CONFIGURATION STREQUAL Standard OR SOFA_CONFIGURATION STREQUAL Full)
+
+
+### SOFA CONFIGURATIONS
+set(SOFA_CONFIGURATION "STANDARD" CACHE STRING "Configuration type defining default compilation set. Three possible values CORE/STANDARD/FULL")
+set_property(CACHE SOFA_CONFIGURATION PROPERTY STRINGS CORE STANDARD FULL )
+
+option(SOFA_FORCE_CONFIGURATION "Force the activation (not the deactivaiton) of options regarding the current SOFA_CONFIGURATION when this option is ON" OFF)
+if(SOFA_FORCE_CONFIGURATION)
+    message( "WARNING : SOFA_CONFIGURATION is forced to ${SOFA_CONFIGURATION}, the cached value will be set regarding the configuration.")
+    set(SOFA_FORCE_CONFIGURATION_OPTION "FORCE")
+endif()
+
+set(SOFA_BUILD_STANDARD OFF)
+set(SOFA_BUILD_FULL OFF)
+if(SOFA_CONFIGURATION STREQUAL STANDARD OR SOFA_CONFIGURATION STREQUAL FULL)
     set(SOFA_BUILD_STANDARD ON)
 endif ()
-if( SOFA_CONFIGURATION STREQUAL Full)
+if( SOFA_CONFIGURATION STREQUAL FULL)
     set(SOFA_BUILD_FULL ON)
 endif()
 
@@ -158,7 +170,7 @@ if(MSVC)
 endif()
 
 ### Testing
-option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ${SOFA_BUILD_STANDARD})
+sofa_configuration_option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." STANDARD)
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
@@ -202,7 +214,7 @@ add_subdirectory(Sofa)
 add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." ${SOFA_BUILD_STANDARD})
+sofa_configuration_option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." STANDARD)
 
 # SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS

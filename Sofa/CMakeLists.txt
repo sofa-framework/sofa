@@ -7,7 +7,7 @@ add_subdirectory(framework)
 sofa_add_subdirectory(module Component Sofa.Component ON)
 
 # GL
-option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ${SOFA_BUILD_STANDARD})
+sofa_configuration_option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." STANDARD)
 sofa_add_subdirectory(library GL Sofa.GL ON WHEN_TO_SHOW "SOFA_WITH_OPENGL" VALUE_IF_HIDDEN OFF)
 
 # GUI
