@@ -3,6 +3,12 @@ include(CMakePackageConfigHelpers)
 include(CMakeParseLibraryList)
 
 
+
+macro(sofa_configuration_option name helpstring configuration_scope)
+    string(TOUPPER ${configuration_scope} UPSCOPE )
+    set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
+endmacro()
+
 # - Create an imported target from a library path and an include dir path.
 #   Handle the special case where LIBRARY_PATH is in fact an existing target.
 #   Handle the case where LIBRARY_PATH contains the following syntax supported by cmake:
@@ -92,15 +98,15 @@ endmacro()
 
 
 macro(sofa_add_generic directory name type)
-    set(optionArgs "FORCE")
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN BINARY_DIR)
+    set(optionArgs )
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN BINARY_DIR CONFIGURATION)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(ARG_FORCE)
-        set(ARG_FORCE "FORCE")
+    if(ARG_CONFIGURATION)
+        set(ARG_CONFIGURATION "CONFIGURATION ${ARG_CONFIGURATION}")
     else()
-        set(ARG_FORCE "")
+        set(ARG_CONFIGURATION "")
     endif()
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
@@ -135,8 +141,8 @@ macro(sofa_add_generic directory name type)
             endforeach()
         endif()
 
-        if(ARG_FORCE)
-            set(${option} ${active} CACHE BOOL "Build the ${name} ${type_lower}." FORCE)
+        if(ARG_CONFIGURATION)
+            set(${option} ${active} CACHE BOOL "Build the ${name} ${type_lower}." ${SOFA_FORCE_CONFIGURATION_OPTION})
         else()
             if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
                 cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
@@ -196,15 +202,15 @@ endmacro()
 # See plugins/SofaHighOrder for example
 #
 function(sofa_add_generic_external directory name type)
-    set(optionArgs FETCH_ONLY "FORCE")
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF)
+    set(optionArgs FETCH_ONLY)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF CONFIGURATION)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(ARG_FORCE)
-        set(ARG_FORCE "FORCE")
+    if(ARG_CONFIGURATION)
+        set(ARG_CONFIGURATION "CONFIGURATION ${ARG_CONFIGURATION}")
     else()
-        set(ARG_FORCE "")
+        set(ARG_CONFIGURATION "")
     endif()
 
     # Make directory absolute
@@ -227,8 +233,8 @@ function(sofa_add_generic_external directory name type)
     # Create option
     string(TOUPPER ${PROJECT_NAME}_FETCH_${name} fetch_enabled)
 
-    if(ARG_FORCE)
-        set(${fetch_enabled} ${active} CACHE BOOL "Fetch/update ${name} repository." FORCE)
+    if(ARG_CONFIGURATION)
+        set(${fetch_enabled} ${active} CACHE BOOL "Fetch/update ${name} repository." ${SOFA_FORCE_CONFIGURATION_OPTION})
     else()
         if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
             cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
@@ -295,23 +301,18 @@ function(sofa_add_generic_external directory name type)
         if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
             add_subdirectory("${directory}")
         elseif(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*plugin.*")
-            sofa_add_subdirectory(plugin "${name}" "${name}" ${active} ${ARG_FORCE})
+            #No need to check if Configuration is set, because it overrides defaultValue
+            sofa_add_subdirectory(plugin "${name}" "${name}" ${active} ${ARG_CONFIGURATION})
         endif()
     endif()
 endfunction()
 
 
 macro(sofa_add_subdirectory type directory name)
-    set(optionArgs EXTERNAL EXPERIMENTAL "FORCE")
-    set(oneValueArgs GIT_REF)
+    set(optionArgs EXTERNAL EXPERIMENTAL)
+    set(oneValueArgs GIT_REF CONFIGURATION)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    if(ARG_FORCE)
-        set(ARG_FORCE "FORCE")
-    else()
-        set(ARG_FORCE "")
-    endif()
 
     set(valid_types "application" "project" "plugin" "module" "library" "collection" "directory")
 
@@ -321,14 +322,22 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 
     set(default_value OFF)
-    if(${ARGV3})
-        set(default_value ON)
+    if(${ARG_CONFIGURATION})
+        set(default_value ${SOFA_BUILD_${UPSCOPE}})
+        #Prepare passing the argument to the other macro
+        set(ARG_CONFIGURATION "CONFIGURATION ${ARG_CONFIGURATION}")
+    else ()
+        if(${ARGV3})
+            set(default_value ON)
+        endif()
+        #Prepare passing the argument to the other macro
+        set(ARG_CONFIGURATION "")
     endif()
 
     if(ARG_EXTERNAL)
-        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value} ${ARG_FORCE} ${ARGN})
+        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value} ${ARG_CONFIGURATION} ${ARGN})
     else()
-        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARG_FORCE} ${ARGN})
+        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARG_CONFIGURATION} ${ARGN})
     endif()
 
     if(ARG_EXPERIMENTAL)
@@ -518,8 +527,3 @@ function(sofa_add_plugin_external directory name)
     message(WARNING "Deprecated macro 'sofa_add_plugin_external'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${name} EXTERNAL)' instead.")
     sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
 endfunction()
-
-macro(sofa_configuration_option name helpstring configuration_scope)
-    string(TOUPPER ${configuration_scope} UPSCOPE )
-    set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
-endmacro()
