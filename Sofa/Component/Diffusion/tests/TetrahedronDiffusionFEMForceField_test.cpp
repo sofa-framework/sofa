@@ -27,7 +27,7 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
-#include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
 
 #include <sofa/type/Vec.h>
 
@@ -57,7 +57,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
     typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
     typedef typename component::topology::container::grid::RegularGridTopology RegularGridTopology;
     typedef typename component::diffusion::TetrahedronDiffusionFEMForceField<DataTypes> TetrahedronDiffusionFEMForceField;
-    typedef typename component::mass::DiagonalMass<DataTypes> DiagonalMass;
+    typedef typename component::mass::MeshMatrixMass<DataTypes> MeshMatrixMass;
 
     /// @name Scene elements
     /// {
@@ -134,7 +134,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         sofa::simulation::node::initRoot(this->root.get());
 
         // Mass parameters
-        typename DiagonalMass::SPtr mass = temperatureNode->get<DiagonalMass>(temperatureNode->SearchDown);
+        typename MeshMatrixMass::SPtr mass = temperatureNode->get<MeshMatrixMass>(temperatureNode->SearchDown);
         if(mass)
         {
             mass->setMassDensity(massDensity);
