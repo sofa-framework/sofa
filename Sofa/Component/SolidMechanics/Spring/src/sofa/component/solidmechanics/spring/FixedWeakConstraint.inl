@@ -39,6 +39,7 @@ namespace sofa::component::solidmechanics::spring
 template<class DataTypes>
 FixedWeakConstraint<DataTypes>::FixedWeakConstraint()
     : d_indices(initData(&d_indices, "indices", "points controlled by the rest shape springs"))
+    , d_fixAll(initData(&d_fixAll, false,"fixAll", "stiffness value between the actual position and the rest shape position"))
     , d_stiffness(initData(&d_stiffness, 1.0,"stiffness", "stiffness value between the actual position and the rest shape position"))
     , d_angularStiffness(initData(&d_angularStiffness,1.0, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
