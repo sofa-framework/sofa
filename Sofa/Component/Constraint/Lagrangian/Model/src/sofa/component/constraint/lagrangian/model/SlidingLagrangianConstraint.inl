@@ -94,8 +94,7 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
     m_dirOrtho = cross(m_dirProj, m_dirAxe);
     m_dirOrtho.normalize();
 
-    auto constraintIndex = sofa::helper::getWriteAccessor(this->m_constraintIndex);
-    constraintIndex.wref() = cIndex;
+    auto constraintIndex = sofa::helper::getReadAccessor(this->m_constraintIndex);
     cIndex += 2;
 
     MatrixDerivRowIterator c1_it = c1.writeLine(constraintIndex);
