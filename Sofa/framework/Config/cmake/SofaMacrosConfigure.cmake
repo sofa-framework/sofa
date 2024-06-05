@@ -3,12 +3,6 @@ include(CMakePackageConfigHelpers)
 include(CMakeParseLibraryList)
 
 
-
-macro(sofa_configuration_option name helpstring configuration_scope)
-    string(TOUPPER ${configuration_scope} UPSCOPE )
-    set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
-endmacro()
-
 # - Create an imported target from a library path and an include dir path.
 #   Handle the special case where LIBRARY_PATH is in fact an existing target.
 #   Handle the case where LIBRARY_PATH contains the following syntax supported by cmake:
@@ -322,7 +316,8 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 
     set(default_value OFF)
-    if(${ARG_CONFIGURATION})
+    if(ARG_CONFIGURATION)
+        string(TOUPPER ${ARG_CONFIGURATION} UPSCOPE )
         set(default_value ${SOFA_BUILD_${UPSCOPE}})
         #Prepare passing the argument to the other macro
         set(ARG_CONFIGURATION "CONFIGURATION ${ARG_CONFIGURATION}")
@@ -527,3 +522,9 @@ function(sofa_add_plugin_external directory name)
     message(WARNING "Deprecated macro 'sofa_add_plugin_external'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${name} EXTERNAL)' instead.")
     sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
 endfunction()
+
+macro(sofa_configuration_option name helpstring configuration_scope)
+    string(TOUPPER ${configuration_scope} UPSCOPE )
+    set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
+endmacro()
+

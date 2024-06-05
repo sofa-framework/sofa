@@ -51,6 +51,7 @@ set(SOFA_CONFIGURATION "STANDARD" CACHE STRING "Configuration type defining defa
 set_property(CACHE SOFA_CONFIGURATION PROPERTY STRINGS CORE STANDARD FULL )
 
 option(SOFA_FORCE_CONFIGURATION "Force the activation (not the deactivaiton) of options regarding the current SOFA_CONFIGURATION when this option is ON" OFF)
+
 if(SOFA_FORCE_CONFIGURATION)
     message( "WARNING : SOFA_CONFIGURATION is forced to ${SOFA_CONFIGURATION}, the cached value will be set regarding the configuration.")
     set(SOFA_FORCE_CONFIGURATION_OPTION "FORCE")

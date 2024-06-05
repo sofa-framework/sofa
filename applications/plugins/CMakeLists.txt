@@ -23,9 +23,7 @@ sofa_add_subdirectory(plugin image image CONFIGURATION FULL) # Depends on CImgPl
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
 #Workaround because variable PULGIN_SOFAPYTHON3 is not defined by macro bu inside plugin
-if(SOFA_BUILD_STANDARD OR SOFA_FORCE_CONFIGURATION_OPTION)
-    sofa_configuration_option(PLUGIN_SOFAPYTHON3 "Build the SofaPython3 plugin." STANDARD)
-endif()
+sofa_configuration_option(PLUGIN_SOFAPYTHON3 "Build the SofaPython3 plugin." STANDARD)
 sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL GIT_REF master CONFIGURATION STANDARD)
 
 
