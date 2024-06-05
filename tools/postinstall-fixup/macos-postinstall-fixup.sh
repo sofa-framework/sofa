@@ -53,6 +53,8 @@ elif [ -d "$QT_DATA_DIR" ]; then
     cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
 fi
 
+move_metis "$INSTALL_DIR"
+
 echo "Fixing up libs manually ..."
 
 check-all-deps() {
