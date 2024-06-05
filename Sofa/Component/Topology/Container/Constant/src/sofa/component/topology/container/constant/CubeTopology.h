@@ -116,9 +116,9 @@ protected:
     Data<Vec3> max;
 
 
-    Data<int> d_nx; ///< z grid resolution
-    Data<int> d_ny;
-    Data<int> d_nz;
+    Data<int> d_nx; ///< x grid resolution
+    Data<int> d_ny; ///< y grid resolution
+    Data<int> d_nz; ///< z grid resolution
     Data<bool> d_internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
     Data<bool> d_splitNormals; ///< split corner points to have planar normals
 

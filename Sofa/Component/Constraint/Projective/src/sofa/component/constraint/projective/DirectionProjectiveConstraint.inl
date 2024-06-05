@@ -36,9 +36,9 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 DirectionProjectiveConstraint<DataTypes>::DirectionProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , d_indices(initData(&d_indices, "indices", "Indices of the fixed points") )
-    , d_drawSize(initData(&d_drawSize, (SReal)0.0, "drawSize", "0 -> point based rendering, >0 -> radius of spheres") )
-    , d_direction(initData(&d_direction, CPos(), "direction", "Direction of the line"))
+    , d_indices( initData(&d_indices,"indices","Indices the particles to project") )
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
+    , d_direction( initData(&d_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new DirectionProjectiveConstraintInternalData<DataTypes>())    
 {

@@ -46,7 +46,7 @@ public:
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
 
 
-    Data<sofa::type::RGBAColor> d_color;                          ///< Color of the Background of the Viewer.
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the background
     sofa::core::objectmodel::DataFileName d_image;                 ///< Image to be used as background of the viewer.
 
 };

@@ -100,7 +100,7 @@ public:
 
 
     sofa::core::objectmodel::DataFileName d_vtkFilename;
-    Data<bool> d_fileFormat;	///< 0 for Simple Legacy Formats, 1 for XML File Format
+    Data<bool> d_fileFormat; ///< Set to true to use XML format
     Data<defaulttype::Vec3Types::VecCoord> d_position; ///< points position (will use points from topology or mechanical state if this is empty)
     Data<bool> d_writeEdges; ///< write edge topology
     Data<bool> d_writeTriangles; ///< write triangle topology

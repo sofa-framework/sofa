@@ -56,7 +56,6 @@ MinProximityIntersection::MinProximityIntersection()
     useLinePoint.setParent(&d_useLinePoint);
     useLineLine.setParent(&d_useLineLine);
     useSurfaceNormals.setParent(&d_useSurfaceNormals);
-
 }
 
 void MinProximityIntersection::init()

@@ -145,7 +145,7 @@ public:
     Data<bool> bothSide;
 
 
-    Data<bool> d_bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
+    Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

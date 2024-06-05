@@ -48,7 +48,7 @@ using type::vector ;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
-    : d_alignedBoxes( initData(&d_alignedBoxes, "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    : d_alignedBoxes( initData(&d_alignedBoxes, "box", "List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax") )
     , d_orientedBoxes( initData(&d_orientedBoxes, "orientedBox", "List of boxes defined by 3 points (p0, p1, p2) and a depth distance \n"
                                 "A parallelogram will be defined by (p0, p1, p2, p3 = p0 + (p2-p1)). \n"
                                 "The box will finaly correspond to the parallelogram extrusion of depth/2 \n"
@@ -66,7 +66,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
     , d_computeHexahedra( initData(&d_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
     , d_computeQuad( initData(&d_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
-    , d_strict( initData(&d_strict, true,"strict","If true, an element is inside the box iif all of its nodes are inside. If False, only the center point of the element is checked. (default = true)") )
+    , d_strict( initData(&d_strict, true,"strict","If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)") )
     , d_indices( initData(&d_indices,"indices","Indices of the points contained in the ROI") )
     , d_edgeIndices( initData(&d_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , d_triangleIndices( initData(&d_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
@@ -80,7 +80,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_hexahedraInROI( initData(&d_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
     , d_quadInROI( initData(&d_quadInROI,"quadInROI","Quad contained in the ROI") )
     , d_nbIndices( initData(&d_nbIndices,"nbIndices", "Number of selected indices") )
-    , d_drawBoxes( initData(&d_drawBoxes,false,"drawBoxes","Draw Boxes. (default = false)") )
+    , d_drawBoxes( initData(&d_drawBoxes,false,"drawBoxes","Draw bounding box (default = false)") )
     , d_drawPoints( initData(&d_drawPoints,false,"drawPoints","Draw Points. (default = false)") )
     , d_drawEdges( initData(&d_drawEdges,false,"drawEdges","Draw Edges. (default = false)") )
     , d_drawTriangles( initData(&d_drawTriangles,false,"drawTriangles","Draw Triangles. (default = false)") )

@@ -218,7 +218,7 @@ ConstraintAnimationLoop::ConstraintAnimationLoop() :
     , d_tol( initData(&d_tol, 0.00001_sreal, "tolerance", "Tolerance of the Gauss-Seidel"))
     , d_maxIt( initData(&d_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
     , d_doCollisionsFirst(initData(&d_doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
-    , d_doubleBuffer( initData(&d_doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a doublebuffer to be accessible with an other thread"))
+    , d_doubleBuffer( initData(&d_doubleBuffer, false, "doubleBuffer","Double the buffer dedicated to the constraint problem to make it accessible to another thread"))
     , d_scaleTolerance( initData(&d_scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints"))
     , d_allVerified( initData(&d_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)"))
     , d_sor( initData(&d_sor, 1.0_sreal, "sor","Successive Over Relaxation parameter (0-2)"))

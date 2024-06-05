@@ -34,9 +34,9 @@ template <class DataTypes>
 TransformEngine<DataTypes>::TransformEngine()
     : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , translation(initData(&translation, type::Vec3(0_sreal,0_sreal,0_sreal),"translation", "translation vector ") )
-    , rotation(initData(&rotation, type::Vec3(0_sreal,0_sreal,0_sreal), "rotation", "rotation vector ") )
-    , quaternion(initData(&quaternion, type::Quat<SReal>(0_sreal,0_sreal,0_sreal,1_sreal), "quaternion", "rotation quaternion ") )
+    , translation(initData(&translation, type::Vec3(0_sreal,0_sreal,0_sreal),"translation", "translation vector (x,y,z)") )
+    , rotation(initData(&rotation, type::Vec3(0_sreal,0_sreal,0_sreal), "rotation", "rotation vector (x,y,z)") )
+    , quaternion(initData(&quaternion, type::Quat<SReal>(0_sreal,0_sreal,0_sreal,1_sreal), "quaternion", "rotation quaternion (qx,qy,qz,qw)") )
     , scale(initData(&scale, type::Vec3(1_sreal,1_sreal,1_sreal),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {

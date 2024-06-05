@@ -45,7 +45,7 @@ int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time inte
         ;
 
 EulerExplicitSolver::EulerExplicitSolver()
-    : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+    : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , l_linearSolver(initLink("linearSolver", "Linear solver used by this component"))
 {

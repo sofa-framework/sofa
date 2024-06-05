@@ -134,7 +134,7 @@ public:
     Data< type::vector<visual_index_type> > m_vertNormIdx;
 
 
-    Data<bool> d_initRestPositions; ///< True if rest positions should be initialized with initial positions, False if nothing should be done
+    Data<bool> d_initRestPositions; ///< True if rest positions must be initialized with initial positions
     Data<bool> d_useNormals; ///< True if normals should be read from file
     Data<bool> d_updateNormals; ///< True if normals should be updated at each iteration
     Data<bool> d_computeTangents; ///< True if tangents should be computed at startup

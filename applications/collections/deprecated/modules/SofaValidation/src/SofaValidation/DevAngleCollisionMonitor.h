@@ -49,9 +49,11 @@ public:
     typedef typename DataTypes::Real Real;
 
     Data < Real > maxDist; ///< alarm distance for proximity detection
+
 protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };
+
 public:
     void init() override;
     void eval() override;

@@ -125,16 +125,16 @@ protected:
     sofa::core::topology::TriangleData<type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
     sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
     
-    Data < VecCoord >  _initialPoints;										///< the intial positions of the points
+    Data < VecCoord >  _initialPoints; ///< Initial Position
 
     bool updateMatrix;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
     Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
-    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
+    Data<bool> f_useAngularSprings; ///< If Angular Springs should be used or not
 
-    Data<bool> f_compressible; ///< whether the material is compressible or not
+    Data<bool> f_compressible; ///< If additional energy penalizing compressibility should be used
     /**** coefficient that controls how the material can cope with very compressible cases
     must be between 0 and 1 : if 0 then the deformation may diverge for large compression
     if 1 then the material can undergo large compression even inverse elements ***/

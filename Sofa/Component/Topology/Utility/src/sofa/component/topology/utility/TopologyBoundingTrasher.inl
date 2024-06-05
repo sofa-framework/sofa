@@ -42,7 +42,7 @@ template <class DataTypes>
 TopologyBoundingTrasher<DataTypes>::TopologyBoundingTrasher()
     : d_positions(initData(&d_positions, "position", "position coordinates of the topology object to interact with."))
     , d_borders(initData(&d_borders, Vec6(-1000, -1000, -1000, 1000, 1000, 1000), "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax"))
-    , d_drawBox(initData(&d_drawBox, false, "drawBox", "Draw Boxes. (default = false)"))
+    , d_drawBox(initData(&d_drawBox, false, "drawBox", "Draw bounding box (default = false)"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , edgeModifier(nullptr)

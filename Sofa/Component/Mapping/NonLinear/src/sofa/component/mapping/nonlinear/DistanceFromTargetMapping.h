@@ -83,9 +83,9 @@ public:
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef type::Vec<In::deriv_total_size> Direction;
 
-    Data<type::vector<unsigned>> f_indices;          ///< Indices of the parent points
-    Data<InVecCoord> f_targetPositions;              ///< Positions to compute the distances from
-    Data<type::vector<Real>> f_restDistances;        ///< Rest lengths of the connections
+    Data<type::vector<unsigned>> f_indices; ///< Indices of the parent points
+    Data<InVecCoord> f_targetPositions; ///< Positions to compute the distances from
+    Data<type::vector<Real>> f_restDistances; ///< Rest lengths of the connections
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);

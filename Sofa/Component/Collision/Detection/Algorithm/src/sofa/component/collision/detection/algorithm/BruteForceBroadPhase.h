@@ -52,7 +52,7 @@ private:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM()
     Data<type::fixed_array<sofa::type::Vec3, 2> > box;
 
-    Data<type::fixed_array<sofa::type::Vec3, 2> > d_box;
+    Data<type::fixed_array<sofa::type::Vec3, 2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
 
 public:

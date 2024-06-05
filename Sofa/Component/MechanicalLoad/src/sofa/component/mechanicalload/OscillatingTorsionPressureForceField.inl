@@ -34,7 +34,7 @@ namespace sofa::component::mechanicalload
 
 template <class DataTypes>
 OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForceField()
-    : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+    : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
     , moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
     , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
     , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))

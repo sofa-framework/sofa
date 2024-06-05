@@ -116,14 +116,14 @@ protected:
 
 
    
-    Data< VecCoord > _initialPoints;										///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< Initial Position
 
     bool updateMatrix;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
     Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
-    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
+    Data<bool> f_useAngularSprings; ///< If Angular Springs should be used or not
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient

@@ -82,10 +82,10 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data<bool> f_computeDistance;                    ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
-    Data<type::vector<Real>> f_restLengths;          ///< Rest lengths of the connections
-    Data<Real> d_showObjectScale;                    ///< Scale for object display
-    Data<sofa::type::RGBAColor> d_color;             ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    Data<bool> f_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
+    Data<type::vector<Real>> f_restLengths; ///< Rest lengths of the connections
+    Data<Real> d_showObjectScale; ///< Scale for object display
+    Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<DistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

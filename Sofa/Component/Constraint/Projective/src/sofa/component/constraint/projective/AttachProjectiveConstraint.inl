@@ -198,7 +198,7 @@ AttachProjectiveConstraint<DataTypes>::AttachProjectiveConstraint(core::behavior
     : core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>(mm1,mm2)
     , f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
-    , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
+    , f_twoWay( initData(&f_twoWay,false,"twoWay", "if true, projects the constraint vertices of both object1 and object2 towards their average degrees of freedom and derivatives. If false, the position of the object1 are projected onto the object2. Therefore, object2 only follows object1 without affecting the motion of object1") )
     , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
     , f_lastFreeRotation( initData(&f_lastFreeRotation,false,"lastFreeRotation", "true to keep rotation of the last attached point free (only used for Rigid DOFs)") )
     , f_restRotations( initData(&f_restRotations,false,"restRotations", "true to use rest rotations local offsets (only used for Rigid DOFs)") )
@@ -209,7 +209,7 @@ AttachProjectiveConstraint<DataTypes>::AttachProjectiveConstraint(core::behavior
     , d_positionFactor(initData(&d_positionFactor, static_cast<Real>(1.0), "positionFactor", "IN: Factor applied to projection of position"))
     , d_velocityFactor(initData(&d_velocityFactor, static_cast<Real>(1.0), "velocityFactor", "IN: Factor applied to projection of velocity"))
     , d_responseFactor(initData(&d_responseFactor, static_cast<Real>(1.0), "responseFactor", "IN: Factor applied to projection of force/acceleration"))
-    , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
+    , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Vector of factors adapting the application of the constraint per pair of points (0 -> the constraint is released. 1 -> the constraint is fully constrained)") )
 {
 
 }

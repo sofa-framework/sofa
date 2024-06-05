@@ -99,7 +99,7 @@ protected:
 
 
 
-    Data<SReal> d_defaultLength;
+    Data<SReal> d_defaultLength; ///< The default length for all rays in this collision model
 
     std::set<response::contact::BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;

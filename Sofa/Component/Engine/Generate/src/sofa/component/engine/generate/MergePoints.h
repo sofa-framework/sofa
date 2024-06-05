@@ -62,8 +62,8 @@ public:
     Data<SetIndex> f_X2_mapping; ///< Mapping of indices to inject position2 inside position1 vertex buffer
     Data<SetIndex> f_indices1; ///< Indices of the points of the first object
     Data<SetIndex> f_indices2; ///< Indices of the points of the second object
-    Data<VecCoord> f_points; ///< position coordinates of the merge
-    Data<bool>     f_noUpdate; ///< do not update the output at eacth time step (false)
+    Data<VecCoord> f_points; ///< position coordinates resulting from the merge
+    Data<bool>     f_noUpdate; ///< do not update the output at each time step (false)
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)

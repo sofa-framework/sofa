@@ -85,7 +85,7 @@ public:
 public:
     Data<VecCoord> d_positions; ///< position coordinates of the topology object to interact with.
     Data<Vec6>  d_borders; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
-    Data<bool>  d_drawBox; ///< draw bounding box
+    Data<bool>  d_drawBox; ///< Draw bounding box (default = false)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TopologyBoundingTrasher, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

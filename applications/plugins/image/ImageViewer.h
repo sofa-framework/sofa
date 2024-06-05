@@ -139,7 +139,7 @@ public:
     /**@}*/
     
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
-    Data <bool> display; ///< Boolean to activate/desactivate the display of the image
+    Data <bool> display; ///< true if image is displayed, false otherwise
 
     typedef sofa::component::visual::VisualModelImpl VisuModelType;
 

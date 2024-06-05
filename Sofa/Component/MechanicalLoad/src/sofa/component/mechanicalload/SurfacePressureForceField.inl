@@ -40,8 +40,8 @@ namespace sofa::component::mechanicalload
 template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField()
     : m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area"))
-    , m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box"))
-    , m_max(initData(&m_max, Coord(), "max", "Upper bond of the selection box"))
+    , m_min(initData(&m_min, Coord(), "min", "Lower bound of the selection box"))
+    , m_max(initData(&m_max, Coord(), "max", "Upper bound of the selection box"))
     , m_triangleIndices(initData(&m_triangleIndices, "triangleIndices", "Indices of affected triangles"))
     , m_quadIndices(initData(&m_quadIndices, "quadIndices", "Indices of affected quads"))
     , m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application"))

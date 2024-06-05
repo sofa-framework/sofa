@@ -90,7 +90,7 @@ protected:
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
 
     const VecElement* _indexedElements;
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
     virtual ~TriangleFEMForceField();
@@ -113,11 +113,11 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;
-    Data<std::string> f_method; ///< Choice of method: 0 for small, 1 for large displacements
-    Data<Real> f_poisson;       ///< Poisson ratio of the material
-    Data<Real> f_young;         ///< Young modulus of the material
-    Data<Real> f_thickness;     ///< Thickness of the elements
-    Data<bool> f_planeStrain; ///< compute material stiffness corresponding to the plane strain assumption, or to the plane stress otherwise.
+    Data<std::string> f_method; ///< large: large displacements, small: small displacements
+    Data<Real> f_poisson; ///< Poisson ratio in Hooke's law
+    Data<Real> f_young; ///< Young modulus in Hooke's law
+    Data<Real> f_thickness; ///< Thickness of the elements
+    Data<bool> f_planeStrain; ///< Plane strain or plane stress assumption
 
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val);
