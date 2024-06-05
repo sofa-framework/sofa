@@ -171,7 +171,7 @@ if(MSVC)
 endif()
 
 ### Testing
-sofa_configuration_option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." STANDARD)
+sofa_configuration_dependent_option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." STANDARD)
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
@@ -215,7 +215,7 @@ add_subdirectory(Sofa)
 add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
-sofa_configuration_option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." STANDARD)
+sofa_configuration_dependent_option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." STANDARD)
 
 # SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS

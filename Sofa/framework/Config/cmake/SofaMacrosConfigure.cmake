@@ -523,7 +523,7 @@ function(sofa_add_plugin_external directory name)
     sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
 endfunction()
 
-macro(sofa_configuration_option name helpstring configuration_scope)
+macro(sofa_configuration_dependent_option name helpstring configuration_scope)
     string(TOUPPER ${configuration_scope} UPSCOPE )
     set(${name} ${SOFA_BUILD_${UPSCOPE}} CACHE BOOL ${helpstring} ${SOFA_FORCE_CONFIGURATION_OPTION})
 endmacro()
