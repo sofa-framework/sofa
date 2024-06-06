@@ -27,6 +27,8 @@ echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
 source $SCRIPT_DIR/common.sh
 clean_default_plugins "$INSTALL_DIR_BIN"
 
+move_metis "$INSTALL_DIR"
+
 # Copy all plugin libs in install/bin to make them easily findable
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
