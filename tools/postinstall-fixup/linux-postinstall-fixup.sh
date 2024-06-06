@@ -193,6 +193,7 @@ for deps_file in postinstall_deps_SOFA.tmp postinstall_deps_plugin_*.tmp; do
     done
 done
 
+move_metis "$INSTALL_DIR"
 
 # Add QtWebEngine dependencies
 if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then
