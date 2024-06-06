@@ -54,7 +54,8 @@ function move_metis()
     echo " - moving $(find ~+ -type f -name "metis.lib" | head -n 1) into $INSTALL_DIR/lib/$"
     mv $(find ~+ -type f -name "metis.lib" | head -n 1) $INSTALL_DIR/lib/ || true
   else
-    find ~+ -type f -name "libmetis*" | while read lib; do echo " - moving $lib} into $INSTALL_DIR/lib/$"; mv $lib} lib/; done
+    echo " - moving $( find ~+ -type f -name "libmetis*" | head -n 1) into $INSTALL_DIR/lib/$"
+    mv $( find ~+ -type f -name "libmetis*" | head -n 1) $INSTALL_DIR/lib/; done
   fi
   echo " - moving $(find ~+ -type d -name "metis" | grep lib/cmake/metis | head -n 1) into $INSTALL_DIR/lib/cmake/$"
   mv $(find ~+ -type d -name "metis" | grep lib/cmake/metis | head -n 1) $INSTALL_DIR/lib/cmake/ || true
