@@ -49,16 +49,19 @@ function move_metis()
   cd $INSTALL_DIR
   echo "Starting metis relocation..."
   if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
-    echo " - moving $(find ~+ -type f -name "metis.dll" | head -n 1) into $INSTALL_DIR/bin/$"
+    echo " - moving $(find ~+ -type f -name "metis.dll" | head -n 1) into $INSTALL_DIR/bin/"
     mv $(find ~+ -type f -name "metis.dll" | head -n 1) $INSTALL_DIR/bin/ || true
-    echo " - moving $(find ~+ -type f -name "metis.lib" | head -n 1) into $INSTALL_DIR/lib/$"
+    echo " - moving $(find ~+ -type f -name "metis.lib" | head -n 1) into $INSTALL_DIR/lib/"
     mv $(find ~+ -type f -name "metis.lib" | head -n 1) $INSTALL_DIR/lib/ || true
+  elif [[ "$(uname)" == "Darwin" ]]; then
+    echo " - moving $( find ~+ -type d -name "metis.framework" | head -n 1) into $INSTALL_DIR/lib/"
+      mv $( find ~+ -type d -name "metis.framework" | head -n 1 ) $INSTALL_DIR/lib/
   else
-    echo " - moving $( find ~+ -type f -name "libmetis*" | head -n 1) into $INSTALL_DIR/lib/$"
+    echo " - moving $( find ~+ -type f -name "libmetis*" | head -n 1) into $INSTALL_DIR/lib/"
     mv $( find ~+ -type f -name "libmetis*" | head -n 1) $INSTALL_DIR/lib/
   fi
-  echo " - moving $(find ~+ -type d -name "metis" | grep lib/cmake/metis | head -n 1) into $INSTALL_DIR/lib/cmake/$"
+  echo " - moving $(find ~+ -type d -name "metis" | grep lib/cmake/metis | head -n 1) into $INSTALL_DIR/lib/cmake/"
   mv $(find ~+ -type d -name "metis" | grep lib/cmake/metis | head -n 1) $INSTALL_DIR/lib/cmake/ || true
-  echo " - moving $(find ~+ -type f -name "metis.h" | head -n 1) into $INSTALL_DIR/include/$"
+  echo " - moving $(find ~+ -type f -name "metis.h" | head -n 1) into $INSTALL_DIR/include/"
   mv $(find ~+ -type f -name "metis.h" | head -n 1) $INSTALL_DIR/include/ || true
 }
