@@ -36,18 +36,26 @@ template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _indexedElements(nullptr)
-    , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
+    , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , m_topology(nullptr)
     , method(LARGE)
-    , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(initData(&f_poisson,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(initData(&f_young,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
-    , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
-    , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
+    , d_method(initData(&d_method, std::string("large"), "method", "large: large displacements, small: small displacements"))
+    , d_poisson(initData(&d_poisson, Real(0.3), "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_young(initData(&d_young, Real(1000.), "youngModulus", "Young modulus in Hooke's law"))
+    , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
+    , d_planeStrain(initData(&d_planeStrain, false, "planeStrain", "Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
 {
-    f_poisson.setRequired(true);
-    f_young.setRequired(true);
+    d_poisson.setRequired(true);
+    d_young.setRequired(true);
+
+    _initialPoints.setParent(&d_initialPoints);
+    f_method.setParent(&d_method);
+    f_poisson.setParent(&d_poisson);
+    f_young.setParent(&d_young);
+    f_thickness.setParent(&d_thickness);
+    f_planeStrain.setParent(&d_planeStrain);
+
 }
 
 template <class DataTypes>
@@ -62,9 +70,9 @@ void TriangleFEMForceField<DataTypes>::init()
     this->Inherited::init();
 
     // checking inputs using setter
-    setMethod(f_method.getValue());
-    setPoisson(f_poisson.getValue());
-    setYoung(f_young.getValue());
+    setMethod(d_method.getValue());
+    setPoisson(d_poisson.getValue());
+    setYoung(d_young.getValue());
 
     if (l_topology.empty())
     {
@@ -107,10 +115,10 @@ void TriangleFEMForceField<DataTypes>::init()
         _indexedElements = trias;
     }
 
-    if (_initialPoints.getValue().size() == 0)
+    if (d_initialPoints.getValue().size() == 0)
     {
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        _initialPoints.setValue(p);
+        d_initialPoints.setValue(p);
     }
 
     _strainDisplacements.resize(_indexedElements->size());
@@ -133,9 +141,9 @@ void TriangleFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::reinit()
 {
-    if (f_method.getValue() == "small")
+    if (d_method.getValue() == "small")
         method = SMALL;
-    else if (f_method.getValue() == "large")
+    else if (d_method.getValue() == "large")
         method = LARGE;
 
     if (method == SMALL) 
@@ -211,21 +219,21 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 {
     _materialsStiffnesses.resize(_indexedElements->size());
-    const VecCoord& p = _initialPoints.getValue();
+    const VecCoord& p = d_initialPoints.getValue();
 
-    const Real _p = f_poisson.getValue();
+    const Real _p = d_poisson.getValue();
     const Real _1_p = 1 - _p;
-    const Real Estrain = f_young.getValue() / ((1 + _p) * (1 - 2 * _p));
-    const Real Estress = f_young.getValue() / (1 - _p * _p);
+    const Real Estrain = d_young.getValue() / ((1 + _p) * (1 - 2 * _p));
+    const Real Estress = d_young.getValue() / (1 - _p * _p);
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         Index a = (*_indexedElements)[i][0];
         Index b = (*_indexedElements)[i][1];
         Index c = (*_indexedElements)[i][2];
-        const Real triangleVolume = (Real)0.5 * f_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
+        const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
 
-        if (f_planeStrain.getValue() == true)
+        if (d_planeStrain.getValue() == true)
         {
             _materialsStiffnesses[i][0][0] = _1_p;
             _materialsStiffnesses[i][0][1] = _p;
@@ -377,7 +385,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 
     typename VecElement::const_iterator it;
     unsigned int i(0);
-    const VecCoord& pos = _initialPoints.getValue();
+    const VecCoord& pos = d_initialPoints.getValue();
 
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
@@ -669,11 +677,11 @@ void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
     if (val < 0)
     {
         msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
-        f_poisson.setValue(0.3);
+        d_poisson.setValue(0.3);
     }
-    else if (val != f_poisson.getValue())
+    else if (val != d_poisson.getValue())
     {
-        f_poisson.setValue(val);
+        d_poisson.setValue(val);
     }
 }
 
@@ -683,11 +691,11 @@ void TriangleFEMForceField<DataTypes>::setYoung(Real val)
     if (val < 0)
     {
         msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        f_young.setValue(Real(1000));
+        d_young.setValue(Real(1000));
     }
-    else if (val != f_young.getValue())
+    else if (val != d_young.getValue())
     {
-        f_young.setValue(val);
+        d_young.setValue(val);
     }
 }
 

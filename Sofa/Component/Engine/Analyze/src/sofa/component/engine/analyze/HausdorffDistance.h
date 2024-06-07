@@ -60,16 +60,34 @@ public:
 
     void doUpdate() override;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<VecCoord> f_points_1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<VecCoord> f_points_2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<Real> d12;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<Real> d21;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<Real> max;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    Data<bool> f_update;
+
     //Input
-    Data<VecCoord> f_points_1; ///< Points belonging to the first point cloud
-    Data<VecCoord> f_points_2; ///< Points belonging to the second point cloud
+    Data<VecCoord> d_points_1; ///< Points belonging to the first point cloud
+    Data<VecCoord> d_points_2; ///< Points belonging to the second point cloud
 
     //Output
-    Data<Real> d12; ///< Distance from point cloud 1 to 2
-    Data<Real> d21; ///< Distance from point cloud 2 to 1
-    Data<Real> max; ///< Symmetrical Hausdorff distance
+    Data<Real> d_d12; ///< Distance from point cloud 1 to 2
+    Data<Real> d_d21; ///< Distance from point cloud 2 to 1
+    Data<Real> d_max; ///< Symmetrical Hausdorff distance
 
-    Data<bool> f_update; ///< Recompute every time step
+    Data<bool> d_update; ///< Recompute every time step
 
 protected:
 

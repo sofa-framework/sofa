@@ -57,7 +57,7 @@ SurfacePressureForceField<defaulttype::Rigid3Types>::Real SurfacePressureForceFi
     Real volume = 0;
 
     unsigned int nTriangles = 0;
-    const VecIndex& triangleIndices = m_triangleIndices.getValue();
+    const VecIndex& triangleIndices = d_triangleIndices.getValue();
     if (!triangleIndices.empty())
     {
         nTriangles = triangleIndices.size();
@@ -86,7 +86,7 @@ SurfacePressureForceField<defaulttype::Rigid3Types>::Real SurfacePressureForceFi
     }
 
     unsigned int nQuads = 0;
-    const VecIndex& quadIndices = m_quadIndices.getValue();
+    const VecIndex& quadIndices = d_quadIndices.getValue();
     if (!quadIndices.empty())
     {
         nQuads = quadIndices.size();
@@ -181,11 +181,11 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addTriangleSurfacePres
     }
 
 
-    if (m_mainDirection.getValue().getVCenter() != defaulttype::Rigid3Types::CPos())
+    if (d_mainDirection.getValue().getVCenter() != defaulttype::Rigid3Types::CPos())
     {
         defaulttype::Rigid3Types::CPos n = ab.cross(ac);
         n.normalize();
-        const Real scal = n * m_mainDirection.getValue().getVCenter();
+        const Real scal = n * d_mainDirection.getValue().getVCenter();
         p *= fabs(scal);
     }
 

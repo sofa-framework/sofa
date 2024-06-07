@@ -49,7 +49,7 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    const sofa::type::vector<Spring>& springs= this->springs.getValue();
+    const sofa::type::vector<Spring>& springs= this->d_springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -114,7 +114,7 @@ void ParallelStiffSpringForceField<DataTypes>::addDForce(
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     const Real bFactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const sofa::type::vector<Spring>& springs= this->springs.getValue();
+    const sofa::type::vector<Spring>& springs= this->d_springs.getValue();
 
     std::mutex mutex;
 

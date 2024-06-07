@@ -40,12 +40,14 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
     : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+    , d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , d_restLengths(initData(&d_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color,sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    f_computeDistance.setParent(&d_computeDistance);
+    f_restLengths.setParent(&d_restLengths);
 }
 
 template <class TIn, class TOut>
@@ -85,11 +87,11 @@ void DistanceMapping<TIn, TOut>::init()
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
 
     // compute the rest lengths if they are not known
-    if( f_restLengths.getValue().size() != links.size() )
+    if(d_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteOnlyAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
+        helper::WriteOnlyAccessor< Data<type::vector<Real> > > restLengths(d_restLengths);
         restLengths.resize( links.size() );
-        if(!(f_computeDistance.getValue()))
+        if(!(d_computeDistance.getValue()))
         {
             for(unsigned i=0; i<links.size(); i++ )
             {
@@ -107,7 +109,7 @@ void DistanceMapping<TIn, TOut>::init()
     }
     else if (compliance) // for warning message
     {
-        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
+        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(d_restLengths);
         std::stringstream sstream;
         for (unsigned i = 0; i < links.size(); i++)
             if (restLengths[i] <= std::numeric_limits<SReal>::epsilon()) 
@@ -132,7 +134,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(d_restLengths);
     const SeqEdges& links = l_topology->getEdges();
 
     jacobian.clear();

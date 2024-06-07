@@ -35,8 +35,10 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TMatrix, class TVector, class TThreadManager>
 SSORPreconditioner<TMatrix,TVector,TThreadManager>::SSORPreconditioner()
-    : f_omega( initData(&f_omega,1.0, "omega","Omega coefficient") )
+    : d_omega(initData(&d_omega, 1.0, "omega", "Omega coefficient") )
 {
+    f_omega.setParent(&d_omega);
+
 }
 
 // solve (D+U) * D^-1 * ( D + U)
@@ -46,7 +48,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     const Index n = M.rowSize();
-    const Real w = (Real)f_omega.getValue();
+    const Real w = (Real)d_omega.getValue();
     //Solve (D/w+u) * u3 = r;
     for (Index j=n-1; j>=0; j--)
     {

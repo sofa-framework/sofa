@@ -182,7 +182,7 @@ struct PlaneForceField_test : public BaseSimulationTest
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
-            "normal", "d", "stiffness", "damping", "maxForce", "bilateral", "localRange",
+            "normal", "d", "stiffness", "damping", "maxForce", "bilateral", "d_localRange",
             "showPlane", "planeColor", "showPlaneSize"
         };
 
@@ -223,7 +223,7 @@ struct PlaneForceField_test : public BaseSimulationTest
              {"stiffness", {{"", "500"}, {"-1.0", "500"}, {"0.0", "0"}, {"1.0", "1"}}},
              {"maxForce",  {{"", "0"}, {"-1.0","0"}, {"0.5","0.5"}, {"1.5","1.5"}}},
              {"bilateral", {{"", "0"}, {"0","0"}, {"1","1"}, {"2","1"}, {"-1","1"}}},
-             {"localRange", {{"","-1 -1"}, {"-2 -1", "-1 -1"}, {"-2 1", "-1 -1"}, {"0 0","0 0"}, {"1 -5","-1 -1"},
+             {"d_localRange", {{"","-1 -1"}, {"-2 -1", "-1 -1"}, {"-2 1", "-1 -1"}, {"0 0","0 0"}, {"1 -5","-1 -1"},
                              {"4 7","4 7"}, {"7 4","-1 -1"} }}
         };
 

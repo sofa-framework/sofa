@@ -70,7 +70,7 @@ UniformMass<DataTypes>::UniformMass()
     , d_computeMappingInertia ( initData ( &d_computeMappingInertia, false, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
     , d_showInitialCenterOfGravity ( initData ( &d_showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
     , d_showX0 ( initData ( &d_showX0, false, "showX0", "display the rest positions" ) )
-    , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. \n"
+    , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "d_localRange", "optional range of local DOF indices. \n"
                                                                                    "Any computation involving only indices outside of this range \n"
                                                                                    "are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
@@ -150,7 +150,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
-    //If localRange is set, update indices
+    //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
         && d_localRange.getValue()[1] + 1 < int(mstate->getSize()))

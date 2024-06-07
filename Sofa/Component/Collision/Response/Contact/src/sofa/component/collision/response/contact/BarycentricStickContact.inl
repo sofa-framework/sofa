@@ -172,7 +172,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         index2 = mapper2.addPointB(o->point[1], index2, r2);
 
         const double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
-        ff->m_stiffness.setValue(stiffness);
+        ff->d_stiffness.setValue(stiffness);
 
         const double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
 

@@ -81,9 +81,15 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
+    Data<bool> f_computeDistance;
 
-    Data<bool> f_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
-    Data<type::vector<Real>> f_restLengths; ///< Rest lengths of the connections
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
+    Data<std::string> f_restLengths;
+
+
+    Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
+    Data<type::vector<Real>> d_restLengths; ///< Rest lengths of the connections
     Data<Real> d_showObjectScale; ///< Scale for object display
     Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 

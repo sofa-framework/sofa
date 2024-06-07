@@ -48,14 +48,14 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     HexahedronFEMForceFieldT::init();
     MassT::init();
 
-    _particleMasses.resize( this->_initialPoints.getValue().size() );
+    _particleMasses.resize( this->d_initialPoints.getValue().size() );
 
     int i=0;
     for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+            nodes[w] = this->d_initialPoints.getValue()[(*it)[w]];
 
         // volume of a element
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -75,7 +75,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
     if( d_lumpedMass.getValue() )
     {
-        _lumpedMasses.resize( this->_initialPoints.getValue().size() );
+        _lumpedMasses.resize( this->d_initialPoints.getValue().size() );
         i=0;
         for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
@@ -114,7 +114,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     {
         type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+            nodes[w] = this->d_initialPoints.getValue()[(*it)[w]];
 
         if( d_elementMasses.getValue().size() <= (unsigned)i )
         {

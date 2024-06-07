@@ -133,15 +133,15 @@ public:
     void updateLameCoefficients();
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    /** Method to update @sa edgeInfo when a new Tetrahedron is created.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
+    /** Method to update @sa d_edgeInfo when a new Tetrahedron is created.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAADDED event is fired
     * to create a new spring in created Tetrahedron.
     */
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
@@ -150,7 +150,7 @@ public:
         const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAREMOVED event is fired
     * to remove spring if needed or update adjacent Tetrahedron.
     */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);

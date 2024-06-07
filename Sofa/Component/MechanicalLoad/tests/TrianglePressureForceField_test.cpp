@@ -73,9 +73,9 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
 
         // Set the properties of the force field
         Inherited::force->normal.setValue(Deriv(0,0,1));
-        Inherited::force->dmin.setValue(-0.01);
-        Inherited::force->dmax.setValue(0.01);
-        Inherited::force->pressure=Coord(0,0,0.6);
+        Inherited::force->d_dmin.setValue(-0.01);
+        Inherited::force->d_dmax.setValue(0.01);
+        Inherited::force->d_pressure=Coord(0, 0, 0.6);
     }
 
     //Test the value of the force it should be equal for each vertex to Pressure*area/4

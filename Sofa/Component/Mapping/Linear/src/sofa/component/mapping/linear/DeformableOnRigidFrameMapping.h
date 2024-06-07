@@ -92,13 +92,33 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
 
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
-    Data<unsigned int> index; ///< input DOF index
-    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data<sofa::type::vector<unsigned int> >  repartition; ///< number of dest dofs per entry dof
-    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data< Real > m_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
-    Data< Real > m_rootLinearForceScaleFactor; ///< Scale factor applied on the linear force accumulated on the rigid model
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<unsigned> index;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<bool> indexFromEnd;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<sofa::type::vector<unsigned int> >  repartition;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<std::string> globalToLocalCoords;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<Real> m_rootAngularForceScaleFactor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<Real> m_rootLinearForceScaleFactor;
+
+
+    Data<unsigned int> d_index; ///< input DOF index
+    Data< bool > d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data<sofa::type::vector<unsigned int> >  d_repartition; ///< number of dest dofs per entry dof
+    Data< bool > d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+
+    Data< Real > d_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
+    Data< Real > d_rootLinearForceScaleFactor; ///< Scale factor applied on the linear force accumulated on the rigid model
 
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );

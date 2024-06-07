@@ -67,8 +67,14 @@ public:
     using Index = sofa::Index;
 
 protected:
-    core::topology::PointData< sofa::type::vector<MappingData > >  map; ///< mapper data
-    core::topology::PointData< sofa::type::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<sofa::Index> map;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<sofa::Index>  mapOrient;
+
+    core::topology::PointData< sofa::type::vector<MappingData > >  d_map; ///< mapper data
+    core::topology::PointData< sofa::type::vector<MappingOrientData > >  d_mapOrient; ///< mapper data for mapped frames
 
     VecCoord actualTetraPosition;
 

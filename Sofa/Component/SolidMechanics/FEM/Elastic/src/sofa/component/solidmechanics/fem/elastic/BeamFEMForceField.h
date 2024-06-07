@@ -130,7 +130,11 @@ public:
         }
     };
 
-    EdgeData<type::vector<BeamInfo> > m_beamsData; ///< Internal element data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index>  m_beamsData;
+
+
+    EdgeData<type::vector<BeamInfo> > d_beamsData; ///< Internal element data
 
 protected:
     void createBeamInfo(Index edgeIndex, BeamInfo&,

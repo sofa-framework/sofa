@@ -49,18 +49,43 @@ public:
 
     using Index = sofa::Index;
 
-    Data<Deriv> pressure; ///< Pressure force per unit area
-  	Data<MatSym3> cauchyStress; ///< Cauchy Stress applied on the normal of each triangle
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Deriv> pressure;
 
-    Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<MatSym3> cauchyStress;
 
-    /// the normal used to define the edge subjected to the pressure force.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<sofa::type::vector<Index> > triangleList;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
     Data<Deriv> normal;
 
-    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
-    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
-    Data<bool> p_showForces; ///< draw triangles which have a given pressure
-    Data<bool> p_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Real> dmin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Real> dmax;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<bool> p_showForces;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<bool> p_useConstantForce;
+
+
+    Data<Deriv> d_pressure; ///< Pressure force per unit area
+  	Data<MatSym3> d_cauchyStress; ///< Cauchy Stress applied on the normal of each triangle
+
+    Data<sofa::type::vector<Index> > d_triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+
+    /// the normal used to define the edge subjected to the pressure force.
+    Data<Deriv> d_normal;
+
+    Data<Real> d_dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> d_dmax; ///< Maximum distance from the origin along the normal direction
+    Data<bool> d_showForces; ///< draw triangles which have a given pressure
+    Data<bool> d_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -101,7 +126,7 @@ protected:
         }
     };
 
-    core::topology::TriangleSubsetData<sofa::type::vector<TrianglePressureInformation> > trianglePressureMap; ///< Map between triangle indices and their pressure
+    core::topology::TriangleSubsetData<sofa::type::vector<TrianglePressureInformation> > d_trianglePressureMap; ///< Map between triangle indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -125,9 +150,9 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
-    void setNormal(const Coord n) { normal.setValue(n);}
-    void setPressure(Deriv _pressure) { this->pressure = _pressure; updateTriangleInformation(); }
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax){d_dmin.setValue((Real)_dmin); d_dmax.setValue((Real)_dmax);}
+    void setNormal(const Coord n) { d_normal.setValue(n);}
+    void setPressure(Deriv _pressure) { this->d_pressure = _pressure; updateTriangleInformation(); }
 
 protected :
     void selectTrianglesAlongPlane();

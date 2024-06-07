@@ -90,7 +90,11 @@ protected:
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
 
     const VecElement* _indexedElements;
-    Data< VecCoord > _initialPoints; ///< Initial Position
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecCoord> _initialPoints;
+
+    Data< VecCoord > d_initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
     virtual ~TriangleFEMForceField();
@@ -113,15 +117,30 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;
-    Data<std::string> f_method; ///< large: large displacements, small: small displacements
-    Data<Real> f_poisson; ///< Poisson ratio in Hooke's law
-    Data<Real> f_young; ///< Young modulus in Hooke's law
-    Data<Real> f_thickness; ///< Thickness of the elements
-    Data<bool> f_planeStrain; ///< Plane strain or plane stress assumption
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<std::string> f_method;
 
-    Real getPoisson() { return f_poisson.getValue(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_poisson;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_young;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_thickness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> f_planeStrain;
+
+    Data<std::string> d_method; ///< large: large displacements, small: small displacements
+    Data<Real> d_poisson; ///< Poisson ratio in Hooke's law
+    Data<Real> d_young; ///< Young modulus in Hooke's law
+    Data<Real> d_thickness; ///< Thickness of the elements
+    Data<bool> d_planeStrain; ///< Plane strain or plane stress assumption
+
+    Real getPoisson() { return d_poisson.getValue(); }
     void setPoisson(Real val);
-    Real getYoung() { return f_young.getValue(); }
+    Real getYoung() { return d_young.getValue(); }
     void setYoung(Real val);
     int  getMethod() { return method; }
     void setMethod(int val);

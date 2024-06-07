@@ -121,7 +121,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , d_index(initData(&d_index, (unsigned)0, "index", "input DOF index"))
     , d_fileRigidMapping(initData(&d_fileRigidMapping, "filename", "Xsp file where rigid mapping information can be loaded from."))
     , d_useX0(initData(&d_useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
-    , d_indexFromEnd(initData(&d_indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
+    , d_indexFromEnd(initData(&d_indexFromEnd, false, "d_indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , d_rigidIndexPerPoint(initData(&d_rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , d_globalToLocalCoords(initData(&d_globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
     , m_matrixJ()
@@ -793,10 +793,10 @@ void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* ar
     Inherit::parse(arg);
 
     // to be backward compatible with previous data structure
-    const char* repartitionChar = arg->getAttribute("repartition");
+    const char* repartitionChar = arg->getAttribute("d_repartition");
     if( repartitionChar )
     {
-        msg_deprecated() << "parse: You are using a deprecated Data 'repartition', please use the new structure data rigidIndexPerPoint";
+        msg_deprecated() << "parse: You are using a deprecated Data 'd_repartition', please use the new structure data rigidIndexPerPoint";
 
         type::vector< unsigned int > repartition;
         std::istringstream ss( repartitionChar );

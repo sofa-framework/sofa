@@ -82,7 +82,7 @@ struct ClusteringEngine_test : public BaseSimulationTest,
         EXPECT_TRUE( m_thisObject->findData("radius") != nullptr ) ;
         EXPECT_TRUE( m_thisObject->findData("number") != nullptr ) ;
         EXPECT_TRUE( m_thisObject->findData("fixedRadius") != nullptr ) ;
-        EXPECT_TRUE( m_thisObject->findData("fixedPosition") != nullptr ) ;
+        EXPECT_TRUE( m_thisObject->findData("d_fixedPosition") != nullptr ) ;
         EXPECT_TRUE( m_thisObject->findData("position") != nullptr ) ;
         EXPECT_TRUE( m_thisObject->findData("cluster") != nullptr ) ;
         EXPECT_TRUE( m_thisObject->findData("inFile") != nullptr ) ;

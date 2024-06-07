@@ -92,15 +92,15 @@ protected:
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void applyEdgeCreation(Index edgeIndex, EdgeRestInformation&,
         const core::topology::BaseMeshTopology::Edge& e,
         const sofa::type::vector<Index>&,
         const sofa::type::vector<SReal>&);
 
-    /** Method to update @sa edgeInfo when a new triangle is created.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESADDED event is fired
+    /** Method to update @sa d_edgeInfo when a new triangle is created.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TRIANGLESADDED event is fired
     * to create a new spring between new created triangles.
     */
     void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
@@ -108,8 +108,8 @@ protected:
         const sofa::type::vector<sofa::type::vector<Index> >&,
         const sofa::type::vector<sofa::type::vector<SReal> >&);
 
-    /** Method to update @sa edgeInfo when a triangle is removed.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESREMOVED event is fired
+    /** Method to update @sa d_edgeInfo when a triangle is removed.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TRIANGLESREMOVED event is fired
     * to remove spring if needed or update pair of triangles.
     */
     void applyTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);

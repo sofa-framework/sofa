@@ -233,7 +233,7 @@ TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , edgeInfo(initData(&edgeInfo, "d_edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
 

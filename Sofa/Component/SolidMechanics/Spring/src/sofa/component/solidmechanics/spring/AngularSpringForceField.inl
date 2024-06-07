@@ -34,12 +34,18 @@ namespace sofa::component::solidmechanics::spring
 
 template<class DataTypes>
 AngularSpringForceField<DataTypes>::AngularSpringForceField()
-    : indices(initData(&indices, "indices", "index of nodes controlled by the angular springs"))
-    , angularStiffness(initData(&angularStiffness, "angularStiffness", "angular stiffness for the controlled nodes"))
-    , angularLimit(initData(&angularLimit, "limit", "angular limit (max; min) values where the force applies"))
-    , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
-    , springColor(initData(&springColor, type::RGBAColor::green(), "springColor","spring color"))
+    : d_indices(initData(&d_indices, "indices", "index of nodes controlled by the angular springs"))
+    , d_angularStiffness(initData(&d_angularStiffness, "angularStiffness", "angular stiffness for the controlled nodes"))
+    , d_angularLimit(initData(&d_angularLimit, "limit", "angular limit (max; min) values where the force applies"))
+    , d_drawSpring(initData(&d_drawSpring, false, "drawSpring", "draw Spring"))
+    , d_springColor(initData(&d_springColor, type::RGBAColor::green(), "springColor", "spring color"))
 {
+    indices.setParent(&d_indices);
+    angularStiffness.setParent(&d_angularStiffness);
+    angularLimit.setParent(&d_angularLimit);
+    drawSpring.setParent(&d_drawSpring);
+    springColor.setParent(&d_springColor);
+
 }
 
 
@@ -48,15 +54,15 @@ void AngularSpringForceField<DataTypes>::bwdInit()
 {
     core::behavior::ForceField<DataTypes>::init();
 
-    if (angularStiffness.getValue().empty())
+    if (d_angularStiffness.getValue().empty())
     {
 		msg_info("AngularSpringForceField") << "No angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << "\n";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
-        angularStiffness.setValue(stiffs);
+        d_angularStiffness.setValue(stiffs);
     }
-    this->k = angularStiffness.getValue();
+    this->k = d_angularStiffness.getValue();
 
     mState = dynamic_cast<core::behavior::MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) {
@@ -68,15 +74,15 @@ void AngularSpringForceField<DataTypes>::bwdInit()
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::reinit()
 {
-    if (angularStiffness.getValue().empty())
+    if (d_angularStiffness.getValue().empty())
     {
 		msg_info("AngularSpringForceField") << "nN angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << "\n";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
-        angularStiffness.setValue(stiffs);
+        d_angularStiffness.setValue(stiffs);
     }
-    this->k = angularStiffness.getValue();
+    this->k = d_angularStiffness.getValue();
 }
 
 
@@ -91,9 +97,9 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
     f1.resize(p1.size());
-    for (sofa::Index i = 1; i < indices.getValue().size(); i++)
+    for (sofa::Index i = 1; i < d_indices.getValue().size(); i++)
     {
-        const sofa::Index index = indices.getValue()[i];
+        const sofa::Index index = d_indices.getValue()[i];
         type::Quat<SReal> dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
         type::Vec3d axis;
         double angle = 0.0;
@@ -122,9 +128,9 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
             axis = type::Vec<3,Real>(dq[0], dq[1], dq[2])/sin_half_theta;
 
 		if (i < this->k.size())
-            stiffness = this->k[i] = angularStiffness.getValue()[i];
+            stiffness = this->k[i] = d_angularStiffness.getValue()[i];
          else
-            stiffness = this->k[0] = angularStiffness.getValue()[0];
+            stiffness = this->k[0] = d_angularStiffness.getValue()[0];
 
         getVOrientation(f1[index]) -= axis * angle * stiffness;
     }
@@ -139,8 +145,8 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
 
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    for (sofa::Index i=0; i<indices.getValue().size(); i++)
-        getVOrientation(df1[indices.getValue()[i]]) -=  getVOrientation(dx1[indices.getValue()[i]]) * (i < this->k.size() ? this->k[i] : this->k[0]) * kFactor ;
+    for (sofa::Index i=0; i < d_indices.getValue().size(); i++)
+        getVOrientation(df1[d_indices.getValue()[i]]) -= getVOrientation(dx1[d_indices.getValue()[i]]) * (i < this->k.size() ? this->k[i] : this->k[0]) * kFactor ;
 }
 
 
@@ -154,9 +160,9 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
-    for (sofa::Index index = 0; index < indices.getValue().size(); index++)
+    for (sofa::Index index = 0; index < d_indices.getValue().size(); index++)
     {
-        curIndex = indices.getValue()[index];
+        curIndex = d_indices.getValue()[index];
         for(int i = 3; i < 6; i++)
             mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < this->k.size() ? this->k[index] : this->k[0]));
     }
@@ -169,7 +175,7 @@ void AngularSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
                        .withRespectToPositionsIn(this->mstate);
     assert(!k.empty());
 
-    const auto& indicesValue = indices.getValue();
+    const auto& indicesValue = d_indices.getValue();
     const auto addValueToMatrix = [&dfdx](const sofa::Index nodeIndex, Real v)
     {
         for(sofa::Size j = Deriv::spatial_dimensions; j < Deriv::total_size; ++j)
@@ -201,7 +207,7 @@ void AngularSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::Damp
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
@@ -210,12 +216,12 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
     sofa::type::vector< type::Vec3 > vertices;
 
-    for (sofa::Index i=0; i<indices.getValue().size(); i++)
+    for (sofa::Index i=0; i < d_indices.getValue().size(); i++)
     {
-        const sofa::Index index = indices.getValue()[i];
+        const sofa::Index index = d_indices.getValue()[i];
         vertices.push_back(p[index].getCenter());
     }
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+    vparams->drawTool()->drawLines(vertices, 5, d_springColor.getValue());
 
 }
 

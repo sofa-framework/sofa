@@ -75,7 +75,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te2[j]]; // ff->d_edgeInfo
             if(!(ei.is_initialized))
             {
                 unsigned int edgeIndex = te2[j];
@@ -158,7 +158,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te[j]]; // ff->d_edgeInfo
             if(ei.is_initialized)
             {
 
@@ -337,7 +337,7 @@ QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     : f_ks ( initData(&f_ks,(SReal) 100000.0,"stiffness","uniform stiffness for the all springs"))
     , f_kd ( initData(&f_kd,(SReal) 1.0,"damping","uniform damping for the all springs"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo ( initData(&edgeInfo, "edgeInfo","Internal edge data"))
+    , edgeInfo ( initData(&edgeInfo, "d_edgeInfo","Internal edge data"))
     , m_topology(nullptr)
     , updateMatrix(true)
 {
