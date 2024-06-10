@@ -74,40 +74,40 @@ protected:
     friend class PartialLinearMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<sofa::type::vector<sofa::Index> >  m_indices;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<type::vector<Real> >m_keyTimes;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<VecDeriv > m_keyMovements;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data< bool > showMovement;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<unsigned> mainIndice;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<unsigned> minDepIndice;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<unsigned> maxDepIndice;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<Real> X0;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<Real> Y0;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<Real> Z0;
 
 
@@ -134,7 +134,7 @@ public :
     core::objectmodel::Data<unsigned> d_mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes
     core::objectmodel::Data<unsigned> d_minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment
     core::objectmodel::Data<unsigned> d_maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment
-    core::objectmodel::Data<type::vector<Real> > d_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    core::objectmodel::Data<type::vector<Real> > d_imposedDisplacmentOnMacroNodes; ///< The imposed displacment on macro nodes
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
     Data<Real> d_X0; ///< Size of specimen in X-direction
     Data<Real> d_Y0; ///< Size of specimen in Y-direction
@@ -143,10 +143,10 @@ public :
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<VecBool> movedDirections;
 
-    core::objectmodel::Data<VecBool> d_movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+    core::objectmodel::Data<VecBool> d_movedDirections; ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PartialLinearMovementProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

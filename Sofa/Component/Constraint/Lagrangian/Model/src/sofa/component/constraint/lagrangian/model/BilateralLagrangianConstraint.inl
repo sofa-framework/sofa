@@ -41,9 +41,9 @@ using sofa::type::Vec;
 template<class DataTypes>
 BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
-    , d_m1(initData(&d_m1, "first_point", "index of the constraint on the first model"))
-    , d_m2(initData(&d_m2, "second_point", "index of the constraint on the second model"))
-    , d_restVector(initData(&d_restVector, "rest_vector", "Relative position to maintain between attached points (optional)"))
+    , d_m1(initData(&d_m1, "first_point","index of the constraint on the first model (object1)"))
+    , d_m2(initData(&d_m2, "second_point","index of the constraint on the second model (object2)"))
+    , d_restVector(initData(&d_restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
     , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
     , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))

@@ -72,62 +72,64 @@ public:
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<bool> displayDebug;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<bool> initial_guess;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<bool> build_lcp;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> tol;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> maxIt;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> mu;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> minW;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> maxF;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<bool> multi_grid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> multi_grid_levels;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> merge_method;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> merge_spatial_step;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> merge_local_levels;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data < std::set<int> >  constraintGroups;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data< int> showLevels;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<SReal> showCellWidth;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<type::Vec3> showTranslation;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     Data<type::Vec3>  showLevelTranslation;
+
 
     Data<bool> d_displayDebug; ///< Display debug information.
     Data<bool> d_initial_guess; ///< activate LCP results history to improve its resolution performances.
@@ -140,9 +142,9 @@ public:
     Data<bool> d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
     Data<int> d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
     Data<int> d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
-    Data<int> d_merge_spatial_step; ///< if d_merge_method is 1: grid size reduction between multigrid levels
-    Data<int> d_merge_local_levels; ///< if d_merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
-    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface
+    Data<int> d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
+    Data<int> d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
 
     Data < std::set<int> > d_constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.

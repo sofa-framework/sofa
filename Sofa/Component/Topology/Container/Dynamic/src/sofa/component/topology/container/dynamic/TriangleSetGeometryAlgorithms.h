@@ -63,6 +63,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
+    using Vec3 = sofa::type::Vec<3, Real>;
+
 protected:
     bool initializedCubatureTables;
     void defineTetrahedronCubaturePoints();
@@ -71,10 +73,10 @@ protected:
         ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw triangles"))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
-        , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
+        , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals"))
         , p_flipNormals(initData(&p_flipNormals, false, "flipNormals","if true, will flip normal of the first triangle used to recompute triangle orientation."))
     {
     }
@@ -229,12 +231,14 @@ public:
      * @param baryCoef : barycoef of the intersection point on the edge
      * @param coord_kmin : barycoef of the intersection point on the vecteur AB.
      */
-    bool computeSegmentTriangleIntersection(bool is_entered,
-            const sofa::type::Vec<3,Real>& a,
-            const sofa::type::Vec<3,Real>& b,
-            const TriangleID ind_t,
-            sofa::type::vector<PointID> &indices,
-            Real &baryCoef, Real& coord_kmin) const;
+
+
+    bool computeSegmentTriangleIntersection(bool is_entered, 
+        const sofa::type::Vec<3, Real>& a,
+        const sofa::type::Vec<3, Real>& b,
+        const TriangleID ind_t,
+        sofa::type::vector<PointID>& indices,
+        Real& baryCoef, Real& coord_kmin) const;
 
     /** \brief Computes the intersections of the vector from point a to point b and the triangle indexed by t
     *
@@ -271,12 +275,11 @@ public:
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */
-    bool computeIntersectedObjectsList (const PointID last_point,
-            const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
-            TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-            sofa::type::vector<ElemID>& indices_list,
-            sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const;
+    bool computeIntersectedObjectsList(const PointID last_point, const Vec3& pointA, const Vec3& pointB,
+        TriangleID& ind_triA, TriangleID& ind_triB,
+        sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+        sofa::type::vector< ElemID >& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs) const;
 
 
     /** \brief Get the triangle in a given direction from a point.
@@ -319,26 +322,26 @@ public:
      * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
      */
-    virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
-        sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
+    virtual int SplitAlongPath(PointID ind_A, Coord& pointA, PointID ind_B, Coord& pointB,
+        sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+        sofa::type::vector< ElemID >& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs,
+        sofa::type::vector< EdgeID >& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
 
 
 
     /* void SnapAlongPath (sofa::type::vector<TriangleID>& triangles_list, sofa::type::vector<EdgeID>& edges_list,
-      sofa::type::vector<Real>& coords_list, sofa::type::vector<Real>& points2Snap);*/
+      sofa::type::vector<Real>& intersected_barycoefs, sofa::type::vector<Real>& points2Snap);*/
 
-    void SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    void SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+        sofa::type::vector<ElemID>& intersected_indices, sofa::type::vector< Vec3 >& intersected_barycoefs,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
         Real epsilonSnapPath);
 
     void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+        sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+        sofa::type::vector<ElemID>& intersected_indices,
+        sofa::type::vector< Vec3 >& intersected_barycoefs,
         sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
         Real epsilonSnapBorder);
 
@@ -356,10 +359,10 @@ public:
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
-    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles.
+    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
     Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
-    Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.
+    Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals
     Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;

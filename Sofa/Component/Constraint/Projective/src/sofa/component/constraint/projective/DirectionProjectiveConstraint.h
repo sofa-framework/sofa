@@ -82,18 +82,18 @@ protected:
 
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<sofa::type::vector<sofa::Index> > f_indices;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<SReal> f_drawSize;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<CPos>f_direction;
 
-    IndexSubsetData d_indices;  ///< the particles to project
-    Data<SReal> d_drawSize;    ///< The size of the square used to display the constrained particles
-    Data<CPos> d_direction;    ///< The direction of the line. Will be normalized by init()
+    IndexSubsetData d_indices;  ///< Indices the particles to project
+    Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
+    Data<CPos> d_direction; ///< Direction of the line
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<DirectionProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

@@ -63,10 +63,10 @@ public:
     void doUpdate() override;
 
 protected:
-    Data<VecCoord> f_inputX;   ///< input position
-    Data<VecCoord> f_outputX;  ///< output position: Z=focal_distance
-    Data<ProjMat> proj_mat;        ///< 3x4 projection matrix
-    Data<Real> focal_distance; ///< focal distance i.e. distance between the optical center and the image plane
+    Data<VecCoord> f_inputX; ///< input array of 3d points
+    Data<VecCoord> f_outputX; ///< output array of projected 3d points
+    Data<ProjMat> proj_mat; ///< projection matrix
+    Data<Real> focal_distance; ///< focal distance 
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)

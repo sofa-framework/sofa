@@ -40,16 +40,16 @@ public:
     virtual std::string type() { return "This object is procedurally created"; }
     bool canLoad() override { return true; }
     bool doLoad() override; ///< create the grid
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< type::Vec2i > resolution;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data< int > trianglePattern;
 
 
 
-    Data< type::Vec2i > d_resolution;  ///< Number of vertices in each direction
-    Data< int > d_trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
+    Data< type::Vec2i > d_resolution; ///< Number of vertices in each direction
+    Data< int > d_trianglePattern; ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles
 
 protected:
     GridMeshCreator();

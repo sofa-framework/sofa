@@ -69,20 +69,20 @@ public:
 
     enum State { INCREASE, DECREASE };
 
-    Data<Real> m_pressure; ///< Scalar pressure value applied on the surfaces.
-    Data<Coord> m_min; ///< Lower bound of the pressured box.
-    Data<Coord> m_max; ///< Upper bound of the pressured box.
-    Data<VecIndex> m_triangleIndices; ///< Specify triangles by indices.
-    Data<VecIndex> m_quadIndices; ///< Specify quads by indices.
-    Data<bool> m_pulseMode; ///< In this mode, the pressure increases (or decreases) from 0 to m_pressure cyclicly.
-    Data<Real> m_pressureLowerBound; ///< In pulseMode, the pressure increases(or decreases) from m_pressureLowerBound to m_pressure cyclicly.
-    Data<Real> m_pressureSpeed; ///< Pressure variation in Pascal by second.
-    Data<bool> m_volumeConservationMode; ///< In this mode, pressure variation is related to the object volume variation.
-    Data<bool> m_useTangentStiffness; ///< The tangent stiffness matrix is not symmetric and could create issues with some linear solvers. Set to false to not use it.
-    Data<Real> m_defaultVolume; ///< Default Volume.
-    Data<Deriv> m_mainDirection; ///< Main axis for pressure application.
+    Data<Real> m_pressure; ///< Pressure force per unit area
+    Data<Coord> m_min; ///< Lower bound of the selection box
+    Data<Coord> m_max; ///< Upper bound of the selection box
+    Data<VecIndex> m_triangleIndices; ///< Indices of affected triangles
+    Data<VecIndex> m_quadIndices; ///< Indices of affected quads
+    Data<bool> m_pulseMode; ///< Cyclic pressure application
+    Data<Real> m_pressureLowerBound; ///< Pressure lower bound force per unit area (active in pulse mode)
+    Data<Real> m_pressureSpeed; ///< Continuous pressure application in Pascal per second. Only active in pulse mode
+    Data<bool> m_volumeConservationMode; ///< Pressure variation follow the inverse of the volume variation
+    Data<bool> m_useTangentStiffness; ///< Whether (non-symmetric) stiffness matrix should be used
+    Data<Real> m_defaultVolume; ///< Default Volume
+    Data<Deriv> m_mainDirection; ///< Main direction for pressure application
 
-    Data<Real> m_drawForceScale; ///< scale used to render force vectors
+    Data<Real> m_drawForceScale; ///< DEBUG: scale used to render force vectors
 
 protected:
     type::vector<Deriv> m_f; ///< store forces for visualization

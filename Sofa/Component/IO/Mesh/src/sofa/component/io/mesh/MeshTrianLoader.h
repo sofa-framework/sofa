@@ -53,16 +53,16 @@ protected:
 
 public:
     //Add specific Data here:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data <bool> p_trian2;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data <type::vector< type::fixed_array <int,3> > > neighborTable;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data <type::vector< type::vector<unsigned int> > > edgesOnBorder;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data <type::vector<unsigned int> > trianglesOnBorderList;
 
     Data <bool> d_trian2; ///< Set to true if the mesh is a trian2 format.

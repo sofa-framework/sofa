@@ -131,7 +131,7 @@ public:
 
 protected :
 
-    Data<VecElementMass> d_elementMasses; ///< mass matrices per element
+    Data<VecElementMass> d_elementMasses; ///< Mass matrices per element (M_i)
     Data<Real> d_density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> d_lumpedMass; ///< Does it use lumped masses?
 

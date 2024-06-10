@@ -282,7 +282,7 @@ public:
     sofa::type::vector<std::map<std::string, sofa::type::vector<double> > > allGraphOrientation;
 
     //the index of element we want to display the graphs
-    Data<Real>  elementID; ///< element id to follow for fracture criteria
+    Data<Real>  elementID; ///< element id to follow in the graphs
 
     //data storing the values along time for the element with index elementID
     Data<std::map < std::string, sofa::type::vector<double> > > f_graphStress; ///< Graph of max stress corresponding to the element id

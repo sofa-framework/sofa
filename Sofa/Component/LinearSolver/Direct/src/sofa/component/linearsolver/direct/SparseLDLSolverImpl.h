@@ -171,7 +171,8 @@ protected :
 
 
     SparseLDLSolverImpl()
-    : d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+    : d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true, the solver will reuse the precomputed symbolic decomposition, meaning that it will store the shape of [factor matrix] on the first step, or when its shape changes, and then it will only update its coefficients. When the shape of the matrix changes, a new factorization is computed."
+                                                                                                                              "If false, the solver will compute the entire decomposition at each step"))
     , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
     {}
 

@@ -387,18 +387,6 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeBarycentricCoordinates(
 }
 
 
-template<class Vec>
-bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
-{
-    const typename Vec::value_type ZERO = 1e-12;
-    Vec v = (p - a).cross(p - b);
-
-    if(v.norm2() < ZERO)
-        return true;
-    else
-        return false;
-}
-
 template<class DataTypes>
 auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
         sofa::type::Vec<3, Real> c,

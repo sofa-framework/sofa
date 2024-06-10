@@ -76,23 +76,23 @@ protected:
 
 public:
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<sofa::type::vector<int>> f_indices;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<Coord> f_point;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<bool> f_fixAll;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<SReal> f_drawSize;
 
 
     SetIndex d_indices;    ///< the indices of the points to project to the target
-    Data<Coord> d_point;    ///< the target of the projection
-    Data<bool> d_fixAll;    ///< to project all the points, rather than those listed in d_indices
-    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    Data<Coord> d_point; ///< Target of the projection
+    Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

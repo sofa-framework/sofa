@@ -65,7 +65,7 @@ protected:
     Data< type::vector< type::Vec3 > > m_positions; ///< input: positions of the vertices
     Data< type::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
     Data< type::vector< MQuad > > m_quads; ///< input: quads of the mesh
-    Data< type::vector< MPolygon > > m_polygons; ///< must be convex
+    Data< type::vector< MPolygon > > m_polygons; ///< input: polygons of the mesh
 
     /// output
     Data< MassType > rigidMass;

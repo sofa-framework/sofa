@@ -77,8 +77,8 @@ protected:
 
 public:
     Data<unsigned int> showMapIndex; ///< Frame DOF index on which display values.
-    Data<bool> showDistanceMap; ///< show the dsitance for each point of the target point set.
-    Data<bool> showGoalDistanceMap; ///< show the dsitance for each point of the target point set.
+    Data<bool> showDistanceMap; ///< show the distance for each point of the target point set.
+    Data<bool> showGoalDistanceMap; ///< show the distance for each point of the target point set.
     Data<double> showTextScaleFactor; ///< Scale to apply on the text.
     Data<bool> showGradientMap; ///< show gradients for each point of the target point set.
     Data<double> showGradientsScaleFactor; ///< scale for the gradients displayed.
@@ -86,7 +86,7 @@ public:
     Data<sofa::helper::OptionsGroup> distanceType; ///< type of distance to compute for inserted frames.
     Data<bool> initTarget; ///< initialize the target MechanicalObject from the grid.
     Data<int> initTargetStep; ///< initialize the target MechanicalObject from the grid using this step.
-    Data<std::map<unsigned int, unsigned int> > zonesFramePair; ///< Correspondance between the segmented value and the frames.
+    Data<std::map<unsigned int, unsigned int> > zonesFramePair; ///< Correspondence between the segmented value and the frames.
     Data<double> harmonicMaxValue; ///< Max value used to initialize the harmonic distance grid.
 
     void init() override;

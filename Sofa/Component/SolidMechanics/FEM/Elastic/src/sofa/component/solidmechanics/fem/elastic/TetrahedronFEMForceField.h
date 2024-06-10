@@ -187,12 +187,12 @@ public:
     type::vector< Mat33 > m_rotations;
     const type::vector<Mat33>& getRotations() override;
 
-    Data< VecCoord > _initialPoints; ///< the initial positions of the points
+    Data< VecCoord > _initialPoints; ///< Initial Position
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
+    Data<std::string> f_method; ///< "small", "large" (by QR), "polar" or "svd" displacements
 
-    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
-    Data<VecReal > _youngModulus; ///< FEM Young Modulus
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > _youngModulus; ///< FEM Young's Modulus in Hooke's law
     Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
@@ -202,12 +202,12 @@ public:
     /// @{
     Data<Real> _plasticMaxThreshold;
     Data<Real> _plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
-    Data<Real> _plasticCreep; ///< this parameters is different from the article, here it includes the multiplication by dt
+    Data<Real> _plasticCreep; ///< Plastic Creep Factor * dt [0,1]. Warning this factor depends on dt.
     /// @}
 
 
-    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
     Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
 
     Real minYoung, maxYoung;
@@ -221,7 +221,7 @@ public:
 
     Real prevMaxStress;
 
-    Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
+    Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1
     Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
     Data<type::vector<type::RGBAColor> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
@@ -232,10 +232,10 @@ public:
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
-    Data<bool> d_showVonMisesStressPerNodeColorMap; ///< draw triangles showing vonMises stress interpolated in nodes
+    Data<bool> d_showVonMisesStressPerNodeColorMap; ///< draw elements showing vonMises stress interpolated in nodes
     Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
 
-    Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled)
+    Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 

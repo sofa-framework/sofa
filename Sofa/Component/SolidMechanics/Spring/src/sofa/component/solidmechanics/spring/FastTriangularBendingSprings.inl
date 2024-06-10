@@ -281,7 +281,7 @@ void FastTriangularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::
 
 template<class DataTypes>
 FastTriangularBendingSprings<DataTypes>::FastTriangularBendingSprings(/*double _ks, double _kd*/)
-    : d_bendingStiffness(initData(&d_bendingStiffness,(SReal) 1.0,"bendingStiffness","bending stiffness of the material"))
+    : d_bendingStiffness(initData(&d_bendingStiffness,(SReal) 1.0,"bendingStiffness","Bending stiffness of the material"))
     , d_minDistValidity(initData(&d_minDistValidity,(SReal) 0.000001,"minDistValidity","Distance under which a spring is not valid"))
     , l_topology(initLink("topology", "link to the topology container"))
     , d_edgeSprings(initData(&d_edgeSprings, "edgeInfo", "Internal edge data"))

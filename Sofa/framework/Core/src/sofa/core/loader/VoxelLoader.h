@@ -48,7 +48,7 @@ protected:
 public:
 
     Data< type::vector<sofa::type::Vec3 > > positions; ///< Coordinates of the nodes loaded
-    Data< type::vector<Hexahedron > > hexahedra;       ///< Hexahedra loaded
+    Data< type::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 
     void addHexahedron(type::vector< Hexahedron >* pHexahedra, const type::fixed_array<unsigned int,8> &p);
