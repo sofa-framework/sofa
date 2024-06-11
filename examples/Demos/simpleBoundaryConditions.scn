@@ -54,7 +54,8 @@
                 <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 
                 <!--Apply a pressure to the triangles in the x=1 plane -->
-                <TrianglePressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" pressure="100 0 0"  showForces="1"/>
+                <BoxROI name="pressureROI" position="@../../DOF.position" triangles="@TriangleContainer.triangles" box="0.99 -0.01 -0.01   1.01 1.01 1.01" drawBoxes="1"/>
+                <TrianglePressureForceField name="PFF" triangleList="@pressureROI.triangleIndices" pressure="100 0 0"  showForces="1"/>
             </Node>
         </Node>
     </Node>

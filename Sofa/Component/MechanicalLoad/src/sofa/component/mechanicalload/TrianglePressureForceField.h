@@ -54,17 +54,16 @@ public:
 
     Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
 
-    /// the normal used to define the edge subjected to the pressure force.
-    Data<Deriv> normal;
-
-    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
-    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
     Data<bool> p_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-  
+
+    core::objectmodel::lifecycle::DeprecatedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::DeprecatedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::DeprecatedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+
 protected:
 
     class TrianglePressureInformation
@@ -125,16 +124,11 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
-    void setNormal(const Coord n) { normal.setValue(n);}
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateTriangleInformation(); }
 
 protected :
-    void selectTrianglesAlongPlane();
-    void selectTrianglesFromString();
     void updateTriangleInformation();
     void initTriangleInformation();
-    bool isPointInPlane(Coord p);
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
