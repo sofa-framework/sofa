@@ -704,7 +704,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     }
 
     // do not register if it was already done before
-    if(m_registeredPluginSet.count(pluginName) == 0)
+    if(m_registeredPluginSet.count(pluginName) > 0)
     {
         // msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
         return false;
@@ -750,6 +750,12 @@ RegisterObject& RegisterObject::addAuthor(std::string val)
 RegisterObject& RegisterObject::addLicense(std::string val)
 {
     m_objectRegistrationdata.addLicense(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addDocumentationURL(std::string url)
+{
+    m_objectRegistrationdata.addDocumentationURL(url);
     return *this;
 }
 
