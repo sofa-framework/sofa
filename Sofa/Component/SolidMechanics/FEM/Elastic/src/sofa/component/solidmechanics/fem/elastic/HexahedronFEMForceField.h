@@ -138,8 +138,6 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<Real> f_drawPercentageOffset;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> _elementStiffnesses;
 
 
     Data<std::string> d_method; ///< "large" or "polar" or "small" displacements
@@ -201,6 +199,10 @@ protected:
 
     typedef type::Mat<24, 24, Real> ElementStiffness;
     typedef type::vector<ElementStiffness> VecElementStiffness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecElementStiffness> _elementStiffnesses;
+
     Data<VecElementStiffness> d_elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
     typedef std::pair<int,Real> Col_Value;
