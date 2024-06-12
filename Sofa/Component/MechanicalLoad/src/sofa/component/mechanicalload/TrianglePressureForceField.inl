@@ -38,7 +38,7 @@ template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePress
 
 template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePressureForceField()
     : d_pressure(initData(&d_pressure, "pressure", "Pressure force per unit area"))
-    , d_cauchyStress(initData(&d_cauchyStress, MatSym3(), "d_cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
+    , d_cauchyStress(initData(&d_cauchyStress, MatSym3(), "cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
     , d_triangleList(initData(&d_triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
     , d_normal(initData(&d_normal, "normal", "Normal direction for the plane selection of triangles"))
     , d_dmin(initData(&d_dmin, (Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
@@ -58,7 +58,23 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     p_showForces.setParent(&d_showForces);
     p_useConstantForce.setParent(&d_useConstantForce);
 
+    this->addUpdateCallback("pressure_change", { &pressure }, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        updateTriangleInformation();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
+
+    this->addUpdateCallback("triangles_change", { &triangleList }, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        initTriangleInformation();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
 }
+
 
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
@@ -81,17 +97,8 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
         return;
     }
 
-    if (d_dmin.getValue() != d_dmax.getValue())
-    {
-        selectTrianglesAlongPlane();
-    }
-    if (d_triangleList.getValue().size() > 0)
-    {
-        selectTrianglesFromString();
-    }
-
     d_trianglePressureMap.createTopologyHandler(m_topology);
-	
+
     initTriangleInformation();
 		
 }
@@ -149,14 +156,25 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
-    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
+    if (triangleList.getValue().empty())
+        return;
+
+    // Get list of input triangle indices
+    type::vector<Index> _triangleList = triangleList.getValue();
+
+    // Get write access to TopologySubset Data storing pressure information per triangle
     auto my_subset = sofa::helper::getWriteOnlyAccessor(d_trianglePressureMap);
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    // Set the list of triangles indices as map of this TopologySubset Data
+    d_trianglePressureMap.setMap2Elements(_triangleList);
 
-    for (unsigned int i=0; i<my_map.size(); ++i)
+    // Fill pressure data
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const Deriv& my_pressure = pressure.getValue();
+
+    for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
-        const auto& t = this->m_topology->getTriangle(my_map[i]);
+        const auto& t = this->m_topology->getTriangle(_triangleList[i]);
 
         const auto& n0 = DataTypes::getCPos(x0[t[0]]);
         const auto& n1 = DataTypes::getCPos(x0[t[1]]);
@@ -164,14 +182,18 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 
         my_subset[i].area = sofa::geometry::Triangle::area(n0, n1, n2);
         my_subset[i].force= d_pressure.getValue() * my_subset[i].area;
+        TrianglePressureInformation tInfo;
+        tInfo.area = sofa::geometry::Triangle::area(n0, n1, n2);
+        tInfo.force = my_pressure * tInfo.area;
+        my_subset.push_back(tInfo);
     }
 }
 
 template<class DataTypes>
 bool TrianglePressureForceField<DataTypes>::isPointInPlane(Coord p)
 {
-    Real d=dot(p, d_normal.getValue());
-    if ((d > d_dmin.getValue()) && (d < d_dmax.getValue()))
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
         return true;
     else
         return false;
@@ -180,10 +202,10 @@ bool TrianglePressureForceField<DataTypes>::isPointInPlane(Coord p)
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 {
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
 
     for (unsigned int i=0; i<my_subset.size(); ++i)
-        my_subset[i].force=(d_pressure.getValue() * my_subset[i].area);
+        my_subset[i].force=(pressure.getValue()*my_subset[i].area);
 
     d_trianglePressureMap.endEdit();
 }
