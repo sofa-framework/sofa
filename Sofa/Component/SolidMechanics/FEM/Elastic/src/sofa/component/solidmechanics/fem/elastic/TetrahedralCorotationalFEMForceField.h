@@ -123,7 +123,7 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index > tetrahedronInfo;
+    Data<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// container that stotes all requires information for each tetrahedron
     core::topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > d_tetrahedronInfo;
