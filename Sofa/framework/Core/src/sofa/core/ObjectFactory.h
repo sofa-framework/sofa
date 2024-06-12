@@ -394,6 +394,7 @@ public:
     RegisterObject& addDescription(std::string val);
     RegisterObject& addAuthor(std::string val);
     RegisterObject& addLicense(std::string val);
+    RegisterObject& addDocumentationURL(std::string url);
     RegisterObject& addCreator(std::string classname, std::string templatename,
         ObjectFactory::Creator::SPtr creator);
 
