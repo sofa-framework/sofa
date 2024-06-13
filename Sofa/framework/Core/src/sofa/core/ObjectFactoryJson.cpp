@@ -45,6 +45,8 @@ inline void to_json(nlohmann::json& json,
     json["name"] = data->m_name;
     json["group"] = data->group;
     json["help"] = data->help;
+    json["type"] = data->getValueTypeString();
+    json["defaultValue"] = data->getDefaultValueString();
 }
 
 inline void to_json(nlohmann::json& json,
