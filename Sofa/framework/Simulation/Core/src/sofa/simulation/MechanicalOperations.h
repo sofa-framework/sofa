@@ -75,7 +75,7 @@ public:
     /// Compute Energy
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
-    void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true, bool neglectingCompliance=true);
+    void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
@@ -92,7 +92,7 @@ public:
 
 
     void computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance=true);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
     void computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
 
     /// @}

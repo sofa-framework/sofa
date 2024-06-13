@@ -97,9 +97,6 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
-    // only used for warning message
-    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
-
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
@@ -119,24 +116,15 @@ void DistanceMultiMapping<TIn, TOut>::init()
                 const InCoord& pos1 = posPair1[pair1[1]];
 
                 restLengths[i] = (pos0 - pos1).norm();
-
-                msg_error_when(restLengths[i] == 0 && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
+            {
                 restLengths[i] = (Real)0.;
+            }
         }
-    }
-    else if( compliance ) // manually set // for warning message
-    {
-        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
-        std::stringstream sstream;
-        for(unsigned i=0; i<links.size(); i++ )
-            if( restLengths[i]<=std::numeric_limits<SReal>::epsilon() ) sstream <<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance \n";
-        msg_error_when(!sstream.str().empty()) << sstream.str();
     }
 
     alloc();
