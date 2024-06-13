@@ -32,8 +32,8 @@ template <class DataTypes>
 HausdorffDistance<DataTypes>::HausdorffDistance()
     : d_points_1(initData (&d_points_1, "points1", "Points belonging to the first point cloud") )
     , d_points_2(initData (&d_points_2, "points2", "Points belonging to the second point cloud") )
-    , d_d12(initData (&d_d12, "d_d12", "Distance from point cloud 1 to 2") )
-    , d_d21(initData (&d_d21, "d_d21", "Distance from point cloud 2 to 1") )
+    , d_d12(initData (&d_d12, "d12", "Distance from point cloud 1 to 2") )
+    , d_d21(initData (&d_d21, "d21", "Distance from point cloud 2 to 1") )
     , d_max(initData (&d_max, "max", "Symmetrical Hausdorff distance") )
     , d_update(initData (&d_update, false, "update", "Recompute every time step") )
 {

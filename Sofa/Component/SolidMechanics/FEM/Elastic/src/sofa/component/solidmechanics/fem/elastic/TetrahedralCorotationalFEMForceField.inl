@@ -75,10 +75,10 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , d_updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&d_updateStiffnessMatrix, false, "updateStiffnessMatrix", ""))
     , d_assembling(core::objectmodel::BaseObject::initData(&d_assembling, false, "computeGlobalMatrix", ""))
     , d_drawing(initData(&d_drawing, true, "drawing", " draw the forcefield if true"))
-    , d_drawColor1(initData(&d_drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "d_drawColor1", " draw color for faces 1"))
-    , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "d_drawColor2", " draw color for faces 2"))
-    , d_drawColor3(initData(&d_drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "d_drawColor3", " draw color for faces 3"))
-    , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "d_drawColor4", " draw color for faces 4"))
+    , d_drawColor1(initData(&d_drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
+    , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
+    , d_drawColor3(initData(&d_drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
+    , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     this->addAlias(&d_assembling, "assembling");

@@ -36,7 +36,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
-    : d_triangleInfo(initData(&d_triangleInfo, "d_triangleInfo", "Internal triangle data (persistent)"))
+    : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data (persistent)"))
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
     , d_poisson(initData(&d_poisson,(Real)(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
     , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
@@ -44,7 +44,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_restScale(initData(&d_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
     , d_computePrincipalStress(initData(&d_computePrincipalStress, false, "computePrincipalStress", "Compute principal stress for each triangle"))
     , d_stressMaxValue(initData(&d_stressMaxValue, (Real)0., "stressMaxValue", "Max stress value computed over the triangulation"))
-    , d_showStressVector(initData(&d_showStressVector,false,"d_showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , d_showStressVector(initData(&d_showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , d_showStressThreshold(initData(&d_showStressThreshold,(Real)0.0,"showStressThreshold","Threshold value to render only stress vectors higher to this threshold"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)

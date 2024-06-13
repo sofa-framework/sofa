@@ -44,7 +44,7 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
     , d_dmax(initData(&d_dmax, (Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
     , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , d_quadPressureMap(initData(&d_quadPressureMap, "d_quadPressureMap", "Map between quad indices and their pressure"))
+    , d_quadPressureMap(initData(&d_quadPressureMap, "quadPressureMap", "Map between quad indices and their pressure"))
     , m_topology(nullptr)
 {
     pressure.setParent(&d_pressure);

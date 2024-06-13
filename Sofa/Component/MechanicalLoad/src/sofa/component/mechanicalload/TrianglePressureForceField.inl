@@ -43,7 +43,7 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
     , d_useConstantForce(initData(&d_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , d_trianglePressureMap(initData(&d_trianglePressureMap, "d_trianglePressureMap", "Map between triangle indices and their pressure"))
+    , d_trianglePressureMap(initData(&d_trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
     , m_topology(nullptr)
 {
     pressure.setParent(&d_pressure);

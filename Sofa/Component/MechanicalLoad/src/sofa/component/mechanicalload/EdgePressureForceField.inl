@@ -33,7 +33,7 @@ namespace sofa::component::mechanicalload
 
 template <class DataTypes>
 EdgePressureForceField<DataTypes>::EdgePressureForceField()
-    : d_edgePressureMap(initData(&d_edgePressureMap, "d_edgePressureMap", "map between edge indices and their pressure"))
+    : d_edgePressureMap(initData(&d_edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
     , d_pressure(initData(&d_pressure, "pressure", "Pressure force per unit area"))
     , d_edgeIndices(initData(&d_edgeIndices, "edgeIndices", "Indices of edges separated with commas where a pressure is applied"))
     , d_edges(initData(&d_edges, "edges", "List of edges where a pressure is applied"))

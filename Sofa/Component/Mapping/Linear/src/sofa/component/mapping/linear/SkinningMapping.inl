@@ -38,11 +38,11 @@ template <class TIn, class TOut>
 SkinningMapping<TIn, TOut>::SkinningMapping ()
     : Inherit ()
     , d_initPos (initData (&d_initPos, "initPos", "initial child coordinates in the world reference frame." ) )
-    , d_nbRef (initData (&d_nbRef, "d_nbRef", "Number of primitives influencing each point." ) )
+    , d_nbRef (initData (&d_nbRef, "nbRef", "Number of primitives influencing each point." ) )
     , d_index (initData (&d_index, "indices", "parent indices for each child." ) )
     , d_weight (initData (&d_weight, "weight", "influence weights of the Dofs." ) )
-    , d_showFromIndex (initData (&d_showFromIndex, ( unsigned int ) 0, "d_showFromIndex", "Displayed From Index." ) )
-    , d_showWeights (initData (&d_showWeights, false, "d_showWeights", "Show influence." ) )
+    , d_showFromIndex (initData (&d_showFromIndex, ( unsigned int ) 0, "showFromIndex", "Displayed From Index." ) )
+    , d_showWeights (initData (&d_showWeights, false, "showWeights", "Show influence." ) )
 {
     type::vector<unsigned int> defaultNbRef;
     defaultNbRef.push_back((unsigned ) 4);

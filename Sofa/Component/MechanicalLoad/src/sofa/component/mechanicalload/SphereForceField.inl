@@ -57,7 +57,7 @@ SphereForceField<DataTypes>::SphereForceField()
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness"))
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
-    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "d_localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_bilateral(initData(&d_bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {
     contacts.setParent(&d_contacts);

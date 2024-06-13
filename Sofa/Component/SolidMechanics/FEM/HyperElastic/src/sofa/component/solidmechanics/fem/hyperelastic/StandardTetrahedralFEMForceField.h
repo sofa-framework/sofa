@@ -192,7 +192,7 @@ public:
   //  type::Mat<3,3,double> getPhi( int );
 
     /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
-    * Will be set as creation callback in the TetrahedronData @sa d_tetrahedronInfo
+    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
     */
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,

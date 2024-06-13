@@ -66,7 +66,7 @@ void PlasticMaterial::computeStress(Vec3& Stress, Vec3& Strain, unsigned int& el
 	// Otherwise we are on the unloading curve
 	else
 	{
-//		 Stress *= (_E[section] / (12 * (1 - d_poissonRatio.getValue()*d_poissonRatio.getValue())));
+//		 Stress *= (_E[section] / (12 * (1 - _poissonRatio.getValue()*_poissonRatio.getValue())));
 	}
 
 

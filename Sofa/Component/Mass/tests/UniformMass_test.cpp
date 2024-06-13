@@ -102,7 +102,7 @@ struct UniformMassTest :  public BaseTest
         EXPECT_TRUE( m_mass->findData("vertexMass") != nullptr ) ;
         EXPECT_TRUE( m_mass->findData("totalMass") != nullptr ) ;
         EXPECT_TRUE( m_mass->findData("filename") != nullptr ) ;
-        EXPECT_TRUE( m_mass->findData("d_localRange") != nullptr ) ;
+        EXPECT_TRUE( m_mass->findData("localRange") != nullptr ) ;
 
         EXPECT_TRUE( m_mass->findData("showGravityCenter") != nullptr ) ;
         EXPECT_TRUE( m_mass->findData("showAxisSizeFactor") != nullptr ) ;

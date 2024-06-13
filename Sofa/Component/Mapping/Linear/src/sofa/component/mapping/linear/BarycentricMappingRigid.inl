@@ -33,7 +33,7 @@ template <class In, class Out>
 BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
       d_map(initData(&d_map, "map", "mapper data")),
-      d_mapOrient(initData(&d_mapOrient, "d_mapOrient", "mapper data for mapped frames")),
+      d_mapOrient(initData(&d_mapOrient, "mapOrient", "mapper data for mapped frames")),
       matrixJ(nullptr),
       updateJ(true)
 {

@@ -43,8 +43,8 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     : d_young2(initData(&d_young2, type::vector<Real>(1, 1000.0), "transverseYoungModulus", "transverseYoungModulus", "Young modulus along transverse direction"))
     , d_theta(initData(&d_theta, (Real)(0.0), "fiberAngle", "Fiber angle in global reference frame (in degrees)"))
     , d_fiberCenter(initData(&d_fiberCenter, "fiberCenter", "Concentric fiber center in global reference frame"))
-    , d_showFiber(initData(&d_showFiber, true, "d_showFiber", "Flag activating rendering of fiber directions within each triangle"))
-    , d_localFiberDirection(initData(&d_localFiberDirection, "d_localFiberDirection", "Computed fibers direction within each triangle"))
+    , d_showFiber(initData(&d_showFiber, true, "showFiber", "Flag activating rendering of fiber directions within each triangle"))
+    , d_localFiberDirection(initData(&d_localFiberDirection, "localFiberDirection", "Computed fibers direction within each triangle"))
 {
     this->_anisotropicMaterial = true;
 

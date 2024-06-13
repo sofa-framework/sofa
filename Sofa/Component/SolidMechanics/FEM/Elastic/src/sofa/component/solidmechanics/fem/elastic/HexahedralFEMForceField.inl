@@ -56,7 +56,7 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     : d_method(initData(&d_method, std::string("large"), "method", "\"large\" or \"polar\" displacements"))
     , d_poissonRatio(initData(&d_poissonRatio, (Real)0.45f, "poissonRatio", ""))
     , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", ""))
-    , d_hexahedronInfo(initData(&d_hexahedronInfo, "d_hexahedronInfo", "Internal hexahedron data"))
+    , d_hexahedronInfo(initData(&d_hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
 {
 
     _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;

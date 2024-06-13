@@ -46,7 +46,7 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
-    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "d_jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
+    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
     , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
 {
     first = true;

@@ -57,8 +57,8 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::Standard
     , f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , f_parameterFileName(initData(&f_parameterFileName,std::string("myFile.param"),"ParameterFile","the name of the file describing the material parameters for all tetrahedra"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , tetrahedronInfo(initData(&tetrahedronInfo, "d_tetrahedronInfo", "Internal tetrahedron data"))
-    , edgeInfo(initData(&edgeInfo, "d_edgeInfo", "Internal edge data"))
+    , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
 {
     
 }

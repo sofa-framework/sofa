@@ -32,8 +32,8 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
     : d_index (initData (&d_index, ( unsigned ) 0, "index", "input DOF index" ) )
-    , d_indexFromEnd(initData (&d_indexFromEnd, false, "d_indexFromEnd", "input DOF index starts from the end of input DOFs vector") )
-    , d_repartition (initData (&d_repartition, "d_repartition", "number of dest dofs per entry dof" ) )
+    , d_indexFromEnd(initData (&d_indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector") )
+    , d_repartition (initData (&d_repartition, "repartition", "number of dest dofs per entry dof" ) )
     , d_globalToLocalCoords (initData (&d_globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates" ) )
     , d_rootAngularForceScaleFactor(initData(&d_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
     , d_rootLinearForceScaleFactor(initData(&d_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))

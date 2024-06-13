@@ -52,12 +52,12 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TDataTypes>
 PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
-    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "d_jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
+    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
     , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
-    , d_share_matrix(initData(&d_share_matrix, true, "d_share_matrix", "Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
+    , d_share_matrix(initData(&d_share_matrix, true, "share_matrix", "Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
     , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to precompute the first matrix"))
-    , d_use_rotations(initData(&d_use_rotations, true, "d_use_rotations", "Use Rotations around the preconditioner") )
-    , d_draw_rotations_scale(initData(&d_draw_rotations_scale, 0.0, "d_draw_rotations_scale", "Scale rotations in draw function") )
+    , d_use_rotations(initData(&d_use_rotations, true, "use_rotations", "Use Rotations around the preconditioner") )
+    , d_draw_rotations_scale(initData(&d_draw_rotations_scale, 0.0, "draw_rotations_scale", "Scale rotations in draw function") )
 {
     first = true;
     _rotate = false;
