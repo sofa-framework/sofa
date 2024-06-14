@@ -133,7 +133,7 @@ void  LineProjectiveConstraint<DataTypes>::updateJacobian()
     // normalize the normal vector
     CPos n = d_direction.getValue();
     if( n.norm()==0 )
-        n[0]=1; // arbritary normal vector
+        n[0]=1; // arbitrary normal vector
     else n *= 1/n.norm();
     d_direction.setValue(n);
 
