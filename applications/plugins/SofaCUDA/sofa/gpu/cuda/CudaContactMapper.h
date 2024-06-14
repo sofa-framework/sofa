@@ -147,10 +147,10 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
+        typename MMapping::IndexArray& map = *this->mapping->d_indices.beginEdit();
         map.fastResize(n);
         gpu::cuda::SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
-        this->mapping->f_indices.endEdit();
+        this->mapping->d_indices.endEdit();
     }
 };
 
@@ -179,10 +179,10 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
+        typename MMapping::IndexArray& map = *this->mapping->d_indices.beginEdit();
         map.fastResize(n);
         gpu::cuda::SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
-        this->mapping->f_indices.endEdit();
+        this->mapping->d_indices.endEdit();
     }
 };
 

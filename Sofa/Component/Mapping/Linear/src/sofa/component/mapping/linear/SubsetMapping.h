@@ -86,7 +86,7 @@ public:
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<Index> f_indices;
+    Data<sofa::Index> f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
     Data<Index> f_first;
