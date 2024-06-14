@@ -46,6 +46,20 @@ Index TopologySubsetIndices::indexOfElement(Index index) const
     return sofa::InvalidID;
 }
 
+
+const type::vector<Index> TopologySubsetIndices::indicesOfElement(Index index) const
+{
+    const container_type& data = m_value.getValue();
+    type::vector<Index> returnVec;
+    for (Index idElem = 0; idElem < data.size(); idElem++)
+    {
+        if (data[idElem] == index)
+            returnVec.push_back(idElem);
+    }
+
+    return returnVec;
+}
+
 void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)
 {
     this->Inherit::createTopologyHandler(_topology);
@@ -65,10 +79,10 @@ void TopologySubsetIndices::swapPostProcess(Index i1, Index i2)
 }
 
 
-void TopologySubsetIndices::removePostProcess(sofa::Size nbElements)
+void TopologySubsetIndices::removePostProcess(sofa::Index elemId)
 {
     // nothing to do here
-    SOFA_UNUSED(nbElements);
+    SOFA_UNUSED(elemId);
 }
 
 

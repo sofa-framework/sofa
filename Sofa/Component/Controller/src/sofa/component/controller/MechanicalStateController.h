@@ -129,13 +129,13 @@ public:
     void applyController(void);
 protected:
 
-    Data< unsigned int > index; ///< Controlled DOF index.
+    Data< unsigned int > index; ///< Index of the controlled DOF
     Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
     Data< bool > buttonDeviceState; ///< state of ths device button
 
     core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
-    Data< sofa::type::Vec<3,Real> > mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
+    Data< sofa::type::Vec<3,Real> > mainDirection; ///< Main direction and orientation of the controlled DOF
 
     enum MouseMode { None=0, BtLeft, BtRight, BtMiddle, Wheel }; ///< Mouse current mode.
     bool device;

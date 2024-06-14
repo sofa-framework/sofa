@@ -394,7 +394,7 @@ int NewOmniDriver::initDevice()
 
 //constructeur
 NewOmniDriver::NewOmniDriver()
-    : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    : forceScale(initData(&forceScale, 1.0, "forceScale","Default scaling factor applied to the force feedback"))
     , scale(initData(&scale, 100.0, "scale","Default scale applied to the Phantom Coordinates. "))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl>
+#include <MultiThreading/config.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>

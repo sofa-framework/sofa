@@ -43,9 +43,18 @@ public:
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
-    Data<double> p_zoomSpeed; ///< Zoom Speed
-    Data<double> p_panSpeed; ///< Pan Speed
-    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_zoomSpeed;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_panSpeed;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<int> p_pivot;
+
+    Data<double> d_zoomSpeed; ///< Zoom Speed
+    Data<double> d_panSpeed; ///< Pan Speed
+    Data<int> d_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
 
 protected:
     InteractiveCamera();

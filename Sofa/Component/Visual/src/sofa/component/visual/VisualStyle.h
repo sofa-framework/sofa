@@ -67,7 +67,10 @@ public:
     void fwdDraw(VisualParams* ) override;
     void bwdDraw(VisualParams* ) override;
 
-    Data<DisplayFlags> displayFlags; ///< Display Flags
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<DisplayFlags> displayFlags;
+
+    Data<DisplayFlags> d_displayFlags; ///< Display Flags
 
 protected:
     DisplayFlags backupFlags;

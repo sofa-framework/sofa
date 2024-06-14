@@ -23,6 +23,7 @@ set(SOURCE_FILES
     objectmodel/SingleLink_test.cpp
     objectmodel/VectorData_test.cpp
     topology/BaseMeshTopology_test.cpp
+    topology/TopologySubsetIndices_test.cpp
     DataEngine_test.cpp
     Engine_test.cpp
     MatrixAccumulator_test.cpp

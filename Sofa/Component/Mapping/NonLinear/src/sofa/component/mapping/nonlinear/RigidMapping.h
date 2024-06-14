@@ -85,7 +85,7 @@ public:
     typedef type::Mat<NOut, NIn, OutReal> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    Data<OutVecCoord> d_points;    ///< mapped points in local coordinates
+    Data<OutVecCoord> d_points; ///< Local Coordinates of the points
     SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_points instead") DeprecatedAndRemoved points;
 
     OutVecCoord m_rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates

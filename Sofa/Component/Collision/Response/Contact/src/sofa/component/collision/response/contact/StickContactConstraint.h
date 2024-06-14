@@ -70,7 +70,7 @@ protected:
 
     ~StickContactConstraint() override;
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
     Data<bool> f_keepAlive;
 
 

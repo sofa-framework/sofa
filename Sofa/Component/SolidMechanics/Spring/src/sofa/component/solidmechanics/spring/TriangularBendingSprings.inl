@@ -584,7 +584,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
         if(edgeInfo.is_activated)
         {
             const bool external=true;
-            Real d = (x[edgeInfo.m2]-x[edgeInfo.m1]).norm();
+            Real d = (x[edgeInfo.m2] - x[edgeInfo.m1]).norm();
             if (external)
             {
                 if (d<edgeInfo.restlength*0.9999)

@@ -351,7 +351,7 @@ void RegularGridTopology::createTexCoords()
         return;
     }
 
-    auto _texCoords = sofa::helper::getWriteAccessor(this->seqUVs);
+    auto _texCoords = sofa::helper::getWriteAccessor(this->d_seqUVs);
     _texCoords.resize(nPts);
 
     // check if flat grid

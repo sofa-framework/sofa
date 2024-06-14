@@ -31,14 +31,20 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 ParabolicProjectiveConstraint<DataTypes>::ParabolicProjectiveConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_P1(initData(&m_P1,"P1","first point of the parabol") )
-    , m_P2(initData(&m_P2,"P2","second point of the parabol") )
-    , m_P3(initData(&m_P3,"P3","third point of the parabol") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
+    , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , d_P1(initData(&d_P1, "P1", "first point of the parabol") )
+    , d_P2(initData(&d_P2, "P2", "second point of the parabol") )
+    , d_P3(initData(&d_P3, "P3", "third point of the parabol") )
+    , d_tBegin(initData(&d_tBegin, "BeginTime", "Begin Time of the motion") )
+    , d_tEnd(initData(&d_tEnd, "EndTime", "End Time of the motion") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    m_indices.setParent(&d_indices);
+    m_P1.setParent(&d_P1);
+    m_P2.setParent(&d_P2);
+    m_P3.setParent(&d_P3);
+    m_tBegin.setParent(&d_tBegin);
+    m_tEnd.setParent(&d_tEnd);
 }
 
 template <class DataTypes>
@@ -49,8 +55,8 @@ ParabolicProjectiveConstraint<DataTypes>::~ParabolicProjectiveConstraint()
 template <class DataTypes>
 void  ParabolicProjectiveConstraint<DataTypes>::addConstraint(unsigned index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 
@@ -70,16 +76,16 @@ void ParabolicProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize functions and parameters for topology data and handler
-        m_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
-    Vec3R P1 = m_P1.getValue();
-    Vec3R P2 = m_P2.getValue();
-    Vec3R P3 = m_P3.getValue();
+    Vec3R P1 = d_P1.getValue();
+    Vec3R P2 = d_P2.getValue();
+    Vec3R P3 = d_P3.getValue();
 
     //compute the projection to go in the parabol plan,
     //such as P1 is the origin, P1P3 vector is the x axis, and P1P2 is in the xy plan
@@ -123,9 +129,9 @@ void ParabolicProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     Real t = (Real) this->getContext()->getTime();
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue())
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             clear(dx, *it);
     }
@@ -146,17 +152,17 @@ void ParabolicProjectiveConstraint<DataTypes>::projectVelocity(const core::Mecha
     Real t = (Real) this->getContext()->getTime();
     Real dt = (Real) this->getContext()->getDt();
 
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue()	)
     {
-        Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
-        const SetIndexArray & indices = m_indices.getValue();
+        Real relativeTime = (t - d_tBegin.getValue() ) / (d_tEnd.getValue() - d_tBegin.getValue());
+        const SetIndexArray & indices = d_indices.getValue();
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             //compute velocity by doing v = dx/dt
             Real pxP = m_locP3.x()*relativeTime;
             Real pyP = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (pxP *pxP) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * pxP;
-            relativeTime = (t+dt - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
+            relativeTime = (t + dt - d_tBegin.getValue() ) / (d_tEnd.getValue() - d_tBegin.getValue());
             Real pxN = m_locP3.x()*relativeTime;
             Real pyN = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (pxN *pxN) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * pxN;
 
@@ -175,10 +181,10 @@ void ParabolicProjectiveConstraint<DataTypes>::projectPosition(const core::Mecha
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real t = (Real) this->getContext()->getTime();
 
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue()	)
     {
-        Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
-        const SetIndexArray & indices = m_indices.getValue();
+        Real relativeTime = (t - d_tBegin.getValue() ) / (d_tEnd.getValue() - d_tBegin.getValue());
+        const SetIndexArray & indices = d_indices.getValue();
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -189,7 +195,7 @@ void ParabolicProjectiveConstraint<DataTypes>::projectPosition(const core::Mecha
             Vec3R locPos( px , py, 0.0);
 
             //projection to world coordinates
-            Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
+            Vec3R worldPos = d_P1.getValue() + m_projection.rotate(locPos);
 
             x[*it] = worldPos;
         }
@@ -214,7 +220,7 @@ void ParabolicProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
-    Real t = m_tEnd.getValue() - m_tBegin.getValue();
+    Real t = d_tEnd.getValue() - d_tBegin.getValue();
     Real nbStep = t/dt;
 
     vparams->drawTool()->disableLighting();
@@ -229,7 +235,7 @@ void ParabolicProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
         Real px = m_locP3.x()*relativeTime;
         Real py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
         Vec3R locPos( px , py, 0.0);
-        Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
+        Vec3R worldPos = d_P1.getValue() + m_projection.rotate(locPos);
 
         vertices.push_back(sofa::type::Vec3(worldPos[0],worldPos[1],worldPos[2]));
 
@@ -237,7 +243,7 @@ void ParabolicProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
         px = m_locP3.x()*relativeTime;
         py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
         locPos = Vec3R( px , py, 0.0);
-        worldPos = m_P1.getValue() + m_projection.rotate(locPos);
+        worldPos = d_P1.getValue() + m_projection.rotate(locPos);
 
 
         vertices.push_back(sofa::type::Vec3(worldPos[0],worldPos[1],worldPos[2]));
@@ -247,9 +253,9 @@ void ParabolicProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
     vertices.clear();
 
     //draw points for the 3 control points
-    const Vec3R& mp1 = m_P1.getValue();
-    const Vec3R& mp2 = m_P2.getValue();
-    const Vec3R& mp3 = m_P3.getValue();
+    const Vec3R& mp1 = d_P1.getValue();
+    const Vec3R& mp2 = d_P2.getValue();
+    const Vec3R& mp3 = d_P3.getValue();
     vertices.push_back(sofa::type::Vec3(mp1[0],mp1[1],mp1[2]));
     vertices.push_back(sofa::type::Vec3(mp2[0],mp2[1],mp2[2]));
     vertices.push_back(sofa::type::Vec3(mp3[0],mp3[1],mp3[2]));

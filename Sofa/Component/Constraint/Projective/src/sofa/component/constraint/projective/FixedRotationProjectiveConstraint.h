@@ -65,9 +65,18 @@ public:
 
 
 protected :
-    Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
-    Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
-    Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< bool > FixedXRotation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< bool > FixedYRotation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< bool > FixedZRotation;
+
+    Data< bool > d_fixedXRotation; ///< Prevent Rotation around X axis
+    Data< bool > d_fixedYRotation; ///< Prevent Rotation around Y axis
+    Data< bool > d_fixedZRotation; ///< Prevent Rotation around Z axis
     type::vector<type::Quat<SReal>> previousOrientation;
 };
 

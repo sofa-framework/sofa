@@ -33,10 +33,14 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 FixedRotationProjectiveConstraint<DataTypes>::FixedRotationProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr),
-      FixedXRotation( initData( &FixedXRotation, false, "FixedXRotation", "Prevent Rotation around X axis")),
-      FixedYRotation( initData( &FixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
-      FixedZRotation( initData( &FixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
+      d_fixedXRotation(initData(&d_fixedXRotation, false, "FixedXRotation", "Prevent Rotation around X axis")),
+      d_fixedYRotation(initData(&d_fixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
+      d_fixedZRotation(initData(&d_fixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
 {
+          FixedXRotation.setParent(&d_fixedXRotation);
+          FixedYRotation.setParent(&d_fixedYRotation);
+          FixedZRotation.setParent(&d_fixedZRotation);
+
 }
 
 
@@ -120,13 +124,13 @@ void FixedRotationProjectiveConstraint<DataTypes>::projectPosition(const core::M
             to_keep = twist * to_keep;
         };
 
-        if (FixedXRotation.getValue() == true){
+        if (d_fixedXRotation.getValue() == true){
             remove_rotation(vx);
         }
-        if (FixedYRotation.getValue() == true){
+        if (d_fixedYRotation.getValue() == true){
             remove_rotation(vy);
         }
-        if (FixedZRotation.getValue() == true){
+        if (d_fixedZRotation.getValue() == true){
             remove_rotation(vz);
         }
         x[i].getOrientation() = Q_remaining * to_keep;

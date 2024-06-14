@@ -95,15 +95,26 @@ protected:
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<unsigned int> m1;
 
-    DataSubsetIndices m1; ///< index of the constraint on the first model
-    DataSubsetIndices m2; ///< index of the constraint on the second model
-    Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<unsigned int> m2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<Vec3Types::VecCoord> restVector;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<bool> keepOrientDiff;
+
+    DataSubsetIndices d_m1; ///< index of the constraint on the first model
+    DataSubsetIndices d_m2; ///< index of the constraint on the second model
+    Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<bool> d_activate; ///< bool to control constraint activation
-    Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+    Data<bool> d_activate; ///< control constraint activation (true by default)
+    Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes

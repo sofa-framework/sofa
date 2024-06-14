@@ -88,7 +88,7 @@ protected:
     bool updateMatrix;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_youngModulus; ///< Young's modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient

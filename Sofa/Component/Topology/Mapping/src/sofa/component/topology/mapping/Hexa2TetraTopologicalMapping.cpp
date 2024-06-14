@@ -56,10 +56,12 @@ int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of ma
 
 Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
-    , swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
+    , d_swapping(initData(&d_swapping, false, "swapping", "Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
 {
     m_inputType = geometry::ElementType::HEXAHEDRON;
     m_outputType = geometry::ElementType::TETRAHEDRON;
+
+    swapping.setParent(&d_swapping);
 }
 
 Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
@@ -123,7 +125,7 @@ void Hexa2TetraTopologicalMapping::init()
         // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
         bool swapped = false;
 
-        if(swapping.getValue())
+        if(d_swapping.getValue())
         {
             if (!((i%nx)&1))
             {

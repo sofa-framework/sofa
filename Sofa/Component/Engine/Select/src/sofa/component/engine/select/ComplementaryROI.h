@@ -70,14 +70,14 @@ protected:
     /// inputs
     /// @{
     Data<VecCoord> d_position; ///< input positions
-    Data<unsigned int> d_nbSet; ///< number of sets
+    Data<unsigned int> d_nbSet; ///< number of sets to complement
     core::objectmodel::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
     /// @}
 
     /// outputs
     /// @{
     Data<SetIndex> d_indices; ///< ROI indices
-    Data<VecCoord> d_pointsInROI; ///< ROI positions
+    Data<VecCoord> d_pointsInROI; ///< points in the ROI
     /// @}
 
 };

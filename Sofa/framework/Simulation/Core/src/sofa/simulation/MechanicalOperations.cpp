@@ -388,8 +388,78 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     projectResponse(a);
 }
 
+void MechanicalOperations::resetSystem(core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        linearSolver->resetSystem();
+    }
+}
 
+void MechanicalOperations::setSystemMBKMatrix(SReal mFact, SReal bFact,
+    SReal kFact, core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        mparams.setMFactor(mFact);
+        mparams.setBFactor(bFact);
+        mparams.setKFactor(kFact);
+        mparams.setSupportOnlySymmetricMatrix(!linearSolver->supportNonSymmetricSystem());
+        linearSolver->setSystemMBKMatrix(&mparams);
+    }
+}
 
+void MechanicalOperations::setSystemRHVector(core::MultiVecDerivId v,
+    core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        linearSolver->setSystemRHVector(v);
+    }
+}
+
+void MechanicalOperations::setSystemLHVector(core::MultiVecDerivId v,
+    core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        linearSolver->setSystemLHVector(v);
+    }
+}
+
+void MechanicalOperations::solveSystem(core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        linearSolver->solveSystem();
+    }
+}
+
+void MechanicalOperations::print(std::ostream& out,
+    core::behavior::LinearSolver* linearSolver)
+{
+    if (linearSolver)
+    {
+        const linearalgebra::BaseMatrix* m = linearSolver->getSystemBaseMatrix();
+        if (!m)
+        {
+            return;
+        }
+        const auto ny = m->rowSize();
+        const auto nx = m->colSize();
+        out << "[";
+        for (linearalgebra::BaseMatrix::Index y = 0; y < ny; ++y)
+        {
+            out << "[";
+            for (linearalgebra::BaseMatrix::Index x = 0; x < nx; x++)
+            {
+                out << ' ' << m->element(x, y);
+            }
+            out << "]";
+        }
+        out << "]";
+    }
+}
 
 
 using sofa::core::behavior::LinearSolver;
@@ -437,7 +507,7 @@ void MechanicalOperations::m_resetSystem()
         showMissingLinearSolverError();
         return;
     }
-    s->resetSystem();
+    resetSystem(s);
 }
 
 void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact)
@@ -448,11 +518,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
         showMissingLinearSolverError();
         return;
     }
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    mparams.setSupportOnlySymmetricMatrix(!s->supportNonSymmetricSystem());
-    s->setSystemMBKMatrix(&mparams);
+    setSystemMBKMatrix(mFact, bFact, kFact, s);
 }
 
 void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
@@ -463,7 +529,7 @@ void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
 
         return;
     }
-    s->setSystemRHVector(v);
+    setSystemRHVector(v, s);
 }
 
 void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
@@ -474,8 +540,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
         showMissingLinearSolverError();
         return;
     }
-    s->setSystemLHVector(v);
-
+    setSystemLHVector(v, s);
 }
 
 void MechanicalOperations::m_solveSystem()
@@ -486,7 +551,7 @@ void MechanicalOperations::m_solveSystem()
         showMissingLinearSolverError();
         return;
     }
-    s->solveSystem();
+    solveSystem(s);
 }
 
 void MechanicalOperations::m_print( std::ostream& out )
@@ -497,20 +562,7 @@ void MechanicalOperations::m_print( std::ostream& out )
         showMissingLinearSolverError();
         return;
     }
-    const linearalgebra::BaseMatrix* m = s->getSystemBaseMatrix();
-    if (!m) return;
-    //out << *m;
-    const auto ny = m->rowSize();
-    const auto nx = m->colSize();
-    out << "[";
-    for (linearalgebra::BaseMatrix::Index y=0; y<ny; ++y)
-    {
-        out << "[";
-        for (linearalgebra::BaseMatrix::Index x=0; x<nx; x++)
-            out << ' ' << m->element(x,y);
-        out << "]";
-    }
-    out << "]";
+    print(out, s);
 }
 
 

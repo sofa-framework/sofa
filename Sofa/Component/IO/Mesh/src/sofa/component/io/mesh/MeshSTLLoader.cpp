@@ -92,7 +92,7 @@ bool MeshSTLLoader::doLoad()
 
 bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
 {
-    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular facets in the file
+    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular d_facets in the file
     // Each facet is described with a 50-bytes field, so a valid binary STL file verifies the following condition:
     // nFacets * 50 + 84-bytes header == filesize
 
@@ -147,7 +147,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 #ifndef NDEBUG
     {
-    // checking that the file is large enough to contain the given nb of facets
+    // checking that the file is large enough to contain the given nb of d_facets
     // store current pos in file
     std::streampos pos = dataFile.tellg();
     // get length of file
@@ -168,7 +168,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     unsigned int nbDegeneratedTriangles = 0;
 
-    // Parsing facets
+    // Parsing d_facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
         Triangle the_tri;

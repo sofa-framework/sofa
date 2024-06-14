@@ -41,8 +41,8 @@ using sofa::core::loader::VoxelLoader;
 template<class DataTypes>
 Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
     showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
-    showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
-    showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),
+    showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the distance for each point of the target point set." ) ),
+    showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the distance for each point of the target point set." ) ),
     showTextScaleFactor ( initData ( &showTextScaleFactor, 0.001, "showTextScaleFactor","Scale to apply on the text." ) ),
     showGradientMap ( initData ( &showGradientMap, false, "showGradients","show gradients for each point of the target point set." ) ),
     showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.1, "showGradientsScaleFactor","scale for the gradients displayed." ) ),
@@ -50,7 +50,7 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     distanceType ( initData ( &distanceType, {"Geodesic","Harmonic","Stiffness Diffusion", "Voronoi", "Harmonic with Stiffness"}, "distanceType","type of distance to compute for inserted frames." ) ),
     initTarget ( initData ( &initTarget, false, "initTarget","initialize the target MechanicalObject from the grid." ) ),
     initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
-    zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
+    zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondence between the segmented value and the frames." ) ),
     harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
     fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
     targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
@@ -97,7 +97,7 @@ void Distances< DataTypes >::init()
         helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
         const Coord& offSet = offset.getValue();
-        const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
+        const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
         for ( unsigned int i = 0; i < size; i++)
         {
             Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -335,7 +335,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     dMIndex.clear();
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
-    const sofa::type::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
+    const sofa::type::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->d_idxInRegularGrid.getValue();
     const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
@@ -359,7 +359,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
 
     msg_info() << "Compute distance map.";
 
-    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
+    sofa::type::Vec3i res = hexaContainer->d_resolution.getValue();
     bool convergence = false;
 
     double*** distMap = new double** [res[0]];
@@ -377,7 +377,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
         }
     }
 
-    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
+    const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -568,8 +568,8 @@ template<class DataTypes>
 void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, type::vector<double>& distances, VecCoord& gradients, const type::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals )
 {
     // Store the distance and compute gradient for each goal.
-    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
-    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
+    sofa::type::Vec3i res = hexaContainer->d_resolution.getValue();
+    const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
     for ( unsigned int i = 0; i < hexaGoal.size(); i++ )
     {
         const core::topology::BaseMeshTopology::HexaID& hID = hexaGoal[i];
@@ -667,8 +667,8 @@ void Distances< DataTypes >::findCorrespondingHexas ( type::vector<core::topolog
 template<class DataTypes>
 void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& point )
 {
-    const sofa::type::Vec3i& res = hexaContainer->resolution.getValue();
-    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
+    const sofa::type::Vec3i& res = hexaContainer->d_resolution.getValue();
+    const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
 
     const int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
     const int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);

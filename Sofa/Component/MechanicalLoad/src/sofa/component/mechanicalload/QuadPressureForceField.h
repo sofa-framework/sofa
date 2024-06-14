@@ -59,8 +59,8 @@ public:
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
+    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
     Data<bool> p_showForces; ///< draw quads which have a given pressure
 
     /// Link to be set to the topology container in the component graph.
@@ -98,7 +98,7 @@ protected:
         }
     };
 
-    sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< map between quad indices and their pressure
+    sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< Map between quad indices and their pressure
 
     /// Pointer to the current topology                                                                        /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

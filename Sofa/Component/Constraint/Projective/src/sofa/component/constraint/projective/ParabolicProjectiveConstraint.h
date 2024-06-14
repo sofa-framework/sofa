@@ -57,17 +57,36 @@ public:
     typedef type::Quat<Real> QuatR;
 
 protected:
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< sofa::type::vector<sofa::Index> > m_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R> m_P1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R> m_P2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R> m_P3;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> m_tBegin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> m_tEnd;
+
     ///indices of the DOFs constraints
-    SetIndex m_indices;
+    SetIndex d_indices;
 
     /// the three points defining the parabol
-    Data<Vec3R> m_P1;
-    Data<Vec3R> m_P2; ///< second point of the parabol
-    Data<Vec3R> m_P3; ///< third point of the parabol
+    Data<Vec3R> d_P1;
+    Data<Vec3R> d_P2; ///< second point of the parabol
+    Data<Vec3R> d_P3; ///< third point of the parabol
 
     /// the time steps defining the velocity of the movement
-    Data<Real> m_tBegin;
-    Data<Real> m_tEnd; ///< End Time of the motion
+    Data<Real> d_tBegin;
+    Data<Real> d_tEnd; ///< End Time of the motion
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<ParabolicProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -86,19 +105,19 @@ protected:
 public:
     void addConstraint(unsigned index );
 
-    void setP1(const Vec3R &p) {m_P1.setValue(p);}
-    void setP2(const Vec3R &p) {m_P2.setValue(p);}
-    void setP3(const Vec3R &p) {m_P3.setValue(p);}
+    void setP1(const Vec3R &p) {d_P1.setValue(p);}
+    void setP2(const Vec3R &p) {d_P2.setValue(p);}
+    void setP3(const Vec3R &p) {d_P3.setValue(p);}
 
-    void setBeginTime(const Real &t) {m_tBegin.setValue(t);}
-    void setEndTime(const Real &t) {m_tEnd.setValue(t);}
+    void setBeginTime(const Real &t) {d_tBegin.setValue(t);}
+    void setEndTime(const Real &t) {d_tEnd.setValue(t);}
 
-    Vec3R getP1() {return m_P1.getValue();}
-    Vec3R getP2() {return m_P2.getValue();}
-    Vec3R getP3() {return m_P3.getValue();}
+    Vec3R getP1() {return d_P1.getValue();}
+    Vec3R getP2() {return d_P2.getValue();}
+    Vec3R getP3() {return d_P3.getValue();}
 
-    Real getBeginTime() {return m_tBegin.getValue();}
-    Real getEndTime() {return m_tEnd.getValue();}
+    Real getBeginTime() {return d_tBegin.getValue();}
+    Real getEndTime() {return d_tEnd.getValue();}
 
     /// -- Constraint interface
     void init() override;

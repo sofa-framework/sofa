@@ -33,11 +33,15 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 PositionBasedDynamicsProjectiveConstraint<DataTypes>::PositionBasedDynamicsProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , stiffness(initData(&stiffness,(Real)1.0,"stiffness","Blending between current pos and target pos."))
-    , position(initData(&position,"position","Target positions."))
-    , velocity(initData(&velocity,"velocity","Velocities."))
-    , old_position(initData(&old_position,"old_position","Old positions."))
+    , d_stiffness(initData(&d_stiffness, (Real)1.0, "stiffness", "Blending between current pos and target pos."))
+    , d_position(initData(&d_position, "position", "Target positions."))
+    , d_velocity(initData(&d_velocity, "velocity", "Velocities."))
+    , d_old_position(initData(&d_old_position, "old_position", "Old positions."))
 {
+    stiffness.setParent(&d_stiffness);
+    position.setParent(&d_position);
+    velocity.setParent(&d_velocity);
+    old_position.setParent(&d_old_position);
 }
 
 
@@ -60,7 +64,7 @@ template <class DataTypes>
 void PositionBasedDynamicsProjectiveConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    if ((int)position.getValue().size() != (int)this->mstate->getSize())    msg_error() << "Invalid target position vector size." ;
+    if ((int)d_position.getValue().size() != (int)this->mstate->getSize())    msg_error() << "Invalid target position vector size." ;
 }
 
 
@@ -69,10 +73,10 @@ void PositionBasedDynamicsProjectiveConstraint<DataTypes>::reset()
 {
 	this->core::behavior::ProjectiveConstraintSet<DataTypes>::reset();
 
-	helper::WriteAccessor<DataVecDeriv> vel ( velocity );
+	helper::WriteAccessor<DataVecDeriv> vel (d_velocity );
 	std::fill(vel.begin(),vel.end(),Deriv());
 
-	helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
+	helper::WriteAccessor<DataVecCoord> old_pos (d_old_position );
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	old_pos.resize(x.size());
 	std::copy(x.begin(),x.end(),old_pos.begin());
@@ -95,7 +99,7 @@ void PositionBasedDynamicsProjectiveConstraint<DataTypes>::projectVelocity(const
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataVecDeriv> res (vData );
-    helper::ReadAccessor<DataVecDeriv> vel ( velocity );
+    helper::ReadAccessor<DataVecDeriv> vel (d_velocity );
 
     if (vel.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
     std::copy(vel.begin(),vel.end(),res.begin());
@@ -107,9 +111,9 @@ void PositionBasedDynamicsProjectiveConstraint<DataTypes>::projectPosition(const
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataVecCoord> res ( xData );
-    helper::WriteAccessor<DataVecDeriv> vel ( velocity );
-    helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
-    helper::ReadAccessor<DataVecCoord> tpos = position ;
+    helper::WriteAccessor<DataVecDeriv> vel (d_velocity );
+    helper::WriteAccessor<DataVecCoord> old_pos (d_old_position );
+    helper::ReadAccessor<DataVecCoord> tpos = d_position ;
     if (tpos.size() != res.size()) 	{ msg_error() << "Invalid target position vector size." ;		return; }
 
     Real dt =  (Real)this->getContext()->getDt();
@@ -125,7 +129,7 @@ void PositionBasedDynamicsProjectiveConstraint<DataTypes>::projectPosition(const
 
     for( size_t i=0; i<res.size(); i++ )
     {
-        res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
+        res[i] += ( tpos[i] - res[i]) * d_stiffness.getValue();
         vel[i] = (res[i] - old_pos[i]) * invdt;
         old_pos[i] = res[i];
     }

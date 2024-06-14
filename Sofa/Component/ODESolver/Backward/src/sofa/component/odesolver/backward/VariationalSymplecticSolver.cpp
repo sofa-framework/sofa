@@ -22,7 +22,6 @@
 #include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -75,6 +74,7 @@ void VariationalSymplecticSolver::init()
         msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :" << tmp.str();
     }
     sofa::core::behavior::OdeSolver::init();
+    sofa::core::behavior::LinearSolverAccessor::init();
     energies.open((d_fileName.getValue()).c_str(), std::ios::out);
 }
 
@@ -221,18 +221,20 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			mop.projectResponse(b);
 		    sofa::helper::AdvancedTimer::stepEnd("ComputeRHTerm");
 
-		    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
 		    {
 			    SCOPED_TIMER("MBKBuild");
-			    matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h));
+                const SReal mFact = 4.0 / (h * h) + 4 * rM / h;
+			    const SReal kFact = -1.0 - 4 * rK / h;
+                mop.setSystemMBKMatrix(mFact, 0, kFact, l_linearSolver.get());
 		    }
 
             {
 			    SCOPED_TIMER("MBKSolve");
                 // resolution of matrix*res=b
-                matrix.solve(res, b); //Call to ODE resolution.
+			    l_linearSolver->setSystemLHVector(res);
+			    l_linearSolver->setSystemRHVector(b);
+			    l_linearSolver->solveSystem();
             }
 
 			/// Updates of q(k,i) ///
@@ -309,14 +311,15 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             // Compute hamiltonian kinetic energy = 0.5*(newp.dot(Minv*newp))
             MultiVecDeriv b(&vop);
             b.clear();
-            core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
             // Mass matrix
-            matrix.setSystemMBKMatrix(MechanicalMatrix::M);
+            mop.setSystemMBKMatrix(1, 0, 0, l_linearSolver.get());
 
             // resolution of matrix*b=newp
-            matrix.solve(b,newp); // b = inv(matrix)*newp = Minv*newp
+            l_linearSolver->setSystemLHVector(b);
+            l_linearSolver->setSystemRHVector(newp);
+            l_linearSolver->solveSystem(); // b = inv(matrix)*newp = Minv*newp
 
-            double hamiltonianKineticEnergy = 0.5*(newp.dot(b));
+            const auto hamiltonianKineticEnergy = 0.5*(newp.dot(b));
 
             // Hamiltonian energy with incremental potential energy
             if (d_useIncrementalPotentialEnergy.getValue())

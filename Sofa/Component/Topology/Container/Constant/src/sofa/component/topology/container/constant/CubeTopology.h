@@ -47,13 +47,13 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    int getNx() const { return nx.getValue(); }
-    int getNy() const { return ny.getValue(); }
-    int getNz() const { return nz.getValue(); }
+    int getNx() const { return d_nx.getValue(); }
+    int getNy() const { return d_ny.getValue(); }
+    int getNz() const { return d_nz.getValue(); }
 
-    void setNx(int n) { nx.setValue(n); setSize(); }
-    void setNy(int n) { ny.setValue(n); setSize(); }
-    void setNz(int n) { nz.setValue(n); setSize(); }
+    void setNx(int n) { d_nx.setValue(n); setSize(); }
+    void setNy(int n) { d_ny.setValue(n); setSize(); }
+    void setNz(int n) { d_nz.setValue(n); setSize(); }
 
     void init() override;
     void reinit() override;
@@ -81,8 +81,8 @@ public:
     const Vec3& getDy() const { return dy; }
     const Vec3& getDz() const { return dz; }
 
-    Vec3   getMin() const { return min.getValue();}
-    Vec3   getMax() const { return max.getValue();}
+    Vec3   getMin() const { return d_min.getValue();}
+    Vec3   getMax() const { return d_max.getValue();}
 
     Vec3 getPoint(int i) const;
     virtual Vec3 getPoint(int x, int y, int z) const;
@@ -91,17 +91,39 @@ public:
     SReal getPY(Index i) const override { return getPoint(i)[1]; }
     SReal getPZ(Index i) const override { return getPoint(i)[2]; }
 
-    void setSplitNormals(bool b) {splitNormals.setValue(b);}
+    void setSplitNormals(bool b) {d_splitNormals.setValue(b);}
 
 protected:
-    Data<int> nx; ///< z grid resolution
-    Data<int> ny;
-    Data<int> nz;
-    Data<bool> internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
-    Data<bool> splitNormals; ///< split corner points to have planar normals
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<int> nx;
 
-    Data< Vec3 > min; ///< Min
-    Data< Vec3 > max; ///< Max
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<int> ny;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<int> nz;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> internalPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> splitNormals;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<Vec3> min;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<Vec3> max;
+
+
+    Data<int> d_nx; ///< x grid resolution
+    Data<int> d_ny; ///< y grid resolution
+    Data<int> d_nz; ///< z grid resolution
+    Data<bool> d_internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
+    Data<bool> d_splitNormals; ///< split corner points to have planar normals
+
+    Data< Vec3 > d_min; ///< Min
+    Data< Vec3 > d_max; ///< Max
     /// Position of point 0
     Vec3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
