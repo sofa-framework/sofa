@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
@@ -48,10 +49,10 @@ public:
 
 
 template<class DataTypes>
-class FastTetrahedralCorotationalForceField : public core::behavior::ForceField<DataTypes>
+class FastTetrahedralCorotationalForceField : public BaseTetrahedronFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(BaseTetrahedronFEMForceField,DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::Real        Real        ;
@@ -130,7 +131,7 @@ public:
     Data<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_youngModulus;
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<bool> f_drawing;
@@ -156,8 +157,8 @@ public:
     Data<std::string> d_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic)
     RotationDecompositionMethod m_decompositionMethod;
 
-    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> d_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -195,24 +196,14 @@ public:
 
     void updateTopologyInformation();
 
-    virtual Real getLambda() const { return lambda;}
-    virtual Real getMu() const { return mu;}
-
-    void setYoungModulus(const Real modulus)
-    {
-        d_youngModulus.setValue(modulus);
-    }
-    void setPoissonRatio(const Real ratio)
-    {
-        d_poissonRatio.setValue(ratio);
-    }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {
         m_decompositionMethod = m;
     }
     void draw(const core::visual::VisualParams* vparams) override;
+
     /// compute lambda and mu based on the Young modulus and Poisson ratio
-    void updateLameCoefficients();
+    static void computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu);
 
 
 

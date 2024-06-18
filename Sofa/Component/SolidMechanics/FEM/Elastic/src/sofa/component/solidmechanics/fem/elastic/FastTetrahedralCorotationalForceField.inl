@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
@@ -44,8 +45,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     const std::vector< Tetrahedron > &tetrahedronArray=this->m_topology->getTetrahedra() ;
 
     unsigned int j,k,l,m,n;
-    typename DataTypes::Real lambda=getLambda();
-    typename DataTypes::Real mu=getMu();
+    Real lambda, mu;
+
+    Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
+
+    computeLameCoefficients(youngModulusElement, this->d_poissonRatio.getValue(), lambda, mu);
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -153,15 +157,11 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , m_topology(nullptr)
     , updateMatrix(true)
 {
-    d_poissonRatio.setRequired(true);
-    d_youngModulus.setRequired(true);
-
     pointInfo.setParent(&d_pointInfo);
     edgeInfo.setParent(&d_edgeInfo);
     tetrahedronInfo.setParent(&d_tetrahedronInfo);
     f_method.setParent(&d_method);
     f_poissonRatio.setParent(&d_poissonRatio);
-    f_youngModulus.setParent(&d_youngModulus);
     f_drawing.setParent(&d_drawing);
     drawColor1.setParent(&d_drawColor1);
     drawColor2.setParent(&d_drawColor2);
@@ -181,8 +181,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 {
     this->Inherited::init();
 
-    msg_warning_when(!d_poissonRatio.isSet()) << "The default value of the Data " << d_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
-    msg_warning_when(!d_youngModulus.isSet()) << "The default value of the Data " << d_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
+    msg_warning_when(!this->d_poissonRatio.isSet()) << "The default value of the Data " << this->d_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
+    msg_warning_when(!this->d_youngModulus.isSet()) << "The default value of the Data " << this->d_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
 
     if (l_topology.empty())
     {
@@ -202,19 +202,17 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 
     if (m_topology->getNbTetrahedra() == 0)
     {
-        msg_warning() << "No tetrahedra found in linked Topology.";
+        msg_error() << "No tetrahedra found in linked Topology.";
     }
-
-    updateLameCoefficients();
 
     const std::string& method = d_method.getValue();
     if (method == "polar")
         m_decompositionMethod = POLAR_DECOMPOSITION;
-     else if ((method == "qr") || (method == "large"))
+    else if ((method == "qr") || (method == "large"))
         m_decompositionMethod = QR_DECOMPOSITION;
     else if (method == "polar2")
         m_decompositionMethod = POLAR_DECOMPOSITION_MODIFIED;
-     else if ((method == "none") || (method == "linear") || (method == "small"))
+    else if ((method == "none") || (method == "linear") || (method == "small"))
         m_decompositionMethod = LINEAR_ELASTIC;
     else
     {
@@ -688,11 +686,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
 }
 
 template<class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::updateLameCoefficients()
+void FastTetrahedralCorotationalForceField<DataTypes>::computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu)
 {
-    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / ((1 - 2 * d_poissonRatio.getValue()) * (1 + d_poissonRatio.getValue()));
-    mu = d_youngModulus.getValue() / (2 * (1 + d_poissonRatio.getValue()));
-
+    outLambda = inYoung * inPoisson / ((1 - 2 * inPoisson) * (1 + inPoisson));
+    outMu = inYoung / (2 * (1 + inPoisson));
 }
 
 
