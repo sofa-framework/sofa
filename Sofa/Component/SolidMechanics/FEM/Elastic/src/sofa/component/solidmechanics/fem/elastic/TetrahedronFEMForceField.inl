@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
@@ -45,8 +46,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , m_VonMisesColorMap(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
-    , _poissonRatio(initData(&_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young's Modulus in Hooke's law"))
     , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
     , _updateStiffnessMatrix(initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(initData(&_assembling,false,"computeGlobalMatrix",""))
@@ -69,11 +68,8 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     , l_topology(initLink("topology", "link to the tetrahedron topology container"))
 {
-    _poissonRatio.setRequired(true);
-    _youngModulus.setRequired(true);
-    _youngModulus.beginEdit()->push_back((Real)5000.);
-    _youngModulus.endEdit();
-    _youngModulus.unset();
+    _poissonRatio.setParent(&this->d_poissonRatio);
+    _youngModulus.setParent(&this->d_youngModulus);
 
     data.initPtrData(this);
     this->addAlias(&_assembling, "assembling");
@@ -317,16 +313,10 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Index&a, Index&b, Index&c, Index&d)
 {
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
-    Real youngModulusElement;
-    if (_youngModulus.getValue().size() == _indexedElements->size()) youngModulusElement = _youngModulus.getValue()[i];
-    else if (_youngModulus.getValue().size() > 0) youngModulusElement = _youngModulus.getValue()[0];
-    else
-    {
-        setYoungModulus(500.0f);
-        youngModulusElement = _youngModulus.getValue()[0];
-    }
+    const Real youngModulusElement = this->getYoungModulusInElement(i);
+
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
-    const Real poissonRatio = _poissonRatio.getValue();
+    const Real poissonRatio = this->d_poissonRatio.getValue();
 
     materialsStiffnesses[i][0][0] = materialsStiffnesses[i][1][1] = materialsStiffnesses[i][2][2] = 1;
     materialsStiffnesses[i][0][1] = materialsStiffnesses[i][0][2] = materialsStiffnesses[i][1][0]
@@ -367,8 +357,8 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d)
 {
-    const Real youngModulus = _youngModulus.getValue()[0];
-    const Real poissonRatio = _poissonRatio.getValue();
+    const Real youngModulus = this->d_youngModulus.getValue()[0];
+    const Real poissonRatio = this->d_poissonRatio.getValue();
 
     materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
     materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] = materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
@@ -1375,7 +1365,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
-    const VecReal& youngModulus = _youngModulus.getValue();
+    const VecReal& youngModulus = d_youngModulus.getValue();
     minYoung=youngModulus[0];
     maxYoung=youngModulus[0];
     for (unsigned i=0; i<youngModulus.size(); i++)
@@ -1384,10 +1374,10 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
-    const Real& poissonRatio = _poissonRatio.getValue();
+    const Real& poissonRatio = d_poissonRatio.getValue();
     if (poissonRatio < 0 || poissonRatio >= 0.5)
     {
-        _poissonRatio.setValue((poissonRatio < 0)? 0.0 : 0.499);
+        d_poissonRatio.setValue((poissonRatio < 0)? 0.0 : 0.499);
         msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
     }
 
@@ -1810,7 +1800,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMinMaxFromYoungsModulus()
 {
-    const auto& youngModulus = _youngModulus.getValue();
+    const auto& youngModulus = d_youngModulus.getValue();
 
     minYoung = youngModulus[0];
     maxYoung = youngModulus[0];
@@ -1972,7 +1962,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->disableLighting();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecReal& youngModulus = _youngModulus.getValue();
+    const VecReal& youngModulus = d_youngModulus.getValue();
 
     const bool heterogeneous = [this, drawVonMisesStress]()
     {
@@ -2266,15 +2256,6 @@ const type::vector< typename TetrahedronFEMForceField<DataTypes>::Mat33 >& Tetra
     }
 
     return m_rotations;
-}
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::setYoungModulus(Real val)
-{
-    VecReal newY;
-    newY.resize(1);
-    newY[0] = val;
-    _youngModulus.setValue(newY);
 }
 
 template<class DataTypes>

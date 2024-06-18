@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
@@ -69,8 +70,6 @@ template< class DataTypes>
 TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForceField()
     : tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-    , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio"))
-    , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
     , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
@@ -82,10 +81,8 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , l_topology(initLink("topology", "link to the topology container"))
 {
     this->addAlias(&_assembling, "assembling");
-    _poissonRatio.setWidget("poissonRatio");
 
-    _poissonRatio.setRequired(true);
-    _youngModulus.setRequired(true);
+    _poissonRatio.setParent(&this->d_poissonRatio);
 }
 
 template <class DataTypes>
@@ -111,7 +108,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     if (m_topology->getNbTetrahedra() == 0)
     {
-        msg_warning() << "No tetrahedra found in linked Topology.";
+        msg_error() << "No tetrahedra found in linked Topology.";
     }
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
@@ -357,16 +354,17 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 
     type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
+    computeMaterialStiffness(i, tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
 
     tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, SReal localStiffnessFactor)
+void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(int tetrahedronId, MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, SReal localStiffnessFactor)
 {
-    const Real youngModulus = _youngModulus.getValue()*(Real)localStiffnessFactor;
-    const Real poissonRatio = _poissonRatio.getValue();
+    const Real youngModulusElement = this->getYoungModulusInElement(tetrahedronId);
+    const Real youngModulus = youngModulusElement*(Real)localStiffnessFactor;
+    const Real poissonRatio = this->d_poissonRatio.getValue();
 
     materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
     materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =
@@ -840,50 +838,6 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
     computeStiffnessMatrix(JKJt,tmp,tetraInf[elementIndex].materialMatrix, tetraInf[elementIndex].strainDisplacementTransposedMatrix,Rot);
-    for(int i=0; i<12; i++)
-    {
-        for(int j=0; j<12; j++)
-            stiffness[i*12+j]=JKJt(i,j);
-    }
-}
-
-template <class DataTypes>
-inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetra& te)
-{
-    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-    Index a = te[0];
-    Index b = te[1];
-    Index c = te[2];
-    Index d = te[3];
-
-    Transformation R_0_1;
-    computeRotationLarge( R_0_1, (X0), a, b, c);
-
-    MaterialStiffness	materialMatrix;
-    StrainDisplacementTransposed	strainMatrix;
-    type::fixed_array<Coord,4> rotatedInitialElements;
-
-    rotatedInitialElements[0] = R_0_1*(X0)[a];
-    rotatedInitialElements[1] = R_0_1*(X0)[b];
-    rotatedInitialElements[2] = R_0_1*(X0)[c];
-    rotatedInitialElements[3] = R_0_1*(X0)[d];
-
-    rotatedInitialElements[1] -= rotatedInitialElements[0];
-    rotatedInitialElements[2] -= rotatedInitialElements[0];
-    rotatedInitialElements[3] -= rotatedInitialElements[0];
-    rotatedInitialElements[0] = Coord(0,0,0);
-
-    computeMaterialStiffness(materialMatrix,a,b,c,d);
-    computeStrainDisplacement(strainMatrix, rotatedInitialElements[0], rotatedInitialElements[1], rotatedInitialElements[2], rotatedInitialElements[3]);
-
-    Transformation Rot;
-    StiffnessMatrix JKJt,tmp;
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
-    computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, Rot);
     for(int i=0; i<12; i++)
     {
         for(int j=0; j<12; j++)

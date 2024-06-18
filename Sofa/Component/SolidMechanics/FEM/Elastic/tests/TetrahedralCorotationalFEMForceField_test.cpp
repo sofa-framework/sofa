@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,46 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 #include "BaseTetrahedronFEMForceField_test.h"
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
 
 namespace sofa
 {
 
-using TetrahedronFEMForceField3 = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<sofa::defaulttype::Vec3Types>;
+using TetraCorotationalFEM = sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3Types>;
 
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    TetrahedronFEMForceField_test,
+    TetrahedralCorotationalFEMForceField_test,
     BaseTetrahedronFEMForceField_test,
-    TetrahedronFEMForceField3
+    TetraCorotationalFEM
 );
 
-class TetrahedronFEMForceField_test : public BaseTetrahedronFEMForceField_test<TetrahedronFEMForceField3>
+
+class TetrahedralCorotationalFEMForceField_test : public BaseTetrahedronFEMForceField_test<TetraCorotationalFEM>
 {
 public:
     void computeMatricesCheckInit(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId) override
     {
-        typename TetrahedronFEMForceField3::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEMForceField3>();
+        typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
         ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-        initRot = tetraFEM->getInitialTetraRotation(elementId);
-        initPosition = tetraFEM->getRotatedInitialElements(elementId);
+        const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[elementId];
+        initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
+        initPosition = tetraInfo.rotatedInitialElements;
 
-        curRot = tetraFEM->getActualTetraRotation(elementId);
+        curRot = initRot;
 
-        stiffnessMat = tetraFEM->getMaterialStiffness(elementId);
-        strainD = tetraFEM->getStrainDisplacement(elementId);
+        stiffnessMat = tetraInfo.materialMatrix;
+        strainD = tetraInfo.strainDisplacementTransposedMatrix;
+    }
+
+    void computeMatricesCheckFEMValues(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId) override
+    {
+        typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
+        ASSERT_TRUE(tetraFEM.get() != nullptr);
+
+        const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[elementId];
+        initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
+        initPosition = tetraInfo.rotatedInitialElements;
+
+        curRot = tetraInfo.rotation;
+
+        stiffnessMat = tetraInfo.materialMatrix;
+        strainD = tetraInfo.strainDisplacementTransposedMatrix;
     }
 };
 
-TEST_F(TetrahedronFEMForceField_test, init)
+TEST_F(TetrahedralCorotationalFEMForceField_test, init)
 {
     this->checkInit();
 }
 
-TEST_F(TetrahedronFEMForceField_test, FEMValues)
+TEST_F(TetrahedralCorotationalFEMForceField_test, FEMValues)
 {
     this->checkFEMValues();
 }
 
-} // namespace sofa
+}
