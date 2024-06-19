@@ -22,6 +22,8 @@
 #include <sofa/core/ObjectFactoryJson.h>
 #include <sofa/core/ObjectFactory.h>
 #include <json.h>
+#include <sofa/core/CategoryLibrary.h>
+
 
 namespace sofa::core
 {
@@ -48,6 +50,10 @@ inline void to_json(nlohmann::json& json,
         }
     }
     json["parents"] = parents;
+
+    std::vector<std::string> categories;
+    sofa::core::CategoryLibrary::getCategories(&baseClass, categories);
+    json["categories"] = categories;
 }
 
 inline void to_json(nlohmann::json& json,
