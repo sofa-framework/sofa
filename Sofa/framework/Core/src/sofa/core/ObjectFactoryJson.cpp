@@ -37,6 +37,17 @@ inline void to_json(nlohmann::json& json,
     json["className"] = baseClass.className;
     json["templateName"] = baseClass.templateName;
     json["shortName"] = baseClass.shortName;
+
+    sofa::type::vector<std::string> parents;
+    parents.reserve(baseClass.parents.size());
+    for (const auto* parent : baseClass.parents)
+    {
+        if (parent)
+        {
+            parents.push_back(parent->typeName);
+        }
+    }
+    json["parents"] = parents;
 }
 
 inline void to_json(nlohmann::json& json,
