@@ -1365,7 +1365,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
-    const VecReal& youngModulus = d_youngModulus.getValue();
+    const VecReal& youngModulus = this->d_youngModulus.getValue();
     minYoung=youngModulus[0];
     maxYoung=youngModulus[0];
     for (unsigned i=0; i<youngModulus.size(); i++)
@@ -1374,10 +1374,10 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
-    const Real& poissonRatio = d_poissonRatio.getValue();
+    const Real& poissonRatio = this->d_poissonRatio.getValue();
     if (poissonRatio < 0 || poissonRatio >= 0.5)
     {
-        d_poissonRatio.setValue((poissonRatio < 0)? 0.0 : 0.499);
+        this->d_poissonRatio.setValue((poissonRatio < 0)? 0.0 : 0.499);
         msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
     }
 
@@ -1800,7 +1800,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMinMaxFromYoungsModulus()
 {
-    const auto& youngModulus = d_youngModulus.getValue();
+    const auto& youngModulus = this->d_youngModulus.getValue();
 
     minYoung = youngModulus[0];
     maxYoung = youngModulus[0];
@@ -1962,7 +1962,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->disableLighting();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecReal& youngModulus = d_youngModulus.getValue();
+    const VecReal& youngModulus = this->d_youngModulus.getValue();
 
     const bool heterogeneous = [this, drawVonMisesStress]()
     {
