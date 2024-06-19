@@ -51,7 +51,8 @@ TEST(ObjectFactoryJson, oneObject)
 template<class T>
 class DummyComponent : public core::objectmodel::BaseObject
 {
-
+public:
+    SOFA_CLASS(DummyComponent<T>, BaseObject);
 };
 
 TEST(ObjectFactoryJson, oneTemplatedObject)
@@ -62,7 +63,7 @@ TEST(ObjectFactoryJson, oneTemplatedObject)
         .add< DummyComponent<sofa::defaulttype::Vec3fTypes> >().commitTo(&o), 1);
 
     const auto dump = core::ObjectFactoryJson::dump(&o);
-    const std::string expectedDump = R"x([{"className":"DummyComponent","creator":{"":{"class":{"categories":["_Miscellaneous"],"className":"BaseObject","namespaceName":"sofa::core::objectmodel","parents":["Base"],"shortName":"baseObject","templateName":"","typeName":"BaseObject"},"object":{"data":[{"defaultValue":"unnamed","group":"","help":"object name","name":"name","type":"string"},{"defaultValue":"0","group":"","help":"if true, emits extra messages at runtime.","name":"printLog","type":"bool"},{"defaultValue":"","group":"","help":"list of the subsets the objet belongs to","name":"tags","type":"TagSet"},{"defaultValue":"","group":"","help":"this object bounding box","name":"bbox","type":"BoundingBox"},{"defaultValue":"Undefined","group":"","help":"The state of the component among (Dirty, Valid, Undefined, Loading, Invalid).","name":"componentState","type":"ComponentState"},{"defaultValue":"0","group":"","help":"if true, handle the events, otherwise ignore the events","name":"listening","type":"bool"}],"link":[{"help":"Graph Node containing this object (or BaseContext::getDefault() if no graph is used)","name":"context"},{"help":"Sub-objects used internally by this object","name":"slaves"},{"help":"nullptr for regular objects, or master object for which this object is one sub-objects","name":"master"}]},"target":""}},"description":"foo\n"}])x";
+    const std::string expectedDump = R"x([{"className":"DummyComponent","creator":{"Vec3f":{"class":{"categories":["_Miscellaneous"],"className":"DummyComponent","namespaceName":"sofa","parents":["BaseObject"],"shortName":"dummyComponent","templateName":"Vec3f","typeName":"DummyComponent<StdVectorTypes<Vec<3,float>,Vec<3,float>,float>>"},"object":{"data":[{"defaultValue":"unnamed","group":"","help":"object name","name":"name","type":"string"},{"defaultValue":"0","group":"","help":"if true, emits extra messages at runtime.","name":"printLog","type":"bool"},{"defaultValue":"","group":"","help":"list of the subsets the objet belongs to","name":"tags","type":"TagSet"},{"defaultValue":"","group":"","help":"this object bounding box","name":"bbox","type":"BoundingBox"},{"defaultValue":"Undefined","group":"","help":"The state of the component among (Dirty, Valid, Undefined, Loading, Invalid).","name":"componentState","type":"ComponentState"},{"defaultValue":"0","group":"","help":"if true, handle the events, otherwise ignore the events","name":"listening","type":"bool"}],"link":[{"help":"Graph Node containing this object (or BaseContext::getDefault() if no graph is used)","name":"context"},{"help":"Sub-objects used internally by this object","name":"slaves"},{"help":"nullptr for regular objects, or master object for which this object is one sub-objects","name":"master"}]},"target":""}},"description":"foo\n"}])x";
     EXPECT_EQ(dump, expectedDump);
 }
 
