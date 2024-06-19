@@ -119,7 +119,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     if (m_topology->getNbTetrahedra() == 0)
     {
-        msg_error() << "No tetrahedra found in linked Topology.";
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     reinit(); // compute per-element stiffness matrices and other precomputed values

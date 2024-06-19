@@ -222,7 +222,7 @@ public:
         addTetraFEMForceField(m_root, 100, 0.3, "large");
 
         {
-            EXPECT_MSG_EMIT(Error);
+            sofa::testing::ExpectMessage failure(expectedMessageWhenEmptyTopology(), __FILE__, __LINE__);
             sofa::simulation::node::initRoot(m_root.get());
         }
     }
@@ -544,7 +544,7 @@ TYPED_TEST_P(BaseTetrahedronFEMForceField_test, noTopology)
 
 // TYPED_TEST_P(BaseTetrahedronFEMForceField_test, emptyTopology)
 // {
-    // this->checkEmptyTopology();
+//     this->checkEmptyTopology();
 // }
 
 TYPED_TEST_P(BaseTetrahedronFEMForceField_test, DISABLED_testFEMPerformance)
