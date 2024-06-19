@@ -66,7 +66,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _showVonMisesStressPerElement(initData(&_showVonMisesStressPerElement, false, "showVonMisesStressPerElement", "draw triangles showing vonMises stress interpolated in elements"))
     , d_showElementGapScale(initData(&d_showElementGapScale, (Real)0.333, "showElementGapScale", "draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
-    , l_topology(initLink("topology", "link to the tetrahedron topology container"))
 {
     _poissonRatio.setParent(&this->d_poissonRatio);
     _youngModulus.setParent(&this->d_youngModulus);

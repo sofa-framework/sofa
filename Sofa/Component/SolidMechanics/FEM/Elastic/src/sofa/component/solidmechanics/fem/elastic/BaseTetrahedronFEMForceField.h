@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -39,6 +40,9 @@ public:
 
     Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
     Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BaseTetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
     static inline const VecReal defaultYoungModulusValue = []()
     {
