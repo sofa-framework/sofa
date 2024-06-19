@@ -61,4 +61,9 @@ TEST_F(TetrahedronFEMForceField_test, FEMValues)
     this->checkFEMValues();
 }
 
+TEST_F(TetrahedronFEMForceField_test, emptyTology)
+{
+    this->checkEmptyTopology();
+}
+
 } // namespace sofa

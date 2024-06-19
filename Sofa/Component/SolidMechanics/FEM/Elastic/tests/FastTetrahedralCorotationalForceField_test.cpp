@@ -195,4 +195,9 @@ TEST_F(FastTetrahedralCorotationalForceField_test, FEMValues)
     this->checkFEMValues();
 }
 
+TEST_F(FastTetrahedralCorotationalForceField_test, emptyTology)
+{
+    this->checkEmptyTopology();
+}
+
 }
