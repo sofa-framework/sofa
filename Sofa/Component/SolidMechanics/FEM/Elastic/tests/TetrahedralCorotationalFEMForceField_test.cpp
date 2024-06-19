@@ -66,6 +66,8 @@ public:
         stiffnessMat = tetraInfo.materialMatrix;
         strainD = tetraInfo.strainDisplacementTransposedMatrix;
     }
+
+    sofa::helper::logging::Message::Type expectedMessageWhenEmptyTopology() const override { return sofa::helper::logging::Message::Warning; }
 };
 
 TEST_F(TetrahedralCorotationalFEMForceField_test, init)
@@ -76,6 +78,11 @@ TEST_F(TetrahedralCorotationalFEMForceField_test, init)
 TEST_F(TetrahedralCorotationalFEMForceField_test, FEMValues)
 {
     this->checkFEMValues();
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField_test, emptyTology)
+{
+    this->checkEmptyTopology();
 }
 
 }

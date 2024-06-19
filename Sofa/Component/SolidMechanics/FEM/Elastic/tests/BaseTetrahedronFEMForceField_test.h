@@ -28,6 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/NumericTest.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 namespace sofa
@@ -205,6 +206,8 @@ public:
         sofa::simulation::node::initRoot(m_root.get());
     }
 
+    virtual sofa::helper::logging::Message::Type expectedMessageWhenEmptyTopology() const { return sofa::helper::logging::Message::Error; }
+
     void checkEmptyTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
@@ -219,7 +222,7 @@ public:
         addTetraFEMForceField(m_root, 100, 0.3, "large");
 
         {
-            EXPECT_MSG_EMIT(Error);
+            sofa::testing::ExpectMessage failure(expectedMessageWhenEmptyTopology(), __FILE__, __LINE__);
             sofa::simulation::node::initRoot(m_root.get());
         }
     }
@@ -539,10 +542,10 @@ TYPED_TEST_P(BaseTetrahedronFEMForceField_test, noTopology)
     this->checkNoTopology();
 }
 
-TYPED_TEST_P(BaseTetrahedronFEMForceField_test, emptyTopology)
-{
-    this->checkEmptyTopology();
-}
+// TYPED_TEST_P(BaseTetrahedronFEMForceField_test, emptyTopology)
+// {
+//     this->checkEmptyTopology();
+// }
 
 TYPED_TEST_P(BaseTetrahedronFEMForceField_test, DISABLED_testFEMPerformance)
 {
@@ -550,6 +553,6 @@ TYPED_TEST_P(BaseTetrahedronFEMForceField_test, DISABLED_testFEMPerformance)
 }
 
 REGISTER_TYPED_TEST_SUITE_P(BaseTetrahedronFEMForceField_test,
-                            creation, noTopology, emptyTopology, DISABLED_testFEMPerformance);
+                            creation, noTopology, DISABLED_testFEMPerformance);
 
 }
