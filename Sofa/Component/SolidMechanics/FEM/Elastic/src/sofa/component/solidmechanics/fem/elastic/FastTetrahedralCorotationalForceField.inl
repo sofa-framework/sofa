@@ -144,8 +144,6 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , d_tetrahedronInfo(initData(&d_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , _initialPoints(0)
     , d_method(initData(&d_method, std::string("qr"), "method", " method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))
-    , d_poissonRatio(initData(&d_poissonRatio, Real(0.45), "poissonRatio", "Poisson ratio in Hooke's law"))
-    , d_youngModulus(initData(&d_youngModulus, Real(5000.), "youngModulus", "Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
     , d_drawing(initData(&d_drawing, true, "drawing", " draw the forcefield if true"))
@@ -153,7 +151,6 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
     , d_drawColor3(initData(&d_drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
     , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
-    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , updateMatrix(true)
 {

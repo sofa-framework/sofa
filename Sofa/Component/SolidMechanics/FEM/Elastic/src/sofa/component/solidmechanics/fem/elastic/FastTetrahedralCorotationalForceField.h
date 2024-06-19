@@ -169,8 +169,7 @@ public:
     Data<sofa::type::RGBAColor> d_drawColor3; ///<  draw color for faces 3
     Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 
     FastTetrahedralCorotationalForceField();
 

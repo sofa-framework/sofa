@@ -308,8 +308,7 @@ public:
 
     Data<bool>  d_updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 
     type::vector<type::Vec<6,Real> > elemDisplacements;
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -28,7 +29,8 @@ namespace sofa::component::solidmechanics::fem::elastic
 template <class DataTypes>
 BaseTetrahedronFEMForceField<DataTypes>::BaseTetrahedronFEMForceField()
     : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-  , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
+    , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
     d_poissonRatio.setWidget("poissonRatio");
