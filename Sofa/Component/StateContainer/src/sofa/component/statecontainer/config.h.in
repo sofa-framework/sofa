@@ -42,6 +42,6 @@ namespace sofa::component::statecontainer
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER() \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.06", "v24.12", \
+        "v24.12", "v25.06", \
         "Data renamed according to the guidelines")
 #endif
