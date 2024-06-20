@@ -59,9 +59,6 @@ public:
     Data<sofa::type::vector<Index> > triangleList;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> normal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
     Data<bool> p_showForces;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
@@ -79,9 +76,9 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    core::objectmodel::lifecycle::DeprecatedData d_normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData d_dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData d_dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::DeprecatedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::DeprecatedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::DeprecatedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
 
 protected:
 

@@ -175,8 +175,6 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
         const auto& n1 = DataTypes::getCPos(x0[t[1]]);
         const auto& n2 = DataTypes::getCPos(x0[t[2]]);
 
-        my_subset[i].area = sofa::geometry::Triangle::area(n0, n1, n2);
-        my_subset[i].force= d_pressure.getValue() * my_subset[i].area;
         TrianglePressureInformation tInfo;
         tInfo.area = sofa::geometry::Triangle::area(n0, n1, n2);
         tInfo.force = my_pressure * tInfo.area;
@@ -185,70 +183,70 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 }
 
 
-    template<class DataTypes>
-    void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
+template<class DataTypes>
+void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
+{
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
+
+    const Deriv& my_pressure = pressure.getValue();
+    for (unsigned int i = 0; i < my_subset.size(); ++i)
+        my_subset[i].force = (my_pressure * my_subset[i].area);
+
+    d_trianglePressureMap.endEdit();
+}
+
+template<class DataTypes>
+void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if (!p_showForces.getValue())
+        return;
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, true);
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    vparams->drawTool()->disableLighting();
+
+    const sofa::type::RGBAColor&  color = sofa::type::RGBAColor::green();
+    std::vector< sofa::type::Vec3 > vertices;
+
+    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
+    const sofa::type::vector<TrianglePressureInformation>& my_subset = d_trianglePressureMap.getValue();
+    std::vector< sofa::type::Vec3 > forceVectors;
+    for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
-
-        const Deriv& my_pressure = pressure.getValue();
-        for (unsigned int i = 0; i < my_subset.size(); ++i)
-            my_subset[i].force = (my_pressure * my_subset[i].area);
-
-        d_trianglePressureMap.endEdit();
-    }
-
-    template<class DataTypes>
-    void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
-    {
-        if (!p_showForces.getValue())
-            return;
-
-        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0, true);
-
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-
-        vparams->drawTool()->disableLighting();
-
-        const sofa::type::RGBAColor&  color = sofa::type::RGBAColor::green();
-        std::vector< sofa::type::Vec3 > vertices;
-
-        const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
-        const sofa::type::vector<TrianglePressureInformation>& my_subset = d_trianglePressureMap.getValue();
-        std::vector< sofa::type::Vec3 > forceVectors;
-        for (unsigned int i=0; i<my_map.size(); ++i)
+        Deriv force = my_subset[i].force / 3;
+        for (unsigned int j = 0; j < 3; j++)
         {
-            Deriv force = my_subset[i].force / 3;
-            for (unsigned int j = 0; j < 3; j++)
-            {
-                sofa::type::Vec3 p = x[m_topology->getTriangle(my_map[i])[j]];
-                vertices.push_back(p);
-                forceVectors.push_back(p);
-                forceVectors.push_back(p + force);
-            }
+            sofa::type::Vec3 p = x[m_topology->getTriangle(my_map[i])[j]];
+            vertices.push_back(p);
+            forceVectors.push_back(p);
+            forceVectors.push_back(p + force);
         }
-        vparams->drawTool()->drawTriangles(vertices, color);
-        vparams->drawTool()->drawLines(forceVectors, 1, sofa::type::RGBAColor::red());
-
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0, false);
-
-
     }
+    vparams->drawTool()->drawTriangles(vertices, color);
+    vparams->drawTool()->drawLines(forceVectors, 1, sofa::type::RGBAColor::red());
 
-    template <class DataTypes>
-    void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
-    {
-        // No damping in this ForceField
-    }
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, false);
 
-    template<class DataTypes>
-    SReal TrianglePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
-    {
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
-        return 0.0;
-    }
+
+}
+
+template <class DataTypes>
+void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template<class DataTypes>
+SReal TrianglePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
 
 } // namespace sofa::component::mechanicalload
