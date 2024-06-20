@@ -299,7 +299,13 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 
         // displacements
         Displacement Depl(type::NOINIT);
-        m_triangleUtils.computeDisplacementSmall(Depl, _rotatedInitialElements[elementIndex], deforme_b, deforme_c);
+        Depl[0] = 0;
+        Depl[1] = 0;
+        Depl[2] = (_initialPoints.getValue()[b][0]-_initialPoints.getValue()[a][0]) - deforme_b[0];
+        Depl[3] = 0;
+        Depl[4] = (_initialPoints.getValue()[c][0]-_initialPoints.getValue()[a][0]) - deforme_c[0];
+        Depl[5] = (_initialPoints.getValue()[c][1]-_initialPoints.getValue()[a][1]) - deforme_c[1];
+
 
         StrainDisplacement J(type::NOINIT);
         try
