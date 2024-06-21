@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
@@ -49,10 +49,10 @@ public:
 
 
 template<class DataTypes>
-class FastTetrahedralCorotationalForceField : public BaseTetrahedronFEMForceField<DataTypes>
+class FastTetrahedralCorotationalForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(BaseTetrahedronFEMForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField,DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::Real        Real        ;

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -74,10 +74,10 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public BaseTetrahedronFEMForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
+class TetrahedronFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseTetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;

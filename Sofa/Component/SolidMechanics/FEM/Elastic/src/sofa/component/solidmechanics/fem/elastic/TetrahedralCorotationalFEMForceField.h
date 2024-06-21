@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -49,10 +49,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 /** Compute Finite Element forces based on tetrahedral elements.
  */
 template<class DataTypes>
-class TetrahedralCorotationalFEMForceField : public BaseTetrahedronFEMForceField<DataTypes>
+class TetrahedralCorotationalFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralCorotationalFEMForceField, DataTypes), SOFA_TEMPLATE(BaseTetrahedronFEMForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralCorotationalFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
