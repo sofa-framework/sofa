@@ -107,10 +107,10 @@ int main(int argc, char** argv)
     // Display Flags
     sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
-    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    sofa::core::visual::DisplayFlags& flags = *style->d_displayFlags.beginEdit();
     flags.setShowBehaviorModels(true);
     flags.setShowCollisionModels(true);
-    style->displayFlags.endEdit();
+    style->d_displayFlags.endEdit();
 
     sofa::simulation::node::initRoot(groot.get());
     groot->setAnimate(false);

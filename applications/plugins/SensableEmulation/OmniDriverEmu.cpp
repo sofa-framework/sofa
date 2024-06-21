@@ -372,8 +372,8 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
         visu_base = sofa::core::objectmodel::New<OglModel>();
-        visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->d_fileMesh.setValue("mesh/omni_test2.obj");
+        visu_base->d_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -382,8 +382,8 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
 
         visu_end = sofa::core::objectmodel::New<OglModel>();
-        visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->d_fileMesh.setValue("mesh/stylus.obj");
+        visu_end->d_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();

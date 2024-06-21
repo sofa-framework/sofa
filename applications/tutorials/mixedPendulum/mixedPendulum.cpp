@@ -180,7 +180,7 @@ int main(int argc, char** argv)
     // Display Flags
     sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
-    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    sofa::core::visual::DisplayFlags& flags = *style->d_displayFlags.beginEdit();
     flags.setShowNormals(false);
     flags.setShowInteractionForceFields(true);
     flags.setShowMechanicalMappings(true);
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
     flags.setShowWireFrame(false);
     flags.setShowVisualModels(true);
     flags.setShowBehaviorModels(true);
-    style->displayFlags.endEdit();
+    style->d_displayFlags.endEdit();
 
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
