@@ -20,60 +20,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes>
-BaseTetrahedronFEMForceField<DataTypes>::BaseTetrahedronFEMForceField()
-    : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
-    , l_topology(initLink("topology", "link to the topology container"))
+template<class DataTypes>
+class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<DataTypes>
 {
-    d_poissonRatio.setRequired(true);
-    d_poissonRatio.setWidget("poissonRatio");
+public:
+    using Coord = typename DataTypes::Coord;
+    using VecReal = typename DataTypes::VecReal;
+    using Real = typename Coord::value_type;
 
-    d_youngModulus.setRequired(true);
-}
+    SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-template <class DataTypes>
-void BaseTetrahedronFEMForceField<DataTypes>::setPoissonRatio(Real val)
-{
-    this->d_poissonRatio.setValue(val);
-}
+    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
 
-template <class DataTypes>
-void BaseTetrahedronFEMForceField<DataTypes>::setYoungModulus(Real val)
-{
-    VecReal newY;
-    newY.resize(1);
-    newY[0] = val;
-    d_youngModulus.setValue(newY);
-}
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
-template <class DataTypes>
-typename BaseTetrahedronFEMForceField<DataTypes>::Real
-BaseTetrahedronFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
-{
-    Real youngModulusElement {};
-
-    const auto& youngModulus = d_youngModulus.getValue();
-    if (youngModulus.size() > elementId)
+    static inline const VecReal defaultYoungModulusValue = []()
     {
-        youngModulusElement = youngModulus[elementId];
-    }
-    else if (d_youngModulus.getValue().size() > 0)
-    {
-        youngModulusElement = youngModulus[0];
-    }
-    else
-    {
-        setYoungModulus(5000);
-        youngModulusElement = youngModulus[0];
-    }
-    return youngModulusElement;
-}
+        VecReal newY;
+        newY.resize(1);
+        newY[0] = 5000;
+        return newY;
+    }();
+
+    BaseLinearElasticityFEMForceField();
+
+    void setPoissonRatio(Real val);
+    void setYoungModulus(Real val);
+
+    Real getYoungModulusInElement(sofa::Size elementId);
+};
+
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
+extern template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+#endif
 
 }

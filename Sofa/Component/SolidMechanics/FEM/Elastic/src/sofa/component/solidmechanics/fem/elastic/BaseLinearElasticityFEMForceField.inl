@@ -19,10 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/fem/elastic/BaseTetrahedronFEMForceField.inl>
+#pragma once
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-template class BaseTetrahedronFEMForceField<defaulttype::Vec3Types>;
+
+template <class DataTypes>
+BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
+    : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
+    , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
+    , l_topology(initLink("topology", "link to the topology container"))
+{
+    d_poissonRatio.setRequired(true);
+    d_poissonRatio.setWidget("poissonRatio");
+
+    d_youngModulus.setRequired(true);
+}
+
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::setPoissonRatio(Real val)
+{
+    this->d_poissonRatio.setValue(val);
+}
+
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::setYoungModulus(Real val)
+{
+    VecReal newY;
+    newY.resize(1);
+    newY[0] = val;
+    d_youngModulus.setValue(newY);
+}
+
+template <class DataTypes>
+typename BaseLinearElasticityFEMForceField<DataTypes>::Real
+BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
+{
+    Real youngModulusElement {};
+
+    const auto& youngModulus = d_youngModulus.getValue();
+    if (youngModulus.size() > elementId)
+    {
+        youngModulusElement = youngModulus[elementId];
+    }
+    else if (d_youngModulus.getValue().size() > 0)
+    {
+        youngModulusElement = youngModulus[0];
+    }
+    else
+    {
+        setYoungModulus(5000);
+        youngModulusElement = youngModulus[0];
+    }
+    return youngModulusElement;
+}
+
 }

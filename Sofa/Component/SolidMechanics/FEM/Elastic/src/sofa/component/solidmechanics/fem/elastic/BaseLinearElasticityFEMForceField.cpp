@@ -19,49 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-
-template<class DataTypes>
-class BaseTetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>
-{
-public:
-    using Coord = typename DataTypes::Coord;
-    using VecReal = typename DataTypes::VecReal;
-    using Real = typename Coord::value_type;
-
-    SOFA_CLASS(SOFA_TEMPLATE(BaseTetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
-
-    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
-    Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<BaseTetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
-
-    static inline const VecReal defaultYoungModulusValue = []()
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = 5000;
-        return newY;
-    }();
-
-    BaseTetrahedronFEMForceField();
-
-    void setPoissonRatio(Real val);
-    void setYoungModulus(Real val);
-
-    Real getYoungModulusInElement(sofa::Size elementId);
-};
-
-#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP)
-extern template class BaseTetrahedronFEMForceField<defaulttype::Vec3Types>;
-#endif
-
+template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
 }
