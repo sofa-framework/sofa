@@ -55,8 +55,9 @@ public:
     /// Set the id of the constraint (this id is build in the getConstraintViolation function)
     ///
     /// \param cId is Id of the first constraint in the sparse matrix
-    virtual void setConstraintId(unsigned cId) {
-        m_cId = cId;
+    virtual void setConstraintId(unsigned cId)
+    {
+        m_constraintIndex.setValue(cId);
     }
 
     /// Process geometrical data.
@@ -75,8 +76,9 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) {
-        getConstraintViolation(cParams,v,m_cId);
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+    {
+        getConstraintViolation(cParams, v, m_constraintIndex.getValue());
     }
 
     /// Construct the Constraint violations vector
@@ -96,7 +98,6 @@ public:
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-    unsigned m_cId;
 
 };
 
