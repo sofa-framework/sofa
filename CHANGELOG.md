@@ -224,7 +224,6 @@
 [Full log](https://github.com/sofa-framework/sofa/compare/v23.06..v23.12)
 
 ### Highlighted contributions
-- [Mass] Remove DiagonalMass and replace with MeshMatrixMass (with lumping) [#3001](https://github.com/sofa-framework/sofa/pull/3001)
 - [LinearAlgebra] Pull Insimo's CompressedRowSparseMatrix into the main branch [#3515](https://github.com/sofa-framework/sofa/pull/3515)
 - [plugins] Add fetchable SoftRobots [#3882](https://github.com/sofa-framework/sofa/pull/3882)
 - [Sofa.Simulation] First steps to remove the singleton Simulation [#3889](https://github.com/sofa-framework/sofa/pull/3889)
