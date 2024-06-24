@@ -9,7 +9,6 @@ endif()
 
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 
-sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
