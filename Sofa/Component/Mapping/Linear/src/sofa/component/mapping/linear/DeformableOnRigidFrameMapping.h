@@ -53,35 +53,9 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
     typedef TInRoot InRoot;
     typedef TOut Out;
 
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename OutCoord::value_type OutReal;
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::Real InReal;
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-
-    typedef typename InRoot::VecCoord InRootVecCoord;
-    typedef typename InRoot::VecDeriv InRootVecDeriv;
-    typedef typename InRoot::MatrixDeriv InRootMatrixDeriv;
-    typedef typename InRoot::Coord InRootCoord;
-    typedef typename InRoot::Deriv InRootDeriv;
-    typedef typename InRoot::Real InRootReal;
-    typedef Data<InRootVecCoord> InRootDataVecCoord;
-    typedef Data<InRootVecDeriv> InRootDataVecDeriv;
-    typedef Data<InRootMatrixDeriv> InRootDataMatrixDeriv;
+    SOFA_DATATYPES_ALIASES_PREFIX(In, In);
+    SOFA_DATATYPES_ALIASES_PREFIX(InRoot, InRoot);
+    SOFA_DATATYPES_ALIASES_PREFIX(Out, Out);
 
     typedef typename OutCoord::value_type Real;
     typedef OutCoord Coord;

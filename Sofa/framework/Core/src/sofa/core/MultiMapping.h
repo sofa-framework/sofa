@@ -44,19 +44,8 @@ public:
     /// Output Model Type
     typedef TOut Out;
 
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
+    SOFA_DATATYPES_ALIASES_PREFIX(In, In);
+    SOFA_DATATYPES_ALIASES_PREFIX(Out, Out);
 
 protected:
     /// Input Models container. New inputs are added through addInputModel(In* ).

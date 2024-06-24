@@ -77,18 +77,11 @@ class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, p
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
+    SOFA_DATATYPES_ALIASES(DataTypes);
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecReal VecReal;
-    typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
 
-    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
-    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    typedef VecCoord Vector;
 
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
