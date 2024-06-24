@@ -186,10 +186,12 @@ public:
     /// @{
 
     /// Considered as compliance, else considered as stiffness (default to false)
-    Data< bool > isCompliance;
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
+    objectmodel::lifecycle::DeprecatedData isCompliance;
 
     /// Return a pointer to the compliance matrix C
     /// \f$ C = K^{-1} \f$
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
@@ -202,6 +204,7 @@ public:
     /// where C is the Compliant matrix (inverse of the Stiffness matrix \f$ K \f$:
     /// \f$ C = K^{-1} \f$)
     ///
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ){}
 
     /// @}
