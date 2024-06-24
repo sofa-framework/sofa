@@ -1096,8 +1096,9 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             localRigid.getCenter()[0] = localTranformation[0][3];
             localRigid.getCenter()[1] = localTranformation[1][3];
             localRigid.getCenter()[2] = localTranformation[2][3];
-            Mat3x3d myrot; myrot = localTranformation;
-            localRigid.getOrientation().fromMatrix(myrot);
+            Mat3x3d localRotation;
+            localRotation = localTranformation;
+            localRigid.getOrientation().fromMatrix(localRotation);
 
             // apply the mesh transformation to the skeleton root joint only
             // we know that this joint is the root if the corresponding aiNode is the mesh node or its parent
