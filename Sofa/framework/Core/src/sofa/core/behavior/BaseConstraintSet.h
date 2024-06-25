@@ -39,8 +39,9 @@ public:
 protected:
     BaseConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
-        , m_constraintIndex(initData(&m_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
+        , d_constraintIndex(initData(&d_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
     {
+        m_constraintIndex.setParent(&d_constraintIndex);
     }
 
     ~BaseConstraintSet() override { }
@@ -57,7 +58,7 @@ public:
     /// \param cId is Id of the first constraint in the sparse matrix
     virtual void setConstraintId(unsigned cId)
     {
-        m_constraintIndex.setValue(cId);
+        d_constraintIndex.setValue(cId);
     }
 
     /// Process geometrical data.
@@ -78,7 +79,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
     {
-        getConstraintViolation(cParams, v, m_constraintIndex.getValue());
+        getConstraintViolation(cParams, v, d_constraintIndex.getValue());
     }
 
     /// Construct the Constraint violations vector
@@ -94,10 +95,16 @@ protected:
 
     Data< int > group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
 public:
-    Data< unsigned int > m_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
+    Data< unsigned int > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
+
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
+    Data< unsigned int > m_constraintIndex;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use d_constraintIndex instead")
+    DeprecatedAndRemoved m_cId;
 
 };
 
