@@ -95,7 +95,7 @@ protected:
 
     Data< int > group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
 public:
-    Data< unsigned int > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
+    Data< sofa::Index > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
 
     SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
     Data< unsigned int > m_constraintIndex;
