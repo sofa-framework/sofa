@@ -21,6 +21,9 @@
 ******************************************************************************/
 #include <sofa/component/mapping/nonlinear/AreaMapping.h>
 #include <gtest/gtest.h>
+#include <sofa/component/mapping/testing/MappingTestCreation.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+
 
 namespace sofa
 {
@@ -81,6 +84,63 @@ TEST(AreaMapping, crossProductDerivative)
             EXPECT_NEAR(centralDifference, dA[vId][dim], 1e-3) << "vId = " << vId << ", i = " << dim;
         }
     }
+}
+
+
+
+
+
+/**
+ * Test suite for AreaMapping.
+ */
+template <typename AreaMapping>
+struct AreaMappingTest : public mapping_test::Mapping_test<AreaMapping>
+{
+    typedef typename AreaMapping::In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::Coord InCoord;
+
+    typedef typename AreaMapping::Out OutDataTypes;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::Coord OutCoord;
+
+    bool test()
+    {
+        AreaMapping* map = static_cast<AreaMapping*>( this->mapping );
+        sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
+
+        const auto triangles = sofa::core::objectmodel::New<component::topology::container::dynamic::TriangleSetTopologyContainer>();
+        this->root->addObject(triangles);
+        triangles->addTriangle(0, 1, 2);
+
+        // parent positions
+        InVecCoord incoord(3);
+        InDataTypes::set( incoord[0], 0,0,0 );
+        InDataTypes::set( incoord[1], 1,0,0 );
+        InDataTypes::set( incoord[2], 1,1,0 );
+
+        // expected child positions
+        OutVecCoord expectedoutcoord;
+        expectedoutcoord.push_back( type::Vec1( std::sqrt(2.0) / 2 ) );
+
+        return this->runTest( incoord, expectedoutcoord );
+    }
+
+};
+
+
+using ::testing::Types;
+typedef Types<
+    component::mapping::nonlinear::AreaMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
+> DataTypes;
+
+TYPED_TEST_SUITE( AreaMappingTest, DataTypes );
+
+// test case
+TYPED_TEST( AreaMappingTest , test )
+{
+    this->flags &= ~AreaMappingTest<TypeParam>::TEST_getJs;
+    ASSERT_TRUE(this->test());
 }
 
 

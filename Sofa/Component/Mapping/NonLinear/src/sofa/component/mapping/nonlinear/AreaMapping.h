@@ -89,7 +89,7 @@ protected:
     {
         sofa::Index vertexId;
         typename In::Coord jacobianValue;
-        bool operator<(const JacobianEntry& other) { return vertexId < other.vertexId;}
+        bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
     };
 };
 
