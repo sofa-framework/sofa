@@ -127,6 +127,7 @@ public:
     void exportGnuplot(SReal time) override;
 
 protected:
+
     class Loader;
     friend class SpringForceFieldInternalData<DataTypes>;
 
@@ -140,6 +141,7 @@ protected:
 
     sofa::type::vector<Mat>  dfdx;
     core::objectmodel::DataFileName fileSprings;
+    core::objectmodel::DataCallback c_springCallBack;
     bool areSpringIndicesDirty { true };
     bool maskInUse;
     Real m_potentialEnergy;

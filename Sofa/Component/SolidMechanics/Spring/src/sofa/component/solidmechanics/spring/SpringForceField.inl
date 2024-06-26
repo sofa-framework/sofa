@@ -58,6 +58,9 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     this->addAlias(&d_springsIndices[0], "indices1");
     this->addAlias(&d_springsIndices[1], "indices2");
 
+    c_springCallBack.addInput(&springs);
+    c_springCallBack.addCallback([this](){ msg_warning(this) << "Spring data is in a read only state and can only be used for initialization purposes. Your changes will be overriden by the content of the other data.";});
+
 }
 
 template <class DataTypes>
@@ -70,7 +73,6 @@ public:
     {
         type::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(sofa::Index(m1), sofa::Index(m2),ks,kd,initpos));
-        dest->springs.endEdit();
     }
 };
 
@@ -875,7 +877,6 @@ void SpringForceField<DataTypes>::clear(sofa::Size reserve)
     _springs.clear();
     if (reserve) _springs.reserve(reserve);
 
-    this->springs.endEdit();
     this->springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
@@ -889,7 +890,6 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
 
     sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
     springs.erase(springs.begin() +idSpring );
-    this->springs.endEdit();
     this->springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
@@ -899,7 +899,6 @@ template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
 {
     springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-    springs.endEdit();
     springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
@@ -909,7 +908,6 @@ template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
     springs.beginEdit()->push_back(spring);
-    springs.endEdit();
     springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
