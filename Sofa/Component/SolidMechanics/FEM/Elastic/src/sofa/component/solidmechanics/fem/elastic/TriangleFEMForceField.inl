@@ -40,9 +40,9 @@ TriangleFEMForceField()
     , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(initData(&f_poisson,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(initData(&f_young,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
-    , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
+    , f_poisson(initData(&f_poisson,Real_t<DataTypes>(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_young(initData(&f_young,Real_t<DataTypes>(1000.),"youngModulus","Young modulus in Hooke's law"))
+    , f_thickness(initData(&f_thickness,Real_t<DataTypes>(1.),"thickness","Thickness of the elements"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
 {
@@ -109,7 +109,7 @@ void TriangleFEMForceField<DataTypes>::init()
 
     if (_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord_t<DataTypes>& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
 
@@ -155,7 +155,7 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     VecDeriv& f1 = *f.beginEdit();
-    const VecCoord& x1 = x.getValue();
+    const VecCoord_t<DataTypes>& x1 = x.getValue();
 
     f1.resize(x1.size());
 
@@ -177,9 +177,9 @@ void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 {
     VecDeriv& df1 = *df.beginEdit();
     const VecDeriv& dx1 = dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    Real_t<DataTypes> kFactor = (Real_t<DataTypes>)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    Real h = 1;
+    Real_t<DataTypes> h = 1;
     df1.resize(dx1.size());
 
     if (method == SMALL)
@@ -195,7 +195,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffness(VecCoord_t<DataTypes>& v, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor)
 {
     if (method == SMALL)
     {
@@ -211,19 +211,19 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 {
     _materialsStiffnesses.resize(_indexedElements->size());
-    const VecCoord& p = _initialPoints.getValue();
+    const VecCoord_t<DataTypes>& p = _initialPoints.getValue();
 
-    const Real _p = f_poisson.getValue();
-    const Real _1_p = 1 - _p;
-    const Real Estrain = f_young.getValue() / ((1 + _p) * (1 - 2 * _p));
-    const Real Estress = f_young.getValue() / (1 - _p * _p);
+    const Real_t<DataTypes> _p = f_poisson.getValue();
+    const Real_t<DataTypes> _1_p = 1 - _p;
+    const Real_t<DataTypes> Estrain = f_young.getValue() / ((1 + _p) * (1 - 2 * _p));
+    const Real_t<DataTypes> Estress = f_young.getValue() / (1 - _p * _p);
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         Index a = (*_indexedElements)[i][0];
         Index b = (*_indexedElements)[i][1];
         Index c = (*_indexedElements)[i][2];
-        const Real triangleVolume = (Real)0.5 * f_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
+        const Real_t<DataTypes> triangleVolume = (Real_t<DataTypes>)0.5 * f_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
 
         if (f_planeStrain.getValue() == true)
         {
@@ -276,7 +276,7 @@ void TriangleFEMForceField<DataTypes>::initSmall()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const VecCoord& p, bool implicit)
+void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord_t<DataTypes>& f, const VecCoord_t<DataTypes>& p, bool implicit)
 {
     typename VecElement::const_iterator it;
     unsigned int elementIndex(0);
@@ -309,11 +309,11 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
             _strainDisplacements[elementIndex] = J;
 
         // compute strain
-        type::Vec<3, Real> strain(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, J, Depl, true);
 
         // compute stress
-        type::Vec<3, Real> stress(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, _materialsStiffnesses[elementIndex], strain, true);
 
         // compute force on element
@@ -326,7 +326,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 }
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord_t<DataTypes>& v, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor)
 {
     if (!_indexedElements)
     {
@@ -352,11 +352,11 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, 
         dX[5] = x[c][1];
 
         // compute strain
-        type::Vec<3, Real> strain(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, _strainDisplacements[i], dX, true);
 
         // compute stress
-        type::Vec<3, Real> stress(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, _materialsStiffnesses[i], strain, true);
 
         // compute force on element
@@ -380,7 +380,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 
     typename VecElement::const_iterator it;
     unsigned int i(0);
-    const VecCoord& pos = _initialPoints.getValue();
+    const VecCoord_t<DataTypes>& pos = _initialPoints.getValue();
 
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
@@ -419,7 +419,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 }
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const VecCoord& p, bool implicit)
+void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord_t<DataTypes>& f, const VecCoord_t<DataTypes>& p, bool implicit)
 {
     if (!_indexedElements)
     {
@@ -465,11 +465,11 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
         }        
 
         // compute strain
-        type::Vec<3, Real> strain(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, J, Depl, false);
 
         // compute stress
-        type::Vec<3, Real> stress(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, _materialsStiffnesses[elementIndex], strain, false);
 
         // compute force on element, in local frame
@@ -493,7 +493,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord_t<DataTypes>& v, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor)
 {
     if (!_indexedElements)
     {
@@ -526,11 +526,11 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, 
         dX[5] = x_2[1];
 
         // compute strain
-        type::Vec<3, Real> strain(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, _strainDisplacements[i], dX, false);
 
         // compute stress
-        type::Vec<3, Real> stress(type::NOINIT);
+        type::Vec<3, Real_t<DataTypes>> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, _materialsStiffnesses[i], strain, false);
 
         // compute force on element, in local frame
@@ -571,7 +571,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     std::vector<sofa::type::RGBAColor> colorVector;
     std::vector<sofa::type::Vec3> vertices;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord_t<DataTypes>& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     typename VecElement::const_iterator it;
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it)
@@ -596,14 +596,14 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot)
 {
-    type::MatNoInit<3, 6, Real> Jt;
+    type::MatNoInit<3, 6, Real_t<DataTypes>> Jt;
     Jt.transpose(J);
 
-    type::MatNoInit<6, 6, Real> JKJt;
+    type::MatNoInit<6, 6, Real_t<DataTypes>> JKJt;
     JKJt = J * K * Jt;  // in-plane stiffness matrix, 6x6
 
     // stiffness JKJt expanded to 3 dimensions
-    type::Mat<9, 9, Real> Ke; // initialized to 0
+    type::Mat<9, 9, Real_t<DataTypes>> Ke; // initialized to 0
     // for each 2x2 block i,j
     for (unsigned i = 0; i < 3; i++)
     {
@@ -617,7 +617,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMa
     }
 
     // rotation matrices. TODO: use block-diagonal matrices, more efficient.
-    type::Mat<9, 9, Real> RR, RRt; // initialized to 0
+    type::Mat<9, 9, Real_t<DataTypes>> RR, RRt; // initialized to 0
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
         {
@@ -650,7 +650,7 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     StiffnessMatrix JKJt, RJKJtRt;
-    sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
+    sofa::type::Mat<3, 3, Real_t<DataTypes>> localMatrix(type::NOINIT);
 
     constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
     unsigned int i = 0;
@@ -681,7 +681,7 @@ void TriangleFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::Dampin
 }
 
 template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
+void TriangleFEMForceField<DataTypes>::setPoisson(Real_t<DataTypes> val)
 {
     if (val < 0)
     {
@@ -695,12 +695,12 @@ void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
 }
 
 template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::setYoung(Real val)
+void TriangleFEMForceField<DataTypes>::setYoung(Real_t<DataTypes> val)
 {
     if (val < 0)
     {
         msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        f_young.setValue(Real(1000));
+        f_young.setValue(Real_t<DataTypes>(1000));
     }
     else if (val != f_young.getValue())
     {
