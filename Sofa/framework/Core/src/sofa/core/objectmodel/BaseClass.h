@@ -99,29 +99,6 @@ public:
     static BaseClass* GetSingleton();
 };
 
-#define SOFA_DATATYPES_ALIASES_PREFIX(T, Prefix) \
-    using Prefix ## Coord = sofa::Coord_t<T>;\
-    using Prefix ## Real = sofa::Real_t<T>;\
-    using Prefix ## VecReal = sofa::VecReal_t<T>;\
-    using Prefix ## Deriv = sofa::Deriv_t<T>;\
-    using Prefix ## VecCoord = sofa::VecCoord_t<T>;\
-    using Prefix ## VecDeriv = sofa::VecDeriv_t<T>;\
-    using Prefix ## MatrixDeriv = sofa::MatrixDeriv_t<T>;\
-    using Prefix ## DataVecCoord = sofa::DataVecCoord_t<T>;\
-    using Prefix ## DataVecDeriv = sofa::DataVecDeriv_t<T>;\
-    using Prefix ## DataMatrixDeriv = sofa::DataMatrixDeriv_t<T>
-
-#define SOFA_DATATYPES_ALIASES(T) \
-    using Coord = sofa::Coord_t<T>;\
-    using Real = sofa::Real_t<T>;\
-    using VecReal = sofa::VecReal_t<T>;\
-    using Deriv = sofa::Deriv_t<T>;\
-    using VecCoord = sofa::VecCoord_t<T>;\
-    using VecDeriv = sofa::VecDeriv_t<T>;\
-    using MatrixDeriv = sofa::MatrixDeriv_t<T>;\
-    using DataVecCoord = sofa::DataVecCoord_t<T>;\
-    using DataVecDeriv = sofa::DataVecDeriv_t<T>;\
-    using DataMatrixDeriv = sofa::DataMatrixDeriv_t<T>
 
 // To specify template classes in C macro parameters, we can't write any commas, hence templates with more than 2 parameters have to use the following macros
 #define SOFA_TEMPLATE(Class,P1) Class<P1>
