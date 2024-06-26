@@ -71,6 +71,7 @@ inline void to_json(nlohmann::json& json,
 {
     json["name"] = link->getName();
     json["help"] = link->getHelp();
+    json["destinationTypeName"] = link->getValueTypeString();
 }
 
 inline void to_json(nlohmann::json& json,
