@@ -141,7 +141,7 @@ using namespace gpu::cuda;
         int nbEdges=m_topology->getNbEdges();
         int nbPoints=m_topology->getNbPoints();
 
-        edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+        edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
         TetrahedralTensorMassForceFieldCuda3d_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
@@ -161,7 +161,7 @@ using namespace gpu::cuda;
 
         int nbEdges=m_topology->getNbEdges();
         int nbPoints=m_topology->getNbPoints();
-        edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+        edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
         TetrahedralTensorMassForceFieldCuda3d_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), kFactor);
