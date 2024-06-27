@@ -66,7 +66,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
     , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material: vector containing anisotropic directions. The vector size is 0 if the material is isotropic, 1 if it is transversely isotropic and 2 for orthotropic materials"))
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , m_edgeInfo(initData(&m_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
