@@ -71,8 +71,8 @@ void init()
     static bool first = true;
     if (first)
     {
-        // make sure that this plugin is registered into PluginManager
-        sofa::helper::system::PluginManager::getInstance().loadPlugin(MODULE_NAME);
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
         first = false;
     }
 }

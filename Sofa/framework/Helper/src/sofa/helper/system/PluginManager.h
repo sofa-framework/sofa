@@ -175,7 +175,10 @@ public:
     };
 
     
-    /// Loads a plugin library in process memory. 
+    /// Loads a plugin library in process memory and register into the map
+    /// - if already registered into the map (and therefore loaded in memory), do nothing.
+    /// - If not registered but loaded in memory, call entrypoints and register into the map
+    /// - If not registered and not loaded in memory, it will load the plugin in memory, call entrypoints and register into the map
     /// @param plugin Can be just the filename of the library to load (without extension) or the full path
     /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds and is empty otherwise.
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
@@ -196,8 +199,12 @@ public:
     /// @param errlog An optional stream for error logging.
     PluginLoadStatus loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
     
-    /// Unloads a plugin from process memory.
+    /// Unloads a plugin from the map
+    /// Warning: a previously loaded plugin will always be in process memory.
     bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
+
+    /// Register a plugin. Merely an alias for loadPlugin()
+    PluginLoadStatus registerPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
 
     void init();
     void init(const std::string& pluginPath);
