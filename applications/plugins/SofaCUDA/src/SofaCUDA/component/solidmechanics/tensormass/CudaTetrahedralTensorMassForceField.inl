@@ -80,7 +80,7 @@ using namespace gpu::cuda;
 
 		const int nbEdges=m_topology->getNbEdges();
 		const int nbPoints=m_topology->getNbPoints();
-		const edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+		const edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
         TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
         TetrahedralTensorMassForceFieldCuda3f_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), (float)kFactor);
