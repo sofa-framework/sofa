@@ -533,4 +533,14 @@ bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::strin
     return false;
 }
 
+auto PluginManager::registerPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog) -> PluginLoadStatus
+{
+    // The plugin is not known by SOFA (i.e the pluginManager was not used)
+    // - either it was never ever loaded (by SOFA or by the OS itself)
+    // - or it was loaded implicitly by the OS (static dependency)
+    
+    // If it was already loaded by the OS before, this will just update the pluginmanager's map
+    return loadPlugin(plugin, suffix, ignoreCase, recursive, errlog);
+}
+
 }
