@@ -74,3 +74,9 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Used only by the deprecated Compliant plugin.")
 #endif
+
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
+#endif
