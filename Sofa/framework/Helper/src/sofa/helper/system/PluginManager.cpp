@@ -212,7 +212,6 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
 
         [[maybe_unused]] const auto moduleDescriptionResult = getPluginEntry(p.getModuleDescription,d);
         [[maybe_unused]] const auto moduleLicenseResult = getPluginEntry(p.getModuleLicense,d);
-        [[maybe_unused]] const auto moduleComponentListResult = getPluginEntry(p.getModuleComponentList,d);
         [[maybe_unused]] const auto moduleVersionResult = getPluginEntry(p.getModuleVersion,d);
     }
 
