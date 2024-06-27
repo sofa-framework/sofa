@@ -185,7 +185,7 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
         for(unsigned i=0; i<links.size(); i++ )
         {
             // force in compression (>0) can lead to negative eigen values in geometric stiffness
-            // this results in a undefinite implicit matrix that causes instabilies
+            // this results in an undefinite implicit matrix that causes instabilities
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
@@ -241,7 +241,7 @@ void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mpa
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -285,7 +285,7 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
         const sofa::topology::Edge link = links[i];
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {
