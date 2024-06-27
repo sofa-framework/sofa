@@ -152,9 +152,9 @@ void TriangleFEMForceField<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv_t<DataTypes>& f, const DataVecCoord_t<DataTypes>& x, const DataVecDeriv_t<DataTypes>& /* v */)
 {
-    VecDeriv& f1 = *f.beginEdit();
+    VecDeriv_t<DataTypes>& f1 = *f.beginEdit();
     const VecCoord_t<DataTypes>& x1 = x.getValue();
 
     f1.resize(x1.size());
@@ -173,10 +173,10 @@ void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& df, const DataVecDeriv_t<DataTypes>& dx)
 {
-    VecDeriv& df1 = *df.beginEdit();
-    const VecDeriv& dx1 = dx.getValue();
+    VecDeriv_t<DataTypes>& df1 = *df.beginEdit();
+    const VecDeriv_t<DataTypes>& dx1 = dx.getValue();
     Real_t<DataTypes> kFactor = (Real_t<DataTypes>)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     Real_t<DataTypes> h = 1;
@@ -319,9 +319,9 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord_t<DataTypes
         // compute force on element
         const Displacement F = J * stress;
 
-        f[a] += Coord(F[0], F[1], 0);
-        f[b] += Coord(F[2], F[3], 0);
-        f[c] += Coord(F[4], F[5], 0);
+        f[a] += Coord_t<DataTypes>(F[0], F[1], 0);
+        f[b] += Coord_t<DataTypes>(F[2], F[3], 0);
+        f[c] += Coord_t<DataTypes>(F[4], F[5], 0);
     }
 }
 
@@ -362,9 +362,9 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord_t<DataTypes>
         // compute force on element
         const Displacement F = _strainDisplacements[i] * stress;
 
-        v[a] += Coord(-h * F[0], -h * F[1], 0) * kFactor;
-        v[b] += Coord(-h * F[2], -h * F[3], 0) * kFactor;
-        v[c] += Coord(-h * F[4], -h * F[5], 0) * kFactor;
+        v[a] += Coord_t<DataTypes>(-h * F[0], -h * F[1], 0) * kFactor;
+        v[b] += Coord_t<DataTypes>(-h * F[2], -h * F[3], 0) * kFactor;
+        v[c] += Coord_t<DataTypes>(-h * F[4], -h * F[5], 0) * kFactor;
     }
 }
 
@@ -384,9 +384,9 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
-        const Coord& pA = pos[(*it)[0]];
-        const Coord& pB = pos[(*it)[1]];
-        const Coord& pC = pos[(*it)[2]];
+        const Coord_t<DataTypes>& pA = pos[(*it)[0]];
+        const Coord_t<DataTypes>& pB = pos[(*it)[1]];
+        const Coord_t<DataTypes>& pC = pos[(*it)[2]];
 
         // Rotation matrix (transpose of initial triangle/world)
         // first vector on first edge
@@ -403,7 +403,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // set the origin of the local frame at vertex a
         _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
-        _rotatedInitialElements[i][0] = Coord(0, 0, 0);
+        _rotatedInitialElements[i][0] = Coord_t<DataTypes>(0, 0, 0);
 
         try
         {
@@ -435,17 +435,17 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord_t<DataTypes
         const Index b = (*_indexedElements)[elementIndex][1];
         const Index c = (*_indexedElements)[elementIndex][2];
 
-        const Coord& pA = p[a];
-        const Coord& pB = p[b];
-        const Coord& pC = p[c];
+        const Coord_t<DataTypes>& pA = p[a];
+        const Coord_t<DataTypes>& pB = p[b];
+        const Coord_t<DataTypes>& pC = p[c];
 
         // Rotation matrix (deformed and displaced Triangle/world)
         Transformation R_2_0(type::NOINIT), R_0_2(type::NOINIT);
         m_triangleUtils.computeRotationLarge(R_0_2, pA, pB, pC);
 
         // positions of the deformed points in the local frame
-        const Coord deforme_b = R_0_2 * (pB - pA);
-        const Coord deforme_c = R_0_2 * (pC - pA);
+        const Coord_t<DataTypes> deforme_b = R_0_2 * (pB - pA);
+        const Coord_t<DataTypes> deforme_c = R_0_2 * (pC - pA);
 
         // displacements in the local frame
         Displacement Depl(type::NOINIT);
@@ -478,9 +478,9 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord_t<DataTypes
 
         // project forces to world frame
         R_2_0.transpose(R_0_2);
-        f[a] += R_2_0 * Coord(F[0], F[1], 0);
-        f[b] += R_2_0 * Coord(F[2], F[3], 0);
-        f[c] += R_2_0 * Coord(F[4], F[5], 0);
+        f[a] += R_2_0 * Coord_t<DataTypes>(F[0], F[1], 0);
+        f[b] += R_2_0 * Coord_t<DataTypes>(F[2], F[3], 0);
+        f[c] += R_2_0 * Coord_t<DataTypes>(F[4], F[5], 0);
 
         // store for re-use in matrix-vector products
         if (implicit)
@@ -513,7 +513,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord_t<DataTypes>
 
         Displacement dX(type::NOINIT);
         
-        Coord x_2 = R_0_2 * x[a];
+        Coord_t<DataTypes> x_2 = R_0_2 * x[a];
         dX[0] = x_2[0];
         dX[1] = x_2[1];
 
@@ -537,9 +537,9 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord_t<DataTypes>
         Displacement F(type::NOINIT);
         m_triangleUtils.computeForceLarge(F, _strainDisplacements[i], stress);
 
-        v[a] += (_rotations[i] * Coord(-h * F[0], -h * F[1], 0)) * kFactor;
-        v[b] += (_rotations[i] * Coord(-h * F[2], -h * F[3], 0)) * kFactor;
-        v[c] += (_rotations[i] * Coord(-h * F[4], -h * F[5], 0)) * kFactor;
+        v[a] += (_rotations[i] * Coord_t<DataTypes>(-h * F[0], -h * F[1], 0)) * kFactor;
+        v[b] += (_rotations[i] * Coord_t<DataTypes>(-h * F[2], -h * F[3], 0)) * kFactor;
+        v[c] += (_rotations[i] * Coord_t<DataTypes>(-h * F[4], -h * F[5], 0)) * kFactor;
     }
 }
 
@@ -737,7 +737,7 @@ void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
 
 
 template<class DataTypes>
-const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
+const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord_t<DataTypes>, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
 {
     if (elemId != sofa::InvalidID && elemId < _rotatedInitialElements.size())
         return _rotatedInitialElements[elemId];
