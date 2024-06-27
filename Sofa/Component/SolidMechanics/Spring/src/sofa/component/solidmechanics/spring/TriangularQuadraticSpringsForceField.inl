@@ -117,8 +117,8 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , d_triangleInfo(initData(&d_triangleInfo, "d_triangleInfo", "Internal triangle data"))
-    , d_edgeInfo(initData(&d_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    , d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
     _initialPoints.setParent(&d_initialPoints);

@@ -87,8 +87,14 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young's modulus in Hooke's law
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_youngModulus;
+
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -122,11 +128,11 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue(modulus);
+        d_youngModulus.setValue(modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue(ratio);
+        d_poissonRatio.setValue(ratio);
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
@@ -155,10 +161,13 @@ public:
     */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
-    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
+    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    core::topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data <sofa::Index> edgeInfo;
+
+    core::topology::EdgeData < edgeRestInfoVector > d_edgeInfo; ///< Internal edge data
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

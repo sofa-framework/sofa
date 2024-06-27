@@ -126,8 +126,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index 
 }
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
-    : d_triangleInfo(initData(&d_triangleInfo, "d_triangleInfo", "Internal triangle data"))
-    , d_edgeInfo(initData(&d_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , updateMatrix(true)
     , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))

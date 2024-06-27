@@ -88,8 +88,10 @@ protected:
             return in;
         }
     };
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data <sofa::Index> edgeInfo;
 
-    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
     * Will be set as creation callback in the EdgeData @sa d_edgeInfo
@@ -119,8 +121,14 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young's modulus in Hooke's law
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_youngModulus;
+
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularTensorMassForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -149,11 +157,11 @@ public:
 
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        d_youngModulus.setValue((Real)modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        d_poissonRatio.setValue((Real)ratio);
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -163,7 +171,7 @@ public:
 
 protected :
 
-    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return d_edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
