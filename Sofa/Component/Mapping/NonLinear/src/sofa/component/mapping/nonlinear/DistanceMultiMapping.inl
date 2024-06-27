@@ -252,14 +252,13 @@ void DistanceMultiMapping<TIn, TOut>::applyJT(const type::vector< InVecDeriv*>& 
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
 {
-    SOFA_UNUSED(outForce);
     // NOT OPTIMIZED AT ALL, but will do the job for now
 
     const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     const SReal kfactor = mparams->kFactor();
-    auto childForceRa = this->getToModels()[0]->readForces();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForceRa (*outForce[this->getToModels()[0].get()].read());
     const OutVecDeriv& childForce = childForceRa.ref();
     const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();

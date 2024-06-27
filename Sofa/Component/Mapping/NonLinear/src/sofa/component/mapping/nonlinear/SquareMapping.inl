@@ -105,28 +105,33 @@ void SquareMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*
 }
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId)
 {
     const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) return;
+    if( !geometricStiffness )
+    {
+        return;
+    }
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     SReal kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
 
     if(d_useGeometricStiffnessMatrix.getValue() && K.compressedMatrix.nonZeros() )
     {
+        // f_p += K * dx_p * k
         K.addMult( parentForce.wref(), parentDisplacement.ref(), (typename In::Real)kfactor );
     }
     else
     {
+        helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
+
         const size_t size = parentDisplacement.size();
         kfactor *= 2.0;
 
         for(unsigned i=0; i<size; i++ )
         {
-            parentForce[i][0] += parentDisplacement[i][0] * childForce[i][0]*kfactor;
+            parentForce[i][0] += parentDisplacement[i][0] * childForce[i][0] * kfactor;
         }
     }
 }

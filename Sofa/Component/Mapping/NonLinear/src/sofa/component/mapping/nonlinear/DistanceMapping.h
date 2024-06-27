@@ -88,7 +88,7 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId  childForceId ) override;
 
     const sofa::linearalgebra::BaseMatrix* getJ() override;
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;

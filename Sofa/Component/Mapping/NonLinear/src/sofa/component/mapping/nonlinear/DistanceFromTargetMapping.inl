@@ -212,7 +212,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams*
 
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId)
 {
     const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
      if( !geometricStiffness ) return;
@@ -220,7 +220,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*childForceId[this->toModel.get()].read());
     const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
