@@ -190,7 +190,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
         {
             invlengths[i] = 0;
 
-            // arbritary vector mapping all directions
+            // arbitrary vector mapping all directions
             static const Real p = static_cast<Real>(1) / std::sqrt(static_cast<Real>(In::spatial_dimensions));
             gap.fill(p);
         }
@@ -282,7 +282,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for(unsigned i=0; i<links.size(); i++ )
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -352,7 +352,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -420,7 +420,7 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         const OutDeriv force_i = childForce[i];
 
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {

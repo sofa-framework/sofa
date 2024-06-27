@@ -53,6 +53,7 @@ PickHandler::PickHandler(double defaultLength):
     mouseNode(nullptr),
     mouseContainer(nullptr),
     mouseCollision(nullptr),
+    interaction(nullptr),
     renderCallback(nullptr),
     pickingMethod(RAY_CASTING),
     m_defaultLength(defaultLength)
