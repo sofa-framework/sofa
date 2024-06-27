@@ -289,7 +289,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
     , d_kd(initData(&d_kd, Real(1.0),"damping","uniform damping for the all springs"))
     , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , d_edgeInfo(initData(&d_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_potentialEnergy(0.0)
     , m_topology(nullptr)
 {
