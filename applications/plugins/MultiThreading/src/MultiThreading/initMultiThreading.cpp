@@ -34,7 +34,6 @@ SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
 SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
 SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();
 SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
 }
 
 void init()
@@ -70,11 +69,6 @@ const char* getModuleLicense()
 const char* getModuleDescription()
 {
     return "MultiThreading SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "DataExchange, AnimationLoopParallelScheduler ";
 }
 
 }

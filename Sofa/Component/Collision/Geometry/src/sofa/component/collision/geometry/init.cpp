@@ -55,10 +55,4 @@ void init()
     }
 }
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
-}
 } // namespace sofa::component::collision::geometry
