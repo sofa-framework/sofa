@@ -75,6 +75,8 @@ void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
 bool RequiredPlugin::loadPlugin()
 {
+    auto* objectFactory = sofa::core::ObjectFactory::getInstance();
+
     /// Get a write accessor to the loadedPlugin
     auto loadedPlugins = sofa::helper::getWriteOnlyAccessor(d_loadedPlugins);
     loadedPlugins.clear();
@@ -127,8 +129,22 @@ bool RequiredPlugin::loadPlugin()
                 loadedPlugins.push_back(name);
                 isNameLoaded = true;
 
-                // Register Objects explicitely
-                sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(name);
+                // Register Objects explicitly
+                objectFactory->registerObjectsFromPlugin(name);
+
+                // fail-safe to check if potential components have been registered (implicitly or explicitly)
+                // SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
+                std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
+                objectFactory->getEntriesFromTarget(entries, name);
+
+                if (entries.empty())
+                {
+                    msg_warning() << "No component has been registered from " << name << ".\n"
+                        << "It could be because: \n"
+                        << " - the entrypoint registerObjects() has not been implemented;\n"
+                        << " - (deprecated) no sofa::core::RegisterObject() has been called;\n"
+                        << " - your plugin does not add any component (i.e BaseObject) into the factory. In that case, RequiredPlugin is not useful for this kind of plugin.";
+                }
 
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
