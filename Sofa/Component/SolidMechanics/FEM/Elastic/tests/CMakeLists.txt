@@ -6,6 +6,7 @@ set(SOURCE_FILES
     BeamFEMForceField_test.cpp
     HexahedronFEMForceField_test.cpp
     TetrahedronFEMForceField_test.cpp
+    TriangleFEMForceField_stepTest.cpp
     TriangleFEMForceField_test.cpp
 )
 

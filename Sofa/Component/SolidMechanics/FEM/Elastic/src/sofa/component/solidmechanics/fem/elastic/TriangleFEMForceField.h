@@ -93,7 +93,7 @@ protected:
     Data< VecCoord > _initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
-    virtual ~TriangleFEMForceField();
+    ~TriangleFEMForceField() override;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -103,6 +103,10 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    using Inherit1::addKToMatrix;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -156,9 +160,6 @@ protected:
 
     //// stiffness matrix assembly
     void computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
-    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     type::Mat<3, 3, Real> InvalidTransform;
     type::fixed_array <Coord, 3> InvalidCoords;
@@ -170,10 +171,7 @@ protected:
 
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
-
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
-
-
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
 } // namespace sofa::component::solidmechanics::fem::elastic
