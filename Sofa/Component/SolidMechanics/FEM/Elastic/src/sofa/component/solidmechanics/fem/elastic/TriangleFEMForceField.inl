@@ -336,9 +336,13 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
-    typename VecElement::const_iterator it;
+    if (!_indexedElements)
+    {
+        return;
+    }
+
     unsigned int i(0);
-    for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
+    for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
@@ -354,7 +358,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, 
 
         dX[4] = x[c][0];
         dX[5] = x[c][1];
-
 
         // compute strain
         type::Vec<3, Real> strain(type::NOINIT);
@@ -426,6 +429,11 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const VecCoord& p, bool implicit)
 {
+    if (!_indexedElements)
+    {
+        return;
+    }
+
     typename VecElement::const_iterator it;
     unsigned int elementIndex(0);
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
@@ -495,10 +503,14 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
-    typename VecElement::const_iterator it;
+    if (!_indexedElements)
+    {
+        return;
+    }
+
     unsigned int i(0);
 
-    for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
+    for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
@@ -629,6 +641,11 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMa
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
+    if (!_indexedElements)
+    {
+        return;
+    }
+
     for (unsigned i = 0; i < _indexedElements->size(); i++)
     {
         StiffnessMatrix JKJt(type::NOINIT), RJKJtRt(type::NOINIT);

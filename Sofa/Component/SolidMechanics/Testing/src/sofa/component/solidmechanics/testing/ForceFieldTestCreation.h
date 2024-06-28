@@ -261,9 +261,9 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         VecDeriv dF;
         sofa::testing::copyFromData( dF, dof->readForces() );
 
-        if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dF differs from change of force" << std::endl << "Failed seed number = " << this->seed << std::endl;
-        }
+        EXPECT_LE(this->vectorMaxDiff(changeOfForce, dF), errorMax * this->epsilon()) <<
+            "dF differs from change of force\n"
+            "Failed seed number = " << this->seed;
 
         // check stiffness matrix: compare its product with dx to actual force change
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
@@ -288,9 +288,9 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         modeling::Vector df;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
-        if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << this->seed << std::endl;
-
+        EXPECT_LE( this->vectorMaxDiff(Kdx, df), errorMax * this->epsilon() ) <<
+            "Kdx differs from change of force"
+            "\nFailed seed number = " << this->seed;
     }
 
 
