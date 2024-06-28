@@ -737,7 +737,7 @@ void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
 
 
 template<class DataTypes>
-const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord_t<DataTypes>, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
+const type::fixed_array<Coord_t<DataTypes>, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
 {
     if (elemId != sofa::InvalidID && elemId < _rotatedInitialElements.size())
         return _rotatedInitialElements[elemId];
