@@ -71,6 +71,7 @@ public:
     void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
     void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
     void applyJT(const core::ConstraintParams *cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId) override;
 
 protected:
     AreaMapping();

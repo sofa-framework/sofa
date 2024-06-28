@@ -121,7 +121,7 @@ struct AreaMappingTest : public mapping_test::Mapping_test<AreaMapping>
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( type::Vec1( std::sqrt(2.0) / 2 ) );
+        expectedoutcoord.emplace_back( 0.5 );
 
         return this->runTest( incoord, expectedoutcoord );
     }
