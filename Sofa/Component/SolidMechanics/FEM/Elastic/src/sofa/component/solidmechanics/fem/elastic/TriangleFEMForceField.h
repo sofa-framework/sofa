@@ -59,23 +59,15 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord    Coord   ;
-    typedef typename DataTypes::Deriv    Deriv   ;
-    typedef typename Coord::value_type   Real    ;
 
-    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
-    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-
-    typedef type::Vec<6, Real> Displacement;								///< the displacement vector
-    typedef type::Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
+    typedef type::Vec<6, Real_t<DataTypes>> Displacement;								///< the displacement vector
+    typedef type::Mat<3, 3, Real_t<DataTypes>> MaterialStiffness;						///< the matrix of material stiffness
     typedef sofa::type::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
-    typedef type::Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix (the transpose, actually)
+    typedef type::Mat<6, 3, Real_t<DataTypes>> StrainDisplacement;						///< the strain-displacement matrix (the transpose, actually)
     typedef sofa::type::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
-    typedef type::Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
+    typedef type::Mat<3, 3, Real_t<DataTypes> > Transformation;						///< matrix for rigid transformations like rotations
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef type::Mat<9, 9, Real> StiffnessMatrix;
+    typedef type::Mat<9, 9, Real_t<DataTypes>> StiffnessMatrix;
 
 
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
@@ -90,7 +82,7 @@ protected:
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
 
     const VecElement* _indexedElements;
-    Data< VecCoord > _initialPoints; ///< Initial Position
+    Data< VecCoord_t<DataTypes> > _initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
     ~TriangleFEMForceField() override;
@@ -101,13 +93,13 @@ public:
 
     void init() override;
     void reinit() override;
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& f, const DataVecCoord_t<DataTypes>& x, const DataVecDeriv_t<DataTypes>& v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& df, const DataVecDeriv_t<DataTypes>& dx) override;
     using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord_t<DataTypes>&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
@@ -118,21 +110,21 @@ public:
 
     int method;
     Data<std::string> f_method; ///< large: large displacements, small: small displacements
-    Data<Real> f_poisson; ///< Poisson ratio in Hooke's law
-    Data<Real> f_young; ///< Young modulus in Hooke's law
-    Data<Real> f_thickness; ///< Thickness of the elements
+    Data<Real_t<DataTypes>> f_poisson; ///< Poisson ratio in Hooke's law
+    Data<Real_t<DataTypes>> f_young; ///< Young modulus in Hooke's law
+    Data<Real_t<DataTypes>> f_thickness; ///< Thickness of the elements
     Data<bool> f_planeStrain; ///< Plane strain or plane stress assumption
 
-    Real getPoisson() { return f_poisson.getValue(); }
-    void setPoisson(Real val);
-    Real getYoung() { return f_young.getValue(); }
-    void setYoung(Real val);
+    Real_t<DataTypes> getPoisson() { return f_poisson.getValue(); }
+    void setPoisson(Real_t<DataTypes> val);
+    Real_t<DataTypes> getYoung() { return f_young.getValue(); }
+    void setYoung(Real_t<DataTypes> val);
     int  getMethod() { return method; }
     void setMethod(int val);
     void setMethod(std::string val);
 
     /// Public methods to access FEM information per element. Those method should not be used internally as they add check on element id.
-    const type::fixed_array <Coord, 3>& getRotatedInitialElement(Index elemId);
+    const type::fixed_array <Coord_t<DataTypes>, 3>& getRotatedInitialElement(Index elemId);
     const Transformation& getRotationMatrix(Index elemId);
     const MaterialStiffness& getMaterialStiffness(Index elemId);
     const StrainDisplacement& getStrainDisplacements(Index elemId);
@@ -143,26 +135,26 @@ public:
 protected:
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
+    virtual void applyStiffness(VecCoord_t<DataTypes>& f, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor);
     void computeMaterialStiffnesses();
 
     ////////////// small displacements method
     void initSmall();
-    void accumulateForceSmall(VecCoord& f, const VecCoord& p, bool implicit = false);
-    void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
+    void accumulateForceSmall(VecCoord_t<DataTypes>& f, const VecCoord_t<DataTypes>& p, bool implicit = false);
+    void applyStiffnessSmall(VecCoord_t<DataTypes>& f, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor);
 
     ////////////// large displacements method
-    sofa::type::vector< type::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
+    sofa::type::vector< type::fixed_array <Coord_t<DataTypes>, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     sofa::type::vector< Transformation > _rotations;
     void initLarge();
-    void accumulateForceLarge(VecCoord& f, const VecCoord& p, bool implicit = false);
-    void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
+    void accumulateForceLarge(VecCoord_t<DataTypes>& f, const VecCoord_t<DataTypes>& p, bool implicit = false);
+    void applyStiffnessLarge(VecCoord_t<DataTypes>& f, Real_t<DataTypes> h, const VecCoord_t<DataTypes>& x, const Real_t<DataTypes>& kFactor);
 
     //// stiffness matrix assembly
     void computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
 
-    type::Mat<3, 3, Real> InvalidTransform;
-    type::fixed_array <Coord, 3> InvalidCoords;
+    type::Mat<3, 3, Real_t<DataTypes>> InvalidTransform;
+    type::fixed_array <Coord_t<DataTypes>, 3> InvalidCoords;
     StrainDisplacement InvalidStrainDisplacement;
 
     /// Pointer to the utils class which store methods common to TriangleFEMForceField

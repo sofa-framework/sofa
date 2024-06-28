@@ -27,6 +27,7 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
+#include <sofa/core/trait/DataTypes.h>
 namespace sofa
 {
 namespace core::objectmodel
