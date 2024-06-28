@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -77,13 +77,13 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
     {
         const auto& triangle = triangles[triangleId];
 
-        const auto n0 = TIn::getCPos(_in[triangle[0]]);
-        const auto n1 = TIn::getCPos(_in[triangle[1]]);
-        const auto n2 = TIn::getCPos(_in[triangle[2]]);
+        const auto& n0 = TIn::getCPos(_in[triangle[0]]);
+        const auto& n1 = TIn::getCPos(_in[triangle[1]]);
+        const auto& n2 = TIn::getCPos(_in[triangle[2]]);
 
-        const auto n10 = n1 - n0;
-        const auto n20 = n2 - n0;
-        const auto N = sofa::type::cross(n10, n20);
+        const auto n01 = n1 - n0;
+        const auto n02 = n2 - n0;
+        const auto N = sofa::type::cross(n01, n02);
         const auto norm = N.norm();
 
         const auto area = static_cast<typename In::Real>(0.5) * norm;
@@ -92,14 +92,10 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
         const auto k = 1 / (2 * norm);
 
-        const auto dN_dn0 = sofa::type::crossProductMatrix(n1-n2);
-        const auto dN_dn1 = sofa::type::crossProductMatrix(n2-n0);
-        const auto dN_dn2 = sofa::type::crossProductMatrix(n0-n1);
-
         sofa::type::fixed_array<JacobianEntry, 3> jacobianEntries {
-            JacobianEntry{triangle[0], k * dN_dn0 * N},
-            JacobianEntry{triangle[1], k * dN_dn1 * N},
-            JacobianEntry{triangle[2], k * dN_dn2 * N},
+            JacobianEntry{triangle[0], k * sofa::type::cross(n1-n2, N)},
+            JacobianEntry{triangle[1], k * sofa::type::cross(n02, N)},
+            JacobianEntry{triangle[2],-k * sofa::type::cross(n01, N)},
         };
 
         //insertion in increasing column order
@@ -162,6 +158,22 @@ void AreaMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams,
     auto childMatRa  = sofa::helper::getReadAccessor(in);
     auto parentMatWa = sofa::helper::getWriteAccessor(out);
     addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
+}
+
+template <class TIn, class TOut>
+void AreaMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
+    core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    helper::WriteAccessor<Data<InVecDeriv> > parentForceAccessor(*parentForceId[this->fromModel.get()].write());
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacementAccessor(*mparams->readDx(this->fromModel.get()));
+    const SReal kfactor = mparams->kFactor();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForceAccessor(mparams->readF(this->toModel.get()));
 }
 
 }
