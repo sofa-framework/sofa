@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
@@ -48,10 +49,10 @@ public:
 
 
 template<class DataTypes>
-class FastTetrahedralCorotationalForceField : public core::behavior::ForceField<DataTypes>
+class FastTetrahedralCorotationalForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField,DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::Real        Real        ;
@@ -122,11 +123,8 @@ public:
     Data<std::string> f_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic) 
     RotationDecompositionMethod m_decompositionMethod;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
-
-    Real lambda;  /// first Lame coefficient
-    Real mu;    /// second Lame coefficient
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() Data<Real> f_poissonRatio;
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     Data<bool> f_drawing; ///<  draw the forcefield if true
     Data<sofa::type::RGBAColor> drawColor1; ///<  draw color for faces 1
@@ -134,8 +132,7 @@ public:
     Data<sofa::type::RGBAColor> drawColor3; ///<  draw color for faces 3
     Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 
     FastTetrahedralCorotationalForceField();
 
@@ -161,24 +158,14 @@ public:
 
     void updateTopologyInformation();
 
-    virtual Real getLambda() const { return lambda;}
-    virtual Real getMu() const { return mu;}
-
-    void setYoungModulus(const Real modulus)
-    {
-        f_youngModulus.setValue(modulus);
-    }
-    void setPoissonRatio(const Real ratio)
-    {
-        f_poissonRatio.setValue(ratio);
-    }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {
         m_decompositionMethod = m;
     }
     void draw(const core::visual::VisualParams* vparams) override;
+
     /// compute lambda and mu based on the Young modulus and Poisson ratio
-    void updateLameCoefficients();
+    static void computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu);
 
 
 

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
@@ -44,8 +45,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     const std::vector< Tetrahedron > &tetrahedronArray=this->m_topology->getTetrahedra() ;
 
     unsigned int j,k,l,m,n;
-    typename DataTypes::Real lambda=getLambda();
-    typename DataTypes::Real mu=getMu();
+    Real lambda, mu;
+
+    Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
+
+    computeLameCoefficients(youngModulusElement, this->d_poissonRatio.getValue(), lambda, mu);
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -140,21 +144,15 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , _initialPoints(0)
     , f_method(initData(&f_method,std::string("qr"),"method"," method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))
-    , f_poissonRatio(initData(&f_poissonRatio,Real(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,Real(5000.),"youngModulus","Young modulus in Hooke's law"))
-    , lambda(0)
-    , mu(0)
     , f_drawing(initData(&f_drawing, true, "drawing", " draw the forcefield if true"))
     , drawColor1(initData(&drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
     , drawColor2(initData(&drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
     , drawColor3(initData(&drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
     , drawColor4(initData(&drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
-    , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , updateMatrix(true)
 {
-    f_poissonRatio.setRequired(true);
-    f_youngModulus.setRequired(true);
+    f_poissonRatio.setParent(&this->d_poissonRatio);
 }
 
 template <class DataTypes> 
@@ -168,8 +166,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 {
     this->Inherited::init();
 
-    msg_warning_when(!f_poissonRatio.isSet()) << "The default value of the Data " << f_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
-    msg_warning_when(!f_youngModulus.isSet()) << "The default value of the Data " << f_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
+    msg_warning_when(!this->d_poissonRatio.isSet()) << "The default value of the Data " << this->d_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
+    msg_warning_when(!this->d_youngModulus.isSet()) << "The default value of the Data " << this->d_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
 
     if (l_topology.empty())
     {
@@ -189,19 +187,17 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 
     if (m_topology->getNbTetrahedra() == 0)
     {
-        msg_warning() << "No tetrahedra found in linked Topology.";
+        msg_error() << "No tetrahedra found in linked Topology.";
     }
-
-    updateLameCoefficients();
 
     const std::string& method = f_method.getValue();
     if (method == "polar")
         m_decompositionMethod = POLAR_DECOMPOSITION;
-     else if ((method == "qr") || (method == "large"))
+    else if ((method == "qr") || (method == "large"))
         m_decompositionMethod = QR_DECOMPOSITION;
     else if (method == "polar2")
         m_decompositionMethod = POLAR_DECOMPOSITION_MODIFIED;
-     else if ((method == "none") || (method == "linear") || (method == "small"))
+    else if ((method == "none") || (method == "linear") || (method == "small"))
         m_decompositionMethod = LINEAR_ELASTIC;
     else
     {
@@ -675,11 +671,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
 }
 
 template<class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::updateLameCoefficients()
+void FastTetrahedralCorotationalForceField<DataTypes>::computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu)
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
-    mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
-
+    outLambda = inYoung * inPoisson / ((1 - 2 * inPoisson) * (1 + inPoisson));
+    outMu = inYoung / (2 * (1 + inPoisson));
 }
 
 

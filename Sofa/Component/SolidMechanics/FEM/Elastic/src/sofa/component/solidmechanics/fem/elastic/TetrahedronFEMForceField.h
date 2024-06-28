@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -73,10 +74,10 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
+class TetrahedronFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -191,8 +192,9 @@ public:
     int method;
     Data<std::string> f_method; ///< "small", "large" (by QR), "polar" or "svd" displacements
 
-    Data<Real> _poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
-    Data<VecReal > _youngModulus; ///< FEM Young's Modulus in Hooke's law
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() Data<Real> _poissonRatio;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() Data<VecReal > _youngModulus;
+
     Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
@@ -239,8 +241,7 @@ public:
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 
     type::vector<type::Vec<6,Real> > elemDisplacements;
 
@@ -251,8 +252,6 @@ protected:
     ~TetrahedronFEMForceField() override;
 
 public:
-    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
-    void setYoungModulus(Real val) ;
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future

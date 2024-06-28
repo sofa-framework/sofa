@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -48,10 +49,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 /** Compute Finite Element forces based on tetrahedral elements.
  */
 template<class DataTypes>
-class TetrahedralCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>
+class TetrahedralCorotationalFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralCorotationalFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralCorotationalFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -140,9 +141,11 @@ public:
 
 public:
     int method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() Data<Real> _poissonRatio;
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved _youngModulus;
+
     Data<std::string> f_method; ///< "small", "large" (by QR) or "polar" displacements
-    Data<Real> _poissonRatio; ///< FEM Poisson Ratio
-    Data<Real> _youngModulus; ///< FEM Young Modulus
     Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
@@ -154,18 +157,14 @@ public:
     Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
+
 protected:
     TetrahedralCorotationalFEMForceField();
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 public:
-
-    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
-
-    void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
@@ -196,7 +195,6 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -221,7 +219,7 @@ protected:
     void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
 
     /// overloaded by classes with non-uniform stiffness
-    virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, SReal localStiffnessFactor=1);
+    virtual void computeMaterialStiffness(int tetrahedronId, MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, SReal localStiffnessFactor=1);
 
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J );
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J, SReal fact );
