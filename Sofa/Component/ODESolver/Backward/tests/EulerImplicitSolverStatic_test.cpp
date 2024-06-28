@@ -81,7 +81,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
                                 {"name",oss.str() + "_mass"},
                                 {"vertexMass", simpleapi::str(totalMass / numParticles)} });
 
-    simpleapi::createObject(node, "StiffSpringForceField", {
+    simpleapi::createObject(node, "SpringForceField", {
                                 {"name", oss.str() + "_spring"},
                                 {"spring", springs.str()}
         });
@@ -245,7 +245,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // attach a spring
         std::ostringstream oss;
         oss << 0 << " " << 0 << " " << 1000.0 << " " << 0.1 << " " << 1.0f;
-        simpleapi::createObject(root, "StiffSpringForceField", {
+        simpleapi::createObject(root, "SpringForceField", {
             {"spring", oss.str()},
             { "object1", "@/DOF"},
             { "object2", "@childNode/childDof"},

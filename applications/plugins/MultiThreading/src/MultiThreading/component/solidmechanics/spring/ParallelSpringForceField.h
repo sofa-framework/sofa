@@ -19,23 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+
+#include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
+
+namespace sofa::simulation
+{
+class TaskScheduler;
+}
 
 namespace multithreading::component::solidmechanics::spring
 {
 
-int ParallelStiffSpringForceFieldClass = sofa::core::RegisterObject("Parallel stiff springs")
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec3Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec2Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec1Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Vec6Types> >()
-    .add< ParallelStiffSpringForceField<sofa::defaulttype::Rigid3Types> >();
+template <class DataTypes>
+using SpringForceField = sofa::component::solidmechanics::spring::SpringForceField<DataTypes>;
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec1Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Vec6Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelStiffSpringForceField<sofa::defaulttype::Rigid3Types>;
+template <class DataTypes>
+class ParallelSpringForceField : public virtual SpringForceField<DataTypes>, public TaskSchedulerUser
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParallelSpringForceField, DataTypes),
+               SOFA_TEMPLATE(SpringForceField, DataTypes));
+
+    using VecCoord = typename DataTypes::VecCoord;
+    using VecDeriv = typename DataTypes::VecDeriv;
+    using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
+    using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
+    using Real = typename Inherit1::Real;
+
+    using Spring = typename Inherit1::Spring;
+    using SpringForce = typename Inherit1::SpringForce;
+
+    void init() override;
+
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+};
 
 }

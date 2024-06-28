@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <map>
 #include <set>
 
@@ -35,10 +35,10 @@ Bending springs added between vertices of quads sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 */
 template<class DataTypes>
-class QuadBendingSprings : public StiffSpringForceField<DataTypes>
+class QuadBendingSprings : public SpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingSprings, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingSprings, DataTypes), SOFA_TEMPLATE(SpringForceField, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;

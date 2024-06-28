@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedralFEMForceField TetrahedralCorotationalFEMForceField] -->
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms HexahedronSetTopologyContainer HexahedronSetTopologyModifier TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -71,7 +71,7 @@
                 <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
+        <SpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
     </Node>
     <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
     <Node name="IterativeSolverNode">
@@ -119,7 +119,7 @@
                 <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
+        <SpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
     </Node>
     <EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1" />
 -->

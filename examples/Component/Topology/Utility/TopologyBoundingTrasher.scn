@@ -9,7 +9,7 @@
 	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
 	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
 	<RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
-	<RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField TriangularBendingSprings] -->
+	<RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField TriangularBendingSprings] -->
 	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
 	<RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologyBoundingTrasher] -->
@@ -32,7 +32,7 @@
 		<TriangleSetTopologyModifier   name="Modifier" />
 		<TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 		<DiagonalMass massDensity="1" />
-		<StiffSpringForceField name="FF" />
+		<SpringForceField name="FF" />
 		<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
 		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
 		

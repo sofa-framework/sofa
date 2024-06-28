@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
@@ -62,17 +62,17 @@ struct RigidTransform
 };
 
 
-/**  Test suite for StiffSpringForceField.
+/**  Test suite for SpringForceField.
   *  The test cases are defined in the #Test_Cases member group.
   *
   * @author Francois Faure, 2014
   */
-template <typename _StiffSpringForceField>
-struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceField>
+template <typename _SpringForceField>
+struct SpringForceField_test : public ForceField_test<_SpringForceField>
 {
 
-    typedef _StiffSpringForceField ForceType;
-    typedef ForceField_test<_StiffSpringForceField> Inherit;
+    typedef _SpringForceField ForceType;
+    typedef ForceField_test<_SpringForceField> Inherit;
     typedef typename ForceType::DataTypes DataTypes;
 
     typedef typename ForceType::VecCoord VecCoord;
@@ -207,17 +207,17 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
 typedef ::testing::Types<
-component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec2Types>,  // 2D
-component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec3Types>   // 3D
+component::solidmechanics::spring::SpringForceField<defaulttype::Vec2Types>,  // 2D
+component::solidmechanics::spring::SpringForceField<defaulttype::Vec3Types>   // 3D
 > TestTypes; // the types to instanciate.
 
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_SUITE(StiffSpringForceField_test, TestTypes);
+TYPED_TEST_SUITE(SpringForceField_test, TestTypes);
 
 // first test case: extension, no velocity
-TYPED_TEST( StiffSpringForceField_test , extension )
+TYPED_TEST( SpringForceField_test , extension )
 {
     this->debug = false;
 
@@ -240,7 +240,7 @@ TYPED_TEST( StiffSpringForceField_test , extension )
 
 
 // velocity, no extension
-TYPED_TEST( StiffSpringForceField_test , viscosity )
+TYPED_TEST( SpringForceField_test , viscosity )
 {
     // initial velocities with viscosity create dissipative forces
     // that would break the potential energy (that is only valid for conservative forces)
@@ -265,7 +265,7 @@ TYPED_TEST( StiffSpringForceField_test , viscosity )
 }
 
 // extension, two particles in different nodes
-TYPED_TEST( StiffSpringForceField_test , extension_in_parent_and_child )
+TYPED_TEST( SpringForceField_test , extension_in_parent_and_child )
 {
     this->debug = false;
 

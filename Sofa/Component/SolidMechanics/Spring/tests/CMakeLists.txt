@@ -5,7 +5,7 @@ project(Sofa.Component.SolidMechanics.Spring_test)
 set(SOURCE_FILES
     PolynomialRestShapeSpringsForceField_test.cpp
     RestShapeSpringsForceField_test.cpp
-    StiffSpringForceField_test.cpp
+    SpringForceField_test.cpp
     TriangularBendingSprings_test.cpp
 )
 
