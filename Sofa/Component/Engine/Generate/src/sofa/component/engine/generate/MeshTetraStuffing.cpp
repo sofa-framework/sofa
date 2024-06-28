@@ -39,7 +39,7 @@ int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume m
         ;
 
 MeshTetraStuffing::MeshTetraStuffing()
-    : d_vbbox(initData(&d_vbbox, "d_vbbox", "BBox to restrict the volume to"))
+    : d_vbbox(initData(&d_vbbox, "vbbox", "BBox to restrict the volume to"))
     , d_size(initData(&d_size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
     , d_inputPoints(initData(&d_inputPoints, "inputPoints", "Input surface mesh points"))
     , d_inputTriangles(initData(&d_inputTriangles, "inputTriangles", "Input surface mesh triangles"))

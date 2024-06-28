@@ -136,7 +136,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
 template <class DataTypes> 
 FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalForceField()
     : d_pointInfo(initData(&d_pointInfo, "pointInfo", "Internal point data"))
-    , d_edgeInfo(initData(&d_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , d_tetrahedronInfo(initData(&d_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , _initialPoints(0)
     , d_method(initData(&d_method, std::string("qr"), "method", " method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))

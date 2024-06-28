@@ -223,7 +223,7 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleDestruction(const s
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
-    : d_edgeInfo(initData(&d_edgeInfo, "d_edgeInfo", "Internal edge data"))
+    : d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , _initialPoints(0)
     , updateMatrix(true)
     , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
