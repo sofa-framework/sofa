@@ -46,10 +46,14 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
-    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
-    , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
+    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
+    , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
 {
     first = true;
+
+    jmjt_twostep.setParent(&d_jmjt_twostep);
+    use_file.setParent(&d_use_file);
+
 }
 
 template<class TMatrix,class TVector>
@@ -85,10 +89,10 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
-    if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
+    if(! d_use_file.getValue() || ! internalData.readFile(ss.str().c_str(), systemSize) )
     {
         loadMatrixWithCholeskyDecomposition(M);
-        if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
+        if (d_use_file.getValue()) internalData.writeFile(ss.str().c_str(), systemSize);
     }
 
     for (unsigned int j=0; j<systemSize; j++)

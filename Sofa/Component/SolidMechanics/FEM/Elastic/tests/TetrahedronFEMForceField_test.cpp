@@ -98,10 +98,10 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         DataTypes::set( f[3],  -fup[0], -fup[1], -(Real)fup[2]);
 
         // Set force parameters
-        Inherited::force->_poissonRatio.setValue(0);
+        Inherited::force->d_poissonRatio.setValue(0);
         type::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
-        Inherited::force->_youngModulus.setValue(youngModulusVec);
-        Inherited::force->f_method.setValue("small");
+        Inherited::force->d_youngModulus.setValue(youngModulusVec);
+        Inherited::force->d_method.setValue("small");
 
         // Init simulation
         sofa::simulation::node::initRoot(Inherited::node.get());
@@ -314,25 +314,25 @@ public:
         {
             typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue()[0], static_cast<Real>(10000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(10000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
         }
         else if (FEMType == 1)
         {
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue(), static_cast<Real>(10000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue(), static_cast<Real>(10000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
         }
         else
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(10000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue(), static_cast<Real>(10000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
         }
     }
 
@@ -427,25 +427,25 @@ public:
             typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
             
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.45));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue()[0], static_cast<Real>(5000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(5000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
         }
         else if (FEMType == 1)
         {
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.45));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue(), static_cast<Real>(5000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue(), static_cast<Real>(5000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
         }
         else
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.45));
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(5000));
-            ASSERT_EQ(tetraFEM->f_method.getValue(), "qr");
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue(), static_cast<Real>(5000));
+            ASSERT_EQ(tetraFEM->d_method.getValue(), "qr");
         }
     }
 
@@ -507,7 +507,7 @@ public:
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
+            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[0];
             initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
@@ -521,7 +521,7 @@ public:
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const typename FastTetraCorotationalFEM::TetrahedronRestInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
+            const typename FastTetraCorotationalFEM::TetrahedronRestInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[0];
             initRot.transpose(tetraInfo.restRotation); // TODO check why transposed is stored in this version
             curRot = initRot; // not needed at init.
 
@@ -698,7 +698,7 @@ public:
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
+            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[100];
             initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
@@ -712,7 +712,7 @@ public:
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const typename FastTetraCorotationalFEM::TetrahedronRestInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
+            const typename FastTetraCorotationalFEM::TetrahedronRestInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[100];
             initRot.transpose(tetraInfo.restRotation); // TODO check why transposed is stored in this version
             curRot = tetraInfo.rotation; 
             

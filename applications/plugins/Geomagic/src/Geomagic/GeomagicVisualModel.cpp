@@ -116,10 +116,10 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         visualNode[i].node->addObject(visualNode[i].visu);
         visualNode[i].visu->setName(sectionName + "_visualModel");
         visualNode[i].visu->m_positions.setParent(&visualNode[i].loader->d_positions);
-        visualNode[i].visu->m_edges.setParent(&visualNode[i].loader->d_edges);
-        visualNode[i].visu->m_triangles.setParent(&visualNode[i].loader->d_triangles);
-        visualNode[i].visu->m_quads.setParent(&visualNode[i].loader->d_quads);
-        visualNode[i].visu->m_vtexcoords.setParent(&visualNode[i].loader->d_texCoords);
+        visualNode[i].visu->d_edges.setParent(&visualNode[i].loader->d_edges);
+        visualNode[i].visu->d_triangles.setParent(&visualNode[i].loader->d_triangles);
+        visualNode[i].visu->d_quads.setParent(&visualNode[i].loader->d_quads);
+        visualNode[i].visu->d_vtexcoords.setParent(&visualNode[i].loader->d_texCoords);
         
         visualNode[i].visu->init();
         visualNode[i].visu->initVisual();

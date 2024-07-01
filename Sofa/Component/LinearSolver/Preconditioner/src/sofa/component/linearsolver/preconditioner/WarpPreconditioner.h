@@ -53,7 +53,11 @@ public:
     using Index = typename TMatrix::Index;
 
     SingleLink<WarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to build the warp conditioner
-    Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    Data<unsigned> f_useRotationFinder;
+
+    Data<unsigned> d_useRotationFinder; ///< Which rotation Finder to use
     Data<unsigned> d_updateStep; ///< Number of steps before the next refresh of the system matrix in the main solver
 
 protected:

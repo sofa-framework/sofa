@@ -44,7 +44,7 @@ public:
 
     using Inherit1::mstate1;
     using Inherit1::mstate2;
-    using Inherit1::springs;
+    using Inherit1::d_springs;
 
 protected:
     Data< Real >  d_linesStiffness; ///< Stiffness for the Lines

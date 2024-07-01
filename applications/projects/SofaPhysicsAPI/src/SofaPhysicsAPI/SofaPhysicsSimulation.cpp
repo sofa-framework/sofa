@@ -965,8 +965,8 @@ void SofaPhysicsSimulation::drawGL()
                 currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
                 currentCamera->setName(sofa::core::objectmodel::Base::shortName(currentCamera.get()));
                 groot->addObject(currentCamera);
-                currentCamera->p_position.forceSet();
-                currentCamera->p_orientation.forceSet();
+                currentCamera->d_position.forceSet();
+                currentCamera->d_orientation.forceSet();
                 currentCamera->bwdInit();
             }
             setView = true;

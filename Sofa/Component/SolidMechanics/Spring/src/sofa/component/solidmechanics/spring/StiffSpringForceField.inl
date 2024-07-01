@@ -49,12 +49,12 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
 {
     this->addAlias(&d_lengths, "length");
 
-    this->addUpdateCallback("updateSprings", { &d_indices1, &d_indices2, &d_lengths, &this->ks, &this->kd}, [this](const core::DataTracker& t)
+    this->addUpdateCallback("updateSprings", {&d_indices1, &d_indices2, &d_lengths, &this->d_ks, &this->d_kd}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         createSpringsFromInputs();
         return sofa::core::objectmodel::ComponentState::Valid;
-    }, {&this->springs});
+    }, {&this->d_springs});
 }
 
 
@@ -104,17 +104,17 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
 
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
-    type::vector<Spring>& _springs = *this->springs.beginEdit();
+    type::vector<Spring>& _springs = *this->d_springs.beginEdit();
     _springs.clear();
 
 
 
-    const SReal& _ks = this->ks.getValue();
-    const SReal& _kd = this->kd.getValue();
+    const SReal& _ks = this->d_ks.getValue();
+    const SReal& _kd = this->d_kd.getValue();
     for (sofa::Index i = 0; i<indices1.size(); ++i)
         _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));
 
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 }
 
 
@@ -231,7 +231,7 @@ typename DataTypes::DPos StiffSpringForceField<DataTypes>::computeSpringDForce(V
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
     this->dfdx.resize(springs.size());
 
     Inherit::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
@@ -247,7 +247,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
@@ -293,7 +293,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);
         if (!mat) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e = 0; e < n; ++e)
         {
@@ -322,7 +322,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
         const sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
 
         if (!mat11 && !mat22 && !mat12 && !mat21) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e = 0; e < n; ++e)
         {
@@ -343,7 +343,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
 template <class DataTypes>
 void StiffSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    const sofa::type::vector<Spring >& ss = this->springs.getValue();
+    const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
     const auto n = std::min(ss.size(), this->dfdx.size());
     if (this->mstate1 == this->mstate2)
     {

@@ -121,8 +121,12 @@ public:
             return in;
         }
     };
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
+
     /// container that stotes all requires information for each tetrahedron
-    core::topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
+    core::topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > d_tetrahedronInfo;
 
     /// @name Full system matrix assembly support
     /// @{
@@ -140,18 +144,52 @@ public:
 
 public:
     int method;
-    Data<std::string> f_method; ///< "small", "large" (by QR) or "polar" displacements
-    Data<Real> _poissonRatio; ///< FEM Poisson Ratio
-    Data<Real> _youngModulus; ///< FEM Young Modulus
-    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<std::string> f_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> _poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> _youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecReal> _localStiffnessFactor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<bool> _updateStiffnessMatrix;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<bool> _assembling;
-    Data<bool> f_drawing; ///<  draw the forcefield if true
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> f_drawing;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor3;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor4;
+
+    Data<std::string> d_method; ///< "small", "large" (by QR) or "polar" displacements
+    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio
+    Data<Real> d_youngModulus; ///< FEM Young Modulus
+    Data<VecReal> d_localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
+    Data<bool> d_updateStiffnessMatrix;
+    Data<bool> d_assembling;
+    Data<bool> d_drawing; ///<  draw the forcefield if true
     Data<bool> _displayWholeVolume;
-    Data<sofa::type::RGBAColor> drawColor1; ///<  draw color for faces 1
-    Data<sofa::type::RGBAColor> drawColor2; ///<  draw color for faces 2
-    Data<sofa::type::RGBAColor> drawColor3; ///<  draw color for faces 3
-    Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
+    Data<sofa::type::RGBAColor> d_drawColor1; ///<  draw color for faces 1
+    Data<sofa::type::RGBAColor> d_drawColor2; ///<  draw color for faces 2
+    Data<sofa::type::RGBAColor> d_drawColor3; ///<  draw color for faces 3
+    Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
 
     /// Link to be set to the topology container in the component graph. 
@@ -163,15 +201,15 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
 public:
 
-    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
+    void setPoissonRatio(Real val) { this->d_poissonRatio.setValue(val); }
 
-    void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }
+    void setYoungModulus(Real val) { this->d_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
-    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
+    void setUpdateStiffnessMatrix(bool val) { this->d_updateStiffnessMatrix.setValue(val); }
 
-    void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
+    void setComputeGlobalMatrix(bool val) { this->d_assembling.setValue(val); }
 
     void init() override;
     void reinit() override;
@@ -206,7 +244,7 @@ public:
 
 protected:
     /** Method to create @sa TetrahedronInformation when a new tetrahedron is created.
-    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    * Will be set as creation callback in the TetrahedronData @sa d_tetrahedronInfo
     */
     void createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,

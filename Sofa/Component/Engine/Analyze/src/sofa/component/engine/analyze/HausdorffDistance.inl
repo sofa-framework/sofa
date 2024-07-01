@@ -30,21 +30,29 @@ namespace sofa::component::engine::analyze
 
 template <class DataTypes>
 HausdorffDistance<DataTypes>::HausdorffDistance()
-    : f_points_1( initData (&f_points_1, "points1", "Points belonging to the first point cloud") )
-    , f_points_2( initData (&f_points_2, "points2", "Points belonging to the second point cloud") )
-    , d12( initData (&d12, "d12", "Distance from point cloud 1 to 2") )
-    , d21( initData (&d21, "d21", "Distance from point cloud 2 to 1") )
-    , max( initData (&max, "max", "Symmetrical Hausdorff distance") )
-    , f_update( initData (&f_update, false, "update", "Recompute every time step") )
+    : d_points_1(initData (&d_points_1, "points1", "Points belonging to the first point cloud") )
+    , d_points_2(initData (&d_points_2, "points2", "Points belonging to the second point cloud") )
+    , d_d12(initData (&d_d12, "d12", "Distance from point cloud 1 to 2") )
+    , d_d21(initData (&d_d21, "d21", "Distance from point cloud 2 to 1") )
+    , d_max(initData (&d_max, "max", "Symmetrical Hausdorff distance") )
+    , d_update(initData (&d_update, false, "update", "Recompute every time step") )
 {
-    f_points_1.setGroup("Input");
-    f_points_2.setGroup("Input");
+    d_points_1.setGroup("Input");
+    d_points_2.setGroup("Input");
 
-    d21.setGroup("Output");
-    d12.setGroup("Output");
-    max.setGroup("Output");
+    d_d21.setGroup("Output");
+    d_d12.setGroup("Output");
+    d_max.setGroup("Output");
 
     f_listening.setValue(true);
+
+    f_points_1.setParent(&d_points_1);
+    f_points_2.setParent(&d_points_2);
+    d12.setParent(&d_d12);
+    d21.setParent(&d_d21);
+    max.setParent(&d_max);
+    f_update.setParent(&d_update);
+
 
 }
 
@@ -63,7 +71,7 @@ void HausdorffDistance<DataTypes>::reinit()
 template <class DataTypes>
 void HausdorffDistance<DataTypes>::doUpdate()
 {
-    if (f_update.getValue())
+    if (d_update.getValue())
         computeDistances();
 }
 
@@ -90,8 +98,8 @@ typename HausdorffDistance<DataTypes>::Real HausdorffDistance<DataTypes>::distan
 template <class DataTypes>
 void HausdorffDistance<DataTypes>::computeDistances()
 {
-    const VecCoord p1 = f_points_1.getValue();
-    const VecCoord p2 = f_points_2.getValue();
+    const VecCoord p1 = d_points_1.getValue();
+    const VecCoord p2 = d_points_2.getValue();
 
     Real max12 = 0.0;
     for (unsigned int i = 0 ; i < p1.size(); i++)
@@ -99,7 +107,7 @@ void HausdorffDistance<DataTypes>::computeDistances()
         Real d = distance(p1[i], p2);
         if (d>max12) max12 = d;
     }
-    d12.setValue(max12);
+    d_d12.setValue(max12);
 
     Real max21 = 0.0;
     for (unsigned int i = 0 ; i < p2.size(); i++)
@@ -107,12 +115,12 @@ void HausdorffDistance<DataTypes>::computeDistances()
         Real d = distance(p2[i], p1);
         if (d>max21) max21 = d;
     }
-    d21.setValue(max21);
+    d_d21.setValue(max21);
 
     if (max21 > max12)
-        max.setValue(max21);
+        d_max.setValue(max21);
     else
-        max.setValue(max12);
+        d_max.setValue(max12);
 }
 
 template<class DataTypes>

@@ -49,7 +49,7 @@ struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMap
     bool test()
     {
         DistanceMapping* map = static_cast<DistanceMapping*>( this->mapping );
-        map->f_computeDistance.setValue(true);
+        map->d_computeDistance.setValue(true);
         sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
 
         const component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();

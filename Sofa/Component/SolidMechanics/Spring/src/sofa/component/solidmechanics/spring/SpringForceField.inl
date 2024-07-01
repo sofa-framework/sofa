@@ -42,11 +42,11 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
-    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , d_ks(initData(&d_ks, _ks, "stiffness", "uniform stiffness for the all springs"))
+    , d_kd(initData(&d_kd, _kd, "damping", "uniform damping for the all springs"))
+    , d_showArrowSize(initData(&d_showArrowSize, 0.01f, "showArrowSize", "size of the axis"))
+    , d_drawMode(initData(&d_drawMode, 0, "drawMode", "The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
+    , d_springs(initData(&d_springs, "spring", "pairs of indices, stiffness, damping, rest length"))
     , maskInUse(false)
 {
     this->addAlias(&fileSprings, "fileSprings");
@@ -60,9 +60,9 @@ public:
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
     void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
-        type::vector<Spring>& springs = *dest->springs.beginEdit();
+        type::vector<Spring>& springs = *dest->d_springs.beginEdit();
         springs.push_back(Spring(sofa::Index(m1), sofa::Index(m2),ks,kd,initpos));
-        dest->springs.endEdit();
+        dest->d_springs.endEdit();
     }
 };
 
@@ -83,10 +83,10 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    for (sofa::Index i=0; i<springs.getValue().size(); ++i)
+    for (sofa::Index i=0; i < d_springs.getValue().size(); ++i)
     {
-        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
-        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
+        (*d_springs.beginEdit())[i].ks = (Real) d_ks.getValue();
+        (*d_springs.beginEdit())[i].kd = (Real) d_kd.getValue();
     }
 }
 
@@ -97,7 +97,7 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     indices1.clear();
     indices2.clear();
-    for (const auto& spring : sofa::helper::getReadAccessor(springs))
+    for (const auto& spring : sofa::helper::getReadAccessor(d_springs))
     {
         indices1.push_back(spring.m1);
         indices2.push_back(spring.m2);
@@ -129,7 +129,7 @@ void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::
     if (modifiedTopology == nullptr)
         return;
 
-    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->d_springs);
     
     const auto& topologyEdges = modifiedTopology->getEdges();
 
@@ -197,7 +197,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     if (modifiedTopology == nullptr)
         return;
 
-    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->d_springs);
     auto nbPoints = modifiedTopology->getNbPoints();
 
     for (const auto pntId : tab) // iterate on the pointIds to remove
@@ -349,7 +349,7 @@ void SpringForceField<DataTypes>::addForce(
     sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
     sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
 
-    const type::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->d_springs.getValue();
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
@@ -369,7 +369,7 @@ void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataV
 template<class DataTypes>
 SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
 {
-    const type::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->d_springs.getValue();
     const VecCoord& p1 =  data_x1.getValue();
     const VecCoord& p2 =  data_x2.getValue();
 
@@ -423,7 +423,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vec3 > points[4];
     const bool external = (this->mstate1 != this->mstate2);
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
@@ -467,37 +467,37 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     constexpr RGBAColor c2 {1.0f, 0.5f, 0.0f, 1.0f };
     constexpr RGBAColor c3{ 0.0f, 1.0f, 0.5f, 1.0f };
 
-    if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
+    if (d_showArrowSize.getValue() == 0 || d_drawMode.getValue() == 0)
     {
         vparams->drawTool()->drawLines(points[0], 1, c0);
         vparams->drawTool()->drawLines(points[1], 1, c1);
         vparams->drawTool()->drawLines(points[2], 1, c2);
         vparams->drawTool()->drawLines(points[3], 1, c3);
     }
-    else if (drawMode.getValue() == 1)
+    else if (d_drawMode.getValue() == 1)
     {
         const auto numLines0=points[0].size()/2;
         const auto numLines1=points[1].size()/2;
         const auto numLines2=points[2].size()/2;
         const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], d_showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], d_showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], d_showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], d_showArrowSize.getValue(), c3);
 
     }
-    else if (drawMode.getValue() == 2)
+    else if (d_drawMode.getValue() == 2)
     {
         const auto numLines0=points[0].size()/2;
         const auto numLines1=points[1].size()/2;
         const auto numLines2=points[2].size()/2;
         const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], d_showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], d_showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], d_showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], d_showArrowSize.getValue(), c3);
     }
     else
     {
@@ -517,7 +517,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
         return;
     }
 
-    const auto& springsValue = springs.getValue();
+    const auto& springsValue = d_springs.getValue();
     if (springsValue.empty())
     {
         return;
@@ -573,28 +573,28 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 template <class DataTypes>
 void SpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
-    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
+    sofa::type::vector<Spring>& springs = *this->d_springs.beginEdit();
     springs.clear();
     if (reserve) springs.reserve(reserve);
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 }
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
 {
-    if (idSpring >= (this->springs.getValue()).size())
+    if (idSpring >= (this->d_springs.getValue()).size())
         return;
 
-    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
+    sofa::type::vector<Spring>& springs = *this->d_springs.beginEdit();
     springs.erase(springs.begin() +idSpring );
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 }
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
 {
-    springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-    springs.endEdit();
+    d_springs.beginEdit()->push_back(Spring(m1, m2, ks, kd, initlen));
+    d_springs.endEdit();
 
     sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(m1);
     sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(m2);
@@ -603,8 +603,8 @@ void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SRea
 template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
-    springs.beginEdit()->push_back(spring);
-    springs.endEdit();
+    d_springs.beginEdit()->push_back(spring);
+    d_springs.endEdit();
 
     sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(spring.m1);
     sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(spring.m2);

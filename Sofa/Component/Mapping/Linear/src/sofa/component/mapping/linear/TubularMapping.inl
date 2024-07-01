@@ -30,15 +30,19 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TOut>
 TubularMapping<TIn, TOut>::TubularMapping ( )
     : Inherit ( )
-    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
-    , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
+    , d_nbPointsOnEachCircle(initData(&d_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , d_radius(initData(&d_radius, "radius", "Radius of created circles"))
+    , d_peak (initData(&d_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
 {
+    m_nbPointsOnEachCircle.setParent(&d_nbPointsOnEachCircle);
+    m_radius.setParent(&d_radius);
+    m_peak.setParent(&d_peak);
+
 }
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::init()
 {
-    if (!m_radius.isSet())
+    if (!d_radius.isSet())
     {
         msg_error() << "No Radius defined";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -60,9 +64,9 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
     const InVecCoord& in = dIn.getValue();
     OutVecCoord& out = *dOut.beginEdit();
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
-    double rho = m_radius.getValue();
-    const int peak = m_peak.getValue();
+    unsigned int N = d_nbPointsOnEachCircle.getValue();
+    double rho = d_radius.getValue();
+    const int peak = d_peak.getValue();
 
     out.resize(in.size() * N);
     rotatedPoints.resize(in.size() * N);
@@ -132,7 +136,7 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
+    unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     out.resize(in.size() * N);
     OutDeriv v,omega;
@@ -172,7 +176,7 @@ void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparam
         rotatedPoints.resize(in.size());
     }
 
-    const unsigned int N = m_nbPointsOnEachCircle.getValue();
+    const unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     OutDeriv v,omega;
 
@@ -203,7 +207,7 @@ void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparam
     const OutMatrixDeriv& in = dIn.getValue();
     InMatrixDeriv& out = *dOut.beginEdit();
 
-    const unsigned int N = m_nbPointsOnEachCircle.getValue();
+    const unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 

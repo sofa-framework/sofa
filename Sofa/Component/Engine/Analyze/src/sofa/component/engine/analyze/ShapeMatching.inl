@@ -60,23 +60,33 @@ inline type::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
 
 template <class DataTypes>
 ShapeMatching<DataTypes>::ShapeMatching()
-    : 	  iterations(initData(&iterations, (unsigned int)1, "iterations", "Number of iterations."))
-    , affineRatio(initData(&affineRatio,(Real)0.0,"affineRatio","Blending between affine and rigid."))
-    , fixedweight(initData(&fixedweight,(Real)1.0,"fixedweight","weight of fixed particles."))
-    , fixedPosition0(initData(&fixedPosition0,"fixedPosition0","rest positions of non mechanical particles."))
-    , fixedPosition(initData(&fixedPosition,"fixedPosition","current (fixed) positions of non mechanical particles."))
-    , position(initData(&position,"position","Input positions."))
-    , cluster(initData(&cluster,"cluster","Input clusters."))
-    , targetPosition(initData(&targetPosition,"targetPosition","Computed target positions."))
+    : 	  d_iterations(initData(&d_iterations, (unsigned int)1, "iterations", "Number of iterations."))
+    , d_affineRatio(initData(&d_affineRatio, (Real)0.0, "affineRatio", "Blending between affine and rigid."))
+    , d_fixedweight(initData(&d_fixedweight, (Real)1.0, "fixedweight", "weight of fixed particles."))
+    , d_fixedPosition0(initData(&d_fixedPosition0, "fixedPosition0", "rest positions of non mechanical particles."))
+    , d_fixedPosition(initData(&d_fixedPosition, "fixedPosition", "current (fixed) positions of non mechanical particles."))
+    , d_position(initData(&d_position, "position", "Input positions."))
+    , d_cluster(initData(&d_cluster, "cluster", "Input clusters."))
+    , d_targetPosition(initData(&d_targetPosition, "targetPosition", "Computed target positions."))
     , topo(nullptr)
     , oldRestPositionSize(0)
     , oldfixedweight(0)
 {
-    addInput(&fixedPosition0);
-    addInput(&fixedPosition);
-    addInput(&position);
-    addInput(&cluster);
-    addOutput(&targetPosition);
+    addInput(&d_fixedPosition0);
+    addInput(&d_fixedPosition);
+    addInput(&d_position);
+    addInput(&d_cluster);
+    addOutput(&d_targetPosition);
+
+    iterations.setParent(&d_iterations);
+    affineRatio.setParent(&d_affineRatio);
+    fixedweight.setParent(&d_fixedweight);
+    fixedPosition0.setParent(&d_fixedPosition0);
+    fixedPosition.setParent(&d_fixedPosition);
+    position.setParent(&d_position);
+    cluster.setParent(&d_cluster);
+    targetPosition.setParent(&d_targetPosition);
+
 }
 
 template <class DataTypes>
@@ -112,11 +122,11 @@ void ShapeMatching<DataTypes>::doUpdate()
     }
 
     const VecCoord& restPositions = restPositionsData->getValue();
-    helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
-    helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
-    helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
-    helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = targetPosition;
-    const helper::ReadAccessor<Data< VVI > > clust = cluster;
+    helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->d_fixedPosition0;
+    helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->d_fixedPosition;
+    helper::ReadAccessor<Data< VecCoord > > currentPositions = d_position;
+    helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = d_targetPosition;
+    const helper::ReadAccessor<Data< VVI > > clust = d_cluster;
 
     VI::const_iterator it, itEnd;
     size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
@@ -128,7 +138,7 @@ void ShapeMatching<DataTypes>::doUpdate()
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
-    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || m_dataTracker.hasChanged(this->cluster))
+    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->d_fixedweight.getValue() || m_dataTracker.hasChanged(this->d_cluster))
     {
         dmsg_info() <<"shape matching: update Xcm0" ;
 
@@ -146,7 +156,7 @@ void ShapeMatching<DataTypes>::doUpdate()
             for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
             {
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
-                Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
+                Real w = (*it<nbp)?(Real)1.0:this->d_fixedweight.getValue();
                 Xcm0[i] += p0*w;
                 Qxinv[i] += type::dyad(p0,p0)*w;
                 W[i] += w;
@@ -161,12 +171,12 @@ void ShapeMatching<DataTypes>::doUpdate()
             Qxinv[i]=inv;
         }
         oldRestPositionSize = nbp+nbf;
-        oldfixedweight = this->fixedweight.getValue();
+        oldfixedweight = this->d_fixedweight.getValue();
     }
 
     targetPos.resize(nbp); 	for (size_t i=0 ; i<nbp ; ++i) targetPos[i]=currentPositions[i];
 
-    for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
+    for (unsigned int iter=0 ; iter < d_iterations.getValue()  ; ++iter)
     {
         // this could be speeded up using fast summation technique
 #ifdef _OPENMP
@@ -180,7 +190,7 @@ void ShapeMatching<DataTypes>::doUpdate()
             {
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
                 Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
-                Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
+                Real w = (*it<nbp)?(Real)1.0:this->d_fixedweight.getValue();
                 Xcm[i] += p*w;
                 T[i] += type::dyad(p,p0)*w;
             }
@@ -188,12 +198,12 @@ void ShapeMatching<DataTypes>::doUpdate()
             T[i] -= type::dyad(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
             Xcm[i] /= W[i];
             Mat3x3 R;
-            if(affineRatio.getValue()!=(Real)1.0)
+            if(d_affineRatio.getValue() != (Real)1.0)
             {
                 helper::Decompose<Real>::polarDecomposition(T[i], R);
             }
-            if(affineRatio.getValue()!=(Real)0.0)
-                T[i] = T[i] * Qxinv[i] * (affineRatio.getValue()) + R * (1.0f-affineRatio.getValue());
+            if(d_affineRatio.getValue() != (Real)0.0)
+                T[i] = T[i] * Qxinv[i] * (d_affineRatio.getValue()) + R * (1.0f - d_affineRatio.getValue());
             else T[i] = R;
         }
 

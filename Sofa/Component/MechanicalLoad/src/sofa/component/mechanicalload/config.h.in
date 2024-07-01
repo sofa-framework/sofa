@@ -54,3 +54,13 @@ namespace sofa::component::mechanicalload
     "v23.12 (PR#XXXX)", "v24.06",\
     "The \'force\' data is no longer used, please use the \'forces\' vector instead (with size = 1).")
 #endif
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MECHANICALLOAD
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif

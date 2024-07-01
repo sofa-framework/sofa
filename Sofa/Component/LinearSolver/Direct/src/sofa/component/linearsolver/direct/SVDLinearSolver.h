@@ -48,14 +48,24 @@ public:
     typedef typename TVector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<Real> f_minSingularValue; ///< Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    Data<bool> f_verbose;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    Data<Real> f_minSingularValue;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    Data<Real> f_conditionNumber;
+
+
+    Data<bool> d_verbose; ///< Dump system state at each iteration
+    Data<Real> d_minSingularValue; ///< Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.
 protected:
     SVDLinearSolver();
 public:
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b) override;
-    Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
+    Data<Real> d_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
     bool supportNonSymmetricSystem() const override { return true; }
 };

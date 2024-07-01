@@ -58,3 +58,12 @@ namespace sofa::component::linearsolver::direct
 #define SOFA_ATTRIBUTE_DEPRECATED__SPARSECOMMON() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "This function is no longer used")
 #endif // SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_DIRECT
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_IO_MESH
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif

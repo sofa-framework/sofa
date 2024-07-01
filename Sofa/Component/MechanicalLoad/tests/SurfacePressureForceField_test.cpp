@@ -75,7 +75,7 @@ struct SurfacePressureForceField_test : public ForceField_test<SurfacePressureFo
         DataTypes::set(f[2], f0[0], f0[1], f0[2]);
 
         // Set the properties of the force field
-        Inherited::force->m_pressure.setValue(0.6);
+        Inherited::force->d_pressure.setValue(0.6);
     }
 
     //Test the value of the force it should be equal for each vertex to Pressure*area/4

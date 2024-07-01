@@ -150,7 +150,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
-    //If localRange is set, update indices
+    //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
         && d_localRange.getValue()[1] + 1 < int(mstate->getSize()))

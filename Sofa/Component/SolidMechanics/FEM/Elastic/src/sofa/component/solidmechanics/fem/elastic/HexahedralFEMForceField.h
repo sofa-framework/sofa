@@ -136,9 +136,9 @@ protected:
     HexahedralFEMForceField();
     virtual ~HexahedralFEMForceField();
 public:
-    void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
+    void setPoissonRatio(Real val) { this->d_poissonRatio.setValue(val); }
 
-    void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
+    void setYoungModulus(Real val) { this->d_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
@@ -185,14 +185,27 @@ protected:
 
 public:
     int method;
-    Data<std::string> f_method; ///< "large" or "polar" displacements
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<std::string> f_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<Real> f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> hexahedronInfo;
+
+    Data<std::string> d_method; ///< "large" or "polar" displacements
+    Data<Real> d_poissonRatio;
+    Data<Real> d_youngModulus;
     /// container that stotes all requires information for each hexahedron
-    core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
+    core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > d_hexahedronInfo;
 
     /** Method to create @sa HexahedronInformation when a new hexahedron is created.
-    * Will be set as creation callback in the HexahedronData @sa hexahedronInfo
+    * Will be set as creation callback in the HexahedronData @sa d_hexahedronInfo
     */
     void createHexahedronInformation(Index, HexahedronInformation& t, const core::topology::BaseMeshTopology::Hexahedron&,
         const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&);

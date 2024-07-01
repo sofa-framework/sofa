@@ -43,13 +43,19 @@ namespace sofa::component::controller
 
 template <class DataTypes>
 MechanicalStateController<DataTypes>::MechanicalStateController()
-    : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
-    , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
-    , buttonDeviceState(initData(&buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
-    , mainDirection( initData(&mainDirection, sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
+    :
+      d_index(initData(&d_index, (unsigned int)0, "index", "Index of the controlled DOF") )
+    , d_onlyTranslation(initData(&d_onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
+    , d_buttonDeviceState(initData(&d_buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
+    , d_mainDirection(initData(&d_mainDirection, sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real) - 1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
-    mainDirection.beginEdit()->normalize();
-    mainDirection.endEdit();
+    d_mainDirection.beginEdit()->normalize();
+    d_mainDirection.endEdit();
+
+    index.setParent(&d_index);
+    onlyTranslation.setParent(&d_onlyTranslation);
+    buttonDeviceState.setParent(&d_buttonDeviceState);
+    mainDirection.setParent(&d_mainDirection);
 }
 
 template <class DataTypes>
@@ -86,7 +92,7 @@ void MechanicalStateController<DataTypes>::applyController()
         device = false;
     }
 
-    if ( !onlyTranslation.getValue()  && ((mouseMode==BtLeft) || (mouseMode==BtRight)))
+    if (!d_onlyTranslation.getValue() && ((mouseMode == BtLeft) || (mouseMode == BtRight)))
     {
         int dx = eventX - mouseSavedPosX;
         int dy = eventY - mouseSavedPosY;
@@ -99,7 +105,7 @@ void MechanicalStateController<DataTypes>::applyController()
             mState->vRealloc( sofa::core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
             helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
-            unsigned int i = index.getValue();
+            unsigned int i = d_index.getValue();
 
             Vec<3,Real> vx(1,0,0);
             Vec<3,Real> vy(0,1,0);
@@ -113,7 +119,7 @@ void MechanicalStateController<DataTypes>::applyController()
             else
             {
                 sofa::type::Quat<Real>& quatrot = x[i].getOrientation();
-                sofa::type::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
+                sofa::type::Vec<3,Real> vectrans(dy * d_mainDirection.getValue()[0] * (Real)0.05, dy * d_mainDirection.getValue()[1] * (Real)0.05, dy * d_mainDirection.getValue()[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
 
                 x[i].getCenter() += vectrans;
@@ -127,7 +133,7 @@ void MechanicalStateController<DataTypes>::applyController()
             }
         }
     }
-    else if( onlyTranslation.getValue() )
+    else if( d_onlyTranslation.getValue() )
     {
         if( mouseMode )
         {
@@ -140,7 +146,7 @@ void MechanicalStateController<DataTypes>::applyController()
             {
                 helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
 
-                unsigned int i = index.getValue();
+                unsigned int i = d_index.getValue();
 
                 switch( mouseMode )
                 {
@@ -170,7 +176,7 @@ void MechanicalStateController<DataTypes>::applyController()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
-    buttonDevice=buttonDeviceState.getValue();
+    buttonDevice=d_buttonDeviceState.getValue();
     applyController();
 }
 
@@ -195,7 +201,7 @@ void MechanicalStateController<DataTypes>::setMechanicalState(core::behavior::Me
 template <class DataTypes>
 unsigned int MechanicalStateController<DataTypes>::getIndex() const
 {
-    return index.getValue();
+    return d_index.getValue();
 }
 
 
@@ -203,7 +209,7 @@ unsigned int MechanicalStateController<DataTypes>::getIndex() const
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::setIndex(const unsigned int _index)
 {
-    index.setValue(_index);
+    d_index.setValue(_index);
 }
 
 
@@ -211,7 +217,7 @@ void MechanicalStateController<DataTypes>::setIndex(const unsigned int _index)
 template <class DataTypes>
 const sofa::type::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
 {
-    return mainDirection.getValue();
+    return d_mainDirection.getValue();
 }
 
 
@@ -219,7 +225,7 @@ const sofa::type::Vec<3, typename MechanicalStateController<DataTypes>::Real > &
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::setMainDirection(const sofa::type::Vec<3,Real> _mainDirection)
 {
-    mainDirection.setValue(_mainDirection);
+    d_mainDirection.setValue(_mainDirection);
 }
 
 
