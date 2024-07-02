@@ -42,7 +42,6 @@ extern "C" {
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleVersion();
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleLicense();
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleDescription();
-    SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -68,13 +67,6 @@ const char* getModuleLicense()
 const char* getModuleDescription()
 {
     return "This plugin defines a linear system and provides components able to assemble one from the scene.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
 }
 
 } // namespace sofa::component::linearsystem
