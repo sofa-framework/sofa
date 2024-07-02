@@ -1304,7 +1304,7 @@ SparseGridTopology::Index SparseGridTopology::findNearestCube(const type::Vec3& 
     Index indice = 0;
     float lgmin = 99999999.0f;
 
-    const auto& points = seqPoints.getValue();
+    const auto& points = d_seqPoints.getValue();
     for(unsigned w=0; w<hexahedra.size(); ++w)
     {
         if(!_usingMC && _types[w]!=BOUNDARY )continue;
@@ -1405,12 +1405,12 @@ void SparseGridTopology::updateEdges()
         edgesMap[IndexPair(c[2],c[6])]=0;
     }
 
-    SeqEdges& edges = *seqEdges.beginEdit();
+    SeqEdges& edges = *d_seqEdges.beginEdit();
     edges.clear();
     edges.reserve(edgesMap.size());
     for( auto it=edgesMap.cbegin(); it!=edgesMap.cend(); ++it)
         edges.push_back( Edge( (*it).first.first,  (*it).first.second ));
-    seqEdges.endEdit();
+    d_seqEdges.endEdit();
 }
 
 
@@ -1435,12 +1435,12 @@ void SparseGridTopology::updateQuads()
         v[0]=c[1]; v[1]=c[5]; v[2]=c[6]; v[3]=c[2];
         quadsMap[v]=0;
     }
-    SeqQuads& quads = *seqQuads.beginEdit();
+    SeqQuads& quads = *d_seqQuads.beginEdit();
     quads.clear();
     quads.reserve(quadsMap.size());
     for( auto it=quadsMap.cbegin(); it!=quadsMap.cend(); ++it)
         quads.push_back( Quad( (*it).first[0],  (*it).first[1],(*it).first[2],(*it).first[3] ));
-    seqQuads.endEdit();
+    d_seqQuads.endEdit();
 }
 
 
