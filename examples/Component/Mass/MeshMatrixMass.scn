@@ -24,6 +24,8 @@
     <CollisionResponse response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
 
+    <InteractiveCamera position="-2 2.6 17.9" orientation="0 0 0 1" distance="17.9" />
+
     <MeshGmshLoader name="MeshLoader" filename="mesh/liver.msh" />
     <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
@@ -34,7 +36,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../MeshLoader"/>
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <MeshMatrixMass totalMass="60" name="SparseMass" topology="@TetraTopo" />
+        <MeshMatrixMass totalMass="60" name="SparseMass" topology="@TetraTopo" printLog="1"/>
         <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
 
