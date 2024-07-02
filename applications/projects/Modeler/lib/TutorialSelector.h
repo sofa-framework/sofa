@@ -25,13 +25,14 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QKeyEvent>
+#include <tinyxml2.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 // Forward declarations
-class tinyxml2::XMLNode;
-class tinyxml2::XMLElement;
+//class tinyxml2::XMLNode;
+//class tinyxml2::XMLElement;
 
 #include <map>
 

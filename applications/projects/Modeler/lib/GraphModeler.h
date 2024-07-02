@@ -34,7 +34,7 @@
 #include <sofa/gui/qt/QDisplayPropertyWidget.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/xml/BaseElement.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -47,6 +47,8 @@
 #include <QMenu>
 
 #include <iostream>
+
+
 
 namespace sofa
 {
@@ -72,7 +74,7 @@ class GraphModeler : public SofaSceneGraphWidget
     friend class LinkComponent;
     Q_OBJECT
 public:
-    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WindowFlags f = 0 );
+    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WindowFlags f = Qt::WindowFlags() );
     ~GraphModeler() override;
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
@@ -177,6 +179,8 @@ public:
 
     /// Used to know what component is about to be created by a drag&drop
     void setLastSelectedComponent( const std::string& templateName, ClassEntry::SPtr entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
+
+    GraphListenerQListView *getGraphListener(){return graphListener;}
 
 
 signals:

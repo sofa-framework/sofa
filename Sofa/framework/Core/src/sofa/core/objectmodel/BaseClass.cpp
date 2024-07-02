@@ -21,8 +21,13 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseClass.h>
 
+namespace sofa
+{
 
-namespace sofa::core::objectmodel
+namespace core
+{
+
+namespace objectmodel
 {
 
 BaseClass* DeprecatedBaseClass::GetSingleton()
@@ -49,9 +54,9 @@ DeprecatedBaseClass::DeprecatedBaseClass()
 }
 
 
-} // namespace sofa::core::objectmodel
+} // namespace objectmodel
 
+} // namespace core
 
-
-
+} // namespace sofa
 

@@ -52,6 +52,8 @@ DataWidget::DataWidget(QWidget* parent,const char* name, MyData* d)
     , m_toFill(false)
 {
     this->setObjectName(name);
+
+
 }
 
 DataWidget::~DataWidget()
@@ -211,23 +213,26 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         if (!ownerClass.empty())
             helper_button->setToolTip( ("Data from "+ownerClass).c_str());
     }
+
+    linkpath_edit = new QLineEdit(this);
+    linkpath_edit->setContentsMargins(2, 0, 0, 0);
+    linkpath_edit->setReadOnly(!modifiable);
+    layout->addWidget(linkpath_edit);
+    if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
+        connect(linkpath_edit, &QLineEdit::textChanged, [=](){ WidgetDirty(); });
+    else
+        connect(linkpath_edit, &QLineEdit::editingFinished, this, &QDisplayDataInfoWidget::linkEdited);
+
     if(data->getParent())
     {
         const std::string linkvalue = data->getParent()->getLinkPath();
-        linkpath_edit = new QLineEdit(this);
-        linkpath_edit->setContentsMargins(2, 0, 0, 0);
         linkpath_edit->setText(QString(linkvalue.c_str()));
-        linkpath_edit->setReadOnly(!modifiable);
-        layout->addWidget(linkpath_edit);
         linkpath_edit->setVisible(!linkvalue.empty());
-        if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
-            connect(linkpath_edit, &QLineEdit::textChanged, [=](){ WidgetDirty(); });
-        else
-            connect(linkpath_edit, &QLineEdit::editingFinished, this, &QDisplayDataInfoWidget::linkEdited);
     }
     else
     {
-        linkpath_edit=nullptr;
+        linkpath_edit->setText("");
+        linkpath_edit->setVisible(false);
     }
 }
 

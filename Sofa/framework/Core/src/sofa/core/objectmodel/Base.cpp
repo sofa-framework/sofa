@@ -637,17 +637,32 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         const BaseData* field = *iData;
-        if (!field->getLinkPath().empty() )
+
+        if (field->getParent())
         {
-            out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
+//            out << separator << field->getName() << "=\"" << xmlencode(field->getLinkPath()) << "\" ";
+            std::string linkPath = field->getParent()->getLinkPath();
+            if(!linkPath.empty())
+                out << separator << field->getName() << "=\"" << xmlencode(linkPath) << "\" ";
         }
         else
         {
-            if(field->isPersistent() && field->isSet())
+            std::string val = field->getValueString();
+            std::string fieldname = field->getName();
+            bool isFullTrim = false;
+            bool isset = field->isSet();
+            if(isset && fieldname != "parents")
             {
-                std::string val = field->getValueString();
-                if (!val.empty())
-                    out << separator << field->getName() << "=\""<< xmlencode(val) << "\" ";
+                std::string checkSpace = field->getValueString();
+                checkSpace.erase(remove_if(checkSpace.begin(), checkSpace.end(), isspace), checkSpace.end());
+                if(checkSpace.empty())
+                {
+                    isFullTrim = true;
+                }
+                if (!val.empty() && !isFullTrim)
+                {
+                    out << separator << fieldname << "=\""<< xmlencode(val) << "\" ";
+                }
             }
         }
     }
@@ -657,8 +672,10 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
         if(link->storePath())
         {
             std::string val = link->getValueString();
-            if (!val.empty())
+            if (!val.empty() && link->getName() != "parents")
+            {
                 out << separator << link->getName() << "=\""<< xmlencode(val) << "\" ";
+            }
         }
     }
 }
