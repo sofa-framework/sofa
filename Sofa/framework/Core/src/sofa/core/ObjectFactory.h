@@ -357,6 +357,8 @@ public:
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
-    operator int();
+    operator int() const;
+
+    int commitTo(ObjectFactory* factory) const;
 };
 } // namespace sofa::core

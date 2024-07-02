@@ -624,53 +624,59 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     return *this;
 }
 
-RegisterObject::operator int()
+int RegisterObject::commitTo(ObjectFactory* factory) const
 {
     if (entry.className.empty())
     {
         return 0;
     }
-    else
-    {
-        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
-        reg.description += entry.description;
-        reg.authors += entry.authors;
-        reg.license += entry.license;
-        reg.documentationURL += entry.documentationURL;
-        if (!entry.defaultTemplate.empty())
-        {
-            if (!reg.defaultTemplate.empty())
-            {
-                msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
-            }
-            else
-            {
-                reg.defaultTemplate = entry.defaultTemplate;
-            }
-        }
-        for (auto & creator_entry : entry.creatorMap)
-        {
-            const std::string & template_name = creator_entry.first;
-            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
-                if (template_name.empty()) {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
-                } else {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
-                }
-            } else {
-                reg.creatorMap.insert(creator_entry);
-            }
-        }
 
-        for (const auto & alias : entry.aliases)
+    ObjectFactory::ClassEntry& reg = factory->getEntry(entry.className);
+    reg.description += entry.description;
+    reg.authors += entry.authors;
+    reg.license += entry.license;
+    reg.documentationURL += entry.documentationURL;
+
+    if (!entry.defaultTemplate.empty())
+    {
+        if (!reg.defaultTemplate.empty())
         {
-            if (reg.aliases.find(alias) == reg.aliases.end())
-            {
-                ObjectFactory::getInstance()->addAlias(alias,entry.className);
-            }
+            msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
         }
-        return 1;
+        else
+        {
+            reg.defaultTemplate = entry.defaultTemplate;
+        }
     }
+    for (const auto& creator_entry : entry.creatorMap)
+    {
+        const std::string & template_name = creator_entry.first;
+        const auto [it, success] = reg.creatorMap.insert(creator_entry);
+        if (!success)
+        {
+            std::string classType = entry.className;
+            if (!template_name.empty())
+            {
+                classType += "<" + template_name + ">";
+            }
+
+            msg_warning("ObjectFactory") << "Class already registered in the ObjectFactory: " << classType;
+        }
+    }
+
+    for (const auto & alias : entry.aliases)
+    {
+        if (reg.aliases.find(alias) == reg.aliases.end())
+        {
+            factory->addAlias(alias,entry.className);
+        }
+    }
+    return 1;
+}
+
+RegisterObject::operator int() const
+{
+    return commitTo(ObjectFactory::getInstance());
 }
 
 } // namespace sofa::core
