@@ -74,3 +74,12 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Used only by the deprecated Compliant plugin.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif
