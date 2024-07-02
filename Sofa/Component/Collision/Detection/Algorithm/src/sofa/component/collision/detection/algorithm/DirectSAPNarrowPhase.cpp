@@ -363,7 +363,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionForPair(core::collision::Elem
 {
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(collisionModel0, collisionModel1);
     intersector->beginIntersect(collisionModel0, collisionModel1, outputs);//creates outputs if null
-    intersector->intersect(collisionModelIterator0, collisionModelIterator1, outputs);
+    intersector->intersect(collisionModelIterator0, collisionModelIterator1, outputs, this->intersectionMethod);
 }
 
 void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)

@@ -43,8 +43,7 @@ using namespace collisionobbcapsule::geometry;
 IntersectorCreator<DiscreteIntersection, RigidDiscreteIntersection> RigidDiscreteIntersectors("Rigid");
 IntersectorCreator<NewProximityIntersection, RigidMeshDiscreteIntersection> RigidMeshDiscreteIntersectors("RigidMesh");
 
-RigidDiscreteIntersection::RigidDiscreteIntersection(DiscreteIntersection* object)
-    : intersection(object)
+RigidDiscreteIntersection::RigidDiscreteIntersection(DiscreteIntersection* intersection)
 {
     intersection->intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, RigidDiscreteIntersection>(this);
     intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, RigidDiscreteIntersection>(this);
@@ -53,13 +52,12 @@ RigidDiscreteIntersection::RigidDiscreteIntersection(DiscreteIntersection* objec
     intersection->intersectors.add<RayCollisionModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, RigidDiscreteIntersection>(this);
 }
 
-RigidMeshDiscreteIntersection::RigidMeshDiscreteIntersection(NewProximityIntersection* object)
-    : intersection(object)
+RigidMeshDiscreteIntersection::RigidMeshDiscreteIntersection(NewProximityIntersection* intersection)
 {
     intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, RigidMeshDiscreteIntersection>(this);
 }
 
-bool RigidDiscreteIntersection::testIntersection(Ray& /*rRay*/, OBB& /*rOBB*/)
+bool RigidDiscreteIntersection::testIntersection(Ray& /*rRay*/, OBB& /*rOBB*/, const core::collision::Intersection*)
 {
     return false;
 }
@@ -68,7 +66,7 @@ static float const c_fMin = -3.402823466e+38f;
 static float const c_fMax = 3.402823466e+38f;
 typedef Mat<3, 3, SReal> Mat33;
 
-int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, OutputVector* contacts)
+int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, OutputVector* contacts, const core::collision::Intersection*)
 {
     //Near intersection: ray to closest plat of slab
     float fNear = c_fMin;

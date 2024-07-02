@@ -82,10 +82,10 @@ public:
 
     virtual std::string name() const = 0;
 
-    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
-    virtual bool canIntersect(core::CollisionElementIterator, core::CollisionElementIterator) { return false; };
-    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
-    virtual int intersect(core::CollisionElementIterator, core::CollisionElementIterator, DetectionOutputVector*) { return 0; };
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    virtual bool canIntersect(core::CollisionElementIterator, core::CollisionElementIterator) = delete;
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    virtual int intersect(core::CollisionElementIterator, core::CollisionElementIterator, DetectionOutputVector*) = delete;
 };
 
 /// Table storing associations between types of collision models and intersectors implementing intersection tests
