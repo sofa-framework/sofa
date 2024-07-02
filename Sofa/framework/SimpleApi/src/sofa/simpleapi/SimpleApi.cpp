@@ -44,7 +44,13 @@ namespace sofa::simpleapi
 
 bool importPlugin(const std::string& name)
 {
-    const auto status = PluginManager::getInstance().loadPlugin(name);
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+
+    const auto status = pluginManager.loadPlugin(name);
+    if(status == PluginManager::PluginLoadStatus::SUCCESS)
+    {
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(name);
+    }
     return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
 

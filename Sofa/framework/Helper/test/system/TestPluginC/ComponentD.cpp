@@ -19,17 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "ComponentD.h"
 
-#pragma once
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/config.h>
-
-namespace sofa::core
+namespace testpluginc
 {
-    class ObjectFactory;
+
+void registerComponentD(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Component D")
+        .add< ComponentD >());
 }
 
-namespace sofa::component
+
+ComponentD::ComponentD()
 {
-	SOFA_COMPONENT_API void init();
-} // namespace sofa::component
+}
+
+ComponentD::~ComponentD()
+{
+}
+
+} // namespace testpluginc

@@ -19,17 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <TestPluginC/TestPluginC.h>
 
-#pragma once
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/config.h>
-
-namespace sofa::core
+namespace testpluginc
 {
-    class ObjectFactory;
+
+extern void registerComponentD(sofa::core::ObjectFactory* factory);
+
+extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY  void initExternalModule()
+{
+    init();
 }
 
-namespace sofa::component
+extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName()
 {
-	SOFA_COMPONENT_API void init();
-} // namespace sofa::component
+    return "TestPluginC";
+}
+
+extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerComponentD(factory);
+}
+
+SOFA_EXPORT_DYNAMIC_LIBRARY void init()
+{
+    static bool first = true;
+
+    if (first)
+    {
+        first = false;
+    }
+}
+
+}
