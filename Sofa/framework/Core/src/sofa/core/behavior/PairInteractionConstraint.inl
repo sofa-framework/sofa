@@ -64,6 +64,7 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
+        m_constraintIndex.setValue(cIndex);
         buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()));
     }
 }

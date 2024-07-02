@@ -69,6 +69,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 {
     if (cParams)
     {
+        m_constraintIndex.setValue(cIndex);
         buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, *cParams->readX(this->mstate.get()));
     }
 }
