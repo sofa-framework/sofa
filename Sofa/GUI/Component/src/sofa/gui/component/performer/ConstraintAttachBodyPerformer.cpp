@@ -34,4 +34,7 @@ namespace sofa::gui::component::performer
 template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3Types> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
 
+template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::RigidTypes>;
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::RigidTypes> >  ConstraintAttachBodyPerformerRigidClass("ConstraintAttachBody",true);
+
 } // namespace sofa::gui::component::performer

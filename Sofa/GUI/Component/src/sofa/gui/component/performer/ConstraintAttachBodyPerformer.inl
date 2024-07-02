@@ -52,12 +52,13 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
         const std::string name = "contactMouse";
         mstateCollision = this->m_mapper->createMapping(name.c_str());
         this->m_mapper->resize(1);
-
-        const typename DataTypes::Coord pointPicked=picked.point;
+        
         const int idx=picked.indexCollisionElement;
+        typename DataTypes::CPos pointPicked = picked.point;
         typename DataTypes::Real r=0.0;
-
-        index = this->m_mapper->addPointB(pointPicked, idx, r);
+        typename DataTypes::Coord dofPicked;
+        DataTypes::setCPos(dofPicked, pointPicked);
+        index = this->m_mapper->addPointB(dofPicked, idx, r);
         this->m_mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
@@ -89,21 +90,19 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
     m_mstate1 = dynamic_cast<MouseContainer*>(this->m_interactor->getMouseContainer());
     m_mstate2 = mstateCollision;
 
-    type::Vec3d point1;
-    type::Vec3d point2;
-
     using sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint;
 
 
-
-    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(m_mstate1, m_mstate2);
-    auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(this->m_interactionObject.get());
+    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<DataTypes> >(m_mstate1, m_mstate2);
+    auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< DataTypes >* >(this->m_interactionObject.get());
 
     bconstraint->setName("Constraint-Mouse-Contact");
 
-    type::Vec3d normal = point1-point2;
+    static const typename DataTypes::Coord point1 {};
+    static const typename DataTypes::Coord point2 {};
+    static const typename DataTypes::Deriv normal {};
 
-    bconstraint->addContact(normal, point1, point2, normal.norm(), 0, index, point2, point1);
+    bconstraint->addContact(normal, point1, point2, 0.0, 0, index, point2, point1);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (auto tag : tags)
