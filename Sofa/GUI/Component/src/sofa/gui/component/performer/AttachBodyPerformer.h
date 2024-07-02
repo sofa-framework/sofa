@@ -54,7 +54,7 @@ public:
     void setStiffness(SReal s) {m_stiffness=s;}
     void setArrowSize(float s) {m_size=s;}
 
-    virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
+    virtual void configure(sofa::component::setting::MouseButtonSetting* setting) override
     {
         const auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)
