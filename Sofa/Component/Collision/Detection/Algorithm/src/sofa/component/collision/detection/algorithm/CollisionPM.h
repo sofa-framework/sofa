@@ -200,7 +200,7 @@ namespace sofa::component::collision::detection::algorithm
                         for(umap_collision::iterator it = _coll_pairs[i][j].begin() ; it != _coll_pairs[i][j].end() ; ++it){
                             core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(it->second.elem1.getCollisionModel(),it->second.elem2.getCollisionModel());
                             ei->beginIntersect(it->second.elem1.getCollisionModel(),it->second.elem2.getCollisionModel(),output);
-                            ei->intersect(it->second.elem1,it->second.elem2,output);
+                            ei->intersect(it->second.elem1,it->second.elem2,output, phase->getIntersectionMethod());
                         }
                     }
                 }
