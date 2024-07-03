@@ -180,8 +180,6 @@ public:
     Data<sofa::type::RGBAColor> drawColor4;
 
     Data<std::string> d_method; ///< "small", "large" (by QR) or "polar" displacements
-    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio
-    Data<Real> d_youngModulus; ///< FEM Young Modulus
     Data<VecReal> d_localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> d_updateStiffnessMatrix;
     Data<bool> d_assembling;

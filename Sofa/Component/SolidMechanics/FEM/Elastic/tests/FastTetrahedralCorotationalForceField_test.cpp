@@ -52,7 +52,7 @@ public:
         typename FastTetrahedralCorotationalForceField3::SPtr tetraFEM = m_root->getTreeObject<FastTetrahedralCorotationalForceField3>();
         ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-        const typename FastTetrahedralCorotationalForceField3::TetrahedronRestInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
+        const typename FastTetrahedralCorotationalForceField3::TetrahedronRestInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[0];
         initRot.transpose(tetraInfo.restRotation); // TODO check why transposed is stored in this version
         curRot = initRot; // not needed at init.
 
@@ -128,7 +128,7 @@ public:
         typename FastTetrahedralCorotationalForceField3::SPtr tetraFEM = m_root->getTreeObject<FastTetrahedralCorotationalForceField3>();
         ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-        const typename FastTetrahedralCorotationalForceField3::TetrahedronRestInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
+        const typename FastTetrahedralCorotationalForceField3::TetrahedronRestInformation& tetraInfo = tetraFEM->d_tetrahedronInfo.getValue()[100];
         initRot.transpose(tetraInfo.restRotation); // TODO check why transposed is stored in this version
         curRot = tetraInfo.rotation;
 

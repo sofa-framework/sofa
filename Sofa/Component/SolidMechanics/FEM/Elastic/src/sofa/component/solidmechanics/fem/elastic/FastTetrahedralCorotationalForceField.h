@@ -157,9 +157,6 @@ public:
     Data<std::string> d_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic)
     RotationDecompositionMethod m_decompositionMethod;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
-
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
 

@@ -158,7 +158,7 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     edgeInfo.setParent(&d_edgeInfo);
     tetrahedronInfo.setParent(&d_tetrahedronInfo);
     f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&d_poissonRatio);
+    f_poissonRatio.setParent(&this->d_poissonRatio);
     f_drawing.setParent(&d_drawing);
     drawColor1.setParent(&d_drawColor1);
     drawColor2.setParent(&d_drawColor2);
