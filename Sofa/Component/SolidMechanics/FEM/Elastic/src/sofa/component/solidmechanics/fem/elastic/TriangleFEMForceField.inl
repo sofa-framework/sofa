@@ -288,6 +288,9 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 {
     typename VecElement::const_iterator it;
     unsigned int elementIndex(0);
+
+    const auto& initialPoints = d_initialPoints.getValue();
+
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
         Index a = (*_indexedElements)[elementIndex][0];
@@ -301,10 +304,10 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
         Displacement Depl(type::NOINIT);
         Depl[0] = 0;
         Depl[1] = 0;
-        Depl[2] = (_initialPoints.getValue()[b][0]-_initialPoints.getValue()[a][0]) - deforme_b[0];
+        Depl[2] = (initialPoints[b][0]-initialPoints[a][0]) - deforme_b[0];
         Depl[3] = 0;
-        Depl[4] = (_initialPoints.getValue()[c][0]-_initialPoints.getValue()[a][0]) - deforme_c[0];
-        Depl[5] = (_initialPoints.getValue()[c][1]-_initialPoints.getValue()[a][1]) - deforme_c[1];
+        Depl[4] = (initialPoints[c][0]-initialPoints[a][0]) - deforme_c[0];
+        Depl[5] = (initialPoints[c][1]-initialPoints[a][1]) - deforme_c[1];
 
 
         StrainDisplacement J(type::NOINIT);
