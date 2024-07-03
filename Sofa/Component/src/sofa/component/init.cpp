@@ -45,7 +45,6 @@
 #include <sofa/component/visual/init.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component
 {
@@ -103,8 +102,6 @@ void init()
         sofa::component::statecontainer::init();
         sofa::component::topology::init();
         sofa::component::visual::init();
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.StateContainer");
 
         first = false;
     }
