@@ -157,9 +157,6 @@ public:
     Data<std::string> d_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic)
     RotationDecompositionMethod m_decompositionMethod;
 
-    Real lambda;  /// first Lame coefficient
-    Real mu;    /// second Lame coefficient
-
     Data<bool> d_drawing; ///<  draw the forcefield if true
     Data<sofa::type::RGBAColor> d_drawColor1; ///<  draw color for faces 1
     Data<sofa::type::RGBAColor> d_drawColor2; ///<  draw color for faces 2

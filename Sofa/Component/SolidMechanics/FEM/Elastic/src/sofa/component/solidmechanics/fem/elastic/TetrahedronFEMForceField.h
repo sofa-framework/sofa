@@ -319,7 +319,7 @@ protected:
     ~TetrahedronFEMForceField() override;
 
 public:
-    void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
+    void setComputeGlobalMatrix(bool val) { this->d_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future
     const Transformation& getActualTetraRotation(Index index);
