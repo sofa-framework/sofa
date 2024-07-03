@@ -42,7 +42,7 @@ template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Rigid2Types>;
 
 void registerMappedObject(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::RegisterObject("Mapped state vectors")
+    factory->registerObjects(core::ObjectRegistrationData("Mapped state vectors")
         .add< MappedObject<Vec1Types> >()
         .add< MappedObject<Vec3Types> >(true) // default template
         .add< MappedObject<Vec2Types> >()

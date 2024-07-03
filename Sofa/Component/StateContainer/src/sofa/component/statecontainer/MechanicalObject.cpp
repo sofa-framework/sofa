@@ -43,7 +43,7 @@ template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
 
 void registerMechanicalObject(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::RegisterObject("mechanical state vectors")
+    factory->registerObjects(core::ObjectRegistrationData("mechanical state vectors")
         .add< MechanicalObject<Vec3Types> >(true) // default template
         .add< MechanicalObject<Vec2Types> >()
         .add< MechanicalObject<Vec1Types> >()
