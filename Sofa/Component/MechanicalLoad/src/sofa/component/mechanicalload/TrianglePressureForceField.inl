@@ -37,15 +37,22 @@ template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePress
 }
 
 template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePressureForceField()
-    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-    , cauchyStress(initData(&cauchyStress, MatSym3(),"cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
-    , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
-    , p_useConstantForce(initData(&p_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
+    : d_pressure(initData(&d_pressure, "pressure", "Pressure force per unit area"))
+    , d_cauchyStress(initData(&d_cauchyStress, MatSym3(), "cauchyStress", "Cauchy Stress applied on the normal of each triangle"))
+    , d_triangleList(initData(&d_triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
+    , d_useConstantForce(initData(&d_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
+    , d_trianglePressureMap(initData(&d_trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
     , m_topology(nullptr)
 {
+    pressure.setParent(&d_pressure);
+    cauchyStress.setParent(&d_cauchyStress);
+    triangleList.setParent(&d_triangleList);
+    p_showForces.setParent(&d_showForces);
+    p_useConstantForce.setParent(&d_useConstantForce);
+
+
     this->addUpdateCallback("pressure_change", { &pressure }, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
@@ -60,14 +67,15 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
         initTriangleInformation();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
-    
+
 }
 
 
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
+
     this->core::behavior::ForceField<DataTypes>::init();
-	
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -84,10 +92,10 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
         return;
     }
 
-    trianglePressureMap.createTopologyHandler(m_topology);
-	
+    d_trianglePressureMap.createTopologyHandler(m_topology);
+
     initTriangleInformation();
-		
+
 }
 
 template <class DataTypes>
@@ -96,10 +104,10 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
     VecDeriv& f = *d_f.beginEdit();
 
-    const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
+    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
 
-	if (p_useConstantForce.getValue()) {
-		const sofa::type::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
+	if (d_useConstantForce.getValue()) {
+		const sofa::type::vector<TrianglePressureInformation>& my_subset = d_trianglePressureMap.getValue();
 
 
 		for (unsigned int i=0; i<my_map.size(); ++i)
@@ -114,7 +122,7 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
         typedef core::topology::BaseMeshTopology::Triangle Triangle;
 		const sofa::type::vector<Triangle> &ta = m_topology->getTriangles();
 		const  VecDeriv p = d_x.getValue();
-		MatSym3 cauchy=cauchyStress.getValue();
+		MatSym3 cauchy=d_cauchyStress.getValue();
 		Deriv areaVector;
 
 		for (unsigned int i=0; i<my_map.size(); ++i)
@@ -142,24 +150,24 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
-{    
+{
     if (triangleList.getValue().empty())
         return;
 
     // Get list of input triangle indices
     type::vector<Index> _triangleList = triangleList.getValue();
-    
-    // Get write access to TopologySubset Data storing pressure information per triangle    
-    auto my_subset = sofa::helper::getWriteOnlyAccessor(trianglePressureMap);
-    
+
+    // Get write access to TopologySubset Data storing pressure information per triangle
+    auto my_subset = sofa::helper::getWriteOnlyAccessor(d_trianglePressureMap);
+
     // Set the list of triangles indices as map of this TopologySubset Data
-    trianglePressureMap.setMap2Elements(_triangleList);
+    d_trianglePressureMap.setMap2Elements(_triangleList);
 
     // Fill pressure data
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     const Deriv& my_pressure = pressure.getValue();
 
-    for (unsigned int i = 0; i < _triangleList.size(); ++i)    
+    for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
         const auto& t = this->m_topology->getTriangle(_triangleList[i]);
 
@@ -178,16 +186,14 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 {
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
-    
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
+
     const Deriv& my_pressure = pressure.getValue();
     for (unsigned int i = 0; i < my_subset.size(); ++i)
         my_subset[i].force = (my_pressure * my_subset[i].area);
 
-    trianglePressureMap.endEdit();
+    d_trianglePressureMap.endEdit();
 }
-
-
 
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
@@ -207,8 +213,8 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     const sofa::type::RGBAColor&  color = sofa::type::RGBAColor::green();
     std::vector< sofa::type::Vec3 > vertices;
 
-    const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
-    const sofa::type::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
+    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
+    const sofa::type::vector<TrianglePressureInformation>& my_subset = d_trianglePressureMap.getValue();
     std::vector< sofa::type::Vec3 > forceVectors;
     for (unsigned int i=0; i<my_map.size(); ++i)
     {

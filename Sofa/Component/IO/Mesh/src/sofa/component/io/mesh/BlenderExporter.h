@@ -70,11 +70,27 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
-    Data < std::string > path; ///< output path
-    Data < std::string > baseName; ///< Base name for the output files
-    Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
-    Data < int > simulationStep; ///< save the  simulation result every step frames
-    Data < int > nbPtsByHair; ///< number of element by hair strand
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<std::string> path;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<std::string> baseName;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<int> simulationType;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<int> simulationStep;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<int> nbPtsByHair;
+
+
+    Data < std::string > d_path; ///< output path
+    Data < std::string > d_baseName; ///< Base name for the output files
+    Data < int > d_simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
+    Data < int > d_simulationStep; ///< save the  simulation result every step frames
+    Data < int > d_nbPtsByHair; ///< number of element by hair strand
 
 protected:
 

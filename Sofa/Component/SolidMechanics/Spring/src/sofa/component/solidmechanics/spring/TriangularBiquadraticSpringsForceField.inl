@@ -48,7 +48,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyTriangleCreation(In
     typename DataTypes::Real lambda=getLambda();
     typename DataTypes::Real mu=getMu();
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
 
     ///describe the indices of the 3 triangle vertices
     const Triangle &t= this->m_topology->getTriangle(triangleIndex);
@@ -95,7 +95,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyTriangleDestruction
 {
     unsigned int j;
 
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
 
     /// describe the jth edge index of triangle no i
     const EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleIndex);
@@ -126,21 +126,30 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index 
 }
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
-    : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_dampingRatio(initData(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
-    , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
-    , f_compressible(initData(&f_compressible,true,"compressible","If additional energy penalizing compressibility should be used"))
-    , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight,(Real)0.4,"matrixRegularization","Regularization of the Stiffnes Matrix (between 0 and 1)"))
+    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)1000., "youngModulus", "Young modulus in Hooke's law"))
+    , d_dampingRatio(initData(&d_dampingRatio, (Real)0., "dampingRatio", "Ratio damping/stiffness"))
+    , d_useAngularSprings(initData(&d_useAngularSprings, true, "useAngularSprings", "If Angular Springs should be used or not"))
+    , d_compressible(initData(&d_compressible, true, "compressible", "If additional energy penalizing compressibility should be used"))
+    , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (Real)0.4, "matrixRegularization", "Regularization of the Stiffnes Matrix (between 0 and 1)"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
+    triangleInfo.setParent(&d_triangleInfo);
+    edgeInfo.setParent(&d_edgeInfo);
+    _initialPoints.setParent(&d_initialPoints);
+    f_poissonRatio.setParent(&d_poissonRatio);
+    f_youngModulus.setParent(&d_youngModulus);
+    f_dampingRatio.setParent(&d_dampingRatio);
+    f_useAngularSprings.setParent(&d_useAngularSprings);
+    f_compressible.setParent(&d_compressible);
+    f_stiffnessMatrixRegularizationWeight.setParent(&d_stiffnessMatrixRegularizationWeight);
 
 }
 
@@ -176,18 +185,18 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     updateLameCoefficients();
 
     /// prepare to store info in the triangle array
-    helper::WriteOnlyAccessor< Data< type::vector<TriangleRestInformation> > > triangleInf = triangleInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<TriangleRestInformation> > > triangleInf = d_triangleInfo;
     triangleInf.resize(m_topology->getNbTriangles());
 
     /// prepare to store info in the edge array
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
 
     // get restPosition
-    if (_initialPoints.getValue().size() == 0)
+    if (d_initialPoints.getValue().size() == 0)
     {
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        _initialPoints.setValue(p);
+        d_initialPoints.setValue(p);
     }
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
@@ -204,26 +213,26 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     }
 
     // Edge info
-    edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
     // Triangle info
-    triangleInfo.createTopologyHandler(m_topology);    
-    triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
-        const core::topology::BaseMeshTopology::Triangle& triangle,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_triangleInfo.createTopologyHandler(m_topology);
+    d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
+                                              const core::topology::BaseMeshTopology::Triangle& triangle,
+                                              const sofa::type::vector< Index >& ancestors,
+                                              const sofa::type::vector< SReal >& coefs)
     {
         applyTriangleCreation(triangleIndex, tinfo, triangle, ancestors, coefs);
     });
 
-    triangleInfo.setDestructionCallback([this](Index triangleIndex, TriangleRestInformation& tinfo)
+    d_triangleInfo.setDestructionCallback([this](Index triangleIndex, TriangleRestInformation& tinfo)
     {
         applyTriangleDestruction(triangleIndex, tinfo);
     });
@@ -241,22 +250,22 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     unsigned int j,k,l,v0,v1;
     const size_t nbEdges=m_topology->getNbEdges();
     const size_t nbTriangles=m_topology->getNbTriangles();
-    const bool compressible=f_compressible.getValue();
+    const bool compressible=d_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
 
     Real val,L;
     TriangleRestInformation *tinfo;
     EdgeRestInformation *einfo;
 
-    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(d_triangleInfo.beginEdit());
 
-    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
     assert(this->mstate);
 
     Deriv force;
     Coord dp,dv;
-    Real _dampingRatio=f_dampingRatio.getValue();
+    Real _dampingRatio=d_dampingRatio.getValue();
 
 
     for(unsigned int i=0; i<nbEdges; i++ )
@@ -274,7 +283,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
         f[v1]+=force;
         f[v0]-=force;
     }
-    if (f_useAngularSprings.getValue()==true)
+    if (d_useAngularSprings.getValue() == true)
     {
         Real JJ;
         std::vector<int> flippedTriangles ;
@@ -352,8 +361,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
             msg_warning() << "The following triangles have flipped: " << tmp.str() ;
         }
     }
-    edgeInfo.endEdit();
-    triangleInfo.endEdit();
+    d_edgeInfo.endEdit();
+    d_triangleInfo.endEdit();
     updateMatrix=true;
     d_f.endEdit();
 }
@@ -368,15 +377,15 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
 
     unsigned int i,j,k;
     const int nbTriangles=m_topology->getNbTriangles();
-    bool compressible=f_compressible.getValue();
+    bool compressible=d_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
     TriangleRestInformation *tinfo;
 
     Deriv deltax,res;
 
-    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(d_triangleInfo.beginEdit());
 
-    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
 
     if (updateMatrix)
@@ -400,7 +409,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
                 Mat3 &m=tinfo->DfDx[k];
                 dpk = -tinfo->dp[k];
 
-                if (f_useAngularSprings.getValue()==false)
+                if (d_useAngularSprings.getValue() == false)
                 {
                     val1 = -tinfo->stiffness[k]*edgeInf[tea[k]].deltaL2;
                     val2= -2*tinfo->stiffness[k];
@@ -515,8 +524,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
             df[ta[j]]-= (tinfo->DfDx[k].transposeMultiply(deltax)) * kFactor;
         }
     }
-    edgeInfo.endEdit();
-    triangleInfo.endEdit();
+    d_edgeInfo.endEdit();
+    d_triangleInfo.endEdit();
     d_df.endEdit();
 }
 
@@ -530,8 +539,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::buildDampingMatrix(core:
 template<class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-    mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
+    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
+    mu = d_youngModulus.getValue() * (1 - d_poissonRatio.getValue()) / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
 }
 
 

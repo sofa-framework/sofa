@@ -95,4 +95,7 @@ void NonLinearMappingData<HasStabilizedGeometricStiffness>::checkLinearSolverSym
         msg_error() << ss.str();
     }
 }
+
+using StabilizedNonLinearMappingData = NonLinearMappingData<true>;
+
 }

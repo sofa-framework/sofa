@@ -45,11 +45,11 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
-    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , d_ks(initData(&d_ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    , d_kd(initData(&d_kd,_kd,"damping","uniform damping for the all springs"))
+    , d_showArrowSize(initData(&d_showArrowSize,0.01f,"showArrowSize","size of the axis"))
+    , d_drawMode(initData(&d_drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
+    , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
     , maskInUse(false)
 {
@@ -58,7 +58,7 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     this->addAlias(&d_springsIndices[0], "indices1");
     this->addAlias(&d_springsIndices[1], "indices2");
 
-    c_springCallBack.addInput(&springs);
+    c_springCallBack.addInput(&d_springs);
     c_springCallBack.addCallback([this](){ msg_warning(this) << "Spring data is in a read only state and can only be used for initialization purposes. Your changes will be overriden by the content of the other data.";});
 
 }
@@ -71,7 +71,7 @@ public:
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
     void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
-        type::vector<Spring>& springs = *dest->springs.beginEdit();
+        type::vector<Spring>& springs = *dest->d_springs.beginEdit();
         springs.push_back(Spring(sofa::Index(m1), sofa::Index(m2),ks,kd,initpos));
     }
 };
@@ -102,7 +102,7 @@ void SpringForceField<DataTypes>::init()
     initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
 
 
-    if (springs.isSet())
+    if (d_springs.isSet())
         updateTopologyIndicesFromSprings();
     else
         updateSpringsFromTopologyIndices();
@@ -114,23 +114,23 @@ void SpringForceField<DataTypes>::init()
                           updateSpringsFromTopologyIndices();
                           return sofa::core::objectmodel::ComponentState::Valid;
                       },
-                      {&springs});
+                      {&d_springs});
 }
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    for (sofa::Index i=0; i<springs.getValue().size(); ++i)
+    for (sofa::Index i=0; i<d_springs.getValue().size(); ++i)
     {
-        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
-        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
+        (*d_springs.beginEdit())[i].ks = (Real) d_ks.getValue();
+        (*d_springs.beginEdit())[i].kd = (Real) d_kd.getValue();
     }
 }
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 {
-    const auto& springValues = *sofa::helper::getReadAccessor(springs);
+    const auto& springValues = *sofa::helper::getReadAccessor(d_springs);
     auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
@@ -179,17 +179,17 @@ void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
 
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
-    type::vector<Spring>& _springs = *this->springs.beginEdit();
+    type::vector<Spring>& _springs = *this->d_springs.beginEdit();
     _springs.clear();
 
 
 
-    const SReal& _ks = this->ks.getValue();
-    const SReal& _kd = this->kd.getValue();
+    const SReal& _ks = this->d_ks.getValue();
+    const SReal& _kd = this->d_kd.getValue();
     for (sofa::Index i = 0; i<indices1.size(); ++i)
         _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));
 
-    // By not calling this->springs.endEdit() I avoid going inside the other callback.
+    // By not calling this->d_springs.endEdit() I avoid going inside the other callback.
 
 
     areSpringIndicesDirty = false;
@@ -219,7 +219,7 @@ void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::
     if (modifiedTopology == nullptr)
         return;
 
-    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->d_springs);
     
     const auto& topologyEdges = modifiedTopology->getEdges();
 
@@ -288,7 +288,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     if (modifiedTopology == nullptr)
         return;
 
-    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->d_springs);
     auto nbPoints = modifiedTopology->getNbPoints();
 
     for (const auto pntId : tab) // iterate on the pointIds to remove
@@ -369,11 +369,11 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                     //We know that changes have been performed on the indices data from the topological changes,
                     //the springs are up-to-date thanks to our callbacks, but not the un-changed indices list,
                     //so we clean dirty on the springs to avoid call to the datacallback when accessing the data
-                    springs.cleanDirty();
+                    d_springs.cleanDirty();
                     //Clean the indices list of the unmodified topology to match the size of the newly modified one
                     updateTopologyIndicesFromSprings();
                     //Clean dirtyness of springs because we just updated the indices lists from the spring data itself
-                    springs.cleanDirty();
+                    d_springs.cleanDirty();
                     areSpringIndicesDirty = false;
                 }
             });
@@ -472,7 +472,7 @@ void SpringForceField<DataTypes>::addForce(
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-    const type::vector<Spring>& _springs = this->springs.getValue();
+    const type::vector<Spring>& _springs = this->d_springs.getValue();
     this->dfdx.resize(_springs.size());
 
     const VecCoord& x1 = data_x1.getValue();
@@ -525,7 +525,7 @@ void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
@@ -538,7 +538,7 @@ void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
 template<class DataTypes>
 SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
 {
-    const type::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->d_springs.getValue();
     const VecCoord& p1 =  data_x1.getValue();
     const VecCoord& p2 =  data_x2.getValue();
 
@@ -593,7 +593,7 @@ void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpa
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);
         if (!mat) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e = 0; e < n; ++e)
         {
@@ -622,7 +622,7 @@ void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpa
         const sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
 
         if (!mat11 && !mat22 && !mat12 && !mat21) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e = 0; e < n; ++e)
         {
@@ -643,7 +643,7 @@ void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpa
 template <class DataTypes>
 void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    const sofa::type::vector<Spring >& ss = this->springs.getValue();
+    const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
     const auto n = std::min(ss.size(), this->dfdx.size());
     if (this->mstate1 == this->mstate2)
     {
@@ -723,7 +723,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vec3 > points[4];
     const bool external = (this->mstate1 != this->mstate2);
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
@@ -767,37 +767,37 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     constexpr RGBAColor c2 {1.0f, 0.5f, 0.0f, 1.0f };
     constexpr RGBAColor c3{ 0.0f, 1.0f, 0.5f, 1.0f };
 
-    if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
+    if (d_showArrowSize.getValue()==0 || d_drawMode.getValue() == 0)
     {
         vparams->drawTool()->drawLines(points[0], 1, c0);
         vparams->drawTool()->drawLines(points[1], 1, c1);
         vparams->drawTool()->drawLines(points[2], 1, c2);
         vparams->drawTool()->drawLines(points[3], 1, c3);
     }
-    else if (drawMode.getValue() == 1)
+    else if (d_drawMode.getValue() == 1)
     {
         const auto numLines0=points[0].size()/2;
         const auto numLines1=points[1].size()/2;
         const auto numLines2=points[2].size()/2;
         const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], d_showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], d_showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], d_showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], d_showArrowSize.getValue(), c3);
 
     }
-    else if (drawMode.getValue() == 2)
+    else if (d_drawMode.getValue() == 2)
     {
         const auto numLines0=points[0].size()/2;
         const auto numLines1=points[1].size()/2;
         const auto numLines2=points[2].size()/2;
         const auto numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], d_showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], d_showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], d_showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], d_showArrowSize.getValue(), c3);
     }
     else
     {
@@ -817,7 +817,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
         return;
     }
 
-    const auto& springsValue = springs.getValue();
+    const auto& springsValue = d_springs.getValue();
     if (springsValue.empty())
     {
         return;
@@ -873,11 +873,11 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 template <class DataTypes>
 void SpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
-    sofa::type::vector<Spring>& _springs = *this->springs.beginEdit();
+    sofa::type::vector<Spring>& _springs = *this->d_springs.beginEdit();
     _springs.clear();
     if (reserve) _springs.reserve(reserve);
 
-    this->springs.cleanDirty();
+    this->d_springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
 }
@@ -885,12 +885,12 @@ void SpringForceField<DataTypes>::clear(sofa::Size reserve)
 template <class DataTypes>
 void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
 {
-    if (idSpring >= (this->springs.getValue()).size())
+    if (idSpring >= (this->d_springs.getValue()).size())
         return;
 
-    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
+    sofa::type::vector<Spring>& springs = *this->d_springs.beginEdit();
     springs.erase(springs.begin() +idSpring );
-    this->springs.cleanDirty();
+    this->d_springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
 }
@@ -898,8 +898,8 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
 template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
 {
-    springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-    springs.cleanDirty();
+    d_springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
+    d_springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
 }
@@ -907,8 +907,8 @@ void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SRea
 template <class DataTypes>
 void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
-    springs.beginEdit()->push_back(spring);
-    springs.cleanDirty();
+    d_springs.beginEdit()->push_back(spring);
+    d_springs.cleanDirty();
 
     updateTopologyIndicesFromSprings();
 }

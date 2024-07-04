@@ -73,7 +73,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
 
     const auto& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
     const auto& tetraArray = m_topology->getTetrahedra();
 
     for (const Index tetraId : tetrahedronAdded)
@@ -139,7 +139,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
 
         }
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 }
 
 template< class DataTypes>
@@ -155,7 +155,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
 
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
 
     for (i=0; i<tetrahedronRemoved.size(); ++i)
     {
@@ -220,7 +220,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
         }
 
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 }
 
 
@@ -228,15 +228,17 @@ template <class DataTypes>
 TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
+    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)1000., "youngModulus", "Young's modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-
+        f_poissonRatio.setParent(&d_poissonRatio);
+        edgeInfo.setParent(&d_edgeInfo);
+        f_youngModulus.setParent(&d_youngModulus);
 }
 
 template <class DataTypes> 
@@ -266,8 +268,8 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         return;
     }
 
-    edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.linkToTetrahedronDataArray();
+    d_edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.linkToTetrahedronDataArray();
 
     if (m_topology->getNbTetrahedra()==0)
     {
@@ -275,7 +277,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     }
     updateLameCoefficients();
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
 
     /// prepare to store info in the edge array
@@ -308,27 +310,27 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         (const sofa::type::vector<sofa::type::vector<SReal> >)0);
 
 
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo)
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
         applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo)
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
         applyTetrahedronDestruction(tRemove->getArray());
     });
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 
     /// FOR CUDA
     /// Save the neighbourhood for points (in case of CudaTypes)
@@ -353,7 +355,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 
     const EdgeRestInformation *einfo;
 
-    const edgeRestInfoVector edgeInf = edgeInfo.getValue();
+    const edgeRestInfoVector edgeInf = d_edgeInfo.getValue();
     Deriv force,dp;
     Deriv dp0,dp1;
 
@@ -391,7 +393,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
     EdgeRestInformation *einfo;
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -408,7 +410,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
         f[v0]-=einfo->DfDx.multTranspose(dp);
     }
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
     d_f.endEdit();
 }
 
@@ -427,7 +429,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 
     EdgeRestInformation *einfo;
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -443,7 +445,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
         df[v1]+= (einfo->DfDx*dp) * kFactor;
         df[v0]-= (einfo->DfDx.multTranspose(dp)) * kFactor;
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 
     d_df.endEdit();
 }
@@ -455,7 +457,7 @@ void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core
                        .withRespectToPositionsIn(this->mstate);
     const sofa::Size nbEdges = m_topology->getNbEdges();
 
-    const auto edgeInf = sofa::helper::getReadAccessor(edgeInfo);
+    const auto edgeInf = sofa::helper::getReadAccessor(d_edgeInfo);
     const auto edges = m_topology->getEdges();
 
     for (sofa::Size i = 0; i < nbEdges; ++i)
@@ -485,8 +487,8 @@ void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavi
 template<class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
-    mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
+    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / ((1 - 2 * d_poissonRatio.getValue()) * (1 + d_poissonRatio.getValue()));
+    mu = d_youngModulus.getValue() / (2 * (1 + d_poissonRatio.getValue()));
 }
 
 

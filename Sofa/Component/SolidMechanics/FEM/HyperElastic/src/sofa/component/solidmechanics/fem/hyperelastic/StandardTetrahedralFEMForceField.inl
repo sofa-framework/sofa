@@ -460,7 +460,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
     type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-//	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+//	tetrahedronRestInfoVector& tetrahedronInf = *(d_tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
 
@@ -533,7 +533,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
     }
     edgeInfo.endEdit();
-//	tetrahedronInfo.endEdit();
+//	d_tetrahedronInfo.endEdit();
     d_df.beginEdit();
 }
 

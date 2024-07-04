@@ -133,12 +133,12 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     Data& data = m->data;
     m->Inherit::init();
 
-    if(!m->springs.isSet())
+    if(!m->d_springs.isSet())
     {
         m->updateSpringsFromTopologyIndices();
     }
 
-    const sofa::type::vector<Spring>& springs = m->springs.getValue();
+    const sofa::type::vector<Spring>& springs = m->d_springs.getValue();
 
     if (!springs.empty())
     {
@@ -226,7 +226,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
     if(m->areSpringIndicesDirty)
     {
-        m->springs.updateIfDirty();
+        m->d_springs.updateIfDirty();
         data.init(m);
     }
 
@@ -289,7 +289,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
     if(m->areSpringIndicesDirty)
     {
-        m->springs.updateIfDirty();
+        m->d_springs.updateIfDirty();
         data.init(m);
     }
 

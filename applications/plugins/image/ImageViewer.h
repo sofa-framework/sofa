@@ -385,7 +385,7 @@ public:
                 sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
                 if(currentCamera)
                 {
-                    currentCamera->m_translationPositions.setValue(this->points.getValue());
+                    currentCamera->d_translationPositions.setValue(this->points.getValue());
                 }
             }
         }

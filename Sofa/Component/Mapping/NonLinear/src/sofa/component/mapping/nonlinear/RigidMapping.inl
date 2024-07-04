@@ -793,10 +793,10 @@ void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* ar
     Inherit::parse(arg);
 
     // to be backward compatible with previous data structure
-    const char* repartitionChar = arg->getAttribute("repartition");
+    const char* repartitionChar = arg->getAttribute("d_repartition");
     if( repartitionChar )
     {
-        msg_deprecated() << "parse: You are using a deprecated Data 'repartition', please use the new structure data rigidIndexPerPoint";
+        msg_deprecated() << "parse: You are using a deprecated Data 'd_repartition', please use the new structure data rigidIndexPerPoint";
 
         type::vector< unsigned int > repartition;
         std::istringstream ss( repartitionChar );

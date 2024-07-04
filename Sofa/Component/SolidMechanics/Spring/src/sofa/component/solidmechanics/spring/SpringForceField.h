@@ -75,11 +75,11 @@ public:
     using Inherit::addKToMatrix;
 
 
-    Data<SReal> ks; ///< uniform stiffness for the all springs
-    Data<SReal> kd; ///< uniform damping for the all springs
-    Data<float> showArrowSize; ///< size of the axis
-    Data<int> drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
-    Data<sofa::type::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+    Data<SReal> d_ks; ///< uniform stiffness for the all springs
+    Data<SReal> d_kd; ///< uniform damping for the all springs
+    Data<float> d_showArrowSize; ///< size of the axis
+    Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
+    Data<sofa::type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
     core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
 
     void init() override;
@@ -105,16 +105,16 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
-    const sofa::type::vector< Spring >& getSprings() const {return springs.getValue();}
+    const sofa::type::vector< Spring >& getSprings() const {return d_springs.getValue();}
 
-    SReal getStiffness() const { return ks.getValue(); }
-    SReal getDamping() const { return kd.getValue(); }
-    void setStiffness(SReal _ks) { ks.setValue(_ks); }
-    void setDamping(SReal _kd) { kd.setValue(_kd); }
-    SReal getArrowSize() const {return showArrowSize.getValue();}
-    void setArrowSize(float s) {showArrowSize.setValue(s);}
-    int getDrawMode() const {return drawMode.getValue();}
-    void setDrawMode(int m) {drawMode.setValue(m);}
+    SReal getStiffness() const { return d_ks.getValue(); }
+    SReal getDamping() const { return d_kd.getValue(); }
+    void setStiffness(SReal _ks) { d_ks.setValue(_ks); }
+    void setDamping(SReal _kd) { d_kd.setValue(_kd); }
+    SReal getArrowSize() const {return d_showArrowSize.getValue();}
+    void setArrowSize(float s) {d_showArrowSize.setValue(s);}
+    int getDrawMode() const {return d_drawMode.getValue();}
+    void setDrawMode(int m) {d_drawMode.setValue(m);}
 
     // -- Modifiers
     void clear(sofa::Size reserve=0);

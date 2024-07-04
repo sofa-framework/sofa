@@ -114,25 +114,59 @@ public:
     using VecTetrahedronRestInformation = type::rebind_to<VecCoord, TetrahedronRestInformation>;
     using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
 
-    core::topology::PointData<VecMat3x3 > pointInfo; ///< Internal point data
-    core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
-    core::topology::TetrahedronData<VecTetrahedronRestInformation > tetrahedronInfo; ///< Internal tetrahedron data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index > pointInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index >  edgeInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecTetrahedronRestInformation >  tetrahedronInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<std::string> f_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> f_drawing;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor3;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::type::RGBAColor> drawColor4;
+
+
+    core::topology::PointData<VecMat3x3 > d_pointInfo; ///< Internal point data
+    core::topology::EdgeData<VecMat3x3 > d_edgeInfo; ///< Internal edge data
+    core::topology::TetrahedronData<VecTetrahedronRestInformation > d_tetrahedronInfo; ///< Internal tetrahedron data
 
     VecCoord  _initialPoints;///< the intial positions of the points
-    Data<std::string> f_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic) 
+    Data<std::string> d_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic)
     RotationDecompositionMethod m_decompositionMethod;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
 
-    Data<bool> f_drawing; ///<  draw the forcefield if true
-    Data<sofa::type::RGBAColor> drawColor1; ///<  draw color for faces 1
-    Data<sofa::type::RGBAColor> drawColor2; ///<  draw color for faces 2
-    Data<sofa::type::RGBAColor> drawColor3; ///<  draw color for faces 3
-    Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
+    Data<bool> d_drawing; ///<  draw the forcefield if true
+    Data<sofa::type::RGBAColor> d_drawColor1; ///<  draw color for faces 1
+    Data<sofa::type::RGBAColor> d_drawColor2; ///<  draw color for faces 2
+    Data<sofa::type::RGBAColor> d_drawColor3; ///<  draw color for faces 3
+    Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -166,11 +200,11 @@ public:
 
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue(modulus);
+        d_youngModulus.setValue(modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue(ratio);
+        d_poissonRatio.setValue(ratio);
     }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {
@@ -186,14 +220,14 @@ protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
     /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
-    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    * Will be set as creation callback in the TetrahedronData @sa d_tetrahedronInfo
     */
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,
         const sofa::type::vector<Index>&,
         const sofa::type::vector<SReal>&);
 
-    core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return edgeInfo;}
+    core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return d_edgeInfo;}
     
     sofa::core::topology::BaseMeshTopology* m_topology;    
 

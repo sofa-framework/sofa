@@ -40,28 +40,45 @@ using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
 Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
-    showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
-    showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the distance for each point of the target point set." ) ),
-    showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the distance for each point of the target point set." ) ),
-    showTextScaleFactor ( initData ( &showTextScaleFactor, 0.001, "showTextScaleFactor","Scale to apply on the text." ) ),
-    showGradientMap ( initData ( &showGradientMap, false, "showGradients","show gradients for each point of the target point set." ) ),
-    showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.1, "showGradientsScaleFactor","scale for the gradients displayed." ) ),
-    offset ( initData ( &offset, Coord(), "offset","translation offset between the topology and the point set." ) ),
-    distanceType ( initData ( &distanceType, {"Geodesic","Harmonic","Stiffness Diffusion", "Voronoi", "Harmonic with Stiffness"}, "distanceType","type of distance to compute for inserted frames." ) ),
-    initTarget ( initData ( &initTarget, false, "initTarget","initialize the target MechanicalObject from the grid." ) ),
-    initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
-    zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondence between the segmented value and the frames." ) ),
-    harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
-    fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
-    targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
+    d_showMapIndex (initData (&d_showMapIndex, (unsigned int)0, "showMapIndex", "Frame DOF index on which display values." ) ),
+    d_showDistanceMap (initData (&d_showDistanceMap, false, "showDistancesMap", "show the distance for each point of the target point set." ) ),
+    d_showGoalDistanceMap (initData (&d_showGoalDistanceMap, false, "showGoalDistancesMap", "show the distance for each point of the target point set." ) ),
+    d_showTextScaleFactor (initData (&d_showTextScaleFactor, 0.001, "showTextScaleFactor", "Scale to apply on the text." ) ),
+    d_showGradientMap (initData (&d_showGradientMap, false, "showGradients", "show gradients for each point of the target point set." ) ),
+    d_showGradientsScaleFactor (initData (&d_showGradientsScaleFactor, 0.1, "showGradientsScaleFactor", "scale for the gradients displayed." ) ),
+    d_offset (initData (&d_offset, Coord(), "offset", "translation offset between the topology and the point set." ) ),
+    d_distanceType (initData (&d_distanceType, {"Geodesic", "Harmonic", "Stiffness Diffusion", "Voronoi", "Harmonic with Stiffness"}, "d_distanceType", "type of distance to compute for inserted frames." ) ),
+    d_initTarget (initData (&d_initTarget, false, "initTarget", "initialize the target MechanicalObject from the grid." ) ),
+    d_initTargetStep (initData (&d_initTargetStep, 1, "initTargetStep", "initialize the target MechanicalObject from the grid using this step." ) ),
+    d_zonesFramePair (initData (&d_zonesFramePair, "zonesFramePair", "Correspondence between the segmented value and the frames." ) ),
+    d_harmonicMaxValue (initData (&d_harmonicMaxValue, 100.0, "harmonicMaxValue", "Max value used to initialize the harmonic distance grid." ) ),
+    d_fileDistance(initData(&d_fileDistance, "filename", "file containing the result of the computation of the distances")),
+    d_targetPath(initData(&d_targetPath, "targetPath", "path to the goal point set topology")),
     target ( targetPointSet ) ,
-    hexaContainerPath(initData(&hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
+    d_hexaContainerPath(initData(&d_hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
     hexaContainer ( hexaTopoContainer )
 {
-    this->addAlias(&fileDistance, "fileDistance");
-    zonesFramePair.setDisplayed( false); // GUI can not display map.
+    this->addAlias(&d_fileDistance, "d_fileDistance");
+    d_zonesFramePair.setDisplayed(false); // GUI can not display map.
 
     this->f_printLog.setValue(true);
+
+    showMapIndex.setParent(&d_showMapIndex);
+    showDistanceMap.setParent(&d_showDistanceMap);
+    showGoalDistanceMap.setParent(&d_showGoalDistanceMap);
+    showTextScaleFactor.setParent(&d_showTextScaleFactor);
+    showGradientMap.setParent(&d_showGradientMap);
+    showGradientsScaleFactor.setParent(&d_showGradientsScaleFactor);
+    offset.setParent(&d_offset);
+    distanceType.setParent(&d_distanceType);
+    initTarget.setParent(&d_initTarget);
+    initTargetStep.setParent(&d_initTargetStep);
+    zonesFramePair.setParent(&d_zonesFramePair);
+    harmonicMaxValue.setParent(&d_harmonicMaxValue);
+    fileDistance.setParent(&d_fileDistance);
+    targetPath.setParent(&d_targetPath);
+    hexaContainerPath.setParent(&d_hexaContainerPath);
+
 }
 
 
@@ -88,15 +105,15 @@ void Distances< DataTypes >::init()
 
 
     // Init the DOFs at each voxel center according to the step
-    if ( initTarget.getValue())
+    if ( d_initTarget.getValue())
     {
         unsigned int size = hexaContainer->getNumberOfHexahedra();
         unsigned int realSize = 0;
-        const unsigned int step = initTargetStep.getValue();
+        const unsigned int step = d_initTargetStep.getValue();
         target->resize( size);
         helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
-        const Coord& offSet = offset.getValue();
+        const Coord& offSet = d_offset.getValue();
         const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
         for ( unsigned int i = 0; i < size; i++)
         {
@@ -149,12 +166,12 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
     type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
     findCorrespondingHexas ( hfrom, beginElts );
 
-    std::string filename=fileDistance.getValue();
-    if ( distanceType.getValue().getSelectedId() == TYPE_GEODESIC ) filename+="Geodesical";
-    else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC ) filename+="Harmonic";
-    else if ( distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION ) filename+="StiffnessPropagation";
-    else if ( distanceType.getValue().getSelectedId() == TYPE_VORONOI ) filename+="Voronoi";
-    else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS ) filename+="StiffnessHarmonic";
+    std::string filename=d_fileDistance.getValue();
+    if (d_distanceType.getValue().getSelectedId() == TYPE_GEODESIC ) filename+="Geodesical";
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC ) filename+="Harmonic";
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION ) filename+="StiffnessPropagation";
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_VORONOI ) filename+="Voronoi";
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS ) filename+="StiffnessHarmonic";
     else
     {
         msg_error() << "distance Type unknown when adding an element.";
@@ -175,7 +192,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
         distanceMap.clear();
         distanceMap.resize ( beginElts.size() );
 
-        if ( distanceType.getValue().getSelectedId() == TYPE_GEODESIC )
+        if (d_distanceType.getValue().getSelectedId() == TYPE_GEODESIC )
         {
             for ( unsigned int i = 0; i < beginElts.size(); i++ )
             {
@@ -184,12 +201,12 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
                 computeGeodesicalDistance ( i, tmpBeginElts, false, distMax );
             }
         }
-        else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
+        else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
         {
             for ( int i = 0; i < (int)beginElts.size(); i++ )
                 computeHarmonicCoords ( i, hfrom, false );
         }
-        else if ( distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION )
+        else if (d_distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION )
         {
             for ( unsigned int i = 0; i < beginElts.size(); i++ )
             {
@@ -198,7 +215,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
                 computeGeodesicalDistance ( i, tmpBeginElts, true, distMax );
             }
         }
-        else if ( distanceType.getValue().getSelectedId() == TYPE_VORONOI )
+        else if (d_distanceType.getValue().getSelectedId() == TYPE_VORONOI )
         {
             for ( unsigned int i = 0; i < beginElts.size(); i++ )
             {
@@ -207,7 +224,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
                 computeVoronoiDistances ( i, tmpBeginElts, distMax );
             }
         }
-        else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
+        else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
         {
             for ( int i = 0; i < (int)beginElts.size(); i++ )
                 computeHarmonicCoords ( i, hfrom, true );
@@ -229,25 +246,25 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     VecCoord tmpvcoord = beginElts;
     tmpvcoord.push_back( elt);
 
-    if ( distanceType.getValue().getSelectedId() == TYPE_GEODESIC )
+    if (d_distanceType.getValue().getSelectedId() == TYPE_GEODESIC )
     {
         computeGeodesicalDistance ( mapIndex, tmpvcoord, false, distMax );
     }
-    else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
     {
         type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
         computeHarmonicCoords ( mapIndex, hfrom, false );
     }
-    else if ( distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION )
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_STIFFNESS_DIFFUSION )
     {
         computeGeodesicalDistance ( mapIndex, tmpvcoord, true, distMax );
     }
-    else if ( distanceType.getValue().getSelectedId() == TYPE_VORONOI )
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_VORONOI )
     {
         computeVoronoiDistances ( mapIndex, tmpvcoord, distMax );
     }
-    else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
+    else if (d_distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
     {
         type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
@@ -273,7 +290,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
     std::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
     type::Vec3 baryC;
-    const Coord& offSet = offset.getValue();
+    const Coord& offSet = d_offset.getValue();
 
     // Get the hexas corresponding to the position 'point'
     Real dist;
@@ -336,7 +353,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
     const sofa::type::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->d_idxInRegularGrid.getValue();
-    const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
+    const std::map<unsigned int, unsigned int>& zones = d_zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
     {
@@ -346,14 +363,14 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
             if ( it->second == mapIndex)
                 dMIndex[j] = 0.0;
             else
-                dMIndex[j] = harmonicMaxValue.getValue();
+                dMIndex[j] = d_harmonicMaxValue.getValue();
         }
         else
-            dMIndex[j] = harmonicMaxValue.getValue()/2.0;
+            dMIndex[j] = d_harmonicMaxValue.getValue() / 2.0;
     }
 
     for ( type::vector<core::topology::BaseMeshTopology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
-        dMIndex[*it] = harmonicMaxValue.getValue();
+        dMIndex[*it] = d_harmonicMaxValue.getValue();
 
     dMIndex[hfrom[mapIndex]] = 0.0;
 
@@ -404,7 +421,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
                 for (  z = 0; z < res[2]; z++ )
                 {
                     // Avoid to compute the value for the 'from' hexa and the unexisting hexas.
-                    if ( dMCpy[x][y][z] == -1.0 || dMCpy[x][y][z] == 0.0 || dMCpy[x][y][z] == harmonicMaxValue.getValue() ) continue;
+                    if ( dMCpy[x][y][z] == -1.0 || dMCpy[x][y][z] == 0.0 || dMCpy[x][y][z] == d_harmonicMaxValue.getValue() ) continue;
 
 
                     double value = 0;
@@ -465,7 +482,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
         for ( int x = 0; x < res[0]; x++ )
             for ( int y = 0; y < res[1]; y++ )
                 for ( int z = 0; z < res[2]; z++ )
-                    if ( fabs(dMCpy[x][y][z] - distMap[x][y][z]) > (harmonicMaxValue.getValue()/1000000.0) )
+                    if ( fabs(dMCpy[x][y][z] - distMap[x][y][z]) > (d_harmonicMaxValue.getValue() / 1000000.0) )
                         convergence = false;
     }
 
@@ -645,7 +662,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, typ
         gradients.push_back ( grad );
 
         // compute the distance value for the point from the distance on the voxel center
-        double pointDist = (point - offset.getValue() - hexaGeoAlgo->computeHexahedronCenter(hID)) * grad + distance;
+        double pointDist = (point - d_offset.getValue() - hexaGeoAlgo->computeHexahedronCenter(hID)) * grad + distance;
         if ( pointDist < 0.0) pointDist = 0.0;
         distances.push_back ( pointDist );
     }
@@ -670,9 +687,9 @@ void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& po
     const sofa::type::Vec3i& res = hexaContainer->d_resolution.getValue();
     const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();
 
-    const int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
-    const int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);
-    const int z = int ( ( point[2] - offset.getValue()[2]) / voxelSize[2]);
+    const int x = int ((point[0] - d_offset.getValue()[0]) / voxelSize[0]);
+    const int y = int ((point[1] - d_offset.getValue()[1]) / voxelSize[1]);
+    const int z = int ((point[2] - d_offset.getValue()[2]) / voxelSize[2]);
     hexaID = z*res[0]*res[1] + y*res[0] + x;
 }
 
@@ -694,18 +711,18 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     // Display the distance on each hexa of the grid
-    if ( showDistanceMap.getValue() )
+    if ( d_showDistanceMap.getValue() )
     {
         constexpr sofa::type::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
 
-        const type::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
+        const type::vector<double>& distMap = distanceMap[d_showMapIndex.getValue() % distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
             sofa::type::Vec3 tmpPt = sofa::type::Vec3 ( point[0], point[1], point[2] );
             std::ostringstream oss;
             oss << (distMap[j]);
-            vparams->drawTool()->draw3DText(tmpPt, showTextScaleFactor.getValue(), color, oss.str().c_str());
+            vparams->drawTool()->draw3DText(tmpPt, d_showTextScaleFactor.getValue(), color, oss.str().c_str());
         }
     }
 

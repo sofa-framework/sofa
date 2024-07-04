@@ -46,8 +46,8 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
     const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    Real s = (Real)this->ks.getValue();
-    Real d = (Real)this->kd.getValue();
+    Real s = (Real)this->d_ks.getValue();
+    Real d = (Real)this->d_kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }

@@ -38,58 +38,78 @@ namespace sofa::component::mechanicalload
 template <class DataTypes>
 TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
 
-    m_p0(initData(&m_p0, (Real)0.0, "p0", "IN: Rest pressure when V = V0")),
-    m_B(initData(&m_B, (Real)0.0, "B", "IN: Bulk modulus (resistance to uniform compression)")),
-    m_gamma(initData(&m_gamma, (Real)0.0, "gamma", "IN: Bulk modulus (resistance to uniform compression)")),
-    m_injectedVolume(initData(&m_injectedVolume, (Real)0.0, "injectedVolume", "IN: Injected (or extracted) volume since the start of the simulation")),
-    m_maxInjectionRate(initData(&m_maxInjectionRate, (Real)1000.0, "maxInjectionRate", "IN: Maximum injection rate (volume per second)")),
-
-    m_initialVolume(initData(&m_initialVolume, (Real)0.0, "initialVolume", "OUT: Initial volume, as computed from the surface rest position")),
-    m_currentInjectedVolume(initData(&m_currentInjectedVolume, (Real)0.0, "currentInjectedVolume", "OUT: Current injected (or extracted) volume (taking into account maxInjectionRate)")),
-    m_v0(initData(&m_v0, (Real)0.0, "v0", "OUT: Rest volume (as computed from initialVolume + injectedVolume)")),
-    m_currentVolume(initData(&m_currentVolume, (Real)0.0, "currentVolume", "OUT: Current volume, as computed from the last surface position")),
-    m_currentPressure(initData(&m_currentPressure, (Real)0.0, "currentPressure", "OUT: Current pressure, as computed from the last surface position")),
-    m_currentStiffness(initData(&m_currentStiffness, (Real)0.0, "currentStiffness", "OUT: dP/dV at current volume and pressure")),
-    m_pressureTriangles(initData(&m_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)")),
-    m_initialSurfaceArea(initData(&m_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
-    m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
-    m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
-    m_drawForceColor(initData(&m_drawForceColor, sofa::type::RGBAColor(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
-    m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
-    m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
+    d_p0(initData(&d_p0, (Real)0.0, "p0", "IN: Rest pressure when V = V0")),
+    d_B(initData(&d_B, (Real)0.0, "B", "IN: Bulk modulus (resistance to uniform compression)")),
+    d_gamma(initData(&d_gamma, (Real)0.0, "gamma", "IN: Bulk modulus (resistance to uniform compression)")),
+    d_injectedVolume(initData(&d_injectedVolume, (Real)0.0, "injectedVolume", "IN: Injected (or extracted) volume since the start of the simulation")),
+    d_maxInjectionRate(initData(&d_maxInjectionRate, (Real)1000.0, "maxInjectionRate", "IN: Maximum injection rate (volume per second)")),
+    d_initialVolume(initData(&d_initialVolume, (Real)0.0, "initialVolume", "OUT: Initial volume, as computed from the surface rest position")),
+    d_currentInjectedVolume(initData(&d_currentInjectedVolume, (Real)0.0, "currentInjectedVolume", "OUT: Current injected (or extracted) volume (taking into account maxInjectionRate)")),
+    d_v0(initData(&d_v0, (Real)0.0, "v0", "OUT: Rest volume (as computed from initialVolume + injectedVolume)")),
+    d_currentVolume(initData(&d_currentVolume, (Real)0.0, "currentVolume", "OUT: Current volume, as computed from the last surface position")),
+    d_currentPressure(initData(&d_currentPressure, (Real)0.0, "currentPressure", "OUT: Current pressure, as computed from the last surface position")),
+    d_currentStiffness(initData(&d_currentStiffness, (Real)0.0, "currentStiffness", "OUT: dP/dV at current volume and pressure")),
+    d_pressureTriangles(initData(&d_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)")),
+    d_initialSurfaceArea(initData(&d_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
+    d_currentSurfaceArea(initData(&d_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
+    d_drawForceScale(initData(&d_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
+    d_drawForceColor(initData(&d_drawForceColor, sofa::type::RGBAColor(0, 1, 1, 1), "drawForceColor", "DEBUG: color used to render force vectors")),
+    d_volumeAfterTC(initData(&d_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
+    d_surfaceAreaAfterTC(initData(&d_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
     l_topology(initLink("topology", "link to the topology container")),
     m_topology(nullptr),
     lastTopologyRevision(-1)
 {
-    m_p0.setGroup("Controls");
-    m_B.setGroup("Controls");
-    m_gamma.setGroup("Controls");
-    m_injectedVolume.setGroup("Controls");
-    m_maxInjectionRate.setGroup("Controls");
-    m_initialVolume.setGroup("Results");
-    m_initialVolume.setReadOnly(true);
-    m_currentInjectedVolume.setGroup("Results");
-    //m_currentInjectedVolume.setReadOnly(true);
-    m_v0.setGroup("Results");
-    m_v0.setReadOnly(true);
-    m_currentVolume.setGroup("Results");
-    m_currentVolume.setReadOnly(true);
-    m_currentPressure.setGroup("Results");
-    m_currentPressure.setReadOnly(true);
-    m_currentStiffness.setGroup("Results");
-    m_currentStiffness.setReadOnly(true);
-    m_pressureTriangles.setDisplayed(false);
-    m_pressureTriangles.setPersistent(false);
-    m_pressureTriangles.setReadOnly(true);
-    m_initialSurfaceArea.setGroup("Stats");
-    m_initialSurfaceArea.setReadOnly(true);
-    m_currentSurfaceArea.setGroup("Stats");
-    m_currentSurfaceArea.setReadOnly(true);
-    m_volumeAfterTC.setGroup("Results");
-    m_volumeAfterTC.setReadOnly(true);
-    m_surfaceAreaAfterTC.setGroup("Results");
-    m_surfaceAreaAfterTC.setReadOnly(true);
+    d_p0.setGroup("Controls");
+    d_B.setGroup("Controls");
+    d_gamma.setGroup("Controls");
+    d_injectedVolume.setGroup("Controls");
+    d_maxInjectionRate.setGroup("Controls");
+    d_initialVolume.setGroup("Results");
+    d_initialVolume.setReadOnly(true);
+    d_currentInjectedVolume.setGroup("Results");
+    //d_currentInjectedVolume.setReadOnly(true);
+    d_v0.setGroup("Results");
+    d_v0.setReadOnly(true);
+    d_currentVolume.setGroup("Results");
+    d_currentVolume.setReadOnly(true);
+    d_currentPressure.setGroup("Results");
+    d_currentPressure.setReadOnly(true);
+    d_currentStiffness.setGroup("Results");
+    d_currentStiffness.setReadOnly(true);
+    d_pressureTriangles.setDisplayed(false);
+    d_pressureTriangles.setPersistent(false);
+    d_pressureTriangles.setReadOnly(true);
+    d_initialSurfaceArea.setGroup("Stats");
+    d_initialSurfaceArea.setReadOnly(true);
+    d_currentSurfaceArea.setGroup("Stats");
+    d_currentSurfaceArea.setReadOnly(true);
+    d_volumeAfterTC.setGroup("Results");
+    d_volumeAfterTC.setReadOnly(true);
+    d_surfaceAreaAfterTC.setGroup("Results");
+    d_surfaceAreaAfterTC.setReadOnly(true);
     this->f_listening.setValue(true);
+
+    m_p0.setParent(&d_p0);
+    m_B.setParent(&d_B);
+    m_gamma.setParent(&d_gamma);
+    m_injectedVolume.setParent(&d_injectedVolume);
+    m_maxInjectionRate.setParent(&d_maxInjectionRate);
+    m_initialVolume.setParent(&d_initialVolume);
+    m_currentInjectedVolume.setParent(&d_currentInjectedVolume);
+    m_v0.setParent(&d_v0);
+    m_currentVolume.setParent(&d_currentVolume);
+    m_currentPressure.setParent(&d_currentPressure);
+    m_currentStiffness.setParent(&d_currentStiffness);
+    m_pressureTriangles.setParent(&d_pressureTriangles);
+    m_initialSurfaceArea.setParent(&d_initialSurfaceArea);
+    m_currentSurfaceArea.setParent(&d_currentSurfaceArea);
+    m_drawForceScale.setParent(&d_drawForceScale);
+    m_drawForceColor.setParent(&d_drawForceColor);
+    m_volumeAfterTC.setParent(&d_volumeAfterTC);
+    m_surfaceAreaAfterTC.setParent(&d_surfaceAreaAfterTC);
+
+
 }
 
 template <class DataTypes>
@@ -120,14 +140,14 @@ void TaitSurfacePressureForceField<DataTypes>::init()
     }
 
     updateFromTopology();
-    computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
-    m_currentVolume.endEdit();
-    m_currentSurfaceArea.endEdit();
+    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
+    d_currentVolume.endEdit();
+    d_currentSurfaceArea.endEdit();
     Real currentStiffness = 0;
     Real currentPressure = 0;
-    computePressureAndStiffness(currentPressure, currentStiffness, m_currentVolume.getValue(), m_v0.getValue());
-    m_currentPressure.setValue(currentPressure);
-    m_currentStiffness.setValue(currentStiffness);
+    computePressureAndStiffness(currentPressure, currentStiffness, d_currentVolume.getValue(), d_v0.getValue());
+    d_currentPressure.setValue(currentPressure);
+    d_currentStiffness.setValue(currentStiffness);
     computeStatistics(this->mstate->read(sofa::core::VecCoordId::position()));
 }
 
@@ -135,16 +155,16 @@ template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::storeResetState()
 {
     Inherit1::storeResetState();
-    reset_injectedVolume = m_injectedVolume.getValue();
-    reset_currentInjectedVolume = m_currentInjectedVolume.getValue();
+    reset_injectedVolume = d_injectedVolume.getValue();
+    reset_currentInjectedVolume = d_currentInjectedVolume.getValue();
 }
 
 template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::reset()
 {
     Inherit1::reset();
-    m_injectedVolume.setValue(reset_injectedVolume);
-    m_currentInjectedVolume.setValue(reset_currentInjectedVolume);
+    d_injectedVolume.setValue(reset_injectedVolume);
+    d_currentInjectedVolume.setValue(reset_currentInjectedVolume);
     updateFromTopology();
 }
 
@@ -154,11 +174,11 @@ void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Ev
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         SReal dt = (static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt();
-        Real inj = m_injectedVolume.getValue();
-        Real curInj = m_currentInjectedVolume.getValue();
+        Real inj = d_injectedVolume.getValue();
+        Real curInj = d_currentInjectedVolume.getValue();
         if (inj != curInj)
         {
-            Real maxInj = (Real)(m_maxInjectionRate.getValue()*dt);
+            Real maxInj = (Real)(d_maxInjectionRate.getValue() * dt);
             if (fabs(inj-curInj) <= maxInj)
                 curInj = inj;
             else if (inj < curInj)
@@ -166,7 +186,7 @@ void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Ev
             else if (inj > curInj)
                 curInj += maxInj;
             msg_info() << "Current Injected Volume = " << curInj;
-            m_currentInjectedVolume.setValue(curInj);
+            d_currentInjectedVolume.setValue(curInj);
             updateFromTopology();
         }
     }
@@ -183,17 +203,17 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
 
-        computeMeshVolumeAndArea(*m_volumeAfterTC.beginEdit(), *m_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
-        m_volumeAfterTC.endEdit();
-        m_surfaceAreaAfterTC.endEdit();
+        computeMeshVolumeAndArea(*d_volumeAfterTC.beginEdit(), *d_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
+        d_volumeAfterTC.endEdit();
+        d_surfaceAreaAfterTC.endEdit();
 		if (lastTopologyRevision == 0)
 		{
-			m_initialVolume.setValue(m_volumeAfterTC.getValue());
-			m_initialSurfaceArea.setValue(m_surfaceAreaAfterTC.getValue());
+			d_initialVolume.setValue(d_volumeAfterTC.getValue());
+			d_initialSurfaceArea.setValue(d_surfaceAreaAfterTC.getValue());
 		}
     }
 
-    m_v0.setValue(m_initialVolume.getValue() + m_currentInjectedVolume.getValue());
+    d_v0.setValue(d_initialVolume.getValue() + d_currentInjectedVolume.getValue());
 }
 
 template <class DataTypes>
@@ -201,7 +221,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureTriangles()
 {
     const SeqTriangles& triangles = m_topology->getTriangles();
     const SeqQuads& quads = m_topology->getQuads();
-    helper::WriteAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    helper::WriteAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
     pressureTriangles.resize(triangles.size()+2*quads.size());
     unsigned int index = 0;
     for (unsigned int i=0; i<triangles.size(); i++)
@@ -224,25 +244,25 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     helper::ReadAccessor<DataVecCoord> x = d_x;
     //helper::ReadAccessor<DataVecDeriv> v = d_v;
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 
-    computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), x);
-    m_currentVolume.endEdit();
-    m_currentSurfaceArea.endEdit();
-    Real currentVolume = m_currentVolume.getValue();
+    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), x);
+    d_currentVolume.endEdit();
+    d_currentSurfaceArea.endEdit();
+    Real currentVolume = d_currentVolume.getValue();
     computeStatistics(x);
     Real currentStiffness = 0;
     Real currentPressure = 0;
 	// apply volume correction after a topological change
 
-    if (m_volumeAfterTC.isSet())
+    if (d_volumeAfterTC.isSet())
     {
-	    currentVolume -= (m_volumeAfterTC.getValue() - m_initialVolume.getValue());
+	    currentVolume -= (d_volumeAfterTC.getValue() - d_initialVolume.getValue());
     }
 
-    computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, m_v0.getValue());
-    m_currentPressure.setValue(currentPressure);
-    m_currentStiffness.setValue(currentStiffness);
+    computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, d_v0.getValue());
+    d_currentPressure.setValue(currentPressure);
+    d_currentStiffness.setValue(currentStiffness);
 
     // first compute gradV
     helper::WriteAccessor<VecDeriv> gradV = this->gradV;
@@ -284,13 +304,13 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::ReadAccessor<DataVecDeriv> dx = d_dx;
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate.get());
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    //const Real currentVolume = m_currentVolume.getValue();
-    const Real currentPressure = m_currentPressure.getValue();
-    const Real currentStiffness = m_currentStiffness.getValue();
+    //const Real currentVolume = d_currentVolume.getValue();
+    const Real currentPressure = d_currentPressure.getValue();
+    const Real currentStiffness = d_currentStiffness.getValue();
 
     // First compute dV
     Real dV = 0;
@@ -348,11 +368,11 @@ template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate.get());
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const Real currentPressure = m_currentPressure.getValue();
-    const Real currentStiffness = m_currentStiffness.getValue();
+    const Real currentPressure = d_currentPressure.getValue();
+    const Real currentStiffness = d_currentStiffness.getValue();
 
     // First compute df = dP*N
     if (currentStiffness != 0)
@@ -402,13 +422,13 @@ template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     const auto mstateSize = this->mstate->getSize();
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate.get())
                        .withRespectToPositionsIn(this->mstate.get());
 
-    const Real currentPressure = m_currentPressure.getValue();
-    const Real currentStiffness = m_currentStiffness.getValue();
+    const Real currentPressure = d_currentPressure.getValue();
+    const Real currentStiffness = d_currentStiffness.getValue();
 
     // First compute df = dP*N
     if (currentStiffness != 0)
@@ -479,7 +499,7 @@ void TaitSurfacePressureForceField<DataTypes>::computeMeshVolumeAndArea(Real& vo
     Real volume6 = 0;
     Real area2 = 0;
 
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
     for (unsigned int i = 0; i < pressureTriangles.size(); i++)
     {
         Triangle t = pressureTriangles[i];
@@ -511,15 +531,15 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
 
-    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 
     std::vector< sofa::type::Vec3i > indices;
     std::vector< type::Vec3 > normals;
-    if (m_drawForceScale.getValue() != (Real)0.0)
+    if (d_drawForceScale.getValue() != (Real)0.0)
     {
         std::vector< sofa::type::Vec3 > points;
         points.clear();
-        const Real fscale = m_currentPressure.getValue()*m_drawForceScale.getValue();
+        const Real fscale = d_currentPressure.getValue() * d_drawForceScale.getValue();
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
@@ -531,7 +551,7 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
             points.push_back(center);
             points.push_back(center+n);
         }
-        vparams->drawTool()->drawLines(points, 1, m_drawForceColor.getValue());
+        vparams->drawTool()->drawLines(points, 1, d_drawForceColor.getValue());
     }
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -547,9 +567,9 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureAndStiffness(Real&
         pressure = 0;
         stiffness = 0;
     }
-    const Real B = m_B.getValue();
-    const Real gamma = m_gamma.getValue();
-    const Real p0 = m_p0.getValue();
+    const Real B = d_B.getValue();
+    const Real gamma = d_gamma.getValue();
+    const Real p0 = d_p0.getValue();
     if (B == 0 || gamma == 0 || v0 == 0)
     {
         stiffness = 0;

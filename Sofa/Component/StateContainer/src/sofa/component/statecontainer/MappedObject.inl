@@ -29,9 +29,12 @@ namespace sofa::component::statecontainer
 
 template <class DataTypes>
 MappedObject<DataTypes>::MappedObject()
-    : f_X( initData(&f_X, "position", "position vector") )
-    , f_V( initData(&f_V, "velocity", "velocity vector") )
+    : d_X(initData(&d_X, "position", "position vector") )
+    , d_V(initData(&d_V, "velocity", "velocity vector") )
 {
+    f_X.setParent(&d_X);
+    f_V.setParent(&d_V);
+
 }
 
 template <class DataTypes>

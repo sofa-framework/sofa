@@ -52,16 +52,23 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TDataTypes>
 PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
-    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
-    , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
-    , share_matrix( initData(&share_matrix,true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
+    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
+    , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
+    , d_share_matrix(initData(&d_share_matrix, true, "share_matrix", "Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
     , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to precompute the first matrix"))
-    , use_rotations( initData(&use_rotations,true,"use_rotations","Use Rotations around the preconditioner") )
-    , draw_rotations_scale( initData(&draw_rotations_scale,0.0,"draw_rotations_scale","Scale rotations in draw function") )
+    , d_use_rotations(initData(&d_use_rotations, true, "use_rotations", "Use Rotations around the preconditioner") )
+    , d_draw_rotations_scale(initData(&d_draw_rotations_scale, 0.0, "draw_rotations_scale", "Scale rotations in draw function") )
 {
     first = true;
     _rotate = false;
     usePrecond = true;
+
+    jmjt_twostep.setParent(&d_jmjt_twostep);
+    use_file.setParent(&d_use_file);
+    share_matrix.setParent(&d_share_matrix);
+    use_rotations.setParent(&d_use_rotations);
+    draw_rotations_scale.setParent(&d_draw_rotations_scale);
+
 }
 
 template <class TDataTypes>
@@ -100,7 +107,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& /*M*/, TVector& 
 {
     if (usePrecond)
     {
-        if (use_rotations.getValue())
+        if (d_use_rotations.getValue())
         {
             unsigned int k = 0;
             unsigned int l = 0;
@@ -158,9 +165,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::string fname = ss.str();
 
-    if (share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
+    if (d_share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
 
-    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (linearalgebra::BaseMatrix::Index)systemSize)
+    if (d_share_matrix.getValue() && internalData.MinvPtr->rowSize() == (linearalgebra::BaseMatrix::Index)systemSize)
     {
         msg_info() << "shared matrix : " << fname << " is already built." ;
     }
@@ -170,7 +177,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
         std::ifstream compFileIn(fname.c_str(), std::ifstream::binary);
 
-        if(compFileIn.good() && use_file.getValue())
+        if(compFileIn.good() && d_use_file.getValue())
         {
             msg_info() << "file open : " << fname << " compliance being loaded" ;
             internalData.readMinvFomFile(compFileIn);
@@ -188,7 +195,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
                 loadMatrixWithSolver();
             }
 
-            if (use_file.getValue())
+            if (d_use_file.getValue())
             {
                 std::ofstream compFileOut(fname.c_str(), std::fstream::out | std::fstream::binary);
                 internalData.writeMinvFomFile(compFileOut);
@@ -468,7 +475,7 @@ template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
 {
     _rotate = true;
-    if (! use_rotations.getValue()) return;
+    if (! d_use_rotations.getValue()) return;
 
     const simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = nullptr;
@@ -570,7 +577,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(linearalgebra::Bas
     internalData.JRMinv.clear();
     internalData.JRMinv.resize(J.rowSize(),internalData.idActiveDofs.size());
 
-    if (use_rotations.getValue())
+    if (d_use_rotations.getValue())
     {
         internalData.JR.clear();
         internalData.JR.resize(J.rowSize(),J.colSize());
@@ -655,15 +662,15 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (! use_rotations.getValue()) return;
-    if (draw_rotations_scale.getValue() <= 0.0) return;
+    if (! d_use_rotations.getValue()) return;
+    if (d_draw_rotations_scale.getValue() <= 0.0) return;
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
     if (mstate==nullptr) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    const Real& scale = this->draw_rotations_scale.getValue();
+    const Real& scale = this->d_draw_rotations_scale.getValue();
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {

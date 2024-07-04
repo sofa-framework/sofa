@@ -370,7 +370,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     mappedParticles_dof->resize(numMapped);
     independentParticles_dof->resize( numX*numY*numZ - numMapped );
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
-    mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
+    mappedParticles_mapping->d_globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
     vector< std::pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
 
@@ -386,7 +386,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // mapped particles
     size_t mappedIndex=0;
-    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->rigidIndexPerPoint.beginEdit();
+    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->d_rigidIndexPerPoint.beginEdit();
     for( size_t b=0; b<numRigid; b++ )
     {
         const vector<size_t>& ind = indices[b];
@@ -399,7 +399,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
         }
     }
-    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
+    mappedParticles_mapping->d_rigidIndexPerPoint.endEdit();
 
     // now add all the particles to the multimapping
     for( size_t i=0; i<xgrid.size(); i++ )

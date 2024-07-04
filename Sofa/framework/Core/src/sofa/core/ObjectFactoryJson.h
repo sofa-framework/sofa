@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
+#pragma once
+#include <sofa/core/config.h>
+#include <string>
 
-#include <sofa/component/mapping/nonlinear/DistanceMapping.inl>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::mapping::nonlinear
+namespace sofa::core
 {
 
-using namespace defaulttype;
+class ObjectFactory;
+struct SOFA_CORE_API ObjectFactoryJson
+{
+    static std::string dump(ObjectFactory* factory);
+};
 
-
-// Register in the Factory
-int DistanceMappingClass = core::RegisterObject("Mapping each connected pair of Degrees of Freedom (DoFs) in a topology to a scalar value representing the distance between them.")
-        .add< DistanceMapping< Vec3Types, Vec1Types > >()
-        .add< DistanceMapping< Rigid3Types, Vec1Types > >()
-        ;
-
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Rigid3Types, Vec1Types >;
-
-} // namespace sofa::component::mapping::nonlinear
+}

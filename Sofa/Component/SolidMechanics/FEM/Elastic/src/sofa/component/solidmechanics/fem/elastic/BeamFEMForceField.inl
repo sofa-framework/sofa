@@ -50,7 +50,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
-    : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
+    : d_beamsData(initData(&d_beamsData, "beamsData", "Internal element data"))
     , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Poisson's Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
@@ -68,6 +68,9 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     d_radiusInner.setRequired(true);
 
     d_youngModulus.setReadOnly(true);
+
+    m_beamsData.setParent(&d_beamsData);
+
 }
 
 
@@ -124,11 +127,11 @@ void BeamFEMForceField<DataTypes>::init()
         m_partialListSegment = false;
     }
 
-    m_beamsData.createTopologyHandler(m_topology);
-    m_beamsData.setCreationCallback([this](Index edgeIndex, BeamInfo& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_beamsData.createTopologyHandler(m_topology);
+    d_beamsData.setCreationCallback([this](Index edgeIndex, BeamInfo& ei,
+                                           const core::topology::BaseMeshTopology::Edge& edge,
+                                           const sofa::type::vector< Index >& ancestors,
+                                           const sofa::type::vector< SReal >& coefs)
     {
         createBeamInfo(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -188,13 +191,13 @@ void BeamFEMForceField<DataTypes>::createBeamInfo(Index edgeIndex, BeamInfo &ei,
     const sofa::type::vector<SReal> &)
 {
     reinitBeam(edgeIndex);
-    ei = m_beamsData.getValue()[edgeIndex];
+    ei = d_beamsData.getValue()[edgeIndex];
 }
 
 template<class DataTypes>
 Quat<SReal>& BeamFEMForceField<DataTypes>::beamQuat(int i)
 {
-    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = d_beamsData;
     return bd[i].quat;
 }
 
@@ -293,16 +296,16 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 {
     Real   phiy, phiz;
-    Real _L = (Real)m_beamsData.getValue()[i]._L;
-    Real _A = (Real)m_beamsData.getValue()[i]._A;
-    Real _nu = (Real)m_beamsData.getValue()[i]._nu;
-    Real _E = (Real)m_beamsData.getValue()[i]._E;
-    Real _Iy = (Real)m_beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)m_beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)m_beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)m_beamsData.getValue()[i]._Asz;
-    Real _G = (Real)m_beamsData.getValue()[i]._G;
-    Real _J = (Real)m_beamsData.getValue()[i]._J;
+    Real _L = (Real)d_beamsData.getValue()[i]._L;
+    Real _A = (Real)d_beamsData.getValue()[i]._A;
+    Real _nu = (Real)d_beamsData.getValue()[i]._nu;
+    Real _E = (Real)d_beamsData.getValue()[i]._E;
+    Real _Iy = (Real)d_beamsData.getValue()[i]._Iy;
+    Real _Iz = (Real)d_beamsData.getValue()[i]._Iz;
+    Real _Asy = (Real)d_beamsData.getValue()[i]._Asy;
+    Real _Asz = (Real)d_beamsData.getValue()[i]._Asz;
+    Real _G = (Real)d_beamsData.getValue()[i]._G;
+    Real _J = (Real)d_beamsData.getValue()[i]._J;
     Real L2 = (Real) (_L * _L);
     Real L3 = (Real) (L2 * _L);
     Real EIy = (Real)(_E * _Iy);
@@ -319,7 +322,7 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     else
         phiz = (Real)(24.0*(1.0+_nu)*_Iy/(_Asz*L2));
 
-    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = d_beamsData;
     StiffnessMatrix& k_loc = bd[i]._k_loc;
 
     // Define stiffness matrix 'k' in local coordinates
@@ -452,7 +455,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     depl[9] = u[0]; depl[10]= u[1]; depl[11]= u[2];
 
     // this computation can be optimised: (we know that half of "depl" is null)
-    Displacement force = m_beamsData.getValue()[i]._k_loc * depl;
+    Displacement force = d_beamsData.getValue()[i]._k_loc * depl;
 
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
@@ -495,7 +498,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
-    Displacement local_force = m_beamsData.getValue()[i]._k_loc * local_depl;
+    Displacement local_force = d_beamsData.getValue()[i]._k_loc * local_depl;
 
     const Vec3 fa1 = q.rotate(type::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
     const Vec3 fa2 = q.rotate(type::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
@@ -539,7 +542,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Transformation R,Rt;
                 q.toMatrix(R);
                 Rt.transpose(R);
-                const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+                const StiffnessMatrix& K0 = d_beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
                 for (int x1=0; x1<12; x1+=3)
                     for (int y1=0; y1<12; y1+=3)
@@ -574,7 +577,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Transformation R,Rt;
                 q.toMatrix(R);
                 Rt.transpose(R);
-                const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+                const StiffnessMatrix& K0 = d_beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
                 const bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
@@ -648,7 +651,7 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
             Transformation R,Rt;
             q.toMatrix(R);
             Rt.transpose(R);
-            const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+            const StiffnessMatrix& K0 = d_beamsData.getValue()[i]._k_loc;
             StiffnessMatrix K;
             for (int x1=0; x1<12; x1+=3)
                 for (int y1=0; y1<12; y1+=3)
@@ -683,7 +686,7 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
             Transformation R,Rt;
             q.toMatrix(R);
             Rt.transpose(R);
-            const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+            const StiffnessMatrix& K0 = d_beamsData.getValue()[i]._k_loc;
             StiffnessMatrix K;
             const bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
@@ -818,7 +821,7 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >*
     Index b = (*m_indexedElements)[i][1];
     type::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
     type::Vec3d beamVec;
-    beamVec[0]=m_beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
+    beamVec[0]= d_beamsData.getValue()[i]._L * 0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
     const type::Quat<SReal>& q = beamQuat(i);
 
@@ -827,12 +830,12 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >*
     points[0].push_back(p + q.rotate(beamVec) );
 
     // axis Y
-    beamVec[0]=0.0; beamVec[1] = m_beamsData.getValue()[i]._r*0.5;
+    beamVec[0]=0.0; beamVec[1] = d_beamsData.getValue()[i]._r * 0.5;
     points[1].push_back(p );
     points[1].push_back(p + q.rotate(beamVec) );
 
     // axis Z
-    beamVec[1]=0.0; beamVec[2] = m_beamsData.getValue()[i]._r*0.5;
+    beamVec[1]=0.0; beamVec[2] = d_beamsData.getValue()[i]._r * 0.5;
     points[2].push_back(p);
     points[2].push_back(p + q.rotate(beamVec) );
 }
@@ -840,7 +843,7 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >*
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initBeams(std::size_t size)
 {
-    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = d_beamsData;
     bd.resize(size);
 }
 
@@ -853,7 +856,7 @@ void BeamFEMForceField<DataTypes>::setUpdateStiffnessMatrix(bool val)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::setBeam(Index i, SReal E, SReal L, SReal nu, SReal r, SReal rInner)
 {
-    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = d_beamsData;
     bd[i].init(E,L,nu,r,rInner);
 }
 

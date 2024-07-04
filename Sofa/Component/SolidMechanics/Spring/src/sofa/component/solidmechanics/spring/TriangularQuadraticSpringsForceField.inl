@@ -57,7 +57,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleCreation(Inde
     typename DataTypes::Real lambda=getLambda();
     typename DataTypes::Real mu=getMu();
 
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
 
     /// describe the jth edge index of triangle no i
     const core::topology::BaseMeshTopology::EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleIndex);
@@ -96,7 +96,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleDestruction(I
 {
     unsigned int j;
 
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
 
     /// describe the jth edge index of triangle no i
     const core::topology::BaseMeshTopology::EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleIndex);
@@ -108,19 +108,27 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleDestruction(I
 }
 
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
-    : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    : d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_dampingRatio(initData(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
-    , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
+    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)1000., "youngModulus", "Young modulus in Hooke's law"))
+    , d_dampingRatio(initData(&d_dampingRatio, (Real)0., "dampingRatio", "Ratio damping/stiffness"))
+    , d_useAngularSprings(initData(&d_useAngularSprings, true, "useAngularSprings", "If Angular Springs should be used or not"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
+    _initialPoints.setParent(&d_initialPoints);
+    f_poissonRatio.setParent(&d_poissonRatio);
+    f_youngModulus.setParent(&d_youngModulus);
+    f_dampingRatio.setParent(&d_dampingRatio);
+    f_useAngularSprings.setParent(&d_useAngularSprings);
+    triangleInfo.setParent(&d_triangleInfo);
+    edgeInfo.setParent(&d_edgeInfo);
+
 
 }
 
@@ -150,8 +158,8 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         return;
     }
 
-    triangleInfo.createTopologyHandler(m_topology);
-    edgeInfo.createTopologyHandler(m_topology);
+    d_triangleInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.createTopologyHandler(m_topology);
 
     if (m_topology->getNbTriangles()==0)
     {
@@ -161,17 +169,17 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     updateLameCoefficients();
 
     /// prepare to store info in the triangle array
-    helper::WriteOnlyAccessor< Data< type::vector<TriangleRestInformation> > > triangleInf = triangleInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<TriangleRestInformation> > > triangleInf = d_triangleInfo;
     triangleInf.resize(m_topology->getNbTriangles());
     /// prepare to store info in the edge array
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
 
-    if (_initialPoints.getValue().size() == 0)
+    if (d_initialPoints.getValue().size() == 0)
     {
         // get restPosition
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        _initialPoints.setValue(p);
+        d_initialPoints.setValue(p);
     }
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
@@ -187,23 +195,23 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
             (const sofa::type::vector< SReal >)0);
     }
 
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
-        const core::topology::BaseMeshTopology::Triangle& triangle,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
+                                              const core::topology::BaseMeshTopology::Triangle& triangle,
+                                              const sofa::type::vector< Index >& ancestors,
+                                              const sofa::type::vector< SReal >& coefs)
     {
         applyTriangleCreation(triangleIndex, tinfo, triangle, ancestors, coefs);
     });
 
-    triangleInfo.setDestructionCallback([this](Index triangleIndex, TriangleRestInformation& tinfo)
+    d_triangleInfo.setDestructionCallback([this](Index triangleIndex, TriangleRestInformation& tinfo)
     {
         applyTriangleDestruction(triangleIndex, tinfo);
     });
@@ -224,15 +232,15 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
     TriangleRestInformation *tinfo;
     EdgeRestInformation *einfo;
 
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(d_triangleInfo.beginEdit());
 
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
     assert(this->mstate);
 
     Deriv force;
     Coord dp,dv;
-    Real _dampingRatio=f_dampingRatio.getValue();
+    Real _dampingRatio=d_dampingRatio.getValue();
 
 
     for(unsigned int i=0; i<nbEdges; i++ )
@@ -249,7 +257,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
         f[v1]+=dp*val;
         f[v0]-=dp*val;
     }
-    if (f_useAngularSprings.getValue()==true)
+    if (d_useAngularSprings.getValue() == true)
     {
         for(unsigned int i=0; i<nbTriangles; i++ )
         {
@@ -272,8 +280,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
         }
 
     }
-    edgeInfo.endEdit();
-    triangleInfo.endEdit();
+    d_edgeInfo.endEdit();
+    d_triangleInfo.endEdit();
     updateMatrix=true;
     d_f.endEdit();
 }
@@ -291,8 +299,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
 
     TriangleRestInformation *tinfo;
 
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(d_triangleInfo.beginEdit());
+    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
     assert(this->mstate);
     const VecDeriv& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -323,7 +331,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
                 Mat3 &m=tinfo->DfDx[k];
                 dpk = x[ta[i]]- x[ta[j]];
 
-                if (f_useAngularSprings.getValue()==false)
+                if (d_useAngularSprings.getValue() == false)
                 {
                     val1 = -tinfo->stiffness[k]*edgeInf[tea[k]].dl;
                     val1/=edgeInf[tea[k]].currentLength;
@@ -396,8 +404,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
             df[ta[j]]-= (tinfo->DfDx[k].transposeMultiply(deltax)) * kFactor;
         }
     }
-    edgeInfo.endEdit();
-    triangleInfo.endEdit();
+    d_edgeInfo.endEdit();
+    d_triangleInfo.endEdit();
     d_df.endEdit();
 }
 
@@ -411,8 +419,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::b
 template<class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-    mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
+    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
+    mu = d_youngModulus.getValue() * (1 - d_poissonRatio.getValue()) / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
 }
 
 
