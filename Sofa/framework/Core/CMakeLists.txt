@@ -40,6 +40,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MultiMapping.inl
     ${SRC_ROOT}/MultiVecId.h
     ${SRC_ROOT}/ObjectFactory.h
+    ${SRC_ROOT}/ObjectFactoryJson.h
     ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
     ${SRC_ROOT}/sptr.h
@@ -220,6 +221,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
+    ${SRC_ROOT}/ObjectFactoryJson.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp

@@ -121,7 +121,7 @@ public:
     Data<sofa::Index >  edgeInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index >  tetrahedronInfo;
+    Data<VecTetrahedronRestInformation >  tetrahedronInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<std::string> f_method;
