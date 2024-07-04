@@ -35,7 +35,6 @@
 
 namespace sofa::component::solidmechanics::spring
 {
-
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
     : SpringForceField(nullptr, nullptr, _ks, _kd)
@@ -45,8 +44,8 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
-    , d_ks(initData(&d_ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , d_kd(initData(&d_kd,_kd,"damping","uniform damping for the all springs"))
+    , d_ks(initData(&d_ks,{_ks},"stiffness","uniform stiffness for the all springs"))
+    , d_kd(initData(&d_kd,{_kd},"damping","uniform damping for the all springs"))
     , d_showArrowSize(initData(&d_showArrowSize,0.01f,"showArrowSize","size of the axis"))
     , d_drawMode(initData(&d_drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
     , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
@@ -57,9 +56,6 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     this->addAlias(&d_lengths, "length");
     this->addAlias(&d_springsIndices[0], "indices1");
     this->addAlias(&d_springsIndices[1], "indices2");
-
-    c_springCallBack.addInput(&d_springs);
-    c_springCallBack.addCallback([this](){ msg_warning(this) << "Spring data is in a read only state and can only be used for initialization purposes. Your changes will be overriden by the content of the other data.";});
 
 }
 
@@ -120,11 +116,10 @@ void SpringForceField<DataTypes>::init()
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    for (sofa::Index i=0; i<d_springs.getValue().size(); ++i)
-    {
-        (*d_springs.beginEdit())[i].ks = (Real) d_ks.getValue();
-        (*d_springs.beginEdit())[i].kd = (Real) d_kd.getValue();
-    }
+    if (d_springs.isSet())
+        updateTopologyIndicesFromSprings();
+    else
+        updateSpringsFromTopologyIndices();
 }
 
 template <class DataTypes>
@@ -134,6 +129,8 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
     auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
     auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
+    auto& kds = *sofa::helper::getWriteOnlyAccessor(d_kd);
+    auto& kss = *sofa::helper::getWriteOnlyAccessor(d_ks);
 
     indices1.resize(springValues.size());
     indices2.resize(springValues.size());
@@ -143,6 +140,8 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
         indices1[i] = springValues[i].m1;
         indices2[i] = springValues[i].m2;
         lengths[i] = springValues[i].initpos;
+        kds[i] = springValues[i].kd;
+        kss[i] = springValues[i].ks;
     }
 
     areSpringIndicesDirty = false;
@@ -168,7 +167,7 @@ void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
     auto lengths = sofa::helper::getWriteAccessor(d_lengths);
     if (lengths.empty())
     {
-        lengths.push_back({});
+        lengths.push_back({0.0});
     }
 
     if (lengths.size() != indices1.size())
@@ -177,21 +176,28 @@ void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
         lengths->resize(indices1.size(), lengths->back());
     }
 
+    auto kds = sofa::helper::getWriteAccessor(d_kd);
+    if (kds.size() != indices1.size())
+    {
+        msg_warning() << "Kd list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+        kds->resize(indices1.size(), kds->back());
+    }
+
+    auto kss = sofa::helper::getWriteAccessor(d_ks);
+    if (kss.size() != indices1.size())
+    {
+        msg_warning() << "Ks list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+        kss->resize(indices1.size(), kss->back());
+    }
+
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
     type::vector<Spring>& _springs = *this->d_springs.beginEdit();
     _springs.clear();
 
-
-
-    const SReal& _ks = this->d_ks.getValue();
-    const SReal& _kd = this->d_kd.getValue();
     for (sofa::Index i = 0; i<indices1.size(); ++i)
-        _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));
-
-    // By not calling this->d_springs.endEdit() I avoid going inside the other callback.
-
-
+        _springs.push_back(Spring(indices1[i], indices2[i], kss[i], kds[i], lengths[i]));
+    
     areSpringIndicesDirty = false;
 }
 
