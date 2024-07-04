@@ -183,7 +183,7 @@ sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
         }
 
         // Here we assume a single root element is present in both models
-        if (intersector->canIntersect(cm_1->begin(), cm_2->begin()))
+        if (intersector->canIntersect(cm_1->begin(), cm_2->begin(), m_intersectionMethod))
         {
             m_intersectingPairs.emplace_back(cm_1, cm_2);
         }

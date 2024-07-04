@@ -26,50 +26,6 @@
 
 #include <sofa/version.h>
 
-// remove the conent of this anonymous namespace once the compat layer is deleted
-// SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12")
-#if (SOFA_VERSION / 100) <= 2406
-namespace
-{
-    // SFINAE block of code to detect at compile time if
-    // - Intersector implements testIntersection(ModelElement1&, ModelElement2&, Intersection*)
-    // - Intersector implements computeIntersection(ModelElement1&, ModelElement2&, OutputVector*, Intersection*)
-
-    template<typename ModelElement1, typename ModelElement2, typename Intersector, typename = void>
-    struct has_testIntersection_with_Intersection
-        : std::false_type
-    { };
-
-    template<typename ModelElement1, typename ModelElement2, typename Intersector, typename = void>
-    struct has_computeIntersection_with_Intersection
-        : std::false_type
-    { };
-
-    // detect at compile time if Intersector implements testIntersection(ModelElement1&, ModelElement2&, Intersection*)
-    template<typename ModelElement1, typename ModelElement2, typename Intersector>
-    struct has_testIntersection_with_Intersection<ModelElement1, ModelElement2, Intersector,
-        std::void_t<decltype(std::declval<Intersector>().testIntersection(
-            std::declval<ModelElement1&>(),
-            std::declval<ModelElement2&>(),
-            std::declval<const sofa::core::collision::Intersection*>()
-        ))>>
-        : std::true_type
-    { };
-
-    // detect at compile time if Intersector implements computeIntersection(ModelElement1&, ModelElement2&, OutputVector*, Intersection*)
-    template<typename ModelElement1, typename ModelElement2, typename Intersector>
-    struct has_computeIntersection_with_Intersection<ModelElement1, ModelElement2, Intersector,
-        std::void_t<decltype(std::declval<Intersector>().computeIntersection(
-            std::declval<ModelElement1&>(),
-            std::declval<ModelElement2&>(),
-            std::declval<sofa::core::collision::BaseIntersector::OutputVector*>(),
-            std::declval<const sofa::core::collision::Intersection*>()
-        ))>>
-        : std::true_type
-    { };
-}
-#endif
-
 namespace sofa::core::collision
 {
 
@@ -81,26 +37,14 @@ public:
     typedef typename Elem2::Model Model2;
     MemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return impl->testIntersection(e1, e2);
-    }
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = delete;
     
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
     {
-        if constexpr (!has_testIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
-        {
-            return canIntersect(elem1, elem2);
-        }
-        else
-        {
-            Elem1 e1(elem1);
-            Elem2 e2(elem2);
-            return impl->testIntersection(e1, e2, currentIntersection);
-        }
+        Elem1 e1(elem1);
+        Elem2 e2(elem2);
+        return impl->testIntersection(e1, e2, currentIntersection);
     }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
@@ -117,26 +61,14 @@ public:
     }
 
     /// Compute the intersection between 2 elements.
-    SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) override
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) = delete;
     
     int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
     {
-        if constexpr (!has_computeIntersection_with_Intersection<typename Model1::Element, typename Model2::Element, T>::value)
-        {
-            return intersect(elem1, elem2, contacts);
-        }
-        else
-        {
-            Elem1 e1(elem1);
-            Elem2 e2(elem2);
-            return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
-        }
+        Elem1 e1(elem1);
+        Elem2 e2(elem2);
+        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
     }
 
     std::string name() const override
