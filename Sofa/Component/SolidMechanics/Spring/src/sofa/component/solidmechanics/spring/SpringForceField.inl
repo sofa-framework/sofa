@@ -44,10 +44,10 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
-    , d_ks(initData(&d_ks,{_ks},"stiffness","uniform stiffness for the all springs"))
-    , d_kd(initData(&d_kd,{_kd},"damping","uniform damping for the all springs"))
     , d_showArrowSize(initData(&d_showArrowSize,0.01f,"showArrowSize","size of the axis"))
     , d_drawMode(initData(&d_drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
+    , d_ks(initData(&d_ks,{_ks},"stiffness","uniform stiffness for the all springs"))
+    , d_kd(initData(&d_kd,{_kd},"damping","uniform damping for the all springs"))
     , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
     , maskInUse(false)
@@ -135,6 +135,8 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
     indices1.resize(springValues.size());
     indices2.resize(springValues.size());
     lengths.resize(springValues.size());
+    kds.resize(springValues.size());
+    kss.resize(springValues.size());
     for (unsigned i=0; i<springValues.size(); ++i)
     {
         indices1[i] = springValues[i].m1;

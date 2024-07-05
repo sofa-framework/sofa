@@ -72,15 +72,13 @@ public:
     typedef LinearSpring<Real> Spring;
 
     using Inherit::getPotentialEnergy;
-    using Inherit::addKToMatrix;
 
-
-    Data<sofa::type::vector<SReal> > d_ks; ///< uniform stiffness for the all springs
-    Data<sofa::type::vector<SReal> > d_kd; ///< uniform damping for the all springs
     Data<float> d_showArrowSize; ///< size of the axis
     Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
-    Data<sofa::type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
-    Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+    Data<type::vector<SReal> > d_kd;  ///< uniform damping for the all springs
+    Data<type::vector<SReal> > d_ks;  ///< uniform stiffness for the all springs
+    Data<type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
+    Data<type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
 
     void init() override;
     void reinit() override;
