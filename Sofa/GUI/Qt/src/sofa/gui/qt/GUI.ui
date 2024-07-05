@@ -997,7 +997,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
   <slot>popupOpenFileSelector()</slot>
   <slot>fileReload()</slot>
   <slot>fileSave()</slot>
-  <slot>fileSaveAs()</slot>
   <slot>fileExit()</slot>
   <slot>editRecordDirectory()</slot>
   <slot>showPluginManager()</slot>
