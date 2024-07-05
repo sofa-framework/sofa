@@ -303,7 +303,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
-    ${SRC_ROOT}/objectmodel/RenamedData.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
     ${SRC_ROOT}/objectmodel/TagSet.cpp
