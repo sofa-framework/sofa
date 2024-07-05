@@ -161,6 +161,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/Link.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
+    ${SRC_ROOT}/objectmodel/RenamedData.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
@@ -302,6 +303,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
+    ${SRC_ROOT}/objectmodel/RenamedData.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
     ${SRC_ROOT}/objectmodel/TagSet.cpp

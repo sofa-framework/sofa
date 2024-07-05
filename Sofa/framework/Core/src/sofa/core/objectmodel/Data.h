@@ -175,13 +175,13 @@ public:
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
-    void setValue(const T& value)
+    virtual void setValue(const T& value)
     {
         *beginWriteOnly()=value;
         endEdit();
     }
 
-    const T& getValue() const
+    virtual const T& getValue() const
     {
         updateIfDirty();
         return m_value.getValue();
