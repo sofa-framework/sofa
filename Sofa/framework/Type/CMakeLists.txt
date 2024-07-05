@@ -86,15 +86,11 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 sofa_find_package(Boost QUIET REQUIRED)
-sofa_find_package(Sofa.Compat QUIET BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
-if(Sofa.Compat_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Compat)
-endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
