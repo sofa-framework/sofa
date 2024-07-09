@@ -164,6 +164,11 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+### Warn the user that the legacy option has been deleted and is useless now
+if(DEFINED SOFA_ENABLE_LEGACY_HEADERS)
+    message(WARNING "SOFA_ENABLE_LEGACY_HEADERS cmake option has been deleted in v24.12 and is now meaningless.")
+endif()
+
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 
