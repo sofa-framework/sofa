@@ -116,7 +116,7 @@ public:
         std::string collModelPath1;
         std::string collModelPath2;
 
-        if(arg)
+        if(arg && context)
         {
             collModelPath1 = arg->getAttribute(std::string("collisionModel1"), "" );
             collModelPath2 = arg->getAttribute(std::string("collisionModel2"), "" );
