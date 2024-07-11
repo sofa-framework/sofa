@@ -48,7 +48,7 @@ void UniformLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::c
     auto& jacobian = sofa::helper::getWriteAccessor(c).wref();
     auto  xVec     = sofa::helper::getReadAccessor(x);
 
-    auto constraintIndex = sofa::helper::getReadAccessor(this->m_constraintIndex);
+    auto constraintIndex = sofa::helper::getReadAccessor(this->d_constraintIndex);
 
     for (std::size_t i = 0; i < xVec.size(); ++i)
     {
@@ -90,21 +90,21 @@ void UniformLagrangianConstraint<DataTypes>::getConstraintViolation(const sofa::
     if (cParams->constOrder() == sofa::core::ConstraintOrder::VEL)
     {
         if (d_constraintRestPos.getValue()){
-            computeViolation(resV, this->m_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)
+            computeViolation(resV, this->d_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)
             { return vfree[i][j] + invDt *(pos[i][j]-restPos[i][j]); });
         }
         else {
-            computeViolation(resV, this->m_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree](int i, int j)
+            computeViolation(resV, this->d_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree](int i, int j)
             { return vfree[i][j] + invDt *pos[i][j]; });
         }
     }
     else
     {
         if( d_constraintRestPos.getValue() )
-            computeViolation(resV, this->m_constraintIndex.getValue(), xfree, Coord::size(),
+            computeViolation(resV, this->d_constraintIndex.getValue(), xfree, Coord::size(),
                              [&xfree,&restPos](int i, int j){ return xfree[i][j] - restPos[i][j]; });
         else
-            computeViolation(resV, this->m_constraintIndex.getValue(), xfree, Coord::size(),[&xfree](int i, int j){ return xfree[i][j]; });
+            computeViolation(resV, this->d_constraintIndex.getValue(), xfree, Coord::size(),[&xfree](int i, int j){ return xfree[i][j]; });
     }
 }
 

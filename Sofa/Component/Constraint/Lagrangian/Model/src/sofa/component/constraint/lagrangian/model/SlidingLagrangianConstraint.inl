@@ -94,7 +94,7 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
     m_dirOrtho = cross(m_dirProj, m_dirAxe);
     m_dirOrtho.normalize();
 
-    auto constraintIndex = sofa::helper::getReadAccessor(this->m_constraintIndex);
+    auto constraintIndex = sofa::helper::getReadAccessor(this->d_constraintIndex);
     cIndex += 2;
 
     MatrixDerivRowIterator c1_it = c1.writeLine(constraintIndex);
@@ -145,7 +145,7 @@ template<class DataTypes>
 void SlidingLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
-    const auto constraintIndex = this->m_constraintIndex.getValue();
+    const auto constraintIndex = this->d_constraintIndex.getValue();
 
     v->set(constraintIndex, m_dist);
     v->set(constraintIndex+1, 0.0);
@@ -178,7 +178,7 @@ void SlidingLagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams*
 {
     Real lamb1,lamb2, lamb3;
 
-    const auto constraintIndex = this->m_constraintIndex.getValue();
+    const auto constraintIndex = this->d_constraintIndex.getValue();
 
     lamb1 = lambda->element(constraintIndex);
     lamb2 = lambda->element(constraintIndex+1);
