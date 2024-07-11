@@ -69,8 +69,8 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
     int tm2a = d_m2a.getValue();
     int tm2b = d_m2b.getValue();
 
-    MatrixDeriv &c1 = *c1_d.beginEdit();
-    MatrixDeriv &c2 = *c2_d.beginEdit();
+    auto c1 = sofa::helper::getWriteAccessor(c1_d);
+    auto c2 = sofa::helper::getWriteAccessor(c2_d);
 
     const Coord P = x1.getValue()[tm1];
     const Coord A = x2.getValue()[tm2a];
@@ -94,50 +94,51 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
     m_dirOrtho = cross(m_dirProj, m_dirAxe);
     m_dirOrtho.normalize();
 
-    auto constraintIndex = sofa::helper::getReadAccessor(this->d_constraintIndex);
-    cIndex += 2;
+    {
+        auto c1_it = c1->writeLine(cIndex);
+        c1_it.addCol(tm1, m_dirProj);
 
-    MatrixDerivRowIterator c1_it = c1.writeLine(constraintIndex);
-    c1_it.addCol(tm1, m_dirProj);
+        auto c2_it = c2->writeLine(cIndex);
+        c2_it.addCol(tm2a, -m_dirProj * (1-r2));
+        c2_it.addCol(tm2b, -m_dirProj * r2);
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(constraintIndex);
-    c2_it.addCol(tm2a, -m_dirProj * (1-r2));
-    c2_it.addCol(tm2b, -m_dirProj * r2);
+        ++cIndex;
+    }
 
-    c1_it = c1.writeLine(constraintIndex + 1);
-    c1_it.setCol(tm1, m_dirOrtho);
+    {
+        auto c1_it = c1->writeLine(cIndex);
+        c1_it.setCol(tm1, m_dirOrtho);
 
-    c2_it = c2.writeLine(constraintIndex + 1);
-    c2_it.addCol(tm2a, -m_dirOrtho * (1-r2));
-    c2_it.addCol(tm2b, -m_dirOrtho * r2);
+        auto c2_it = c2->writeLine(cIndex);
+        c2_it.addCol(tm2a, -m_dirOrtho * (1-r2));
+        c2_it.addCol(tm2b, -m_dirOrtho * r2);
+
+        ++cIndex;
+    }
 
     m_thirdConstraint = 0;
 
     if (r < 0)
     {
         m_thirdConstraint = r;
-        cIndex++;
 
-        c1_it = c1.writeLine(constraintIndex + 2);
+        auto c1_it = c1->writeLine(cIndex);
         c1_it.setCol(tm1, m_dirAxe);
 
-        c2_it = c2.writeLine(constraintIndex + 2);
+        auto c2_it = c2->writeLine(cIndex);
         c2_it.addCol(tm2a, -m_dirAxe);
     }
     else if (r > ab)
     {
         m_thirdConstraint = r - ab;
-        cIndex++;
 
-        c1_it = c1.writeLine(constraintIndex + 2);
+        auto c1_it = c1->writeLine(cIndex);
         c1_it.setCol(tm1, -m_dirAxe);
 
-        c2_it = c2.writeLine(constraintIndex + 2);
+        auto c2_it = c2->writeLine(cIndex);
         c2_it.addCol(tm2b, m_dirAxe);
     }
-
-    c1_d.endEdit();
-    c2_d.endEdit();
+    ++cIndex;
 }
 
 

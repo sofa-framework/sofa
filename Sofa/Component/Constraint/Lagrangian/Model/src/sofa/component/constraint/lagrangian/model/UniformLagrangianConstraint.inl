@@ -45,20 +45,17 @@ void UniformLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::c
 
     const auto N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
-    auto& jacobian = sofa::helper::getWriteAccessor(c).wref();
-    auto  xVec     = sofa::helper::getReadAccessor(x);
-
-    auto constraintIndex = sofa::helper::getReadAccessor(this->d_constraintIndex);
+    auto jacobian = sofa::helper::getWriteAccessor(c);
+    auto xVec     = sofa::helper::getReadAccessor(x);
 
     for (std::size_t i = 0; i < xVec.size(); ++i)
     {
         for (std::size_t j = 0; j < N; ++j)
         {
-            auto row = jacobian.writeLine(N*i + j + constraintIndex);
+            auto row = jacobian->writeLine(cIndex++);
             Deriv d;
-            d[j] = Real(1);
+            d[j] = static_cast<Real>(1);
             row.setCol(i, d);
-            ++cIndex;
         }
     }
 }
