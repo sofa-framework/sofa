@@ -128,8 +128,8 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
     _initialPoints.setParent(&d_initialPoints);
     f_method.setParent(&d_method);
-    _poissonRatio.setParent(&d_poissonRatio);
-    _youngModulus.setParent(&d_youngModulus);
+    _poissonRatio.setParent(&this->d_poissonRatio);
+    _youngModulus.setParent(&this->d_youngModulus);
     _localStiffnessFactor.setParent(&d_localStiffnessFactor);
     _updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
     _assembling.setParent(&d_assembling);
