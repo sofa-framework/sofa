@@ -44,10 +44,10 @@ protected:
     ~VisualLoop() override { }
 public:
     /// Initialize the textures
-    virtual void initStep(sofa::core::ExecParams* /*params*/) {}
+    virtual void initStep(sofa::core::visual::VisualParams* /*vparams*/) {}
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateStep(sofa::core::ExecParams* /*params*/) {}
+    virtual void updateStep(sofa::core::visual::VisualParams* /*vparams*/) {}
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
     virtual void updateContextStep(sofa::core::visual::VisualParams* /*vparams*/) {}

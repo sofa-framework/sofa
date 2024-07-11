@@ -54,6 +54,32 @@ void VisualModel::drawVisual(const VisualParams* vparams)
     doDrawVisual(vparams);
 }
 
+void VisualModel::updateVisual(const VisualParams* vparams)
+{
+    // don't update if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't update if this component is specifically configured to be disabled
+    if (!d_enable.getValue())
+        return;
+
+    // don't update if the component is not in valid state
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
+    doUpdateVisual(vparams);
+}
+
+void VisualModel::initVisual(const VisualParams* vparams)
+{
+    // don't init visual things if the component is not in valid state
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
+    doInitVisual(vparams);
+}
+
 bool VisualModel::insertInNode( objectmodel::BaseNode* node )
 {
     node->addVisualModel(this);

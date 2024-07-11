@@ -57,6 +57,24 @@ public:
      *  will have to override doDrawVisual;
      */
     virtual void drawVisual(const VisualParams* /*vparams*/) final;
+    
+    /**
+     *  \brief Initialize the textures, or other graphical resources.
+     *
+     *  Called once before the first frame is drawn, and if the graphical
+     *  context has been recreated.
+     *  TODO for v25.12: Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
+     *  will have to override doInitVisual;
+     */
+    virtual void initVisual(const VisualParams* /*vparams*/) final;
+
+    /**
+     *  \brief used to update the model if necessary.
+     * 
+     *  TODO for v25.12: Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
+     *  will have to override doUpdateVisual;
+     */
+    virtual void updateVisual(const VisualParams* /*vparams*/) final;
 
 
 protected:
@@ -65,16 +83,10 @@ protected:
 
 private:
     virtual void doDrawVisual(const VisualParams* /*vparams*/) {}
+    virtual void doInitVisual(const VisualParams* /*vparams*/) {}
+    virtual void doUpdateVisual(const VisualParams* /*vparams*/) {}
 
 public:
-    /**
-     *  \brief Initialize the textures, or other graphical resources.
-     *
-     *  Called once before the first frame is drawn, and if the graphical
-     *  context has been recreated.
-     */
-    virtual void initVisual() {  }
-
     /**
      *  \brief clear some graphical resources (generaly called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
@@ -111,10 +123,6 @@ public:
         doDrawVisual(vparams);
     }
 
-    /**
-     *  \brief used to update the model if necessary.
-     */
-    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */
