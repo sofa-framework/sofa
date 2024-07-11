@@ -93,11 +93,11 @@ public:
     void setID(const GLint& id);
 
     //VisualModel
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void init() override;
     virtual void drawLight();
     void reinit() override;
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     /// Draw the light source from an external point of view.
     virtual void drawSource(const sofa::core::visual::VisualParams*) = 0;
