@@ -1388,6 +1388,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
     const VecReal& youngModulus = this->d_youngModulus.getValue();
+    assert(!youngModulus.empty());
     minYoung=youngModulus[0];
     maxYoung=youngModulus[0];
     for (unsigned i=0; i<youngModulus.size(); i++)
