@@ -256,7 +256,7 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
             loadTexture(d_texturename.getFullPath());
             m_textureChanged = false;
         }
-        
+        initVisual(vparams);
         updateBuffers();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
@@ -661,8 +661,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
         m_restPositions.endEdit();
     }
 
-    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    doUpdateVisual(vparams);
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
@@ -695,8 +694,7 @@ void VisualModelImpl::applyRotation(const Quat<SReal> q)
         m_restPositions.endEdit();
     }
 
-    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    doUpdateVisual(vparams);
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
@@ -727,8 +725,7 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
         m_restPositions.endEdit();
     }
 
-    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    doUpdateVisual(vparams);
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
@@ -742,6 +739,8 @@ void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
         vtexcoords[i][1] += dVf;
     }
     d_vtexcoords.endEdit();
+
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
