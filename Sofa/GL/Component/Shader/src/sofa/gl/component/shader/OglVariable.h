@@ -64,7 +64,7 @@ public:
     virtual void pushValue() = 0;
     
     void init() override { OglShaderElement::init(); }
-    void doInitVisual(const core::visual::VisualParams* vparams) override
+    void doInitVisual(const core::visual::VisualParams*) override
     {
         pushValue();
     }

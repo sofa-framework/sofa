@@ -198,7 +198,7 @@ void OglTexture::init()
     OglShaderElement::init();
 }
 
-void OglTexture::doInitVisual(const core::visual::VisualParams* vparams)
+void OglTexture::doInitVisual(const core::visual::VisualParams*)
 {
     if (img == nullptr)
     {

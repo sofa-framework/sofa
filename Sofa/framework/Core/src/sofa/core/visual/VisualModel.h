@@ -63,19 +63,18 @@ public:
      *
      *  Called once before the first frame is drawn, and if the graphical
      *  context has been recreated.
-     *  TODO for v25.12: Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
-     *  will have to override doInitVisual;
      */
-    virtual void initVisual(const VisualParams* /*vparams*/) final;
+    void initVisual(const VisualParams* /*vparams*/);
+    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.12", "Implement doInitVisual(const VisualParams*) instead")
+    virtual void initVisual() = delete;
 
     /**
      *  \brief used to update the model if necessary.
-     * 
-     *  TODO for v25.12: Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
-     *  will have to override doUpdateVisual;
+     *
      */
-    virtual void updateVisual(const VisualParams* /*vparams*/) final;
-
+    void updateVisual(const VisualParams* /*vparams*/);
+    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.12", "Implement doUpdateVisual(const VisualParams*) instead")
+    virtual void updateVisual() = delete;
 
 protected:
     VisualModel();

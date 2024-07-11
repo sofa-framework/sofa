@@ -64,7 +64,7 @@ void VisualGrid::reinit()
     updateGrid();
 }
 
-void VisualGrid::doUpdateVisual(const core::visual::VisualParams* vparams)
+void VisualGrid::doUpdateVisual(const core::visual::VisualParams*)
 {
     updateGrid();
 }

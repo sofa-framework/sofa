@@ -754,6 +754,8 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
         vtexcoords[i][1] *= scaleVf;
     }
     d_vtexcoords.endEdit();
+
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 
