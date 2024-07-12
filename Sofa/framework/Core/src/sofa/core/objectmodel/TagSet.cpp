@@ -71,6 +71,16 @@ bool TagSet::includes(const TagSet& t) const
     return true;
 }
 
+TagSet::iterator TagSet::find(const Tag& _Keyval)
+{
+    return m_set.find(_Keyval);
+}
+
+TagSet::const_iterator TagSet::find(const Tag& _Keyval) const
+{
+    return m_set.find(_Keyval);
+}
+
 bool TagSet::empty() const noexcept
 {
     return m_set.empty();

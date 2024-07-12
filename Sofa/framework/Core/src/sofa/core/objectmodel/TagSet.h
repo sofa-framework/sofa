@@ -46,6 +46,9 @@ public:
     /// Returns true if this TagSet contains all specified tags
     bool includes(const TagSet& t) const;
 
+    iterator find(const Tag& _Keyval);
+    const_iterator find(const Tag& _Keyval) const;
+
     [[nodiscard]] bool empty() const noexcept;
 
     [[nodiscard]] std::size_t size() const noexcept;
