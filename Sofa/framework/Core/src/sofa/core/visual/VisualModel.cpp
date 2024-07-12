@@ -71,6 +71,11 @@ void VisualModel::updateVisual(const VisualParams* vparams)
     doUpdateVisual(vparams);
 }
 
+void VisualModel::updateVisual()
+{
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
+}
+
 void VisualModel::initVisual(const VisualParams* vparams)
 {
     // don't init visual things if the component is not in valid state
@@ -78,6 +83,11 @@ void VisualModel::initVisual(const VisualParams* vparams)
         return;
 
     doInitVisual(vparams);
+}
+
+void VisualModel::initVisual()
+{
+    initVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 bool VisualModel::insertInNode( objectmodel::BaseNode* node )
