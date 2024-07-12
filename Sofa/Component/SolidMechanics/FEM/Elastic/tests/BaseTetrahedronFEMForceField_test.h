@@ -253,8 +253,8 @@ public:
         typename _TetrahedronFEMForceField::SPtr tetraFEM = m_root->getTreeObject<_TetrahedronFEMForceField>();
         ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-        ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.45));
-        ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue()[0], static_cast<Real>(5000));
+        ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.45));
+        ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(5000));
         ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
     }
 

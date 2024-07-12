@@ -78,9 +78,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
 
         // Set force parameters
         this->force->d_poissonRatio.setValue(0);
-        type::vector<Real> youngModulusVec;
-        youngModulusVec.push_back(40);
-        this->force->d_youngModulus.setValue(youngModulusVec);
+        this->force->d_youngModulus.setValue({40});
         this->force->f_method.setValue("small");
 
         // Init simulation
