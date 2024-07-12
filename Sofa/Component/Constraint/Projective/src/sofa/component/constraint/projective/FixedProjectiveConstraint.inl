@@ -371,7 +371,7 @@ void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vec
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    const auto drawSize = d_drawSize.getValue();
+    const auto drawSize = static_cast<Real>(d_drawSize.getValue());
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
