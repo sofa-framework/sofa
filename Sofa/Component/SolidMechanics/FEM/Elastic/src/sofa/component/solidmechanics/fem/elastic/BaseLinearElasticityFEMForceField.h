@@ -34,7 +34,7 @@ class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<Data
 public:
     using Coord = typename DataTypes::Coord;
     using VecReal = typename DataTypes::VecReal;
-    using Real = typename Coord::value_type;
+    using Real = typename DataTypes::Real;
 
     SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 

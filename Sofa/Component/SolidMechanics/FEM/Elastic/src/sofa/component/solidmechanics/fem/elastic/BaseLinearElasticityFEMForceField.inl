@@ -54,8 +54,8 @@ void BaseLinearElasticityFEMForceField<DataTypes>::setYoungModulus(Real val)
 }
 
 template <class DataTypes>
-typename BaseLinearElasticityFEMForceField<DataTypes>::Real
-BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
+auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
+-> Real
 {
     Real youngModulusElement {};
 
