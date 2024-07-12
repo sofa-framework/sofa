@@ -186,7 +186,7 @@ public:
         ASSERT_TRUE(tetraFEM.get() != nullptr);
         ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.4));
         ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(10000));
-        ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+        ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
     }
 
     void checkNoTopology()
@@ -255,7 +255,7 @@ public:
 
         ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.45));
         ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(5000));
-        ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+        ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
     }
 
 

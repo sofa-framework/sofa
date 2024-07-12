@@ -79,7 +79,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         // Set force parameters
         this->force->d_poissonRatio.setValue(0);
         this->force->d_youngModulus.setValue({40});
-        this->force->f_method.setValue("small");
+        this->force->d_method.setValue("small");
 
         // Init simulation
         sofa::simulation::node::initRoot(Inherited::node.get());
