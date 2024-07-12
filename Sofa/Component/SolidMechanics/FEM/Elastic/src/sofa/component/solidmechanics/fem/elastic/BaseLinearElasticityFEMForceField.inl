@@ -64,7 +64,7 @@ BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Siz
     {
         youngModulusElement = youngModulus[elementId];
     }
-    else if (youngModulus.size() > 0)
+    else if (!youngModulus.empty())
     {
         youngModulusElement = youngModulus[0];
     }
