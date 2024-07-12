@@ -91,8 +91,8 @@ private:
     std::set<Tag> m_set;
 };
 
-std::ostream &operator<<(std::ostream &o, const sofa::core::objectmodel::TagSet& tagSet);
-std::istream &operator>>(std::istream &in, sofa::core::objectmodel::TagSet& tagSet);
+SOFA_CORE_API std::ostream &operator<<(std::ostream &o, const sofa::core::objectmodel::TagSet& tagSet);
+SOFA_CORE_API std::istream &operator>>(std::istream &in, sofa::core::objectmodel::TagSet& tagSet);
 
 } // namespace sofa::core::objectmodel
 
