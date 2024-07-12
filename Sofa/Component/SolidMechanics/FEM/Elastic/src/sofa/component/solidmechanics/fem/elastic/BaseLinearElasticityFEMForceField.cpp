@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,29 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::solidmechanics::fem::elastic
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.12", "v25.06", \
-        "Data renamed according to the guidelines")
-#endif
+template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+}

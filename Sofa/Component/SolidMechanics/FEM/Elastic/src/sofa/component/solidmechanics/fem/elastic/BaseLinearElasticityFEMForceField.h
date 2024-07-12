@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,28 +20,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::solidmechanics::fem::elastic
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.12", "v25.06", \
-        "Data renamed according to the guidelines")
+template<class DataTypes>
+class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<DataTypes>
+{
+public:
+    using Coord = typename DataTypes::Coord;
+    using VecReal = typename DataTypes::VecReal;
+    using Real = typename DataTypes::Real;
+
+    SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+
+    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
+
+    static inline const VecReal defaultYoungModulusValue = []()
+    {
+        VecReal newY;
+        newY.resize(1);
+        newY[0] = 5000;
+        return newY;
+    }();
+
+    BaseLinearElasticityFEMForceField();
+
+    void setPoissonRatio(Real val);
+    void setYoungModulus(Real val);
+
+    Real getYoungModulusInElement(sofa::Size elementId);
+};
+
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
+extern template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
 #endif
+
+}
