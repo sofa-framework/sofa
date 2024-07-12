@@ -127,6 +127,8 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
         auto c2_it = c2->writeLine(cIndex);
         c2_it.addCol(tm2a, -m_dirAxe);
+
+        ++cIndex;
     }
     else if (r > ab)
     {
@@ -137,8 +139,9 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
         auto c2_it = c2->writeLine(cIndex);
         c2_it.addCol(tm2b, m_dirAxe);
+
+        ++cIndex;
     }
-    ++cIndex;
 }
 
 
