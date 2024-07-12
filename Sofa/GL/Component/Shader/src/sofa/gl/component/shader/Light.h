@@ -95,7 +95,7 @@ public:
     //VisualModel
     void doInitVisual(const core::visual::VisualParams* vparams) override;
     void init() override;
-    virtual void drawLight();
+    virtual void drawLight(const core::visual::VisualParams* vparams);
     void reinit() override;
     void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
@@ -137,7 +137,7 @@ public:
     DirectionalLight();
     ~DirectionalLight() override;
     void preDrawShadow(core::visual::VisualParams* vp) override;
-    void drawLight() override;
+    void drawLight(const core::visual::VisualParams* vparams) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void drawSource(const core::visual::VisualParams* vparams) override;
     GLuint getDepthTexture() override;
@@ -162,7 +162,7 @@ public:
 
     PositionalLight();
     ~PositionalLight() override;
-    void drawLight() override;
+    void drawLight(const core::visual::VisualParams* vparams) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void drawSource(const core::visual::VisualParams*) override;
     const sofa::type::Vec3 getPosition() override { return d_position.getValue(); }
@@ -181,7 +181,7 @@ public:
 
     SpotLight();
     ~SpotLight() override;
-    void drawLight() override;
+    void drawLight(const core::visual::VisualParams* vparams) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void drawSource(const core::visual::VisualParams* vparams) override;
 

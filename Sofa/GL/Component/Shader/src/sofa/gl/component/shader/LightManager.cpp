@@ -206,7 +206,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
         glEnable(GL_LIGHT0+id);
-        (*itl)->drawLight();
+        (*itl)->drawLight(vp);
         ++id;
     }
 
