@@ -555,6 +555,6 @@ int main(int argc, char** argv)
 
     sofa::simulation::common::cleanup();
     sofa::simulation::graph::cleanup();
-    PluginManager::getInstance().cleanup();
+
     return 0;
 }
