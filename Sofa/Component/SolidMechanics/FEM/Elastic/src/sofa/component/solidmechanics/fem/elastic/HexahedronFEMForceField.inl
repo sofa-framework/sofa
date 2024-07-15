@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -51,8 +51,6 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     : d_method(initData(&d_method, std::string("large"), "method", "\"large\" or \"polar\" or \"small\" displacements" ))
-    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.45f, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", "FEM Young's modulus in Hooke's law"))
     , d_updateStiffnessMatrix(initData(&d_updateStiffnessMatrix, false, "updateStiffnessMatrix", ""))
     , d_gatherPt(initData(&d_gatherPt, "gatherPt", "number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     , d_gatherBsize(initData(&d_gatherBsize, "gatherBsize", "number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
@@ -94,12 +92,8 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 
     _alreadyInit=false;
 
-    d_poissonRatio.setRequired(true);
-    d_youngModulus.setRequired(true);
-
     f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&d_poissonRatio);
-    f_youngModulus.setParent(&d_youngModulus);
+    f_poissonRatio.setParent(&this->d_poissonRatio);
     f_updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
     _gatherPt.setParent(&d_gatherPt);
     _gatherBsize.setParent(&d_gatherBsize);
@@ -120,13 +114,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
     _alreadyInit=true;
 
-    this->core::behavior::ForceField<DataTypes>::init();
-
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -717,18 +705,19 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
+    const auto poissonRatio = this->d_poissonRatio.getValue();
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = d_poissonRatio.getValue() / (1 - d_poissonRatio.getValue());
+                    _materialsStiffnesses[i][2][1] = poissonRatio / (1 - poissonRatio);
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
     _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
     _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
     _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1- 2 * d_poissonRatio.getValue()) / (2 * (1 - d_poissonRatio.getValue()));
-    _materialsStiffnesses[i] *= (d_youngModulus.getValue() * (1 - d_poissonRatio.getValue())) / ((1 + d_poissonRatio.getValue()) * (1 - 2 * d_poissonRatio.getValue()));
+    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1- 2 * poissonRatio) / (2 * (1 - poissonRatio));
+    _materialsStiffnesses[i] *= (this->getYoungModulusInElement(i) * (1 - poissonRatio)) / ((1 + poissonRatio) * (1 - 2 * poissonRatio));
     // S = [ U V V 0 0 0 ]
     //     [ V U V 0 0 0 ]
     //     [ V V U 0 0 0 ]

@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
@@ -59,10 +59,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedralFEMForceField : virtual public core::behavior::ForceField<DataTypes>
+class HexahedralFEMForceField : virtual public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -136,9 +136,6 @@ protected:
     HexahedralFEMForceField();
     virtual ~HexahedralFEMForceField();
 public:
-    void setPoissonRatio(Real val) { this->d_poissonRatio.setValue(val); }
-
-    void setYoungModulus(Real val) { this->d_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
@@ -192,15 +189,13 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<Real> f_poissonRatio;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_youngModulus;
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<sofa::Index> hexahedronInfo;
 
     Data<std::string> d_method; ///< "large" or "polar" displacements
-    Data<Real> d_poissonRatio;
-    Data<Real> d_youngModulus;
+
     /// container that stotes all requires information for each hexahedron
     core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > d_hexahedronInfo;
 
@@ -211,7 +206,7 @@ public:
         const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&);
 
 protected:
-    core::topology::BaseMeshTopology* _topology;
+    core::topology::BaseMeshTopology* _topology { nullptr };
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };

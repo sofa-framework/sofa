@@ -29,7 +29,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>
-class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<DataTypes>
+class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>
 {
 public:
     using Coord = typename DataTypes::Coord;
@@ -53,6 +53,7 @@ public:
     }();
 
     BaseLinearElasticityFEMForceField();
+    void init() override;
 
     void setPoissonRatio(Real val);
     void setYoungModulus(Real val);

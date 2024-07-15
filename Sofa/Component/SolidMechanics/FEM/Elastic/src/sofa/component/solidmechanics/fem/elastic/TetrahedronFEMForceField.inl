@@ -1325,14 +1325,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
-    this->core::behavior::ForceField<DataTypes>::init();
-
-    /// Take the user provide topology.
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
