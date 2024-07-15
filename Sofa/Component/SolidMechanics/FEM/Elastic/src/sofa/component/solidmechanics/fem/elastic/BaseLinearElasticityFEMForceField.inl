@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,39 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/fem/elastic/init.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
+
 namespace sofa::component::solidmechanics::fem::elastic
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+
+template <class DataTypes>
+BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
+    : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
+    , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
+    , l_topology(initLink("topology", "link to the topology container"))
+{
+    d_poissonRatio.setRequired(true);
+    d_poissonRatio.setWidget("poissonRatio");
+
+    d_youngModulus.setRequired(true);
 }
 
-void initExternalModule()
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::setPoissonRatio(Real val)
 {
-    init();
+    this->d_poissonRatio.setValue(val);
 }
 
-const char* getModuleName()
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::setYoungModulus(Real val)
 {
-    return MODULE_NAME;
+    VecReal newY;
+    newY.resize(1);
+    newY[0] = val;
+    d_youngModulus.setValue(newY);
 }
 
-const char* getModuleVersion()
+template <class DataTypes>
+auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
+-> Real
 {
-    return MODULE_VERSION;
-}
+    Real youngModulusElement {};
 
-void init()
-{
-    static bool first = true;
-    if (first)
+    const auto& youngModulus = d_youngModulus.getValue();
+    if (youngModulus.size() > elementId)
     {
-        first = false;
+        youngModulusElement = youngModulus[elementId];
     }
+    else if (!youngModulus.empty())
+    {
+        youngModulusElement = youngModulus[0];
+    }
+    else
+    {
+        setYoungModulus(5000);
+        youngModulusElement = youngModulus[0];
+    }
+    return youngModulusElement;
 }
 
-} // namespace sofa::component::solidmechanics::fem::elastic
+}

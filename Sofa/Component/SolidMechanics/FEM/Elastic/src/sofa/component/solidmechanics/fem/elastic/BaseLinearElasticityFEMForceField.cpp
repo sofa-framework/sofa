@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,39 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/controller/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::controller
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
+
+namespace sofa::component::solidmechanics::fem::elastic
 {
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
 }
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace sofa::component::controller

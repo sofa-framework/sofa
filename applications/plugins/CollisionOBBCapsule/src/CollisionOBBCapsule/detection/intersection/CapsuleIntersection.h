@@ -42,24 +42,21 @@ class COLLISIONOBBCAPSULE_API CapsuleDiscreteIntersection : public core::collisi
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    CapsuleDiscreteIntersection(DiscreteIntersection* object);
+    CapsuleDiscreteIntersection(DiscreteIntersection* intersection);
 
     template <class Elem1, class Elem2>
-    int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts) {
-        return BaseIntTool::computeIntersection(e1, 
+    int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts, const core::collision::Intersection* intersection) {
+        return BaseIntTool::computeIntersection(e1,
             e2, 
-            e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(), 
+            e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),
             e1.getProximity() + e2.getProximity() + intersection->getContactDistance(),
             contacts);
     }
 
     template <class Elem1, class Elem2>
-    bool testIntersection(Elem1& e1, Elem2& e2) {
+    bool testIntersection(Elem1& e1, Elem2& e2, const core::collision::Intersection* intersection) {
         return BaseIntTool::testIntersection(e1, e2, intersection->getAlarmDistance());
     }
-
-protected:
-    DiscreteIntersection* intersection;
 
 };
 
@@ -69,10 +66,10 @@ class COLLISIONOBBCAPSULE_API CapsuleMeshDiscreteIntersection : public core::col
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    CapsuleMeshDiscreteIntersection(NewProximityIntersection* object);
+    CapsuleMeshDiscreteIntersection(NewProximityIntersection* intersection);
 
     template <class Elem1, class Elem2>
-    int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts) {
+    int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts, const core::collision::Intersection* intersection) {
         return MeshIntTool::computeIntersection(e1,
             e2,
             e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),
@@ -81,15 +78,12 @@ public:
     }
 
     template <class Elem1, class Elem2>
-    bool testIntersection(Elem1& e1, Elem2& e2) {
+    bool testIntersection(Elem1& e1, Elem2& e2, const core::collision::Intersection* intersection) {
         return BaseIntTool::testIntersection(e1, e2, intersection->getAlarmDistance());
     }
 
-    bool testIntersection(Capsule&, Triangle&) { return true; }
-    bool testIntersection(Capsule&, Line&) { return true; }
-
-protected:
-    NewProximityIntersection* intersection;
+    bool testIntersection(Capsule&, Triangle&, const core::collision::Intersection*) { return true; }
+    bool testIntersection(Capsule&, Line&, const core::collision::Intersection*) { return true; }
 
 };
 
