@@ -287,7 +287,7 @@ std::string Data<T>::getDefaultValueString() const
 template<class T>
 std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&getValue());
+    return BaseData::typeName<T>();
 }
 
 template <class T>

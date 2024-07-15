@@ -24,6 +24,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/system/DynamicLibrary.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <vector>
 #include <map>
 #include <memory>
@@ -96,9 +97,15 @@ public:
         static  const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
+
+        SOFA_ATTRIBUTE_DEPRECATED__PLUGIN_GETCOMPONENTLIST()
         const char* operator() () const
         {
-            if (func) return func();
+            if (func)
+            {
+                msg_warning("Plugin::GetModuleComponentList") << "This entrypoint is being deprecated, and should not be implemented anymore.";
+                return func();
+            }
             else return nullptr;
         }
         GetModuleComponentList():func(nullptr) {}

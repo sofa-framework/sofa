@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,39 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/controller/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::controller
+#pragma once
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+
+
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
-
-void initExternalModule()
+template<class DataTypes>
+class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<DataTypes>
 {
-    init();
-}
+public:
+    using Coord = typename DataTypes::Coord;
+    using VecReal = typename DataTypes::VecReal;
+    using Real = typename DataTypes::Real;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
+    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
 
-void init()
-{
-    static bool first = true;
-    if (first)
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
+
+    static inline const VecReal defaultYoungModulusValue = []()
     {
-        first = false;
-    }
-}
+        VecReal newY;
+        newY.resize(1);
+        newY[0] = 5000;
+        return newY;
+    }();
 
-} // namespace sofa::component::controller
+    BaseLinearElasticityFEMForceField();
+
+    void setPoissonRatio(Real val);
+    void setYoungModulus(Real val);
+
+    Real getYoungModulusInElement(sofa::Size elementId);
+};
+
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
+extern template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+#endif
+
+}

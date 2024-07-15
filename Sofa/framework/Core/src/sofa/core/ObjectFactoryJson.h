@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,39 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/controller/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::controller
+#pragma once
+#include <sofa/core/config.h>
+#include <string>
+
+namespace sofa::core
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
-
-void initExternalModule()
+class ObjectFactory;
+struct SOFA_CORE_API ObjectFactoryJson
 {
-    init();
-}
+    static std::string dump(ObjectFactory* factory);
+};
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
 }
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace sofa::component::controller

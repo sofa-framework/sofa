@@ -152,8 +152,12 @@ public:
 
             context->addObject(obj);
         }
+        else
+        {
+            obj = sofa::core::objectmodel::New<T>();
+        }
 
-        if (arg) obj->parse(arg);
+        if (arg && obj) obj->parse(arg);
 
         return obj;
     }

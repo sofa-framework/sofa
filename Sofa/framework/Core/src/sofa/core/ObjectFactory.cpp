@@ -566,7 +566,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
 
 bool ObjectFactory::registerObjects(ObjectRegistrationData& ro)
 {
-    return ro.commit(this);
+    return ro.commitTo(this);
 }
 
 ObjectRegistrationData::ObjectRegistrationData(const std::string& description)
@@ -630,7 +630,7 @@ ObjectRegistrationData& ObjectRegistrationData::addCreator(std::string classname
     return *this;
 }
 
-bool ObjectRegistrationData::commit(sofa::core::ObjectFactory* objectFactory)
+bool ObjectRegistrationData::commitTo(sofa::core::ObjectFactory* objectFactory) const
 {
     if (entry.className.empty() || objectFactory == nullptr)
     {
@@ -654,31 +654,32 @@ bool ObjectRegistrationData::commit(sofa::core::ObjectFactory* objectFactory)
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (auto& creator_entry : entry.creatorMap)
+        for (const auto& creator_entry : entry.creatorMap)
         {
-            const std::string& template_name = creator_entry.first;
-            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
-                if (template_name.empty()) {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
+            const std::string & template_name = creator_entry.first;
+            const auto [it, success] = reg.creatorMap.insert(creator_entry);
+            if (!success)
+            {
+                std::string classType = entry.className;
+                if (!template_name.empty())
+                {
+                    classType += "<" + template_name + ">";
                 }
-                else {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
-                }
-            }
-            else {
-                reg.creatorMap.insert(creator_entry);
+
+                msg_warning("ObjectFactory") << "Class already registered in the ObjectFactory: " << classType;
             }
         }
 
-        for (const auto& alias : entry.aliases)
+        for (const auto & alias : entry.aliases)
         {
             if (reg.aliases.find(alias) == reg.aliases.end())
             {
-                objectFactory->addAlias(alias, entry.className);
+                objectFactory->addAlias(alias,entry.className);
             }
         }
         return true;
     }
+
 }
 
 typedef struct ObjectRegistrationEntry
@@ -766,11 +767,16 @@ RegisterObject& RegisterObject::addCreator(std::string classname, std::string te
     return *this;
 }
 
-RegisterObject::operator int()
+RegisterObject::operator int() const
 {
     //std::cout << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information." << std::endl;
     // msg_warning("RegisterObject") << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information.";
-    return (m_objectRegistrationdata.commit(ObjectFactory::getInstance())) ? 1 : 0;
+    return commitTo(ObjectFactory::getInstance());
+}
+
+int RegisterObject::commitTo(ObjectFactory* factory) const
+{
+    return (m_objectRegistrationdata.commitTo(factory) ? 1 : 0);
 }
 
 } // namespace sofa::core

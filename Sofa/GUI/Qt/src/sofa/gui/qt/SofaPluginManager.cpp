@@ -27,6 +27,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <QMessageBox>
 #include <QTextEdit>
@@ -249,7 +250,21 @@ void SofaPluginManager::updateComponentList()
         return;
     }
 
-    QString cpts( plugin->getModuleComponentList() );
+    std::string componentListStr{};
+    const char* tempComponentList = plugin->getModuleComponentList();
+
+    // the plugin does not implement getModuleComponentList(), or returns nothing.
+    if (tempComponentList == nullptr)
+    {
+        const char* pluginNameStr = plugin->getModuleName();
+        componentListStr = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(pluginNameStr);
+    }
+    else
+    {
+        componentListStr = tempComponentList;
+    }
+
+    QString cpts(componentListStr.data());
     cpts.replace(", ","\n");
     cpts.replace(",","\n");
     std::istringstream in(cpts.toStdString());
