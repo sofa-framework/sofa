@@ -1077,7 +1077,6 @@ void SofaPhysicsSimulation::calcProjection()
     double xNear, yNear/*, xOrtho, yOrtho*/;
     double xFactor = 1.0, yFactor = 1.0;
     double offset;
-    [[maybe_unused]] double xForeground, yForeground, zForeground, xBackground, yBackground, zBackground;
     sofa::type::Vec3 center;
 
     /// Camera part
@@ -1126,8 +1125,8 @@ void SofaPhysicsSimulation::calcProjection()
 
     //std::cout << xNear << " " << yNear << std::endl;
 
-    zForeground = -vparams->zNear() - offset;
-    zBackground = -vparams->zFar() + offset;
+    double zForeground = -vparams->zNear() - offset;
+    double zBackground = -vparams->zFar() + offset;
 
     if (currentCamera->getCameraType() == sofa::core::visual::VisualParams::PERSPECTIVE_TYPE)
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
@@ -1143,6 +1142,8 @@ void SofaPhysicsSimulation::calcProjection()
                 * yFactor) * ratio, (yNear * yFactor) * ratio,
                 vparams->zNear(), vparams->zFar());
     }
+
+    double xForeground, yForeground, xBackground, yBackground;
 
     xForeground = -zForeground * xNear / vparams->zNear();
     yForeground = -zForeground * yNear / vparams->zNear();
