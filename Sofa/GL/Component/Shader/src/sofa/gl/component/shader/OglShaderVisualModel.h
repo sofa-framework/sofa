@@ -53,8 +53,6 @@ protected:
     ~OglShaderVisualModel() override;
 public:
     void init() override;
-    void doInitVisual(const core::visual::VisualParams* vparams) override;
-    
     void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     void bwdDraw(core::visual::VisualParams*) override;

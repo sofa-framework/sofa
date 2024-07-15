@@ -132,15 +132,10 @@ void OglShaderVisualModel::init()
     }
 }
 
-
-void OglShaderVisualModel::doInitVisual(const core::visual::VisualParams* vparams)
-{
-    OglModel::initVisual(vparams);
-}
-
 void OglShaderVisualModel::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
-    OglModel::updateVisual(vparams);
+    OglModel::doUpdateVisual(vparams);
+
     computeRestPositions();
 }
 
