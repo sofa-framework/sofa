@@ -238,18 +238,12 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
 
 void PluginManager::addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback)
 {
-    if(m_onPluginLoadedCallbacks.find(key) == m_onPluginLoadedCallbacks.end())
-    {
-        m_onPluginLoadedCallbacks[key] = callback;
-    }
+    m_onPluginLoadedCallbacks.insert({key, callback});
 }
 
 void PluginManager::addOnPluginCleanupCallbacks(const std::string& key, std::function<void()> callback)
 {
-    if(m_onPluginCleanupCallbacks.find(key) == m_onPluginCleanupCallbacks.end())
-    {
-        m_onPluginCleanupCallbacks[key] = callback;
-    }
+    m_onPluginCleanupCallbacks.insert({key, callback});
 }
 
 void PluginManager::removeOnPluginLoadedCallback(const std::string& key)
