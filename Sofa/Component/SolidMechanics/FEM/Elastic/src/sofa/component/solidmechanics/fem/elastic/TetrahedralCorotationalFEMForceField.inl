@@ -78,7 +78,7 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
     , d_drawColor3(initData(&d_drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
     , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
-    , d_computeVonMisesStress(initData(&d_computeVonMisesStress, true, "computeVonMisesStress", "compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
+    , d_computeVonMisesStress(initData(&d_computeVonMisesStress, false, "computeVonMisesStress", "compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
     , d_vonMisesPerElement(initData(&d_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , d_vonMisesPerNode(initData(&d_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , m_VonMisesColorMap(nullptr)
@@ -1342,7 +1342,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-    if (!d_drawing.getValue()) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
@@ -1389,46 +1388,46 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
             vparams->drawTool()->drawPoints(pts, 10, nodeColors);
         }
     }
-
-    std::vector< type::Vec3 > points[4];
-    for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+    
+    if (d_drawing.getValue())
     {
-        const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
+        std::vector< type::Vec3 > points[4];
+        for (Size i = 0; i < m_topology->getNbTetrahedra(); ++i)
+        {
+            const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);
 
-        const auto& [a, b, c, d] = t.array();
-        Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-        Coord pa = (x[a]+center)*(Real)0.666667;
-        Coord pb = (x[b]+center)*(Real)0.666667;
-        Coord pc = (x[c]+center)*(Real)0.666667;
-        Coord pd = (x[d]+center)*(Real)0.666667;
+            const auto& [a, b, c, d] = t.array();
+            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
+            Coord pa = (x[a] + center) * (Real)0.666667;
+            Coord pb = (x[b] + center) * (Real)0.666667;
+            Coord pc = (x[c] + center) * (Real)0.666667;
+            Coord pd = (x[d] + center) * (Real)0.666667;
 
-        points[0].push_back(pa);
-        points[0].push_back(pb);
-        points[0].push_back(pc);
+            points[0].push_back(pa);
+            points[0].push_back(pb);
+            points[0].push_back(pc);
 
-        points[1].push_back(pb);
-        points[1].push_back(pc);
-        points[1].push_back(pd);
+            points[1].push_back(pb);
+            points[1].push_back(pc);
+            points[1].push_back(pd);
 
-        points[2].push_back(pc);
-        points[2].push_back(pd);
-        points[2].push_back(pa);
+            points[2].push_back(pc);
+            points[2].push_back(pd);
+            points[2].push_back(pa);
 
-        points[3].push_back(pd);
-        points[3].push_back(pa);
-        points[3].push_back(pb);
+            points[3].push_back(pd);
+            points[3].push_back(pa);
+            points[3].push_back(pb);
+        }
+
+        vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
+        vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
+        vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
+        vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
     }
-
-    vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
-    vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
-    vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
-    vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
-
+    
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
-
-
-
 }
 
 
