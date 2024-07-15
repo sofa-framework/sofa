@@ -271,6 +271,8 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initSmall()
 {
+    _rotatedInitialElements.resize(_indexedElements->size());
+
     const VecCoord& pos = _initialPoints.getValue();
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
