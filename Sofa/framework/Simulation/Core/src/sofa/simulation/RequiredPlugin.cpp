@@ -139,11 +139,11 @@ bool RequiredPlugin::loadPlugin()
 
                 if (entries.empty())
                 {
-                    msg_warning() << "No component has been registered from " << name << ".\n"
-                        << "It could be because: \n"
-                        << " - the entrypoint registerObjects() has not been implemented;\n"
-                        << " - (deprecated) no sofa::core::RegisterObject() has been called;\n"
-                        << " - your plugin does not add any component (i.e BaseObject) into the factory. In that case, RequiredPlugin is not useful for this kind of plugin.";
+//                    msg_warning() << "No component has been registered from " << name << ".\n"
+//                        << "It could be because: \n"
+//                        << " - the entrypoint registerObjects() has not been implemented;\n"
+//                        << " - (deprecated) no sofa::core::RegisterObject() has been called;\n"
+//                        << " - your plugin does not add any component (i.e BaseObject) into the factory. In that case, RequiredPlugin is not useful for this kind of plugin.";
                 }
 
                 if (d_stopAfterFirstSuffixFound.getValue()) break;

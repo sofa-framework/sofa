@@ -382,7 +382,7 @@ public:
 
 // Legacy structure, to keep compatibility with olden code
 // using the singleton to get the instance of ObjectFactory
-class SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() SOFA_CORE_API RegisterObject
+class /* SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() */ SOFA_CORE_API RegisterObject
 {
 private:
     ObjectRegistrationData m_objectRegistrationdata;

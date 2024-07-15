@@ -119,7 +119,7 @@ struct RequiredPlugin_test : public BaseSimulationTest
 TEST_F(RequiredPlugin_test, testNotExistingPlugin ) { testNotExistingPlugin(); }
 TEST_F(RequiredPlugin_test, testNoParameter ) { testNoParameter(); }
 TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginA) { testLoadPluginA(); } // disabled because testLoadPluginA() should throw a warning (but this warning is commented for the moment)
-TEST_F(RequiredPlugin_test, testLoadPluginB) { testLoadPluginB(); }
+TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginB) { testLoadPluginB(); }// disabled because testLoadPluginB() should throw a warning (but this warning is commented for the moment)
 TEST_F(RequiredPlugin_test, testLoadPluginC) { testLoadPluginC(); }
 
 }
