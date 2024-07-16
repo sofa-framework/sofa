@@ -70,7 +70,7 @@ TEST(ObjectFactoryJson, oneTemplatedObject)
 
 TEST(ObjectFactoryJson, mainInstance)
 {
-    sofa::simpleapi::importPlugin("Sofa.Component");
+    EXPECT_TRUE(sofa::simpleapi::importPlugin("Sofa.Component"));
     const auto dump = core::ObjectFactoryJson::dump(core::ObjectFactory::getInstance());
     EXPECT_NE(dump.find("MechanicalObject"), std::string::npos);
 }
