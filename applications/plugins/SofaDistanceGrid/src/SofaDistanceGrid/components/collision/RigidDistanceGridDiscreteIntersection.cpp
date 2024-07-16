@@ -45,8 +45,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, RigidDistanceGridDiscreteIntersection> RigidDistanceGridDiscreteIntersectors("RigidDistanceGrid");
 
-RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(DiscreteIntersection* object)
-    : intersection(object)
+RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(DiscreteIntersection* intersection)
 {
     intersection->intersectors.add<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,                      RigidDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>,                     RigidDistanceGridDiscreteIntersection>  (this);
@@ -56,14 +55,14 @@ RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(Dis
     intersection->intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection> (this);
 }
 
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, const core::collision::Intersection*)
 {
     return true;
 }
 
 //#define DEBUG_XFORM
 
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
@@ -550,12 +549,12 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     return nc;
 }
 
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Point&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Point&, const core::collision::Intersection* )
 {
     return true;
 }
 
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
@@ -613,12 +612,12 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     return 1;
 }
 
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Triangle&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Triangle&, const core::collision::Intersection*)
 {
     return true;
 }
 
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     const int f2 = e2.flags();
     if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS|TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_BEDGES))) return 0; // no points associated with this triangle
@@ -722,12 +721,12 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     return nc;
 }
 
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Line&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Line&, const core::collision::Intersection*)
 {
     return true;
 }
 
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Line& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     const int f2 = e2.flags();
     if (!(f2&LineCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS)) return 0; // no points associated with this line
@@ -786,12 +785,12 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     return nresult;
 }
 
-bool RigidDistanceGridDiscreteIntersection::testIntersection(Ray& /*e2*/, RigidDistanceGridCollisionElement& /*e1*/)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(Ray& /*e2*/, RigidDistanceGridCollisionElement& /*e1*/, const core::collision::Intersection*)
 {
     return true;
 }
 
-int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDistanceGridCollisionElement& e1, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDistanceGridCollisionElement& e1, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     type::Vec3 rayOrigin(e2.origin());
     type::Vec3 rayDirection(e2.direction());
