@@ -283,7 +283,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Index&a, Index&b, Index&c, Index&d)
 {
-    const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
+    const VecReal& localStiffnessFactor = d_localStiffnessFactor.getValue();
     const Real youngModulusElement = this->getYoungModulusInElement(i);
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
     const Real poissonRatio = this->d_poissonRatio.getValue();
