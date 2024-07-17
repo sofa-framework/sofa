@@ -152,7 +152,7 @@ public:
 
     /// BeginEdit method if it is only to write the value
     /// checking that current value is up to date
-    T* beginEdit()
+    virtual T* beginEdit()
     {
         updateIfDirty();
         return beginWriteOnly();
@@ -160,7 +160,7 @@ public:
 
     /// beginWriteOnly method if it is only to write the value
     /// regardless of the current status of this value: no dirtiness check
-    T* beginWriteOnly()
+    virtual T* beginWriteOnly()
     {
         m_counter++;
         m_isSet=true;
