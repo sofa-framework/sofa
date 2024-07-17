@@ -54,6 +54,8 @@ using sofa::component::statecontainer::MechanicalObject ;
 using sofa::component::mechanicalload::ConstantForceField ;
 using sofa::core::execparams::defaultInstance; 
 
+#include <sofa/simpleapi/SimpleApi.h>
+
 template <typename TDataType, typename TMassType>
 struct TypeTuple
 {
@@ -70,7 +72,11 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     typedef MechanicalObject<DataTypes>   TheMechanicalObject;
     using Real = typename DataTypes::Coord::value_type;
 
-    void SetUp() override {}
+    void SetUp() override 
+    {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+    }
+
     void TearDown() override {}
 
     void testSimpleBehavior()

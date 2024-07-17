@@ -21,8 +21,7 @@
 ******************************************************************************/
 #include <SofaCarving/config.h>
 
-namespace sofa::component
+namespace sofacarving
 {
     SOFA_SOFACARVING_API void init();
-} // namespace sofa::component
-
+} // namespace sofacarving
