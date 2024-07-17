@@ -214,7 +214,6 @@ void testApplyElasticityTensor(
     HyperelasticMaterial<defaulttype::Vec3Types>& material,
     const MaterialParameters<defaulttype::Vec3Types>& materialParameters)
 {
-    using Real = defaulttype::Vec3Types::Coord::value_type;
     using MatrixSym = StrainInformation<defaulttype::Vec3Types>::MatrixSym;
     using Matrix6 = HyperelasticMaterial<defaulttype::Vec3Types>::Matrix6;
 

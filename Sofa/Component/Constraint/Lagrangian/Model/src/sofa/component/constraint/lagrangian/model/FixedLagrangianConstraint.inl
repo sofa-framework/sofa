@@ -65,8 +65,11 @@ void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::Con
 }
 
 template<class DataTypes>
-void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
+void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
+    SOFA_UNUSED(cParams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
     const DataVecCoord * freePos = this->getMState()->read(sofa::core::VecId::freePosition());
     const DataVecCoord * restPos = this->getMState()->read(sofa::core::VecId::restPosition());
 
