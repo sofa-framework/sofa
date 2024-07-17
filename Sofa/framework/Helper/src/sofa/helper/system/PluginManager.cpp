@@ -45,26 +45,6 @@ using sofa::helper::Utils;
 namespace sofa::helper::system
 {
 
-namespace
-{
-
-template <class LibraryEntry>
-[[nodiscard]] bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
-{
-    typedef typename LibraryEntry::FuncPtr FuncPtr;
-    entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
-    if( entry.func == 0 )
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-} // namespace
-
 const char* Plugin::GetModuleComponentList::symbol    = "getModuleComponentList";
 const char* Plugin::InitExternalModule::symbol        = "initExternalModule";
 const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";
@@ -551,6 +531,16 @@ bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::strin
     }
 
     return false;
+}
+
+auto PluginManager::registerPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog) -> PluginLoadStatus
+{
+    // The plugin is not known by SOFA (i.e the pluginManager was not used)
+    // - either it was never ever loaded (by SOFA or by the OS itself)
+    // - or it was loaded implicitly by the OS (static dependency)
+    
+    // If it was already loaded by the OS before, this will just update the pluginmanager's map
+    return loadPlugin(plugin, suffix, ignoreCase, recursive, errlog);
 }
 
 }

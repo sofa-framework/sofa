@@ -19,17 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef TESTPLUGINC_COMPONENT_D_H
+#define TESTPLUGINC_COMPONENT_D_H
 
-#pragma once
+#include <TestPluginC/TestPluginC.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/component/config.h>
 
-namespace sofa::core
+namespace testpluginc
 {
-    class ObjectFactory;
-}
 
-namespace sofa::component
+class SOFA_TESTPLUGINC_API ComponentD : public sofa::core::objectmodel::BaseObject
 {
-	SOFA_COMPONENT_API void init();
-} // namespace sofa::component
+
+public:
+    SOFA_CLASS(ComponentD, sofa::core::objectmodel::BaseObject);
+
+protected:
+    ComponentD();
+    ~ComponentD() override;
+};
+
+} // namespace testpluginc
+
+
+#endif // TESTPLUGINC_COMPONENT_D_H
