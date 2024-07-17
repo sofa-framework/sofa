@@ -34,7 +34,6 @@ template< class DataTypes >
 UniformLagrangianConstraint<DataTypes>::UniformLagrangianConstraint()
     :d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation is computed."))
     ,d_constraintRestPos(initData(&d_constraintRestPos, false, "constrainToRestPos", "if false, constrains the pos to be zero / if true constraint the current position to stay at rest position"))
-    ,m_constraintIndex(0)
 {
 
 }
@@ -46,20 +45,17 @@ void UniformLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::c
 
     const auto N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
-    auto& jacobian = sofa::helper::getWriteAccessor(c).wref();
-    auto  xVec     = sofa::helper::getReadAccessor(x);
-
-    m_constraintIndex = cIndex; // we should not have to remember this, it should be available through the API directly.
+    auto jacobian = sofa::helper::getWriteAccessor(c);
+    auto xVec     = sofa::helper::getReadAccessor(x);
 
     for (std::size_t i = 0; i < xVec.size(); ++i)
     {
         for (std::size_t j = 0; j < N; ++j)
         {
-            auto row = jacobian.writeLine(N*i + j + m_constraintIndex);
+            auto row = jacobian->writeLine(cIndex++);
             Deriv d;
-            d[j] = Real(1);
+            d[j] = static_cast<Real>(1);
             row.setCol(i, d);
-            ++cIndex;
         }
     }
 }
@@ -91,21 +87,21 @@ void UniformLagrangianConstraint<DataTypes>::getConstraintViolation(const sofa::
     if (cParams->constOrder() == sofa::core::ConstraintOrder::VEL)
     {
         if (d_constraintRestPos.getValue()){
-            computeViolation(resV, m_constraintIndex, vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)
+            computeViolation(resV, this->d_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree,&restPos](int i, int j)
             { return vfree[i][j] + invDt *(pos[i][j]-restPos[i][j]); });
         }
         else {
-            computeViolation(resV, m_constraintIndex, vfree, Deriv::size(),[&invDt,&pos,&vfree](int i, int j)
+            computeViolation(resV, this->d_constraintIndex.getValue(), vfree, Deriv::size(),[&invDt,&pos,&vfree](int i, int j)
             { return vfree[i][j] + invDt *pos[i][j]; });
         }
     }
     else
     {
         if( d_constraintRestPos.getValue() )
-            computeViolation(resV, m_constraintIndex, xfree, Coord::size(),
+            computeViolation(resV, this->d_constraintIndex.getValue(), xfree, Coord::size(),
                              [&xfree,&restPos](int i, int j){ return xfree[i][j] - restPos[i][j]; });
         else
-            computeViolation(resV, m_constraintIndex, xfree, Coord::size(),[&xfree](int i, int j){ return xfree[i][j]; });
+            computeViolation(resV, this->d_constraintIndex.getValue(), xfree, Coord::size(),[&xfree](int i, int j){ return xfree[i][j]; });
     }
 }
 
