@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 
-#pragma once
-
-#include <sofa/component/config.h>
-
-namespace sofa::core
+namespace sofa::component::solidmechanics::fem::elastic
 {
-    class ObjectFactory;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
 }
-
-namespace sofa::component
-{
-	SOFA_COMPONENT_API void init();
-} // namespace sofa::component

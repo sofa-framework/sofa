@@ -83,3 +83,19 @@
         "v24.12", "v25.06", \
         "Data renamed according to the guidelines")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "The parameter is not necessary. Use the function without parameter.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
+#endif
