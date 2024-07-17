@@ -78,6 +78,7 @@ void FixedLagrangianConstraint<Vec6Types>::doGetSingleConstraintViolation(linear
 template<>
 void FixedLagrangianConstraint<Vec6Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
 {
+    SOFA_UNUSED(lineNumber);
     resTab[offset] = new BilateralConstraintResolutionNDof(6);
     offset += 6;
 }
@@ -148,6 +149,7 @@ void FixedLagrangianConstraint<Vec2Types>::doGetSingleConstraintViolation(linear
 template<>
 void FixedLagrangianConstraint<Vec2Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
 {
+    SOFA_UNUSED(lineNumber);
     resTab[offset] = new BilateralConstraintResolutionNDof(2);
     offset += 2;
 }
@@ -175,6 +177,7 @@ void FixedLagrangianConstraint<Vec1Types>::doGetSingleConstraintViolation(linear
 template<>
 void FixedLagrangianConstraint<Vec1Types>::doGetSingleConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset, unsigned int lineNumber)
 {
+    SOFA_UNUSED(lineNumber);
     resTab[offset] = new BilateralConstraintResolutionNDof(1);
     offset += 1;
 }
