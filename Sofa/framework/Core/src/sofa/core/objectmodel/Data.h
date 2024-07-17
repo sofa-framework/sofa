@@ -152,7 +152,7 @@ public:
 
     /// BeginEdit method if it is only to write the value
     /// checking that current value is up to date
-    virtual T* beginEdit()
+    T* beginEdit()
     {
         updateIfDirty();
         return beginWriteOnly();
@@ -160,7 +160,7 @@ public:
 
     /// beginWriteOnly method if it is only to write the value
     /// regardless of the current status of this value: no dirtiness check
-    virtual T* beginWriteOnly()
+    T* beginWriteOnly()
     {
         m_counter++;
         m_isSet=true;
@@ -175,13 +175,13 @@ public:
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
-    virtual void setValue(const T& value)
+    void setValue(const T& value)
     {
         *beginWriteOnly()=value;
         endEdit();
     }
 
-    virtual const T& getValue() const
+    const T& getValue() const
     {
         updateIfDirty();
         return m_value.getValue();
