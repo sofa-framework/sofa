@@ -52,6 +52,7 @@ void QDataDescriptionWidget::addRowHyperLink(QGridLayout* grid,
     const std::string& title, const std::string& value, unsigned int row,
     unsigned int minimumWidth)
 {
+    SOFA_UNUSED(minimumWidth);
     QLabel* titlew = new QLabel(QString(title.c_str()));
     grid->addWidget(titlew, row, 0, Qt::AlignTop);
 
