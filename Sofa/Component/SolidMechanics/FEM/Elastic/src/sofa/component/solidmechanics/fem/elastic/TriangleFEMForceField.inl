@@ -271,14 +271,22 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initSmall()
 {
-    Transformation identity;
-    identity[0][0] = identity[1][1] = identity[2][2] = 1;
-    identity[0][1] = identity[0][2] = 0;
-    identity[1][0] = identity[1][2] = 0;
-    identity[2][0] = identity[2][1] = 0;
+    _rotatedInitialElements.resize(_indexedElements->size());
+
+    const VecCoord& pos = _initialPoints.getValue();
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
-        _rotations[i] = identity;
+        _rotations[i] = Transformation::Identity();
+
+        // In this case R_0_1 is identity
+        // coordinates of the triangle vertices in their local frames
+        const Coord& pA = pos[(*_indexedElements)[i][0]];
+        const Coord& pB = pos[(*_indexedElements)[i][1]];
+        const Coord& pC = pos[(*_indexedElements)[i][2]];
+
+        _rotatedInitialElements[i][0] = Coord(0, 0, 0);
+        _rotatedInitialElements[i][1] = pB - pA;
+        _rotatedInitialElements[i][2] = pC - pA;
     }
 }
 
@@ -288,6 +296,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 {
     typename VecElement::const_iterator it;
     unsigned int elementIndex(0);
+
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
         Index a = (*_indexedElements)[elementIndex][0];
