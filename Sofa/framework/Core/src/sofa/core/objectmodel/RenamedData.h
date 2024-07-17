@@ -128,7 +128,7 @@ public:
     bool copyValueFrom(const Data<T>* data) { return m_originalData->copyValueFrom(data); }
 
 private:
-    Data<T>* m_originalData;
+    Data<T>* m_originalData { nullptr };
 };
 
 }
