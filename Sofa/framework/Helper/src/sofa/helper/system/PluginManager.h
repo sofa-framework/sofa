@@ -24,6 +24,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/system/DynamicLibrary.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <vector>
 #include <map>
 #include <memory>
@@ -96,9 +97,15 @@ public:
         static  const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
+
+        SOFA_ATTRIBUTE_DEPRECATED__PLUGIN_GETCOMPONENTLIST()
         const char* operator() () const
         {
-            if (func) return func();
+            if (func)
+            {
+                msg_warning("Plugin::GetModuleComponentList") << "This entrypoint is being deprecated, and should not be implemented anymore.";
+                return func();
+            }
             else return nullptr;
         }
         GetModuleComponentList():func(nullptr) {}
@@ -141,6 +148,17 @@ private:
 
 };
 
+namespace
+{
+    template <class LibraryEntry>
+    [[nodiscard]] static bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
+    {
+        typedef typename LibraryEntry::FuncPtr FuncPtr;
+        entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
+        return entry.func != 0;
+    }
+}
+
 class SOFA_HELPER_API PluginManager
 {
 public:
@@ -164,7 +182,10 @@ public:
     };
 
     
-    /// Loads a plugin library in process memory. 
+    /// Loads a plugin library in process memory and register into the map
+    /// - if already registered into the map (and therefore loaded in memory), do nothing.
+    /// - If not registered but loaded in memory, call entrypoints and register into the map
+    /// - If not registered and not loaded in memory, it will load the plugin in memory, call entrypoints and register into the map
     /// @param plugin Can be just the filename of the library to load (without extension) or the full path
     /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds and is empty otherwise.
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
@@ -185,8 +206,12 @@ public:
     /// @param errlog An optional stream for error logging.
     PluginLoadStatus loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
     
-    /// Unloads a plugin from process memory.
+    /// Unloads a plugin from the map
+    /// Warning: a previously loaded plugin will always be in process memory.
     bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
+
+    /// Register a plugin. Merely an alias for loadPlugin()
+    PluginLoadStatus registerPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
 
     void init();
     void init(const std::string& pluginPath);
@@ -208,6 +233,12 @@ public:
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
     Plugin* getPluginByName(const std::string& pluginName);
+    
+    template <typename Entry>
+    bool getEntryFromPlugin(const Plugin* plugin, Entry& entry)
+    {
+        return getPluginEntry(entry, plugin->dynamicLibrary);
+    }
 
     void readFromIniFile(const std::string& path);
     void readFromIniFile(const std::string& path, type::vector<std::string>& listLoadedPlugins);

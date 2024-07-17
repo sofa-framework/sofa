@@ -62,7 +62,7 @@ set(SOURCE_FILES
 
 sofa_find_package(Eigen3 3.3.5 REQUIRED)
 
-if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.10)
+if (SOFA_OPENMP)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFA_LINEARALGEBRA_HAVE_OPENMP
 endif()
 

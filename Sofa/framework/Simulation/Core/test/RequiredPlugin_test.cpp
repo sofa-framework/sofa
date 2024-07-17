@@ -66,9 +66,60 @@ struct RequiredPlugin_test : public BaseSimulationTest
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
+
+    void testLoadPluginA()
+    {
+        EXPECT_MSG_EMIT(Warning); // TestPluginA registers implicitly its components
+
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>"
+            "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+            "   <RequiredPlugin pluginName=\"TestPluginA\"/>            \n"
+            "</Node>                                                                        \n";
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
+    }
+    
+    void testLoadPluginB()
+    {
+        EXPECT_MSG_EMIT(Warning); // // TestPluginB does not register any component
+
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>"
+            "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+            "   <RequiredPlugin pluginName=\"TestPluginB\"/>            \n"
+            "</Node>                                                                        \n";
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
+    }
+
+    void testLoadPluginC()
+    {
+        EXPECT_MSG_NOEMIT(Warning); // // TestPluginC registers its component explicitly
+
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>"
+            "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+            "   <RequiredPlugin pluginName=\"TestPluginC\"/>            \n"
+            "</Node>                                                                        \n";
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
+    }
 };
 
 TEST_F(RequiredPlugin_test, testNotExistingPlugin ) { testNotExistingPlugin(); }
 TEST_F(RequiredPlugin_test, testNoParameter ) { testNoParameter(); }
+TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginA) { testLoadPluginA(); } // disabled because testLoadPluginA() should throw a warning (but this warning is commented for the moment)
+TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginB) { testLoadPluginB(); }// disabled because testLoadPluginB() should throw a warning (but this warning is commented for the moment)
+TEST_F(RequiredPlugin_test, testLoadPluginC) { testLoadPluginC(); }
 
 }

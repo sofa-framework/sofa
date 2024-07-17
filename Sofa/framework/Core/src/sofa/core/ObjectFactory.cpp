@@ -26,6 +26,7 @@
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/DiffLib.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::core
 {
@@ -563,7 +564,12 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "</ul>\n";
 }
 
-RegisterObject::RegisterObject(const std::string& description)
+bool ObjectFactory::registerObjects(ObjectRegistrationData& ro)
+{
+    return ro.commitTo(this);
+}
+
+ObjectRegistrationData::ObjectRegistrationData(const std::string& description)
 {
     if (!description.empty())
     {
@@ -571,39 +577,39 @@ RegisterObject::RegisterObject(const std::string& description)
     }
 }
 
-RegisterObject& RegisterObject::addAlias(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addAlias(std::string val)
 {
     entry.aliases.insert(val);
     return *this;
 }
 
-RegisterObject& RegisterObject::addDescription(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addDescription(std::string val)
 {
     val += '\n';
     entry.description += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addAuthor(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addAuthor(std::string val)
 {
     val += ' ';
     entry.authors += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addLicense(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addLicense(std::string val)
 {
     entry.license += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addDocumentationURL(std::string url)
+ObjectRegistrationData& ObjectRegistrationData::addDocumentationURL(std::string url)
 {
     entry.documentationURL += url;
     return *this;
 }
 
-RegisterObject& RegisterObject::addCreator(std::string classname,
+ObjectRegistrationData& ObjectRegistrationData::addCreator(std::string classname,
                                            std::string templatename,
                                            ObjectFactory::Creator::SPtr creator)
 {
@@ -624,15 +630,15 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     return *this;
 }
 
-RegisterObject::operator int()
+bool ObjectRegistrationData::commitTo(sofa::core::ObjectFactory* objectFactory) const
 {
-    if (entry.className.empty())
+    if (entry.className.empty() || objectFactory == nullptr)
     {
-        return 0;
+        return false;
     }
     else
     {
-        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
+        ObjectFactory::ClassEntry& reg = objectFactory->getEntry(entry.className);
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
@@ -648,17 +654,19 @@ RegisterObject::operator int()
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (auto & creator_entry : entry.creatorMap)
+        for (const auto& creator_entry : entry.creatorMap)
         {
             const std::string & template_name = creator_entry.first;
-            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
-                if (template_name.empty()) {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
-                } else {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
+            const auto [it, success] = reg.creatorMap.insert(creator_entry);
+            if (!success)
+            {
+                std::string classType = entry.className;
+                if (!template_name.empty())
+                {
+                    classType += "<" + template_name + ">";
                 }
-            } else {
-                reg.creatorMap.insert(creator_entry);
+
+                msg_warning("ObjectFactory") << "Class already registered in the ObjectFactory: " << classType;
             }
         }
 
@@ -666,11 +674,109 @@ RegisterObject::operator int()
         {
             if (reg.aliases.find(alias) == reg.aliases.end())
             {
-                ObjectFactory::getInstance()->addAlias(alias,entry.className);
+                objectFactory->addAlias(alias,entry.className);
             }
         }
-        return 1;
+        return true;
     }
+
+}
+
+typedef struct ObjectRegistrationEntry
+{
+    inline static const char* symbol = "registerObjects";
+    typedef void (*FuncPtr) (sofa::core::ObjectFactory*);
+    FuncPtr func;
+    void operator()(sofa::core::ObjectFactory* data)
+    {
+        if (func) return func(data);
+    }
+    ObjectRegistrationEntry() :func(nullptr) {}
+} ObjectRegistrationEntry;
+
+bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
+{
+    sofa::helper::system::PluginManager& pluginManager = sofa::helper::system::PluginManager::getInstance();
+    auto* plugin = pluginManager.getPlugin(pluginName);
+    if (plugin == nullptr)
+    {
+        msg_error("ObjectFactory") << pluginName << " has not been loaded yet.";
+        return false;
+    }
+
+    // do not register if it was already done before
+    if(m_registeredPluginSet.count(pluginName) > 0)
+    {
+        // msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
+        return false;
+    }
+
+    ObjectRegistrationEntry registerObjects;
+    if (pluginManager.getEntryFromPlugin(plugin, registerObjects))
+    {
+        registerObjects(this);
+        m_registeredPluginSet.insert(pluginName);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+RegisterObject::RegisterObject(const std::string& description)
+    : m_objectRegistrationdata(description)
+{
+
+}
+
+RegisterObject& RegisterObject::addAlias(std::string val)
+{
+    m_objectRegistrationdata.addAlias(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addDescription(std::string val)
+{
+    m_objectRegistrationdata.addDescription(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addAuthor(std::string val)
+{
+    m_objectRegistrationdata.addAuthor(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addLicense(std::string val)
+{
+    m_objectRegistrationdata.addLicense(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addDocumentationURL(std::string url)
+{
+    m_objectRegistrationdata.addDocumentationURL(url);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename,
+    ObjectFactory::Creator::SPtr creator)
+{
+    m_objectRegistrationdata.addCreator(classname, templatename, creator);
+    return *this;
+}
+
+RegisterObject::operator int() const
+{
+    //std::cout << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information." << std::endl;
+    // msg_warning("RegisterObject") << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information.";
+    return commitTo(ObjectFactory::getInstance());
+}
+
+int RegisterObject::commitTo(ObjectFactory* factory) const
+{
+    return (m_objectRegistrationdata.commitTo(factory) ? 1 : 0);
 }
 
 } // namespace sofa::core

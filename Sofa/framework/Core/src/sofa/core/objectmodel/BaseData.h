@@ -288,12 +288,19 @@ public:
 
     /// Helper method to get the type name of type T
     template<class T>
-    static std::string typeName(const T* = nullptr)
+    static std::string typeName()
     {
         if (defaulttype::DataTypeInfo<T>::ValidInfo)
+        {
             return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
+        }
+        return decodeTypeName(typeid(T));
+    }
+
+    template<class T>
+    SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME() static std::string typeName(const T*)
+    {
+        return typeName<T>();
     }
 
 protected:
