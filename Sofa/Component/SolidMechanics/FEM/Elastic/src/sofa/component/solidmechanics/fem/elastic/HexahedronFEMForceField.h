@@ -147,8 +147,7 @@ public:
     Data<Real> d_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 
     void setMethod(int val) ;
 
