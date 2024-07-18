@@ -1,6 +1,8 @@
 #pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/accessor/ReadAccessor.h>
+#include <sofa/helper/accessor/WriteAccessor.h>
 
 namespace sofa
 {
@@ -18,6 +20,27 @@ public:
     {
         m_originalData = data;
     }
+
+    Data<T>* operator&()
+    {
+        return m_originalData;
+    }
+
+    operator Data<T>() const
+    {
+        return m_originalData;
+    }
+
+    operator sofa::helper::ReadAccessor<Data<T>>() const
+    {
+        return sofa::helper::ReadAccessor<Data<T>>(m_originalData);
+    }
+
+    operator sofa::helper::WriteAccessor<Data<T>>() const
+    {
+        return sofa::helper::WriteAccessor<Data<T>>(m_originalData);
+    }
+
 
     //Public methods from BaseData
     bool read(const std::string& value) { return m_originalData->read(value); }
