@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/SleepController.h>
+#include <sofa/component/controller/SleepController.h>
+
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/ContactManager.h>
