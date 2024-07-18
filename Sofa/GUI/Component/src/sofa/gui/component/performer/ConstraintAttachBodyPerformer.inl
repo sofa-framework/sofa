@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/type/isRigidType.h>
 
 namespace sofa::gui::component::performer
 {
@@ -95,6 +96,20 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
 
     this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<DataTypes> >(m_mstate1, m_mstate2);
     auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< DataTypes >* >(this->m_interactionObject.get());
+
+    if constexpr (sofa::type::isRigidType<DataTypes>())
+    {
+        // BilateralLagrangianConstraint::d_keepOrientDiff is protected
+        auto* keepOrientDiffBaseData = bconstraint->findData("keepOrientationDifference");
+        assert(keepOrientDiffBaseData);
+        auto* keepOrientDiffData = dynamic_cast<Data<bool>*>(keepOrientDiffBaseData);
+        assert(keepOrientDiffData);
+
+        // setting "keepOrientDiffData" to True
+        // would avoid having the beam forced to be oriented with the world frame.
+        // But it crashes in v24.12 so for now, we set to false.
+        keepOrientDiffData->setValue(false);
+    }
 
     bconstraint->setName("Constraint-Mouse-Contact");
 
