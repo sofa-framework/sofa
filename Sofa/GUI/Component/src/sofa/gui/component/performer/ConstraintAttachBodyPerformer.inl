@@ -107,8 +107,10 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
 
         // setting "keepOrientDiffData" to True
         // would avoid having the beam forced to be oriented with the world frame.
-        // But it crashes in v24.12 so for now, we set to false.
+        // But it is unstable in v24.12 so for now, we set to false.
         keepOrientDiffData->setValue(false);
+        
+        bconstraint->init();
     }
 
     bconstraint->setName("Constraint-Mouse-Contact");
@@ -118,7 +120,9 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
     static const typename DataTypes::Deriv normal {};
 
     bconstraint->addContact(normal, point1, point2, 0.0, 0, index, point2, point1);
-
+    
+    bconstraint->bwdInit();
+    
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (auto tag : tags)
         bconstraint->addTag(tag);
