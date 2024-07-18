@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/component/mechanicalload/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/ContextObject.h>
@@ -31,11 +31,11 @@ namespace sofa::simulation
     class Node;
 } // sofa::simulation
 
-namespace sofa::component::contextobject
+namespace sofa::component::mechanicalload
 {
 
 /** Override the default gravity */
-class SOFA_SOFAGRAPHCOMPONENT_API Gravity : public core::objectmodel::ContextObject
+class SOFA_COMPONENT_MECHANICALLOAD_API Gravity : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
@@ -48,4 +48,4 @@ public:
     void apply() override;
 };
 
-} // namespace sofa::component::contextobject
+} // namespace sofa::component::mechanicalload

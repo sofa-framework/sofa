@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/Gravity.h>
+#include <sofa/component/mechanicalload/Gravity.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa::component::contextobject
+namespace sofa::component::mechanicalload
 {
 
 using namespace sofa::type;
@@ -46,4 +47,4 @@ int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()
         ;
 
-} // namespace sofa::component::contextobject
+} // namespace sofa::component::mechanicalload
