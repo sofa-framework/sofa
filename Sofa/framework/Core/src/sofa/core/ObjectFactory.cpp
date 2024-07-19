@@ -37,8 +37,9 @@ ObjectFactory::~ObjectFactory()
 
 ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 {
-    if (registry.find(classname) == registry.end()) {
-        registry[classname] = ClassEntry::SPtr(new ClassEntry);
+    if (registry.find(classname) == registry.end())
+    {
+        registry[classname] = std::make_shared<ClassEntry>();
         registry[classname]->className = classname;
     }
 

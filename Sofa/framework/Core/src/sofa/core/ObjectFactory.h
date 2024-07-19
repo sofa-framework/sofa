@@ -366,13 +366,13 @@ public:
             }
         }
 
-        auto* objectCreator = new ObjectCreator<RealObject>;
+        auto objectCreator = std::make_shared<ObjectCreator<RealObject> >();
         if (objectCreator->getTarget() == "")
         {
             dmsg_warning("ObjectFactory") << "Module name cannot be found when registering "
                 << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the object factory";
         }
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(objectCreator));
+        return addCreator(classname, templatename, objectCreator);
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.

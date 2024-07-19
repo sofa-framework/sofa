@@ -69,6 +69,8 @@ namespace sofa::defaulttype
 class SOFA_DEFAULTTYPE_API AbstractTypeInfo
 {
 public:
+    virtual ~AbstractTypeInfo() = default;
+
     /// If the type is a container, returns the TypeInfo for the type of the
     /// values inside this container.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
@@ -173,7 +175,6 @@ public:
 
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
-    virtual ~AbstractTypeInfo() {}
 
     virtual const TypeInfoId& getBaseTypeId() const = 0;
     virtual const TypeInfoId& getValueTypeId() const = 0;

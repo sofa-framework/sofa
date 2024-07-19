@@ -95,14 +95,8 @@ MechanicalParams* MechanicalParams::operator= ( const MechanicalParams& mparams 
 
 const MechanicalParams* MechanicalParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(MechanicalParams, threadParams);
-    MechanicalParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new MechanicalParams;
-        threadParams = ptr;
-    }
-    return ptr;
+    thread_local MechanicalParams threadParams;
+    return &threadParams;
 }
 
 } // namespace sofa::core

@@ -156,7 +156,7 @@ public:
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
-    std::ofstream* m_gnuplotFileEnergy;
+    std::unique_ptr<std::ofstream> m_gnuplotFileEnergy;
 
 public:
     bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
