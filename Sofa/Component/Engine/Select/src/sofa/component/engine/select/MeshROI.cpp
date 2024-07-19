@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHROI_CPP
 #include <sofa/component/engine/select/MeshROI.inl>
+#include <sofa/component/engine/select/BaseROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

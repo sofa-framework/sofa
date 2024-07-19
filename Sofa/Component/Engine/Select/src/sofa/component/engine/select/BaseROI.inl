@@ -75,6 +75,14 @@ BaseROI<DataTypes>::BaseROI()
     , d_tetrahedraInROI( initData(&d_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , d_hexahedraInROI( initData(&d_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
     , d_nbIndices( initData(&d_nbIndices,"nbIndices", "Number of selected indices") )
+    , d_pointsOutROI(initData(&d_pointsOutROI, "pointsOutROI", "Points not contained in the ROI"))
+    , d_edgesOutROI(initData(&d_edgesOutROI, "edgesOutROI", "Edges not contained in the ROI"))
+    , d_trianglesOutROI(initData(&d_trianglesOutROI, "trianglesOutROI", "Triangles not contained in the ROI"))
+    , d_tetrahedraOutROI(initData(&d_tetrahedraOutROI, "tetrahedraOutROI", "Tetrahedra not contained in the ROI"))
+    , d_indicesOut(initData(&d_indicesOut, "indicesOut", "Indices of the points not contained in the ROI"))
+    , d_edgeOutIndices(initData(&d_edgeOutIndices, "edgeOutIndices", "Indices of the edges not contained in the ROI"))
+    , d_triangleOutIndices(initData(&d_triangleOutIndices, "triangleOutIndices", "Indices of the triangles not contained in the ROI"))
+    , d_tetrahedronOutIndices(initData(&d_tetrahedronOutIndices, "tetrahedronOutIndices", "Indices of the tetrahedra not contained in the ROI"))
     , d_drawROI( initData(&d_drawROI,false,"drawROI","Draw the ROI (default = false)") )
     , d_drawPoints( initData(&d_drawPoints,false,"drawPoints","Draw Points. (default = false)") )
     , d_drawEdges( initData(&d_drawEdges,false,"drawEdges","Draw Edges. (default = false)") )
@@ -107,6 +115,15 @@ BaseROI<DataTypes>::BaseROI()
     addOutput(&d_hexahedraInROI);
     addOutput(&d_quadInROI);
     addOutput(&d_nbIndices);
+
+    addOutput(&d_pointsOutROI);
+    addOutput(&d_edgesOutROI);
+    addOutput(&d_trianglesOutROI);
+    addOutput(&d_tetrahedraOutROI);
+    addOutput(&d_indicesOut);
+    addOutput(&d_edgeOutIndices);
+    addOutput(&d_triangleOutIndices);
+    addOutput(&d_tetrahedronOutIndices);
 }
 
 template <class DataTypes>
@@ -289,33 +306,56 @@ void BaseROI<DataTypes>::doUpdate()
         SetIndex& indices = *d_indices.beginWriteOnly();
         SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
         SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
+        SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
         SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
         SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
-        SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
+        SetIndex& indicesOut = *d_indicesOut.beginWriteOnly();
+        SetIndex& edgeOutIndices = *d_edgeOutIndices.beginWriteOnly();
+        SetIndex& triangleOutIndices = *d_triangleOutIndices.beginWriteOnly();
+        SetIndex& quadOutIndices = *d_quadOutIndices.beginWriteOnly();
+        SetIndex& tetrahedronOutIndices = *d_tetrahedronOutIndices.beginWriteOnly();
+        SetIndex& hexahedronOutIndices = *d_hexahedronOutIndices.beginWriteOnly();
 
         // Write accessor for toplogical element in BOX
         WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
         WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
         WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
         WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
-        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+        WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = d_pointsOutROI;
+        WriteOnlyAccessor< Data<vector<Edge> > > edgesOutROI = d_edgesOutROI;
+        WriteOnlyAccessor< Data<vector<Triangle> > > trianglesOutROI = d_trianglesOutROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadsOutROI = d_quadsOutROI;
+        WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraOutROI = d_tetrahedraOutROI;
+        WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraOutROI = d_hexahedraOutROI;
 
         // Clear lists
         indices.clear();
         edgeIndices.clear();
         triangleIndices.clear();
+        quadIndices.clear();
         tetrahedronIndices.clear();
         hexahedronIndices.clear();
-        quadIndices.clear();
-
+        indicesOut.clear();
+        edgeOutIndices.clear();
+        triangleOutIndices.clear();
+        quadOutIndices.clear();
+        tetrahedronOutIndices.clear();
+        hexahedronOutIndices.clear();
 
         pointsInROI.clear();
         edgesInROI.clear();
         trianglesInROI.clear();
+        quadInROI.clear();
         tetrahedraInROI.clear();
         hexahedraInROI.clear();
-        quadInROI.clear();
+        pointsOutROI.clear();
+        edgesOutROI.clear();
+        trianglesOutROI.clear();
+        quadsOutROI.clear();
+        tetrahedraOutROI.clear();
+        hexahedraOutROI.clear();
 
 
         if (d_X0.getValue().size() == 0)
@@ -348,6 +388,11 @@ void BaseROI<DataTypes>::doUpdate()
                 indices.push_back(i);
                 pointsInROI.push_back(x0[i]);
             }
+            else
+            {
+                indicesOut.push_back(i);
+                pointsOutROI.push_back(x0[i]);
+            }
         }
 
         //Edges
@@ -356,11 +401,16 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<edges.size() ; i++)
             {
                 Edge e = edges[i];
-                const bool is_in_box = (strict) ? isEdgeInStrict(e) : isEdgeIn(e);
-                if (is_in_box)
+                const bool is_in_roi = (strict) ? isEdgeInStrict(e) : isEdgeIn(e);
+                if (is_in_roi)
                 {
                     edgeIndices.push_back(i);
                     edgesInROI.push_back(e);
+                }
+                else
+                {
+                    edgeOutIndices.push_back(i);
+                    edgesOutROI.push_back(e);
                 }
             }
         }
@@ -371,11 +421,36 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
                 Triangle t = triangles[i];
-                const bool is_in_box = (strict) ? isTriangleInStrict(t) : isTriangleIn(t);
-                if (is_in_box)
+                const bool is_in_roi = (strict) ? isTriangleInStrict(t) : isTriangleIn(t);
+                if (is_in_roi)
                 {
                     triangleIndices.push_back(i);
                     trianglesInROI.push_back(t);
+                }
+                else
+                {
+                    triangleOutIndices.push_back(i);
+                    trianglesOutROI.push_back(t);
+                }
+            }
+        }
+
+        //Quads
+        if (d_computeQuad.getValue())
+        {
+            for (unsigned int i = 0; i < quad.size(); i++)
+            {
+                Quad q = quad[i];
+                const bool is_in_roi = (strict) ? isQuadInStrict(q) : isQuadIn(q);
+                if (is_in_roi)
+                {
+                    quadIndices.push_back(i);
+                    quadInROI.push_back(q);
+                }
+                else
+                {
+                    quadOutIndices.push_back(i);
+                    quadsOutROI.push_back(q);
                 }
             }
         }
@@ -386,11 +461,16 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
                 Tetra t = tetrahedra[i];
-                const bool is_in_box = (strict) ? isTetrahedronInStrict(t) : isTetrahedronIn(t);
-                if (is_in_box)
+                const bool is_in_roi = (strict) ? isTetrahedronInStrict(t) : isTetrahedronIn(t);
+                if (is_in_roi)
                 {
                     tetrahedronIndices.push_back(i);
                     tetrahedraInROI.push_back(t);
+                }
+                else
+                {
+                    tetrahedronOutIndices.push_back(i);
+                    tetrahedraOutROI.push_back(t);
                 }
             }
         }
@@ -401,26 +481,16 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
                 Hexa t = hexahedra[i];
-                const bool is_in_box = (strict) ? isHexahedronInStrict(t) : isHexahedronIn(t);
-                if (is_in_box)
+                const bool is_in_roi = (strict) ? isHexahedronInStrict(t) : isHexahedronIn(t);
+                if (is_in_roi)
                 {
                     hexahedronIndices.push_back(i);
                     hexahedraInROI.push_back(t);
                 }
-            }
-        }
-
-        //Quads
-        if (d_computeQuad.getValue())
-        {
-            for(unsigned int i=0 ; i<quad.size() ; i++)
-            {
-                Quad q = quad[i];
-                const bool is_in_box = (strict) ? isQuadInStrict(q) : isQuadIn(q);
-                if (is_in_box)
+                else
                 {
-                    quadIndices.push_back(i);
-                    quadInROI.push_back(q);
+                    hexahedronOutIndices.push_back(i);
+                    hexahedraOutROI.push_back(t);
                 }
             }
         }

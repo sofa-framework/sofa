@@ -62,7 +62,7 @@ public:
 
 public:
     void init() final;
-    void doUpdate() final;
+    void doUpdate() override; //cannot set final because of the tests;
     void draw(const core::visual::VisualParams* vparams) final;
 
     virtual void roiInit() = 0;
@@ -117,6 +117,19 @@ public:
     Data<VecTetra> d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
     Data<VecHexa> d_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data< sofa::Size > d_nbIndices; ///< Number of selected indices
+
+    Data<VecCoord > d_pointsOutROI; ///< Points not contained in the ROI
+    Data<type::vector<Edge> > d_edgesOutROI; ///< Edges not contained in the ROI
+    Data<type::vector<Triangle> > d_trianglesOutROI; ///< Triangles not contained in the ROI
+    Data<type::vector<Quad> > d_quadsOutROI; ///< Quads not contained in the ROI
+    Data<type::vector<Tetra> > d_tetrahedraOutROI; ///< Tetrahedra not contained in the ROI
+    Data<type::vector<Hexa> > d_hexahedraOutROI; ///< Hexahedra not contained in the ROI
+    Data<SetIndex> d_indicesOut; ///< Indices of the points not contained in the ROI
+    Data<SetIndex> d_edgeOutIndices; ///< Indices of the edges not contained in the ROI
+    Data<SetIndex> d_triangleOutIndices; ///< Indices of the triangles not contained in the ROI
+    Data<SetIndex> d_quadOutIndices; ///< Indices of the quads not contained in the ROI
+    Data<SetIndex> d_tetrahedronOutIndices; ///< Indices of the tetrahedra not contained in the ROI
+    Data<SetIndex> d_hexahedronOutIndices; ///< Indices of the hexahedra not contained in the ROI
 
     //Parameter
     Data<bool> d_drawROI; ///< Draw the ROI. (default = false)
