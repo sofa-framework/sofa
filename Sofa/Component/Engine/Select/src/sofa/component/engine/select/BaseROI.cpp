@@ -19,31 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_BOXROI_CPP
-#include <sofa/component/engine/select/BoxROI.inl>
+#define SOFA_COMPONENT_ENGINE_BASEROI_CPP
 #include <sofa/component/engine/select/BaseROI.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine::select::boxroi
-{
-
-using namespace sofa::defaulttype;
-
-int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes")
-        .add< BoxROI<Vec3Types> >(true) //default
-        .add< BoxROI<Vec2Types> >()
-        .add< BoxROI<Vec1Types> >()
-        .add< BoxROI<Rigid3Types> >()
-        .add< BoxROI<Vec6Types> >()
- 
-        ;
-
-template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec2Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec1Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Rigid3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec6Types>;
- 
-
-} // namespace sofa::component::engine::select::boxroi
