@@ -512,6 +512,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     const VecCoord& x0 = d_X0.getValue();
     constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
+    vparams->drawTool()->saveLastState();
 
     if (d_drawROI.getValue())
     {
@@ -521,10 +522,11 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
     const float sizeFactor = std::max(static_cast<float>(d_drawSize.getValue()), 1.0f);
 
+    vparams->drawTool()->setLightingEnabled(false);
+
     ///draw points in ROI
     if( d_drawPoints.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
         for (const auto i : pointsInROI)
@@ -540,16 +542,15 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw edges in ROI
     if( d_drawEdges.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         for (const auto& e : edgesInROI)
         {
             type::Vec3 pv{};
-            for (unsigned int j=0 ; j<2 ; j++)
+            for(const auto eid : e)
             {
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = DataTypes::getCPos(x0[e[j]])[j];
+                    pv[j] = DataTypes::getCPos(x0[eid])[j];
                 vertices.push_back( pv );
             }
         }
@@ -559,16 +560,15 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw triangles in ROI
     if( d_drawTriangles.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
         for (const auto& t : trianglesInROI)
         {
             type::Vec3 pv{};
-            for (unsigned int j=0 ; j<3 ; j++)
+            for(const auto tid : t)
             {
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = DataTypes::getCPos(x0[t[j]])[j];
+                    pv[j] = DataTypes::getCPos(x0[tid])[j];
                 vertices.push_back( pv );
             }
         }
@@ -578,7 +578,6 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw quads in ROI
     if (d_drawQuads.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
         for (const auto& q : quadsInROI)
@@ -605,13 +604,12 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw tetrahedra in ROI
     if( d_drawTetrahedra.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
         for (const auto& t : tetrahedraInROI)
         {
             type::Vec3 pv{};
-            
+
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
@@ -645,7 +643,6 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw hexahedra in ROI
     if( d_drawHexahedra.getValue())
     {
-        vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
         for (const auto& h : hexahedraInROI)
@@ -697,6 +694,8 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
+
+    vparams->drawTool()->restoreLastState();
 
 }
 

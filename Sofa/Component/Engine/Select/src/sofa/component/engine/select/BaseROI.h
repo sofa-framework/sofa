@@ -67,7 +67,7 @@ public:
 
     virtual void roiInit() {};
     virtual bool roiDoUpdate() { return true; };
-    virtual void roiDraw(const core::visual::VisualParams* vparams) {};
+    virtual void roiDraw(const core::visual::VisualParams*) {};
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
