@@ -53,44 +53,10 @@ SphereROI<DataTypes>::SphereROI()
 }
 
 template <class DataTypes>
-void SphereROI<DataTypes>::roiInit()
-{
-    ;
-}
-
-template <class DataTypes>
 bool SphereROI<DataTypes>::isPointInSphere(const CPos& c, const Real& r, const CPos& p)
 {
-    if((p-c).norm() > r)
-        return false;
-    else
-        return true;
+    return (p - c).norm2() <= r * r;
 }
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
-{
-    const auto& x0 = this->d_X0.getValue();
-    for (unsigned int i=0; i<2; ++i)
-    {
-        if(isPointInSphere(c, r, DataTypes::getCPos(x0[edge[i]])))
-            return false;
-    }
-    return true;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
-{
-    const auto& x0 = this->d_X0.getValue();
-    for (unsigned int i=0; i<3; ++i)
-    {
-        if (isPointInSphere(c, r, DataTypes::getCPos(x0[triangle[i]])))
-            return false;
-    }
-    return true;
-}
-
 
 template <class DataTypes>
 bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
@@ -112,28 +78,29 @@ bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
+bool SphereROI<DataTypes>::testEdgeAngle(const Edge& e)
 {
-    const auto& x0 = this->d_X0.getValue();
-    const auto& centers = (d_centers.getValue());
-    const auto& radii = (d_radii.getValue());
-
-    const auto& dir = d_direction.getValue();
     const auto eAngle = d_edgeAngle.getValue();
 
-    for (unsigned int j = 0; j < centers.size(); ++j)
+    if (eAngle > static_cast<Real>(0))
     {
-        if (isEdgeInSphere(centers[j], radii[j], e))
-        {
-            if (eAngle > 0)
-            {
-                auto n = DataTypes::getCPos(x0[e[1]]) - DataTypes::getCPos(x0[e[0]]);
-                n.normalize();
-                if (fabs(dot(n, dir)) < fabs(cos(eAngle * M_PI / 180.0)))
-                    continue;
-            }
-            return true;
-        }
+        const auto& x0 = this->d_X0.getValue();
+        const auto& dir = d_direction.getValue();
+
+        auto n = DataTypes::getCPos(x0[e[1]]) - DataTypes::getCPos(x0[e[0]]);
+        n.normalize();
+        return (fabs(dot(n, dir)) < fabs(cos(eAngle * M_PI / 180.0)));
+    }
+
+    return true;
+}
+
+template <class DataTypes>
+bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
+{
+    if (Inherit::isEdgeInROI(e))
+    {
+        return testEdgeAngle(e);
     }
 
     return false;
@@ -142,44 +109,56 @@ bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
 template <class DataTypes>
 bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
 {
-    return isEdgeInROI(e);
+    if (Inherit::isEdgeInStrictROI(e))
+    {
+        return testEdgeAngle(e);
+    }
+
+    return false;
+}
+
+template <class DataTypes>
+bool SphereROI<DataTypes>::testTriangleAngle(const Triangle& t)
+{
+    const auto tAngle = d_triAngle.getValue();
+
+    if (tAngle > static_cast<Real>(0))
+    {
+        const auto& x0 = this->d_X0.getValue();
+        const auto& normal = d_normal.getValue();
+
+        auto n = cross(
+            DataTypes::getCPos(x0[t[2]]) - DataTypes::getCPos(x0[t[0]]),
+            DataTypes::getCPos(x0[t[1]]) - DataTypes::getCPos(x0[t[0]])
+        );
+        n.normalize();
+
+        return (dot(n, normal) < std::cos(tAngle * M_PI / 180.0));
+    }
+
+    return true;
 }
 
 template <class DataTypes>
 bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t)
 {
-    const auto& x0 = this->d_X0.getValue();
-    const auto& centers = (d_centers.getValue());
-    const auto& radii = (d_radii.getValue());
-
-    const auto tAngle = d_triAngle.getValue();
-    const auto& normal = d_normal.getValue();
-
-    for (unsigned int j = 0; j < centers.size(); ++j)
+    if (Inherit::isTriangleInROI(t))
     {
-        if (isTriangleInSphere(centers[j], radii[j], t))
-        {
-            if (tAngle > 0)
-            {
-                auto n = cross(
-                    DataTypes::getCPos(x0[t[2]]) - DataTypes::getCPos(x0[t[0]]), 
-                    DataTypes::getCPos(x0[t[1]]) - DataTypes::getCPos(x0[t[0]])
-                );
-                n.normalize();
-
-                if (dot(n, normal) < std::cos(tAngle * M_PI / 180.0)) 
-                    continue;
-            }
-            return true;
-        }
+        return testTriangleAngle(t);
     }
+
     return false;
 }
 
 template <class DataTypes>
 bool SphereROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
 {
-    return isTriangleInROI(t);
+    if (Inherit::isTriangleInStrictROI(t))
+    {
+        return testTriangleAngle(t);
+    }
+
+    return false;
 }
 
 template <class DataTypes>

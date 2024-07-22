@@ -65,9 +65,9 @@ public:
     void doUpdate() override; //cannot set final because of the tests;
     void draw(const core::visual::VisualParams* vparams) final;
 
-    virtual void roiInit() = 0;
-    virtual bool roiDoUpdate() = 0;
-    virtual void roiDraw(const core::visual::VisualParams* vparams) = 0;
+    virtual void roiInit() {};
+    virtual bool roiDoUpdate() { return true; };
+    virtual void roiDraw(const core::visual::VisualParams* vparams) {};
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

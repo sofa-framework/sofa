@@ -700,9 +700,6 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 }
 
-/// 
-///
-/// 
 template<typename DataTypes, typename Element>
 constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x0) -> typename DataTypes::CPos
 {

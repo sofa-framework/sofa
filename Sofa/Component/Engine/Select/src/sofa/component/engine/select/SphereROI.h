@@ -52,17 +52,23 @@ protected:
     ~SphereROI() override = default;
 
 public:
-    void roiInit() override;
     bool roiDoUpdate() override;
     void roiDraw(const core::visual::VisualParams* vparams) override;
 
 protected:
+    bool testEdgeAngle(const Edge& e);
+    bool testTriangleAngle(const Triangle& t);
+
     bool isPointInSphere(const CPos& c, const Real& r, const CPos& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const CPos& p);
     bool isEdgeInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+    bool isEdgeInSphereStrict(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
     bool isTriangleInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+    bool isTriangleInSphereStrict(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
     bool isQuadInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+    bool isQuadInSphereStrict(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
     bool isTetrahedronInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+    bool isTetrahedronInSphereStrict(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
 
     bool isPointInROI(const CPos& p) override;
     bool isEdgeInROI(const Edge& e) override;
