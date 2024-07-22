@@ -282,7 +282,7 @@ template <class DataTypes>
 bool BaseROI<DataTypes>::isPointIn(const PointID pid)
 {
     const VecCoord& x0 = d_X0.getValue();
-    CPos p = DataTypes::getCPos(x0[pid]);
+    const CPos& p = DataTypes::getCPos(x0[pid]);
     return (isPointInROI(p));
 }
 
@@ -400,7 +400,7 @@ void BaseROI<DataTypes>::doUpdate()
         {
             for(unsigned int i=0 ; i<edges.size() ; i++)
             {
-                Edge e = edges[i];
+                const auto& e = edges[i];
                 const bool is_in_roi = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
                 if (is_in_roi)
                 {
@@ -420,7 +420,7 @@ void BaseROI<DataTypes>::doUpdate()
         {
             for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
-                Triangle t = triangles[i];
+                const auto& t = triangles[i];
                 const bool is_in_roi = (strict) ? isTriangleInStrictROI(t) : isTriangleInROI(t);
                 if (is_in_roi)
                 {
@@ -440,7 +440,7 @@ void BaseROI<DataTypes>::doUpdate()
         {
             for (unsigned int i = 0; i < quad.size(); i++)
             {
-                Quad q = quad[i];
+                const auto& q = quad[i];
                 const bool is_in_roi = (strict) ? isQuadInStrictROI(q) : isQuadInROI(q);
                 if (is_in_roi)
                 {
@@ -460,7 +460,7 @@ void BaseROI<DataTypes>::doUpdate()
         {
             for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
-                Tetra t = tetrahedra[i];
+                const auto& t = tetrahedra[i];
                 const bool is_in_roi = (strict) ? isTetrahedronInStrictROI(t) : isTetrahedronInROI(t);
                 if (is_in_roi)
                 {
@@ -480,7 +480,7 @@ void BaseROI<DataTypes>::doUpdate()
         {
             for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
-                Hexa t = hexahedra[i];
+                const auto& t = hexahedra[i];
                 const bool is_in_roi = (strict) ? isHexahedronInStrictROI(t) : isHexahedronInROI(t);
                 if (is_in_roi)
                 {
@@ -519,45 +519,41 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 
     const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
+    const float sizeFactor = std::max(static_cast<float>(d_drawSize.getValue()), 1.0f);
 
     ///draw points in ROI
     if( d_drawPoints.getValue())
     {
-        float pointsWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
-        for (unsigned int i=0; i<pointsInROI.size() ; ++i)
+        for (const auto i : pointsInROI)
         {
-            CPos p = DataTypes::getCPos(pointsInROI[i]);
-            type::Vec3 pv;
+            type::Vec3 pv{};
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(i)[j];
             vertices.push_back( pv );
         }
-        vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
+        vparams->drawTool()->drawPoints(vertices, sizeFactor, color);
     }
 
     ///draw edges in ROI
     if( d_drawEdges.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
-        for (unsigned int i=0; i<edgesInROI.size() ; ++i)
+        for (const auto& e : edgesInROI)
         {
-            Edge e = edgesInROI[i];
+            type::Vec3 pv{};
             for (unsigned int j=0 ; j<2 ; j++)
             {
-                CPos p = DataTypes::getCPos(x0[e[j]]);
-                type::Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = p[j];
+                    pv[j] = DataTypes::getCPos(x0[e[j]])[j];
                 vertices.push_back( pv );
             }
         }
-        vparams->drawTool()->drawLines(vertices, linesWidth, color);
+        vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
 
     ///draw triangles in ROI
@@ -566,156 +562,140 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(false);
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
-        for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
+        for (const auto& t : trianglesInROI)
         {
-            Triangle t = trianglesInROI[i];
+            type::Vec3 pv{};
             for (unsigned int j=0 ; j<3 ; j++)
             {
-                CPos p = DataTypes::getCPos(x0[t[j]]);
-                type::Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = p[j];
+                    pv[j] = DataTypes::getCPos(x0[t[j]])[j];
                 vertices.push_back( pv );
             }
         }
         vparams->drawTool()->drawTriangles(vertices, color);
     }
 
+    ///draw quads in ROI
+    if (d_drawQuads.getValue())
+    {
+        vparams->drawTool()->setLightingEnabled(false);
+        std::vector<type::Vec3> vertices;
+        ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
+        for (const auto& q : quadsInROI)
+        {
+            for (unsigned j = 0; j < 4; j++)
+            {
+                type::Vec3 pv{};
+                for (unsigned k = 0; k < max_spatial_dimensions; k++)
+                    pv[k] = DataTypes::getCPos(x0[q[j]])[k];
+                vertices.push_back(pv);
+            }
+            for (unsigned j = 0; j < 4; j++)
+            {
+                type::Vec3 pv{};
+                for (unsigned k = 0; k < max_spatial_dimensions; k++)
+                    pv[k] = DataTypes::getCPos(x0[q[(j + 1) % 4]])[k];
+                vertices.push_back(pv);
+            }
+
+        }
+        vparams->drawTool()->drawLines(vertices, sizeFactor, color);
+    }
+
     ///draw tetrahedra in ROI
     if( d_drawTetrahedra.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
-        for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
+        for (const auto& t : tetrahedraInROI)
         {
-            Tetra t = tetrahedraInROI[i];
+            type::Vec3 pv{};
+            
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                CPos p = DataTypes::getCPos(x0[t[j]]);
-                type::Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = p[k];
+                    pv[k] = DataTypes::getCPos(x0[t[j]])[k];
                 vertices.push_back( pv );
 
-                p = DataTypes::getCPos(x0[t[(j+1)%4]]);
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = p[k];
+                    pv[k] = DataTypes::getCPos(x0[t[(j + 1) % 4]])[k];
                 vertices.push_back( pv );
             }
 
-            CPos p = DataTypes::getCPos(x0[t[0]]);
-            type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[t[0]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[2]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[t[2]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[1]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[t[1]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[3]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[t[3]])[j];
             vertices.push_back( pv );
         }
-        vparams->drawTool()->drawLines(vertices, linesWidth, color);
+        vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
 
     ///draw hexahedra in ROI
     if( d_drawHexahedra.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
-        for (unsigned int i=0; i<hexahedraInROI.size() ; ++i)
+        for (const auto& h : hexahedraInROI)
         {
-            Hexa t = hexahedraInROI[i];
+            type::Vec3 pv{};
+
             for (unsigned int j=0 ; j<8 ; j++)
             {
-                CPos p = DataTypes::getCPos(x0[t[j]]);
-                type::Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = p[k];
+                    pv[k] = DataTypes::getCPos(x0[h[j]])[k];
                 vertices.push_back( pv );
 
-                p = DataTypes::getCPos(x0[t[(j+1)%4]]);
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = p[k];
+                    pv[k] = DataTypes::getCPos(x0[h[(j + 1) % 4]])[k];
                 vertices.push_back( pv );
             }
 
-            CPos p = DataTypes::getCPos(x0[t[0]]);
-            type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[0]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[2]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[2]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[1]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[1]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[3]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[3]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[4]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[4]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[5]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[5]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[6]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[6]])[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos(x0[t[7]]);
+
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = p[j];
+                pv[j] = DataTypes::getCPos(x0[h[7]])[j];
             vertices.push_back( pv );
         }
-        vparams->drawTool()->drawLines(vertices, linesWidth, color);
-    }
-
-    ///draw quads in ROI
-    if( d_drawQuads.getValue())
-    {
-        vparams->drawTool()->setLightingEnabled(false);
-        float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<type::Vec3> vertices;
-        ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
-        for (unsigned i=0; i<quadsInROI.size(); ++i)
-        {
-            Quad q = quadsInROI[i];
-            for (unsigned j=0; j<4; j++)
-            {
-                CPos p = DataTypes::getCPos(x0[q[j]]);
-                type::Vec3 pv;
-                for (unsigned k=0; k<max_spatial_dimensions; k++)
-                    pv[k] = p[k];
-                vertices.push_back(pv);
-            }
-            for (unsigned j=0; j<4; j++)
-            {
-                CPos p = DataTypes::getCPos(x0[q[(j+1)%4]]);
-                type::Vec3 pv;
-                for (unsigned k=0; k<max_spatial_dimensions; k++)
-                    pv[k] = p[k];
-                vertices.push_back(pv);
-            }
-
-        }
-        vparams->drawTool()->drawLines(vertices,linesWidth,color);
+        vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
 
 }
