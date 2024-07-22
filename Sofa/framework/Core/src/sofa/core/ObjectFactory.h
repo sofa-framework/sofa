@@ -361,8 +361,8 @@ public:
             {
                 entry.documentationURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
                 entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
-                    [](const std::string& m){ return sofa::helper::Utils::downcaseString(m);}, "/");
-                entry.documentationURL += "/" + sofa::helper::Utils::downcaseString(classname);
+                    [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
+                entry.documentationURL += "/" + sofa::helper::downcaseString(classname);
             }
         }
 
