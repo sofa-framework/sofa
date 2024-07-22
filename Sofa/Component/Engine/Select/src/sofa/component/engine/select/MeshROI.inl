@@ -238,15 +238,20 @@ bool MeshROI<DataTypes>::isPointInROI(const CPos& p) const
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId) const
+bool MeshROI<DataTypes>::isPointInIndices(const unsigned int pointId, const SetIndex& indices)
 {
-    auto indices = sofa::helper::getReadAccessor(this->d_indices);
-
-    for (unsigned int i=0; i<indices.size(); i++)
-        if(indices[i]==pointId)
+    for (unsigned int i = 0; i < indices.size(); i++)
+        if (indices[i] == pointId)
             return true;
 
     return false;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isPointInIndices(const unsigned int pointId) const
+{
+    auto indices = sofa::helper::getReadAccessor(this->d_indices);
+    return isPointInIndices(pointId, indices.ref());
 }
 
 template <class DataTypes>
@@ -258,25 +263,38 @@ bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p) const
     return false;
 }
 
-
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e) const
+template <class DataTypes, class Element>
+bool applyROIFunc(const Element& e, const core::topology::BaseMeshTopology::SetIndex& indices, const std::function<bool(const Element&)>& roiFunc)
 {
-    for (int i = 0; i < 2; i++)
+    for(const auto eid : e)
     {
-        if (!isPointInIndices(e[i]))
+        if (!MeshROI<DataTypes>::isPointInIndices(eid, indices))
         {
-            return Inherit::isEdgeInROI(e);
+            return roiFunc(e);
         }
     }
     return true;
 }
 
 template <class DataTypes>
+bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e) const
+{
+    return applyROIFunc<DataTypes, Edge>(e, d_indices.getValue(), [this](auto&& x)
+        { return Inherit::isEdgeInROI(std::forward<decltype(x)>(x)); }
+    );
+}
+
+template <class DataTypes>
 bool MeshROI<DataTypes>::isEdgeInStrictROI(const Edge& e) const
 {
-    return isEdgeInROI(e);
+    for (int i = 0; i < 2; i++)
+    {
+        if (!isPointInIndices(e[i]))
+        {
+            return Inherit::isEdgeInStrictROI(e);
+        }
+    }
+    return true;
 }
 
 template <class DataTypes>
@@ -295,7 +313,14 @@ bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t) const
 template <class DataTypes>
 bool MeshROI<DataTypes>::isTriangleInStrictROI(const Triangle& t) const
 {
-    return isTriangleInROI(t);
+    for (int i = 0; i < 3; i++)
+    {
+        if (!isPointInIndices(t[i]))
+        {
+            return Inherit::isTriangleInStrictROI(t);
+        }
+    }
+    return true;
 }
 
 template <class DataTypes>
@@ -315,7 +340,15 @@ bool MeshROI<DataTypes>::isQuadInROI(const Quad& q) const
 template <class DataTypes>
 bool MeshROI<DataTypes>::isQuadInStrictROI(const Quad& q) const
 {
-    return isQuadInROI(q);
+    for (int i = 0; i < 4; i++)
+    {
+        if (!isPointInIndices(q[i]))
+        {
+            return Inherit::isQuadInStrictROI(q);
+        }
+    }
+
+    return true;
 }
 
 template <class DataTypes>
@@ -335,7 +368,15 @@ bool MeshROI<DataTypes>::isTetrahedronInROI(const Tetra& t) const
 template <class DataTypes>
 bool MeshROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t) const
 {
-    return isTetrahedronInROI(t);
+    for (int i = 0; i < 4; i++)
+    {
+        if (!isPointInIndices(t[i]))
+        {
+            return Inherit::isTetrahedronInStrictROI(t);
+        }
+    }
+
+    return true;
 }
 
 template <class DataTypes>
@@ -355,7 +396,15 @@ bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h) const
 template <class DataTypes>
 bool MeshROI<DataTypes>::isHexahedronInStrictROI(const Hexa& h) const
 {
-    return isHexahedronInROI(h);
+    for (int i = 0; i < 8; i++)
+    {
+        if (!isPointInIndices(h[i]))
+        {
+            return Inherit::isHexahedronInStrictROI(h);
+        }
+    }
+
+    return true;
 }
 
 template <class DataTypes>

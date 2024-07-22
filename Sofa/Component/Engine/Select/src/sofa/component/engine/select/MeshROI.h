@@ -68,7 +68,7 @@ public:
 protected:
     bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm) const;
 
-    bool isPointInIndices(const unsigned int& i) const;
+    bool isPointInIndices(const unsigned int i) const;
     bool isPointInBoundingBox(const CPos& p) const;
 
     bool isPointInROI(const CPos& p) const override;
@@ -82,7 +82,6 @@ protected:
     bool isTetrahedronInStrictROI(const Tetra& t) const override;
     bool isHexahedronInROI(const Hexa& t) const override;
     bool isHexahedronInStrictROI(const Hexa& t) const override;
-
 
 protected:
     void checkInputData();
@@ -102,6 +101,8 @@ public:
     //Parameter
     Data<bool> d_drawOut; ///< Draw the data not contained in the ROI
     Data<bool> d_drawBox; ///< Draw the Bounding box around the mesh used for the ROI
+
+    static bool isPointInIndices(const unsigned int i, const SetIndex& indices);
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
