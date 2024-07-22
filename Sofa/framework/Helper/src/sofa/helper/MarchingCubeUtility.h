@@ -25,7 +25,6 @@
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
 #include <sofa/helper/io/Mesh.h>
 #include <map>
 
