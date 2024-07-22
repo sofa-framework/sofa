@@ -43,6 +43,7 @@ SphereROI<DataTypes>::SphereROI()
     this->addAlias(&d_triAngle,"angle");
     this->addAlias(&this->d_indices,"pointIndices");
     this->addAlias(&this->d_X0,"rest_position");
+    this->addAlias(&this->d_drawROI, "drawSphere");
 
     centers.setParent(&d_centers);
     radii.setParent(&d_radii);

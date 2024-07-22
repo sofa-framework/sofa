@@ -93,12 +93,12 @@ public:
     Data<VecCoord> d_X0;
     Data<VecEdge > d_edges; ///< Edge Topology
     Data<VecTriangle > d_triangles; ///< Triangle Topology
-    Data<VecQuad > d_quad; ///< Quad Topology
+    Data<VecQuad > d_quads; ///< Quad Topology
     Data<VecTetra > d_tetrahedra; ///< Tetrahedron Topology
     Data<VecHexa > d_hexahedra; ///< Hexahedron Topology
     Data<bool> d_computeEdges; ///< If true, will compute edge list and index list inside the ROI. (default = true)
     Data<bool> d_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI. (default = true)
-    Data<bool> d_computeQuad; ///< If true, will compute quad list and index list inside the ROI. (default = true)
+    Data<bool> d_computeQuads; ///< If true, will compute quad list and index list inside the ROI. (default = true)
     Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI. (default = true)
     Data<bool> d_computeHexahedra; ///< If true, will compute hexahedra list and index list inside the ROI. (default = true)
     Data<bool> d_strict; ///< If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)
@@ -113,7 +113,7 @@ public:
     Data<VecCoord> d_pointsInROI; ///< Points contained in the ROI
     Data<VecEdge> d_edgesInROI; ///< Edges contained in the ROI
     Data<VecTriangle> d_trianglesInROI; ///< Triangles contained in the ROI
-    Data<VecQuad> d_quadInROI; ///< Quad contained in the ROI
+    Data<VecQuad> d_quadsInROI; ///< Quad contained in the ROI
     Data<VecTetra> d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
     Data<VecHexa> d_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data< sofa::Size > d_nbIndices; ///< Number of selected indices

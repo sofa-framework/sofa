@@ -64,6 +64,11 @@ BoxROI<DataTypes>::BoxROI()
 
     this->addInput(&d_alignedBoxes);
     this->addInput(&d_orientedBoxes);
+
+    this->addAlias(&this->d_drawROI, "drawBoxes");
+    this->addAlias(&this->d_quads, "quad");
+    this->addAlias(&this->d_computeQuads, "computeQuad");
+    this->addAlias(&this->d_quadsInROI, "quadInROI");
 }
 
 template <class DataTypes>
@@ -219,7 +224,7 @@ bool BoxROI<DataTypes>::isPointInROI(const CPos& p)
 template <class DataTypes>
 bool BoxROI<DataTypes>::roiDoUpdate()
 {
-    return (d_alignedBoxes.getValue().empty() && d_orientedBoxes.getValue().empty());
+    return !d_alignedBoxes.getValue().empty() || !d_orientedBoxes.getValue().empty();
 }
 
 template <class DataTypes>

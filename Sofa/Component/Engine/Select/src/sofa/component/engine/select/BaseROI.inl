@@ -53,12 +53,12 @@ BaseROI<DataTypes>::BaseROI()
                                          "If none are found the parent's context is searched for MechanicalObject." ) )
     , d_edges(initData (&d_edges, "edges", "Edge Topology") )
     , d_triangles(initData (&d_triangles, "triangles", "Triangle Topology") )
-    , d_quad(initData (&d_quad, "quad", "Quad Topology") )
+    , d_quads(initData (&d_quads, "quads", "Quad Topology") )
     , d_tetrahedra(initData (&d_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
     , d_hexahedra(initData (&d_hexahedra, "hexahedra", "Hexahedron Topology") )
     , d_computeEdges( initData(&d_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI. (default = true)") )
     , d_computeTriangles( initData(&d_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI. (default = true)") )
-    , d_computeQuad(initData(&d_computeQuad, true, "computeQuad", "If true, will compute quad list and index list inside the ROI. (default = true)"))
+    , d_computeQuads(initData(&d_computeQuads, true, "computeQuads", "If true, will compute quad list and index list inside the ROI. (default = true)"))
     , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
     , d_computeHexahedra( initData(&d_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
     , d_strict( initData(&d_strict, true,"strict","If true, an element is inside the box if all of its nodes are inside. If False, only the center point of the element is checked. (default = true)") )
@@ -71,7 +71,7 @@ BaseROI<DataTypes>::BaseROI()
     , d_pointsInROI( initData(&d_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , d_edgesInROI( initData(&d_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , d_trianglesInROI( initData(&d_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
-    , d_quadInROI(initData(&d_quadInROI, "quadInROI", "Quad contained in the ROI"))
+    , d_quadsInROI(initData(&d_quadsInROI, "quadsInROI", "Quad contained in the ROI"))
     , d_tetrahedraInROI( initData(&d_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , d_hexahedraInROI( initData(&d_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
     , d_nbIndices( initData(&d_nbIndices,"nbIndices", "Number of selected indices") )
@@ -100,7 +100,7 @@ BaseROI<DataTypes>::BaseROI()
     addInput(&d_triangles);
     addInput(&d_tetrahedra);
     addInput(&d_hexahedra);
-    addInput(&d_quad);
+    addInput(&d_quads);
 
     addOutput(&d_indices);
     addOutput(&d_edgeIndices);
@@ -113,7 +113,7 @@ BaseROI<DataTypes>::BaseROI()
     addOutput(&d_trianglesInROI);
     addOutput(&d_tetrahedraInROI);
     addOutput(&d_hexahedraInROI);
-    addOutput(&d_quadInROI);
+    addOutput(&d_quadsInROI);
     addOutput(&d_nbIndices);
 
     addOutput(&d_pointsOutROI);
@@ -197,7 +197,7 @@ void BaseROI<DataTypes>::init()
     }
 
 
-    if (!d_edges.isSet() || !d_triangles.isSet() || !d_tetrahedra.isSet() || !d_hexahedra.isSet() || !d_quad.isSet() )
+    if (!d_edges.isSet() || !d_triangles.isSet() || !d_tetrahedra.isSet() || !d_hexahedra.isSet() || !d_quads.isSet() )
     {
         msg_info(this) << "No topology given. Searching for a TopologyContainer and a BaseMeshTopology in the current context.\n";
 
@@ -245,13 +245,13 @@ void BaseROI<DataTypes>::init()
                     d_hexahedra.setReadOnly(true);
                 }
             }
-            if (!d_quad.isSet() && d_computeQuad.getValue())
+            if (!d_quads.isSet() && d_computeQuads.getValue())
             {
                 BaseData* tparent = topologyContainer?topologyContainer->findData("quads"):topology->findData("quads");
                 if (tparent)
                 {
-                    d_quad.setParent(tparent);
-                    d_quad.setReadOnly(true);
+                    d_quads.setParent(tparent);
+                    d_quads.setReadOnly(true);
                 }
             }
         }/*else{
@@ -320,7 +320,7 @@ void BaseROI<DataTypes>::doUpdate()
         WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
         WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
-        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadsInROI;
         WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
         WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
         WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = d_pointsOutROI;
@@ -376,7 +376,7 @@ void BaseROI<DataTypes>::doUpdate()
         const ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
         const ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
         const ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-        const ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+        const ReadAccessor< Data<vector<Quad> > > quad = d_quads;
 
         const VecCoord& x0 = d_X0.getValue();
 
@@ -436,7 +436,7 @@ void BaseROI<DataTypes>::doUpdate()
         }
 
         //Quads
-        if (d_computeQuad.getValue())
+        if (d_computeQuads.getValue())
         {
             for (unsigned int i = 0; i < quad.size(); i++)
             {
@@ -586,7 +586,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (d_drawQuads.getValue())
     {
         std::vector<type::Vec3> vertices;
-        ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
+        ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadsInROI;
         for (const auto& q : quadsInROI)
         {
             for (unsigned j = 0; j < 4; j++)
