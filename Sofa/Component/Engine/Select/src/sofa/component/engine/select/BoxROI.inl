@@ -159,7 +159,7 @@ void BoxROI<DataTypes>::computeOrientedBoxes()
 
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInOrientedBox(const CPos& point, const OrientedBox& box)
+bool BoxROI<DataTypes>::isPointInOrientedBox(const CPos& point, const OrientedBox& box) const
 {
     if constexpr (DataTypes::spatial_dimensions != 3)
     {
@@ -203,7 +203,7 @@ bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, c
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInROI(const CPos& p)
+bool BoxROI<DataTypes>::isPointInROI(const CPos& p) const
 {
     const vector<type::Vec6>& alignedBoxes = d_alignedBoxes.getValue();
 
@@ -370,7 +370,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3>& points)
+void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3>& points) const
 {
     points.resize(8);
     points[0] = type::Vec3(box[0], box[1], box[2]);

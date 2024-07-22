@@ -164,7 +164,7 @@ void MeshROI<DataTypes>::computeBoundingBox()
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& N)
+bool MeshROI<DataTypes>::checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& N) const
 {
     CPos vectorial;
     vectorial[0] = (((B[1] - A[1])*(pt[2] - A[2])) - ((pt[1] - A[1])*(B[2] - A[2])));
@@ -176,7 +176,7 @@ bool MeshROI<DataTypes>::checkSameOrder(const CPos& A, const CPos& B, const CPos
 
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInROI(const CPos& p)
+bool MeshROI<DataTypes>::isPointInROI(const CPos& p) const
 {
     if(!d_computeTemplateTriangles.getValue()) return true;
 
@@ -238,7 +238,7 @@ bool MeshROI<DataTypes>::isPointInROI(const CPos& p)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
+bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId) const
 {
     auto indices = sofa::helper::getReadAccessor(this->d_indices);
 
@@ -250,7 +250,7 @@ bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p)
+bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p) const
 {
     const auto& b = d_box.getValue();
     if( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] )
@@ -261,7 +261,7 @@ bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p)
 
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e)
+bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e) const
 {
     for (int i = 0; i < 2; i++)
     {
@@ -274,13 +274,13 @@ bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
+bool MeshROI<DataTypes>::isEdgeInStrictROI(const Edge& e) const
 {
     return isEdgeInROI(e);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t)
+bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t) const
 {
     for (int i = 0; i < 3; i++)
     {
@@ -293,13 +293,13 @@ bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
+bool MeshROI<DataTypes>::isTriangleInStrictROI(const Triangle& t) const
 {
     return isTriangleInROI(t);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isQuadInROI(const Quad& q)
+bool MeshROI<DataTypes>::isQuadInROI(const Quad& q) const
 {
     for (int i = 0; i < 4; i++)
     {
@@ -313,13 +313,13 @@ bool MeshROI<DataTypes>::isQuadInROI(const Quad& q)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isQuadInStrictROI(const Quad& q)
+bool MeshROI<DataTypes>::isQuadInStrictROI(const Quad& q) const
 {
     return isQuadInROI(q);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronInROI(const Tetra& t)
+bool MeshROI<DataTypes>::isTetrahedronInROI(const Tetra& t) const
 {
     for (int i = 0; i < 4; i++)
     {
@@ -333,13 +333,13 @@ bool MeshROI<DataTypes>::isTetrahedronInROI(const Tetra& t)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t)
+bool MeshROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t) const
 {
     return isTetrahedronInROI(t);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h)
+bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h) const
 {
     for (int i = 0; i < 8; i++)
     {
@@ -353,7 +353,7 @@ bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isHexahedronInStrictROI(const Hexa& h)
+bool MeshROI<DataTypes>::isHexahedronInStrictROI(const Hexa& h) const
 {
     return isHexahedronInROI(h);
 }

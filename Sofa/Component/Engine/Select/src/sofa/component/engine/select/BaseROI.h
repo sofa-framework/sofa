@@ -145,28 +145,28 @@ protected:
     BaseROI();
     ~BaseROI() override = default;
 
-    bool isPointIn(const PointID pid);
+    bool isPointIn(const PointID pid) const;
 
     template <typename Element>
-    bool isInROI(const Element & e);
+    bool isInROI(const Element & e) const;
     
     template <typename Element>
-    bool isInStrictROI(const Element & e);
+    bool isInStrictROI(const Element & e) const;
 
     // main function to implement from this interface
-    virtual bool isPointInROI(const CPos& p) = 0;
+    virtual bool isPointInROI(const CPos& p) const = 0;
 
     // special cases can be implemented by overriding those functions
-    virtual bool isEdgeInROI(const Edge& e);
-    virtual bool isEdgeInStrictROI(const Edge& e);
-    virtual bool isTriangleInROI(const Triangle& t);
-    virtual bool isTriangleInStrictROI(const Triangle& t);
-    virtual bool isQuadInROI(const Quad& q);
-    virtual bool isQuadInStrictROI(const Quad& q);
-    virtual bool isTetrahedronInROI(const Tetra& t);
-    virtual bool isTetrahedronInStrictROI(const Tetra& t);
-    virtual bool isHexahedronInROI(const Hexa& t);
-    virtual bool isHexahedronInStrictROI(const Hexa& t);
+    virtual bool isEdgeInROI(const Edge& e) const;
+    virtual bool isEdgeInStrictROI(const Edge& e) const;
+    virtual bool isTriangleInROI(const Triangle& t) const;
+    virtual bool isTriangleInStrictROI(const Triangle& t) const;
+    virtual bool isQuadInROI(const Quad& q) const;
+    virtual bool isQuadInStrictROI(const Quad& q) const;
+    virtual bool isTetrahedronInROI(const Tetra& t) const;
+    virtual bool isTetrahedronInStrictROI(const Tetra& t) const;
+    virtual bool isHexahedronInROI(const Hexa& t) const;
+    virtual bool isHexahedronInStrictROI(const Hexa& t) const;
 };
 
 } // namespace sofa::component::engine::select

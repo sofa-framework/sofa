@@ -101,11 +101,11 @@ protected:
 
     void computeOrientedBoxes();
 
-    bool isPointInOrientedBox(const CPos& p, const OrientedBox& box);
+    bool isPointInOrientedBox(const CPos& p, const OrientedBox& box) const;
     static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const type::Vec6& box);
-    void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points);
+    void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points) const;
 
-    bool isPointInROI(const CPos& p) override;
+    bool isPointInROI(const CPos& p) const override;
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

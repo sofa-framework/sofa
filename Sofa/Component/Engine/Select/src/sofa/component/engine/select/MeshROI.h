@@ -66,22 +66,22 @@ public:
     void roiDraw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
+    bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm) const;
 
-    bool isPointInIndices(const unsigned int& i);
-    bool isPointInBoundingBox(const CPos& p);
+    bool isPointInIndices(const unsigned int& i) const;
+    bool isPointInBoundingBox(const CPos& p) const;
 
-    bool isPointInROI(const CPos& p) override;
-    bool isEdgeInROI(const Edge& e) override;
-    bool isEdgeInStrictROI(const Edge& e) override;
-    bool isTriangleInROI(const Triangle& t) override;
-    bool isTriangleInStrictROI(const Triangle& t) override;
-    bool isQuadInROI(const Quad& q) override;
-    bool isQuadInStrictROI(const Quad& q) override;
-    bool isTetrahedronInROI(const Tetra& t) override;
-    bool isTetrahedronInStrictROI(const Tetra& t) override;
-    bool isHexahedronInROI(const Hexa& t) override;
-    bool isHexahedronInStrictROI(const Hexa& t) override;
+    bool isPointInROI(const CPos& p) const override;
+    bool isEdgeInROI(const Edge& e) const override;
+    bool isEdgeInStrictROI(const Edge& e) const override;
+    bool isTriangleInROI(const Triangle& t) const override;
+    bool isTriangleInStrictROI(const Triangle& t) const override;
+    bool isQuadInROI(const Quad& q) const override;
+    bool isQuadInStrictROI(const Quad& q) const override;
+    bool isTetrahedronInROI(const Tetra& t) const override;
+    bool isTetrahedronInStrictROI(const Tetra& t) const override;
+    bool isHexahedronInROI(const Hexa& t) const override;
+    bool isHexahedronInStrictROI(const Hexa& t) const override;
 
 
 protected:

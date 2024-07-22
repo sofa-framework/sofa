@@ -279,7 +279,7 @@ void BaseROI<DataTypes>::init()
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isPointIn(const PointID pid)
+bool BaseROI<DataTypes>::isPointIn(const PointID pid) const
 {
     const VecCoord& x0 = d_X0.getValue();
     const CPos& p = DataTypes::getCPos(x0[pid]);
@@ -401,7 +401,7 @@ void BaseROI<DataTypes>::doUpdate()
             for(std::size_t i=0 ; i<edges.size() ; i++)
             {
                 const auto& e = edges[i];
-                const bool isInROI = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
+                const bool is_in_roi = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
                 if (is_in_roi)
                 {
                     edgeIndices.push_back(i);
@@ -655,7 +655,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 }
 
 template<typename DataTypes, typename Element>
-constexpr auto getCenter(const Element& e, const VecCoord& x0) -> typename DataTypes::CPos
+constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & x0) -> typename DataTypes::CPos
 {
     constexpr auto NumberOfNodes = Element::NumberOfNodes;
 
@@ -667,7 +667,7 @@ constexpr auto getCenter(const Element& e, const VecCoord& x0) -> typename DataT
         center += DataTypes::getCPos(x0[eid]);
     }
 
-    center = center / static_cast<Real>(NumberOfNodes);
+    center = center / static_cast<DataTypes::Real>(NumberOfNodes);
 
     return center;
 }
@@ -694,7 +694,7 @@ bool isElementInStrictROI(const Element& e, const typename DataTypes::VecCoord& 
 
 template <class DataTypes>
 template <typename Element>
-bool BaseROI<DataTypes>::isInROI(const Element& e)
+bool BaseROI<DataTypes>::isInROI(const Element& e) const
 {
     const VecCoord& x0 = d_X0.getValue();
 
@@ -705,7 +705,7 @@ bool BaseROI<DataTypes>::isInROI(const Element& e)
 
 template <class DataTypes>
 template <typename Element>
-bool BaseROI<DataTypes>::isInStrictROI(const Element& e)
+bool BaseROI<DataTypes>::isInStrictROI(const Element& e) const
 {
     const VecCoord& x0 = d_X0.getValue();
 
@@ -716,61 +716,61 @@ bool BaseROI<DataTypes>::isInStrictROI(const Element& e)
 
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isEdgeInROI(const Edge& e)
+bool BaseROI<DataTypes>::isEdgeInROI(const Edge& e) const
 {
     return isInROI(e);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
+bool BaseROI<DataTypes>::isEdgeInStrictROI(const Edge& e) const
 {
     return isInStrictROI(e);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isTriangleInROI(const Triangle& t)
+bool BaseROI<DataTypes>::isTriangleInROI(const Triangle& t) const
 {
     return isInROI(t);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
+bool BaseROI<DataTypes>::isTriangleInStrictROI(const Triangle& t) const
 {
     return isInStrictROI(t);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isQuadInROI(const Quad& q)
+bool BaseROI<DataTypes>::isQuadInROI(const Quad& q) const
 {
     return isInROI(q);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isQuadInStrictROI(const Quad& q)
+bool BaseROI<DataTypes>::isQuadInStrictROI(const Quad& q) const
 {
     return isInStrictROI(q);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isTetrahedronInROI(const Tetra& t)
+bool BaseROI<DataTypes>::isTetrahedronInROI(const Tetra& t) const
 {
     return isInROI(t);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t)
+bool BaseROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t) const
 {
     return isInStrictROI(t);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isHexahedronInROI(const Hexa& h)
+bool BaseROI<DataTypes>::isHexahedronInROI(const Hexa& h) const
 {
     return isInROI(h);
 }
 
 template <class DataTypes>
-bool BaseROI<DataTypes>::isHexahedronInStrictROI(const Hexa& t)
+bool BaseROI<DataTypes>::isHexahedronInStrictROI(const Hexa& t) const
 {
     return isInStrictROI(t);
 }

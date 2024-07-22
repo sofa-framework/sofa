@@ -54,13 +54,13 @@ SphereROI<DataTypes>::SphereROI()
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isPointInSphere(const CPos& c, const Real& r, const CPos& p)
+bool SphereROI<DataTypes>::isPointInSphere(const CPos& c, const Real& r, const CPos& p) const
 {
     return (p - c).norm2() <= r * r;
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
+bool SphereROI<DataTypes>::isPointInROI(const CPos& p) const
 {
     bool isInSpheres = false;
 
@@ -79,7 +79,7 @@ bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::testEdgeAngle(const Edge& e)
+bool SphereROI<DataTypes>::testEdgeAngle(const Edge& e) const
 {
     const auto eAngle = d_edgeAngle.getValue();
 
@@ -97,7 +97,7 @@ bool SphereROI<DataTypes>::testEdgeAngle(const Edge& e)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
+bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e) const
 {
     if (Inherit::isEdgeInROI(e))
     {
@@ -108,7 +108,7 @@ bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
+bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e) const
 {
     if (Inherit::isEdgeInStrictROI(e))
     {
@@ -119,7 +119,7 @@ bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::testTriangleAngle(const Triangle& t)
+bool SphereROI<DataTypes>::testTriangleAngle(const Triangle& t) const
 {
     const auto tAngle = d_triAngle.getValue();
 
@@ -141,7 +141,7 @@ bool SphereROI<DataTypes>::testTriangleAngle(const Triangle& t)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t)
+bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t) const
 {
     if (Inherit::isTriangleInROI(t))
     {
@@ -152,7 +152,7 @@ bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
+bool SphereROI<DataTypes>::isTriangleInStrictROI(const Triangle& t) const
 {
     if (Inherit::isTriangleInStrictROI(t))
     {
