@@ -519,22 +519,35 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         roiDraw(vparams);
     }
 
-    const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
     const float sizeFactor = std::max(static_cast<float>(d_drawSize.getValue()), 1.0f);
 
     vparams->drawTool()->setLightingEnabled(false);
+
+    constexpr auto convertToVertex = [](const auto& coord) -> type::Vec3d{
+
+        if constexpr(DataTypes::spatial_dimensions == 1)
+        {
+            return { coord[0], 0.0, 0.0};
+        }
+        if constexpr (DataTypes::spatial_dimensions == 2)
+        {
+            return { coord[0], coord[1], 0.0 };
+        }
+        if constexpr (DataTypes::spatial_dimensions >= 3)
+        {
+            return { coord[0], coord[1], coord[2] };
+        }
+
+    };
 
     ///draw points in ROI
     if( d_drawPoints.getValue())
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
-        for (const auto i : pointsInROI)
+        for (const auto& p : pointsInROI)
         {
-            type::Vec3 pv{};
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(i)[j];
-            vertices.push_back( pv );
+            vertices.push_back(convertToVertex(DataTypes::getCPos(p)));
         }
         vparams->drawTool()->drawPoints(vertices, sizeFactor, color);
     }
@@ -546,12 +559,9 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         for (const auto& e : edgesInROI)
         {
-            type::Vec3 pv{};
             for(const auto eid : e)
             {
-                for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = DataTypes::getCPos(x0[eid])[j];
-                vertices.push_back( pv );
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[eid])));
             }
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
@@ -564,12 +574,9 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
         for (const auto& t : trianglesInROI)
         {
-            type::Vec3 pv{};
             for(const auto tid : t)
             {
-                for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                    pv[j] = DataTypes::getCPos(x0[tid])[j];
-                vertices.push_back( pv );
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[tid])));
             }
         }
         vparams->drawTool()->drawTriangles(vertices, color);
@@ -584,17 +591,11 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for (unsigned j = 0; j < 4; j++)
             {
-                type::Vec3 pv{};
-                for (unsigned k = 0; k < max_spatial_dimensions; k++)
-                    pv[k] = DataTypes::getCPos(x0[q[j]])[k];
-                vertices.push_back(pv);
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[q[j]])));
             }
             for (unsigned j = 0; j < 4; j++)
             {
-                type::Vec3 pv{};
-                for (unsigned k = 0; k < max_spatial_dimensions; k++)
-                    pv[k] = DataTypes::getCPos(x0[q[(j + 1) % 4]])[k];
-                vertices.push_back(pv);
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[q[(j + 1) % 4]])));
             }
 
         }
@@ -612,30 +613,14 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = DataTypes::getCPos(x0[t[j]])[k];
-                vertices.push_back( pv );
-
-                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = DataTypes::getCPos(x0[t[(j + 1) % 4]])[k];
-                vertices.push_back( pv );
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[j]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[(j + 1) % 4]])));
             }
 
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[t[0]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[t[2]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[t[1]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[t[3]])[j];
-            vertices.push_back( pv );
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[0]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[2]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[1]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[3]])));
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
@@ -647,50 +632,20 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
         for (const auto& h : hexahedraInROI)
         {
-            type::Vec3 pv{};
-
             for (unsigned int j=0 ; j<8 ; j++)
             {
-                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = DataTypes::getCPos(x0[h[j]])[k];
-                vertices.push_back( pv );
-
-                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
-                    pv[k] = DataTypes::getCPos(x0[h[(j + 1) % 4]])[k];
-                vertices.push_back( pv );
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[j]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[(j + 1) % 4]])));
             }
 
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[0]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[2]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[1]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[3]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[4]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[5]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[6]])[j];
-            vertices.push_back( pv );
-
-            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
-                pv[j] = DataTypes::getCPos(x0[h[7]])[j];
-            vertices.push_back( pv );
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[0]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[2]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[1]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[3]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[4]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[5]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[6]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[7]])));
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
