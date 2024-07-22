@@ -33,7 +33,7 @@ namespace sofa::component::engine::select
 {
 
 /**
- * This interface defines ROI features.
+ * This interface defines the features for Regions Of Interest (ROI)
  */
 template <class DataTypes>
 class BaseROI : public core::DataEngine

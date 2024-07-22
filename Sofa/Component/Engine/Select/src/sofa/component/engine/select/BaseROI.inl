@@ -283,7 +283,7 @@ bool BaseROI<DataTypes>::isPointIn(const PointID pid)
 {
     const VecCoord& x0 = d_X0.getValue();
     const CPos& p = DataTypes::getCPos(x0[pid]);
-    return (isPointInROI(p));
+    return isPointInROI(p);
 }
 
 // The update method is called when the engine is marked as dirty.
@@ -360,8 +360,8 @@ void BaseROI<DataTypes>::doUpdate()
 
         if (d_X0.getValue().size() == 0)
         {
-            msg_warning() << "No rest position yet defined. Box might not work properly. \n"
-                            "This may be caused by an early call of init() on the box before  \n"
+            msg_warning() << "No rest position yet defined. ROI might not work properly. \n"
+                            "This may be caused by an early initialization of the ROI before  \n"
                             "the mesh or the MechanicalObject of the node was initialized too";
             return;
         }
@@ -398,10 +398,10 @@ void BaseROI<DataTypes>::doUpdate()
         //Edges
         if (d_computeEdges.getValue())
         {
-            for(unsigned int i=0 ; i<edges.size() ; i++)
+            for(std::size_t i=0 ; i<edges.size() ; i++)
             {
                 const auto& e = edges[i];
-                const bool is_in_roi = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
+                const bool isInROI = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
                 if (is_in_roi)
                 {
                     edgeIndices.push_back(i);
@@ -655,7 +655,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 }
 
 template<typename DataTypes, typename Element>
-constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x0) -> typename DataTypes::CPos
+constexpr auto getCenter(const Element& e, const VecCoord& x0) -> typename DataTypes::CPos
 {
     constexpr auto NumberOfNodes = Element::NumberOfNodes;
 
@@ -667,7 +667,7 @@ constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x
         center += DataTypes::getCPos(x0[eid]);
     }
 
-    center = center / static_cast<typename DataTypes::Real>(NumberOfNodes);
+    center = center / static_cast<Real>(NumberOfNodes);
 
     return center;
 }

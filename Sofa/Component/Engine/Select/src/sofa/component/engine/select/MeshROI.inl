@@ -160,7 +160,7 @@ void MeshROI<DataTypes>::computeBoundingBox()
     if (b[2] > b[5]) std::swap(b[2],b[5]);
     d_box.setValue(b);
 
-    msg_info(this) << "Bounding Box " << b;
+    msg_info() << "Bounding Box " << b;
 }
 
 template <class DataTypes>
