@@ -62,22 +62,17 @@ protected:
     bool isPointInIndices(const unsigned int& i);
     bool isPointInBoundingBox(const CPos& p);
 
-    bool isPointInMesh(const CPos& p);
-    bool isEdgeInMesh(const Edge& e);
-    bool isTriangleInMesh(const Triangle& t);
-    bool isTetrahedronInMesh(const Tetra& t);
-
-    bool isPointIn(const CPos& p) override;
-    bool isEdgeIn(const Edge& e) override;
-    bool isEdgeInStrict(const Edge& e) override;
-    bool isTriangleIn(const Triangle& t) override;
-    bool isTriangleInStrict(const Triangle& t) override;
-    bool isQuadIn(const Quad& q) override;
-    bool isQuadInStrict(const Quad& q) override;
-    bool isTetrahedronIn(const Tetra& t) override;
-    bool isTetrahedronInStrict(const Tetra& t) override;
-    bool isHexahedronIn(const Hexa& t) override;
-    bool isHexahedronInStrict(const Hexa& t) override;
+    bool isPointInROI(const CPos& p) override;
+    bool isEdgeInROI(const Edge& e) override;
+    bool isEdgeInStrictROI(const Edge& e) override;
+    bool isTriangleInROI(const Triangle& t) override;
+    bool isTriangleInStrictROI(const Triangle& t) override;
+    bool isQuadInROI(const Quad& q) override;
+    bool isQuadInStrictROI(const Quad& q) override;
+    bool isTetrahedronInROI(const Tetra& t) override;
+    bool isTetrahedronInStrictROI(const Tetra& t) override;
+    bool isHexahedronInROI(const Hexa& t) override;
+    bool isHexahedronInStrictROI(const Hexa& t) override;
 
 
 protected:

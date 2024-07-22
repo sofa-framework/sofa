@@ -59,17 +59,11 @@ protected:
     bool isQuadInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
     bool isTetrahedronInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
 
-    bool isPointIn(const CPos& p) override;
-    bool isEdgeIn(const Edge& e) override;
-    bool isEdgeInStrict(const Edge& e) override;
-    bool isTriangleIn(const Triangle& t) override;
-    bool isTriangleInStrict(const Triangle& t) override;
-    bool isTetrahedronIn(const Tetra& t) override;
-    bool isTetrahedronInStrict(const Tetra& t) override;
-    bool isHexahedronIn(const Hexa& t) override;
-    bool isHexahedronInStrict(const Hexa& t) override;
-    bool isQuadIn(const Quad& q) override;
-    bool isQuadInStrict(const Quad& q) override;
+    bool isPointInROI(const CPos& p) override;
+    bool isEdgeInROI(const Edge& e) override;
+    bool isEdgeInStrictROI(const Edge& e) override;
+    bool isTriangleInROI(const Triangle& t) override;
+    bool isTriangleInStrictROI(const Triangle& t) override;
 
 public:
     //Input

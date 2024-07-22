@@ -173,7 +173,7 @@ bool MeshROI<DataTypes>::checkSameOrder(const CPos& A, const CPos& B, const CPos
 
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInMesh(const CPos& p)
+bool MeshROI<DataTypes>::isPointInROI(const CPos& p)
 {
     if(!d_computeTemplateTriangles.getValue()) return true;
 
@@ -255,110 +255,57 @@ bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p)
     return false;
 }
 
+
+
 template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInMesh(const Edge& e)
+bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e)
 {
     const auto& x0 = d_X0.getValue();
 
-    for (int i=0; i<2; i++)
+    for (int i = 0; i < 2; i++)
     {
-        if(!isPointInIndices(e[i]))
+        if (!isPointInIndices(e[i]))
         {
-            const CPos& p0 =  DataTypes::getCPos(x0[e[0]]);
-            const CPos& p1 =  DataTypes::getCPos(x0[e[1]]);
-            const CPos c = (p1+p0)*0.5;
-
-            return (isPointInMesh(c));
+            return Inherit::isEdgeInROI(e);
         }
     }
     return true;
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleInMesh(const Triangle& t)
+bool MeshROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
+{
+    return isEdgeInROI(e);
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t)
 {
     const auto& x0 = d_X0.getValue();
-    for (int i=0; i<3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        if(!isPointInIndices(t[i]))
+        if (!isPointInIndices(t[i]))
         {
-            const CPos& p0 =  DataTypes::getCPos(x0[t[0]]);
-            const CPos& p1 =  DataTypes::getCPos(x0[t[1]]);
-            const CPos& p2 =  DataTypes::getCPos(x0[t[2]]);
-            const CPos c = (p2+p1+p0)/3.0;
-
-            return (isPointInMesh(c));
+            return Inherit::isTriangleInROI(t);
         }
     }
     return true;
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronInMesh(const Tetra &t)
+bool MeshROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
 {
-    for (int i=0; i<4; i++)
-    {
-        if(!isPointInIndices(t[i]))
-        {
-            const auto& x0 = d_X0.getValue();
-            const CPos& p0 = DataTypes::getCPos(x0[t[0]]);
-            const CPos& p1 = DataTypes::getCPos(x0[t[1]]);
-            const CPos& p2 = DataTypes::getCPos(x0[t[2]]);
-            const CPos& p3 =  DataTypes::getCPos(x0[t[3]]);
-            const CPos c = (p3+p2+p1+p0)/4.0;
-
-            return (isPointInMesh(c));
-        }
-    }
-
-    return true;
+    return isTriangleInROI(t);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isPointIn(const CPos& p)
-{
-    return isPointInMesh(p);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeIn(const Edge& e)
-{
-    return isEdgeInMesh(e);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInStrict(const Edge& e)
-{
-    return isEdgeIn(e);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleIn(const Triangle& t)
-{
-    return isTriangleInMesh(t);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleInStrict(const Triangle& t)
-{
-    return isTriangleIn(t);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isQuadIn(const Quad& q)
+bool MeshROI<DataTypes>::isQuadInROI(const Quad& q)
 {
     for (int i = 0; i < 4; i++)
     {
         if (!isPointInIndices(q[i]))
         {
-            const auto& x0 = d_X0.getValue();
-            const CPos& p0 = DataTypes::getCPos(x0[q[0]]);
-            const CPos& p1 = DataTypes::getCPos(x0[q[1]]);
-            const CPos& p2 = DataTypes::getCPos(x0[q[2]]);
-            const CPos& p3 = DataTypes::getCPos(x0[q[3]]);
-            const CPos c = (p3 + p2 + p1 + p0) / 4.0;
-
-            return (isPointInMesh(c));
+            return Inherit::isQuadInROI(q);
         }
     }
 
@@ -366,42 +313,40 @@ bool MeshROI<DataTypes>::isQuadIn(const Quad& q)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isQuadInStrict(const Quad& q)
+bool MeshROI<DataTypes>::isQuadInStrictROI(const Quad& q)
 {
-    return isQuadIn(q);
+    return isQuadInROI(q);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronIn(const Tetra& t)
+bool MeshROI<DataTypes>::isTetrahedronInROI(const Tetra& t)
 {
-    return isTetrahedronInMesh(t);
+    for (int i = 0; i < 4; i++)
+    {
+        if (!isPointInIndices(t[i]))
+        {
+            return Inherit::isTetrahedronInROI(t);
+        }
+    }
+
+    return true;
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronInStrict(const Tetra& t)
+bool MeshROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t)
 {
-    return isTetrahedronIn(t);
+    return isTetrahedronInROI(t);
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isHexahedronIn(const Hexa& h)
+bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h)
 {
     const auto& x0 = d_X0.getValue();
     for (int i = 0; i < 8; i++)
     {
         if (!isPointInIndices(h[i]))
         {
-            const CPos& p0 = DataTypes::getCPos(x0[h[0]]);
-            const CPos& p1 = DataTypes::getCPos(x0[h[1]]);
-            const CPos& p2 = DataTypes::getCPos(x0[h[2]]);
-            const CPos& p3 = DataTypes::getCPos(x0[h[3]]);
-            const CPos& p4 = DataTypes::getCPos(x0[h[4]]);
-            const CPos& p5 = DataTypes::getCPos(x0[h[5]]);
-            const CPos& p6 = DataTypes::getCPos(x0[h[6]]);
-            const CPos& p7 = DataTypes::getCPos(x0[h[7]]);
-            const CPos c = (p7 + p6 + p5 + p4 + p3 + p2 + p1 + p0) / 8.0;
-
-            return (isPointInMesh(c));
+            return Inherit::isHexahedronInROI(h);
         }
     }
 
@@ -409,9 +354,9 @@ bool MeshROI<DataTypes>::isHexahedronIn(const Hexa& h)
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::isHexahedronInStrict(const Hexa& h)
+bool MeshROI<DataTypes>::isHexahedronInStrictROI(const Hexa& h)
 {
-    return isHexahedronIn(h);
+    return isHexahedronInROI(h);
 }
 
 template <class DataTypes>

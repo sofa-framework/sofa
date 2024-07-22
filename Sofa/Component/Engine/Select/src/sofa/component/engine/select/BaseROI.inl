@@ -283,7 +283,7 @@ bool BaseROI<DataTypes>::isPointIn(const PointID pid)
 {
     const VecCoord& x0 = d_X0.getValue();
     CPos p = DataTypes::getCPos(x0[pid]);
-    return (isPointIn(p));
+    return (isPointInROI(p));
 }
 
 // The update method is called when the engine is marked as dirty.
@@ -401,7 +401,7 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<edges.size() ; i++)
             {
                 Edge e = edges[i];
-                const bool is_in_roi = (strict) ? isEdgeInStrict(e) : isEdgeIn(e);
+                const bool is_in_roi = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
                 if (is_in_roi)
                 {
                     edgeIndices.push_back(i);
@@ -421,7 +421,7 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
                 Triangle t = triangles[i];
-                const bool is_in_roi = (strict) ? isTriangleInStrict(t) : isTriangleIn(t);
+                const bool is_in_roi = (strict) ? isTriangleInStrictROI(t) : isTriangleInROI(t);
                 if (is_in_roi)
                 {
                     triangleIndices.push_back(i);
@@ -441,7 +441,7 @@ void BaseROI<DataTypes>::doUpdate()
             for (unsigned int i = 0; i < quad.size(); i++)
             {
                 Quad q = quad[i];
-                const bool is_in_roi = (strict) ? isQuadInStrict(q) : isQuadIn(q);
+                const bool is_in_roi = (strict) ? isQuadInStrictROI(q) : isQuadInROI(q);
                 if (is_in_roi)
                 {
                     quadIndices.push_back(i);
@@ -461,7 +461,7 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
                 Tetra t = tetrahedra[i];
-                const bool is_in_roi = (strict) ? isTetrahedronInStrict(t) : isTetrahedronIn(t);
+                const bool is_in_roi = (strict) ? isTetrahedronInStrictROI(t) : isTetrahedronInROI(t);
                 if (is_in_roi)
                 {
                     tetrahedronIndices.push_back(i);
@@ -481,7 +481,7 @@ void BaseROI<DataTypes>::doUpdate()
             for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
                 Hexa t = hexahedra[i];
-                const bool is_in_roi = (strict) ? isHexahedronInStrict(t) : isHexahedronIn(t);
+                const bool is_in_roi = (strict) ? isHexahedronInStrictROI(t) : isHexahedronInROI(t);
                 if (is_in_roi)
                 {
                     hexahedronIndices.push_back(i);
@@ -719,5 +719,130 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 
 }
+
+/// 
+///
+/// 
+template<typename DataTypes, typename Element>
+constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x0) -> typename DataTypes::CPos
+{
+    constexpr auto NumberOfNodes = typename Element::NumberOfNodes;
+
+    assert(NumberOfNodes > 0);
+
+    typename DataTypes::CPos center{};
+    for (const auto eid : e)
+    {
+        center += DataTypes::getCPos(x0[eid]);
+    }
+
+    center = center / static_cast<DataTypes::Real>(NumberOfNodes);
+
+    return center;
+}
+
+template<typename DataTypes, typename Element>
+bool isElementInROI(const Element& e, const typename DataTypes::VecCoord& x0, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
+{
+    const auto center = getCenter<DataTypes>(e, x0);
+
+    return isPointInROI(center);
+}
+
+template<typename DataTypes, typename Element>
+bool isElementInStrictROI(const Element& e, const typename DataTypes::VecCoord& x0, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
+{
+    for (const auto eid : e)
+    {
+        if (!isPointInROI(DataTypes::getCPos(x0[eid])))
+            return false;
+    }
+
+    return true;
+}
+
+template <class DataTypes>
+template <typename Element>
+bool BaseROI<DataTypes>::isInROI(const Element& e)
+{
+    const VecCoord& x0 = d_X0.getValue();
+
+    return isElementInROI<DataTypes, Element>(e, x0, [this](auto&& x) {
+        return isPointInROI(std::forward<decltype(x)>(x));
+        }) ;
+}
+
+template <class DataTypes>
+template <typename Element>
+bool BaseROI<DataTypes>::isInStrictROI(const Element& e)
+{
+    const VecCoord& x0 = d_X0.getValue();
+
+    return isElementInStrictROI<DataTypes, Element>(e, x0, [this](auto&& x) {
+        return isPointInROI(std::forward<decltype(x)>(x));
+        });
+}
+
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isEdgeInROI(const Edge& e)
+{
+    return isInROI(e);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
+{
+    return isInStrictROI(e);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isTriangleInROI(const Triangle& t)
+{
+    return isInROI(t);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
+{
+    return isInStrictROI(t);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isQuadInROI(const Quad& q)
+{
+    return isInROI(q);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isQuadInStrictROI(const Quad& q)
+{
+    return isInStrictROI(q);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isTetrahedronInROI(const Tetra& t)
+{
+    return isInROI(t);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t)
+{
+    return isInStrictROI(t);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isHexahedronInROI(const Hexa& h)
+{
+    return isInROI(h);
+}
+
+template <class DataTypes>
+bool BaseROI<DataTypes>::isHexahedronInStrictROI(const Hexa& t)
+{
+    return isInStrictROI(t);
+}
+
 
 } // namespace sofa::component::engine::selectI

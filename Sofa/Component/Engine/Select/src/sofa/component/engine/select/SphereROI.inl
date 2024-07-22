@@ -71,9 +71,7 @@ bool SphereROI<DataTypes>::isEdgeInSphere(const CPos& c, const Real& r, const so
     const auto& x0 = d_X0.getValue();
     for (unsigned int i=0; i<2; ++i)
     {
-        const auto& p = DataTypes::getCPos(x0[edge[i]]);
-
-        if((p-c).norm() > r)
+        if(isPointInSphere(c, r, DataTypes::getCPos(x0[edge[i]])))
             return false;
     }
     return true;
@@ -85,23 +83,7 @@ bool SphereROI<DataTypes>::isTriangleInSphere(const CPos& c, const Real& r, cons
     const auto& x0 = d_X0.getValue();
     for (unsigned int i=0; i<3; ++i)
     {
-        const auto& p = DataTypes::getCPos(x0[triangle[i]]);
-
-        if((p-c).norm() > r)
-            return false;
-    }
-    return true;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isQuadInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
-{
-    const auto& x0 = d_X0.getValue();
-    for (unsigned int i=0; i<4; ++i)
-    {
-        const auto& p = DataTypes::getCPos(x0[quad[i]]);
-
-        if((p-c).norm() > r)
+        if (isPointInSphere(c, r, DataTypes::getCPos(x0[triangle[i]])))
             return false;
     }
     return true;
@@ -109,21 +91,7 @@ bool SphereROI<DataTypes>::isQuadInSphere(const CPos& c, const Real& r, const so
 
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTetrahedronInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
-{
-    const auto& x0 = d_X0.getValue();
-    for (unsigned int i=0; i<4; ++i)
-    {
-        const auto& p = DataTypes::getCPos(x0[tetrahedron[i]]);
-
-        if((p-c).norm() > r)
-            return false;
-    }
-    return true;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isPointIn(const CPos& p)
+bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
 {
     bool isInSpheres = false;
 
@@ -142,7 +110,7 @@ bool SphereROI<DataTypes>::isPointIn(const CPos& p)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeIn(const Edge& e)
+bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
 {
     const auto& x0 = d_X0.getValue();
     const auto& centers = (d_centers.getValue());
@@ -170,13 +138,13 @@ bool SphereROI<DataTypes>::isEdgeIn(const Edge& e)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInStrict(const Edge& e)
+bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
 {
-    return isEdgeIn(e);
+    return isEdgeInROI(e);
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleIn(const Triangle& t)
+bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t)
 {
     const auto& x0 = d_X0.getValue();
     const auto& centers = (d_centers.getValue());
@@ -207,68 +175,9 @@ bool SphereROI<DataTypes>::isTriangleIn(const Triangle& t)
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleInStrict(const Triangle& t)
+bool SphereROI<DataTypes>::isTriangleInStrictROI(const Triangle& t)
 {
-    return isTriangleIn(t);
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isQuadIn(const Quad& q)
-{
-    const auto& centers = (d_centers.getValue());
-    const auto& radii = (d_radii.getValue());
-
-    for (unsigned int j = 0; j < centers.size(); ++j)
-    {
-        if (isQuadInSphere(centers[j], radii[j], q))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isQuadInStrict(const Quad& q) 
-{
-    return isQuadIn(q);
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isTetrahedronIn(const Tetra& t)
-{
-    const auto& centers = (d_centers.getValue());
-    const auto& radii = (d_radii.getValue());
-
-    for (unsigned int j = 0; j < centers.size(); ++j)
-    {
-        if (isTetrahedronInSphere(centers[j], radii[j], t))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isTetrahedronInStrict(const Tetra& t)
-{
-    return isTetrahedronIn(t);
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isHexahedronIn(const Hexa& h)
-{
-    const auto& centers = (d_centers.getValue());
-    const auto& radii = (d_radii.getValue());
-
-    return true;
-}
-
-template <class DataTypes>
-bool SphereROI<DataTypes>::isHexahedronInStrict(const Hexa& h)
-{
-    return isHexahedronIn(h);
+    return isTriangleInROI(t);
 }
 
 template <class DataTypes>

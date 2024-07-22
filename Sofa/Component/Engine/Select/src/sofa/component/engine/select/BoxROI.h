@@ -101,20 +101,9 @@ protected:
 
     bool isPointInOrientedBox(const CPos& p, const OrientedBox& box);
     static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const type::Vec6& box);
-
-    bool isPointIn(const CPos& p) override;
-    bool isEdgeIn(const Edge& e) override;
-    bool isEdgeInStrict(const Edge& e) override;
-    bool isTriangleIn(const Triangle& t) override;
-    bool isTriangleInStrict(const Triangle& t) override;
-    bool isTetrahedronIn(const Tetra& t) override;
-    bool isTetrahedronInStrict(const Tetra& t) override;
-    bool isHexahedronIn(const Hexa& t) override;
-    bool isHexahedronInStrict(const Hexa& t) override;
-    bool isQuadIn(const Quad& q) override;
-    bool isQuadInStrict(const Quad& q) override;
-
     void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points);
+
+    bool isPointInROI(const CPos& p) override;
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

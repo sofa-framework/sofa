@@ -196,7 +196,7 @@ bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, c
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointIn(const typename DataTypes::CPos& p)
+bool BoxROI<DataTypes>::isPointInROI(const CPos& p)
 {
     const vector<type::Vec6>& alignedBoxes = d_alignedBoxes.getValue();
 
@@ -212,134 +212,6 @@ bool BoxROI<DataTypes>::isPointIn(const typename DataTypes::CPos& p)
     }
 
     return false;
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isEdgeIn(const Edge& e)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[e[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[e[1]]);
-    CPos c = (p1+p0)*0.5;
-
-    return isPointIn(c);
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isEdgeInStrict(const Edge& e)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[e[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[e[1]]);
-
-    return isPointIn(p0) && isPointIn(p1);
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isTriangleIn(const Triangle& t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-    CPos c = (p2+p1+p0)/3.0;
-
-    return (isPointIn(c));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isTriangleInStrict(const Triangle& t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-
-    return (isPointIn(p0) && isPointIn(p1) && isPointIn(p2));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isTetrahedronIn(const Tetra &t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
-    CPos c = (p3+p2+p1+p0)/4.0;
-
-    return (isPointIn(c));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isTetrahedronInStrict(const Tetra &t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
-
-    return (isPointIn(p0) && isPointIn(p1) && isPointIn(p2) && isPointIn(p3));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isHexahedronIn(const Hexa &t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
-    CPos p4 =  DataTypes::getCPos(x0[t[4]]);
-    CPos p5 =  DataTypes::getCPos(x0[t[5]]);
-    CPos p6 =  DataTypes::getCPos(x0[t[6]]);
-    CPos p7 =  DataTypes::getCPos(x0[t[7]]);
-    CPos c = (p7+p6+p5+p4+p3+p2+p1+p0)/8.0;
-
-    return (isPointIn(c));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isHexahedronInStrict(const Hexa &t)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
-    CPos p4 =  DataTypes::getCPos(x0[t[4]]);
-    CPos p5 =  DataTypes::getCPos(x0[t[5]]);
-    CPos p6 =  DataTypes::getCPos(x0[t[6]]);
-    CPos p7 =  DataTypes::getCPos(x0[t[7]]);
-
-    return (isPointIn(p0) && isPointIn(p1) && isPointIn(p2) && isPointIn(p3) &&
-            isPointIn(p4) && isPointIn(p5) && isPointIn(p6) && isPointIn(p7));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isQuadIn(const Quad& q)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[q[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[q[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[q[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[q[3]]);
-    CPos c = (p3+p2+p1+p0)/4.0;
-
-    return (isPointIn(c));
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isQuadInStrict(const Quad& q)
-{
-    const VecCoord& x0 = d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos(x0[q[0]]);
-    CPos p1 =  DataTypes::getCPos(x0[q[1]]);
-    CPos p2 =  DataTypes::getCPos(x0[q[2]]);
-    CPos p3 =  DataTypes::getCPos(x0[q[3]]);
-
-    return (isPointIn(p0) && isPointIn(p1) && isPointIn(p2) && isPointIn(p3));
 }
 
 template <class DataTypes>
