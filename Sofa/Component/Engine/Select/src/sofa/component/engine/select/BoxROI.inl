@@ -27,6 +27,8 @@
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/helper/accessor.h>
 
+#include <sofa/component/engine/select/BaseROI.inl>
+
 namespace sofa::component::engine::select::boxroi
 {
 
@@ -58,10 +60,10 @@ BoxROI<DataTypes>::BoxROI()
     /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
     /// he has to fix his scene.
 {
-    sofa::helper::getWriteOnlyAccessor(d_indices).push_back(0);
+    sofa::helper::getWriteOnlyAccessor(this->d_indices).push_back(0);
 
-    addInput(&d_alignedBoxes);
-    addInput(&d_orientedBoxes);
+    this->addInput(&d_alignedBoxes);
+    this->addInput(&d_orientedBoxes);
 }
 
 template <class DataTypes>
@@ -152,7 +154,7 @@ void BoxROI<DataTypes>::computeOrientedBoxes()
 
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& point, const OrientedBox& box)
+bool BoxROI<DataTypes>::isPointInOrientedBox(const CPos& point, const OrientedBox& box)
 {
     if constexpr (DataTypes::spatial_dimensions != 3)
     {
@@ -224,7 +226,7 @@ template <class DataTypes>
 void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->setLightingEnabled(false);
-    float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
+    float linesWidth = this->d_drawSize.getValue() ? (float)this->d_drawSize.getValue() : 1;
     std::vector<type::Vec3> vertices;
 
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
@@ -317,7 +319,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     if( onlyVisible && !this->d_drawROI.getValue() )
         return;
 
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();

@@ -24,6 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 
+#include <sofa/component/engine/select/BaseROI.inl>
+
 namespace sofa::component::engine::select
 {
 
@@ -37,10 +39,10 @@ SphereROI<DataTypes>::SphereROI()
     , d_triAngle( initData(&d_triAngle, (Real)0, "triAngle", "Max angle between the normal of the selected triangle and the specified normal direction") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
-    addAlias(&d_drawROI,"isVisible");
-    addAlias(&d_triAngle,"angle");
-    addAlias(&d_indices,"pointIndices");
-    addAlias(&d_X0,"rest_position");
+    this->addAlias(&this->d_drawROI,"isVisible");
+    this->addAlias(&d_triAngle,"angle");
+    this->addAlias(&this->d_indices,"pointIndices");
+    this->addAlias(&this->d_X0,"rest_position");
 
     centers.setParent(&d_centers);
     radii.setParent(&d_radii);
@@ -68,7 +70,7 @@ bool SphereROI<DataTypes>::isPointInSphere(const CPos& c, const Real& r, const C
 template <class DataTypes>
 bool SphereROI<DataTypes>::isEdgeInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
 {
-    const auto& x0 = d_X0.getValue();
+    const auto& x0 = this->d_X0.getValue();
     for (unsigned int i=0; i<2; ++i)
     {
         if(isPointInSphere(c, r, DataTypes::getCPos(x0[edge[i]])))
@@ -80,7 +82,7 @@ bool SphereROI<DataTypes>::isEdgeInSphere(const CPos& c, const Real& r, const so
 template <class DataTypes>
 bool SphereROI<DataTypes>::isTriangleInSphere(const CPos& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
 {
-    const auto& x0 = d_X0.getValue();
+    const auto& x0 = this->d_X0.getValue();
     for (unsigned int i=0; i<3; ++i)
     {
         if (isPointInSphere(c, r, DataTypes::getCPos(x0[triangle[i]])))
@@ -112,7 +114,7 @@ bool SphereROI<DataTypes>::isPointInROI(const CPos& p)
 template <class DataTypes>
 bool SphereROI<DataTypes>::isEdgeInROI(const Edge& e)
 {
-    const auto& x0 = d_X0.getValue();
+    const auto& x0 = this->d_X0.getValue();
     const auto& centers = (d_centers.getValue());
     const auto& radii = (d_radii.getValue());
 
@@ -146,7 +148,7 @@ bool SphereROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
 template <class DataTypes>
 bool SphereROI<DataTypes>::isTriangleInROI(const Triangle& t)
 {
-    const auto& x0 = d_X0.getValue();
+    const auto& x0 = this->d_X0.getValue();
     const auto& centers = (d_centers.getValue());
     const auto& radii = (d_radii.getValue());
 
@@ -226,7 +228,6 @@ bool SphereROI<DataTypes>::roiDoUpdate()
 template <class DataTypes>
 void SphereROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 {
-    const VecCoord* x0 = &d_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     const auto& c = d_centers.getValue();

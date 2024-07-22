@@ -21,7 +21,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
 #include <sofa/component/engine/select/SphereROI.inl>
-#include <sofa/component/engine/select/BaseROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

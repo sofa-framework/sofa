@@ -64,6 +64,8 @@ public:
     using Inherit = BaseROI<DataTypes>;
 
     typedef type::Vec<10, SReal> Vec10;
+    using typename Inherit::Real;
+    using typename Inherit::CPos;
 
 public:
     void roiInit() override;

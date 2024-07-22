@@ -47,6 +47,15 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(MeshROI, DataTypes), SOFA_TEMPLATE(BaseROI, DataTypes));
     using Inherit = BaseROI<DataTypes>;
 
+    using typename Inherit::Real;
+    using typename Inherit::VecCoord;
+    using typename Inherit::CPos;
+    using typename Inherit::Edge;
+    using typename Inherit::Triangle;
+    using typename Inherit::Quad;
+    using typename Inherit::Tetra;
+    using typename Inherit::Hexa;
+
 protected:
     MeshROI();
     ~MeshROI() override = default;

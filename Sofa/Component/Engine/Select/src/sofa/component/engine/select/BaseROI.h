@@ -136,9 +136,9 @@ public:
     Data<bool> d_drawPoints; ///< Draw Points. (default = false)
     Data<bool> d_drawEdges; ///< Draw Edges. (default = false)
     Data<bool> d_drawTriangles; ///< Draw Triangles. (default = false)
+    Data<bool> d_drawQuads; ///< Draw Quads. (default = false)
     Data<bool> d_drawTetrahedra; ///< Draw Tetrahedra. (default = false)
     Data<bool> d_drawHexahedra; ///< Draw Tetrahedra. (default = false)
-    Data<bool> d_drawQuads; ///< Draw Quads. (default = false)
     Data<double> d_drawSize; ///< rendering size for ROI and topological elements
     Data<bool> d_doUpdate; ///< If true, updates the selection at the beginning of simulation steps. (default = true)
 protected:

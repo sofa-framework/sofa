@@ -32,7 +32,7 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <sofa/component/engine/select/SphereROI.h>
+#include <sofa/component/engine/select/SphereROI.inl>
 using sofa::component::engine::select::SphereROI ;
 
 #include <sofa/core/visual/VisualParams.h>

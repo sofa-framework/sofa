@@ -26,6 +26,8 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
+#include <sofa/component/engine/select/BaseROI.inl>
+
 namespace sofa::component::engine::select
 {
 
@@ -49,11 +51,11 @@ MeshROI<DataTypes>::MeshROI()
     , d_drawOut( initData(&d_drawOut,false,"drawOut","Draw the data not contained in the ROI") )
     , d_drawBox( initData(&d_drawBox,false,"drawBox","Draw the Bounding box around the mesh used for the ROI") )
 {
-    addInput(&d_X0_i);
-    addInput(&d_edges_i);
-    addInput(&d_triangles_i);
+    this->addInput(&d_X0_i);
+    this->addInput(&d_edges_i);
+    this->addInput(&d_triangles_i);
 
-    addOutput(&d_box);
+    this->addOutput(&this->d_box);
 
 }
 
@@ -107,7 +109,7 @@ void MeshROI<DataTypes>::checkInputData()
         this->getContext()->get(topology,BaseContext::Local); // perso
         if (topology)
         {
-            if (!d_edges_i.isSet() && d_computeEdges.getValue())
+            if (!d_edges_i.isSet() && this->d_computeEdges.getValue())
             {
                 BaseData* eparent = topology->findData("edges");
                 if (eparent)
@@ -116,7 +118,7 @@ void MeshROI<DataTypes>::checkInputData()
                     d_edges_i.setReadOnly(true);
                 }
             }
-            if (!d_triangles_i.isSet() && d_computeTriangles.getValue())
+            if (!d_triangles_i.isSet() && this->d_computeTriangles.getValue())
             {
                 BaseData* tparent = topology->findData("triangles");
                 if (tparent)
@@ -237,7 +239,7 @@ bool MeshROI<DataTypes>::isPointInROI(const CPos& p)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
 {
-    const ReadAccessor<Data<SetIndex>> indices = d_indices;
+    auto indices = sofa::helper::getReadAccessor(this->d_indices);
 
     for (unsigned int i=0; i<indices.size(); i++)
         if(indices[i]==pointId)
@@ -260,8 +262,6 @@ bool MeshROI<DataTypes>::isPointInBoundingBox(const CPos& p)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e)
 {
-    const auto& x0 = d_X0.getValue();
-
     for (int i = 0; i < 2; i++)
     {
         if (!isPointInIndices(e[i]))
@@ -281,7 +281,6 @@ bool MeshROI<DataTypes>::isEdgeInStrictROI(const Edge& e)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isTriangleInROI(const Triangle& t)
 {
-    const auto& x0 = d_X0.getValue();
     for (int i = 0; i < 3; i++)
     {
         if (!isPointInIndices(t[i]))
@@ -341,7 +340,6 @@ bool MeshROI<DataTypes>::isTetrahedronInStrictROI(const Tetra& t)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isHexahedronInROI(const Hexa& h)
 {
-    const auto& x0 = d_X0.getValue();
     for (int i = 0; i < 8; i++)
     {
         if (!isPointInIndices(h[i]))
@@ -368,15 +366,13 @@ bool MeshROI<DataTypes>::roiDoUpdate()
 template <class DataTypes>
 void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
 {
-    const VecCoord* x0 = &d_X0.getValue();
-
     std::vector<sofa::type::Vec3> vertices;
 
-    const float drawSize = float((d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0);
+    const float drawSize = float((this->d_drawSize.getValue() > 1.0) ? this->d_drawSize.getValue() : 1.0);
 
-    const VecCoord* x0_i = &d_X0_i.getValue();
+    const VecCoord& x0_i = d_X0_i.getValue();
     ///draw ROI points
-    if(d_drawPoints.getValue())
+    if(this->d_drawPoints.getValue())
     {
         helper::ReadAccessor< Data<VecCoord > > points_i = d_X0_i;
         for (unsigned int i=0; i<points_i.size() ; ++i)
@@ -388,7 +384,7 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
         vparams->drawTool()->drawPoints(vertices, drawSize, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw ROI edges
-    if(d_drawEdges.getValue())
+    if(this->d_drawEdges.getValue())
     {
         vertices.clear();
         const helper::ReadAccessor< Data<type::vector<Edge> > > edges_i = d_edges_i;
@@ -397,14 +393,14 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
             Edge e = edges_i[i];
             for (unsigned int j=0 ; j<2 ; j++)
             {
-                const CPos& p = DataTypes::getCPos((*x0_i)[e[j]]);
+                const CPos& p = DataTypes::getCPos(x0_i[e[j]]);
                 vertices.emplace_back(p[0], p[1], p[2]);
             }
         }
         vparams->drawTool()->drawLines(vertices, drawSize, sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
     }
     // draw ROI triangles
-    if(d_drawTriangles.getValue())
+    if(this->d_drawTriangles.getValue())
     {
         vertices.clear();
         const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles_i = d_triangles_i;
@@ -413,7 +409,7 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
             Triangle t = triangles_i[i];
             for (unsigned int j=0 ; j<3 ; j++)
             {
-                const CPos& p= (DataTypes::getCPos((*x0_i)[t[j]]));
+                const CPos& p= (DataTypes::getCPos(x0_i[t[j]]));
                 vertices.emplace_back(p[0], p[1], p[2]);
             }
         }

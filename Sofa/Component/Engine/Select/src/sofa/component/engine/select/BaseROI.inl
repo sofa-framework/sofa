@@ -53,9 +53,9 @@ BaseROI<DataTypes>::BaseROI()
                                          "If none are found the parent's context is searched for MechanicalObject." ) )
     , d_edges(initData (&d_edges, "edges", "Edge Topology") )
     , d_triangles(initData (&d_triangles, "triangles", "Triangle Topology") )
+    , d_quad(initData (&d_quad, "quad", "Quad Topology") )
     , d_tetrahedra(initData (&d_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
     , d_hexahedra(initData (&d_hexahedra, "hexahedra", "Hexahedron Topology") )
-    , d_quad(initData (&d_quad, "quad", "Quad Topology") )
     , d_computeEdges( initData(&d_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI. (default = true)") )
     , d_computeTriangles( initData(&d_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI. (default = true)") )
     , d_computeQuad(initData(&d_computeQuad, true, "computeQuad", "If true, will compute quad list and index list inside the ROI. (default = true)"))
@@ -726,7 +726,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template<typename DataTypes, typename Element>
 constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x0) -> typename DataTypes::CPos
 {
-    constexpr auto NumberOfNodes = typename Element::NumberOfNodes;
+    constexpr auto NumberOfNodes = Element::NumberOfNodes;
 
     assert(NumberOfNodes > 0);
 
@@ -736,7 +736,7 @@ constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord& x
         center += DataTypes::getCPos(x0[eid]);
     }
 
-    center = center / static_cast<DataTypes::Real>(NumberOfNodes);
+    center = center / static_cast<typename DataTypes::Real>(NumberOfNodes);
 
     return center;
 }

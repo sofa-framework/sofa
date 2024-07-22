@@ -21,7 +21,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_BOXROI_CPP
 #include <sofa/component/engine/select/BoxROI.inl>
-#include <sofa/component/engine/select/BaseROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
