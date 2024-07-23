@@ -683,13 +683,8 @@ bool isElementInROI(const Element& e, const typename DataTypes::VecCoord& x0, co
 template<typename DataTypes, typename Element>
 bool isElementInStrictROI(const Element& e, const typename DataTypes::VecCoord& x0, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
 {
-    for (const auto eid : e)
-    {
-        if (!isPointInROI(DataTypes::getCPos(x0[eid])))
-            return false;
-    }
-
-    return true;
+    return std::all_of(e.cbegin(), e.cend(), 
+        [&](const auto eid) { return isPointInROI(DataTypes::getCPos(x0[eid])); });
 }
 
 template <class DataTypes>
