@@ -215,20 +215,31 @@ void SphereROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
     std::vector<sofa::type::Vec3> drawcenters;
     std::vector<float> drawradii;
 
+    const auto edgeAngle = d_edgeAngle.getValue();
+    const auto triAngle = d_triAngle.getValue();
+
+    const float degToRad = static_cast<float>(M_PI / 180.0);
+    const float cosEdgeAngle = static_cast<float>(cos(edgeAngle * degToRad));
+    const float cosTriangleAngle = static_cast<float>(cos(triAngle * degToRad));
+    const float sinEdgeAngle = static_cast<float>(sin(edgeAngle * degToRad));
+    const float sinTriangleAngle = static_cast<float>(sin(triAngle * degToRad));
+
+    const auto& direction = d_direction.getValue();
+    const auto& normal = d_normal.getValue();
+
     for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
     {
-
         drawcenters.push_back(c[i]);
         drawradii.push_back(float(r[i]));
             
-        if (edgeAngle.getValue() > 0)
+        if (edgeAngle > 0)
         {
-            vparams->drawTool()->drawCone(c[i], c[i] + direction.getValue()*(cos(edgeAngle.getValue()*M_PI / 180.0)*r[i]), 0, (float)sin(edgeAngle.getValue()*M_PI / 180.0)*((float)r[i]), color);
+            vparams->drawTool()->drawCone(c[i], c[i] + direction*(cosEdgeAngle * r[i]), 0, sinEdgeAngle *((float)r[i]), color);
         }
 
-        if (triAngle.getValue() > 0)
+        if (triAngle > 0)
         {
-            vparams->drawTool()->drawCone(c[i], c[i] + normal.getValue()*(cos(triAngle.getValue()*M_PI / 180.0)*r[i]), 0, (float)sin(triAngle.getValue()*M_PI / 180.0)*((float)r[i]), color);
+            vparams->drawTool()->drawCone(c[i], c[i] + normal*(cosTriangleAngle * r[i]), 0, sinTriangleAngle *((float)r[i]), color);
         }
     }
 
