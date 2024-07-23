@@ -279,7 +279,7 @@ bool applyROIFunc(const Element& e, const core::topology::BaseMeshTopology::SetI
 template <class DataTypes>
 bool MeshROI<DataTypes>::isEdgeInROI(const Edge& e) const
 {
-    return applyROIFunc<DataTypes, Edge>(e, d_indices.getValue(), [this](auto&& x)
+    return applyROIFunc<DataTypes, Edge>(e, this->d_indices.getValue(), [this](auto&& x)
         { return Inherit::isEdgeInROI(std::forward<decltype(x)>(x)); }
     );
 }

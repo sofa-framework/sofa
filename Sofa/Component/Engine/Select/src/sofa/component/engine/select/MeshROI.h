@@ -49,6 +49,7 @@ public:
 
     using typename Inherit::Real;
     using typename Inherit::VecCoord;
+    using typename Inherit::SetIndex;
     using typename Inherit::CPos;
     using typename Inherit::Edge;
     using typename Inherit::Triangle;

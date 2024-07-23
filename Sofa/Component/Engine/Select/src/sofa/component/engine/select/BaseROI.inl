@@ -630,7 +630,7 @@ constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & 
         center += DataTypes::getCPos(x0[eid]);
     }
 
-    center = center / static_cast<DataTypes::Real>(NumberOfNodes);
+    center = center / static_cast<typename DataTypes::Real>(NumberOfNodes);
 
     return center;
 }
