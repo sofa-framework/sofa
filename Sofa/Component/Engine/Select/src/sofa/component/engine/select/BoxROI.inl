@@ -231,55 +231,26 @@ template <class DataTypes>
 void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->setLightingEnabled(false);
-    float linesWidth = this->d_drawSize.getValue() ? (float)this->d_drawSize.getValue() : 1;
-    std::vector<type::Vec3> vertices;
+    const float linesWidth = std::max(static_cast<float>(this->d_drawSize.getValue()), 1.0f);
 
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
-    for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
+    vparams->drawTool()->setMaterial(color);
+    for (const auto& b : alignedBoxes)
     {
-        const type::Vec6& b=alignedBoxes[bi];
-        const Real& Xmin=b[0];
-        const Real& Xmax=b[3];
-        const Real& Ymin=b[1];
-        const Real& Ymax=b[4];
-        const Real& Zmin=b[2];
-        const Real& Zmax=b[5];
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
-        vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
-        vparams->drawTool()->drawLines(vertices, linesWidth , color );
+        vparams->drawTool()->drawBoundingBox({ b[0], b[1] , b[2] }, { b[3], b[4], b[5]}, linesWidth);
     }
+    vparams->drawTool()->resetMaterial();
 
-    for (unsigned int bi=0; bi<orientedBoxes.size(); ++bi)
+    std::vector<type::Vec3> vertices;
+    vertices.reserve(24 * orientedBoxes.size());
+
+    for (const auto& box : orientedBoxes)
     {
-        const Vec10& box=orientedBoxes[bi];
-
-        vector<type::Vec3> points;
+        type::vector<type::Vec3> points;
         points.resize(8);
         getPointsFromOrientedBox(box, points);
 
@@ -311,8 +282,8 @@ void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
         vertices.push_back( points[5] );
         vertices.push_back( points[3] );
         vertices.push_back( points[7] );
-        vparams->drawTool()->drawLines(vertices, linesWidth , color );
     }
+    vparams->drawTool()->drawLines(vertices, linesWidth, color);
 }
 
 
@@ -370,7 +341,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3>& points) const
+void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, type::vector<type::Vec3>& points) const
 {
     points.resize(8);
     points[0] = type::Vec3(box[0], box[1], box[2]);

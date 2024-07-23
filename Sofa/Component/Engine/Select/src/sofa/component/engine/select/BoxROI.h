@@ -48,7 +48,6 @@ namespace sofa::component::engine::select::boxroi
     using core::objectmodel::Event ;
     using core::ExecParams ;
     using core::DataEngine ;
-    using type::vector ;
     using std::string ;
 
 
@@ -78,8 +77,8 @@ public:
 
 public:
     //Input
-    Data<vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax
-    Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
+    Data<type::vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax
+    Data<type::vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
    
 protected:
 
@@ -94,7 +93,7 @@ protected:
         double width, length, depth;
     };
 
-    vector<OrientedBox> m_orientedBoxes;
+    type::vector<OrientedBox> m_orientedBoxes;
 
     BoxROI();
     ~BoxROI() override = default;
@@ -103,7 +102,7 @@ protected:
 
     bool isPointInOrientedBox(const CPos& p, const OrientedBox& box) const;
     static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const type::Vec6& box);
-    void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points) const;
+    void getPointsFromOrientedBox(const Vec10& box, type::vector<type::Vec3> &points) const;
 
     bool isPointInROI(const CPos& p) const override;
 };
