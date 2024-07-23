@@ -473,7 +473,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     const VecCoord& x0 = d_X0.getValue();
     constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (d_drawROI.getValue())
     {
@@ -484,7 +484,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->setLightingEnabled(false);
 
-    constexpr auto convertToVertex = [](const auto& coord) -> type::Vec3d{
+    constexpr auto convertToVertex = [](const auto& coord) -> type::Vec3 {
 
         if constexpr(DataTypes::spatial_dimensions == 1)
         {
@@ -506,6 +506,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
+        vertices.reserve(pointsInROI.size());
         for (const auto& p : pointsInROI)
         {
             vertices.push_back(convertToVertex(DataTypes::getCPos(p)));
@@ -518,6 +519,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
+        vertices.reserve(edgesInROI.size() * 2);
         for (const auto& e : edgesInROI)
         {
             for(const auto eid : e)
@@ -533,6 +535,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+        vertices.reserve(trianglesInROI.size() * 3);
         for (const auto& t : trianglesInROI)
         {
             for(const auto tid : t)
@@ -548,6 +551,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadsInROI;
+        vertices.reserve(quadsInROI.size() * 8);
         for (const auto& q : quadsInROI)
         {
             for (unsigned j = 0; j < 4; j++)
@@ -568,10 +572,9 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
+        vertices.reserve(tetrahedraInROI.size() * 12);
         for (const auto& t : tetrahedraInROI)
         {
-            type::Vec3 pv{};
-
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[j]])));
@@ -591,6 +594,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
+        vertices.reserve(hexahedraInROI.size() * 24);
         for (const auto& h : hexahedraInROI)
         {
             for (unsigned int j=0 ; j<8 ; j++)
@@ -610,8 +614,6 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
-
-    vparams->drawTool()->restoreLastState();
 
 }
 
