@@ -339,11 +339,4 @@ void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, type::vector<
     points[7] = points[3] - normal * depth;
 }
 
-
-template<class DataTypes>
-void BoxROI<DataTypes>::handleEvent(Event *event)
-{
-    SOFA_UNUSED(event);
-}
-
 } // namespace sofa::component::engine::select::boxroi

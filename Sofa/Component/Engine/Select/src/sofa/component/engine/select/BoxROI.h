@@ -72,9 +72,6 @@ public:
     void roiDraw(const VisualParams* vparams) override;
     void roiComputeBBox(const ExecParams* params, type::BoundingBox& bbox) override;
 
-    void handleEvent(Event *event) override;
-
-
 public:
     //Input
     Data<type::vector<type::Vec6> >  d_alignedBoxes; ///< List of boxes, each defined by two 3D points : xmin,ymin,zmin, xmax,ymax,zmax
