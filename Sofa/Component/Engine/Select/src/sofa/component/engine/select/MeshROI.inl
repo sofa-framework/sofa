@@ -58,6 +58,14 @@ MeshROI<DataTypes>::MeshROI()
 
     this->addOutput(&this->d_box);
 
+    // SOFA_ATTRIBUTE_DEPRECATED("24.12", "25.06", "default behavior is now strict.")
+    if (!this->d_strict.isSet())
+    {
+        // Strict mode was not handled before v24.12, and default behavior was non-strict by itself.
+        // so this emulates a default value to false.
+        this->d_strict.setValue(false);
+    }
+
 }
 
 template <class DataTypes>
