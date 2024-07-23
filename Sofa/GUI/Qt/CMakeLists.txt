@@ -265,6 +265,11 @@ if(Sofa.GL_FOUND)
         list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qt/QtViewer.cpp)
     endif()
 
+    if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
+        list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.h)
+        list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.cpp)
+    endif()
+
 endif()
 
 # QtCharts
