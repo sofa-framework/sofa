@@ -376,7 +376,7 @@ void BaseROI<DataTypes>::doUpdate()
         const ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
         const ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
         const ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-        const ReadAccessor< Data<vector<Quad> > > quad = d_quads;
+        const ReadAccessor< Data<vector<Quad> > > quads = d_quads;
 
         const VecCoord& x0 = d_X0.getValue();
 
@@ -395,104 +395,65 @@ void BaseROI<DataTypes>::doUpdate()
             }
         }
 
+        auto testROI = [&](const auto& elements, const auto& predicate, const auto& strictPredicate, bool strict, 
+            auto& inIndices, auto& inROI, auto& outIndices, auto& outROI)
+            {
+                for (std::size_t i = 0; i < elements.size(); i++)
+                {
+                    const auto& e = elements[i];
+                    const bool isInROI = (strict) ? strictPredicate(e) : predicate(e);
+                    if (isInROI)
+                    {
+                        inIndices.push_back(static_cast<sofa::Index>(i));
+                        inROI.push_back(e);
+                    }
+                    else
+                    {
+                        outIndices.push_back(static_cast<sofa::Index>(i));
+                        outROI.push_back(e);
+                    }
+                }
+            };
+
         //Edges
         if (d_computeEdges.getValue())
         {
-            for(std::size_t i=0 ; i<edges.size() ; i++)
-            {
-                const auto& e = edges[i];
-                const bool is_in_roi = (strict) ? isEdgeInStrictROI(e) : isEdgeInROI(e);
-                if (is_in_roi)
-                {
-                    edgeIndices.push_back(i);
-                    edgesInROI.push_back(e);
-                }
-                else
-                {
-                    edgeOutIndices.push_back(i);
-                    edgesOutROI.push_back(e);
-                }
-            }
+            testROI(edges, [this](auto&& x) {return isEdgeInROI(std::forward<decltype(x)>(x));}, 
+                           [this](auto&& x) {return isEdgeInStrictROI(std::forward<decltype(x)>(x)); }, 
+                    strict, edgeIndices, edgesInROI, edgeOutIndices, edgesOutROI);
         }
 
         //Triangles
         if (d_computeTriangles.getValue())
         {
-            for(unsigned int i=0 ; i<triangles.size() ; i++)
-            {
-                const auto& t = triangles[i];
-                const bool is_in_roi = (strict) ? isTriangleInStrictROI(t) : isTriangleInROI(t);
-                if (is_in_roi)
-                {
-                    triangleIndices.push_back(i);
-                    trianglesInROI.push_back(t);
-                }
-                else
-                {
-                    triangleOutIndices.push_back(i);
-                    trianglesOutROI.push_back(t);
-                }
-            }
+            testROI(triangles, [this](auto&& x) {return isTriangleInROI(std::forward<decltype(x)>(x)); },
+                [this](auto&& x) {return isTriangleInStrictROI(std::forward<decltype(x)>(x)); },
+                strict, triangleIndices, trianglesInROI, triangleOutIndices, trianglesOutROI);
         }
 
         //Quads
         if (d_computeQuads.getValue())
         {
-            for (unsigned int i = 0; i < quad.size(); i++)
-            {
-                const auto& q = quad[i];
-                const bool is_in_roi = (strict) ? isQuadInStrictROI(q) : isQuadInROI(q);
-                if (is_in_roi)
-                {
-                    quadIndices.push_back(i);
-                    quadInROI.push_back(q);
-                }
-                else
-                {
-                    quadOutIndices.push_back(i);
-                    quadsOutROI.push_back(q);
-                }
-            }
+            testROI(quads, [this](auto&& x) {return isQuadInROI(std::forward<decltype(x)>(x)); },
+                [this](auto&& x) {return isQuadInStrictROI(std::forward<decltype(x)>(x)); },
+                strict, quadIndices, quadInROI, quadOutIndices, quadsOutROI);
+
         }
 
         //Tetrahedra
         if (d_computeTetrahedra.getValue())
         {
-            for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
-            {
-                const auto& t = tetrahedra[i];
-                const bool is_in_roi = (strict) ? isTetrahedronInStrictROI(t) : isTetrahedronInROI(t);
-                if (is_in_roi)
-                {
-                    tetrahedronIndices.push_back(i);
-                    tetrahedraInROI.push_back(t);
-                }
-                else
-                {
-                    tetrahedronOutIndices.push_back(i);
-                    tetrahedraOutROI.push_back(t);
-                }
-            }
+            testROI(tetrahedra, [this](auto&& x) {return isTetrahedronInROI(std::forward<decltype(x)>(x)); },
+                [this](auto&& x) {return isTetrahedronInStrictROI(std::forward<decltype(x)>(x)); },
+                strict, tetrahedronIndices, tetrahedraInROI, tetrahedronOutIndices, tetrahedraOutROI);
         }
 
         //Hexahedra
         if (d_computeHexahedra.getValue())
         {
-            for(unsigned int i=0 ; i<hexahedra.size() ; i++)
-            {
-                const auto& t = hexahedra[i];
-                const bool is_in_roi = (strict) ? isHexahedronInStrictROI(t) : isHexahedronInROI(t);
-                if (is_in_roi)
-                {
-                    hexahedronIndices.push_back(i);
-                    hexahedraInROI.push_back(t);
-                }
-                else
-                {
-                    hexahedronOutIndices.push_back(i);
-                    hexahedraOutROI.push_back(t);
-                }
-            }
+            testROI(hexahedra, [this](auto&& x) {return isHexahedronInROI(std::forward<decltype(x)>(x)); },
+                [this](auto&& x) {return isHexahedronInStrictROI(std::forward<decltype(x)>(x)); },
+                strict, hexahedronIndices, hexahedraInROI, hexahedronOutIndices, hexahedraOutROI);
         }
 
         d_nbIndices.setValue(sofa::Size(indices.size()));
