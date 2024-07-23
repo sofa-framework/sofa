@@ -44,7 +44,6 @@ using type::Vec3 ;
 using type::Vec4f ;
 using helper::WriteOnlyAccessor ;
 using helper::ReadAccessor ;
-using type::vector ;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
@@ -288,33 +287,17 @@ void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible)
+void BoxROI<DataTypes>::roiComputeBBox(const ExecParams* params, type::BoundingBox& bbox)
 {
-    SOFA_UNUSED(params);
-
-    if( onlyVisible && !this->d_drawROI.getValue() )
-        return;
-
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
-        return ;
-
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
-
-    const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
 
     for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
     {
         const type::Vec6& box=alignedBoxes[bi];
-        if (box[0] < minBBox[0]) minBBox[0] = box[0];
-        if (box[1] < minBBox[1]) minBBox[1] = box[1];
-        if (box[2] < minBBox[2]) minBBox[2] = box[2];
-        if (box[3] > maxBBox[0]) maxBBox[0] = box[3];
-        if (box[4] > maxBBox[1]) maxBBox[1] = box[4];
-        if (box[5] > maxBBox[2]) maxBBox[2] = box[5];
+
+        bbox.include({ box[0], box[1], box[2] });
+        bbox.include({ box[3], box[4], box[5] });
     }
 
     for (unsigned int bi=0; bi<orientedBoxes.size(); ++bi)
@@ -327,16 +310,9 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
         for(int i=0; i<8; i++)
         {
-            if (points[i][0] < minBBox[0]) minBBox[0] = points[i][0];
-            if (points[i][1] < minBBox[1]) minBBox[1] = points[i][1];
-            if (points[i][2] < minBBox[2]) minBBox[2] = points[i][2];
-            if (points[i][0] > maxBBox[0]) maxBBox[0] = points[i][0];
-            if (points[i][1] > maxBBox[1]) maxBBox[1] = points[i][1];
-            if (points[i][2] > maxBBox[2]) maxBBox[2] = points[i][2];
+            bbox.include(points[i]);
         }
     }
-
-    this->f_bbox.setValue(TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

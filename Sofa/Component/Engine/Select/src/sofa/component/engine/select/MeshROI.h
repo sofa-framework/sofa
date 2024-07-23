@@ -65,6 +65,7 @@ public:
     void roiInit() override;
     bool roiDoUpdate() override;
     void roiDraw(const core::visual::VisualParams* vparams) override;
+    void roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox) override;
 
 protected:
     bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm) const;

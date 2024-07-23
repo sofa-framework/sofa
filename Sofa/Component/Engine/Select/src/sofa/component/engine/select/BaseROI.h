@@ -63,11 +63,13 @@ public:
 public:
     void init() final;
     void doUpdate() override; //cannot set final because of the tests;
-    void draw(const core::visual::VisualParams* vparams) final;
+    void draw(const core::visual::VisualParams* vparams) final; 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) final;
 
     virtual void roiInit() {};
     virtual bool roiDoUpdate() { return true; };
     virtual void roiDraw(const core::visual::VisualParams*) {};
+    virtual void roiComputeBBox(const core::ExecParams*, type::BoundingBox& bbox) {};
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

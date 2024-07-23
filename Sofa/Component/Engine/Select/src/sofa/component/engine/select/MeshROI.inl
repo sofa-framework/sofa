@@ -486,7 +486,17 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
         vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, drawSize);
 
     }
+}
 
+template <class DataTypes>
+void MeshROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox)
+{
+    const VecCoord& x0_i = d_X0_i.getValue();
+
+    for (const auto& p : x0_i)
+    {
+        bbox.include(DataTypes::getCPos(p));
+    }
 }
 
 } //namespace sofa::component::engine::select

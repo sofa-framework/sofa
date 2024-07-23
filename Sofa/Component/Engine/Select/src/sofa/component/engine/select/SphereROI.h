@@ -54,6 +54,7 @@ protected:
 public:
     bool roiDoUpdate() override;
     void roiDraw(const core::visual::VisualParams* vparams) override;
+    void roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox) override;
 
 protected:
     bool testEdgeAngle(const Edge& e) const;

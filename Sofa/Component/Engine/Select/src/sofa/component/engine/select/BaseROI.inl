@@ -617,6 +617,28 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 }
 
+template<typename DataTypes>
+void BaseROI<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (onlyVisible && !this->d_drawROI.getValue())
+        return;
+
+    if (this->d_componentState.getValue() == ComponentState::Invalid)
+        return;
+
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
+
+    sofa::type::BoundingBox bbox{};
+    roiComputeBBox(params, bbox);
+
+    // add the ROI of the input vertices ?
+
+    this->f_bbox.setValue(bbox);
+}
+
 template<typename DataTypes, typename Element>
 constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & x0) -> typename DataTypes::CPos
 {

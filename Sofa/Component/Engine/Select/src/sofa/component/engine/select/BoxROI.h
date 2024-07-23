@@ -70,8 +70,8 @@ public:
     void roiInit() override;
     bool roiDoUpdate() override;
     void roiDraw(const VisualParams* vparams) override;
+    void roiComputeBBox(const ExecParams* params, type::BoundingBox& bbox) override;
 
-    void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
     void handleEvent(Event *event) override;
 
 

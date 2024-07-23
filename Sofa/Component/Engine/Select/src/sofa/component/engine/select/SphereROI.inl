@@ -249,4 +249,17 @@ void SphereROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 
 }
 
+template <class DataTypes>
+void SphereROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox)
+{
+    const auto& centers = d_centers.getValue();
+    const auto& radii = d_radii.getValue();
+    
+    for (unsigned int i = 0; i < centers.size() && i < radii.size(); ++i)
+    {
+        bbox.include({ centers[i][0] - radii[i], centers[i][1] - radii[i], centers[i][2] - radii[i] });
+        bbox.include({ centers[i][0] + radii[i], centers[i][1] + radii[i], centers[i][2] + radii[i] });
+    }
+}
+
 } //namespace sofa::component::engine::select
