@@ -48,7 +48,7 @@ using type::vector ;
 
 template <class DataTypes>
 BaseROI<DataTypes>::BaseROI()
-    : d_X0( initData (&d_X0, "position", "Rest position coordinates of the degrees of freedom. \n"
+    : d_positions( initData (&d_positions, "position", "Rest position coordinates of the degrees of freedom. \n"
                                          "If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context. \n"
                                          "If none are found the parent's context is searched for MechanicalObject." ) )
     , d_edges(initData (&d_edges, "edges", "Edge Topology") )
@@ -95,7 +95,7 @@ BaseROI<DataTypes>::BaseROI()
 {
     sofa::helper::getWriteOnlyAccessor(d_indices).push_back(0);
 
-    addInput(&d_X0);
+    addInput(&d_positions);
     addInput(&d_edges);
     addInput(&d_triangles);
     addInput(&d_tetrahedra);
@@ -124,6 +124,8 @@ BaseROI<DataTypes>::BaseROI()
     addOutput(&d_edgeOutIndices);
     addOutput(&d_triangleOutIndices);
     addOutput(&d_tetrahedronOutIndices);
+
+    d_X0.setParent(&d_positions);
 }
 
 template <class DataTypes>
@@ -133,7 +135,7 @@ void BaseROI<DataTypes>::init()
     /// automatically load the positions from the current context MechanicalState if any, then
     /// in a MeshLoad if any and in case of failure it will finally search it in the parent's
     /// context.
-    if (!d_X0.isSet())
+    if (!d_positions.isSet())
     {
         msg_info(this) << "No attribute 'position' set.\n"
                           "Searching in the context for a MechanicalObject or MeshLoader.\n" ;
@@ -145,8 +147,8 @@ void BaseROI<DataTypes>::init()
             BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
-                d_X0.setParent(parent);
-                d_X0.setReadOnly(true);
+                d_positions.setParent(parent);
+                d_positions.setReadOnly(true);
             }else{
                 msg_warning(this) << "No attribute 'rest_position' in component '" << getName() << "'.\n"
                                   << "The BaseROI component thus have no input and is thus deactivated.\n" ;
@@ -163,8 +165,8 @@ void BaseROI<DataTypes>::init()
                 BaseData* parent = loader->findData("position");
                 if (parent)
                 {
-                    d_X0.setParent(parent);
-                    d_X0.setReadOnly(true);
+                    d_positions.setParent(parent);
+                    d_positions.setReadOnly(true);
                 }else{
                     msg_warning(this) << "No attribute 'position' in component '" << getName() << "'.\n"
                                       << "The BaseROI component thus have no input and is thus deactivated.\n" ;
@@ -190,8 +192,8 @@ void BaseROI<DataTypes>::init()
                     d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
-                d_X0.setParent(parent);
-                d_X0.setReadOnly(true);
+                d_positions.setParent(parent);
+                d_positions.setReadOnly(true);
             }
         }
     }
@@ -281,8 +283,8 @@ void BaseROI<DataTypes>::init()
 template <class DataTypes>
 bool BaseROI<DataTypes>::isPointIn(const PointID pid) const
 {
-    const VecCoord& x0 = d_X0.getValue();
-    const CPos& p = DataTypes::getCPos(x0[pid]);
+    const VecCoord& positions = d_positions.getValue();
+    const CPos& p = DataTypes::getCPos(positions[pid]);
     return isPointInROI(p);
 }
 
@@ -358,7 +360,7 @@ void BaseROI<DataTypes>::doUpdate()
         hexahedraOutROI.clear();
 
 
-        if (d_X0.getValue().size() == 0)
+        if (d_positions.getValue().size() == 0)
         {
             msg_warning() << "No rest position yet defined. ROI might not work properly. \n"
                             "This may be caused by an early initialization of the ROI before  \n"
@@ -378,20 +380,20 @@ void BaseROI<DataTypes>::doUpdate()
         const ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
         const ReadAccessor< Data<vector<Quad> > > quads = d_quads;
 
-        const VecCoord& x0 = d_X0.getValue();
+        const VecCoord& positions = d_positions.getValue();
 
         //Points
-        for( unsigned i=0; i<x0.size(); ++i )
+        for( unsigned i=0; i<positions.size(); ++i )
         {
             if (isPointIn(i))
             {
                 indices.push_back(i);
-                pointsInROI.push_back(x0[i]);
+                pointsInROI.push_back(positions[i]);
             }
             else
             {
                 indicesOut.push_back(i);
-                pointsOutROI.push_back(x0[i]);
+                pointsOutROI.push_back(positions[i]);
             }
         }
 
@@ -470,7 +472,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x0 = d_X0.getValue();
+    const VecCoord& positions = d_positions.getValue();
     constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
@@ -524,7 +526,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for(const auto eid : e)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[eid])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[eid])));
             }
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
@@ -540,7 +542,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for(const auto tid : t)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[tid])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[tid])));
             }
         }
         vparams->drawTool()->drawTriangles(vertices, color);
@@ -556,11 +558,11 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for (unsigned j = 0; j < 4; j++)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[q[j]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[q[j]])));
             }
             for (unsigned j = 0; j < 4; j++)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[q[(j + 1) % 4]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[q[(j + 1) % 4]])));
             }
 
         }
@@ -577,14 +579,14 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[j]])));
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[(j + 1) % 4]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[j]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[(j + 1) % 4]])));
             }
 
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[0]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[2]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[1]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[t[3]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[0]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[2]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[1]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[t[3]])));
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
@@ -599,18 +601,18 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             for (unsigned int j=0 ; j<8 ; j++)
             {
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[j]])));
-                vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[(j + 1) % 4]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[j]])));
+                vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[(j + 1) % 4]])));
             }
 
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[0]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[2]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[1]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[3]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[4]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[5]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[6]])));
-            vertices.push_back(convertToVertex(DataTypes::getCPos(x0[h[7]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[0]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[2]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[1]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[3]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[4]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[5]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[6]])));
+            vertices.push_back(convertToVertex(DataTypes::getCPos(positions[h[7]])));
         }
         vparams->drawTool()->drawLines(vertices, sizeFactor, color);
     }
@@ -637,7 +639,7 @@ void BaseROI<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVi
 }
 
 template<typename DataTypes, typename Element>
-constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & x0) -> typename DataTypes::CPos
+constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & positions) -> typename DataTypes::CPos
 {
     constexpr auto NumberOfNodes = Element::NumberOfNodes;
 
@@ -646,7 +648,7 @@ constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & 
     typename DataTypes::CPos center{};
     for (const auto eid : e)
     {
-        center += DataTypes::getCPos(x0[eid]);
+        center += DataTypes::getCPos(positions[eid]);
     }
 
     center = center / static_cast<typename DataTypes::Real>(NumberOfNodes);
@@ -655,27 +657,27 @@ constexpr auto getCenter(const Element& e, const typename DataTypes::VecCoord & 
 }
 
 template<typename DataTypes, typename Element>
-bool isElementInROI(const Element& e, const typename DataTypes::VecCoord& x0, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
+bool isElementInROI(const Element& e, const typename DataTypes::VecCoord& positions, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
 {
-    const auto center = getCenter<DataTypes>(e, x0);
+    const auto center = getCenter<DataTypes>(e, positions);
 
     return isPointInROI(center);
 }
 
 template<typename DataTypes, typename Element>
-bool isElementInStrictROI(const Element& e, const typename DataTypes::VecCoord& x0, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
+bool isElementInStrictROI(const Element& e, const typename DataTypes::VecCoord& positions, const std::function<bool(const typename DataTypes::CPos&)>& isPointInROI)
 {
     return std::all_of(e.cbegin(), e.cend(), 
-        [&](const auto eid) { return isPointInROI(DataTypes::getCPos(x0[eid])); });
+        [&](const auto eid) { return isPointInROI(DataTypes::getCPos(positions[eid])); });
 }
 
 template <class DataTypes>
 template <typename Element>
 bool BaseROI<DataTypes>::isInROI(const Element& e) const
 {
-    const VecCoord& x0 = d_X0.getValue();
+    const VecCoord& positions = d_positions.getValue();
 
-    return isElementInROI<DataTypes, Element>(e, x0, [this](auto&& x) {
+    return isElementInROI<DataTypes, Element>(e, positions, [this](auto&& x) {
         return isPointInROI(std::forward<decltype(x)>(x));
         }) ;
 }
@@ -684,9 +686,9 @@ template <class DataTypes>
 template <typename Element>
 bool BaseROI<DataTypes>::isInStrictROI(const Element& e) const
 {
-    const VecCoord& x0 = d_X0.getValue();
+    const VecCoord& positions = d_positions.getValue();
 
-    return isElementInStrictROI<DataTypes, Element>(e, x0, [this](auto&& x) {
+    return isElementInStrictROI<DataTypes, Element>(e, positions, [this](auto&& x) {
         return isPointInROI(std::forward<decltype(x)>(x));
         });
 }

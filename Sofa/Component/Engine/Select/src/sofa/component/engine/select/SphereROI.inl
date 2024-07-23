@@ -42,7 +42,7 @@ SphereROI<DataTypes>::SphereROI()
     this->addAlias(&this->d_drawROI,"isVisible");
     this->addAlias(&d_triAngle,"angle");
     this->addAlias(&this->d_indices,"pointIndices");
-    this->addAlias(&this->d_X0,"rest_position");
+    this->addAlias(&this->d_positions,"rest_position");
     this->addAlias(&this->d_drawROI, "drawSphere");
 
     centers.setParent(&d_centers);
@@ -85,7 +85,7 @@ bool SphereROI<DataTypes>::testEdgeAngle(const Edge& e) const
 
     if (eAngle > static_cast<Real>(0))
     {
-        const auto& x0 = this->d_X0.getValue();
+        const auto& x0 = this->d_positions.getValue();
         const auto& dir = d_direction.getValue();
 
         auto n = DataTypes::getCPos(x0[e[1]]) - DataTypes::getCPos(x0[e[0]]);
@@ -125,7 +125,7 @@ bool SphereROI<DataTypes>::testTriangleAngle(const Triangle& t) const
 
     if (tAngle > static_cast<Real>(0))
     {
-        const auto& x0 = this->d_X0.getValue();
+        const auto& x0 = this->d_positions.getValue();
         const auto& normal = d_normal.getValue();
 
         auto n = cross(

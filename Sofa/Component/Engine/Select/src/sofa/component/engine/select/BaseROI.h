@@ -92,7 +92,7 @@ public:
 
 public:
     //Input
-    Data<VecCoord> d_X0;
+    Data<VecCoord> d_positions;
     Data<VecEdge > d_edges; ///< Edge Topology
     Data<VecTriangle > d_triangles; ///< Triangle Topology
     Data<VecQuad > d_quads; ///< Quad Topology
@@ -143,6 +143,9 @@ public:
     Data<bool> d_drawHexahedra; ///< Draw Tetrahedra. (default = false)
     Data<double> d_drawSize; ///< rendering size for ROI and topological elements
     Data<bool> d_doUpdate; ///< If true, updates the selection at the beginning of simulation steps. (default = true)
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    Data<VecCoord> d_X0;
 protected:
     BaseROI();
     ~BaseROI() override = default;

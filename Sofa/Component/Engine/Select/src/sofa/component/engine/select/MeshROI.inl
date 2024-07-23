@@ -44,17 +44,17 @@ using core::visual::VisualParams;
 template <class DataTypes>
 MeshROI<DataTypes>::MeshROI()
     : Inherit()
-    , d_X0_i(initData(&d_X0_i, "ROIposition", "ROI position coordinates of the degrees of freedom"))
-    , d_edges_i(initData (&d_edges_i, "ROIedges", "ROI Edge Topology") )
-    , d_triangles_i(initData (&d_triangles_i, "ROItriangles", "ROI Triangle Topology") )
+    , d_roiPositions(initData(&d_roiPositions, "ROIposition", "ROI position coordinates of the degrees of freedom"))
+    , d_roiEdges(initData (&d_roiEdges, "ROIedges", "ROI Edge Topology") )
+    , d_roiTriangles(initData (&d_roiTriangles, "ROItriangles", "ROI Triangle Topology") )
     , d_computeTemplateTriangles(initData(&d_computeTemplateTriangles, true, "computeMeshROI", "Compute with the mesh (not only bounding box)"))
     , d_box( initData(&d_box, "box", "Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , d_drawOut( initData(&d_drawOut,false,"drawOut","Draw the data not contained in the ROI") )
     , d_drawBox( initData(&d_drawBox,false,"drawBox","Draw the Bounding box around the mesh used for the ROI") )
 {
-    this->addInput(&d_X0_i);
-    this->addInput(&d_edges_i);
-    this->addInput(&d_triangles_i);
+    this->addInput(&d_roiPositions);
+    this->addInput(&d_roiEdges);
+    this->addInput(&d_roiTriangles);
 
     this->addOutput(&this->d_box);
 
@@ -65,6 +65,10 @@ MeshROI<DataTypes>::MeshROI()
         // so this emulates a default value to false.
         this->d_strict.setValue(false);
     }
+
+    d_X0_i.setParent(&d_roiPositions);
+    d_edges_i.setParent(&d_roiEdges);
+    d_triangles_i.setParent(&d_roiTriangles);
 
 }
 
@@ -80,7 +84,7 @@ template <class DataTypes>
 void MeshROI<DataTypes>::checkInputData()
 {
     // ROI Mesh init
-    if (!d_X0_i.isSet())
+    if (!d_roiPositions.isSet())
     {
         msg_warning(this) << "Data 'ROIposition' is not set. Get rest position of local mechanical state "
                           << "or mesh loader (if no mechanical)";
@@ -92,8 +96,8 @@ void MeshROI<DataTypes>::checkInputData()
             BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
-                d_X0_i.setParent(parent);
-                d_X0_i.setReadOnly(true);
+                d_roiPositions.setParent(parent);
+                d_roiPositions.setReadOnly(true);
             }
         }
         else
@@ -105,35 +109,35 @@ void MeshROI<DataTypes>::checkInputData()
                 BaseData* parent = loader->findData("position");
                 if (parent)
                 {
-                    d_X0_i.setParent(parent);
-                    d_X0_i.setReadOnly(true);
+                    d_roiPositions.setParent(parent);
+                    d_roiPositions.setReadOnly(true);
                 }
             }
         }
     }
 
-    if (!d_edges_i.isSet() || !d_triangles_i.isSet() )
+    if (!d_roiEdges.isSet() || !d_roiTriangles.isSet() )
     {
         BaseMeshTopology* topology;
         this->getContext()->get(topology,BaseContext::Local); // perso
         if (topology)
         {
-            if (!d_edges_i.isSet() && this->d_computeEdges.getValue())
+            if (!d_roiEdges.isSet() && this->d_computeEdges.getValue())
             {
                 BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
-                    d_edges_i.setParent(eparent);
-                    d_edges_i.setReadOnly(true);
+                    d_roiEdges.setParent(eparent);
+                    d_roiEdges.setReadOnly(true);
                 }
             }
-            if (!d_triangles_i.isSet() && this->d_computeTriangles.getValue())
+            if (!d_roiTriangles.isSet() && this->d_computeTriangles.getValue())
             {
                 BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
-                    d_triangles_i.setParent(tparent);
-                    d_triangles_i.setReadOnly(true);
+                    d_roiTriangles.setParent(tparent);
+                    d_roiTriangles.setReadOnly(true);
                 }
             }
         }
@@ -146,7 +150,7 @@ void MeshROI<DataTypes>::computeBoundingBox()
 {
     // Bounding Box computation
     type::Vec6 b = d_box.getValue();
-    ReadAccessor<Data<VecCoord>> points_i = d_X0_i;
+    ReadAccessor<Data<VecCoord>> points_i = d_roiPositions;
     if(points_i.size()>0)
     {
         const CPos& p = DataTypes::getCPos(points_i[0]);
@@ -206,8 +210,8 @@ bool MeshROI<DataTypes>::isPointInROI(const CPos& p) const
             Vec[2]= (b[5]+100.0f)-p[2];
         }
 
-        const ReadAccessor< Data<vector<Triangle> > > triangles_i = d_triangles_i;
-        const VecCoord& x0 = d_X0_i.getValue();
+        const ReadAccessor< Data<vector<Triangle> > > triangles_i = d_roiTriangles;
+        const VecCoord& x0 = d_roiPositions.getValue();
         int Through=0;
         double d=0.0;
         for (unsigned int i=0; i<triangles_i.size() ; ++i)
@@ -428,11 +432,11 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
 
     const float drawSize = float((this->d_drawSize.getValue() > 1.0) ? this->d_drawSize.getValue() : 1.0);
 
-    const VecCoord& x0_i = d_X0_i.getValue();
+    const VecCoord& x0_i = d_roiPositions.getValue();
     ///draw ROI points
     if(this->d_drawPoints.getValue())
     {
-        helper::ReadAccessor< Data<VecCoord > > points_i = d_X0_i;
+        helper::ReadAccessor< Data<VecCoord > > points_i = d_roiPositions;
         for (unsigned int i=0; i<points_i.size() ; ++i)
         {
             const CPos& p= DataTypes::getCPos(points_i[i]);
@@ -445,7 +449,7 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
     if(this->d_drawEdges.getValue())
     {
         vertices.clear();
-        const helper::ReadAccessor< Data<type::vector<Edge> > > edges_i = d_edges_i;
+        const helper::ReadAccessor< Data<type::vector<Edge> > > edges_i = d_roiEdges;
         for (unsigned int i=0; i<edges_i.size() ; ++i)
         {
             Edge e = edges_i[i];
@@ -461,7 +465,7 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
     if(this->d_drawTriangles.getValue())
     {
         vertices.clear();
-        const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles_i = d_triangles_i;
+        const helper::ReadAccessor< Data<type::vector<Triangle> > > triangles_i = d_roiTriangles;
         for (unsigned int i=0; i<triangles_i.size() ; ++i)
         {
             Triangle t = triangles_i[i];
@@ -493,9 +497,9 @@ void MeshROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::Bo
 {
     SOFA_UNUSED(params);
 
-    const VecCoord& x0_i = d_X0_i.getValue();
+    const VecCoord& roiPositions = d_roiPositions.getValue();
 
-    for (const auto& p : x0_i)
+    for (const auto& p : roiPositions)
     {
         bbox.include(DataTypes::getCPos(p));
     }

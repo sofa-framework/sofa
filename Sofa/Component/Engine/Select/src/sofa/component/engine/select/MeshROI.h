@@ -92,9 +92,9 @@ protected:
 public:
     //Input
     // ROI mesh
-    Data<VecCoord> d_X0_i; ///< ROI position coordinates of the degrees of freedom
-    Data<type::vector<Edge> > d_edges_i; ///< ROI Edge Topology
-    Data<type::vector<Triangle> > d_triangles_i; ///< ROI Triangle Topology
+    Data<VecCoord> d_roiPositions; ///< ROI position coordinates of the degrees of freedom
+    Data<type::vector<Edge> > d_roiEdges; ///< ROI Edge Topology
+    Data<type::vector<Triangle> > d_roiTriangles; ///< ROI Triangle Topology
     Data<bool> d_computeTemplateTriangles; ///< Compute with the mesh (not only bounding box)
 
     //Output
@@ -105,6 +105,13 @@ public:
     Data<bool> d_drawBox; ///< Draw the Bounding box around the mesh used for the ROI
 
     static bool isPointInIndices(const unsigned int i, const SetIndex& indices);
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    Data<VecCoord> d_X0_i;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    Data<type::vector<Edge> > d_edges_i;;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    Data<type::vector<Triangle> > d_triangles_i;
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
