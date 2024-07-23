@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL LANGUAGES CXX)
 
+# Detect if component is compiled outside SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/Modules")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../framework/Config/cmake")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../framework/Config/cmake/Modules")
+    include(SofaMacros)
+endif()
+
 set(SOFAGLSRC_ROOT "src/sofa/gl")
 
 sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
