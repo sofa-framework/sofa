@@ -115,6 +115,7 @@ public:
 
     void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     bool fixAllDOFs() const { return d_fixAll.getValue(); }
@@ -122,6 +123,8 @@ public:
 protected :
     /// Function check values of given indices
     void checkIndices();
+
+    void computeBBoxForIndices(const type::vector<Index>& indices);
 
 };
 
