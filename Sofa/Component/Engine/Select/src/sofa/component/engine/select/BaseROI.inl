@@ -628,9 +628,6 @@ void BaseROI<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVi
     if (this->d_componentState.getValue() == ComponentState::Invalid)
         return;
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-
     sofa::type::BoundingBox bbox{};
     roiComputeBBox(params, bbox);
 

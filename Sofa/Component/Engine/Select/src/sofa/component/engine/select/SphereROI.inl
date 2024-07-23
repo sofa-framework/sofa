@@ -252,6 +252,8 @@ void SphereROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void SphereROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox)
 {
+    SOFA_UNUSED(params);
+
     const auto& centers = d_centers.getValue();
     const auto& radii = d_radii.getValue();
     

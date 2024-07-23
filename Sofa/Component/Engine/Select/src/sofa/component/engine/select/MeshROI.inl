@@ -491,6 +491,8 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
 template <class DataTypes>
 void MeshROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox)
 {
+    SOFA_UNUSED(params);
+
     const VecCoord& x0_i = d_X0_i.getValue();
 
     for (const auto& p : x0_i)

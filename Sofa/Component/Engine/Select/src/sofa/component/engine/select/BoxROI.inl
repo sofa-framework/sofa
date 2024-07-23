@@ -289,22 +289,20 @@ void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void BoxROI<DataTypes>::roiComputeBBox(const ExecParams* params, type::BoundingBox& bbox)
 {
+    SOFA_UNUSED(params);
+
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
-    for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
+    for(const auto& box : alignedBoxes)
     {
-        const type::Vec6& box=alignedBoxes[bi];
-
         bbox.include({ box[0], box[1], box[2] });
         bbox.include({ box[3], box[4], box[5] });
     }
 
-    for (unsigned int bi=0; bi<orientedBoxes.size(); ++bi)
+    for(const auto& box : orientedBoxes)
     {
-        const Vec10& box=orientedBoxes[bi];
-
-        vector<type::Vec3> points;
+        vector<type::Vec3> points{};
         points.resize(8);
         getPointsFromOrientedBox(box, points);
 
