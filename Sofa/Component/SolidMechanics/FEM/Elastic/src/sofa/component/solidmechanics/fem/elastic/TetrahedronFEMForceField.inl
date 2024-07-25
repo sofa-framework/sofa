@@ -126,29 +126,29 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 
-    _initialPoints.setParent(&d_initialPoints);
-    f_method.setParent(&d_method);
-    _poissonRatio.setParent(&this->d_poissonRatio);
-    _youngModulus.setParent(&this->d_youngModulus);
-    _localStiffnessFactor.setParent(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
-    _assembling.setParent(&d_assembling);
-    _plasticMaxThreshold.setParent(&d_plasticMaxThreshold);
-    _plasticYieldThreshold.setParent(&d_plasticYieldThreshold);
-    _plasticCreep.setParent(&d_plasticCreep);
-    _gatherPt.setParent(&d_gatherPt);
-    _gatherBsize.setParent(&d_gatherBsize);
-    drawHeterogeneousTetra.setParent(&d_drawHeterogeneousTetra);
-    _computeVonMisesStress.setParent(&d_computeVonMisesStress);
-    _vonMisesPerElement.setParent(&d_vonMisesPerElement);
-    _vonMisesPerNode.setParent(&d_vonMisesPerNode);
-    _vonMisesStressColors.setParent(&d_vonMisesStressColors);
-    _showStressColorMap.setParent(&d_showStressColorMap);
-    _showStressAlpha.setParent(&d_showStressAlpha);
-    _showVonMisesStressPerNode.setParent(&d_showVonMisesStressPerNode);
-    _showVonMisesStressPerNodeColorMap.setParent(&d_showVonMisesStressPerNodeColorMap);
-    _showVonMisesStressPerElement.setParent(&d_showVonMisesStressPerElement);
-    _updateStiffness.setParent(&d_updateStiffness);
+    _initialPoints.setOriginalData(&d_initialPoints);
+    f_method.setOriginalData(&d_method);
+    _poissonRatio.setOriginalData(&this->d_poissonRatio);
+    _youngModulus.setOriginalData(&this->d_youngModulus);
+    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
+    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
+    _assembling.setOriginalData(&d_assembling);
+    _plasticMaxThreshold.setOriginalData(&d_plasticMaxThreshold);
+    _plasticYieldThreshold.setOriginalData(&d_plasticYieldThreshold);
+    _plasticCreep.setOriginalData(&d_plasticCreep);
+    _gatherPt.setOriginalData(&d_gatherPt);
+    _gatherBsize.setOriginalData(&d_gatherBsize);
+    drawHeterogeneousTetra.setOriginalData(&d_drawHeterogeneousTetra);
+    _computeVonMisesStress.setOriginalData(&d_computeVonMisesStress);
+    _vonMisesPerElement.setOriginalData(&d_vonMisesPerElement);
+    _vonMisesPerNode.setOriginalData(&d_vonMisesPerNode);
+    _vonMisesStressColors.setOriginalData(&d_vonMisesStressColors);
+    _showStressColorMap.setOriginalData(&d_showStressColorMap);
+    _showStressAlpha.setOriginalData(&d_showStressAlpha);
+    _showVonMisesStressPerNode.setOriginalData(&d_showVonMisesStressPerNode);
+    _showVonMisesStressPerNodeColorMap.setOriginalData(&d_showVonMisesStressPerNodeColorMap);
+    _showVonMisesStressPerElement.setOriginalData(&d_showVonMisesStressPerElement);
+    _updateStiffness.setOriginalData(&d_updateStiffness);
 
 
 }
@@ -570,10 +570,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 {
     const VecCoord &initialPoints=d_initialPoints.getValue();
     Element index = *elementIt;
-    Index a = index[0];
-    Index b = index[1];
-    Index c = index[2];
-    Index d = index[3];
+    const auto [a, b, c, d] = index.array();
 
     // displacements
     Displacement D;
@@ -677,10 +674,7 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             Element index = *it;
-            Index a = index[0];
-            Index b = index[1];
-            Index c = index[2];
-            Index d = index[3];
+            const auto [a, b, c, d] = index.array();
 
             // displacements
             Displacement D;
@@ -1325,14 +1319,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
-    this->core::behavior::ForceField<DataTypes>::init();
-
-    /// Take the user provide topology.
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -1544,8 +1531,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1564,8 +1549,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1682,24 +1665,16 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-
-            applyStiffnessSmall( df,dx, i, a,b,c,d, kFactor );
+            const auto [a, b, c, d] = it->array();
+            applyStiffnessSmall(df, dx, i, a, b, c, d, kFactor);
         }
     }
     else
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-
-            applyStiffnessCorotational( df,dx, i, a,b,c,d, kFactor );
+            const auto [a, b, c, d] = it->array();
+            applyStiffnessCorotational(df, dx, i, a, b, c, d, kFactor);
         }
     }
 }
@@ -2093,11 +2068,12 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
                 Index b = (*it)[1];
                 Index c = (*it)[2];
                 Index d = (*it)[3];
-                this->computeMaterialStiffness(i,a,b,c,d);
+                this->computeMaterialStiffness(i, a, b, c, d);
             }
         }
     }
-    if (sofa::simulation::AnimateEndEvent::checkEventType(event)) {
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
         if ( isComputeVonMisesStressMethodSet() && updateVonMisesStress )
         {
             computeVonMisesStress();

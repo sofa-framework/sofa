@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/fwd.h>
 
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/type/vector.h>
@@ -79,12 +79,12 @@ public:
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedronFEMForceField : virtual public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
+class HexahedronFEMForceField : virtual public BaseLinearElasticityFEMForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -120,8 +120,7 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<Real> f_poissonRatio;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_youngModulus;
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     Data<bool> f_updateStiffnessMatrix;
@@ -141,8 +140,6 @@ public:
 
 
     Data<std::string> d_method; ///< "large" or "polar" or "small" displacements
-    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
-    Data<Real> d_youngModulus; ///< FEM Young's modulus in Hooke's law
     Data<bool> d_updateStiffnessMatrix;
     Data< sofa::helper::OptionsGroup > d_gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
     Data< sofa::helper::OptionsGroup > d_gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
@@ -150,11 +147,8 @@ public:
     Data<Real> d_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<HexahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-public:
-    void setPoissonRatio(Real val) { this->d_poissonRatio.setValue(val); }
-    void setYoungModulus(Real val) { this->d_youngModulus.setValue(val); }
+    using Inherit1::l_topology;
+
     void setMethod(int val) ;
 
     void setUpdateStiffnessMatrix(bool val) { this->d_updateStiffnessMatrix.setValue(val); }
