@@ -126,29 +126,29 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 
-    _initialPoints.setParent(&d_initialPoints);
-    f_method.setParent(&d_method);
-    _poissonRatio.setParent(&this->d_poissonRatio);
-    _youngModulus.setParent(&this->d_youngModulus);
-    _localStiffnessFactor.setParent(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
-    _assembling.setParent(&d_assembling);
-    _plasticMaxThreshold.setParent(&d_plasticMaxThreshold);
-    _plasticYieldThreshold.setParent(&d_plasticYieldThreshold);
-    _plasticCreep.setParent(&d_plasticCreep);
-    _gatherPt.setParent(&d_gatherPt);
-    _gatherBsize.setParent(&d_gatherBsize);
-    drawHeterogeneousTetra.setParent(&d_drawHeterogeneousTetra);
-    _computeVonMisesStress.setParent(&d_computeVonMisesStress);
-    _vonMisesPerElement.setParent(&d_vonMisesPerElement);
-    _vonMisesPerNode.setParent(&d_vonMisesPerNode);
-    _vonMisesStressColors.setParent(&d_vonMisesStressColors);
-    _showStressColorMap.setParent(&d_showStressColorMap);
-    _showStressAlpha.setParent(&d_showStressAlpha);
-    _showVonMisesStressPerNode.setParent(&d_showVonMisesStressPerNode);
-    _showVonMisesStressPerNodeColorMap.setParent(&d_showVonMisesStressPerNodeColorMap);
-    _showVonMisesStressPerElement.setParent(&d_showVonMisesStressPerElement);
-    _updateStiffness.setParent(&d_updateStiffness);
+    _initialPoints.setOriginalData(&d_initialPoints);
+    f_method.setOriginalData(&d_method);
+    _poissonRatio.setOriginalData(&this->d_poissonRatio);
+    _youngModulus.setOriginalData(&this->d_youngModulus);
+    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
+    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
+    _assembling.setOriginalData(&d_assembling);
+    _plasticMaxThreshold.setOriginalData(&d_plasticMaxThreshold);
+    _plasticYieldThreshold.setOriginalData(&d_plasticYieldThreshold);
+    _plasticCreep.setOriginalData(&d_plasticCreep);
+    _gatherPt.setOriginalData(&d_gatherPt);
+    _gatherBsize.setOriginalData(&d_gatherBsize);
+    drawHeterogeneousTetra.setOriginalData(&d_drawHeterogeneousTetra);
+    _computeVonMisesStress.setOriginalData(&d_computeVonMisesStress);
+    _vonMisesPerElement.setOriginalData(&d_vonMisesPerElement);
+    _vonMisesPerNode.setOriginalData(&d_vonMisesPerNode);
+    _vonMisesStressColors.setOriginalData(&d_vonMisesStressColors);
+    _showStressColorMap.setOriginalData(&d_showStressColorMap);
+    _showStressAlpha.setOriginalData(&d_showStressAlpha);
+    _showVonMisesStressPerNode.setOriginalData(&d_showVonMisesStressPerNode);
+    _showVonMisesStressPerNodeColorMap.setOriginalData(&d_showVonMisesStressPerNodeColorMap);
+    _showVonMisesStressPerElement.setOriginalData(&d_showVonMisesStressPerElement);
+    _updateStiffness.setOriginalData(&d_updateStiffness);
 
 
 }
