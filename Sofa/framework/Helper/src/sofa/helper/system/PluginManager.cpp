@@ -24,7 +24,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
-#include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #if __has_include(<filesystem>)
@@ -39,8 +39,6 @@ using sofa::helper::system::FileSystem;
 
 #include <fstream>
 #include <array>
-
-using sofa::helper::Utils;
 
 namespace sofa::helper::system
 {
@@ -420,7 +418,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     if (ignoreCase)
     {
         if(!recursive) maxRecursiveDepth = 0;
-        const std::string downcaseLibName = Utils::downcaseString(libName);
+        const std::string downcaseLibName = helper::downcaseString(libName);
 
         for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
         {
@@ -439,7 +437,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
-                    const std::string downcaseFilename = Utils::downcaseString(filename);
+                    const std::string downcaseFilename = helper::downcaseString(filename);
 
                     if (downcaseFilename == downcaseLibName)
                     {

@@ -179,12 +179,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
     msg_warning_when(!this->d_poissonRatio.isSet()) << "The default value of the Data " << this->d_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
     msg_warning_when(!this->d_youngModulus.isSet()) << "The default value of the Data " << this->d_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
 
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 

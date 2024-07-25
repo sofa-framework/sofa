@@ -24,14 +24,20 @@
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/helper/set.h>
+#include <set>
 
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API TagSet : public std::set<Tag>
+class SOFA_CORE_API TagSet
 {
 public:
+    using iterator = std::set<Tag>::iterator;
+    using const_iterator = std::set<Tag>::const_iterator;
+    using reverse_iterator = std::set<Tag>::reverse_iterator;
+    using const_reverse_iterator = std::set<Tag>::const_reverse_iterator;
+    using value_type = Tag;
+
     TagSet() = default;
     /// Automatic conversion between a tag and a tagset composed of this tag
     TagSet(const Tag& t);
@@ -39,7 +45,54 @@ public:
     bool includes(const Tag& t) const;
     /// Returns true if this TagSet contains all specified tags
     bool includes(const TagSet& t) const;
+
+    iterator find(const Tag& _Keyval);
+    const_iterator find(const Tag& _Keyval) const;
+
+    [[nodiscard]] bool empty() const noexcept;
+
+    [[nodiscard]] std::size_t size() const noexcept;
+
+    [[nodiscard]] std::size_t count(const Tag& _Keyval) const;
+
+    [[nodiscard]] iterator begin() noexcept;
+
+    [[nodiscard]] const_iterator begin() const noexcept;
+
+    [[nodiscard]] iterator end() noexcept;
+
+    [[nodiscard]] const_iterator end() const noexcept;
+
+    [[nodiscard]] reverse_iterator rbegin() noexcept;
+
+    [[nodiscard]] const_reverse_iterator rbegin() const noexcept;
+
+    [[nodiscard]] reverse_iterator rend() noexcept;
+
+    [[nodiscard]] const_reverse_iterator rend() const noexcept;
+
+    [[nodiscard]] const_iterator cbegin() const noexcept;
+
+    [[nodiscard]] const_iterator cend() const noexcept;
+
+    [[nodiscard]] const_reverse_iterator crbegin() const noexcept;
+
+    [[nodiscard]] const_reverse_iterator crend() const noexcept;
+
+    std::pair<iterator, bool> insert(const value_type& _Val);
+
+    iterator erase(const_iterator _Where) noexcept;
+    iterator erase(const_iterator _First, const_iterator _Last) noexcept;
+    std::size_t erase(const Tag& _Keyval) noexcept;
+
+    void clear() noexcept;
+
+private:
+    std::set<Tag> m_set;
 };
+
+SOFA_CORE_API std::ostream &operator<<(std::ostream &o, const sofa::core::objectmodel::TagSet& tagSet);
+SOFA_CORE_API std::istream &operator>>(std::istream &in, sofa::core::objectmodel::TagSet& tagSet);
 
 } // namespace sofa::core::objectmodel
 

@@ -39,6 +39,18 @@ BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField(
 }
 
 template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::init()
+{
+    core::behavior::ForceField<DataTypes>::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+}
+
+template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::setPoissonRatio(Real val)
 {
     this->d_poissonRatio.setValue(val);

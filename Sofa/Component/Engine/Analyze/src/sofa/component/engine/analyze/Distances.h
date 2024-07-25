@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/SVector.h>
-#include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
