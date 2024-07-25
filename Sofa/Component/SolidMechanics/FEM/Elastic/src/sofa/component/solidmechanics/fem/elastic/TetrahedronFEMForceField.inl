@@ -570,10 +570,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 {
     const VecCoord &initialPoints=d_initialPoints.getValue();
     Element index = *elementIt;
-    Index a = index[0];
-    Index b = index[1];
-    Index c = index[2];
-    Index d = index[3];
+    const auto [a, b, c, d] = index.array();
 
     // displacements
     Displacement D;
@@ -677,10 +674,7 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             Element index = *it;
-            Index a = index[0];
-            Index b = index[1];
-            Index c = index[2];
-            Index d = index[3];
+            const auto [a, b, c, d] = index.array();
 
             // displacements
             Displacement D;
@@ -1537,8 +1531,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1557,8 +1549,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         _rotationIdx.resize(m_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1675,24 +1665,16 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-
-            applyStiffnessSmall( df,dx, i, a,b,c,d, kFactor );
+            const auto [a, b, c, d] = it->array();
+            applyStiffnessSmall(df, dx, i, a, b, c, d, kFactor);
         }
     }
     else
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-
-            applyStiffnessCorotational( df,dx, i, a,b,c,d, kFactor );
+            const auto [a, b, c, d] = it->array();
+            applyStiffnessCorotational(df, dx, i, a, b, c, d, kFactor);
         }
     }
 }
@@ -2086,11 +2068,12 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
                 Index b = (*it)[1];
                 Index c = (*it)[2];
                 Index d = (*it)[3];
-                this->computeMaterialStiffness(i,a,b,c,d);
+                this->computeMaterialStiffness(i, a, b, c, d);
             }
         }
     }
-    if (sofa::simulation::AnimateEndEvent::checkEventType(event)) {
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
         if ( isComputeVonMisesStressMethodSet() && updateVonMisesStress )
         {
             computeVonMisesStress();
