@@ -50,6 +50,8 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     , d_kd(initData(&d_kd,{_kd},"damping","uniform damping for the all springs"))
     , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
+    , d_elongationOnly(initData(&d_elongationOnly, {false}, "elongationOnly", "///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere"))
+    , d_enabled(initData(&d_enabled, {false}, "enabled", "///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere"))
     , maskInUse(false)
 {
     this->addAlias(&fileSprings, "fileSprings");
@@ -131,12 +133,16 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
     auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
     auto& kds = *sofa::helper::getWriteOnlyAccessor(d_kd);
     auto& kss = *sofa::helper::getWriteOnlyAccessor(d_ks);
+    auto& elongationOnly = *sofa::helper::getWriteOnlyAccessor(d_elongationOnly);
+    auto& enabled = *sofa::helper::getWriteOnlyAccessor(d_enabled);
 
     indices1.resize(springValues.size());
     indices2.resize(springValues.size());
     lengths.resize(springValues.size());
     kds.resize(springValues.size());
     kss.resize(springValues.size());
+    elongationOnly.resize(springValues.size());
+    enabled.resize(springValues.size());
     for (unsigned i=0; i<springValues.size(); ++i)
     {
         indices1[i] = springValues[i].m1;
@@ -144,7 +150,70 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
         lengths[i] = springValues[i].initpos;
         kds[i] = springValues[i].kd;
         kss[i] = springValues[i].ks;
+        elongationOnly[i] = springValues[i].elongationOnly;
+        enabled[i] = springValues[i].enabled;
     }
+
+    areSpringIndicesDirty = false;
+}
+
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings_springAdded()
+{
+    const auto& springValues = *sofa::helper::getReadAccessor(d_springs);
+    auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
+    auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
+    auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
+    auto& kds = *sofa::helper::getWriteOnlyAccessor(d_kd);
+    auto& kss = *sofa::helper::getWriteOnlyAccessor(d_ks);
+    auto& elongationOnly = *sofa::helper::getWriteOnlyAccessor(d_elongationOnly);
+    auto& enabled = *sofa::helper::getWriteOnlyAccessor(d_enabled);
+
+    const unsigned oldSize = indices1.size();
+    const unsigned newSize = springValues.size();
+
+    indices1.resize(springValues.size());
+    indices2.resize(springValues.size());
+    lengths.resize(springValues.size());
+    kds.resize(springValues.size());
+    kss.resize(springValues.size());
+    elongationOnly.resize(springValues.size());
+    enabled.resize(springValues.size());
+    for (unsigned i=oldSize; i<newSize; ++i)
+    {
+        indices1[i] = springValues[i].m1;
+        indices2[i] = springValues[i].m2;
+        lengths[i] = springValues[i].initpos;
+        kds[i] = springValues[i].kd;
+        kss[i] = springValues[i].ks;
+        elongationOnly[i] = springValues[i].elongationOnly;
+        enabled[i] = springValues[i].enabled;
+    }
+
+    areSpringIndicesDirty = false;
+}
+
+
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::updateTopologyIndices_springRemoved(unsigned id)
+{
+    auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
+    auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
+    auto& lengths = *sofa::helper::getWriteOnlyAccessor(d_lengths);
+    auto& kds = *sofa::helper::getWriteOnlyAccessor(d_kd);
+    auto& kss = *sofa::helper::getWriteOnlyAccessor(d_ks);
+    auto& elongationOnly = *sofa::helper::getWriteOnlyAccessor(d_elongationOnly);
+    auto& enabled = *sofa::helper::getWriteOnlyAccessor(d_enabled);
+
+    indices1.erase(indices1.begin() + id);
+    indices2.erase(indices2.begin() + id);
+    lengths.erase(lengths.begin() + id);
+    kds.erase(kds.begin() + id);
+    kss.erase(kss.begin() + id);
+    elongationOnly.erase(elongationOnly.begin() + id);
+    enabled.erase(enabled.begin() + id);
 
     areSpringIndicesDirty = false;
 }
@@ -192,13 +261,28 @@ void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
         kss->resize(indices1.size(), kss->back());
     }
 
+    auto elongationOnly = sofa::helper::getWriteAccessor(d_elongationOnly);
+    if (elongationOnly.size() != indices1.size())
+    {
+        msg_warning() << "elongationOnly list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+        elongationOnly->resize(indices1.size(), elongationOnly->back());
+    }
+
+
+    auto enabled = sofa::helper::getWriteAccessor(d_enabled);
+    if (enabled.size() != indices1.size())
+    {
+        msg_warning() << "enabled list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+        enabled->resize(indices1.size(), enabled->back());
+    }
+
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
     type::vector<Spring>& _springs = *this->d_springs.beginEdit();
     _springs.clear();
 
     for (sofa::Index i = 0; i<indices1.size(); ++i)
-        _springs.push_back(Spring(indices1[i], indices2[i], kss[i], kds[i], lengths[i]));
+        _springs.push_back(Spring(indices1[i], indices2[i], kss[i], kds[i], lengths[i],elongationOnly[i],enabled[i]));
     
     areSpringIndicesDirty = false;
 }
@@ -436,7 +520,7 @@ auto SpringForceField<DataTypes>::computeSpringForce(
     /// Get the positional part out of the dofs.
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
-    if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
+    if( spring.enabled && (d - spring.initpos)>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
         std::unique_ptr<SpringForce> springForce = std::make_unique<SpringForce>();
 
@@ -900,7 +984,7 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
     springs.erase(springs.begin() +idSpring );
     this->d_springs.cleanDirty();
 
-    updateTopologyIndicesFromSprings();
+    updateTopologyIndices_springRemoved(idSpring);
 }
 
 template <class DataTypes>
@@ -909,7 +993,7 @@ void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SRea
     d_springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
     d_springs.cleanDirty();
 
-    updateTopologyIndicesFromSprings();
+    updateTopologyIndicesFromSprings_springAdded();
 }
 
 template <class DataTypes>
@@ -918,7 +1002,7 @@ void SpringForceField<DataTypes>::addSpring(const Spring& spring)
     d_springs.beginEdit()->push_back(spring);
     d_springs.cleanDirty();
 
-    updateTopologyIndicesFromSprings();
+    updateTopologyIndicesFromSprings_springAdded();
 }
 
 template<class DataTypes>

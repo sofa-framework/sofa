@@ -75,10 +75,12 @@ public:
 
     Data<float> d_showArrowSize; ///< size of the axis
     Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
-    Data<type::vector<SReal> > d_kd;  ///< uniform damping for the all springs
-    Data<type::vector<SReal> > d_ks;  ///< uniform stiffness for the all springs
+    Data<type::vector<SReal> > d_kd;  ///< List of damping for the all springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+    Data<type::vector<SReal> > d_ks;  ///< List of stiffness for the all springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
     Data<type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
-    Data<type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+    Data<type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+    Data<type::vector<bool> > d_elongationOnly; ///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere
+    Data<type::vector<bool> > d_enabled; ///< List of boolean stating on the fact that the spring is enabled. Must have as same size than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere
 
     void init() override;
     void reinit() override;
@@ -158,6 +160,8 @@ protected:
     virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring);
     void initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices, core::topology::BaseMeshTopology* topology, sofa::Index mstateId);
     void updateTopologyIndicesFromSprings();
+    void updateTopologyIndicesFromSprings_springAdded();
+    void updateTopologyIndices_springRemoved(unsigned id);
     void updateSpringsFromTopologyIndices();
     void applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId);
     void applyRemovedEdges(const sofa::core::topology::EdgesRemoved* edgesRemoved, sofa::Index mstateId);
