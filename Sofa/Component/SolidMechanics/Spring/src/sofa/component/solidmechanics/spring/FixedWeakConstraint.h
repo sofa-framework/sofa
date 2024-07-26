@@ -29,6 +29,7 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/component/solidmechanics/spring/BaseRestShapeSpringsForceField.h>
 
 
 namespace sofa::component::solidmechanics::spring
@@ -41,10 +42,10 @@ namespace sofa::component::solidmechanics::spring
 * An external MechanicalState reference can also be passed to the ForceField as rest shape position.
 */
 template<class DataTypes>
-class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
+class FixedWeakConstraint : public BaseRestShapeSpringsForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedWeakConstraint, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedWeakConstraint, DataTypes), SOFA_TEMPLATE(BaseRestShapeSpringsForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -65,20 +66,11 @@ public:
 
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-    SetIndex d_indices;
     Data<bool> d_fixAll;
-    Data< Real > d_stiffness; ///< stiffness values between the actual position and the rest shape position
-    Data< Real > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
-    Data< bool > d_drawSpring; ///< draw Spring
-    Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
-
-    linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<FixedWeakConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     FixedWeakConstraint();
-    bool checkOutOfBoundsIndices();
+    virtual bool checkOutOfBoundsIndices() override;
 
 public:
     virtual void init() override;

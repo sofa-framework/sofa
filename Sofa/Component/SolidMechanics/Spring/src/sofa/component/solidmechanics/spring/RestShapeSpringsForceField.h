@@ -128,11 +128,10 @@ protected :
     bool checkOutOfBoundsIndices();
     bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
 
+
     VecIndex m_indices;
     VecIndex m_ext_indices;
     type::vector<CPos> m_pivots;
-
-    SReal lastUpdatedStep{};
 
 private :
 

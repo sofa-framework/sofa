@@ -26,6 +26,7 @@
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/component/solidmechanics/spring/BaseRestShapeSpringsForceField.inl>
 
 
 namespace sofa::component::solidmechanics::spring
@@ -34,7 +35,7 @@ namespace sofa::component::solidmechanics::spring
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int FixedWeakConstraintClass = core::RegisterObject("Elastic springs generating forces on degrees of freedom between their current and rest shape position")
+int FixedWeakConstraintClass = core::RegisterObject("Weak constraints fixing dofs at their rest shape using springs")
         .add< FixedWeakConstraint<Vec6Types> >()
         .add< FixedWeakConstraint<Vec3Types> >()
         .add< FixedWeakConstraint<Vec2Types> >()
