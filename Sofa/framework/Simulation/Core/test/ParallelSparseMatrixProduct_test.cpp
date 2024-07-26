@@ -41,6 +41,7 @@ struct SparseMatrixProductInit<
 
     static void cleanup(sofa::simulation::ParallelSparseMatrixProduct<Lhs, Rhs, ResultType>& product)
     {
+        SOFA_UNUSED(product);
         // simulation::MainTaskSchedulerRegistry::clear();
     }
 };

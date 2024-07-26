@@ -33,10 +33,10 @@ namespace sofa::component::linearsolver::iterative
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
-    : d_maxIter( initData(&d_maxIter, 25u,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
+    : d_maxIter( initData(&d_maxIter, 25u,"iterations","Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
     , d_tolerance( initData(&d_tolerance,(Real)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_smallDenominatorThreshold( initData(&d_smallDenominatorThreshold,(Real)1e-5,"threshold","Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") )
-    , d_warmStart( initData(&d_warmStart,false,"warmStart","Use previous solution as initial solution") )
+    , d_warmStart( initData(&d_warmStart,false,"warmStart","Use previous solution as initial solution, which may improve the initial guess if your system is evolving smoothly") )
     , d_graph( initData(&d_graph,"graph","Graph of residuals at each iteration") )
 {
     d_graph.setWidget("graph");

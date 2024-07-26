@@ -7,7 +7,7 @@ include(CMakeDependentOption)
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 24)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -48,16 +48,13 @@ option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetche
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
 
 # https://cmake.org/cmake/help/latest/policy/CMP0127.html
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
-    cmake_policy(SET CMP0127 NEW)
-endif()
-cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
-    "Compile SOFA using precompiled header (to accelerate the build process)" OFF
-    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+cmake_policy(SET CMP0127 NEW)
+
+option(SOFA_BUILD_WITH_PCH_ENABLED "Compile SOFA using precompiled header (to accelerate the build process)" OFF)
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("-- Precompiled headers: enabled (SOFA_BUILD_WITH_PCH_ENABLED is ON).")
 else()
-    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF or CMake < 3.16).")
+    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF).")
     set(DISABLE_PRECOMPILE_HEADERS ON)
 endif()
 
@@ -178,7 +175,6 @@ option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers locat
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
 endif()
-sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
@@ -294,9 +290,6 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
     ################
     # Package config
     include(CPackComponent)
-    if(WIN32 AND ${CMAKE_VERSION} VERSION_LESS "3.13.0")
-        include(CPackNSIS)
-    endif()
     include(CPackIFW)
     set(CPACK_PACKAGE_VERSION "${Sofa_VERSION}")
     set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")

@@ -31,10 +31,13 @@ namespace sofa::component::constraint::lagrangian::model
 template<class DataTypes>
 StopperLagrangianConstraint<DataTypes>::StopperLagrangianConstraint(MechanicalState* object)
     : Inherit(object)
-    , index(initData(&index, 0, "index", "index of the stop constraint"))
-    , min(initData(&min, -100.0_sreal, "min", "minimum value accepted"))
-    , max(initData(&max, 100.0_sreal, "max", "maximum value accepted"))
+    , d_index(initData(&d_index, 0, "index", "index of the stop constraint"))
+    , d_min(initData(&d_min, -100.0_sreal, "min", "minimum value accepted"))
+    , d_max(initData(&d_max, 100.0_sreal, "max", "maximum value accepted"))
 {
+        index.setParent(&d_index);
+        min.setParent(&d_min);
+        max.setParent(&d_max);
 }
 
 template<class DataTypes>
@@ -45,37 +48,33 @@ void StopperLagrangianConstraint<DataTypes>::init()
 
     helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
     VecCoord& x = xData.wref();
-    if (x[index.getValue()].x() < min.getValue())
-        x[index.getValue()].x() = (Real) min.getValue();
-    if (x[index.getValue()].x() > max.getValue())
-        x[index.getValue()].x() = (Real) max.getValue();
+    if (x[d_index.getValue()].x() < d_min.getValue())
+        x[d_index.getValue()].x() = (Real) d_min.getValue();
+    if (x[d_index.getValue()].x() > d_max.getValue())
+        x[d_index.getValue()].x() = (Real) d_max.getValue();
 }
 
 template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
-    cid = cIndex;
+    auto c = sofa::helper::getWriteAccessor(c_d);
 
-    MatrixDeriv& c = *c_d.beginEdit();
-
-    MatrixDerivRowIterator c_it = c.writeLine(cid);
-    c_it.setCol(index.getValue(), Coord(1));
-
-    cIndex++;
-    c_d.endEdit();
+    MatrixDerivRowIterator c_it = c->writeLine(cIndex++);
+    c_it.setCol(d_index.getValue(), Coord(1));
 }
 
 template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
-    resV->set(cid, x.getValue()[index.getValue()][0]);
+    const auto constraintIndex = this->d_constraintIndex.getValue();
+    resV->set(constraintIndex, x.getValue()[d_index.getValue()][0]);
 }
 
 template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<1; i++)
-        resTab[offset++] = new StopperLagrangianConstraintResolution1Dof(min.getValue(), max.getValue());
+        resTab[offset++] = new StopperLagrangianConstraintResolution1Dof(d_min.getValue(), d_max.getValue());
 }
 
 } //namespace sofa::component::constraint::lagrangian::model

@@ -31,7 +31,7 @@ namespace sofa::gui::component
 
 /*****
 * This component modifies the mouse picking behavior in the GUI 
-* and set it at the beginning to Lagrangian-based contraints
+* and set it at the beginning to Lagrangian-based constraints
 * It doesn't have any parameter because its only presence is sufficient.
 *****/
 class SOFA_GUI_COMPONENT_API ConstraintAttachButtonSetting: public sofa::component::setting::MouseButtonSetting

@@ -72,7 +72,7 @@ protected:
 
 public:
 
-    Data<bool> f_applyRestPosition; ///< @todo document this
+    Data<bool> f_applyRestPosition; ///< set to true to apply this mapping to restPosition at init
 protected:
 
     /// Constructor

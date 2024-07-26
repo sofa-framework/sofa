@@ -40,10 +40,10 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     using Real = typename Matrix::Real;
 
-    Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<Real> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-    Data<Real> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
-    Data<bool> d_warmStart; ///< Use previous solution as initial solution
+    Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
+    Data<Real> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
+    Data<Real> d_smallDenominatorThreshold; ///< Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution
+    Data<bool> d_warmStart; ///< Use previous solution as initial solution, which may improve the initial guess if your system is evolving smoothly
     Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:

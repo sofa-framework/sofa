@@ -44,7 +44,7 @@ class PartialLinearMovementProjectiveConstraintInternalData
 };
 
 /** impose a motion to given DOFs (translation and rotation) in some directions only.
-  The moved and free directioons are the same for all the particles, defined  in the movedDirections attribute.
+  The moved and free directions are the same for all the particles, defined  in the movedDirections attribute.
     The motion between 2 key times is linearly interpolated
 */
 template <class TDataTypes>
@@ -70,21 +70,58 @@ public:
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
 protected:
-    PartialLinearMovementProjectiveConstraintInternalData<DataTypes> *data;
+    std::unique_ptr<PartialLinearMovementProjectiveConstraintInternalData<DataTypes> > data;
     friend class PartialLinearMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-    /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
-    /// the key frames when the motion is defined by the user
-    core::objectmodel::Data<type::vector<Real> > m_keyTimes;
-    /// the motions corresponding to the key frames
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<sofa::type::vector<sofa::Index> >  m_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<type::vector<Real> >m_keyTimes;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     core::objectmodel::Data<VecDeriv > m_keyMovements;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data< bool > showMovement;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<unsigned> mainIndice;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<unsigned> minDepIndice;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<unsigned> maxDepIndice;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> X0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> Y0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> Z0;
+
+
+    /// indices of the DOFs the constraint is applied to
+    SetIndex d_indices;
+    /// the key frames when the motion is defined by the user
+    core::objectmodel::Data<type::vector<Real> > d_keyTimes;
+    /// the motions corresponding to the key frames
+    core::objectmodel::Data<VecDeriv > d_keyMovements;
 
     /// attributes to precise display
     /// if showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
-    core::objectmodel::Data< bool > showMovement;
+    core::objectmodel::Data< bool > d_showMovement;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -93,19 +130,23 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
-    core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
-    core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
-    core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
-    core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    core::objectmodel::Data<bool> d_linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
+    core::objectmodel::Data<unsigned> d_mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes
+    core::objectmodel::Data<unsigned> d_minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment
+    core::objectmodel::Data<unsigned> d_maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment
+    core::objectmodel::Data<type::vector<Real> > d_imposedDisplacmentOnMacroNodes; ///< The imposed displacment on macro nodes
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0; ///< Size of specimen in X-direction
-    Data<Real> Y0; ///< Size of specimen in Y-direction
-    Data<Real> Z0; ///< Size of specimen in Z-direction
+    Data<Real> d_X0; ///< Size of specimen in X-direction
+    Data<Real> d_Y0; ///< Size of specimen in Y-direction
+    Data<Real> d_Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
-    core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    core::objectmodel::Data<VecBool> movedDirections;
+
+    core::objectmodel::Data<VecBool> d_movedDirections; ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PartialLinearMovementProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

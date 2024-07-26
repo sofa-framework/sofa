@@ -29,7 +29,7 @@
 namespace sofa::component::solidmechanics::fem::nonuniform
 {
 
-/** Need a SparseGridTopology with _sparseGrid->_nbVirtualFinerLevels >= this->_nbVirtualFinerLevels
+/** Need a SparseGridTopology with _sparseGrid->d_nbVirtualFinerLevels >= this->d_nbVirtualFinerLevels
 
 @InProceedings{NPF06,
 author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
@@ -75,8 +75,8 @@ public:
 public:
 
 
-    Data<int> d_nbVirtualFinerLevels; ///< use virtual finer levels, in order to compte non-uniform stiffness, only valid if the topology is a SparseGridTopology with enough VirtualFinerLevels.
-    Data<bool> d_useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
+    Data<int> d_nbVirtualFinerLevels; ///< use virtual finer levels, in order to compte non-uniform stiffness
+    Data<bool> d_useMass; ///< Using this ForceField like a Mass? (rather than using a separated Mass)
     Data<Real> d_totalMass;
 
     /// Link to be set to the topology container in the component graph. 

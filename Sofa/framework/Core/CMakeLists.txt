@@ -40,6 +40,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MultiMapping.inl
     ${SRC_ROOT}/MultiVecId.h
     ${SRC_ROOT}/ObjectFactory.h
+    ${SRC_ROOT}/ObjectFactoryJson.h
     ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
     ${SRC_ROOT}/sptr.h
@@ -77,6 +78,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
+    ${SRC_ROOT}/behavior/LinearSolverAccessor.h
     ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
@@ -159,6 +161,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/Link.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
+    ${SRC_ROOT}/objectmodel/RenamedData.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
@@ -182,6 +185,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
+    ${SRC_ROOT}/trait/DataTypes.h
     ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/FlagTreeItem.h
@@ -219,6 +223,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
+    ${SRC_ROOT}/ObjectFactoryJson.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
@@ -242,6 +247,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
+    ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
     ${SRC_ROOT}/behavior/MechanicalMatrix.cpp
     ${SRC_ROOT}/behavior/MechanicalState.cpp

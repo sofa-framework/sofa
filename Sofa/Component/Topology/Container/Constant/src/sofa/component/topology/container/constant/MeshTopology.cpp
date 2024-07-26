@@ -39,16 +39,16 @@ MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)
 {
     if( topology->hasVolume() )
     {
-        addInput(&topology->seqHexahedra);
-        addInput(&topology->seqTetrahedra);
-        addOutput(&topology->seqEdges);
+        addInput(&topology->d_seqHexahedra);
+        addInput(&topology->d_seqTetrahedra);
+        addOutput(&topology->d_seqEdges);
         setDirtyValue();
     }
     else if( topology->hasSurface() )
     {
-        addInput(&topology->seqTriangles);
-        addInput(&topology->seqQuads);
-        addOutput(&topology->seqEdges);
+        addInput(&topology->d_seqTriangles);
+        addInput(&topology->d_seqQuads);
+        addOutput(&topology->d_seqEdges);
         setDirtyValue();
     }
 
@@ -66,12 +66,12 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     typedef MeshTopology::SeqHexahedra  SeqHexahedra;
     typedef MeshTopology::SeqEdges     SeqEdges;
 
-    SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
+    SeqEdges& seqEdges = *topology->d_seqEdges.beginEdit();
     seqEdges.clear();
     std::map<Edge,unsigned int> edgeMap;
     unsigned int edgeIndex;
 
-    const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
+    const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use d_seqTetrahedra directly as it might not be up-to-date
     for (const auto& t : tetrahedra)
     {
         std::map<Edge,unsigned int>::iterator ite;
@@ -105,7 +105,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     // fjourdes :
     // should the edgeMap be cleared here ? Sounds strange but it seems that is what was done in previous method.
 
-    const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use d_seqHexahedra directly as it might not be up-to-date
     // create a temporary map to find redundant edges
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
@@ -139,7 +139,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
             //m_edgesInHexahedron[i][j]=edgeIndex;
         }
     }
-    topology->seqEdges.endEdit();
+    topology->d_seqEdges.endEdit();
 }
 
 void MeshTopology::EdgeUpdate::updateFromSurface()
@@ -150,9 +150,9 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
 
     std::map<Edge,unsigned int> edgeMap;
     unsigned int edgeIndex;
-    SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
+    SeqEdges& seqEdges = *topology->d_seqEdges.beginEdit();
     seqEdges.clear();
-    const SeqTriangles& triangles = topology->getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
+    const SeqTriangles& triangles = topology->getTriangles(); // do not use d_seqTriangles directly as it might not be up-to-date
     for (const auto& t : triangles)
     {
         std::map<Edge,unsigned int>::iterator ite;
@@ -173,7 +173,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
                 // To be similar to TriangleSetTopologyContainer::createEdgeSetArray
-                //seqEdges.push_back(e); Changed to have oriented edges on the border of the triangulation. 
+                //d_seqEdges.push_back(e); Changed to have oriented edges on the border of the triangulation.
                 seqEdges.push_back(Edge(v1, v2));
             }
 //            else
@@ -184,7 +184,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         }
     }
 
-    const SeqQuads& quads = topology->getQuads(); // do not use seqQuads directly as it might not be up-to-date
+    const SeqQuads& quads = topology->getQuads(); // do not use d_seqQuads directly as it might not be up-to-date
     for (const auto& t : quads)
     {
         std::map<Edge,unsigned int>::iterator ite;
@@ -214,15 +214,15 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         }
     }
 
-    topology->seqEdges.endEdit();
+    topology->d_seqEdges.endEdit();
 }
 
 
 MeshTopology::TriangleUpdate::TriangleUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
-    addInput(&topology->seqTetrahedra);
-    addOutput(&topology->seqTriangles);
+    addInput(&topology->d_seqTetrahedra);
+    addOutput(&topology->d_seqTriangles);
     setDirtyValue();
 }
 
@@ -232,7 +232,7 @@ void MeshTopology::TriangleUpdate::doUpdate()
     typedef MeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef MeshTopology::SeqTriangles SeqTriangles;
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra();
-    SeqTriangles& seqTriangles = *topology->seqTriangles.beginEdit();
+    SeqTriangles& seqTriangles = *topology->d_seqTriangles.beginEdit();
     seqTriangles.clear();
     // create a temporary map to find redundant triangles
     std::map<Triangle,unsigned int> triangleMap;
@@ -243,7 +243,7 @@ void MeshTopology::TriangleUpdate::doUpdate()
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
-        const Tetra &t=topology->seqTetrahedra.getValue()[i];
+        const Tetra &t=topology->d_seqTetrahedra.getValue()[i];
         for (const auto j : sofa::core::topology::trianglesOrientationInTetrahedronArray)
         {
             for (PointID k=0; k<3; ++k)
@@ -269,14 +269,14 @@ void MeshTopology::TriangleUpdate::doUpdate()
         }
     }
 
-    topology->seqTriangles.endEdit();
+    topology->d_seqTriangles.endEdit();
 }
 
 MeshTopology::QuadUpdate::QuadUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
-    addInput(&topology->seqHexahedra);
-    addOutput(&topology->seqQuads);
+    addInput(&topology->d_seqHexahedra);
+    addOutput(&topology->d_seqQuads);
     setDirtyValue();
 }
 
@@ -285,12 +285,12 @@ void MeshTopology::QuadUpdate::doUpdate()
     typedef MeshTopology::SeqHexahedra SeqHexahedra;
     typedef MeshTopology::SeqQuads SeqQuads;
 
-    SeqQuads& seqQuads = *topology->seqQuads.beginEdit();
+    SeqQuads& seqQuads = *topology->d_seqQuads.beginEdit();
     seqQuads.clear();
 
     if (topology->getNbHexahedra()==0) return; // no hexahedra to extract edges from
 
-    const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use d_seqQuads directly as it might not be up-to-date
 
     // create a temporary map to find redundant quads
     std::map<Quad,unsigned int> quadMap;
@@ -403,7 +403,7 @@ void MeshTopology::QuadUpdate::doUpdate()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=(unsigned int)topology->seqQuads.getValue().size();
+            quadIndex=(unsigned int)topology->d_seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -472,7 +472,7 @@ void MeshTopology::QuadUpdate::doUpdate()
         //m_quadsInHexahedron[i][5]=quadIndex;
     }
 
-    topology->seqQuads.endEdit();
+    topology->d_seqQuads.endEdit();
 }
 
 using namespace sofa::defaulttype;
@@ -485,28 +485,41 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
         ;
 
 MeshTopology::MeshTopology()
-    : seqPoints(initData(&seqPoints,"position","List of point positions"))
-    , seqEdges(initData(&seqEdges,"edges","List of edge indices"))
-    , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices"))
-    , seqQuads(initData(&seqQuads,"quads","List of quad indices"))
-    , seqTetrahedra(initData(&seqTetrahedra,"tetrahedra","List of tetrahedron indices"))
-    , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices"))
-    , seqUVs(initData(&seqUVs,"uv","List of uv coordinates"))
+    : d_seqPoints(initData(&d_seqPoints, "position", "List of point positions"))
+    , d_seqEdges(initData(&d_seqEdges, "edges", "List of edge indices"))
+    , d_seqTriangles(initData(&d_seqTriangles, "triangles", "List of triangle indices"))
+    , d_seqQuads(initData(&d_seqQuads, "quads", "List of quad indices"))
+    , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
+    , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
+    , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
     , nbPoints(0)
     , validTetrahedra(false), validHexahedra(false)
     , revision(0)
-    , _drawEdges(initData(&_drawEdges, false, "drawEdges","if true, draw the topology Edges"))
-    , _drawTriangles(initData(&_drawTriangles, false, "drawTriangles","if true, draw the topology Triangles"))
-    , _drawQuads(initData(&_drawQuads, false, "drawQuads","if true, draw the topology Quads"))
-    , _drawTetra(initData(&_drawTetra, false, "drawTetrahedra","if true, draw the topology Tetrahedra"))
-    , _drawHexa(initData(&_drawHexa, false, "drawHexahedra","if true, draw the topology hexahedra"))
+    , d_drawEdges(initData(&d_drawEdges, false, "drawEdges", "if true, draw the topology Edges"))
+    , d_drawTriangles(initData(&d_drawTriangles, false, "drawTriangles", "if true, draw the topology Triangles"))
+    , d_drawQuads(initData(&d_drawQuads, false, "drawQuads", "if true, draw the topology Quads"))
+    , d_drawTetra(initData(&d_drawTetra, false, "drawTetrahedra", "if true, draw the topology Tetrahedra"))
+    , d_drawHexa(initData(&d_drawHexa, false, "drawHexahedra", "if true, draw the topology hexahedra"))
 {
     m_upperElementType = sofa::geometry::ElementType::EDGE;
-    addAlias(&seqPoints,"points");
-    addAlias(&seqEdges,"lines");
-    addAlias(&seqTetrahedra,"tetras");
-    addAlias(&seqHexahedra,"hexas");
-    addAlias(&seqUVs,"texcoords");
+    addAlias(&d_seqPoints, "points");
+    addAlias(&d_seqEdges, "lines");
+    addAlias(&d_seqTetrahedra, "tetras");
+    addAlias(&d_seqHexahedra, "hexas");
+    addAlias(&d_seqUVs, "texcoords");
+
+    seqPoints.setParent(&d_seqPoints);
+    seqEdges.setParent(&d_seqEdges);
+    seqTriangles.setParent(&d_seqTriangles);
+    seqQuads.setParent(&d_seqQuads);
+    seqTetrahedra.setParent(&d_seqTetrahedra);
+    seqHexahedra.setParent(&d_seqHexahedra);
+    seqUVs.setParent(&d_seqUVs);
+    _drawEdges.setParent(&d_drawEdges);
+    _drawTriangles.setParent(&d_drawTriangles);
+    _drawQuads.setParent(&d_drawQuads);
+    _drawTetra.setParent(&d_drawTetra);
+    _drawHexa.setParent(&d_drawHexa);
 }
 
 void MeshTopology::init()
@@ -514,11 +527,11 @@ void MeshTopology::init()
 
     BaseMeshTopology::init();
 
-    const auto hexahedra = sofa::helper::getReadAccessor(seqHexahedra);
-    const auto tetrahedra = sofa::helper::getReadAccessor(seqTetrahedra);
-    const auto quads = sofa::helper::getReadAccessor(seqQuads);
-    const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
-    const auto edges = sofa::helper::getReadAccessor(seqEdges);
+    const auto hexahedra = sofa::helper::getReadAccessor(d_seqHexahedra);
+    const auto tetrahedra = sofa::helper::getReadAccessor(d_seqTetrahedra);
+    const auto quads = sofa::helper::getReadAccessor(d_seqQuads);
+    const auto triangles = sofa::helper::getReadAccessor(d_seqTriangles);
+    const auto edges = sofa::helper::getReadAccessor(d_seqEdges);
 
 
     // looking for upper topology
@@ -565,9 +578,9 @@ void MeshTopology::init()
 
     if(edges.empty() )
     {
-        if(seqEdges.getParent() != nullptr )
+        if(d_seqEdges.getParent() != nullptr )
         {
-            seqEdges.delInput(seqEdges.getParent());
+            d_seqEdges.delInput(d_seqEdges.getParent());
         }
         const EdgeUpdate::SPtr edgeUpdate = sofa::core::objectmodel::New<EdgeUpdate>(this);
         edgeUpdate->setName("edgeUpdate");
@@ -575,9 +588,9 @@ void MeshTopology::init()
     }
     if(triangles.empty() )
     {
-        if(seqTriangles.getParent() != nullptr)
+        if(d_seqTriangles.getParent() != nullptr)
         {
-            seqTriangles.delInput(seqTriangles.getParent());
+            d_seqTriangles.delInput(d_seqTriangles.getParent());
         }
         const TriangleUpdate::SPtr triangleUpdate = sofa::core::objectmodel::New<TriangleUpdate>(this);
         triangleUpdate->setName("triangleUpdate");
@@ -585,9 +598,9 @@ void MeshTopology::init()
     }
     if(quads.empty() )
     {
-        if(seqQuads.getParent() != nullptr )
+        if(d_seqQuads.getParent() != nullptr )
         {
-            seqQuads.delInput(seqQuads.getParent());
+            d_seqQuads.delInput(d_seqQuads.getParent());
         }
         const QuadUpdate::SPtr quadUpdate = sofa::core::objectmodel::New<QuadUpdate>(this);
         quadUpdate->setName("quadUpdate");
@@ -599,13 +612,13 @@ void MeshTopology::clear()
 {
     nbPoints = 0;
 
-    helper::getWriteOnlyAccessor(seqPoints).clear();
-    helper::getWriteOnlyAccessor(seqEdges).clear();
-    helper::getWriteOnlyAccessor(seqTriangles).clear();
-    helper::getWriteOnlyAccessor(seqQuads).clear();
-    helper::getWriteOnlyAccessor(seqTetrahedra).clear();
-    helper::getWriteOnlyAccessor(seqHexahedra).clear();
-    helper::getWriteOnlyAccessor(seqUVs).clear();
+    helper::getWriteOnlyAccessor(d_seqPoints).clear();
+    helper::getWriteOnlyAccessor(d_seqEdges).clear();
+    helper::getWriteOnlyAccessor(d_seqTriangles).clear();
+    helper::getWriteOnlyAccessor(d_seqQuads).clear();
+    helper::getWriteOnlyAccessor(d_seqTetrahedra).clear();
+    helper::getWriteOnlyAccessor(d_seqHexahedra).clear();
+    helper::getWriteOnlyAccessor(d_seqUVs).clear();
 
     invalidate();
 }
@@ -613,24 +626,24 @@ void MeshTopology::clear()
 
 void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 {
-    seqPoints.beginEdit()->push_back(type::Vec3((SReal)px, (SReal)py, (SReal)pz));
-    seqPoints.endEdit();
-    if (seqPoints.getValue().size() > nbPoints)
-        nbPoints = (int)seqPoints.getValue().size();
+    d_seqPoints.beginEdit()->push_back(type::Vec3((SReal)px, (SReal)py, (SReal)pz));
+    d_seqPoints.endEdit();
+    if (d_seqPoints.getValue().size() > nbPoints)
+        nbPoints = (int)d_seqPoints.getValue().size();
 }
 
 void MeshTopology::addEdge( Index a, Index b )
 {
-    seqEdges.beginEdit()->push_back(Edge(a,b));
-    seqEdges.endEdit();
+    d_seqEdges.beginEdit()->push_back(Edge(a, b));
+    d_seqEdges.endEdit();
     if (a >= nbPoints) nbPoints = a+1;
     if (b >= nbPoints) nbPoints = b+1;
 }
 
 void MeshTopology::addTriangle( Index a, Index b, Index c )
 {
-    seqTriangles.beginEdit()->push_back( Triangle(a,b,c) );
-    seqTriangles.endEdit();
+    d_seqTriangles.beginEdit()->push_back(Triangle(a, b, c) );
+    d_seqTriangles.endEdit();
     if (a >= nbPoints) nbPoints = a+1;
     if (b >= nbPoints) nbPoints = b+1;
     if (c >= nbPoints) nbPoints = c+1;
@@ -638,8 +651,8 @@ void MeshTopology::addTriangle( Index a, Index b, Index c )
 
 void MeshTopology::addQuad(Index a, Index b, Index c, Index d)
 {
-    seqQuads.beginEdit()->push_back(Quad(a,b,c,d));
-    seqQuads.endEdit();
+    d_seqQuads.beginEdit()->push_back(Quad(a, b, c, d));
+    d_seqQuads.endEdit();
     if (a >= nbPoints) nbPoints = a+1;
     if (b >= nbPoints) nbPoints = b+1;
     if (c >= nbPoints) nbPoints = c+1;
@@ -648,8 +661,8 @@ void MeshTopology::addQuad(Index a, Index b, Index c, Index d)
 
 void MeshTopology::addTetra( Index a, Index b, Index c, Index d )
 {
-    seqTetrahedra.beginEdit()->push_back( Tetra(a,b,c,d) );
-    seqTetrahedra.endEdit();
+    d_seqTetrahedra.beginEdit()->push_back(Tetra(a, b, c, d) );
+    d_seqTetrahedra.endEdit();
     if (a >= nbPoints) nbPoints = a+1;
     if (b >= nbPoints) nbPoints = b+1;
     if (c >= nbPoints) nbPoints = c+1;
@@ -659,9 +672,9 @@ void MeshTopology::addTetra( Index a, Index b, Index c, Index d )
 void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Index p6, Index p7, Index p8)
 {
 
-    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
+    d_seqHexahedra.beginEdit()->push_back(Hexa(p1, p2, p3, p4, p5, p6, p7, p8));
 
-    seqHexahedra.endEdit();
+    d_seqHexahedra.endEdit();
     if (p1 >= nbPoints) nbPoints = p1+1;
     if (p2 >= nbPoints) nbPoints = p2+1;
     if (p3 >= nbPoints) nbPoints = p3+1;
@@ -674,26 +687,26 @@ void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Ind
 
 void MeshTopology::addUV(SReal u, SReal v)
 {
-    seqUVs.beginEdit()->push_back(type::Vec<2,SReal>((SReal)u, (SReal)v));
-    seqUVs.endEdit();
-    if (seqUVs.getValue().size() > nbPoints)
-        nbPoints = (int)seqUVs.getValue().size();
+    d_seqUVs.beginEdit()->push_back(type::Vec<2,SReal>((SReal)u, (SReal)v));
+    d_seqUVs.endEdit();
+    if (d_seqUVs.getValue().size() > nbPoints)
+        nbPoints = (int)d_seqUVs.getValue().size();
 }
 
 const MeshTopology::SeqEdges& MeshTopology::getEdges()
 {
-    return seqEdges.getValue();
+    return d_seqEdges.getValue();
 }
 
 const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
 {
-    return seqTriangles.getValue();
+    return d_seqTriangles.getValue();
 }
 
 const MeshTopology::SeqQuads& MeshTopology::getQuads()
 {
 
-    return seqQuads.getValue();
+    return d_seqQuads.getValue();
 }
 
 const MeshTopology::SeqTetrahedra& MeshTopology::getTetrahedra()
@@ -703,7 +716,7 @@ const MeshTopology::SeqTetrahedra& MeshTopology::getTetrahedra()
         updateTetrahedra();
         validTetrahedra = true;
     }
-    return seqTetrahedra.getValue();
+    return d_seqTetrahedra.getValue();
 }
 
 const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
@@ -713,12 +726,12 @@ const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
         updateHexahedra();
         validHexahedra = true;
     }
-    return seqHexahedra.getValue();
+    return d_seqHexahedra.getValue();
 }
 
 const MeshTopology::SeqUV& MeshTopology::getUVs()
 {
-    return seqUVs.getValue();
+    return d_seqUVs.getValue();
 }
 
 Size MeshTopology::getNbPoints() const
@@ -830,8 +843,8 @@ void MeshTopology::createEdgesAroundVertexArray ()
 
 void MeshTopology::createEdgesInTriangleArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqTriangles& triangles = getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
+    const SeqTriangles& triangles = getTriangles(); // do not use d_seqTriangles directly as it might not be up-to-date
     m_edgesInTriangle.clear();
     m_edgesInTriangle.resize(triangles.size());
     for (unsigned int i = 0; i < triangles.size(); ++i)
@@ -849,8 +862,8 @@ void MeshTopology::createEdgesInTriangleArray ()
 
 void MeshTopology::createEdgesInQuadArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqQuads& quads = getQuads(); // do not use seqQuads directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
+    const SeqQuads& quads = getQuads(); // do not use d_seqQuads directly as it might not be up-to-date
     m_edgesInQuad.clear();
     m_edgesInQuad.resize(quads.size());
     for (unsigned int i = 0; i < quads.size(); ++i)
@@ -868,8 +881,8 @@ void MeshTopology::createEdgesInQuadArray ()
 
 void MeshTopology::createEdgesInTetrahedronArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
+    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use d_seqTetrahedra directly as it might not be up-to-date
     m_edgesInTetrahedron.clear();
     m_edgesInTetrahedron.resize(tetrahedra.size());
 
@@ -888,9 +901,9 @@ void MeshTopology::createEdgesInTetrahedronArray ()
 
 void MeshTopology::createEdgesInHexahedronArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
     //getEdges();
-    const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = getHexahedra(); // do not use d_seqHexahedra directly as it might not be up-to-date
     m_edgesInHexahedron.clear();
     m_edgesInHexahedron.resize(hexahedra.size());
 
@@ -909,7 +922,7 @@ void MeshTopology::createEdgesInHexahedronArray ()
 
 void MeshTopology::createTrianglesAroundVertexArray ()
 {
-    const SeqTriangles& triangles = getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
+    const SeqTriangles& triangles = getTriangles(); // do not use d_seqTriangles directly as it might not be up-to-date
     m_trianglesAroundVertex.clear();
     m_trianglesAroundVertex.resize( nbPoints );
 
@@ -1070,7 +1083,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
 
 void MeshTopology::createTrianglesAroundEdgeArray ()
 {
-    const SeqTriangles& triangles = getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
+    const SeqTriangles& triangles = getTriangles(); // do not use d_seqTriangles directly as it might not be up-to-date
     if (m_edgesInTriangle.empty())
         createEdgesInTriangleArray();
     m_trianglesAroundEdge.clear();
@@ -1084,7 +1097,7 @@ void MeshTopology::createTrianglesAroundEdgeArray ()
         // adding triangle i in the triangle shell of all edges
         for (j=0; j<3; ++j)
         {
-            if (seqEdges.getValue()[tea[i][j]][0] == t[(j+1)%3])
+            if (d_seqEdges.getValue()[tea[i][j]][0] == t[(j + 1) % 3])
                 m_trianglesAroundEdge[ tea[i][j] ].insert(m_trianglesAroundEdge[ tea[i][j] ].begin(), i); // triangle is on the left of the edge
             else
                 m_trianglesAroundEdge[ tea[i][j] ].push_back( i ); // triangle is on the right of the edge
@@ -1094,8 +1107,8 @@ void MeshTopology::createTrianglesAroundEdgeArray ()
 
 void MeshTopology::createTrianglesInTetrahedronArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
+    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use d_seqTetrahedra directly as it might not be up-to-date
     m_trianglesInTetrahedron.clear();
     m_trianglesInTetrahedron.resize(tetrahedra.size());
 
@@ -1115,7 +1128,7 @@ void MeshTopology::createTrianglesInTetrahedronArray ()
 
 void MeshTopology::createQuadsAroundVertexArray ()
 {
-    const SeqQuads& quads = getQuads(); // do not use seqQuads directly as it might not be up-to-date
+    const SeqQuads& quads = getQuads(); // do not use d_seqQuads directly as it might not be up-to-date
     m_quadsAroundVertex.clear();
     m_quadsAroundVertex.resize( nbPoints );
 
@@ -1267,7 +1280,7 @@ void MeshTopology::createOrientedQuadsAroundVertexArray()
 
 void MeshTopology::createQuadsAroundEdgeArray ()
 {
-    const SeqQuads& quads = getQuads(); // do not use seqQuads directly as it might not be up-to-date
+    const SeqQuads& quads = getQuads(); // do not use d_seqQuads directly as it might not be up-to-date
     if (m_edgesInQuad.empty())
         createEdgesInQuadArray();
     m_quadsAroundEdge.clear();
@@ -1282,8 +1295,8 @@ void MeshTopology::createQuadsAroundEdgeArray ()
 
 void MeshTopology::createQuadsInHexahedronArray ()
 {
-    //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
+    //const SeqEdges& edges = getEdges(); // do not use d_seqEdges directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = getHexahedra(); // do not use d_seqHexahedra directly as it might not be up-to-date
     m_quadsInHexahedron.clear();
     m_quadsInHexahedron.resize(hexahedra.size());
 
@@ -1324,10 +1337,10 @@ void MeshTopology::createTetrahedraAroundVertexArray ()
     m_tetrahedraAroundVertex.resize( nbPoints );
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<4; ++j)
-            m_tetrahedraAroundVertex[ seqTetrahedra.getValue()[i][j]  ].push_back( i );
+            m_tetrahedraAroundVertex[ d_seqTetrahedra.getValue()[i][j]  ].push_back(i );
     }
 }
 
@@ -1339,7 +1352,7 @@ void MeshTopology::createTetrahedraAroundEdgeArray ()
     const vector< EdgesInTetrahedron > &tea = m_edgesInTetrahedron;
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<6; ++j)
             m_tetrahedraAroundEdge[ tea[i][j] ].push_back( i );
@@ -1354,7 +1367,7 @@ void MeshTopology::createTetrahedraAroundTriangleArray ()
     unsigned int j;
     const vector< TrianglesInTetrahedron > &tta=m_trianglesInTetrahedron;
 
-    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<4; ++j)
             m_tetrahedraAroundTriangle[ tta[i][j] ].push_back( i );
@@ -1366,10 +1379,10 @@ void MeshTopology::createHexahedraAroundVertexArray ()
     m_hexahedraAroundVertex.resize( nbPoints );
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqHexahedra.getValue().size(); ++i)
     {
         for (j=0; j<8; ++j)
-            m_hexahedraAroundVertex[ seqHexahedra.getValue()[i][j]  ].push_back( i );
+            m_hexahedraAroundVertex[ d_seqHexahedra.getValue()[i][j]  ].push_back(i );
     }
 }
 
@@ -1381,7 +1394,7 @@ void MeshTopology::createHexahedraAroundEdgeArray ()
     unsigned int j;
     const vector< EdgesInHexahedron > &hea=m_edgesInHexahedron;
 
-    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqHexahedra.getValue().size(); ++i)
     {
         for (j=0; j<12; ++j)
             m_hexahedraAroundEdge[ hea[i][j] ].push_back( i );
@@ -1396,7 +1409,7 @@ void MeshTopology::createHexahedraAroundQuadArray ()
     unsigned int j;
     const vector< QuadsInHexahedron > &qha=m_quadsInHexahedron;
 
-    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
+    for (unsigned int i = 0; i < d_seqHexahedra.getValue().size(); ++i)
     {
         // adding quad i in the edge shell of both points
         for (j=0; j<6; ++j)
@@ -2245,35 +2258,35 @@ void MeshTopology::reOrientateTriangle(TriangleID id)
         msg_warning() << "reOrientateTriangle Triangle ID out of bounds.";
         return;
     }
-    Triangle& tri = (*seqTriangles.beginEdit())[id];
+    Triangle& tri = (*d_seqTriangles.beginEdit())[id];
     const unsigned int tmp = tri[1];
     tri[1] = tri[2];
     tri[2] = tmp;
-    seqTriangles.endEdit();
+    d_seqTriangles.endEdit();
 
     return;
 }
 
 bool MeshTopology::hasPos() const
 {
-    return !seqPoints.getValue().empty();
+    return !d_seqPoints.getValue().empty();
 }
 
 SReal MeshTopology::getPX(Index i) const
 {
-    const auto& points = seqPoints.getValue();
+    const auto& points = d_seqPoints.getValue();
     return ((unsigned)i<points.size()?points[i][0]:0.0);
 }
 
 SReal MeshTopology::getPY(Index i) const
 {
-    const auto& points = seqPoints.getValue();
+    const auto& points = d_seqPoints.getValue();
     return ((unsigned)i<points.size()?points[i][1]:0.0);
 }
 
 SReal MeshTopology::getPZ(Index i) const
 {
-    const auto& points = seqPoints.getValue();
+    const auto& points = d_seqPoints.getValue();
     return ((unsigned)i<points.size()?points[i][2]:0.0);
 }
 
@@ -2308,13 +2321,13 @@ void MeshTopology::invalidate()
 
 void MeshTopology::updateHexahedra()
 {
-    if (!seqHexahedra.getValue().empty()) return; // hexahedra already defined
+    if (!d_seqHexahedra.getValue().empty()) return; // hexahedra already defined
     // No 4D elements yet! ;)
 }
 
 void MeshTopology::updateTetrahedra()
 {
-    if (!seqTetrahedra.getValue().empty()) return; // tetrahedra already defined
+    if (!d_seqTetrahedra.getValue().empty()) return; // tetrahedra already defined
     // No 4D elements yet! ;)
 }
 
@@ -2620,17 +2633,17 @@ const sofa::type::vector<Index> MeshTopology::getElementAroundElements(sofa::typ
 
 SReal MeshTopology::getPosX(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
+    return ((unsigned)i < d_seqPoints.getValue().size() ? d_seqPoints.getValue()[i][0] : 0.0);
 }
 
 SReal MeshTopology::getPosY(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
+    return ((unsigned)i < d_seqPoints.getValue().size() ? d_seqPoints.getValue()[i][1] : 0.0);
 }
 
 SReal MeshTopology::getPosZ(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
+    return ((unsigned)i < d_seqPoints.getValue().size() ? d_seqPoints.getValue()[i][2] : 0.0);
 }
 
 void MeshTopology::draw(const core::visual::VisualParams* vparams)
@@ -2638,7 +2651,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw Edges
-    if(_drawEdges.getValue())
+    if(d_drawEdges.getValue())
     {
         std::vector<type::Vec3> pos;
         pos.reserve(this->getNbEdges()*2u);
@@ -2652,7 +2665,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     }
 
     //Draw Triangles
-    if(_drawTriangles.getValue())
+    if(d_drawTriangles.getValue())
     {
         std::vector<type::Vec3> pos;
         pos.reserve(this->getNbTriangles()*3u);
@@ -2667,7 +2680,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     }
 
     //Draw Quads
-    if(_drawQuads.getValue())
+    if(d_drawQuads.getValue())
     {
         std::vector<type::Vec3> pos;
         pos.reserve(this->getNbQuads()*4u);
@@ -2683,7 +2696,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     }
 
     //Draw Hexahedron
-    if (_drawHexa.getValue())
+    if (d_drawHexa.getValue())
     {
         std::vector<type::Vec3> pos1;
         std::vector<type::Vec3> pos2;
@@ -2715,7 +2728,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     }
 
     // Draw Tetra
-    if(_drawTetra.getValue())
+    if(d_drawTetra.getValue())
     {
         std::vector<type::Vec3> pos;
         pos.reserve(this->getNbTetrahedra()*12u);

@@ -81,9 +81,9 @@ public:
     Data<Real> d_radius; ///< Neighborhood range.
     Data<Real> d_fixedRadius; ///< Neighborhood range (for non mechanical particles).
     Data<int> d_nbClusters; ///< Number of clusters (-1 means that all input points are selected).
-    Data< VecCoord > d_fixedPosition;  ///< input (non mechanical particle reference position)
-    Data< VecCoord > d_position; ///< input (reference mstate position)
-    Data< VVI > d_cluster;       ///< result
+    Data< VecCoord > d_fixedPosition; ///< Input positions of fixed (non mechanical) particles.
+    Data< VecCoord > d_position; ///< Input rest positions.
+    Data< VVI > d_cluster; ///< Computed clusters.
 
     sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
     sofa::core::objectmodel::DataFileName output_filename; ///< export clusters

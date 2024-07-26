@@ -57,11 +57,11 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
 
     // inputs
-    Data< VecCoord > d_x0;  ///< initial bone positions
-    Data< VecCoord > d_x;   ///< current bone positions
+    Data< VecCoord > d_x0; ///< Rest position
+    Data< VecCoord > d_x; ///< Current position
 
     // outputs
-    Data< type::vector< OutputType > > d_displacements; ///< displacement
+    Data< type::vector< OutputType > > d_displacements; ///< Displacement transforms with respect to original rigid positions
 
     // methods
     DisplacementTransformEngine();
@@ -115,7 +115,7 @@ public:
     void doUpdate() override; // compute the displacements wrt original positions
 
     // inputs
-    Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
+    Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< Scale transformation added to the rigid transformation
     type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 

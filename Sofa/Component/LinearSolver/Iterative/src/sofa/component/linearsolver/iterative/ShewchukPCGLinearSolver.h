@@ -42,13 +42,32 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-    Data<bool> f_use_precond; ///< Use preconditioner
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<unsigned> f_maxIter;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<double> f_tolerance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<bool> f_use_precond;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<unsigned> f_update_step;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<bool> f_build_precond;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
+    Data<std::map < std::string, sofa::type::vector<double> > >  f_graph;
+
+
+    Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
+    Data<double> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
+    Data<bool> d_use_precond; ///< Use a preconditioner
     SingleLink<ShewchukPCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
-    Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
-    Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
-    Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
+    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of precondtioners
+    Data<bool> d_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
     ShewchukPCGLinearSolver();

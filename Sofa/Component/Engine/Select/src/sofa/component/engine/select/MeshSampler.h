@@ -70,12 +70,12 @@ public:
 
 
     Data<unsigned int> number; ///< Sample number
-    Data< VecCoord > position; ///< input positions
-    Data< SeqEdges > f_edges;  ///< input edges for geodesic sampling
+    Data< VecCoord > position; ///< Input positions.
+    Data< SeqEdges > f_edges; ///< Input edges for geodesic sampling (Euclidean distances are used if not specified).
     Data< VecCoord > fixedPosition;  ///< User defined sample positions.
-    Data<unsigned int> maxIter;     ///< Max number of LLoyd iterations
-    Data< VI > outputIndices;       ///< selected point indices
-    Data< VecCoord > outputPosition;       ///< selected point coordinates
+    Data<unsigned int> maxIter; ///< Max number of Lloyd iterations.
+    Data< VI > outputIndices; ///< Computed sample indices.
+    Data< VecCoord > outputPosition; ///< Computed sample coordinates.
 
 
 private:

@@ -3,9 +3,14 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.SolidMechanics.FEM.Elastic_test)
 
 set(SOURCE_FILES
+    BaseTetrahedronFEMForceField_test.h
     BeamFEMForceField_test.cpp
+    FastTetrahedralCorotationalForceField_test.cpp
     HexahedronFEMForceField_test.cpp
+    TetrahedralCorotationalFEMForceField_test.cpp
+    TetrahedronFEMForceField_stepTest.cpp
     TetrahedronFEMForceField_test.cpp
+    TriangleFEMForceField_stepTest.cpp
     TriangleFEMForceField_test.cpp
 )
 

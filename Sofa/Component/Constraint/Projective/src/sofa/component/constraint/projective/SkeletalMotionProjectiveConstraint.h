@@ -68,8 +68,8 @@ public:
     void init() override;
     void reset() override;
 
-	float getAnimationSpeed() const			{return animationSpeed.getValue();}
-	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
+	float getAnimationSpeed() const			{return d_animationSpeed.getValue();}
+	void setAnimationSpeed(float speed)		{d_animationSpeed.setValue(speed);}
 
     void findKeyTimes(Real ct);
 
@@ -102,16 +102,30 @@ protected:
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
 protected:
-	// every nodes needed in the animation chain
-    Data<type::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<type::SVector<SkeletonJoint<TDataTypes> > > skeletonJoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<type::SVector<SkeletonBone> > skeletonBones;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<float> animationSpeed;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<bool> active;
+
+
+    // every nodes needed in the animation chain
+    Data<type::SVector<SkeletonJoint<TDataTypes> > >	d_skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
-    Data<type::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
+    Data<type::SVector<SkeletonBone> >				d_skeletonBones; ///< skeleton bones
 
 	// control how fast the animation is played since animation time is not simulation time
-	Data<float>											animationSpeed; ///< animation speed
+	Data<float>											d_animationSpeed; ///< animation speed
 
     /// is the projective constraint activated?
-    Data<bool>                                          active;
+    Data<bool>                                          d_active;
 
 private:
     /// the key times surrounding the current simulation time (for interpolation)

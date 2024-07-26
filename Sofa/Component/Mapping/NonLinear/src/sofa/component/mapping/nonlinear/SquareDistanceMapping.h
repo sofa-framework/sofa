@@ -85,8 +85,8 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data<Real> d_showObjectScale;        ///< drawing size
-    Data<sofa::type::RGBAColor> d_color; ///< drawing color
+    Data<Real> d_showObjectScale; ///< Scale for object display
+    Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
-
+#include <sofa/geometry/ElementType.h>
 #include <sofa/geometry/Edge.h>
 
 namespace sofa::geometry
@@ -31,6 +31,7 @@ namespace sofa::geometry
 struct Triangle
 {
     static constexpr sofa::Size NumberOfNodes = 3;
+    static constexpr ElementType Element_type = ElementType::TRIANGLE;
 
     Triangle() = delete;
 

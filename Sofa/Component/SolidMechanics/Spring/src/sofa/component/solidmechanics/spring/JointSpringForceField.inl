@@ -45,15 +45,19 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
     , m_lastTime((Real)0.0)
     , m_infile(nullptr)
     , m_outfile(nullptr)
-    , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
-    , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
-    , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
-    , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
+    , d_outfilename(initData(&d_outfilename, "outfile", "output file name"))
+    , d_infilename(initData(&d_infilename, "infile", "input file containing constant joint force"))
+    , d_period(initData(&d_period, (Real)0.0, "period", "period between outputs"))
+    , d_reinit(initData(&d_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
     , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , d_showLawfulTorsion(initData(&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , d_showExtraTorsion(initData(&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
     , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
+    f_outfilename.setParent(&d_outfilename);
+    f_infilename.setParent(&d_infilename);
+    f_period.setParent(&d_period);
+    f_reinit.setParent(&d_reinit);
 }
 
 template<class DataTypes>
@@ -69,7 +73,7 @@ void JointSpringForceField<DataTypes>::init()
 {
     Inherit1::init();
 
-    const std::string& outfilename = f_outfilename.getFullPath();
+    const std::string& outfilename = d_outfilename.getFullPath();
     if (!outfilename.empty())
     {
         m_outfile = new std::ofstream(outfilename.c_str());
@@ -81,7 +85,7 @@ void JointSpringForceField<DataTypes>::init()
         }
     }
 
-    const std::string& infilename = f_infilename.getFullPath();
+    const std::string& infilename = d_infilename.getFullPath();
     if (!infilename.empty())
     {
         m_infile = new std::ifstream(infilename.c_str());
@@ -261,12 +265,12 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     // write output file
     if (m_outfile)
     {
-        if(f_reinit.getValue()) m_outfile->seekp(std::ios::beg);
+        if(d_reinit.getValue()) m_outfile->seekp(std::ios::beg);
 
         SReal time = this->getContext()->getTime();
-        if (time >= (m_lastTime + f_period.getValue()))
+        if (time >= (m_lastTime + d_period.getValue()))
         {
-            m_lastTime += f_period.getValue();
+            m_lastTime += d_period.getValue();
             (*m_outfile) << "T= "<< time << "\n";
 
             const Coord xrel(spring.ref.inverseRotate(Mp1p2.getCenter()), Mp1p2.getOrientation());
@@ -284,7 +288,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
 
             (*m_outfile) << "  F= " << force << "\n";
 
-            if(f_reinit.getValue()) (*m_outfile) << "\n\n\n\n\n";
+            if(d_reinit.getValue()) (*m_outfile) << "\n\n\n\n\n";
             m_outfile->flush();
         }
     }
@@ -386,7 +390,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     {
         sofa::type::RGBAColor color;
 
-        Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
+        Real d = (p2[springs[i].m2] - p1[springs[i].m1]).getCenter().norm();
         if (external)
         {
             if (d<springs[i].initTrans.norm()*0.9999)
@@ -445,7 +449,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         }
         if (d_showExtraTorsion.getValue())
         {
-            Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
+            Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion - springs[i].lawfulTorsion);
             v1 = Vec3(vtemp[0], vtemp[1], vtemp[2]);
 
             vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );

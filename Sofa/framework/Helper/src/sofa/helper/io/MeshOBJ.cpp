@@ -227,7 +227,7 @@ void MeshOBJ::readMTL(const char* filename)
     bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
 
     file = fopen(filename, "r");
-    Material *mat = nullptr;
+    std::unique_ptr<Material> mat;
     if (file)
     {
         /* now, read in the data */
@@ -252,10 +252,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if (mat != nullptr)
                 {
                     materials.push_back(*mat);
-                    delete mat;
-                    mat = nullptr;
+                    mat.reset();
                 }
-                mat = new Material();
+                mat = std::make_unique<Material>();
                 if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
@@ -432,8 +431,7 @@ void MeshOBJ::readMTL(const char* filename)
     if (mat != nullptr)
     {
         materials.push_back(*mat);
-        delete mat;
-        mat = nullptr;
+        mat.reset();
     }
 }
 

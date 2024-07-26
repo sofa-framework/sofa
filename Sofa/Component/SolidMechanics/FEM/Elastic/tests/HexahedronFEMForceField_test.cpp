@@ -89,10 +89,9 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         DataTypes::set( f[7],  fup[0], fup[1], fup[2]);
 
         // Set force parameters
-        Inherited::force->f_poissonRatio.setValue(0);
-        Inherited::force->f_youngModulus.setValue(10);
+        Inherited::force->d_poissonRatio.setValue(0);
+        Inherited::force->setYoungModulus(10);
         Inherited::force->setMethod(2); // small method
-        Inherited::force->isCompliance.setValue(0);
 
         // Init simulation
         sofa::simulation::node::initRoot(Inherited::node.get());

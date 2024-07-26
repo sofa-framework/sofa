@@ -94,17 +94,33 @@ protected:
 
 public:
 
-    /// where the springs information are stored
-    sofa::core::topology::EdgeData<sofa::type::vector<Spring> > springArray;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<sofa::Index> springArray;
 
-    /// the filename where to load the spring information
-    sofa::core::objectmodel::DataFileName m_filename;
-    /// By default, assume that all edges have the same stiffness
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<sofa::Index> m_filename;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
     Data<SReal> m_stiffness;
-    /// By default, assume that all edges have the same viscosity
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
     Data<SReal> m_viscosity;
 
-    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<bool> m_useTopology;
+
+
+    /// where the springs information are stored
+    sofa::core::topology::EdgeData<sofa::type::vector<Spring> > d_springArray;
+
+    /// the filename where to load the spring information
+    sofa::core::objectmodel::DataFileName d_filename;
+    /// By default, assume that all edges have the same stiffness
+    Data<SReal> d_stiffness;
+    /// By default, assume that all edges have the same viscosity
+    Data<SReal> d_viscosity;
+
+    Data<bool> d_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<VectorSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -119,7 +135,7 @@ protected:
     virtual ~VectorSpringForceField() override;
 
     /** Method to initialize @sa Spring when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa springArray
+    * Will be set as creation callback in the EdgeData @sa d_springArray
     */
     void createEdgeInformation(Index, Spring& t,
         const core::topology::BaseMeshTopology::Edge& e,
@@ -147,15 +163,15 @@ public:
 
     Real getStiffness() const
     {
-        return Real(m_stiffness.getValue());
+        return Real(d_stiffness.getValue());
     }
     const Real getViscosity() const
     {
-        return Real(m_viscosity.getValue());
+        return Real(d_viscosity.getValue());
     }
     const core::topology::EdgeData<sofa::type::vector<Spring> >& getSpringArray() const
     {
-        return springArray;
+        return d_springArray;
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -164,10 +180,10 @@ public:
 
     void clear(int reserve=0)
     {
-        type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+        type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
         springArrayData.clear();
         if (reserve) springArrayData.reserve(reserve);
-        springArray.endEdit();
+        d_springArray.endEdit();
         if(!useTopology) edgeArray.clear();
     }
 

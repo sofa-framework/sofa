@@ -141,11 +141,11 @@ public:
 
     int getLineFlags(sofa::Index i);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> bothSide;
 
 
-    Data<bool> d_bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
+    Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -168,7 +168,7 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> m_displayFreePosition;
 
 

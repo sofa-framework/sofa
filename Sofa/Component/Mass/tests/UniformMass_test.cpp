@@ -115,7 +115,7 @@ struct UniformMassTest :  public BaseTest
         return ;
     }
 
-    /// totalMass, mass and localRange..
+    /// totalMass, mass and d_localRange..
     /// case where NO mass info give, default totalMass = 1.0
     void checkNoAttributes(){
         const string scene =
@@ -138,7 +138,7 @@ struct UniformMassTest :  public BaseTest
         }
     }
 
-    /// totalMass, mass and localRange..
+    /// totalMass, mass and d_localRange..
     /// case where NO mass info give, default totalMass = 1.0
     void checkRigidAttribute()
     {

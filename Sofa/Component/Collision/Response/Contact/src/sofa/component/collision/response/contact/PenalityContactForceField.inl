@@ -353,7 +353,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
         {
             for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contactsRef[i].m1  == index[j])
+                if (contactsRef[i].m1 == index[j])
                 {
                     result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),mstate2Pos[contactsRef[i].m2]));
                     triangle.push_back(contactsRef[i].index2);
@@ -369,7 +369,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
         {
             for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contactsRef[i].m2  == index[j])
+                if (contactsRef[i].m2 == index[j])
                 {
                     result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this), mstate1Pos[contactsRef[i].m1]));
                     triangle.push_back(contactsRef[i].index1);

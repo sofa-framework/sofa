@@ -31,17 +31,26 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 HermiteSplineProjectiveConstraint<DataTypes>::HermiteSplineProjectiveConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
-    , m_x0(initData(&m_x0,"X0","first control point") )
-    , m_dx0(initData(&m_dx0,"dX0","first control tangente") )
-    , m_x1(initData(&m_x1,"X1","second control point") )
-    , m_dx1(initData(&m_dx1,"dX1","sceond control tangente") )
-    , m_sx0(initData(&m_sx0,"SX0","first interpolation vector") )
-    , m_sx1(initData(&m_sx1,"SX1","second interpolation vector") )
+    , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , d_tBegin(initData(&d_tBegin, "BeginTime", "Begin Time of the motion") )
+    , d_tEnd(initData(&d_tEnd, "EndTime", "End Time of the motion") )
+    , d_x0(initData(&d_x0, "X0", "first control point") )
+    , d_dx0(initData(&d_dx0, "dX0", "first control tangente") )
+    , d_x1(initData(&d_x1, "X1", "second control point") )
+    , d_dx1(initData(&d_dx1, "dX1", "sceond control tangente") )
+    , d_sx0(initData(&d_sx0, "SX0", "first interpolation vector") )
+    , d_sx1(initData(&d_sx1, "SX1", "second interpolation vector") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    m_indices.setParent(&d_indices);
+    m_tBegin.setParent(&d_tBegin);
+    m_tEnd.setParent(&d_tEnd);
+    m_x0.setParent(&d_x0);
+    m_dx0.setParent(&d_dx0);
+    m_x1.setParent(&d_x1);
+    m_dx1.setParent(&d_dx1);
+    m_sx0.setParent(&d_sx0);
+    m_sx1.setParent(&d_sx1);
 }
 
 template <class DataTypes>
@@ -52,15 +61,15 @@ HermiteSplineProjectiveConstraint<DataTypes>::~HermiteSplineProjectiveConstraint
 template <class DataTypes>
 void HermiteSplineProjectiveConstraint<DataTypes>::clearConstraints()
 {
-    m_indices.beginEdit()->clear();
-    m_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void  HermiteSplineProjectiveConstraint<DataTypes>::addConstraint(unsigned index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 
@@ -80,7 +89,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize functions and parameters for topology data and handler
-        m_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -105,7 +114,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::computeHermiteCoefs( const Re
     Real uH10 = u3 -2*u2 +u;
     Real uH01 = -2*u3 + 3*u2;
     Real uH11 = u3 -u2;
-    Vec2R pu = m_sx0.getValue()*uH10 + Vec2R(1,1)*uH01 + m_sx1.getValue()*uH11;
+    Vec2R pu = d_sx0.getValue() * uH10 + Vec2R(1, 1) * uH01 + d_sx1.getValue() * uH11;
     Real su = pu.y();
 
     Real su2 = su*su;
@@ -125,7 +134,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::computeDerivateHermiteCoefs( 
     Real uH10 = u3 -2*u2 +u;
     Real uH01 = -2*u3 + 3*u2;
     Real uH11 = u3 -u2;
-    Vec2R pu = m_sx0.getValue()*uH10 + Vec2R(1,1)*uH01 + m_sx1.getValue()*uH11;
+    Vec2R pu = d_sx0.getValue() * uH10 + Vec2R(1, 1) * uH01 + d_sx1.getValue() * uH11;
     Real su = pu.y();
 
     Real su2 = su*su;
@@ -141,9 +150,9 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& d
     const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     Real t = (Real) this->getContext()->getTime();
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue())
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             clear(dx, *it);
     }
@@ -163,12 +172,12 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectVelocity(const core::M
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real t = (Real) this->getContext()->getTime();
 
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue()	)
     {
-        Real DT = m_tEnd.getValue() - m_tBegin.getValue();
-        const SetIndexArray & indices = m_indices.getValue();
+        Real DT = d_tEnd.getValue() - d_tBegin.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
-        t -= m_tBegin.getValue();
+        t -= d_tBegin.getValue();
         Real u = t/DT;
 
         Real dH00, dH10, dH01, dH11;
@@ -176,7 +185,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectVelocity(const core::M
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            dx[*it] = m_x0.getValue()*dH00 + m_dx0.getValue()*dH10 + m_x1.getValue()*dH01 + m_dx1.getValue()*dH11;
+            dx[*it] = d_x0.getValue() * dH00 + d_dx0.getValue() * dH10 + d_x1.getValue() * dH01 + d_dx1.getValue() * dH11;
         }
     }
 }
@@ -187,12 +196,12 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectPosition(const core::M
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real t = (Real) this->getContext()->getTime();
 
-    if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
+    if (t >= d_tBegin.getValue() && t <= d_tEnd.getValue()	)
     {
-        Real DT = m_tEnd.getValue() - m_tBegin.getValue();
-        const SetIndexArray & indices = m_indices.getValue();
+        Real DT = d_tEnd.getValue() - d_tBegin.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
-        t -= m_tBegin.getValue();
+        t -= d_tBegin.getValue();
         Real u = t/DT;
 
         Real H00, H10, H01, H11;
@@ -200,7 +209,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectPosition(const core::M
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            x[*it] = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
+            x[*it] = d_x0.getValue() * H00 + d_dx0.getValue() * H10 + d_x1.getValue() * H01 + d_dx1.getValue() * H11;
         }
     }
 }
@@ -220,7 +229,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::draw(const core::visual::Visu
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
-    Real DT = m_tEnd.getValue() - m_tBegin.getValue();
+    Real DT = d_tEnd.getValue() - d_tBegin.getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
@@ -228,10 +237,10 @@ void HermiteSplineProjectiveConstraint<DataTypes>::draw(const core::visual::Visu
     std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
-    const Vec3R& mx0 = m_x0.getValue();
-    const Vec3R& mx1 = m_x0.getValue();
-    const Vec3R& mdx0 = m_dx0.getValue();
-    const Vec3R& mdx1 = m_dx1.getValue();
+    const Vec3R& mx0 = d_x0.getValue();
+    const Vec3R& mx1 = d_x0.getValue();
+    const Vec3R& mdx0 = d_dx0.getValue();
+    const Vec3R& mdx1 = d_dx1.getValue();
 
     for (Real t=0.0 ; t< DT ; t+= dt)
     {

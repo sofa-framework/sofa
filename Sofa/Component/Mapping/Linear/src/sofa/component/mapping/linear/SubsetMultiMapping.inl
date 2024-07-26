@@ -32,8 +32,8 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
 {
-    assert( indexPairs.getValue().size()%2==0 );
-    const auto indexPairSize = indexPairs.getValue().size()/2;
+    assert(d_indexPairs.getValue().size() % 2 == 0 );
+    const auto indexPairSize = d_indexPairs.getValue().size() / 2;
 
     this->toModels[0]->resize( indexPairSize );
 
@@ -58,9 +58,9 @@ void SubsetMultiMapping<TIn, TOut>::init()
     // fill the Jacobians
     for(unsigned i=0; i<indexPairSize; i++)
     {
-        unsigned parent = indexPairs.getValue()[i*2];
+        unsigned parent = d_indexPairs.getValue()[i * 2];
         Jacobian* jacobian = jacobians[parent];
-        unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
+        unsigned bcol = d_indexPairs.getValue()[i * 2 + 1];  // parent particle
         for(unsigned k=0; k<Nout; k++ )
         {
             unsigned row = i*Nout + k;
@@ -77,8 +77,10 @@ void SubsetMultiMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
-    , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
-{}
+    , d_indexPairs(initData(&d_indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+{
+        indexPairs.setParent(&d_indexPairs);
+}
 
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
@@ -117,10 +119,10 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from < this->fromModels.size());
-    type::vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
+    type::vector<unsigned>& indexPairsVector = *d_indexPairs.beginEdit();
     indexPairsVector.push_back(from);
     indexPairsVector.push_back(index);
-    indexPairs.endEdit();
+    d_indexPairs.endEdit();
 }
 
 
@@ -133,10 +135,10 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
     for(unsigned i=0; i<out.size(); i++)
     {
-        const InDataVecCoord* inPosPtr = dataVecInPos[indexPairs.getValue()[i*2]];
+        const InDataVecCoord* inPosPtr = dataVecInPos[d_indexPairs.getValue()[i * 2]];
         const InVecCoord& inPos = (*inPosPtr).getValue();
 
-        core::eq( out[i], inPos[indexPairs.getValue()[i*2+1]] );
+        core::eq( out[i], inPos[d_indexPairs.getValue()[i * 2 + 1]] );
     }
 
     dataVecOutPos[0]->endEdit();
@@ -152,9 +154,9 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 
     for(unsigned i=0; i<out.size(); i++)
     {
-        const InDataVecDeriv* inDerivPtr = dataVecInVel[indexPairs.getValue()[i*2]];
+        const InDataVecDeriv* inDerivPtr = dataVecInVel[d_indexPairs.getValue()[i * 2]];
         const InVecDeriv& inDeriv = (*inDerivPtr).getValue();
-        core::eq( out[i], inDeriv[indexPairs.getValue()[i*2+1]] );
+        core::eq( out[i], inDeriv[d_indexPairs.getValue()[i * 2 + 1]] );
     }
 
     dataVecOutVel[0]->endEdit();
@@ -163,7 +165,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const type::vector< InDataMatrixDeriv* >& dOut, const type::vector< const OutDataMatrixDeriv* >& dIn)
 {
-    type::vector<unsigned>  indexP = indexPairs.getValue();
+    type::vector<unsigned>  indexP = d_indexPairs.getValue();
 
     // hypothesis: one child only:
     const OutMatrixDeriv& in = dIn[0]->getValue();
@@ -190,16 +192,16 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
         while (colIt != colItEnd)
         {
-            unsigned int index_parent = indexP[colIt.index()*2]; // 0 or 1 (for now...)
+            unsigned int index_parent = indexP[colIt.index() * 2]; // 0 or 1 (for now...)
             // writeLine provide an iterator on the line... if this line does not exist, the line is created:
             typename InMatrixDeriv::RowIterator o = dOut[index_parent]->beginEdit()->writeLine(rowIt.index());
             dOut[index_parent]->endEdit();
 
             // for each col of the constraint direction, it adds a col in the corresponding parent's constraint direction
-            if(indexPairs.getValue()[colIt.index()*2+1] < (unsigned int)this->fromModels[index_parent]->getSize())
+            if(d_indexPairs.getValue()[colIt.index() * 2 + 1] < (unsigned int)this->fromModels[index_parent]->getSize())
             {
                 InDeriv tmp; core::eq( tmp, colIt.val() );
-                o.addCol(indexP[colIt.index()*2+1], tmp);
+                o.addCol(indexP[colIt.index() * 2 + 1], tmp);
             }
             ++colIt;
         }
@@ -220,9 +222,9 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
 
     for(unsigned i=0; i<cder.size(); i++)
     {
-        InDataVecDeriv* inDerivPtr = dataVecOutForce[indexPairs.getValue()[i*2]];
+        InDataVecDeriv* inDerivPtr = dataVecOutForce[d_indexPairs.getValue()[i * 2]];
         InVecDeriv& inDeriv = *(*inDerivPtr).beginEdit();
-        core::peq( inDeriv[indexPairs.getValue()[i*2+1]], cder[i] );
+        core::peq(inDeriv[d_indexPairs.getValue()[i * 2 + 1]], cder[i] );
         (*inDerivPtr).endEdit();
     }
 }

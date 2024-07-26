@@ -438,7 +438,7 @@ public:
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             for (int id = 0; id < 2; id++)
             {
-                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
+                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
                 const Mat33& rotMat = triangleInfo.rotation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -583,7 +583,7 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
-            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
+            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.rotation;
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;

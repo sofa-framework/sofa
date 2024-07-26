@@ -43,14 +43,34 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    Data<sofa::type::Vec3i> resolution; ///< voxel grid resolution
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data<sofa::type::Vec3i> resolution;
 
-    Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
-    core::topology::HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid;
 
-    Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid; ///< indices in the Regular Grid
-    Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo; ///< map between id in the Regular Grid and index in the topology
-    Data< type::Vec3 > voxelSize; ///< Size of the Voxels
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data< std::map< unsigned int, BaseMeshTopology::HexaID> >  idInRegularGrid2IndexInTopo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
+    Data< type::Vec3 > voxelSize;
+
+
+    Data<sofa::type::Vec3i> d_resolution; ///< voxel grid resolution
+
+    Data< sofa::type::vector<unsigned char> > d_valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
+
+    core::topology::HexahedronData< sofa::type::vector<unsigned char> > d_valuesIndexedInTopology; ///< values indexed in the topology
+
+    Data< sofa::type::vector<BaseMeshTopology::HexaID> > d_idxInRegularGrid; ///< indices in the Regular Grid
+    Data< std::map< unsigned int, BaseMeshTopology::HexaID> > d_idInRegularGrid2IndexInTopo; ///< map between id in the Regular Grid and index in the topology
+    Data< type::Vec3 > d_voxelSize; ///< Size of the Voxels
 protected:
     DynamicSparseGridTopologyContainer();
     ~DynamicSparseGridTopologyContainer() override {}

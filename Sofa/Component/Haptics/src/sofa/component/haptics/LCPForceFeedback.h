@@ -60,11 +60,18 @@ public:
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    Data< double > forceCoef; ///< multiply haptic force by this coef.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
+    Data<double> forceCoef;
 
-    Data< double > solverTimeout; ///< max time to spend solving constraints.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
+    Data<double> solverTimeout;
 
-    Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints.
+
+    Data< double > d_forceCoef; ///< multiply haptic force by this coef.
+
+    Data< double > d_solverTimeout; ///< max time to spend solving constraints.
+
+    Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints
 
     // deriv (or not) the rotations when updating the violations
     Data <bool> d_derivRotations; ///< if true, deriv the rotations when updating the violations

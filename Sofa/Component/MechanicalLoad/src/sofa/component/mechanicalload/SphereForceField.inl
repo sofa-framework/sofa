@@ -51,15 +51,24 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 SphereForceField<DataTypes>::SphereForceField()
-    : contacts(initData(&contacts,"contacts", "Contacts"))
-    , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
-    , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
-    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
-    , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::type::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
-    , localRange( initData(&localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-    , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
+    : d_contacts(initData(&d_contacts, "contacts", "Contacts"))
+    , d_sphereCenter(initData(&d_sphereCenter, "center", "sphere center"))
+    , d_sphereRadius(initData(&d_sphereRadius, (Real)1, "radius", "sphere radius"))
+    , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness"))
+    , d_damping(initData(&d_damping, (Real)5, "damping", "force damping"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
+    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_bilateral(initData(&d_bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {
+    contacts.setParent(&d_contacts);
+    sphereCenter.setParent(&d_sphereCenter);
+    sphereRadius.setParent(&d_sphereRadius);
+    stiffness.setParent(&d_stiffness);
+    damping.setParent(&d_damping);
+    color.setParent(&d_color);
+    localRange.setParent(&d_localRange);
+    bilateral.setParent(&d_bilateral);
+
 }
 
 template<class DataTypes>
@@ -69,51 +78,51 @@ void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpar
     const VecCoord& p1 = d_x.getValue();
     const VecDeriv& v1 = d_v.getValue();
 
-    const Coord center = sphereCenter.getValue();
-    const Real r = sphereRadius.getValue();
+    const Coord center = d_sphereCenter.getValue();
+    const Real r = d_sphereRadius.getValue();
     const Real r2 = r*r;
-    this->contacts.beginEdit()->clear();
+    this->d_contacts.beginEdit()->clear();
     f1.resize(p1.size());
 
     unsigned int ibegin = 0;
     unsigned int iend = p1.size();
 
-    if (localRange.getValue()[0] >= 0)
-        ibegin = localRange.getValue()[0];
+    if (d_localRange.getValue()[0] >= 0)
+        ibegin = d_localRange.getValue()[0];
 
-    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-        iend = localRange.getValue()[1]+1;
+    if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1] + 1 < iend)
+        iend = d_localRange.getValue()[1] + 1;
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Coord dp = p1[i] - center;
         Real norm2 = dp.norm2();
-        if (norm2<r2 || bilateral.getValue() )
+        if (norm2<r2 || d_bilateral.getValue() )
         {
             Real norm = helper::rsqrt(norm2);
             Real d = norm - r;
-            Real forceIntensity = -this->stiffness.getValue()*d;
-            Real dampingIntensity = -this->damping.getValue()*d;
+            Real forceIntensity = -this->d_stiffness.getValue() * d;
+            Real dampingIntensity = -this->d_damping.getValue() * d;
             Deriv force = dp*(forceIntensity/norm) - v1[i]*dampingIntensity;
             f1[i]+=force;
             Contact c;
             c.index = i;
             c.normal = dp / norm;
             c.fact = r / norm;
-            this->contacts.beginEdit()->push_back(c);
+            this->d_contacts.beginEdit()->push_back(c);
         }
     }
-    this->contacts.endEdit();
+    this->d_contacts.endEdit();
     d_f.endEdit();
 }
 
 template<class DataTypes>
 void SphereForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
 {
-    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
-    for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
+    const Real fact = (Real)(-this->d_stiffness.getValue() * kFactor);
+    for (unsigned int i=0; i<this->d_contacts.getValue().size(); i++)
     {
-        const Contact& c = (this->contacts.getValue())[i];
+        const Contact& c = (this->d_contacts.getValue())[i];
         unsigned int p = c.index;
         for (sofa::Index l=0; l<Deriv::total_size; ++l)
             for (sofa::Index k=0; k<Deriv::total_size; ++k)
@@ -132,10 +141,10 @@ void SphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df1.resize(dx1.size());
-    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
-    for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
+    const Real fact = (Real)(-this->d_stiffness.getValue() * kFactor);
+    for (unsigned int i=0; i<this->d_contacts.getValue().size(); i++)
     {
-        const Contact& c = (this->contacts.getValue())[i];
+        const Contact& c = (this->d_contacts.getValue())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
         Deriv dforce; dforce = (c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact)) * fact;
@@ -148,19 +157,19 @@ void SphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
 template<class DataTypes>
 void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 {
-    const Coord center = sphereCenter.getValue();
-    const Real r = sphereRadius.getValue();
+    const Coord center = d_sphereCenter.getValue();
+    const Real r = d_sphereRadius.getValue();
     const Real r2 = r*r;
-    this->contacts.beginEdit()->clear();
+    this->d_contacts.beginEdit()->clear();
 
     unsigned int ibegin = 0;
     unsigned int iend = x.size();
 
-    if (localRange.getValue()[0] >= 0)
-        ibegin = localRange.getValue()[0];
+    if (d_localRange.getValue()[0] >= 0)
+        ibegin = d_localRange.getValue()[0];
 
-    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-        iend = localRange.getValue()[1]+1;
+    if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1] + 1 < iend)
+        iend = d_localRange.getValue()[1] + 1;
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
@@ -173,21 +182,21 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
             c.index = i;
             c.normal = dp / norm;
             c.fact = r / norm;
-            this->contacts.beginEdit()->push_back(c);
+            this->d_contacts.beginEdit()->push_back(c);
         }
     }
-    this->contacts.endEdit();
+    this->d_contacts.endEdit();
 }
 
 template <class DataTypes>
 void SphereForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    const Real fact = (Real)(-this->stiffness.getValue());
+    const Real fact = (Real)(-this->d_stiffness.getValue());
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
 
-    for (const auto& c : sofa::helper::getReadAccessor(contacts))
+    for (const auto& c : sofa::helper::getReadAccessor(d_contacts))
     {
         unsigned int p = c.index;
         for (sofa::Index l = 0; l < Deriv::total_size; ++l)
@@ -215,8 +224,8 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     type::Vec3d center;
-    DataTypes::get(center[0], center[1], center[2], sphereCenter.getValue());
-    const Real& r = sphereRadius.getValue();
+    DataTypes::get(center[0], center[1], center[2], d_sphereCenter.getValue());
+    const Real& r = d_sphereRadius.getValue();
 
     vparams->drawTool()->enableLighting();
 
@@ -236,20 +245,20 @@ SReal SphereForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 template<class DataTypes>
 void SphereForceField<DataTypes>::setSphere(const Coord& center, Real radius)
 {
-    sphereCenter.setValue( center );
-    sphereRadius.setValue( radius );
+    d_sphereCenter.setValue(center );
+    d_sphereRadius.setValue(radius );
 }
 
 template<class DataTypes>
 void SphereForceField<DataTypes>::setStiffness(Real stiff)
 {
-    stiffness.setValue( stiff );
+    d_stiffness.setValue(stiff );
 }
 
 template<class DataTypes>
 void SphereForceField<DataTypes>::setDamping(Real damp)
 {
-    damping.setValue( damp );
+    d_damping.setValue(damp );
 }
 
 } // namespace sofa::component::mechanicalload

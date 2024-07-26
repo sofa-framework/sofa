@@ -152,8 +152,8 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     mass->d_vertexMass.setValue( totalMass/(numX*numY*numZ) );
 
     HexahedronFEMForceField3::SPtr hexaFem = addNew<HexahedronFEMForceField3>(deformableGrid, "hexaFEM");
-    hexaFem->f_youngModulus.setValue(1000);
-    hexaFem->f_poissonRatio.setValue(0.4);
+    hexaFem->setYoungModulus(1000);
+    hexaFem->d_poissonRatio.setValue(0.4);
 
 
     // ======  Set up the multimapping and its parents, based on its child

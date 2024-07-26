@@ -49,8 +49,8 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 template < class DataTypes >
 core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing )
 {
-    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
-    existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
+    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->d_idInRegularGrid2IndexInTopo.getValue().find(index);
+    existing = !(it == topoContainer->d_idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {
         return 0;
@@ -61,7 +61,7 @@ core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<Dat
 template < class DataTypes >
 unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndexFromTopoIndex ( core::topology::BaseMeshTopology::HexaID index )
 {
-    return topoContainer->idxInRegularGrid.getValue()[ index];
+    return topoContainer->d_idxInRegularGrid.getValue()[ index];
 }
 
 template < class DataTypes >
@@ -70,8 +70,8 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     int index = -1;
     distance = 1e10;
 
-    type::Vec3i resolution = topoContainer->resolution.getValue();
-    type::Vec3i currentIndex = type::Vec3i( (int)((pos[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2]) / topoContainer->voxelSize.getValue()[2]));
+    type::Vec3i resolution = topoContainer->d_resolution.getValue();
+    type::Vec3i currentIndex = type::Vec3i((int)((pos[0]) / topoContainer->d_voxelSize.getValue()[0]), (int)((pos[1]) / topoContainer->d_voxelSize.getValue()[1]), (int)((pos[2]) / topoContainer->d_voxelSize.getValue()[2]));
 
     // Projection sur la bbox si l'element est en dehors.
     if( currentIndex[0] < 0) currentIndex[0] = 0;
@@ -81,7 +81,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( currentIndex[1] > resolution[1]) currentIndex[1] = resolution[1];
     if( currentIndex[2] > resolution[2]) currentIndex[2] = resolution[2];
 
-    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
+    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regular2topo = topoContainer->d_idInRegularGrid2IndexInTopo.getValue();
     unsigned int regularGridIndex;
     std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it;
     for( int k = 0; k < 3; k++)

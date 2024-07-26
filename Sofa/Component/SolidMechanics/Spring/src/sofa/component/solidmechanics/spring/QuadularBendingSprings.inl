@@ -75,7 +75,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te2[j]]; // ff->d_edgeInfo
             if(!(ei.is_initialized))
             {
                 unsigned int edgeIndex = te2[j];
@@ -158,7 +158,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te[j]]; // ff->d_edgeInfo
             if(ei.is_initialized)
             {
 

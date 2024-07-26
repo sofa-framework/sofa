@@ -62,11 +62,11 @@ public:
     void doUpdate() override;
 
 protected:
-    Data<VecCoord> d_inputX; ///< input position
-    Data<VecCoord> d_outputX; ///< ouput position
-    Data<SeqTriangles> d_triangles; ///< input triangles
-    Data<SeqQuads> d_quads; ///< input quads
-    Data<VecCoord> d_normals; ///< ouput normals
+    Data<VecCoord> d_inputX; ///< input array of 3d points
+    Data<VecCoord> d_outputX; ///< output array of 3d points
+    Data<SeqTriangles> d_triangles; ///< input mesh triangles
+    Data<SeqQuads> d_quads; ///< input mesh quads
+    Data<VecCoord> d_normals; ///< point normals
     Data<type::vector<Real> > d_thickness; ///< point thickness
     Data<Real> d_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
     Data<Real> d_minThickness; ///< minimal thickness to enforce

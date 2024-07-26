@@ -90,10 +90,14 @@ protected:
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
 
     const VecElement* _indexedElements;
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecCoord> _initialPoints;
+
+    Data< VecCoord > d_initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
-    virtual ~TriangleFEMForceField();
+    ~TriangleFEMForceField() override;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -103,6 +107,10 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    using Inherit1::addKToMatrix;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -113,15 +121,30 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;
-    Data<std::string> f_method; ///< Choice of method: 0 for small, 1 for large displacements
-    Data<Real> f_poisson;       ///< Poisson ratio of the material
-    Data<Real> f_young;         ///< Young modulus of the material
-    Data<Real> f_thickness;     ///< Thickness of the elements
-    Data<bool> f_planeStrain; ///< compute material stiffness corresponding to the plane strain assumption, or to the plane stress otherwise.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<std::string> f_method;
 
-    Real getPoisson() { return f_poisson.getValue(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_poisson;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_young;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_thickness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> f_planeStrain;
+
+    Data<std::string> d_method; ///< large: large displacements, small: small displacements
+    Data<Real> d_poisson; ///< Poisson ratio in Hooke's law
+    Data<Real> d_young; ///< Young modulus in Hooke's law
+    Data<Real> d_thickness; ///< Thickness of the elements
+    Data<bool> d_planeStrain; ///< Plane strain or plane stress assumption
+
+    Real getPoisson() { return d_poisson.getValue(); }
     void setPoisson(Real val);
-    Real getYoung() { return f_young.getValue(); }
+    Real getYoung() { return d_young.getValue(); }
     void setYoung(Real val);
     int  getMethod() { return method; }
     void setMethod(int val);
@@ -156,9 +179,6 @@ protected:
 
     //// stiffness matrix assembly
     void computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
-    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     type::Mat<3, 3, Real> InvalidTransform;
     type::fixed_array <Coord, 3> InvalidCoords;
@@ -170,10 +190,7 @@ protected:
 
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
-
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
-
-
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
 } // namespace sofa::component::solidmechanics::fem::elastic

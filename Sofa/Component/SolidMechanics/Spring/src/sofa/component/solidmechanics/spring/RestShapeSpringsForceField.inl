@@ -273,7 +273,7 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
 {
     if (!checkOutOfBoundsIndices(m_indices, this->mstate->getSize()))
     {
-        msg_error() << "Out of Bounds m_indices detected. ForceField is not activated.";
+        msg_error() << "Out of Bounds d_indices detected. ForceField is not activated.";
         return false;
     }
     if (const DataVecCoord* extPosition = getExtPosition())

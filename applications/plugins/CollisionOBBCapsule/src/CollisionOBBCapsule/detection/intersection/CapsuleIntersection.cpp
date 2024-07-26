@@ -43,8 +43,7 @@ using namespace collisionobbcapsule::geometry;
 IntersectorCreator<DiscreteIntersection, CapsuleDiscreteIntersection> CapsuleDiscreteIntersectors("Capsule");
 IntersectorCreator<NewProximityIntersection, CapsuleMeshDiscreteIntersection> CapsuleMeshDiscreteIntersectors("CapsuleMesh");
 
-CapsuleDiscreteIntersection::CapsuleDiscreteIntersection(DiscreteIntersection* object)
-    : intersection(object)
+CapsuleDiscreteIntersection::CapsuleDiscreteIntersection(DiscreteIntersection* intersection)
 {
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleDiscreteIntersection>(this);
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleDiscreteIntersection>(this);
@@ -60,8 +59,7 @@ CapsuleDiscreteIntersection::CapsuleDiscreteIntersection(DiscreteIntersection* o
     intersection->intersectors.ignore<RayCollisionModel, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>();
 }
 
-CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityIntersection* object)
-    : intersection(object)
+CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityIntersection* intersection)
 {
 
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleMeshDiscreteIntersection>(this);

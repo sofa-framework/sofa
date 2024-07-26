@@ -475,10 +475,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //       //given an elementIndice, find the 8 others from the sparse grid
             //       //compute MaterialStiffness
             MaterialStiffness material;
-            this->computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+            this->computeMaterialStiffness(material, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue());
 
 
-            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, this->_sparseGrid->getStiffnessCoef( i )); // classical stiffness
+            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->d_elementStiffnesses.beginEdit())[i], material, nodes, i, this->_sparseGrid->getStiffnessCoef(i )); // classical stiffness
 
             HexahedronFEMForceFieldAndMassT::computeElementMass((*this->d_elementMasses.beginEdit())[i],nodes,i,this->_sparseGrid->getMassCoef( i ));
         }
@@ -502,14 +502,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
     if( d_finestToCoarse.getValue() )
         for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-            computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i );
+            computeMechanicalMatricesDirectlyFromTheFinestToCoarse((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i );
     else
     {
         auto* sparseGridRamification = dynamic_cast<component::topology::container::grid::SparseGridRamificationTopology*>( this->_sparseGrid );
         if( d_useRamification.getValue() && sparseGridRamification )
         {
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-                computeMechanicalMatricesRecursivelyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursivelyWithRamifications((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
 
 
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
@@ -527,7 +527,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
         else
         {
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-                computeMechanicalMatricesRecursively( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursively((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
 
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
             {
@@ -1053,7 +1053,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                         WB[i][j] = WBmeca[i][j];
                     else
                     {
-                        WB[i][j] = (Real)(WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3);
+                        WB[i][j] = (Real)(WB[i][j] / fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->d_poissonRatio.getValue() * .3);
                     }
                 }
             }

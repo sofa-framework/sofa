@@ -31,10 +31,12 @@ int VisualTransformClass = sofa::core::RegisterObject("TODO")
         .add<VisualTransform>();
 
 VisualTransform::VisualTransform()
-    : transform(initData(&transform,"transform","Transformation to apply"))
-    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
+    : d_transform(initData(&d_transform, "transform", "Transformation to apply"))
+    , d_recursive(initData(&d_recursive, false, "recursive", "True to apply transform to all nodes below"))
     , nbpush(0)
 {
+    transform.setParent(&d_transform);
+    recursive.setParent(&d_recursive);
 }
 
 VisualTransform::~VisualTransform()
@@ -43,7 +45,7 @@ VisualTransform::~VisualTransform()
 
 void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
 {
-    const Coord xform = transform.getValue();
+    const Coord xform = d_transform.getValue();
     vparams->drawTool()->pushMatrix();
     ++nbpush;
     float glTransform[16];
@@ -73,13 +75,13 @@ void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
 
 void VisualTransform::doDrawVisual(const sofa::core::visual::VisualParams* vparams)
 {
-    if (!recursive.getValue())
+    if (!d_recursive.getValue())
         pop(vparams);
 }
 
 void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
 {
-    if (!recursive.getValue())
+    if (!d_recursive.getValue())
         pop(vparams);
 }
 

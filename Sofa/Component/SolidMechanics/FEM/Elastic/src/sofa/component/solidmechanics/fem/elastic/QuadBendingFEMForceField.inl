@@ -65,26 +65,33 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
-  : quadInfo(initData(&quadInfo,"quadInfo", "Internal quad data"))
-  , vertexInfo(initData(&vertexInfo,"vertexInfo", "Internal node data"))
-  , edgeInfo(initData(&edgeInfo,"edgeInfo", "Internal edge data"))
+  : d_quadInfo(initData(&d_quadInfo, "quadInfo", "Internal quad data"))
+  , d_vertexInfo(initData(&d_vertexInfo, "vertexInfo", "Internal point data"))
+  , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
   , m_topology(nullptr)
   , method(SMALL)
-  , f_method(initData(&f_method,std::string("small"),"method","large: large displacements, small: small displacements"))
-  , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
-  , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
-  , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
+  , d_method(initData(&d_method, std::string("small"), "method", "large: large displacements, small: small displacements"))
+  , d_poisson(initData(&d_poisson, type::vector<Real>(1, static_cast<Real>(0.45)), "poissonRatio", "Poisson ratio in Hooke's law (vector)"))
+  , d_young(initData(&d_young, type::vector<Real>(1, static_cast<Real>(1000.0)), "youngModulus", "Young modulus in Hooke's law (vector)"))
+  , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
   , l_topology(initLink("topology", "link to the topology container"))
 
 {
+    quadInfo.setParent(&d_quadInfo);
+    vertexInfo.setParent(&d_vertexInfo);
+    edgeInfo.setParent(&d_edgeInfo);
+    f_method.setParent(&d_method);
+    f_poisson.setParent(&d_poisson);
+    f_young.setParent(&d_young);
+    f_thickness.setParent(&d_thickness);
 
 }
                 
 template <class DataTypes>
 QuadBendingFEMForceField<DataTypes>::~QuadBendingFEMForceField()
 {
-    f_poisson.setRequired(true);
-    f_young.setRequired(true);
+    d_poisson.setRequired(true);
+    d_young.setRequired(true);
 }
     
 // --------------------------------------------------------------------------------------
@@ -114,18 +121,18 @@ void QuadBendingFEMForceField<DataTypes>::init()
         msg_warning() << "No quads found in linked Topology.";
     }
     // Create specific handler for QuadData
-    quadInfo.createTopologyHandler(m_topology);
-    quadInfo.setCreationCallback([this](Index quadIndex, QuadInformation& qInfo,
-        const core::topology::BaseMeshTopology::Quad& q,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_quadInfo.createTopologyHandler(m_topology);
+    d_quadInfo.setCreationCallback([this](Index quadIndex, QuadInformation& qInfo,
+                                          const core::topology::BaseMeshTopology::Quad& q,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         createQuadInformation(quadIndex, qInfo, q, ancestors, coefs);
     });
 
-    edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.createTopologyHandler(m_topology);
 
-    vertexInfo.createTopologyHandler(m_topology);
+    d_vertexInfo.createTopologyHandler(m_topology);
 
     reinit();
 }
@@ -136,7 +143,7 @@ void QuadBendingFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
-  type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+  type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
 
   QuadInformation *qinfo = &quadInf[i];
   Coord IntlengthElement;
@@ -153,7 +160,7 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   qinfo->InitialPosElements[2] = (initialPoints)[c] - quadInf[i].Intcentroid;
   qinfo->InitialPosElements[3] = (initialPoints)[d] - quadInf[i].Intcentroid;
   
-  quadInfo.endEdit();
+  d_quadInfo.endEdit();
 }
   
   
@@ -165,8 +172,8 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
 {   
 
     //---------- check topology data----------------
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-    type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(d_edgeInfo.beginEdit());
+    type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
     // prepare to store info in the quad array
     quadInf.resize(m_topology->getNbQuads()); 
 
@@ -174,9 +181,9 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
     edgeInf.resize(m_topology->getNbEdges());
   
     unsigned int nbPoints = m_topology->getNbPoints(); 
-    type::vector<VertexInformation>& vi = *(vertexInfo.beginEdit()); 
+    type::vector<VertexInformation>& vi = *(d_vertexInfo.beginEdit());
     vi.resize(nbPoints);
-    vertexInfo.endEdit(); 
+    d_vertexInfo.endEdit();
   
     for (Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
     {
@@ -184,8 +191,8 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
             (const sofa::type::vector< unsigned int > )0,
             (const sofa::type::vector< SReal >)0);
     }
-    edgeInfo.endEdit();
-    quadInfo.endEdit();
+    d_edgeInfo.endEdit();
+    d_quadInfo.endEdit();
 }
 
 
@@ -237,7 +244,7 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
 
     Coord centroid = (p[idx0] + p[idx2]) / 2;
 
-    type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+    type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
 
     Coord deform_t0 = p[idx0]-centroid;  // translation in x direction of node 0
     Coord deform_t1 = p[idx1]-centroid;  // translation in x direction of node 1
@@ -268,7 +275,7 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     D[18] = 0;  
     D[19] = 0;
 
-    quadInfo.endEdit();
+    d_quadInfo.endEdit();
 }
   
 // ------------------------------------------------------------------------------------------------------------
@@ -375,16 +382,16 @@ void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainD
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i, Index &/*a*/, Index &/*b*/, Index &/*c*/, Index &/*d*/)
 {
-  type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+  type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
 
-  const type::vector<Real> & youngArray = f_young.getValue();
-  const type::vector<Real> & poissonArray = f_poisson.getValue();
+  const type::vector<Real> & youngArray = d_young.getValue();
+  const type::vector<Real> & poissonArray = d_poisson.getValue();
 
   QuadInformation *qinfo = &quadInf[i];
 
   Real y = ((int)youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
   Real p = ((int)poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
-  Real  thickness = f_thickness.getValue();
+  Real  thickness = d_thickness.getValue();
   
   // Membrance material stiffness Cm
   qinfo->BendingmaterialMatrix[0][0] = y * thickness / (1 - p * p);
@@ -393,7 +400,7 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i,
   qinfo->BendingmaterialMatrix[1][1] = y * thickness / (1 - p * p);
   qinfo->BendingmaterialMatrix[2][2] = y * thickness * (1 - p) / (2 - 2 * p * p);
 
-  quadInfo.endEdit();
+  d_quadInfo.endEdit();
 }
   
 // --------------------------------------------------------------------------------------
@@ -402,16 +409,16 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i,
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, Index &/*a*/, Index &/*b*/, Index &/*c*/, Index &/*d*/)
 {
-  type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+  type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
 
-  const type::vector<Real> & youngArray = f_young.getValue();
-  const type::vector<Real> & poissonArray = f_poisson.getValue();
+  const type::vector<Real> & youngArray = d_young.getValue();
+  const type::vector<Real> & poissonArray = d_poisson.getValue();
 
   QuadInformation *qinfo = &quadInf[i];
 
   Real y = ((int)youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
   Real p = ((int)poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
-  Real thickness = f_thickness.getValue();
+  Real thickness = d_thickness.getValue();
   constexpr Real k = static_cast<Real>(5) / static_cast<Real>(6);
 
   // Bending material stiffness Cb
@@ -423,7 +430,7 @@ void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, I
   // Shear material stiffness Cs
   qinfo->ShearmaterialMatrix[6][6] = k * y * thickness / (2 + 2 * p);
   qinfo->ShearmaterialMatrix[7][7] = k * y * thickness / (2 + 2 * p);
-  quadInfo.endEdit();
+  d_quadInfo.endEdit();
 
 }
   
@@ -433,7 +440,7 @@ void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, I
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K, Index elementIndex)
 {  
-  type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
+  type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
   const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
   //QuadInformation *qinfo = &quadInf[elementIndex];
 
@@ -543,7 +550,7 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   // save stiffness
   quadInf[elementIndex].Bendingstiffness=Kb;
   quadInf[elementIndex].Shearstiffness=Ks;
-  quadInfo.endEdit();
+  d_quadInfo.endEdit();
 
 }
   
@@ -553,7 +560,7 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeForce(Displacement &F, Index elementIndex, Displacement &D)
 {
-    type::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit()); 
+    type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
     // Tinh stiffness matrix K
     Stiffness K;
     computeElementStiffness(K, elementIndex);
@@ -581,7 +588,7 @@ void QuadBendingFEMForceField<DataTypes>::computeForce(Displacement &F, Index el
     F[19]=0; //F[19]=K[19][2]*D[2]+K[19][7]*D[7]+K[19][12]*D[12]+K[19][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     quadInf[elementIndex].stiffness = K; 
 
-    quadInfo.endEdit();
+    d_quadInfo.endEdit();
 }
 
   
@@ -671,7 +678,7 @@ void QuadBendingFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, con
   f[idx2] += Coord(F[10],F[11],F[12]);
   f[idx3] += Coord(F[15],F[16],F[17]);
     
-  quadInfo.endEdit();
+  d_quadInfo.endEdit();
 }
   
 /*template <class DataTypes>

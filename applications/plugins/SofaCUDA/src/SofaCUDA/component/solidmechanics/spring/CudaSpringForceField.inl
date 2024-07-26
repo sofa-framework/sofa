@@ -157,7 +157,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     Data& data = m->data;
     m->Inherit::init();
-    const sofa::type::vector<Spring>& springs = m->springs.getValue();
+    const sofa::type::vector<Spring>& springs = m->d_springs.getValue();
     if (!springs.empty())
     {
         const bool external = (m->mstate1!=m->mstate2);

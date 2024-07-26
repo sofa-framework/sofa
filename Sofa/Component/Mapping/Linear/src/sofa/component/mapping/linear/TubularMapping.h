@@ -87,9 +87,18 @@ public:
 
     void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn ) override;
 
-    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points along the circles around each point of the input object (10 by default)
-    Data<double> m_radius; ///< radius of the circles around each point of the input object (1 by default)
-    Data<int> m_peak; ///< if 1 or 2 creates a peak at the end
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<unsigned int> m_nbPointsOnEachCircle;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<double> m_radius;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<int> m_peak;
+
+    Data<unsigned int> d_nbPointsOnEachCircle; ///< Discretization of created circles
+    Data<double> d_radius; ///< Radius of created circles
+    Data<int> d_peak; ///< =0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment
 
 protected:
 

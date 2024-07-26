@@ -79,3 +79,15 @@ SOFA_ATTRIBUTE_DISABLED( \
 SOFA_ATTRIBUTE_DISABLED( \
 "v23.12", "v24.06", "This function is replaced by solveLCP.")
 #endif // SOFA_BUILD_SOFA_HELPER
+
+#define SOFA_ATTRIBUTE_DEPRECATED__PLUGIN_GETCOMPONENTLIST() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06",  \
+    "Using entrypoint GetComponentList() from a plugin has been deprecated. Use the helper function listClassesFromTarget() from ObjectFactory instead.")
+
+#ifdef SOFA_BUILD_SOFA_HELPER
+#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
+#else
+#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v24.12", "v25.06", "This function is now in StringUtils.h")
+#endif // SOFA_BUILD_SOFA_HELPER

@@ -302,13 +302,50 @@ public:
 
 public:
     typedef type::vector<type::Vec3> SeqPoints;
-    Data< SeqPoints > seqPoints; ///< List of point positions
-    Data<SeqEdges> seqEdges; ///< List of edge indices
-    Data<SeqTriangles> seqTriangles; ///< List of triangle indices
-    Data<SeqQuads>       seqQuads; ///< List of quad indices
-    Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
-    Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
-    Data<SeqUV>	seqUVs; ///< List of uv coordinates
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data< SeqPoints > seqPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqEdges> seqEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqTriangles> seqTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqQuads> seqQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqTetrahedra> seqTetrahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqHexahedra> seqHexahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<SeqUV> seqUVs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> _drawEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> _drawTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> _drawQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> _drawTetra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    Data<bool> _drawHexa;
+
+    Data< SeqPoints > d_seqPoints; ///< List of point positions
+    Data<SeqEdges> d_seqEdges; ///< List of edge indices
+    Data<SeqTriangles> d_seqTriangles; ///< List of triangle indices
+    Data<SeqQuads>       d_seqQuads; ///< List of quad indices
+    Data<SeqTetrahedra>      d_seqTetrahedra; ///< List of tetrahedron indices
+    Data<SeqHexahedra>	   d_seqHexahedra; ///< List of hexahedron indices
+    Data<SeqUV>	d_seqUVs; ///< List of uv coordinates
 
 protected:
     Size  nbPoints;
@@ -604,11 +641,11 @@ public:
     int revision;
 
     // To draw the mesh, the topology position must be linked with the mechanical object position 
-    Data< bool > _drawEdges; ///< if true, draw the topology Edges
-    Data< bool > _drawTriangles; ///< if true, draw the topology Triangles
-    Data< bool > _drawQuads; ///< if true, draw the topology Quads
-    Data< bool > _drawTetra; ///< if true, draw the topology Tetrahedra
-    Data< bool > _drawHexa; ///< if true, draw the topology hexahedra
+    Data< bool > d_drawEdges; ///< if true, draw the topology Edges
+    Data< bool > d_drawTriangles; ///< if true, draw the topology Triangles
+    Data< bool > d_drawQuads; ///< if true, draw the topology Quads
+    Data< bool > d_drawTetra; ///< if true, draw the topology Tetrahedra
+    Data< bool > d_drawHexa; ///< if true, draw the topology hexahedra
 
     void invalidate();
 

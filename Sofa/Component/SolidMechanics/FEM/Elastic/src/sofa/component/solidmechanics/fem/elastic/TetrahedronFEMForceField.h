@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -32,6 +33,7 @@
 
 #include <sofa/helper/ColorMap.h>
 #include <sofa/simulation/ParallelForEach.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -60,8 +62,8 @@ public:
     typedef TetrahedronFEMForceField<DataTypes> Main;
     void initPtrData(Main * m)
     {
-        auto gatherPt = sofa::helper::getWriteOnlyAccessor(m->_gatherPt);
-        auto gatherBsize = sofa::helper::getWriteOnlyAccessor(m->_gatherBsize);
+        auto gatherPt = sofa::helper::getWriteOnlyAccessor(m->d_gatherPt);
+        auto gatherBsize = sofa::helper::getWriteOnlyAccessor(m->d_gatherBsize);
 
         gatherPt.wref().setNames({" "});
         gatherBsize.wref().setNames({" "});
@@ -73,22 +75,22 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
+class TetrahedronFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecReal VecReal;
-    typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    using VecCoord = VecCoord_t<DataTypes>;
+    using VecDeriv = VecDeriv_t<DataTypes>;
+    using VecReal = VecReal_t<DataTypes>;
+    using Coord = Coord_t<DataTypes>;
+    using Deriv = Deriv_t<DataTypes>;
+    using Real = Real_t<DataTypes>;
+    using DataVecDeriv = DataVecDeriv_t<DataTypes>;
+    using DataVecCoord = DataVecCoord_t<DataTypes>;
 
-    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
-    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    using Vector = VecCoord;
 
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
@@ -187,28 +189,64 @@ public:
     type::vector< Mat33 > m_rotations;
     const type::vector<Mat33>& getRotations() override;
 
-    Data< VecCoord > _initialPoints; ///< the initial positions of the points
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<VecCoord> _initialPoints;
+
+    Data< VecCoord > d_initialPoints; ///< Initial Position
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
 
-    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
-    Data<VecReal > _youngModulus; ///< FEM Young Modulus
-    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
-    Data<bool> _updateStiffnessMatrix;
-    Data<bool> _assembling;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<std::string> f_method;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<Real> _poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<VecReal> _youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<VecReal> _localStiffnessFactor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _updateStiffnessMatrix;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _assembling;
+
+    Data<std::string> d_method; ///< "small", "large" (by QR), "polar" or "svd" displacements
+
+    Data<VecReal> d_localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
+    Data<bool> d_updateStiffnessMatrix;
+    Data<bool> d_assembling;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<Real> _plasticMaxThreshold;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<Real> _plasticYieldThreshold;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<Real> _plasticCreep;
 
     /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     /// @{
-    Data<Real> _plasticMaxThreshold;
-    Data<Real> _plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
-    Data<Real> _plasticCreep; ///< this parameters is different from the article, here it includes the multiplication by dt
+    Data<Real> d_plasticMaxThreshold;
+    Data<Real> d_plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
+    Data<Real> d_plasticCreep; ///< Plastic Creep Factor * dt [0,1]. Warning this factor depends on dt.
     /// @}
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<sofa::helper::OptionsGroup> _gatherPt;
 
-    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
-    Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<sofa::helper::OptionsGroup> _gatherBsize;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> drawHeterogeneousTetra;
+
+    Data< sofa::helper::OptionsGroup > d_gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
+    Data< sofa::helper::OptionsGroup > d_gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
+    Data< bool > d_drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
 
     Real minYoung, maxYoung;
 
@@ -221,26 +259,55 @@ public:
 
     Real prevMaxStress;
 
-    Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
-    Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
-    Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
-    Data<type::vector<type::RGBAColor> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<int> _computeVonMisesStress;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<type::vector<Real> > _vonMisesPerElement;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<type::vector<Real> >  _vonMisesPerNode;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<type::vector<type::RGBAColor> > _vonMisesStressColors;
+
+    Data<int> d_computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1
+    Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
+    Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
+    Data<type::vector<type::RGBAColor> > d_vonMisesStressColors; ///< Vector of colors describing the VonMises stress
 
     Real m_minVonMisesPerNode;
     Real m_maxVonMisesPerNode;
 
-    Data<std::string> _showStressColorMap; ///< Color map used to show stress values
-    Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
-    Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
-    Data<bool> d_showVonMisesStressPerNodeColorMap; ///< draw triangles showing vonMises stress interpolated in nodes
-    Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<std::string> _showStressColorMap;
 
-    Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<float> _showStressAlpha;
 
-    Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerNode;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerNodeColorMap;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerElement;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    core::objectmodel::RenamedData<bool> _updateStiffness;
+
+    Data<std::string> d_showStressColorMap; ///< Color map used to show stress values
+    Data<float> d_showStressAlpha; ///< Alpha for vonMises visualisation
+    Data<bool> d_showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
+    Data<bool> d_showVonMisesStressPerNodeColorMap; ///< draw elements showing vonMises stress interpolated in nodes
+    Data<bool> d_showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
+
+    Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element
+
+    Data<bool>  d_updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
+
+    using Inherit1::l_topology;
 
     type::vector<type::Vec<6,Real> > elemDisplacements;
 
@@ -251,9 +318,7 @@ protected:
     ~TetrahedronFEMForceField() override;
 
 public:
-    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
-    void setYoungModulus(Real val) ;
-    void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
+    void setComputeGlobalMatrix(bool val) { this->d_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future
     const Transformation& getActualTetraRotation(Index index);
@@ -269,7 +334,7 @@ public:
     void setMethod(std::string methodName);
     void setMethod(int val);
 
-    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
+    void setUpdateStiffnessMatrix(bool val) { this->d_updateStiffnessMatrix.setValue(val); }
 
     void reset() override;
     void init() override;
@@ -283,8 +348,8 @@ public:
     // getPotentialEnergy is implemented for small method
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
+    using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
-    void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
@@ -295,8 +360,6 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
-    virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
 protected:
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );

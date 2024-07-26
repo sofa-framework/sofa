@@ -61,26 +61,54 @@ public:
     typedef typename type::Quat<Real> QuatR;
 
 public:
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< sofa::type::vector<sofa::Index> > m_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> m_tBegin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Real> m_tEnd;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R>  m_x0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R>  m_dx0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R> m_x1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec3R>  m_dx1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec2R> m_sx0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<Vec2R> m_sx1;
+
     ///indices of the DOFs constraints
-    SetIndex m_indices;
+    SetIndex d_indices;
 
     /// the time steps defining the duration of the constraint
-    Data<Real> m_tBegin;
-    Data<Real> m_tEnd; ///< End Time of the motion
+    Data<Real> d_tBegin;
+    Data<Real> d_tEnd; ///< End Time of the motion
 
     /// control parameters :
     /// first control point
-    Data<Vec3R> m_x0;
+    Data<Vec3R> d_x0;
     /// first derivated control point
-    Data<Vec3R> m_dx0;
+    Data<Vec3R> d_dx0;
     /// second control point
-    Data<Vec3R> m_x1;
+    Data<Vec3R> d_x1;
     /// second derivated control point
-    Data<Vec3R> m_dx1;
+    Data<Vec3R> d_dx1;
     /// acceleration parameters : the accaleration curve is itself a hermite spline, with first point at (0,0) and second at (1,1)
     /// and derivated on this points are :
-    Data<Vec2R> m_sx0;
-    Data<Vec2R> m_sx1; ///< second interpolation vector
+    Data<Vec2R> d_sx0;
+    Data<Vec2R> d_sx1; ///< second interpolation vector
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<HermiteSplineProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -93,11 +121,11 @@ public:
     void clearConstraints();
     void addConstraint(unsigned index );
 
-    void setBeginTime(const Real &t) {m_tBegin.setValue(t);}
-    void setEndTime(const Real &t) {m_tEnd.setValue(t);}
+    void setBeginTime(const Real &t) {d_tBegin.setValue(t);}
+    void setEndTime(const Real &t) {d_tEnd.setValue(t);}
 
-    Real getBeginTime() {return m_tBegin.getValue();}
-    Real getEndTime() {return m_tEnd.getValue();}
+    Real getBeginTime() {return d_tBegin.getValue();}
+    Real getEndTime() {return d_tEnd.getValue();}
 
     void computeHermiteCoefs( const Real u, Real &H00, Real &H10, Real &H01, Real &H11);
     void computeDerivateHermiteCoefs( const Real u, Real &dH00, Real &dH10, Real &dH01, Real &dH11);

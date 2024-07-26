@@ -32,7 +32,6 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 
-#include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 
@@ -73,31 +72,88 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> displayDebug;
 
-    Data<bool> displayDebug; ///< Display debug information.
-    Data<bool> initial_guess; ///< activate LCP results history to improve its resolution performances.
-    Data<bool> build_lcp; ///< LCP is not fully built to increase performance in some case.
-    Data<SReal> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
-    Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-    Data<SReal> mu; ///< Friction coefficient
-    Data<SReal> minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
-    Data<SReal> maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
-    Data<bool> multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
-    Data<int> multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
-    Data<int> merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
-    Data<int> merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
-    Data<int> merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
-    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> initial_guess;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> build_lcp;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> tol;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> maxIt;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> mu;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> minW;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> maxF;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> multi_grid;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> multi_grid_levels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> merge_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> merge_spatial_step;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> merge_local_levels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data < std::set<int> >  constraintGroups;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data< int> showLevels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> showCellWidth;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<type::Vec3> showTranslation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<type::Vec3>  showLevelTranslation;
+
+
+    Data<bool> d_displayDebug; ///< Display debug information.
+    Data<bool> d_initial_guess; ///< activate LCP results history to improve its resolution performances.
+    Data<bool> d_build_lcp; ///< LCP is not fully built to increase performance in some case.
+    Data<SReal> d_tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<SReal> d_mu; ///< Friction coefficient
+    Data<SReal> d_minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
+    Data<SReal> d_maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
+    Data<bool> d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
+    Data<int> d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
+    Data<int> d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
+    Data<int> d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
+    Data<int> d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
 
-    Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
+    Data < std::set<int> > d_constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
 
-    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
 
-    Data<int> showLevels; ///< Number of constraint levels to display
-    Data<SReal> showCellWidth; ///< Distance between each constraint cells
-    Data<type::Vec3> showTranslation; ///< Position of the first cell
-    Data<type::Vec3> showLevelTranslation; ///< Translation between levels
+    Data<int> d_showLevels; ///< Number of constraint levels to display
+    Data<SReal> d_showCellWidth; ///< Distance between each constraint cells
+    Data<type::Vec3> d_showTranslation; ///< Position of the first cell
+    Data<type::Vec3> d_showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread

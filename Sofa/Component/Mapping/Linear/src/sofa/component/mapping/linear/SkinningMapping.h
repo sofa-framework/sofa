@@ -75,7 +75,26 @@ public:
     typedef linearalgebra::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 protected:
-    Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<std::string> f_initPos;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data< type::vector<unsigned int> > nbRef;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<std::string> f_index;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<double> weight;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<unsigned int> showFromIndex;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<bool> showWeights;
+
+
+    Data<OutVecCoord> d_initPos; ///< initial child coordinates in the world reference frame.
 
     // data for linear blending
     type::vector<type::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
@@ -83,17 +102,17 @@ protected:
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
-    Data< type::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
-    Data< type::vector<sofa::type::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
-    Data< type::vector<sofa::type::SVector<InReal> > > weight; ///< influence weights of the Dofs.
+    Data< type::vector<unsigned int> > d_nbRef; ///< Number of primitives influencing each point.
+    Data< type::vector<sofa::type::SVector<unsigned int> > > d_index; ///< parent indices for each child.
+    Data< type::vector<sofa::type::SVector<InReal> > > d_weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
     void setWeights(const type::vector<sofa::type::SVector<InReal> >& weights, const type::vector<sofa::type::SVector<unsigned int> >& indices, const type::vector<unsigned int>& nbrefs);
 
 public:
-    Data<unsigned int> showFromIndex; ///< Displayed From Index.
-    Data<bool> showWeights; ///< Show influence.
+    Data<unsigned int> d_showFromIndex; ///< Displayed From Index.
+    Data<bool> d_showWeights; ///< Show influence.
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();

@@ -152,20 +152,24 @@ public:
 
             context->addObject(obj);
         }
+        else
+        {
+            obj = sofa::core::objectmodel::New<T>();
+        }
 
-        if (arg) obj->parse(arg);
+        if (arg && obj) obj->parse(arg);
 
         return obj;
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data< VecReal > radius;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<SReal> defaultRadius;
 
     Data< VecReal > d_radius; ///< Radius of each sphere
-    Data< SReal > d_defaultRadius; ///< Default Radius
+    Data< SReal > d_defaultRadius; ///< Default radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 

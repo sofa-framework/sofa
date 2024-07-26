@@ -70,7 +70,7 @@ public:
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
 protected:
-    PatchTestMovementProjectiveConstraintInternalData<DataTypes> *data;
+    std::unique_ptr<PatchTestMovementProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class PatchTestMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :

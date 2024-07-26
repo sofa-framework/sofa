@@ -75,7 +75,7 @@ public:
     /// Compute Energy
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
-    void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true, bool neglectingCompliance=true);
+    void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
@@ -92,7 +92,7 @@ public:
 
 
     void computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance=true);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
     void computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
 
     /// @}
@@ -100,12 +100,19 @@ public:
     /// @name Matrix operations using LinearSolver components
 /// @{
 
-    void m_resetSystem();
-    void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact);
-    void m_setSystemRHVector(core::MultiVecDerivId v);
-    void m_setSystemLHVector(core::MultiVecDerivId v);
-    void m_solveSystem();
-    void m_print( std::ostream& out );
+    void resetSystem(core::behavior::LinearSolver* linearSolver);
+    void setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact, core::behavior::LinearSolver* linearSolver);
+    void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
+    void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
+    void solveSystem(core::behavior::LinearSolver* linearSolver);
+    void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
+
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_RESETSYSTEM() void m_resetSystem();
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_SETSYSTEMMBKMATRIX() void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact);
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_SETSYSTEMRHVECTOR() void m_setSystemRHVector(core::MultiVecDerivId v);
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_SETSYSTEMLHVECTOR() void m_setSystemLHVector(core::MultiVecDerivId v);
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_SOLVESYSTEM() void m_solveSystem();
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_PRINT() void m_print( std::ostream& out );
 
     /// @}
 

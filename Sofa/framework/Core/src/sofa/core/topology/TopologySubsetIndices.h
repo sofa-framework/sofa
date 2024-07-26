@@ -47,14 +47,17 @@ public:
     
     Index indexOfElement(Index index) const override;
 
+    const type::vector<Index> indicesOfElement(Index index) const override;
+
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
     Index getLastElementIndex() const override;
 
+
 protected:
     void swapPostProcess(Index i1, Index i2) override;
 
-    void removePostProcess(sofa::Size nbElements) override;
+    void removePostProcess(sofa::Index elemId) override;
 
     void addPostProcess(sofa::Index dataLastId) override;
 

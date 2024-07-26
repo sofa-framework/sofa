@@ -52,7 +52,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
         this->errorMax *= 10;
 
         SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
-//        map->f_computeDistance.setValue(true);
+//        map->d_computeDistance.setValue(true);
         sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
 
         const component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
@@ -79,13 +79,13 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 //        this->errorMax *= 10;
 
 //        SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
-////        map->f_computeDistance.setValue(true);
+////        map->d_computeDistance.setValue(true);
 //        map->d_geometricStiffness.setValue(1);
 
 //        type::vector< SReal > restLength(2);
 //        restLength[0] = .5;
 //        restLength[1] = 2;
-//        map->f_restLengths.setValue( restLength );
+//        map->d_restLengths.setValue( restLength );
 
 //        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::container::dynamic::EdgeSetTopologyContainer>(this->root);
 //        edges->addEdge( 0, 1 );

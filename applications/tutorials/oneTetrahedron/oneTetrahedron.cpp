@@ -173,7 +173,7 @@ int main(int argc, char** argv)
     // Display Flags
     const VisualStyle::SPtr style = sofa::core::objectmodel::New<VisualStyle>();
     groot->addObject(style);
-    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    sofa::core::visual::DisplayFlags& flags = *style->d_displayFlags.beginEdit();
     flags.setShowNormals(false);
     flags.setShowInteractionForceFields(false);
     flags.setShowMechanicalMappings(false);
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
     flags.setShowWireFrame(true);
     flags.setShowVisualModels(true);
     flags.setShowBehaviorModels(true);
-    style->displayFlags.endEdit();
+    style->d_displayFlags.endEdit();
 
     sofa::gui::common::GUIManager::SetScene(groot);
 

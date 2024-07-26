@@ -101,11 +101,11 @@ public:
 
     const Deriv& velocity(sofa::Index index) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> bothSide;
 
 
-    Data<bool> d_bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
+    Data<bool> d_bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -133,10 +133,10 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> computeNormals;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
     Data<bool> m_displayFreePosition;
 
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)

@@ -54,7 +54,10 @@ public:
     SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
     sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
-    Data<double> f_omega; ///< Omega coefficient
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    Data<double> f_omega;
+
+    Data<double> d_omega; ///< Omega coefficient
 protected:
     SSORPreconditioner();
 public:
