@@ -38,14 +38,57 @@ BaseLinearElasticityFEMForceField<DataTypes>::GetDefaultYoungModulusValue()
 
 template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
-    : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , d_youngModulus(initData(&d_youngModulus, GetDefaultYoungModulusValue(), "youngModulus","FEM Young's Modulus in Hooke's law"))
+    : d_poissonRatio(initData(&d_poissonRatio, defaultPoissonRatioValue, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
+    , d_youngModulus(initData(&d_youngModulus, defaultVecYoungModulusValue, "youngModulus", "FEM Young's Modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
     d_poissonRatio.setWidget("poissonRatio");
 
     d_youngModulus.setRequired(true);
+
+    this->addUpdateCallback("checkPoissonRatio", {&d_poissonRatio}, [this](const core::DataTracker& )
+    {
+        checkPoissonRatio();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
+    this->addUpdateCallback("checkPositiveYoungModulus", {&d_youngModulus}, [this](const core::DataTracker& )
+    {
+        checkYoungModulus();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+}
+
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::checkPoissonRatio()
+{
+    const auto& poissonRatio = d_poissonRatio.getValue();
+    if (poissonRatio < 0 || poissonRatio >= 0.5)
+    {
+        msg_warning() << "Poisson's ratio must be in the range [0, 0.5), "
+                "but an out-of-bounds value has been provided (" <<
+                poissonRatio << "). It is set to " << defaultPoissonRatioValue <<
+                " to ensure the correct behavior";
+        d_poissonRatio.setValue(defaultPoissonRatioValue);
+    }
+}
+
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::checkYoungModulus()
+{
+    auto youngModulus = sofa::helper::getWriteAccessor(d_youngModulus);
+    for (auto& y : youngModulus)
+    {
+        if (y < 0)
+        {
+            msg_warning() << "Young's modulus must be positive, but "
+                    "a negative value has been provided (" << y <<
+                    "). It is set to " << defaultYoungModulusValue <<
+                    " to ensure the correct behavior";
+            y = defaultYoungModulusValue;
+        }
+    }
 }
 
 template <class DataTypes>
@@ -58,6 +101,9 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
+
+    checkYoungModulus();
+    checkPoissonRatio();
 }
 
 template <class DataTypes>

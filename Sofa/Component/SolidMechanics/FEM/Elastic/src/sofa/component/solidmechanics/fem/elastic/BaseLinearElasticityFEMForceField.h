@@ -47,6 +47,7 @@ public:
     static VecReal GetDefaultYoungModulusValue();
 
     BaseLinearElasticityFEMForceField();
+
     void init() override;
 
     void setPoissonRatio(Real val);
