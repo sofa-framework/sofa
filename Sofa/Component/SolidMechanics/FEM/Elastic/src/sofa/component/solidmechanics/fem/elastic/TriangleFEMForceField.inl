@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
@@ -40,19 +40,13 @@ TriangleFEMForceField()
     , m_topology(nullptr)
     , method(LARGE)
     , d_method(initData(&d_method, std::string("large"), "method", "large: large displacements, small: small displacements"))
-    , d_poisson(initData(&d_poisson, Real(0.3), "poissonRatio", "Poisson ratio in Hooke's law"))
-    , d_young(initData(&d_young, Real(1000.), "youngModulus", "Young modulus in Hooke's law"))
     , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
     , d_planeStrain(initData(&d_planeStrain, false, "planeStrain", "Plane strain or plane stress assumption"))
-    , l_topology(initLink("topology", "link to the topology container"))    
 {
-    d_poisson.setRequired(true);
-    d_young.setRequired(true);
-
     _initialPoints.setOriginalData(&d_initialPoints);
     f_method.setOriginalData(&d_method);
-    f_poisson.setOriginalData(&d_poisson);
-    f_young.setOriginalData(&d_young);
+    f_poisson.setOriginalData(&this->d_poissonRatio);
+    f_young.setOriginalData(&this->d_young);
     f_thickness.setOriginalData(&d_thickness);
     f_planeStrain.setOriginalData(&d_planeStrain);
 
@@ -71,21 +65,13 @@ void TriangleFEMForceField<DataTypes>::init()
 
     // checking inputs using setter
     setMethod(d_method.getValue());
-    setPoisson(d_poisson.getValue());
-    setYoung(d_young.getValue());
 
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    m_topology = this->l_topology.get();
+    msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
 
     if (m_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -221,14 +207,15 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
     _materialsStiffnesses.resize(_indexedElements->size());
     const VecCoord& p = d_initialPoints.getValue();
 
-    const Real _p = d_poisson.getValue();
+    const Real _p = this->d_poissonRatio.getValue();
     const Real _1_p = 1 - _p;
-    const Real Estrain = d_young.getValue() / ((1 + _p) * (1 - 2 * _p));
-    const Real Estress = d_young.getValue() / (1 - _p * _p);
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         const auto& [a, b, c] = (*_indexedElements)[i].array();
+
+        const Real Estrain = this->getYoungModulusInElement(i) / ((1 + _p) * (1 - 2 * _p));
+        const Real Estress = this->getYoungModulusInElement(i) / (1 - _p * _p);
 
         const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
 
@@ -684,34 +671,6 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
-}
-
-template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
-{
-    if (val < 0)
-    {
-        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
-        d_poisson.setValue(0.3);
-    }
-    else if (val != d_poisson.getValue())
-    {
-        d_poisson.setValue(val);
-    }
-}
-
-template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::setYoung(Real val)
-{
-    if (val < 0)
-    {
-        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        d_young.setValue(Real(1000));
-    }
-    else if (val != d_young.getValue())
-    {
-        d_young.setValue(val);
-    }
 }
 
 template<class DataTypes>

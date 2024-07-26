@@ -23,9 +23,8 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
@@ -54,12 +53,12 @@ namespace sofa::component::solidmechanics::fem::elastic
   The method for small displacements has not been validated and we suspect that it is broke. Use it very carefully, and compare with the method for large displacements.
   */
 template<class DataTypes>
-class TriangleFEMForceField : public core::behavior::ForceField<DataTypes>
+class TriangleFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef Inherit1 Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;
@@ -138,15 +137,9 @@ public:
     sofa::core::objectmodel::RenamedData<bool> f_planeStrain;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
-    Data<Real> d_poisson; ///< Poisson ratio in Hooke's law
-    Data<Real> d_young; ///< Young modulus in Hooke's law
     Data<Real> d_thickness; ///< Thickness of the elements
     Data<bool> d_planeStrain; ///< Plane strain or plane stress assumption
 
-    Real getPoisson() { return d_poisson.getValue(); }
-    void setPoisson(Real val);
-    Real getYoung() { return d_young.getValue(); }
-    void setYoung(Real val);
     int  getMethod() { return method; }
     void setMethod(int val);
     void setMethod(std::string val);
@@ -156,9 +149,6 @@ public:
     const Transformation& getRotationMatrix(Index elemId);
     const MaterialStiffness& getMaterialStiffness(Index elemId);
     const StrainDisplacement& getStrainDisplacements(Index elemId);
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TriangleFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
