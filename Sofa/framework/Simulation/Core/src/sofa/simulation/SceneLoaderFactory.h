@@ -47,6 +47,8 @@ class SOFA_SIMULATION_CORE_API SceneLoader
 public:
     typedef std::vector<std::string> ExtensionList;
 
+    virtual ~SceneLoader() = default;
+
     /// Pre-loading check
     virtual bool canLoadFileName(const char *filename);
 
@@ -112,6 +114,8 @@ public:
 
     /// Get the ObjectFactory singleton instance
     static SceneLoaderFactory* getInstance();
+
+    ~SceneLoaderFactory();
 
 protected:
 

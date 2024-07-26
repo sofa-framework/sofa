@@ -81,7 +81,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     : QOpenGLWidget(parent)
 {
     m_backend.reset(new GLBackend());
-    pick = new GLPickHandler();
+    pick = std::make_unique<GLPickHandler>();
 
     this->setObjectName(name);
 

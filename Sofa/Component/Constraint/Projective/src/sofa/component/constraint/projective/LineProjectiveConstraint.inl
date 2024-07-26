@@ -40,7 +40,7 @@ LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
     , d_origin( initData(&d_origin,CPos(),"origin","A point in the line"))
     , d_direction( initData(&d_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new LineProjectiveConstraintInternalData<DataTypes>())    
+    , data(std::make_unique<LineProjectiveConstraintInternalData<DataTypes>>())
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -55,7 +55,6 @@ LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
 template <class DataTypes>
 LineProjectiveConstraint<DataTypes>::~LineProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>
