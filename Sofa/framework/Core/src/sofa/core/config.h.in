@@ -107,4 +107,9 @@
     SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use d_constraintIndex instead.")
 #endif
 
-
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "This function is not used.")
+#endif

@@ -53,7 +53,6 @@ OglModel::OglModel()
     , pointSize(initData(&pointSize, 1.0f, "pointSize", "Point size (set if != 1, only for points rendering)"))
     , lineSmooth(initData(&lineSmooth, false, "lineSmooth", "Enable smooth line rendering"))
     , pointSmooth(initData(&pointSmooth, false, "pointSmooth", "Enable smooth point rendering"))
-    , isEnabled( initData(&isEnabled, true, "isEnabled", "Activate/deactive the component."))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
@@ -71,6 +70,18 @@ OglModel::OglModel()
     sourceFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(2));
     destFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(3));
     primitiveType.setValue(helper::OptionsGroup{"DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS"}.setSelectedItem(0));
+}
+
+void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("isEnabled"))
+    {
+        msg_warning() << "isEnabled field has been renamed to \'enabled\' since v23.12 (#3931).";
+
+        this->d_enable.setValue(std::strcmp(arg->getAttribute("isEnabled"), "true") == 0 || arg->getAttributeAsInt("isEnabled"));
+    }
+
+    Inherit::parse(arg);
 }
 
 void OglModel::deleteTextures()
@@ -329,9 +340,6 @@ void copyVector(const InType& src, OutType& dst)
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
     if (!vparams->displayFlags().getShowVisualModels())
-        return;
-
-    if(!isEnabled.getValue())
         return;
 
     /// Checks that the VBO's are ready.

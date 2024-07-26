@@ -42,7 +42,7 @@ FixedProjectiveConstraint<DataTypes>::FixedProjectiveConstraint()
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","if true, projects not only a constant but a zero velocity") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new FixedProjectiveConstraintInternalData<DataTypes>())
+    , data(std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes>>())
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -60,7 +60,6 @@ FixedProjectiveConstraint<DataTypes>::FixedProjectiveConstraint()
 template <class DataTypes>
 FixedProjectiveConstraint<DataTypes>::~FixedProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>

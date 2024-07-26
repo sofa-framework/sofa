@@ -39,10 +39,7 @@ int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron
         ;
 
 DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
-    : HexahedronSetTopologyContainer()
-    /// deprecated
-    , valuesIndexedInTopology(initData(&valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
-    , d_resolution (initData (&d_resolution, type::Vec3i (0, 0, 0 ), "resolution", "voxel grid resolution" ) )
+    : d_resolution (initData (&d_resolution, type::Vec3i (0, 0, 0 ), "resolution", "voxel grid resolution" ) )
     , d_valuesIndexedInRegularGrid(initData (&d_valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
     , d_valuesIndexedInTopology(initData(&d_valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
     , d_idxInRegularGrid(initData (&d_idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )

@@ -81,7 +81,7 @@ public:
     virtual ~MessageAsTestFailure() ;
 
 private:
-    GtestMessageFrame* m_frame ;
+    std::unique_ptr<GtestMessageFrame> m_frame;
 };
 
 /// Rise a gtest failure during the object destruction when the expected message have not

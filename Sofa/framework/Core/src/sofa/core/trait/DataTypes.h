@@ -19,41 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ConstraintParams.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
-#include <sofa/helper/BackTrace.h>
-#include <cassert>
-#include <iostream>
+#pragma once
 
-
-namespace sofa::core
+namespace sofa
 {
 
-ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
-    : sofa::core::ExecParams(p)
-    , m_x(ConstVecCoordId::position())
-    , m_v(ConstVecDerivId::velocity())
-    , m_j(MatrixDerivId::constraintJacobian())
-    , m_dx(VecDerivId::dx())
-    , m_lambda(VecDerivId::externalForce())
-    , m_constOrder (ConstraintOrder::POS_AND_VEL)
-    , m_smoothFactor (1)
+template <typename DataTypes>
+using Coord_t = typename DataTypes::Coord;
+
+template <typename DataTypes>
+using Real_t = typename DataTypes::Real;
+
+template <typename DataTypes>
+using VecReal_t = typename DataTypes::VecReal;
+
+template <typename DataTypes>
+using Deriv_t = typename DataTypes::Deriv;
+
+template <typename DataTypes>
+using MatrixDeriv_t = typename DataTypes::MatrixDeriv;
+
+template <typename DataTypes>
+using VecCoord_t = typename DataTypes::VecCoord;
+
+template <typename DataTypes>
+using VecDeriv_t = typename DataTypes::VecDeriv;
+
+namespace core::objectmodel
 {
+template<typename DataTypes>
+class Data;
 }
 
-ConstraintParams& ConstraintParams::setExecParams(const core::ExecParams* params)
-{
-    sofa::core::ExecParams::operator=(*params);
-    return *this;
+template <typename DataTypes>
+using DataVecCoord_t = core::objectmodel::Data<VecCoord_t<DataTypes>>;
+
+template <typename DataTypes>
+using DataVecDeriv_t = core::objectmodel::Data<VecDeriv_t<DataTypes>>;
+
+template <typename DataTypes>
+using DataMatrixDeriv_t = core::objectmodel::Data<MatrixDeriv_t<DataTypes>>;
+
 }
-
-/// Get the default ConstraintParams, to be used to provide a default values for method parameters
-const ConstraintParams* ConstraintParams::defaultInstance()
-{
-    thread_local ConstraintParams threadParams;
-    return &threadParams;
-}
-
-} // namespace sofa::core
-
-
