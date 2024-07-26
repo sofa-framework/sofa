@@ -222,8 +222,8 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
         }
     }
 
-    const auto unloadedIt = std::find(m_unloadedPlugins.begin(), m_unloadedPlugins.end(), p.getModuleName());
-    if (unloadedIt != m_unloadedPlugins.end())
+    if (const auto unloadedIt = m_unloadedPlugins.find(p.getModuleName());
+        unloadedIt != m_unloadedPlugins.end())
     {
         m_unloadedPlugins.erase(unloadedIt);
     }
@@ -302,7 +302,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     else
     {
         const auto it = m_pluginMap.find(pluginPath);
-        m_unloadedPlugins.push_back(it->second.getModuleName());
+        m_unloadedPlugins.insert(it->second.getModuleName());
 
         m_pluginMap.erase(it);
         removeOnPluginLoadedCallback(pluginPath);
@@ -311,7 +311,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     }
 }
 
-const sofa::type::vector<std::string>& PluginManager::unloadedPlugins() const
+const std::unordered_set<std::string>& PluginManager::unloadedPlugins() const
 {
     return m_unloadedPlugins;
 }

@@ -182,7 +182,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             Creator::SPtr c = it2->second;
             const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
             const auto creatorTarget = c->getTarget();
-            if (std::find(unloadedPlugins.begin(), unloadedPlugins.end(), creatorTarget) != unloadedPlugins.end())
+            if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
             {
                 creators_errors[templatename].emplace_back(
                     "The object was previously registered, but its module has been unloaded.");
@@ -211,7 +211,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 Creator::SPtr c = it3->second;
                 const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
                 const auto creatorTarget = c->getTarget();
-                if (std::find(unloadedPlugins.begin(), unloadedPlugins.end(), creatorTarget) != unloadedPlugins.end())
+                if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
                 {
                     creators_errors[templatename].emplace_back(
                         "The object was previously registered, but its module has been unloaded.");

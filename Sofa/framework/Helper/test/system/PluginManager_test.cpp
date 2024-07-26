@@ -297,13 +297,13 @@ TEST_F(PluginManager_test, failingPlugin)
 
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
-    EXPECT_EQ(std::find(pm.unloadedPlugins().begin(), pm.unloadedPlugins().end(), failingPluginName), pm.unloadedPlugins().end());
+    EXPECT_EQ(pm.unloadedPlugins().find(failingPluginName), pm.unloadedPlugins().end());
     EXPECT_FALSE(sofa::core::ObjectFactory::getInstance()->hasCreator("ComponentFailingPlugin"));
     {
         EXPECT_MSG_EMIT(Error); //because initialization will fail
         pm.loadPluginByName(failingPluginName);
     }
-    EXPECT_NE(std::find(pm.unloadedPlugins().begin(), pm.unloadedPlugins().end(), failingPluginName), pm.unloadedPlugins().end());
+    EXPECT_NE(pm.unloadedPlugins().find(failingPluginName), pm.unloadedPlugins().end());
 
     const std::string pluginPath = pm.findPlugin(failingPluginName);
     EXPECT_EQ(pm.getPluginMap().find(pluginPath), pm.getPluginMap().end());

@@ -29,7 +29,7 @@
 #include <map>
 #include <memory>
 #include <functional>
-
+#include <unordered_set>
 #include <sofa/type/vector.h>
 
 namespace sofa::helper::system
@@ -213,7 +213,7 @@ public:
     /// Register a plugin. Merely an alias for loadPlugin()
     PluginLoadStatus registerPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
 
-    [[nodiscard]] const sofa::type::vector<std::string>& unloadedPlugins() const;
+    [[nodiscard]] const std::unordered_set<std::string>& unloadedPlugins() const;
 
     void init();
     void init(const std::string& pluginPath);
@@ -263,7 +263,7 @@ private:
     PluginMap m_pluginMap;
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 
-    sofa::type::vector<std::string> m_unloadedPlugins;
+    std::unordered_set<std::string> m_unloadedPlugins;
 };
 
 
