@@ -520,7 +520,7 @@ auto SpringForceField<DataTypes>::computeSpringForce(
     /// Get the positional part out of the dofs.
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
-    if( spring.enabled && (d - spring.initpos)>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
+    if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
         std::unique_ptr<SpringForce> springForce = std::make_unique<SpringForce>();
 
