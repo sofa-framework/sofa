@@ -492,7 +492,7 @@ void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real
         Real val = values[id];
         if (val < 0) {
             msg_warning() << "Input Poisson Coefficient at position: " << id << " is not possible: " << val << ", setting default value: 0.3";
-            val = 1000;
+            val = 0.3;
         }
         _poisson[id] = val;
     }

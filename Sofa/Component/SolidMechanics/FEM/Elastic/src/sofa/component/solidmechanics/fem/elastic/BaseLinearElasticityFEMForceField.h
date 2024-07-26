@@ -44,21 +44,30 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
-    static inline const VecReal defaultYoungModulusValue = []()
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = 5000;
-        return newY;
-    }();
-
     BaseLinearElasticityFEMForceField();
+
     void init() override;
 
     void setPoissonRatio(Real val);
     void setYoungModulus(Real val);
 
     Real getYoungModulusInElement(sofa::Size elementId);
+
+protected:
+
+    static constexpr Real defaultYoungModulusValue = 5000;
+    static inline const VecReal defaultVecYoungModulusValue = []()
+    {
+        VecReal newY;
+        newY.resize(1);
+        newY[0] = defaultYoungModulusValue;
+        return newY;
+    }();
+
+    static constexpr Real defaultPoissonRatioValue = 0.45;
+
+    void checkPoissonRatio();
+    void checkYoungModulus();
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
