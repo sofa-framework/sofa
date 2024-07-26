@@ -23,4 +23,4 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v24.12", "v24.12", "sofa/component/controller/SleepController.h")
+SOFA_DISABLED_HEADER_NOT_REPLACED("v24.12", "v24.12")
