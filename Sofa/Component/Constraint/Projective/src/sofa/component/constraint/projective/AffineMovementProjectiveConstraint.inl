@@ -36,7 +36,7 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 AffineMovementProjectiveConstraint<DataTypes>::AffineMovementProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , data(new AffineMovementProjectiveConstraintInternalData<DataTypes>)
+    , data(std::make_unique<AffineMovementProjectiveConstraintInternalData<DataTypes>>())
     , d_meshIndices(initData(&d_meshIndices, "meshIndices", "Indices of the mesh") )
     , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
     , d_beginConstraintTime(initData(&d_beginConstraintTime, "beginConstraintTime", "Begin time of the bilinear constraint") )

@@ -21,12 +21,19 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/config.h>
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
 #include <sofa/helper/Utils.h>
 #include <sofa/url.h>
 
+
+namespace sofa::helper::system
+{
+    class Plugin;
+}
 
 namespace sofa::core
 {
@@ -43,6 +50,9 @@ namespace sofa::core
  *  \see RegisterObject for how new classes should be registered.
  *
  */
+
+class ObjectRegistrationData;
+
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
@@ -100,6 +110,10 @@ protected:
     /// Main class registry
     ClassEntryMap registry;
     OnCreateCallback m_callbackOnCreate ;
+
+    /// Keep track of plugins who already registered
+    using RegisteredPluginSet = std::set<std::string>;
+    RegisteredPluginSet m_registeredPluginSet;
 
 public:
 
@@ -193,6 +207,10 @@ public:
     void dumpHTML(std::ostream& out = std::cout);
 
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
+
+    bool registerObjectsFromPlugin(const std::string& pluginName);
+    bool registerObjects(ObjectRegistrationData& ro);
+
 };
 
 template<class BaseClass>
@@ -291,42 +309,43 @@ public:
  *  \endcode
  *
  */
-class SOFA_CORE_API RegisterObject
+class SOFA_CORE_API ObjectRegistrationData
 {
 protected:
     /// Class entry being constructed
     ObjectFactory::ClassEntry entry;
+
 public:
 
     /// Start the registration by giving the description of this class.
-    RegisterObject(const std::string& description);
+    explicit ObjectRegistrationData(const std::string& description);
 
     /// Add an alias name for this class
-    RegisterObject& addAlias(std::string val);
+    ObjectRegistrationData& addAlias(std::string val);
 
     /// Add more descriptive text about this class
-    RegisterObject& addDescription(std::string val);
+    ObjectRegistrationData& addDescription(std::string val);
 
     /// Specify a list of authors (separated with spaces)
-    RegisterObject& addAuthor(std::string val);
+    ObjectRegistrationData& addAuthor(std::string val);
 
     /// Specify a license (LGPL, GPL, ...)
-    RegisterObject& addLicense(std::string val);
+    ObjectRegistrationData& addLicense(std::string val);
 
     /// Specify a documentation URL
-    RegisterObject& addDocumentationURL(std::string url);
+    ObjectRegistrationData& addDocumentationURL(std::string url);
 
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
-    RegisterObject& addCreator(std::string classname, std::string templatename,
+    ObjectRegistrationData& addCreator(std::string classname, std::string templatename,
                                ObjectFactory::Creator::SPtr creator);
 
     /// Add a template instanciation of this class.
     ///
     /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
     template<class RealObject>
-    RegisterObject& add(bool defaultTemplate=false)
+    ObjectRegistrationData& add(bool defaultTemplate=false)
     {
         const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
         const std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
@@ -342,23 +361,53 @@ public:
             {
                 entry.documentationURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
                 entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
-                    [](const std::string& m){ return sofa::helper::Utils::downcaseString(m);}, "/");
-                entry.documentationURL += "/" + sofa::helper::Utils::downcaseString(classname);
+                    [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
+                entry.documentationURL += "/" + sofa::helper::downcaseString(classname);
             }
         }
 
-        auto* objectCreator = new ObjectCreator<RealObject>;
-        if (objectCreator->getTarget() == "")
+        auto objectCreator = std::make_shared<ObjectCreator<RealObject> >();
+        if (strcmp(objectCreator->getTarget(), "") == 0)
         {
             dmsg_warning("ObjectFactory") << "Module name cannot be found when registering "
                 << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the object factory";
         }
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(objectCreator));
+        return addCreator(classname, templatename, objectCreator);
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
+    bool commitTo(sofa::core::ObjectFactory* objectFactory) const;
+};
+
+
+// Legacy structure, to keep compatibility with olden code
+// using the singleton to get the instance of ObjectFactory
+class /* SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() */ SOFA_CORE_API RegisterObject
+{
+private:
+    ObjectRegistrationData m_objectRegistrationdata;
+
+public:
+    explicit RegisterObject(const std::string& description);
+
+    RegisterObject& addAlias(std::string val);
+    RegisterObject& addDescription(std::string val);
+    RegisterObject& addAuthor(std::string val);
+    RegisterObject& addLicense(std::string val);
+    RegisterObject& addDocumentationURL(std::string url);
+    RegisterObject& addCreator(std::string classname, std::string templatename,
+        ObjectFactory::Creator::SPtr creator);
+
+    template<class RealObject>
+    RegisterObject& add(bool defaultTemplate = false)
+    {
+        m_objectRegistrationdata.add<RealObject>(defaultTemplate);
+        return *this;
+    }
+
     operator int() const;
 
     int commitTo(ObjectFactory* factory) const;
 };
+
 } // namespace sofa::core

@@ -144,7 +144,7 @@ protected:
 
     sofa::type::Vec3 ambientColour;
 
-    PickHandler *pick;
+    std::unique_ptr<PickHandler> pick;
 
     //instruments handling
     int _navigationMode;

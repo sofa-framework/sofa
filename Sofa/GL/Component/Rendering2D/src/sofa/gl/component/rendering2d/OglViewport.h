@@ -63,7 +63,7 @@ protected:
 public:
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams*) override;
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;
     void postDrawScene(core::visual::VisualParams* vp) override;

@@ -177,7 +177,7 @@ OglInt4Variable::OglInt4Variable()
 
 }
 
-void OglIntVariable::initVisual()
+void OglIntVariable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -187,7 +187,7 @@ void OglIntVariable::initVisual()
 }
 
 
-void OglInt2Variable::initVisual()
+void OglInt2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -196,7 +196,7 @@ void OglInt2Variable::initVisual()
         (*it)->setInt2(idShader, idstr.c_str(), v[0], v[1]);
 }
 
-void OglInt3Variable::initVisual()
+void OglInt3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -205,7 +205,7 @@ void OglInt3Variable::initVisual()
         (*it)->setInt3(idShader, idstr.c_str(), v[0], v[1], v[2]);
 }
 
-void OglInt4Variable::initVisual()
+void OglInt4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -235,7 +235,7 @@ OglFloat4Variable::OglFloat4Variable()
 
 }
 
-void OglFloatVariable::initVisual()
+void OglFloatVariable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -245,7 +245,7 @@ void OglFloatVariable::initVisual()
 }
 
 
-void OglFloat2Variable::initVisual()
+void OglFloat2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -254,7 +254,7 @@ void OglFloat2Variable::initVisual()
         (*it)->setFloat2(idShader, idstr.c_str(), v[0], v[1]);
 }
 
-void OglFloat3Variable::initVisual()
+void OglFloat3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -263,7 +263,7 @@ void OglFloat3Variable::initVisual()
         (*it)->setFloat3(idShader, idstr.c_str(), v[0], v[1], v[2]);
 }
 
-void OglFloat4Variable::initVisual()
+void OglFloat4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -340,7 +340,7 @@ void OglIntVector4Variable::init()
     }
 }
 
-void OglIntVectorVariable::initVisual()
+void OglIntVectorVariable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -351,7 +351,7 @@ void OglIntVectorVariable::initVisual()
         (*it)->setIntVector(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglIntVector2Variable::initVisual()
+void OglIntVector2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -362,7 +362,7 @@ void OglIntVector2Variable::initVisual()
         (*it)->setIntVector2(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglIntVector3Variable::initVisual()
+void OglIntVector3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -373,7 +373,7 @@ void OglIntVector3Variable::initVisual()
         (*it)->setIntVector3(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglIntVector4Variable::initVisual()
+void OglIntVector4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -426,7 +426,7 @@ void OglFloatVector4Variable::init()
     OglVariable<type::vector<type::Vec4f> >::init();
 }
 
-void OglFloatVectorVariable::initVisual()
+void OglFloatVectorVariable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -437,7 +437,7 @@ void OglFloatVectorVariable::initVisual()
         (*it)->setFloatVector(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglFloatVector2Variable::initVisual()
+void OglFloatVector2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -448,7 +448,7 @@ void OglFloatVector2Variable::initVisual()
         (*it)->setFloatVector2(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglFloatVector3Variable::initVisual()
+void OglFloatVector3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -459,7 +459,7 @@ void OglFloatVector3Variable::initVisual()
         (*it)->setFloatVector3(idShader, idstr.c_str(), count, vptr);
 }
 
-void OglFloatVector4Variable::initVisual()
+void OglFloatVector4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -493,7 +493,7 @@ void OglMatrix2Variable::init()
     }
 }
 
-void OglMatrix2Variable::initVisual()
+void OglMatrix2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -526,7 +526,7 @@ void OglMatrix3Variable::init()
     }
 }
 
-void OglMatrix3Variable::initVisual()
+void OglMatrix3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -559,7 +559,7 @@ void OglMatrix4Variable::init()
     }
 }
 
-void OglMatrix4Variable::initVisual()
+void OglMatrix4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -592,7 +592,7 @@ void OglMatrix2x3Variable::init()
     }
 }
 
-void OglMatrix2x3Variable::initVisual()
+void OglMatrix2x3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -626,7 +626,7 @@ void OglMatrix3x2Variable::init()
     }
 }
 
-void OglMatrix3x2Variable::initVisual()
+void OglMatrix3x2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -659,7 +659,7 @@ void OglMatrix2x4Variable::init()
     }
 }
 
-void OglMatrix2x4Variable::initVisual()
+void OglMatrix2x4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -692,7 +692,7 @@ void OglMatrix4x2Variable::init()
     }
 }
 
-void OglMatrix4x2Variable::initVisual()
+void OglMatrix4x2Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -725,7 +725,7 @@ void OglMatrix3x4Variable::init()
     }
 }
 
-void OglMatrix3x4Variable::initVisual()
+void OglMatrix3x4Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -758,7 +758,7 @@ void OglMatrix4x3Variable::init()
     }
 }
 
-void OglMatrix4x3Variable::initVisual()
+void OglMatrix4x3Variable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
@@ -779,7 +779,7 @@ void OglMatrix4VectorVariable::init()
 {
     OglVariable<type::vector<type::Mat4x4f> >::init();
 }
-void OglMatrix4VectorVariable::initVisual()
+void OglMatrix4VectorVariable::pushValue()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();

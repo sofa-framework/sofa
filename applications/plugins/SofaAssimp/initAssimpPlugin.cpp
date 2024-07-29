@@ -50,7 +50,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Assimp Plugin";
+    return "SofaAssimp";
 }
 
 const char* getModuleVersion()

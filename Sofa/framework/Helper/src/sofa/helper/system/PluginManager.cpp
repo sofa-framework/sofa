@@ -24,7 +24,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
-#include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #if __has_include(<filesystem>)
@@ -40,30 +40,8 @@ using sofa::helper::system::FileSystem;
 #include <fstream>
 #include <array>
 
-using sofa::helper::Utils;
-
 namespace sofa::helper::system
 {
-
-namespace
-{
-
-template <class LibraryEntry>
-[[nodiscard]] bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
-{
-    typedef typename LibraryEntry::FuncPtr FuncPtr;
-    entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
-    if( entry.func == 0 )
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-} // namespace
 
 const char* Plugin::GetModuleComponentList::symbol    = "getModuleComponentList";
 const char* Plugin::InitExternalModule::symbol        = "initExternalModule";
@@ -440,7 +418,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     if (ignoreCase)
     {
         if(!recursive) maxRecursiveDepth = 0;
-        const std::string downcaseLibName = Utils::downcaseString(libName);
+        const std::string downcaseLibName = helper::downcaseString(libName);
 
         for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
         {
@@ -459,7 +437,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
-                    const std::string downcaseFilename = Utils::downcaseString(filename);
+                    const std::string downcaseFilename = helper::downcaseString(filename);
 
                     if (downcaseFilename == downcaseLibName)
                     {
@@ -551,6 +529,16 @@ bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::strin
     }
 
     return false;
+}
+
+auto PluginManager::registerPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog) -> PluginLoadStatus
+{
+    // The plugin is not known by SOFA (i.e the pluginManager was not used)
+    // - either it was never ever loaded (by SOFA or by the OS itself)
+    // - or it was loaded implicitly by the OS (static dependency)
+    
+    // If it was already loaded by the OS before, this will just update the pluginmanager's map
+    return loadPlugin(plugin, suffix, ignoreCase, recursive, errlog);
 }
 
 }

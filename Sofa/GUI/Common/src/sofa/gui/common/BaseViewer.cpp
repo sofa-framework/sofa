@@ -43,11 +43,9 @@ BaseViewer::BaseViewer()
     , backgroundColour(type::Vec3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(type::Vec3())
-    , pick(nullptr)
+    , pick(std::make_unique<PickHandler>())
     , _screenshotDirectory(".")
-{
-    pick = new PickHandler();
-}
+{}
 
 BaseViewer::~BaseViewer()
 {
@@ -198,7 +196,7 @@ std::string BaseViewer::getBackgroundImage()
 
 PickHandler* BaseViewer::getPickHandler()
 {
-    return pick;
+    return pick.get();
 }
 
 bool BaseViewer::load()

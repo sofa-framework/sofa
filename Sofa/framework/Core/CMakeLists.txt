@@ -161,6 +161,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/Link.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
+    ${SRC_ROOT}/objectmodel/RenamedData.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
@@ -184,6 +185,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
+    ${SRC_ROOT}/trait/DataTypes.h
     ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/FlagTreeItem.h

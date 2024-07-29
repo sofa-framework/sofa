@@ -50,8 +50,6 @@ void Visual3DText::init()
     VisualModel::init();
 
     reinit();
-
-    updateVisual();
 }
 
 void Visual3DText::reinit()
