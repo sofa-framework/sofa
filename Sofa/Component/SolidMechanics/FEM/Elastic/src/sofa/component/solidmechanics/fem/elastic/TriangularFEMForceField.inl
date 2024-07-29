@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
@@ -47,8 +47,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , m_topology(nullptr)
     , method(LARGE)
     , d_method(initData(&d_method, std::string("large"), "method", "large: large displacements, small: small displacements"))
-    , d_poisson(initData(&d_poisson, type::vector<Real>(1, static_cast<Real>(0.3)), "poissonRatio", "Poisson ratio in Hooke's law (vector)"))
-    , d_young(initData(&d_young, type::vector<Real>(1, static_cast<Real>(1000.0)), "youngModulus", "Young modulus in Hooke's law (vector)"))
     , d_rotatedInitialElements(initData(&d_rotatedInitialElements, "rotatedInitialElements", "Flag activating rendering of stress directions within each triangle"))
     , d_initialTransformation(initData(&d_initialTransformation, "initialTransformation", "Flag activating rendering of stress directions within each triangle"))
     , d_hosfordExponant(initData(&d_hosfordExponant, (Real)1.0, "hosfordExponant", "Exponant in the Hosford yield criteria"))
@@ -73,15 +71,11 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphOrientation.setWidget("graph");
 #endif
 
-    d_poisson.setRequired(true);
-    d_young.setRequired(true);
     p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
 
     triangleInfo.setOriginalData(&d_triangleInfo);
     vertexInfo.setOriginalData(&d_vertexInfo);
     f_method.setOriginalData(&d_method);
-    f_poisson.setOriginalData(&d_poisson);
-    f_young.setOriginalData(&d_young);
     m_rotatedInitialElements.setOriginalData(&d_rotatedInitialElements);
     m_initialTransformation.setOriginalData(&d_initialTransformation);
     hosfordExponant.setOriginalData(&d_hosfordExponant);
@@ -304,15 +298,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     // checking inputs using setter
     setMethod(d_method.getValue());
-    if (d_poisson.getValue().size() == 1) // array option is not checked
-        setPoisson(d_poisson.getValue()[0]);
-    else
-        setPoissonArray(d_poisson.getValue());
-
-    if (d_young.getValue().size() == 1)
-        setYoung(d_young.getValue()[0]);
-    else
-        setYoungArray(d_young.getValue());
 
 #ifdef PLOT_CURVE
     std::map<std::string, sofa::type::vector<double> >& stress = *(f_graphStress.beginEdit());
@@ -458,80 +443,6 @@ void TriangularFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
                 dfdx(tri[n1] * S, tri[n2] * S) += -localMatrix;
             }
         }
-    }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
-{
-    if (val < 0)
-    {
-        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
-        type::vector<Real> newP(1, 0.3);
-        d_poisson.setValue(newP);
-    }
-    else {
-        type::vector<Real> newP(1, val);
-        d_poisson.setValue(newP);
-    }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real>& values)
-{
-    auto nbrTri = d_triangleInfo.getValue().size();
-    if (values.size() != nbrTri)
-    {
-        msg_warning() << "Input Poisson Coefficient array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
-        return;
-    }
-
-    sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _poisson = d_poisson;
-    for (auto id = 0u; id < values.size(); ++id)
-    {
-        Real val = values[id];
-        if (val < 0) {
-            msg_warning() << "Input Poisson Coefficient at position: " << id << " is not possible: " << val << ", setting default value: 0.3";
-            val = 1000;
-        }
-        _poisson[id] = val;
-    }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setYoung(Real val)
-{
-    if (val < 0)
-    {
-        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        type::vector<Real> newY(1, 1000);
-        d_young.setValue(newY);
-    }
-    else {
-        type::vector<Real> newY(1, val);
-        d_young.setValue(newY);
-    }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>& values)
-{
-    auto nbrTri = d_triangleInfo.getValue().size();
-    if (values.size() != nbrTri)
-    {
-        msg_warning() << "Input Young Modulus array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
-        return;
-    }
-
-    sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _young = d_young;
-    for (auto id = 0u; id<values.size(); ++id)
-    {
-        Real val = values[id];
-        if (val < 0) {
-            msg_warning() << "Input Young Modulus at position: " << id << " is not possible: " << val << ", setting default value: 1000";
-            val = 1000;
-        }
-        _young[id] = val;
     }
 }
 
@@ -830,23 +741,20 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&/
 {
     type::vector<TriangleInformation>& triangleInf = *(d_triangleInfo.beginEdit());
 
-    const type::vector<Real>& youngArray = d_young.getValue();
-    const type::vector<Real>& poissonArray = d_poisson.getValue();
-
     TriangleInformation* tinfo = &triangleInf[i];
 
-    Real y = ((int)youngArray.size() > i) ? youngArray[i] : youngArray[0];
-    Real p = ((int)poissonArray.size() > i) ? poissonArray[i] : poissonArray[0];
+    const Real y = this->getYoungModulusInElement(i);
+    const Real p = this->getPoissonRatioInElement(i);
 
     tinfo->materialMatrix[0][0] = 1;
-    tinfo->materialMatrix[0][1] = p;//poissonArray[i];//d_poisson.getValue();
+    tinfo->materialMatrix[0][1] = p;
     tinfo->materialMatrix[0][2] = 0;
-    tinfo->materialMatrix[1][0] = p;//poissonArray[i];//d_poisson.getValue();
+    tinfo->materialMatrix[1][0] = p;
     tinfo->materialMatrix[1][1] = 1;
     tinfo->materialMatrix[1][2] = 0;
     tinfo->materialMatrix[2][0] = 0;
     tinfo->materialMatrix[2][1] = 0;
-    tinfo->materialMatrix[2][2] = (1.0f - p) * 0.5f;//poissonArray[i]);
+    tinfo->materialMatrix[2][2] = (1.0f - p) * 0.5f;
 
     tinfo->materialMatrix *= (y / (1.0f - p * p)) * tinfo->area;
 

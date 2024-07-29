@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -56,12 +56,12 @@ namespace sofa::component::solidmechanics::fem::elastic
 * }
 */
 template<class DataTypes>
-class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -207,13 +207,6 @@ public:
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     /// Get/Set methods
-    Real getPoisson() { return (d_poisson.getValue())[0]; }
-    void setPoisson(Real val);
-    void setPoissonArray(const type::vector<Real>& values);
-
-    Real getYoung() { return (d_young.getValue())[0]; }
-    void setYoung(Real val);
-    void setYoungArray(const type::vector<Real>& values);
 
     int  getMethod() { return method; }
     void setMethod(int val);
@@ -298,8 +291,6 @@ public:
     sofa::core::objectmodel::RenamedData<bool> f_computePrincipalStress;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
-    Data<type::vector<Real> > d_poisson; ///< Poisson ratio in Hooke's law (vector)
-    Data<type::vector<Real> > d_young; ///< Young modulus in Hooke's law (vector)
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
     Data< sofa::type::vector<type::fixed_array<Coord,3> > > d_rotatedInitialElements;

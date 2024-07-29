@@ -196,11 +196,6 @@ public:
     }
     void draw(const core::visual::VisualParams* vparams) override;
 
-    /// compute lambda and mu based on the Young modulus and Poisson ratio
-    static void computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu);
-
-
-
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 

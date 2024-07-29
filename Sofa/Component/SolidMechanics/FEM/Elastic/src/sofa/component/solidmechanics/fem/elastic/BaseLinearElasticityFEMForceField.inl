@@ -98,4 +98,46 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa
     return youngModulusElement;
 }
 
+template <class DataTypes>
+typename BaseLinearElasticityFEMForceField<DataTypes>::Real
+BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(
+    sofa::Size elementId)
+{
+    return d_poissonRatio.getValue();
+}
+
+template <class DataTypes>
+auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
+    const ElementsType2D elementType,
+    const Real youngModulus,
+    const Real poissonRatio) -> std::pair<Real, Real>
+{
+    SOFA_UNUSED(elementType);
+
+    //Lamé's first parameter
+    const Real lambda = youngModulus * poissonRatio / (1 - poissonRatio * poissonRatio);
+
+    //Lamé's second parameter (or shear modulus)
+    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+
+    return {lambda, mu};
+}
+
+template <class DataTypes>
+auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
+    const ElementsType3D elementType,
+    const Real youngModulus,
+    const Real poissonRatio) -> std::pair<Real, Real>
+{
+    SOFA_UNUSED(elementType);
+
+    //Lamé's first parameter
+    const Real lambda = youngModulus * poissonRatio / ((1 - 2 * poissonRatio) * (1 + poissonRatio));
+
+    //Lamé's second parameter (or shear modulus)
+    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+
+    return {lambda, mu};
+}
+
 }

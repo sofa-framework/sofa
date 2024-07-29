@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/BlocMatrixWriter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -38,8 +38,6 @@ template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data (persistent)"))
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
-    , d_poisson(initData(&d_poisson,(Real)(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
-    , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , d_restScale(initData(&d_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
     , d_computePrincipalStress(initData(&d_computePrincipalStress, false, "computePrincipalStress", "Compute principal stress for each triangle"))
@@ -49,8 +47,6 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-    d_poisson.setRequired(true);
-    d_young.setRequired(true);
     d_stressMaxValue.setReadOnly(true);
 }
 
@@ -212,13 +208,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangle
 template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 {
-    // Compute material-dependent constants
-    // mu = (1-p)*y/(1-p^2) = (1-p)*y/((1-p)(1+p)) = y/(1+p)
-    const Real youngModulus = d_young.getValue();
-    const Real poissonRatio = d_poisson.getValue();
-    mu = (youngModulus) / (1+poissonRatio);
-    gamma = (youngModulus * poissonRatio) / (1-poissonRatio*poissonRatio);
-
     /// prepare to store info in the triangle array
     const unsigned int nbTriangles = m_topology->getNbTriangles();
     const VecElement& triangles = m_topology->getTriangles();
@@ -263,8 +252,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 
     const unsigned int nbTriangles = m_topology->getNbTriangles();
     const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
 
     f.resize(x.size());
 
@@ -276,6 +263,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Coord a = x[t[0]];
         Coord ab = x[t[1]] -a;
         Coord ac = x[t[2]] -a;
+
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
 
         computeTriangleRotation(ts.frame, ab, ac);
 
@@ -357,14 +346,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
 
     const unsigned int nbTriangles = m_topology->getNbTriangles();
     const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
     for ( Index i=0; i<nbTriangles; i+=1)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -419,13 +408,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const unsigned int nbTriangles = m_topology->getNbTriangles();
     const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
 
     constexpr auto S = DataTypes::deriv_total_size;
 
     for ( Index i=0; i<nbTriangles; i+=1)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -500,6 +489,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavio
 
     for (Index i = 0; i < nbTriangles; ++i)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -728,8 +719,7 @@ typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFE
     // (gamma+mu, gamma   ,    0)
     // (gamma   , gamma+mu,    0)
     // (       0,        0, mu/2)
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(elemId), this->getPoissonRatioInElement(elemId));
 
     MaterialStiffness mat;
     mat[0][0] = mat[1][1] = gamma + mu;
@@ -767,6 +757,16 @@ typename TriangularFEMForceFieldOptim<DataTypes>::Real TriangularFEMForceFieldOp
     }
 
     return triInfo[elemId].ss_factor;
+}
+
+template <class DataTypes>
+auto TriangularFEMForceFieldOptim<
+    DataTypes>::computeMuGamma(Real youngModulus,
+                               Real poissonRatio) -> std::pair<Real, Real>
+{
+    const Real mu = (youngModulus) / (1 + poissonRatio);
+    const Real gamma = (youngModulus * poissonRatio) / (1 - poissonRatio * poissonRatio);
+    return {mu, gamma};
 }
 
 

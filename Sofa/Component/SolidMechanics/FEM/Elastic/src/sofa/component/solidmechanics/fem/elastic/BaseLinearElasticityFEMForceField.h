@@ -53,6 +53,16 @@ public:
     void setYoungModulus(Real val);
 
     Real getYoungModulusInElement(sofa::Size elementId);
+    Real getPoissonRatioInElement(sofa::Size elementId);
+
+    struct ElementsType2D{};
+    struct ElementsType3D{};
+
+    static constexpr ElementsType2D elementsType2D;
+    static constexpr ElementsType3D elementsType3D;
+
+    static std::pair<Real, Real> toLameParameters(ElementsType2D, Real youngModulus, Real poissonRatio);
+    static std::pair<Real, Real> toLameParameters(ElementsType3D, Real youngModulus, Real poissonRatio);
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
