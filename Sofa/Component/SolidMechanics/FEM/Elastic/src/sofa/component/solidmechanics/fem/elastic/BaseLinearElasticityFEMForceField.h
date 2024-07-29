@@ -28,6 +28,10 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+// Tags representing the type of elements (3D materials or 2D materials)
+struct _2DMaterials{};
+struct _3DMaterials{};
+
 template<class DataTypes>
 class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>
 {
@@ -56,15 +60,13 @@ public:
     Real getYoungModulusInElement(sofa::Size elementId);
     Real getPoissonRatioInElement(sofa::Size elementId);
 
-    struct ElementsType2D{};
-    struct ElementsType3D{};
-
-    static constexpr ElementsType2D elementsType2D;
-    static constexpr ElementsType3D elementsType3D;
-
-    static std::pair<Real, Real> toLameParameters(ElementsType2D, Real youngModulus, Real poissonRatio);
-    static std::pair<Real, Real> toLameParameters(ElementsType3D, Real youngModulus, Real poissonRatio);
+    static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio);
+    static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio);
 };
+
+//instances of types of materials
+static constexpr _2DMaterials _2DMat {};
+static constexpr _3DMaterials _3DMat {};
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;

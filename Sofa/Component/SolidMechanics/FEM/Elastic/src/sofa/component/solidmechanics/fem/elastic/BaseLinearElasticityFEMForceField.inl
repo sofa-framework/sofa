@@ -174,7 +174,7 @@ BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(
 
 template <class DataTypes>
 auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
-    const ElementsType2D elementType,
+    const _2DMaterials elementType,
     const Real youngModulus,
     const Real poissonRatio) -> std::pair<Real, Real>
 {
@@ -191,7 +191,7 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 
 template <class DataTypes>
 auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
-    const ElementsType3D elementType,
+    const _3DMaterials elementType,
     const Real youngModulus,
     const Real poissonRatio) -> std::pair<Real, Real>
 {
