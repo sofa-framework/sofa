@@ -103,7 +103,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     for(int w=0; w<8; ++w)
         nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
 
-    HexahedralFEMForceFieldT::computeMaterialStiffness(_material.C, this->getYoungModulusInElement(0), this->d_poissonRatio.getValue());
+    HexahedralFEMForceFieldT::computeMaterialStiffness(_material.C, this->getYoungModulusInElement(0), this->getPoissonRatioInElement(0));
     HexahedralFEMForceFieldT::computeElementStiffness(_material.K, _material.C, nodesFine);
 
     //	HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
