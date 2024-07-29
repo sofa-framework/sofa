@@ -40,13 +40,13 @@ BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField(
     this->addUpdateCallback("checkPoissonRatio", {&d_poissonRatio}, [this](const core::DataTracker& )
     {
         checkPoissonRatio();
-        return sofa::core::objectmodel::ComponentState::Valid;
+        return this->getComponentState();
     }, {});
 
     this->addUpdateCallback("checkPositiveYoungModulus", {&d_youngModulus}, [this](const core::DataTracker& )
     {
         checkYoungModulus();
-        return sofa::core::objectmodel::ComponentState::Valid;
+        return this->getComponentState();
     }, {});
 }
 
