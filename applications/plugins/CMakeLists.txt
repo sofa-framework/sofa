@@ -46,6 +46,7 @@ sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgP
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin Cosserat Cosserat EXTERNAL GIT_REF master) # Cosserat has an optional dependency on SoftRobots
 sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL GIT_REF master)
