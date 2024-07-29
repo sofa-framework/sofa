@@ -49,7 +49,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     const Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
     const Real poissonRatioElement = this->getPoissonRatioInElement(tetrahedronIndex);
 
-    auto [lambda, mu] = Inherited::toLameParameters(Inherited::elementsType3D, youngModulusElement, poissonRatioElement);
+    auto [lambda, mu] = Inherited::toLameParameters(_3DMat, youngModulusElement, poissonRatioElement);
 
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
