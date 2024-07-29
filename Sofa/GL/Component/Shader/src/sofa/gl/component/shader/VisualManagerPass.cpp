@@ -78,7 +78,7 @@ void VisualManagerPass::init()
 }
 
 /* herited from VisualModel */
-void VisualManagerPass::initVisual()
+void VisualManagerPass::doInitVisual(const core::visual::VisualParams*)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
