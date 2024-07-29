@@ -37,16 +37,22 @@ ExecParams::ExecParamsThreadStorage::ExecParamsThreadStorage(int tid)
 /// Get the default ExecParams, to be used to provide a default values for method parameters
 ExecParams* ExecParams::defaultInstance()
 {
-    static ExecParams* threadParams;
-    ExecParams* ptr = threadParams;
-    if (!ptr)
+    thread_local struct ThreadLocalInstance
     {
-        ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.fetch_add(1)));
-        threadParams = ptr;
-        if (ptr->threadID())
-            msg_info("ExecParams") << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created.";
-    }
-    return ptr;
+        ThreadLocalInstance()
+            : threadStorage(g_nbThreads.fetch_add(1))
+            , params(&threadStorage)
+        {
+            if (params.threadID())
+            {
+                msg_info("ExecParams") << "[THREAD " << params.threadID() << "]: local ExecParams storage created.";
+            }
+        }
+        ExecParamsThreadStorage threadStorage;
+        ExecParams params;
+
+    } threadParams;
+    return &threadParams.params;
 }
 
 ExecParams::ExecParamsThreadStorage* ExecParams::threadStorage()

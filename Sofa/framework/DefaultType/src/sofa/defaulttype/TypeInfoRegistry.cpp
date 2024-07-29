@@ -40,8 +40,19 @@ namespace sofa::defaulttype
 
 static std::vector<const AbstractTypeInfo*>& getStorage()
 {
-    static std::vector<const AbstractTypeInfo*> typeinfos {NoTypeInfo::Get()};
-    return typeinfos;
+    static auto deleter = [](const std::vector<const AbstractTypeInfo*>* v)
+    {
+        for (const auto* info : *v)
+        {
+            if (info != NoTypeInfo::Get())
+            {
+                delete info;
+            }
+        }
+    };
+    static std::unique_ptr<std::vector<const AbstractTypeInfo*>, decltype(deleter)> type_infos(
+        new std::vector<const AbstractTypeInfo*>{NoTypeInfo::Get()}, deleter);
+    return *type_infos;
 }
 
 std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const std::string& target)
