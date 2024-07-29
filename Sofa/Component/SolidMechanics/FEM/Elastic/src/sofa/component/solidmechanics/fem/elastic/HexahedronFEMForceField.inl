@@ -704,7 +704,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
-    const auto poissonRatio = this->d_poissonRatio.getValue();
+    const auto poissonRatio = this->getPoissonRatioInElement(i);
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =

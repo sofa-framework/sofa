@@ -159,7 +159,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
 
     radius = d_radius.getValue() ;
     radiusInner = d_radiusInner.getValue();
-    poisson = this->d_poissonRatio.getValue() ;
+    poisson = this->getPoissonRatioInElement(i) ;
 
 
     setBeam(i, stiffness, length, poisson, radius, radiusInner);
