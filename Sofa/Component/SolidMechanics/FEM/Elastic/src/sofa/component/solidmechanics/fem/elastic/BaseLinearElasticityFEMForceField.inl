@@ -38,13 +38,11 @@ BaseLinearElasticityFEMForceField<DataTypes>::GetDefaultYoungModulusValue()
 
 template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
-    : d_poissonRatio(initData(&d_poissonRatio, defaultPoissonRatioValue, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
+    : d_poissonRatio(initData(&d_poissonRatio, defaultVecPoissonRatioValue, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
     , d_youngModulus(initData(&d_youngModulus, defaultVecYoungModulusValue, "youngModulus", "FEM Young's Modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
-    d_poissonRatio.setWidget("poissonRatio");
-
     d_youngModulus.setRequired(true);
 
     this->addUpdateCallback("checkPoissonRatio", {&d_poissonRatio}, [this](const core::DataTracker& )
@@ -63,14 +61,17 @@ BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField(
 template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::checkPoissonRatio()
 {
-    const auto& poissonRatio = d_poissonRatio.getValue();
-    if (poissonRatio < 0 || poissonRatio >= 0.5)
+    auto poissonRatio = sofa::helper::getWriteAccessor(d_poissonRatio);
+    for (auto& p : poissonRatio)
     {
-        msg_warning() << "Poisson's ratio must be in the range [0, 0.5), "
-                "but an out-of-bounds value has been provided (" <<
-                poissonRatio << "). It is set to " << defaultPoissonRatioValue <<
-                " to ensure the correct behavior";
-        d_poissonRatio.setValue(defaultPoissonRatioValue);
+        if (p < 0 || p >= 0.5)
+        {
+            msg_warning() << "Poisson's ratio must be in the range [0, 0.5), "
+                    "but an out-of-bounds value has been provided (" <<
+                    p << "). It is set to " << defaultPoissonRatioValue <<
+                    " to ensure the correct behavior";
+            p = defaultPoissonRatioValue;
+        }
     }
 }
 
@@ -109,7 +110,10 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::setPoissonRatio(Real val)
 {
-    this->d_poissonRatio.setValue(val);
+    VecReal newPoissonRationList;
+    newPoissonRationList.resize(1);
+    newPoissonRationList[0] = val;
+    d_poissonRatio.setValue(newPoissonRationList);
 }
 
 template <class DataTypes>
@@ -138,7 +142,7 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa
     }
     else
     {
-        setYoungModulus(5000);
+        setYoungModulus(defaultYoungModulusValue);
         youngModulusElement = youngModulus[0];
     }
     return youngModulusElement;
@@ -149,7 +153,23 @@ typename BaseLinearElasticityFEMForceField<DataTypes>::Real
 BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(
     sofa::Size elementId)
 {
-    return d_poissonRatio.getValue();
+    Real poissonRationElement {};
+
+    const auto& poissonRatio = d_poissonRatio.getValue();
+    if (poissonRatio.size() > elementId)
+    {
+        poissonRationElement = poissonRatio[elementId];
+    }
+    else if (!poissonRatio.empty())
+    {
+        poissonRationElement = poissonRatio[0];
+    }
+    else
+    {
+        setPoissonRatio(defaultPoissonRatioValue);
+        poissonRationElement = poissonRatio[0];
+    }
+    return poissonRationElement;
 }
 
 template <class DataTypes>

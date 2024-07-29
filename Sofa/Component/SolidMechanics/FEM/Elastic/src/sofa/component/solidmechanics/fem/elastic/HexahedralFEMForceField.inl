@@ -411,7 +411,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i) );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes);
 
     d_hexahedronInfo.endEdit();
@@ -508,7 +508,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
         hexahedronInf[i].rotatedInitialElements[j] = R_0_1 * nodes[j];
     }
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i) );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes );
 
     d_hexahedronInfo.endEdit();

@@ -128,7 +128,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
     _initialPoints.setOriginalData(&d_initialPoints);
     f_method.setOriginalData(&d_method);
-    _poissonRatio.setOriginalData(&this->d_poissonRatio);
     _youngModulus.setOriginalData(&this->d_youngModulus);
     _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
     _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
@@ -286,7 +285,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
     const VecReal& localStiffnessFactor = d_localStiffnessFactor.getValue();
     const Real youngModulusElement = this->getYoungModulusInElement(i);
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
-    const Real poissonRatio = this->d_poissonRatio.getValue();
+    const Real poissonRatio = this->getPoissonRatioInElement(i);
 
     materialsStiffnesses[i][0][0] = materialsStiffnesses[i][1][1] = materialsStiffnesses[i][2][2] = 1;
     materialsStiffnesses[i][0][1] = materialsStiffnesses[i][0][2] = materialsStiffnesses[i][1][0]

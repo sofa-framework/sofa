@@ -207,12 +207,12 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
     _materialsStiffnesses.resize(_indexedElements->size());
     const VecCoord& p = d_initialPoints.getValue();
 
-    const Real _p = this->d_poissonRatio.getValue();
-    const Real _1_p = 1 - _p;
-
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         const auto& [a, b, c] = (*_indexedElements)[i].array();
+
+        const Real _p = this->getPoissonRatioInElement(i);
+        const Real _1_p = 1 - _p;
 
         const Real Estrain = this->getYoungModulusInElement(i) / ((1 + _p) * (1 - 2 * _p));
         const Real Estress = this->getYoungModulusInElement(i) / (1 - _p * _p);

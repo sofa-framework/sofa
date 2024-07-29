@@ -38,7 +38,7 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
     Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
 
     /// Link to be set to the topology container in the component graph.
