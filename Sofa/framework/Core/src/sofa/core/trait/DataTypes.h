@@ -20,61 +20,44 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/visual/config.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
-
-namespace sofa::component::visual
+namespace sofa
 {
 
-namespace
+template <typename DataTypes>
+using Coord_t = typename DataTypes::Coord;
+
+template <typename DataTypes>
+using Real_t = typename DataTypes::Real;
+
+template <typename DataTypes>
+using VecReal_t = typename DataTypes::VecReal;
+
+template <typename DataTypes>
+using Deriv_t = typename DataTypes::Deriv;
+
+template <typename DataTypes>
+using MatrixDeriv_t = typename DataTypes::MatrixDeriv;
+
+template <typename DataTypes>
+using VecCoord_t = typename DataTypes::VecCoord;
+
+template <typename DataTypes>
+using VecDeriv_t = typename DataTypes::VecDeriv;
+
+namespace core::objectmodel
 {
-    using sofa::type::Vec3;
+template<typename DataTypes>
+class Data;
 }
 
-class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(VisualGrid, VisualModel);
+template <typename DataTypes>
+using DataVecCoord_t = core::objectmodel::Data<VecCoord_t<DataTypes>>;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+template <typename DataTypes>
+using DataVecDeriv_t = core::objectmodel::Data<VecDeriv_t<DataTypes>>;
 
-    enum PLANE
-    {
-        PLANE_X = 0,
-        PLANE_Y = 1,
-        PLANE_Z = 2
-    };
+template <typename DataTypes>
+using DataMatrixDeriv_t = core::objectmodel::Data<MatrixDeriv_t<DataTypes>>;
 
-    Data<std::string> d_plane; ///< Plane of the grid
-
-
-    Data<float> d_size; ///< Size of the squared grid
-    Data<int> d_nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
-
-    VisualGrid();
-    ~VisualGrid() override = default;
-
-    void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateGrid();
-    void buildGrid();
-
-protected:
-
-    PLANE internalPlane;
-
-    ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vec3> m_drawnPoints;
-
-};
-
-} // namespace sofa::component::visual
+}

@@ -164,8 +164,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
         return;
 
     SReal stiffness, length, radius, poisson, radiusInner;
-    Index a = (*m_indexedElements)[i][0];
-    Index b = (*m_indexedElements)[i][1];
+    const auto [a, b] = (*m_indexedElements)[i].array();
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     stiffness =  d_youngModulus.getValue() ;
@@ -222,15 +221,11 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 
     if (m_partialListSegment)
     {
-
-        for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        for (unsigned int i : d_listSegment.getValue())
         {
-            unsigned int i = d_listSegment.getValue()[j];
-            Element edge= (*m_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
-            initLarge(i,a,b);
-            accumulateForceLarge( f.wref(), p, i, a, b );
+            const auto [a, b] = (*m_indexedElements)[i].array();
+            initLarge(i, a, b);
+            accumulateForceLarge(f.wref(), p, i, a, b);
         }
     }
     else
@@ -238,12 +233,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
         unsigned int i;
         for(it=m_indexedElements->begin(),i=0; it!=m_indexedElements->end(); ++it,++i)
         {
-
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-
-            initLarge(i,a,b);
-            accumulateForceLarge( f.wref(), p, i, a, b );
+            const auto [a, b] = it->array();
+            initLarge(i, a, b);
+            accumulateForceLarge(f.wref(), p, i, a, b);
         }
     }
 }
@@ -262,25 +254,18 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     if (m_partialListSegment)
     {
-        for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        for (unsigned int i : d_listSegment.getValue())
         {
-            unsigned int i = d_listSegment.getValue()[j];
-            Element edge= (*m_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
-
+            const auto [a, b] = (*m_indexedElements)[i].array();
             applyStiffnessLarge(df.wref(), dx, i, a, b, kFactor);
         }
     }
     else
     {
-        typename VecElement::const_iterator it;
         unsigned int i = 0;
-        for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
+        for(auto it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-
+            const auto [a, b] = it->array();
             applyStiffnessLarge(df.wref(), dx, i, a, b, kFactor);
         }
     }
@@ -522,20 +507,14 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
     if (r)
     {
-        unsigned int i=0;
-
         const unsigned int &offset = r.offset;
 
         if (m_partialListSegment)
         {
 
-            for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+            for (unsigned int i : d_listSegment.getValue())
             {
-
-                i = d_listSegment.getValue()[j];
-                Element edge= (*m_indexedElements)[i];
-                const Index a = edge[0];
-                const Index b = edge[1];
+                const auto [a, b] = (*m_indexedElements)[i].array();
 
                 type::Quat<SReal>& q = beamQuat(i);
                 q.normalize();
@@ -566,11 +545,10 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
         }
         else
         {
-            typename VecElement::const_iterator it;
-            for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
+            unsigned int i {};
+            for(auto it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
             {
-                const Index a = (*it)[0];
-                const Index b = (*it)[1];
+                const auto [a, b] = it->array();
 
                 type::Quat<SReal>& q = beamQuat(i);
                 q.normalize();
@@ -632,19 +610,14 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    unsigned int i=0;
-
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
 
     if (m_partialListSegment)
     {
-        for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        for (unsigned int i : d_listSegment.getValue())
         {
-            i = d_listSegment.getValue()[j];
-            Element edge= (*m_indexedElements)[i];
-            const Index a = edge[0];
-            const Index b = edge[1];
+            const auto [a, b] = (*m_indexedElements)[i].array();
 
             type::Quat<SReal>& q = beamQuat(i);
             q.normalize();
@@ -675,11 +648,10 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
     }
     else
     {
-        typename VecElement::const_iterator it;
-        for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
+        unsigned int i {};
+        for(auto it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
         {
-            const Index a = (*it)[0];
-            const Index b = (*it)[1];
+            const auto [a, b] = it->array();
 
             type::Quat<SReal>& q = beamQuat(i);
             q.normalize();
@@ -817,9 +789,8 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >* points, const VecCoord& x)
 {
-    Index a = (*m_indexedElements)[i][0];
-    Index b = (*m_indexedElements)[i][1];
-    type::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
+    const auto [a, b] = (*m_indexedElements)[i].array();
+    const type::Vec3d p = (x[a].getCenter() + x[b].getCenter()) * 0.5;
     type::Vec3d beamVec;
     beamVec[0]= d_beamsData.getValue()[i]._L * 0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 

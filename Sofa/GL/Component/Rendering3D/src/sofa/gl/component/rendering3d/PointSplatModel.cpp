@@ -98,8 +98,6 @@ void PointSplatModel::init()
     }
 
     reinit();
-
-    updateVisual();
 }
 
 void PointSplatModel::reinit()

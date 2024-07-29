@@ -228,9 +228,8 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
-        Index a = (*_indexedElements)[i][0];
-        Index b = (*_indexedElements)[i][1];
-        Index c = (*_indexedElements)[i][2];
+        const auto [a, b, c] = (*_indexedElements)[i].array();
+
         const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
 
         if (d_planeStrain.getValue() == true)
@@ -299,9 +298,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
-        Index a = (*_indexedElements)[elementIndex][0];
-        Index b = (*_indexedElements)[elementIndex][1];
-        Index c = (*_indexedElements)[elementIndex][2];
+        const auto [a, b, c] = it->array();
 
         const auto deforme_b = p[b] - p[a];
         const auto deforme_c = p[c] - p[a];
@@ -353,9 +350,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, 
     unsigned int i(0);
     for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index c = (*it)[2];
+        const auto [a, b, c] = it->array();
 
         Displacement dX;
 
@@ -448,9 +443,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
         // triangle vertex indices
-        const Index a = (*_indexedElements)[elementIndex][0];
-        const Index b = (*_indexedElements)[elementIndex][1];
-        const Index c = (*_indexedElements)[elementIndex][2];
+        const auto [a, b, c] = it->array();
 
         const Coord& pA = p[a];
         const Coord& pB = p[b];
@@ -521,9 +514,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, 
 
     for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index c = (*it)[2];
+        const auto [a, b, c] = it->array();
 
         Transformation R_0_2(type::NOINIT);
         R_0_2.transpose(_rotations[i]);
@@ -593,9 +584,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     typename VecElement::const_iterator it;
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index c = (*it)[2];
+        const auto [a, b, c] = it->array();
 
         colorVector.push_back(sofa::type::RGBAColor::green());
         vertices.push_back(sofa::type::Vec3(x[a]));

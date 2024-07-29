@@ -53,11 +53,7 @@ protected:
     ~OglShaderVisualModel() override;
 public:
     void init() override;
-    void initVisual() override;
-
-    void updateVisual() override;
-
-    //void putRestPositions(const Vec3fTypes::VecCoord& positions);
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     void bwdDraw(core::visual::VisualParams*) override;
     void fwdDraw(core::visual::VisualParams*) override;

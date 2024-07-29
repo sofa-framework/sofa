@@ -502,7 +502,7 @@ void SofaViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 {
     BaseViewer::configure(viewerConf);
 
-    m_backend->setPickingMethod(pick, viewerConf);
+    m_backend->setPickingMethod(pick.get(), viewerConf);
 
 }
 

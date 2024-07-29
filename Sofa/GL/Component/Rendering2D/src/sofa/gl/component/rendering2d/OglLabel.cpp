@@ -118,7 +118,7 @@ void OglLabel::reinit()
     }
 }
 
-void OglLabel::updateVisual()
+void OglLabel::doUpdateVisual(const core::visual::VisualParams*)
 {
     if (!d_updateLabelEveryNbSteps.getValue()) m_internalLabel = d_label.getValue();
 }

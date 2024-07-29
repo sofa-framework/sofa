@@ -50,14 +50,8 @@ ConstraintParams& ConstraintParams::setExecParams(const core::ExecParams* params
 /// Get the default ConstraintParams, to be used to provide a default values for method parameters
 const ConstraintParams* ConstraintParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(ConstraintParams, threadParams);
-    ConstraintParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new ConstraintParams;
-        threadParams = ptr;
-    }
-    return ptr;
+    thread_local ConstraintParams threadParams;
+    return &threadParams;
 }
 
 } // namespace sofa::core
