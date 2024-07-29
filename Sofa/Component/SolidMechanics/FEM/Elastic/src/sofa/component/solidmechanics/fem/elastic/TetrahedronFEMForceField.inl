@@ -1306,7 +1306,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     const VecReal& youngModulus = this->d_youngModulus.getValue();
     if (youngModulus.empty())
     {
-        this->setYoungModulus(BaseLinearElasticityFEMForceField::defaultYoungModulusValue);
+        this->setYoungModulus(BaseLinearElasticityFEMForceField<DataTypes>::defaultYoungModulusValue);
     }
     assert(!youngModulus.empty());
     const auto [yMin, yMax] = std::minmax_element(youngModulus.begin(), youngModulus.end());
