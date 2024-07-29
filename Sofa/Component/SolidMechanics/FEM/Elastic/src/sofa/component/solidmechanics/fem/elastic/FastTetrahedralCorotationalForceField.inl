@@ -45,11 +45,12 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     const std::vector< Tetrahedron > &tetrahedronArray=this->m_topology->getTetrahedra() ;
 
     unsigned int j,k,l,m,n;
-    Real lambda, mu;
 
-    Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
+    const Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
+    const Real poissonRatioElement = this->getPoissonRatioInElement(tetrahedronIndex);
 
-    computeLameCoefficients(youngModulusElement, this->d_poissonRatio.getValue(), lambda, mu);
+    auto [lambda, mu] = Inherited::toLameParameters(Inherited::elementsType3D, youngModulusElement, poissonRatioElement);
+
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -673,14 +674,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
     }
 
 }
-
-template<class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu)
-{
-    outLambda = inYoung * inPoisson / ((1 - 2 * inPoisson) * (1 + inPoisson));
-    outMu = inYoung / (2 * (1 + inPoisson));
-}
-
 
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
