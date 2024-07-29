@@ -111,6 +111,35 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 }
 
 
+void findTemplatedCreator(
+    objectmodel::BaseContext* context,
+    const ObjectFactory::Creator::SPtr& creator, const std::string& templateName,
+    std::map<std::string, std::vector<std::string>>& creatorsErrors,
+    std::vector< std::pair<std::string, ObjectFactory::Creator::SPtr> >& creators,
+    objectmodel::BaseObjectDescription* arg)
+{
+    const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
+    const auto creatorTarget = creator->getTarget();
+    if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
+    {
+        creatorsErrors[templateName].emplace_back(
+            "The object was previously registered, but its module has been unloaded.");
+        arg->clearErrors();
+    }
+    else
+    {
+        if (creator->canCreate(context, arg))
+        {
+            creators.emplace_back(templateName, creator);
+        }
+        else
+        {
+            creatorsErrors[templateName] = arg->getErrors();
+            arg->clearErrors();
+        }
+    }
+}
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = nullptr;
@@ -176,57 +205,17 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
             templatename = entry->defaultTemplate;
 
-        CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
-        if (it2 != entry->creatorMap.end())
+
+        if (auto it2 = entry->creatorMap.find(templatename);
+            it2 != entry->creatorMap.end())
         {
-            Creator::SPtr c = it2->second;
-            const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
-            const auto creatorTarget = c->getTarget();
-            if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
-            {
-                creators_errors[templatename].emplace_back(
-                    "The object was previously registered, but its module has been unloaded.");
-                arg->clearErrors();
-            }
-            else
-            {
-                if (c->canCreate(context, arg)) {
-                    creators.push_back(*it2);
-                } else {
-                    creators_errors[templatename] = arg->getErrors();
-                    arg->clearErrors();
-                }
-            }
+            findTemplatedCreator(context, it2->second, it2->first, creators_errors, creators, arg);
         }
 
         // If object cannot be created with the given template (or the default one), try all possible ones
-        if (creators.empty())
+        for (const auto& [templateName, creator] : entry->creatorMap)
         {
-            CreatorMap::iterator it3;
-            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
-            {
-                if (it3->first == templatename)
-                    continue; // We already tried to create the object with the specified (or default) template
-
-                Creator::SPtr c = it3->second;
-                const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
-                const auto creatorTarget = c->getTarget();
-                if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
-                {
-                    creators_errors[templatename].emplace_back(
-                        "The object was previously registered, but its module has been unloaded.");
-                    arg->clearErrors();
-                }
-                else
-                {
-                    if (c->canCreate(context, arg)){
-                        creators.push_back(*it3);
-                    } else {
-                        creators_errors[it3->first] = arg->getErrors();
-                        arg->clearErrors();
-                    }
-                }
-            }
+            findTemplatedCreator(context, creator, templateName, creators_errors, creators, arg);
         }
     }
 
