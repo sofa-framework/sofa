@@ -1293,23 +1293,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
-    const VecReal& youngModulus = this->d_youngModulus.getValue();
-    assert(!youngModulus.empty());
-    minYoung=youngModulus[0];
-    maxYoung=youngModulus[0];
-    for (unsigned i=0; i<youngModulus.size(); i++)
-    {
-        if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-        if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
-    }
-
-    const Real& poissonRatio = this->d_poissonRatio.getValue();
-    if (poissonRatio < 0 || poissonRatio >= 0.5)
-    {
-        this->d_poissonRatio.setValue((poissonRatio < 0) ? 0.0 : 0.499);
-        msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
-    }
-
     if (d_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
     {
         this->f_listening.setValue(true);
@@ -1320,6 +1303,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
     BaseLinearElasticityFEMForceField<DataTypes>::init();
+
+    const VecReal& youngModulus = this->d_youngModulus.getValue();
+    if (youngModulus.empty())
+    {
+        this->setYoungModulus(BaseLinearElasticityFEMForceField::defaultYoungModulusValue);
+    }
+    assert(!youngModulus.empty());
+    const auto [yMin, yMax] = std::minmax_element(youngModulus.begin(), youngModulus.end());
+    minYoung = *yMin;
+    maxYoung = *yMax;
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
