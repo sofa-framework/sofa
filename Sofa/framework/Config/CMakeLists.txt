@@ -166,8 +166,14 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 
     option(SOFA_ENABLE_THREAD_SANITIZER "Enable thread sanitizer (only gcc or clang)" OFF)
     if(SOFA_ENABLE_THREAD_SANITIZER)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=thread")
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=thread;-fno-omit-frame-pointer")
         list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=thread")
+    endif()
+
+    option(SOFA_ENABLE_MEMORY_SANITIZER "Enable memory sanitizer (only gcc or clang)" OFF)
+    if(SOFA_ENABLE_MEMORY_SANITIZER)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=address;-fno-omit-frame-pointer")
+        list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=address")
     endif()
 endif()
 
