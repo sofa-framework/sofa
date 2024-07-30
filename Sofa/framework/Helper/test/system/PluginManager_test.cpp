@@ -318,6 +318,9 @@ TEST_F(PluginManager_test, failingPlugin)
     EXPECT_NE(std::find_if(description.getErrors().begin(), description.getErrors().end(),
         [](const std::string& error)
         {
-            return error.find("The object was previously registered, but its module has been unloaded.") != std::string::npos;
+            return error.find(
+                "The object was previously registered, but the module that "
+                "registered the object has been unloaded, preventing the object creation.")
+            != std::string::npos;
         }), description.getErrors().end());
 }

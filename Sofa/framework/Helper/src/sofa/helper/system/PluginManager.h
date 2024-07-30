@@ -215,6 +215,8 @@ public:
 
     [[nodiscard]] const std::unordered_set<std::string>& unloadedPlugins() const;
 
+    [[nodiscard]] bool isPluginUnloaded(const std::string& pluginName) const;
+
     void init();
     void init(const std::string& pluginPath);
 
@@ -274,6 +276,7 @@ private:
     PluginMap m_pluginMap;
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 
+    // contains the list of plugin names that were unloaded
     std::unordered_set<std::string> m_unloadedPlugins;
 };
 

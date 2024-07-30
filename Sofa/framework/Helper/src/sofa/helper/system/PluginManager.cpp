@@ -333,6 +333,11 @@ const std::unordered_set<std::string>& PluginManager::unloadedPlugins() const
     return m_unloadedPlugins;
 }
 
+bool PluginManager::isPluginUnloaded(const std::string& pluginName) const
+{
+    return m_unloadedPlugins.find(pluginName) != m_unloadedPlugins.end();
+}
+
 Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
 {
     const std::string pluginPath = plugin;

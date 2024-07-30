@@ -118,12 +118,11 @@ void findTemplatedCreator(
     std::vector< std::pair<std::string, ObjectFactory::Creator::SPtr> >& creators,
     objectmodel::BaseObjectDescription* arg)
 {
-    const auto& unloadedPlugins = helper::system::PluginManager::getInstance().unloadedPlugins();
-    const auto creatorTarget = creator->getTarget();
-    if (unloadedPlugins.find(creatorTarget) != unloadedPlugins.end())
+    if (helper::system::PluginManager::getInstance().isPluginUnloaded(creator->getTarget()))
     {
         creatorsErrors[templateName].emplace_back(
-            "The object was previously registered, but its module has been unloaded.");
+            "The object was previously registered, but the module that "
+            "registered the object has been unloaded, preventing the object creation.");
         arg->clearErrors();
     }
     else
