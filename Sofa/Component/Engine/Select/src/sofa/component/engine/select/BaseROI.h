@@ -62,7 +62,7 @@ public:
 
 public:
     void init() final;
-    void doUpdate() override; //cannot set final because of the tests;
+    void doUpdate() override; // Cannot set final because of the tests (e.g. DataEngine_test)
     void draw(const core::visual::VisualParams* vparams) final; 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) final;
 

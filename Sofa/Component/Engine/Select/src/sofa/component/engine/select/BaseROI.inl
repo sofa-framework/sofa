@@ -270,14 +270,16 @@ void BaseROI<DataTypes>::init()
     d_componentState.setValue(ComponentState::Valid) ;
 
     /// The following is a trick to force the initial selection of the element by the engine.
-    const bool tmp=d_doUpdate.getValue() ;
-    d_doUpdate.setValue(true);
-    setDirtyValue();
-
-    roiInit();
-
-    update();
-    d_doUpdate.setValue(tmp);
+    {
+        const bool tmp=d_doUpdate.getValue() ;
+        d_doUpdate.setValue(true);
+        setDirtyValue();
+        
+        roiInit();
+        
+        update();
+        d_doUpdate.setValue(tmp);
+    }
 }
 
 template <class DataTypes>
