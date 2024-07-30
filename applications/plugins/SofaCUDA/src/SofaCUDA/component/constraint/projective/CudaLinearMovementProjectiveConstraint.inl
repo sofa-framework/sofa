@@ -137,8 +137,8 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<
 {
     Data& data = *m->data;
 
-    m->m_indices.beginEdit()->push_back(index);
-    m->m_indices.endEdit();
+    m->d_indices.beginEdit()->push_back(index);
+    m->d_indices.endEdit();
 
     data.indices.push_back(index);
     // TODO : then it becomes non-consistent and also in the main version !!!
@@ -151,8 +151,8 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<
 {
     // Data& data = m->data;
 
-    removeValue(*m->m_indices.beginEdit(),index);
-    m->m_indices.endEdit();
+    removeValue(*m->d_indices.beginEdit(),index);
+    m->d_indices.endEdit();
 
     // removeValue(data.indices, index);
     // TODO : then it becomes non-consistent and also in the main version !!!
@@ -167,7 +167,7 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<
     assert(m->data != nullptr);
 
     Data& data = *m->data;
-    const SetIndexArray & indices = m->m_indices.getValue();
+    const SetIndexArray & indices = m->d_indices.getValue();
 //  m->x0.resize( indices.size() );
 //  for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
 //    m->x0[*it] = x[*it];
@@ -279,8 +279,8 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N
 {
     Data& data = *m->data;
 
-    m->m_indices.beginEdit()->push_back(index);
-    m->m_indices.endEdit();
+    m->d_indices.beginEdit()->push_back(index);
+    m->d_indices.endEdit();
 
     data.indices.push_back(index);
     // TODO : then it becomes non-consistent and also in the main version !!!
@@ -293,8 +293,8 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N
 {
     // Data& data = m->data;
 
-    removeValue(*m->m_indices.beginEdit(),index);
-    m->m_indices.endEdit();
+    removeValue(*m->d_indices.beginEdit(),index);
+    m->d_indices.endEdit();
 
     // removeValue(data.indices, index);
     // TODO : then it becomes non-consistent and also in the main version !!!
@@ -306,7 +306,7 @@ template<int N, class real>
 void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m, VecCoord& x)
 {
     Data& data = *m->data;
-    const SetIndexArray & indices = m->m_indices.getValue();
+    const SetIndexArray & indices = m->d_indices.getValue();
 //  m->x0.resize( indices.size() );
 //  for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
 //    m->x0[*it] = x[*it];
