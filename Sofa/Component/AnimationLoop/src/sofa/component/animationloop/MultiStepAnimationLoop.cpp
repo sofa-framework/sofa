@@ -43,9 +43,11 @@ using namespace sofa::simulation;
 namespace sofa::component::animationloop
 {
 
-int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
-        .add< MultiStepAnimationLoop >()
-        ;
+void registerMultiStepAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Multi steps animation loop, multi integration steps in a single animation step are managed.")
+        .add< MultiStepAnimationLoop >());
+}
 
 MultiStepAnimationLoop::MultiStepAnimationLoop() :
       d_collisionSteps( initData(&d_collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
