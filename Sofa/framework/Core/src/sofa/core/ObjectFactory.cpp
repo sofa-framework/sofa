@@ -235,18 +235,24 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
         using sofa::helper::lifecycle::movedComponents;
+        using sofa::helper::lifecycle::dealiasedComponents;
         if(it == registry.end())
         {
             arg->logError("The object '" + classname + "' is not in the factory.");
-            auto uuncreatableComponent = uncreatableComponents.find(classname);
+            auto uncreatableComponent = uncreatableComponents.find(classname);
             auto movedComponent = movedComponents.find(classname);
-            if( uuncreatableComponent != uncreatableComponents.end() )
+            auto dealiasedComponent = dealiasedComponents.find(classname);
+            if( uncreatableComponent != uncreatableComponents.end() )
             {
-                arg->logError( uuncreatableComponent->second.getMessage() );
+                arg->logError( uncreatableComponent->second.getMessage() );
             }
             else if (movedComponent != movedComponents.end())
             {
                 arg->logError( movedComponent->second.getMessage() );
+            }
+            else if (dealiasedComponent != dealiasedComponents.end())
+            {
+                arg->logError(dealiasedComponent->second.getMessage());
             }
             else
             {

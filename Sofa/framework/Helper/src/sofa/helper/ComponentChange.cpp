@@ -761,4 +761,8 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
 
 };
 
+
+const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
+};
+
 } // namespace sofa::helper::lifecycle
