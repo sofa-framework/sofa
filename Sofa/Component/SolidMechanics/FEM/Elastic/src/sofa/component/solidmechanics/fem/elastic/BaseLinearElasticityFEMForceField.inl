@@ -38,8 +38,8 @@ BaseLinearElasticityFEMForceField<DataTypes>::GetDefaultYoungModulusValue()
 
 template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
-    : d_poissonRatio(initData(&d_poissonRatio, defaultVecPoissonRatioValue, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , d_youngModulus(initData(&d_youngModulus, defaultVecYoungModulusValue, "youngModulus", "FEM Young's Modulus in Hooke's law"))
+    : d_poissonRatio(initData(&d_poissonRatio, { defaultPoissonRatioValue }, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
+    , d_youngModulus(initData(&d_youngModulus, { defaultYoungModulusValue }, "youngModulus", "FEM Young's Modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
@@ -110,19 +110,13 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::setPoissonRatio(Real val)
 {
-    VecReal newPoissonRationList;
-    newPoissonRationList.resize(1);
-    newPoissonRationList[0] = val;
-    d_poissonRatio.setValue(newPoissonRationList);
+    d_poissonRatio.setValue({val});
 }
 
 template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::setYoungModulus(Real val)
 {
-    VecReal newY;
-    newY.resize(1);
-    newY[0] = val;
-    d_youngModulus.setValue(newY);
+    d_youngModulus.setValue({val});
 }
 
 template <class DataTypes>

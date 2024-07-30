@@ -62,6 +62,14 @@ public:
 
     static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio);
     static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio);
+
+protected:
+
+    static constexpr Real defaultYoungModulusValue = 5000;
+    static constexpr Real defaultPoissonRatioValue = 0.45;
+
+    void checkPoissonRatio();
+    void checkYoungModulus();
 };
 
 //instances of types of materials
