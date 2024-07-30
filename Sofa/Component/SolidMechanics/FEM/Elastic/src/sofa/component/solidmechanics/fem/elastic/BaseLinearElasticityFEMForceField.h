@@ -64,22 +64,7 @@ public:
 protected:
 
     static constexpr Real defaultYoungModulusValue = 5000;
-    static inline const VecReal defaultVecYoungModulusValue = []()
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = defaultYoungModulusValue;
-        return newY;
-    }();
-
     static constexpr Real defaultPoissonRatioValue = 0.45;
-    static inline const VecReal defaultVecPoissonRatioValue = []()
-    {
-        VecReal newPoissonRationList;
-        newPoissonRationList.resize(1);
-        newPoissonRationList[0] = defaultPoissonRatioValue;
-        return newPoissonRationList;
-    }();
 
     void checkPoissonRatio();
     void checkYoungModulus();
