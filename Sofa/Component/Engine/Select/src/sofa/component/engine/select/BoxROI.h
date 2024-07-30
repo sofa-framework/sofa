@@ -63,7 +63,7 @@ public:
     using Inherit = BaseROI<DataTypes>;
 
     typedef type::Vec<10, SReal> Vec10;
-    using typename Inherit::Real;
+    using Real = Real_t<DataTypes>;
     using typename Inherit::CPos;
 
 public:

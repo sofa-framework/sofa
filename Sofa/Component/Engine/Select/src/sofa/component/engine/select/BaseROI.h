@@ -42,9 +42,9 @@ public:
     using Inherit = core::DataEngine;
     SOFA_CLASS(SOFA_TEMPLATE(BaseROI,DataTypes), Inherit);
 
-    using VecCoord = typename DataTypes::VecCoord;
-    using Coord = typename DataTypes::Coord;
-    using Real = typename DataTypes::Real;
+    using VecCoord = VecCoord_t<DataTypes>;
+    using Coord = Coord_t<DataTypes>;
+    using Real = Real_t<DataTypes>;
     using CPos = typename DataTypes::CPos;
 
     using PointID = core::topology::BaseMeshTopology::PointID;

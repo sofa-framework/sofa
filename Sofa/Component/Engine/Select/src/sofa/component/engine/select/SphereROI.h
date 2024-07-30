@@ -41,7 +41,7 @@ class SphereROI : public BaseROI<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SphereROI, DataTypes), SOFA_TEMPLATE(BaseROI, DataTypes));
     using Inherit = BaseROI<DataTypes>;
-    using typename Inherit::Real;
+    using Real = Real_t<DataTypes>;
     using typename Inherit::CPos;
     using typename Inherit::PointID;
     using typename Inherit::Edge;
