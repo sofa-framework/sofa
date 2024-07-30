@@ -66,7 +66,7 @@ void PostProcessManager::init()
     }
 }
 
-void PostProcessManager::initVisual()
+void PostProcessManager::doInitVisual(const core::visual::VisualParams*)
 {
     if (postProcessEnabled)
     {

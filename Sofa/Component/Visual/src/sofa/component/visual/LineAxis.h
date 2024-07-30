@@ -42,10 +42,10 @@ public:
     void init() override;
     void reinit() override;
     void doDrawVisual(const core::visual::VisualParams*) override;
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams*) override;
+    void updateLine();
 
 protected:
-
     bool m_drawX;
     bool m_drawY;
     bool m_drawZ;

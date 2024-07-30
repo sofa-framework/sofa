@@ -367,7 +367,7 @@ public:
         }
 
         auto objectCreator = std::make_shared<ObjectCreator<RealObject> >();
-        if (objectCreator->getTarget() == "")
+        if (strcmp(objectCreator->getTarget(), "") == 0)
         {
             dmsg_warning("ObjectFactory") << "Module name cannot be found when registering "
                 << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the object factory";

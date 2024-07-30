@@ -45,15 +45,20 @@ LineAxis::LineAxis()
 void LineAxis::init()
 {
     Inherit1::init();
-    updateVisual();
+    updateLine();
 }
 
 void LineAxis::reinit()
 {
-    updateVisual();
+    updateLine();
 }
 
-void LineAxis::updateVisual()
+void LineAxis::doUpdateVisual(const core::visual::VisualParams*)
+{
+    updateLine();
+}
+
+void LineAxis::updateLine()
 {
     const std::string a = d_axis.getValue();
 

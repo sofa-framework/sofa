@@ -77,7 +77,7 @@ void OglViewport::init()
     }
 }
 
-void OglViewport::initVisual()
+void OglViewport::doInitVisual(const core::visual::VisualParams*)
 {
     if (p_useFBO.getValue())
     {

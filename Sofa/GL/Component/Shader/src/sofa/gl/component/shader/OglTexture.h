@@ -78,7 +78,7 @@ protected:
     ~OglTexture() override;
 public:
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;

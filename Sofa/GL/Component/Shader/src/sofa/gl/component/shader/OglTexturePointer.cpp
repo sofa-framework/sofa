@@ -53,16 +53,6 @@ void OglTexturePointer::init()
     OglShaderElement::init();
 }
 
-void OglTexturePointer::initVisual()
-{
-
-}
-
-void OglTexturePointer::reinit()
-{
-
-}
-
 void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
 {
     if (enabled.getValue() && !l_oglTexture.empty())

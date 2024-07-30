@@ -55,12 +55,6 @@ void OglCylinderModel::init()
     VisualModel::init();
 
     reinit();
-
-    updateVisual();
-}
-
-void OglCylinderModel::reinit()
-{
 }
 
 void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)

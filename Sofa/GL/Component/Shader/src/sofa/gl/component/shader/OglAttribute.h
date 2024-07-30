@@ -44,13 +44,13 @@ public:
     typedef TDataTypes DataType;
 
     void init() override;
-
-    void initVisual() override;
+    
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void reinit() override;
 
     /// if attributes are not static, update the buffer
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     type::vector<TDataTypes>* beginEdit();
     void endEdit();

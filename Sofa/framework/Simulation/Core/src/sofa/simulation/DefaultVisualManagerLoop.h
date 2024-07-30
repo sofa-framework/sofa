@@ -54,10 +54,10 @@ public:
     void init() override;
 
     /// Initialize the textures
-    void initStep(sofa::core::ExecParams* params) override;
+    void initStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update the Visual Models: triggers the Mappings
-    void updateStep(sofa::core::ExecParams* params) override;
+    void updateStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
     void updateContextStep(sofa::core::visual::VisualParams* vparams) override;

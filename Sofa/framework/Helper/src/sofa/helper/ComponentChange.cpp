@@ -221,7 +221,7 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "InteractiveCamera", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualModelImpl", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualStyle", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
-    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.UserInterface.ConfigurationSetting") },
+    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Setting") },
 
     // SofaGeneralVisual was deprecated in #2679
     { "RecordedCamera", Moved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },

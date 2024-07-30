@@ -109,7 +109,7 @@ public:
     bool loadTextures() override;
 
     void initTextures();
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void init() override { VisualModelImpl::init(); }
 

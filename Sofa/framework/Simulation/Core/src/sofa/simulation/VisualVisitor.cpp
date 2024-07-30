@@ -157,7 +157,7 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
     helper::ScopedAdvancedTimer timer("VisualUpdateVisitor process: " + vm->getName());
-    vm->updateVisual();
+    vm->updateVisual(vparams);
 }
 
 
@@ -169,7 +169,7 @@ Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
 }
 void VisualInitVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    vm->initVisual();
+    vm->initVisual(vparams);
 }
 
 VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* params)

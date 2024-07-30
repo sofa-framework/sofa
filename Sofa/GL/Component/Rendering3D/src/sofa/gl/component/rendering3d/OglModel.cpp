@@ -641,7 +641,7 @@ bool OglModel::loadTextures()
     return result;
 }
 
-void OglModel::initVisual()
+void OglModel::doInitVisual(const core::visual::VisualParams*)
 {
     initTextures();
 

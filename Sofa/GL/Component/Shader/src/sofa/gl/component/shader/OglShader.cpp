@@ -140,7 +140,7 @@ void OglShader::reinit()
 
 }
 
-void OglShader::initVisual()
+void OglShader::doInitVisual(const core::visual::VisualParams*)
 {
 
     if (!sofa::gl::GLSLShader::InitGLSL())
@@ -278,11 +278,6 @@ void OglShader::start()
 bool OglShader::isActive()
 {
     return !passive.getValue();
-}
-
-void OglShader::updateVisual()
-{
-
 }
 
 unsigned int OglShader::getNumberOfShaders()

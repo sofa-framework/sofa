@@ -79,7 +79,7 @@ void OrderIndependentTransparencyManager::bwdInit()
 
 }
 
-void OrderIndependentTransparencyManager::initVisual()
+void OrderIndependentTransparencyManager::doInitVisual(const core::visual::VisualParams*)
 {
     GLSLShader::InitGLSL();
 
