@@ -40,7 +40,7 @@ PlaneProjectiveConstraint<DataTypes>::PlaneProjectiveConstraint()
     , d_normal( initData(&d_normal,CPos(),"normal","Normal vector to the plane"))
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(std::unique_ptr<PlaneProjectiveConstraintInternalData<DataTypes>>())
+    , data(std::make_unique<PlaneProjectiveConstraintInternalData<DataTypes>>())
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
