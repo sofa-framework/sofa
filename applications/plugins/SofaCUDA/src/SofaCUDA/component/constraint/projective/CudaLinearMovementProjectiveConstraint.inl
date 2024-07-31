@@ -163,6 +163,9 @@ void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<
 template<class TCoord, class TDeriv, class TReal>
 void LinearMovementProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m, VecCoord& x)
 {
+    assert(m != nullptr);
+    assert(m->data != nullptr);
+
     Data& data = *m->data;
     const SetIndexArray & indices = m->m_indices.getValue();
 //  m->x0.resize( indices.size() );
