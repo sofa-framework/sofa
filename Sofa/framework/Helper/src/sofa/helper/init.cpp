@@ -23,6 +23,7 @@
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/PluginManager.h>
 
 #include <iostream>
 
@@ -50,6 +51,8 @@ SOFA_HELPER_API void cleanup()
 {
     if (!s_cleanedUp)
     {
+
+        system::PluginManager::getInstance().cleanup();
         s_cleanedUp = true;
     }
 }
