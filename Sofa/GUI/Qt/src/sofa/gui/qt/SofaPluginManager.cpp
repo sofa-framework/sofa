@@ -148,6 +148,16 @@ void SofaPluginManager::addLibrary()
             msg_error("SofaPluginManager") << "plugin should be loaded: " << pluginFile << msgendl;
             return;
         }
+
+        if (plugin->moduleIsInitialized.func && plugin->moduleIsInitialized()
+            || !plugin->moduleIsInitialized.func)
+        {
+            if (const char* moduleName = plugin->getModuleName())
+            {
+                core::ObjectFactory::getInstance()->registerObjectsFromPlugin(moduleName);
+            }
+        }
+
         const QString slicense = plugin->getModuleLicense();
         const QString sname    = plugin->getModuleName();
         const QString sversion = plugin->getModuleVersion();
@@ -315,6 +325,11 @@ void SofaPluginManager::loadPluginsFromIniFile()
     m_pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
     msg_info("SofaPluginManager") << "Loading automatically plugin list in " << m_pluginsIniFile;
     sofa::helper::system::PluginManager::getInstance().readFromIniFile(m_pluginsIniFile, m_loadedPlugins);
+
+    for (const auto& loadedPlugin : m_loadedPlugins)
+    {
+        core::ObjectFactory::getInstance()->registerObjectsFromPlugin(loadedPlugin);
+    }
 }
 
 
