@@ -212,9 +212,15 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
 
         // If object cannot be created with the given template (or the default one), try all possible ones
-        for (const auto& [templateName, creator] : entry->creatorMap)
+        if (creators.empty())
         {
-            findTemplatedCreator(context, creator, templateName, creators_errors, creators, arg);
+            for (const auto& [creatorTemplateName, creator] : entry->creatorMap)
+            {
+                if (creatorTemplateName != templatename)
+                {
+                    findTemplatedCreator(context, creator, creatorTemplateName, creators_errors, creators, arg);
+                }
+            }
         }
     }
 
