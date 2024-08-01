@@ -136,7 +136,10 @@ void Context::copyContext(const Context& c)
 
 void Context::copySimulationContext(const Context& c)
 {
-    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    if (!worldGravity_.isSet())
+    {
+        worldGravity_.setValue(c.getGravity()); ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    }
     setDt(c.getDt());
     setTime(c.getTime());
     setAnimate(c.getAnimate());
