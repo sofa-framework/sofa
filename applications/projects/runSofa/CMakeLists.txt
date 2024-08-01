@@ -3,10 +3,7 @@ project(runSofa)
 
 # Detect if component is compiled outside SOFA
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Modules")
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../Sofa/framework/Config/cmake")
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../Sofa/framework/Config/cmake/Modules")
-    include(SofaMacros)
+    sofa_find_package(Sofa.Config REQUIRED)
     sofa_find_package(Sofa.Simulation.Graph REQUIRED)
     sofa_find_package(ZLIB)
 endif()
