@@ -28,20 +28,27 @@
 #ifdef WIN32
 # include <Windows.h>
 # include <StrSafe.h>
+# include <Shlobj_core.h>
 #elif defined __APPLE__
 # include <mach-o/dyld.h>       // for _NSGetExecutablePath()
 # include <errno.h>
+# include <sysdir.h>  // for sysdir_start_search_path_enumeration
+# include <glob.h>    // for glob needed to expand ~ to user dir
 #else
 # include <string.h>            // for strerror()
 # include <unistd.h>            // for readlink()
 # include <errno.h>
 # include <linux/limits.h>      // for PATH_MAX
+# include <cstdlib>
+# include <sys/types.h>
+# include <pwd.h>
 #endif
 
 #include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -224,6 +231,111 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
     }
 
     return map;
+}
+
+// no standard/portable way
+const std::string& Utils::getUserLocalDirectory()
+{
+
+    auto computeUserHomeDirectory = []()
+    {
+// Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
+#ifdef WIN32
+        std::wstring wresult;
+        wchar_t* path = nullptr;
+        const auto hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path);
+        if (SUCCEEDED(hr))
+        {
+            wresult = std::wstring(path);
+        }
+        if (path)
+        {
+            CoTaskMemFree(path);
+        }
+
+        // convert wide string (unicode) to standard string
+        std::string result(wresult.length(), 0);
+        std::transform(wresult.begin(), wresult.end(), result.begin(), [](wchar_t c) {
+            return (char)c;
+        });
+
+        return result;
+
+#elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
+        // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
+        
+        char path[PATH_MAX];
+        auto state = sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
+                                                          SYSDIR_DOMAIN_MASK_USER);
+        if ((state = sysdir_get_next_search_path_enumeration(state, path)))
+        {
+            glob_t globbuf;
+            if (glob(path, GLOB_TILDE, nullptr, &globbuf) == 0) 
+            {
+                std::string result(globbuf.gl_pathv[0]);
+                globfree(&globbuf);
+                return result;
+            } 
+            else
+            {
+                // "Unable to expand tilde"
+                return std::string("");
+            }
+        }
+        else
+        {
+            // "Failed to get settings folder"
+            return std::string("");
+        }
+        
+#else // Linux: either ${XDG_CONFIG_HOME} if defined, or ${HOME}/.config (should be equivalent)
+        const char* configDir;
+
+        // if env.var XDG_CONFIG_HOME is defined
+        if ((configDir = std::getenv("XDG_CONFIG_HOME")) == nullptr)
+        {
+            const char* homeDir;
+
+            // else if HOME is defined
+            if ((homeDir = std::getenv("HOME")) == nullptr)
+            {
+                // else system calls are used
+                homeDir = getpwuid(getuid())->pw_dir;
+            }
+
+            return std::string(homeDir) + std::string("/.config");
+        }
+        else
+        {
+            return std::string(configDir);
+        }
+
+#endif
+    };
+
+    static std::string homeDir = FileSystem::cleanPath(computeUserHomeDirectory());
+    return homeDir;
+}
+
+const std::string& Utils::getSofaUserLocalDirectory()
+{
+    auto computeSofaLocalDirectory = []()
+    {
+        const std::filesystem::path localDirPath = getUserLocalDirectory() + "/SOFA";
+        if(!std::filesystem::exists(localDirPath))
+        {
+            if(!std::filesystem::create_directories(localDirPath))
+            {
+                // error while trying to create the computed path
+                // most likely because of permissions errors
+                return std::string("");
+            }
+        }
+        return localDirPath.string();
+    };
+
+    static std::string sofaLocalDirectory = FileSystem::cleanPath(computeSofaLocalDirectory());
+    return sofaLocalDirectory;
 }
 
 
