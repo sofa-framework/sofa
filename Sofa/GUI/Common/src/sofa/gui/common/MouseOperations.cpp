@@ -78,7 +78,7 @@ InteractionPerformer *Operation::createPerformer()
     }
 
     // Retrieve the interaction associated with the pickHandle
-    auto interaction = pickHandle->getInteraction();
+    const auto interaction = pickHandle->getInteraction();
     if (!interaction)
     {
         msg_error("MouseOperation") << "Failed to create InteractionPerformer: Interaction object is null.";
@@ -86,7 +86,7 @@ InteractionPerformer *Operation::createPerformer()
     }
 
     // Retrieve the mouseInteractor from the interaction
-    auto mouseInteractor = interaction->mouseInteractor.get();
+    const auto mouseInteractor = interaction->mouseInteractor.get();
     if (!mouseInteractor)
     {
         msg_error("MouseOperation") << "Failed to create InteractionPerformer: MouseInteractor is null.";
@@ -94,7 +94,7 @@ InteractionPerformer *Operation::createPerformer()
     }
 
     // Create the InteractionPerformer using the factory
-    InteractionPerformer *performer = InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, mouseInteractor);
+    const InteractionPerformer *performer = InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, mouseInteractor);
     if (!performer)
     {
         msg_error("MouseOperation") << "Failed to create InteractionPerformer: Performer creation failed for type \"" << type << "\".";
