@@ -212,7 +212,7 @@ public:
     void copyVertexMass();
 
 
-    /// Mass APInterface
+    /// Mass API
     void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
     void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
