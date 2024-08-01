@@ -1,0 +1,9 @@
+# CMake package configuration file for the VolumetricRendering.CUDA library
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(SofaDistanceGrid QUIET REQUIRED)
+find_package(SofaCUDA QUIET REQUIRED)
+
+check_required_components(SofaDistanceGrid.CUDA)
