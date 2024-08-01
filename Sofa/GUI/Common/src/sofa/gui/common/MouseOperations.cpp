@@ -67,7 +67,7 @@ void Operation::start()
     }
 }
 
-    InteractionPerformer *Operation::createPerformer()
+InteractionPerformer *Operation::createPerformer()
 {
     // Obtain the type of performer to create
     const std::string type = defaultPerformerType();
@@ -212,8 +212,6 @@ void TopologyOperation::endOperation()
 void InciseOperation::start()
 {
     const int currentMethod = getIncisionMethod();
-
-    std::cout<<"\t###mouseeee operations inciion operation start () ->\n\n";
     if (!startPerformer)
     {
         startPerformer=InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());
