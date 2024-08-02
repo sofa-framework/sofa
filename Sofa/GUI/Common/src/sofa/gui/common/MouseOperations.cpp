@@ -94,7 +94,7 @@ InteractionPerformer *Operation::createPerformer()
     }
 
     // Create the InteractionPerformer using the factory
-    const InteractionPerformer *performer = InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, mouseInteractor);
+    InteractionPerformer *performer = InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, mouseInteractor);
     if (!performer)
     {
         msg_error("MouseOperation") << "Failed to create InteractionPerformer: Performer creation failed for type \"" << type << "\".";
