@@ -20,64 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/http/init.h>
+#include <sofa/http/Server.h>
+#include <sofa/http/VersionChecker.h>
 
-#include <sofa/gui/qt/init.h>
 
-#include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/qt/RealGUI.h>
-#include <sofa/gui/qt/QtMessageRedirection.h>
-
-namespace sofa::gui::qt
+namespace sofa::http
 {
 
-    extern "C" {
-        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    }
-
-    void initExternalModule()
+SOFA_HTTP_API void init()
+{
+    static bool first = true;
+    if (first)
     {
-        init();
+        checkLatestSOFARelease();
     }
+}
 
-    const char* getModuleName()
-    {
-        return MODULE_NAME;
-    }
-
-    const char* getModuleVersion()
-    {
-        return MODULE_VERSION;
-    }
-
-    void init()
-    {
-        static bool first = true;
-        if (first)
-        {
-            sofa::http::init();
-
-
-#if SOFA_GUI_QT_ENABLE_QGLVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
-#endif
-
-#if SOFA_GUI_QT_ENABLE_QTVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
-#endif
-
-            // if ObjectStateListener is triggered (either by changing the message number, or by
-            // changing the component name) in a thread different than the main thread (=UI thread),
-            // a Qt event is launched through the queued connection system. For that, the event
-            // parameters must be known to Qt's meta-object system. This is what qRegisterMetaType
-            // does in the following instruction.
-            qRegisterMetaType<QVector<int> >("QVector<int>");
-
-            qInstallMessageHandler(redirectQtMessages);
-
-            first = false;
-        }
-    }
-
-} // namespace sofa::gui::qt
+} // namespace sofa::http
