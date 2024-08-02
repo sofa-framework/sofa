@@ -2,8 +2,9 @@ name: Post - SOFA dev meeting agenda/reminder
 
 on:
   schedule:
-    - cron: '30 8 * * 1'  # 9:30 am CET every Monday
-    - cron: '30 7 * * 3'   # 8:00 am CET on Wednesdays
+    - cron: '30 8 * * 1'  # 9:30 am UTC+1 every Monday
+    - cron: '30 7 * * 3'   # 8:30 am UTC+1 on Wednesdays
+    - cron: '30 6 * * 3'   # 7:30 am UTC+1 on Wednesdays (for summer times)
 
 env:
   TZ: "Europe/Paris"
@@ -24,7 +25,7 @@ jobs:
           pip install requests
         working-directory: ${{ github.workspace }}
 
-      # Monday message : agenda
+      # Monday message : request agenda info
       - name: Run script post-discord-message.py
         if: github.event.schedule == '30 8 * * 1'
         run: |
@@ -38,9 +39,27 @@ jobs:
           EMBEDS_URL: "https://github.com/sofa-framework/sofa/labels/pr%3A%20dev%20meeting%20topic"
           EMBEDS_DESCRIPTION: ""
 
-      # Wednesday message : get ready
+      # Wednesday message : announce meeting and share link
+      - name: Check time depending on winter/summer times
+        if: ${{ (github.event.schedule == '30 7 * * 3') || (github.event.schedule == '30 6 * * 3') }}
+        id: check_time
+        run: |
+          # Set the timezone to CET
+          sudo ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+          sudo dpkg-reconfigure -f noninteractive tzdata
+
+          # Get the current hour in CET
+          current_hour=$(date +'%H')
+
+          # Check if the current hour is 8 and set output
+          if [ "$current_hour" -eq 8 ]; then
+            echo "::set-output name=itstime::true"
+          else
+            echo "::set-output name=itstime::false"
+          fi
+      
       - name: Run script post-discord-message.py
-        if: github.event.schedule == '30 7 * * 3'
+        if: steps.check_time.outputs.itstime == 'true'
         run: |
           python scripts/discord/post-discord-message.py
         working-directory: ${{ github.workspace }}
