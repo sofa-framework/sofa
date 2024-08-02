@@ -47,7 +47,6 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     {"Monitor", Pluginized("v20.06", "SofaValidation")},
 
     // SofaGraphComponent was pluginized in #1531
-    { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
     { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
 
     // SofaUserInteraction was pluginized in #1588
@@ -620,8 +619,10 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
-    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") }
-
+    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+    
+    // Moved to Sofa.Component.MechanicalLoad
+    { "Gravity", Moved("v24.12", "SofaGraphComponent", "Sofa.Component.Mechanicalload") }
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {

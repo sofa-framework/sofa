@@ -164,27 +164,19 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+### Warn the user that the legacy option has been deleted and is useless now
+if(DEFINED SOFA_ENABLE_LEGACY_HEADERS)
+    message(WARNING "SOFA_ENABLE_LEGACY_HEADERS cmake option has been deleted in v24.12 and is now meaningless.")
+endif()
+
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 
 ### Extlibs
 add_subdirectory(extlibs)
 
-### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    message("Using legacy headers is enabled.")
-endif()
-
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
-
-### Compatibility
-# Deprecated (hollow) framework and component modules.
-# All depend on SOFA_ENABLE_LEGACY_HEADERS
-# Some still contain (maybe useful) components not moved in Sofa/ yet.
-# TODO: finally empty those remnants
-add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
