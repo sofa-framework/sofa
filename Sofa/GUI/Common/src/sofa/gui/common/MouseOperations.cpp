@@ -81,7 +81,7 @@ InteractionPerformer *Operation::createPerformer()
     const auto interaction = pickHandle->getInteraction();
     if (!interaction)
     {
-        msg_error("MouseOperation") << "Failed to create InteractionPerformer: Interaction object is null.";
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: ComponentMouseInteraction object from input PickHandler is null.";
         return nullptr;
     }
 
@@ -89,7 +89,7 @@ InteractionPerformer *Operation::createPerformer()
     const auto mouseInteractor = interaction->mouseInteractor.get();
     if (!mouseInteractor)
     {
-        msg_error("MouseOperation") << "Failed to create InteractionPerformer: MouseInteractor is null.";
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: MouseInteractor inside input PickHandler  is null.";
         return nullptr;
     }
 
