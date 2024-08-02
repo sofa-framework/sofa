@@ -149,7 +149,7 @@ void SofaPluginManager::addLibrary()
             return;
         }
 
-        if (plugin->moduleIsInitialized.func && plugin->moduleIsInitialized()
+        if ( (plugin->moduleIsInitialized.func && plugin->moduleIsInitialized())
             || !plugin->moduleIsInitialized.func)
         {
             if (const char* moduleName = plugin->getModuleName())
