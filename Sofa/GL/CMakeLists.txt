@@ -3,7 +3,7 @@ project(Sofa.GL LANGUAGES CXX)
 
 # Detect if component is compiled outside SOFA
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
-    sofa_find_package(Sofa.Config REQUIRED)
+   find_package(Sofa.Config REQUIRED)
 endif()
 
 set(SOFAGLSRC_ROOT "src/sofa/gl")

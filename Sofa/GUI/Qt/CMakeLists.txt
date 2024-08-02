@@ -3,7 +3,7 @@ project(Sofa.GUI.Qt LANGUAGES CXX)
 
 # Detect if component is compiled outside SOFA
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
-    sofa_find_package(Sofa.Config REQUIRED)
+    find_package(Sofa.Config REQUIRED)
     sofa_find_package(Sofa.GUI.Common REQUIRED)
 endif()
 
