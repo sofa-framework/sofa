@@ -831,7 +831,7 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
     BaseCameraXMLExportSingleParameter(root, d_zFar, "Real");
     BaseCameraXMLExportSingleParameter(root, d_type, "Int (0 -> Perspective, 1 -> Orthographic)");
 
-    return doc.SaveFile( viewFilename.c_str() );
+    return (doc.SaveFile(viewFilename.c_str()) == tinyxml2::XML_SUCCESS);
 }
 
 bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
