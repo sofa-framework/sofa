@@ -761,4 +761,12 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
 
 };
 
+
+const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
+    {"MasterConstraintSolver", Dealiased("v24.12","ConstraintAnimationLoop")},
+    {"FreeMotionMasterSolver", Dealiased("v24.12","FreeMotionAnimationLoop")},
+    {"MultiStepMasterSolver", Dealiased("v24.12","MultiStepAnimationLoop")},
+    {"MultiTagMasterSolver", Dealiased("v24.12","MultiTagAnimationLoop")}
+};
+
 } // namespace sofa::helper::lifecycle
