@@ -108,7 +108,7 @@ inline void to_json(nlohmann::json& json,
 std::string ObjectFactoryJson::dump(ObjectFactory* factory)
 {
     std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-    factory->getAllEntries(entries);
+    factory->getAllEntries(entries, true);
 
     const nlohmann::json json = entries;
 
