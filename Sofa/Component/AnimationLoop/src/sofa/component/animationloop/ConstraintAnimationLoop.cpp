@@ -960,7 +960,6 @@ ConstraintProblem* ConstraintAnimationLoop::getCP()
 
 
 int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
-        .add< ConstraintAnimationLoop >()
-        .addAlias("MasterConstraintSolver");
+        .add< ConstraintAnimationLoop >();
 
 } //namespace sofa::component::animationloop

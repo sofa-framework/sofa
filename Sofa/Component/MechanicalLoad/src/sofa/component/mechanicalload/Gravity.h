@@ -19,24 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VOLUMETRICRENDERING_CONFIG_H
-#define VOLUMETRICRENDERING_CONFIG_H
+#pragma once
 
-#include <sofa/config.h>
+#include <sofa/component/mechanicalload/config.h>
 
-#define VOLUMETRICRENDERING_VERSION @PROJECT_VERSION@
+#include <sofa/type/Vec.h>
+#include <sofa/core/objectmodel/ContextObject.h>
 
-#ifdef SOFA_BUILD_VOLUMETRICRENDERING
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace volumetricrendering
+namespace sofa::simulation
 {
-    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-}
+    class Node;
+} // sofa::simulation
 
-#endif
+namespace sofa::component::mechanicalload
+{
+
+/** Override the default gravity */
+class SOFA_COMPONENT_MECHANICALLOAD_API Gravity : public core::objectmodel::ContextObject
+{
+public:
+    SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
+protected:
+    Gravity();
+public:
+    Data<sofa::type::Vec3> f_gravity; ///< Gravity in the world coordinate system
+
+    /// Modify the context of the Node
+    void apply() override;
+};
+
+} // namespace sofa::component::mechanicalload

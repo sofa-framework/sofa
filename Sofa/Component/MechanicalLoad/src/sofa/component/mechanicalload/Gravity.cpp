@@ -19,24 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VOLUMETRICRENDERING_CONFIG_H
-#define VOLUMETRICRENDERING_CONFIG_H
+#include <sofa/component/mechanicalload/Gravity.h>
 
-#include <sofa/config.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/ObjectFactory.h>
 
-#define VOLUMETRICRENDERING_VERSION @PROJECT_VERSION@
 
-#ifdef SOFA_BUILD_VOLUMETRICRENDERING
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace volumetricrendering
+namespace sofa::component::mechanicalload
 {
-    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+
+using namespace sofa::type;
+using namespace core::behavior;
+
+Gravity::Gravity()
+    : f_gravity( initData(&f_gravity,Vec3(0,0,0),"gravity","Gravity in the world coordinate system") )
+{
 }
 
-#endif
+void Gravity::apply()
+{
+    getContext()->setGravity( f_gravity.getValue() );
+}
+
+int GravityClass = core::RegisterObject("Gravity in world coordinates")
+        .add< Gravity >()
+        ;
+
+} // namespace sofa::component::mechanicalload

@@ -19,24 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VOLUMETRICRENDERING_CONFIG_H
-#define VOLUMETRICRENDERING_CONFIG_H
 
+#pragma once
 #include <sofa/config.h>
 
-#define VOLUMETRICRENDERING_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_VOLUMETRICRENDERING
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace volumetricrendering
-{
-    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-}
-
-#endif
+SOFA_DISABLED_HEADER_NOT_REPLACED("v24.12", "v24.12")
