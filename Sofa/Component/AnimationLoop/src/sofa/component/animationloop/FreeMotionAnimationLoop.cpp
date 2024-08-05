@@ -406,8 +406,8 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
 void registerFreeMotionAnimationLoop(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData(R"(
-        The animation loop to use with constraints.
-        You must add this loop at the beginning of the scene if you are using constraints.")")
+The animation loop to use with constraints.
+You must add this loop at the beginning of the scene if you are using constraints.")")
         .add< FreeMotionAnimationLoop >());
 }
 
