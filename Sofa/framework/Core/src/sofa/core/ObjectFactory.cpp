@@ -412,16 +412,44 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
+void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result, const bool filterUnloadedPlugins)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    for (const auto& [className, entry] : registry)
     {
-        ClassEntry::SPtr entry = it->second;
         // Push the entry only if it is not an alias
-        if (entry->className == it->first)
+        if (entry->className == className)
+        {
             result.push_back(entry);
+        }
+    }
+
+    if (filterUnloadedPlugins)
+    {
+        for (auto itEntry = result.begin(); itEntry != result.end();)
+        {
+            auto& creatorMap = (*itEntry)->creatorMap;
+            for (auto itCreator = creatorMap.begin(); itCreator != creatorMap.end();)
+            {
+                if (helper::system::PluginManager::getInstance().isPluginUnloaded(itCreator->second->getTarget()))
+                {
+                    itCreator = creatorMap.erase(itCreator);
+                }
+                else
+                {
+                    ++itCreator;
+                }
+            }
+
+            if (creatorMap.empty())
+            {
+                itEntry = result.erase(itEntry);
+            }
+            else
+            {
+                ++itEntry;
+            }
+        }
     }
 }
 

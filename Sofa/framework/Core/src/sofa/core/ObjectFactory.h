@@ -130,7 +130,7 @@ public:
     std::string shortName(std::string classname);
 
     /// Fill the given vector with all the registered classes
-    void getAllEntries(std::vector<ClassEntry::SPtr>& result);
+    void getAllEntries(std::vector<ClassEntry::SPtr>& result, bool filterUnloadedPlugins = true);
 
     /// Fill the given vector with the registered classes from a given target
     void getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target);
