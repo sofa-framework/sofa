@@ -63,12 +63,15 @@ public:
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) override;
     const linearalgebra::BaseMatrix* getK() override;
 
+    const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
+
 protected:
     AreaMapping();
 
     using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
 
     SparseMatrixEigen jacobian; ///< Jacobian of the mapping
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
     typename AreaMapping::SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
 
     /**
