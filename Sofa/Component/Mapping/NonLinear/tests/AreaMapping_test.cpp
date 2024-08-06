@@ -28,10 +28,10 @@
 namespace sofa
 {
 
-SReal computeArea(const sofa::type::Vec3& A, const sofa::type::Vec3& B, const sofa::type::Vec3& C)
+SReal computeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& vertices)
 {
-    const auto AB = B - A;
-    const auto AC = C - A;
+    const auto AB = vertices[1] - vertices[0];
+    const auto AC = vertices[2] - vertices[0];
 
     const auto N = sofa::type::cross(AB, AC);
     const auto n = N.norm();
@@ -39,8 +39,73 @@ SReal computeArea(const sofa::type::Vec3& A, const sofa::type::Vec3& B, const so
     return 0.5 * n;
 };
 
+sofa::type::Mat<3,3,SReal> computeDerivativeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& vertices)
+{
+    const auto AB = vertices[1] - vertices[0];
+    const auto AC = vertices[2] - vertices[0];
 
-TEST(AreaMapping, crossProductDerivative)
+    const auto N = sofa::type::cross(AB, AC);
+    const auto n = N.norm();
+
+    sofa::type::Mat<3,3,SReal> result { type::NOINIT };
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        result[i] = -(1 / (2 * n)) * (vertices[(2 + i) % 3] - vertices[(1 + i) % 3]).cross(N);
+    }
+
+    return result;
+}
+
+sofa::type::Mat<3,3,sofa::type::Mat<3,3,SReal>> computeSecondDerivativeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& vertices)
+{
+    const auto AB = vertices[1] - vertices[0];
+    const auto AC = vertices[2] - vertices[0];
+
+    const auto N = sofa::type::cross(AB, AC);
+    const auto n2 = sofa::type::dot(N, N);
+
+    sofa::type::Mat<3,3,sofa::type::Mat<3,3,SReal>> d2A;
+
+    const auto ka = 1 / (2 * std::sqrt(std::pow(n2, 3)));
+
+    constexpr auto skewSign = type::crossProductMatrix(sofa::type::Vec<3, SReal>{1,1,1});
+
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        for (unsigned int j = 0; j < 3; ++j)
+        {
+            auto& entry = d2A[i][j];
+
+            const auto i1 = (i + 1) % 3;
+            const auto j1 = (j + 1) % 3;
+            const auto i2 = (i + 2) % 3;
+            const auto j2 = (j + 2) % 3;
+
+            const auto N_cross_Pi1Pi2 = N.cross(vertices[i1] - vertices[i2]);
+            const auto N_cross_Pj1Pj2 = N.cross(vertices[j1] - vertices[j2]);
+
+            const auto outer = sofa::type::dyad(N_cross_Pi1Pi2, N_cross_Pj1Pj2);
+            static const auto& id = sofa::type::Mat<3, 3, SReal>::Identity();
+
+            const auto dot_product = sofa::type::dot(vertices[i1] - vertices[i2], vertices[j1] - vertices[j2]);
+
+            entry = ka * (- outer + n2 * (dot_product * id - sofa::type::dyad(vertices[j1] - vertices[j2], vertices[i1] - vertices[i2])));
+
+            if (i != j)
+            {
+                const auto sign = skewSign[i][j];
+                entry += sign * ka * n2 * type::crossProductMatrix(N);
+            }
+
+        }
+    }
+
+    return d2A;
+}
+
+constexpr SReal small_step = 1e-6;
+
+TEST(AreaMapping, firstDerivative)
 {
     constexpr sofa::type::fixed_array<sofa::type::Vec3, 3> vertices{
         sofa::type::Vec3{43, -432, 1},
@@ -48,40 +113,73 @@ TEST(AreaMapping, crossProductDerivative)
         sofa::type::Vec3{874, -413, -3}
     };
 
-    constexpr auto AB = vertices[1] - vertices[0];
-    constexpr auto AC = vertices[2] - vertices[0];
-
-    constexpr auto N = sofa::type::cross(AB, AC);
-    const auto n = sofa::type::cross(AB, AC).norm();
-
-    constexpr auto dN_dA = -sofa::type::crossProductMatrix(vertices[2]-vertices[1]);
-    constexpr auto dN_dB = -sofa::type::crossProductMatrix(vertices[0]-vertices[2]);
-    constexpr auto dN_dC = -sofa::type::crossProductMatrix(vertices[1]-vertices[0]);
-
-    const sofa::type::Mat<3,3,SReal> dA {
-        sofa::type::Vec3{ 1 / (2 * n) * dN_dA * N}, // dArea_dA
-        sofa::type::Vec3{ 1 / (2 * n) * dN_dB * N}, // dArea_dB
-        sofa::type::Vec3{ 1 / (2 * n) * dN_dC * N}, // dArea_dC
-    };
+    const sofa::type::Mat<3,3,SReal> dA = computeDerivativeArea(vertices);
 
     static constexpr SReal h = 1e-6;
     for (unsigned int vId = 0; vId < 3; ++vId)
     {
-        for (unsigned int dim = 0; dim < 3; ++dim)
+        for (unsigned int axis = 0; axis < 3; ++axis)
         {
             auto perturbation = vertices;
-            perturbation[vId][dim] += h;
+            perturbation[vId][axis] += small_step;
 
-            const auto areaPlus = computeArea(perturbation[0], perturbation[1], perturbation[2]);
+            const auto areaPlus = computeArea(perturbation);
 
             perturbation = vertices;
-            perturbation[vId][dim] -= h;
+            perturbation[vId][axis] -= small_step;
 
-            const auto areaMinus = computeArea(perturbation[0], perturbation[1], perturbation[2]);
+            const auto areaMinus = computeArea(perturbation);
 
-            const SReal centralDifference = (areaPlus - areaMinus) / (2 * h);
+            const SReal centralDifference = (areaPlus - areaMinus) / (2 * small_step);
 
-            EXPECT_NEAR(centralDifference, dA[vId][dim], 1e-3) << "vId = " << vId << ", i = " << dim;
+            EXPECT_NEAR(centralDifference, dA[vId][axis], 1e-3) << "vId = " << vId << ", i = " << axis;
+        }
+    }
+}
+
+
+TEST(AreaMapping, secondDerivative)
+{
+    constexpr sofa::type::fixed_array<sofa::type::Vec3, 3> vertices{
+        sofa::type::Vec3{43, -432, 1},
+        sofa::type::Vec3{-53,85,32},
+        sofa::type::Vec3{874, -413, -3}
+    };
+
+    const auto dA2 = computeSecondDerivativeArea({vertices[0], vertices[1], vertices[2]});
+
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        for (unsigned int j = 0; j < 3; ++j)
+        {
+            sofa::type::Mat<3,3,SReal> d2Area_dPidPj;
+
+            for (unsigned int axis = 0; axis < 3; ++axis)
+            {
+                auto perturbation = vertices;
+
+                perturbation[j][axis] += small_step;
+
+                const auto derivativePlus = computeDerivativeArea(perturbation)[i];
+
+                perturbation = vertices;
+                perturbation[j][axis] -= small_step;
+                const auto derivativeMinus = computeDerivativeArea(perturbation)[i];
+
+                const auto centralDifference = (derivativePlus - derivativeMinus) / (2 * small_step);
+
+                d2Area_dPidPj[axis] = centralDifference;
+            }
+            d2Area_dPidPj.transpose();
+
+            for (unsigned int p = 0; p < 3; ++p)
+            {
+                for (unsigned int q = 0; q < 3; ++q)
+                {
+                    EXPECT_NEAR(d2Area_dPidPj[p][q], dA2[i][j][p][q], 1e-6) << "i = " << i << ", j = " << j << ", p = " << p << ", q = " << q << "\n" << d2Area_dPidPj;
+                }
+            }
+
         }
     }
 }
@@ -94,7 +192,7 @@ TEST(AreaMapping, crossProductDerivative)
  * Test suite for AreaMapping.
  */
 template <typename AreaMapping>
-struct AreaMappingTest : public mapping_test::Mapping_test<AreaMapping>
+struct AreaMappingTest : public sofa::mapping_test::Mapping_test<AreaMapping>
 {
     typedef typename AreaMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
@@ -131,7 +229,7 @@ struct AreaMappingTest : public mapping_test::Mapping_test<AreaMapping>
 
 using ::testing::Types;
 typedef Types<
-    component::mapping::nonlinear::AreaMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
+    sofa::component::mapping::nonlinear::AreaMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>
 > DataTypes;
 
 TYPED_TEST_SUITE( AreaMappingTest, DataTypes );
