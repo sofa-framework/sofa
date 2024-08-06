@@ -74,7 +74,7 @@ auto AreaMapping<TIn, TOut>::computeSecondDerivativeArea(
 
             entry = - outer_a + n2 * (dot_product * id - outer_b);
 
-            if (i != j) // diagonal terms are skipped because skewSign[i][j] == 0
+            if (i != j) // diagonal blocks are skipped because skewSign[i][j] == 0
             {
                 const auto sign = skewSign[i][j];
                 entry += sign * n2 * type::crossProductMatrix(N);
@@ -167,16 +167,9 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
         }
     }
 
-    for (unsigned int quadId = 0; quadId < quads.size(); ++quadId)
+    if (!quads.empty())
     {
-        const auto& quad = quads[quadId];
-        const auto quadArea = sofa::geometry::Quad::area(
-            TIn::getCPos(_in[quad[0]]),
-            TIn::getCPos(_in[quad[1]]),
-            TIn::getCPos(_in[quad[2]]),
-            TIn::getCPos(_in[quad[3]]));
-
-        _out[triangles.size() + quadId] = quadArea;
+        msg_warning() << "Quads are not supported in this Mapping. Convert them to triangles first.";
     }
 
     jacobian.compress();
@@ -236,6 +229,56 @@ void AreaMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     const SReal kFactor = mparams->kFactor();
     helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForceAccessor(mparams->readF(this->toModel.get()));
 
+    if( K.compressedMatrix.nonZeros() )
+    {
+        K.addMult( parentForceAccessor.wref(), parentDisplacementAccessor.ref(), (typename In::Real)kFactor );
+    }
+    else
+    {
+        const auto& triangles = l_topology->getTriangles();
+        for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
+        {
+            const auto& triangle = triangles[triangleId];
+
+            const sofa::type::fixed_array<Coord_t<In>, 3> v{
+                (*m_vertices)[triangle[0]],
+                (*m_vertices)[triangle[1]],
+                (*m_vertices)[triangle[2]]
+            };
+
+            //it's a 9x9 matrix, where each entry is a 3x3 matrix
+            const auto d2Area_d2x = computeSecondDerivativeArea(v);
+
+            for (unsigned int i = 0; i < 3; ++i)
+            {
+                for (unsigned int j = 0; j < 3; ++j)
+                {
+                    parentForceAccessor[triangle[i]] +=
+                        kFactor
+                        * d2Area_d2x[i][j]
+                        * parentDisplacementAccessor[triangle[j]]
+                        * childForceAccessor[triangleId][0];
+                }
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
+    core::ConstMultiVecDerivId childForceId)
+{
+    SOFA_UNUSED(mparams);
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness ) { K.resize(0,0); return; }
+
+    helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForce( *childForceId[this->toModel.get()].read() );
+
+    {
+        unsigned int kSize = this->fromModel->getSize();
+        K.resizeBlocks(kSize, kSize);
+    }
+
     const auto& triangles = l_topology->getTriangles();
     for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
     {
@@ -254,25 +297,12 @@ void AreaMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
-                parentForceAccessor[triangle[i]] +=
-                    kFactor
-                    * d2Area_d2x[i][j]
-                    * parentDisplacementAccessor[triangle[j]]
-                    * childForceAccessor[triangleId][0];
+                K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForce[triangleId][0]);
             }
         }
     }
-}
 
-template <class TIn, class TOut>
-void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
-    core::ConstMultiVecDerivId childForceId)
-{
-    SOFA_UNUSED(mparams);
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { K.resize(0,0); return; }
-
-    helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForce( *childForceId[this->toModel.get()].read() );
+    K.compress();
 }
 
 template <class TIn, class TOut>
