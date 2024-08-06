@@ -315,17 +315,17 @@ const std::string& Utils::getSofaUserLocalDirectory()
 {
     auto computeSofaLocalDirectory = []()
     {
-        const std::filesystem::path localDirPath = getUserLocalDirectory() + "/SOFA";
-        if(!std::filesystem::exists(localDirPath))
+        const auto localDirPath = FileSystem::append(getUserLocalDirectory(), "SOFA");
+        if(!FileSystem::exists(localDirPath))
         {
-            if(!std::filesystem::create_directories(localDirPath))
+            if(!FileSystem::createDirectory(localDirPath))
             {
                 // error while trying to create the computed path
                 // most likely because of permissions errors
                 return std::string("");
             }
         }
-        return localDirPath.string();
+        return localDirPath;
     };
 
     static std::string sofaLocalDirectory = FileSystem::cleanPath(computeSofaLocalDirectory());
