@@ -253,13 +253,7 @@ const std::string& Utils::getUserLocalDirectory()
             CoTaskMemFree(path);
         }
 
-        // convert wide string (unicode) to standard string
-        std::string result(wresult.length(), 0);
-        std::transform(wresult.begin(), wresult.end(), result.begin(), [](wchar_t c) {
-            return (char)c;
-        });
-
-        return result;
+        return Utils::narrowString(wresult);
 
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
