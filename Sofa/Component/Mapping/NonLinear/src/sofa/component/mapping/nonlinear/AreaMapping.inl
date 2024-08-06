@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/nonlinear/AreaMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
@@ -31,9 +32,7 @@ using sofa::type::dot;
 
 template <class TIn, class TOut>
 AreaMapping<TIn, TOut>::AreaMapping()
-    : d_computeRestArea(initData(&d_computeRestArea, false, "computeRestArea", "if 'computeRestArea = true', then rest area of each element equal 0, otherwise rest area is the initial area of each of them"))
-    , d_restArea(initData(&d_restArea, "restArea", "Rest area of the surface primitives"))
-    , l_topology(initLink("topology", "link to the topology container"))
+    : l_topology(initLink("topology", "link to the topology container"))
 {}
 
 template <class TIn, class TOut>
@@ -312,6 +311,44 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* AreaMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readTotalForces();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    const auto& triangles = l_topology->getTriangles();
+    for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
+    {
+        const auto& triangle = triangles[triangleId];
+
+        const sofa::type::fixed_array<Coord_t<In>, 3> v{
+            (*m_vertices)[triangle[0]],
+            (*m_vertices)[triangle[1]],
+            (*m_vertices)[triangle[2]]
+        };
+
+        //it's a 9x9 matrix, where each entry is a 3x3 matrix
+        const auto d2Area_d2x = computeSecondDerivativeArea(v);
+
+        for (unsigned int i = 0; i < 3; ++i)
+        {
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                dJdx(triangle[i], triangle[j]) += d2Area_d2x[i][j] * childForce[triangleId][0];
+            }
+        }
+    }
+
 }
 
 template <class TIn, class TOut>

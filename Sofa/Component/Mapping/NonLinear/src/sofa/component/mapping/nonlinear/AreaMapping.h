@@ -45,9 +45,6 @@ public:
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut> SparseMatrixEigen;
     static constexpr auto Nin = In::deriv_total_size;
 
-    Data<bool> d_computeRestArea;
-    Data<type::vector<Real> > d_restArea;
-
     SingleLink<AreaMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     static sofa::type::Mat<3,3,sofa::type::Mat<3,3,Real>> computeSecondDerivativeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triangleVertices);
@@ -62,6 +59,7 @@ public:
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) override;
     const linearalgebra::BaseMatrix* getK() override;
+    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
