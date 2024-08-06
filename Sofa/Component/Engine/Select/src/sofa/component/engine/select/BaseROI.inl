@@ -175,7 +175,7 @@ void BaseROI<DataTypes>::init()
                     msg_error(this) <<  "Unable to find a MechanicalObject for this component. "
                                         "To remove this error message you can either:\n"
                                         "   - to specifiy the DOF where to apply the BaseROI with the 'position' attribute.\n"
-                                        "   - to add MechanicalObject or MeshLoader component before the BaseROI in the scene graph.\n";
+                                        "   - to add MechanicalObject or MeshLoader component before the " << this->getClassName() << " in the scene graph.\n";
                     d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
