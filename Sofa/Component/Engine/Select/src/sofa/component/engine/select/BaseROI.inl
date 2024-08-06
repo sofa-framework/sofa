@@ -247,14 +247,7 @@ void BaseROI<DataTypes>::init()
                     d_quads.setReadOnly(true);
                 }
             }
-        }/*else{
-            msg_warning(this) << "No primitives provided no BaseMeshTopology in the current context.\n"
-                                 "To remove this message you can either: \n"
-                                 "  - set value into one or more of the attributes 'edges', 'triangles', 'quads', 'tetrahedra', 'hexahedra'. \n"
-                                 "  - add a BaseMeshTopology in the context of this object. \n";
-            d_componentState.setValue(ComponentState::Invalid) ;
-            return ;
-        }*/
+        }
     }
 
 
