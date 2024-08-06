@@ -32,7 +32,6 @@ namespace sofa::component::engine::select
 {
 
 using core::behavior::BaseMechanicalState ;
-using core::topology::TopologyContainer ;
 using core::topology::BaseMeshTopology ;
 using core::objectmodel::ComponentState ;
 using core::objectmodel::BaseData ;
@@ -196,19 +195,16 @@ void BaseROI<DataTypes>::init()
 
     if (!d_edges.isSet() || !d_triangles.isSet() || !d_tetrahedra.isSet() || !d_hexahedra.isSet() || !d_quads.isSet() )
     {
-        msg_info(this) << "No topology given. Searching for a TopologyContainer and a BaseMeshTopology in the current context.\n";
+        msg_info(this) << "No topology given. Searching for a BaseMeshTopology in the current context.\n";
 
-        TopologyContainer* topologyContainer;
-        this->getContext()->get(topologyContainer, core::objectmodel::BaseContext::Local);
-
-        BaseMeshTopology* topology;
+        BaseMeshTopology* topology = nullptr;
         this->getContext()->get(topology, core::objectmodel::BaseContext::Local);
 
-        if (topologyContainer || topology)
+        if (topology)
         {
             if (!d_edges.isSet() && d_computeEdges.getValue())
             {
-                BaseData* eparent = topologyContainer?topologyContainer->findData("edges"):topology->findData("edges");
+                BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     d_edges.setParent(eparent);
@@ -217,7 +213,7 @@ void BaseROI<DataTypes>::init()
             }
             if (!d_triangles.isSet() && d_computeTriangles.getValue())
             {
-                BaseData* tparent = topologyContainer?topologyContainer->findData("triangles"):topology->findData("triangles");
+                BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     d_triangles.setParent(tparent);
@@ -226,7 +222,7 @@ void BaseROI<DataTypes>::init()
             }
             if (!d_tetrahedra.isSet() && d_computeTetrahedra.getValue())
             {
-                BaseData* tparent = topologyContainer?topologyContainer->findData("tetrahedra"):topology->findData("tetrahedra");
+                BaseData* tparent = topology->findData("tetrahedra");
                 if (tparent)
                 {
                     d_tetrahedra.setParent(tparent);
@@ -235,7 +231,7 @@ void BaseROI<DataTypes>::init()
             }
             if (!d_hexahedra.isSet() && d_computeHexahedra.getValue())
             {
-                BaseData* tparent = topologyContainer?topologyContainer->findData("hexahedra"):topology->findData("hexahedra");
+                BaseData* tparent = topology->findData("hexahedra");
                 if (tparent)
                 {
                     d_hexahedra.setParent(tparent);
@@ -244,7 +240,7 @@ void BaseROI<DataTypes>::init()
             }
             if (!d_quads.isSet() && d_computeQuads.getValue())
             {
-                BaseData* tparent = topologyContainer?topologyContainer->findData("quads"):topology->findData("quads");
+                BaseData* tparent = topology->findData("quads");
                 if (tparent)
                 {
                     d_quads.setParent(tparent);
@@ -252,10 +248,10 @@ void BaseROI<DataTypes>::init()
                 }
             }
         }/*else{
-            msg_warning(this) << "No primitives provided nor TopologyContainer and a BaseMeshTopology in the current context.\n"
+            msg_warning(this) << "No primitives provided no BaseMeshTopology in the current context.\n"
                                  "To remove this message you can either: \n"
-                                 "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
-                                 "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
+                                 "  - set value into one or more of the attributes 'edges', 'triangles', 'quads', 'tetrahedra', 'hexahedra'. \n"
+                                 "  - add a BaseMeshTopology in the context of this object. \n";
             d_componentState.setValue(ComponentState::Invalid) ;
             return ;
         }*/
