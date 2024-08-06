@@ -27,6 +27,7 @@
 
 namespace sofa
 {
+using component::mapping::nonlinear::AreaMapping;
 
 SReal computeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& vertices)
 {
@@ -54,53 +55,6 @@ sofa::type::Mat<3,3,SReal> computeDerivativeArea(const sofa::type::fixed_array<s
     }
 
     return result;
-}
-
-sofa::type::Mat<3,3,sofa::type::Mat<3,3,SReal>> computeSecondDerivativeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& vertices)
-{
-    const auto AB = vertices[1] - vertices[0];
-    const auto AC = vertices[2] - vertices[0];
-
-    const auto N = sofa::type::cross(AB, AC);
-    const auto n2 = sofa::type::dot(N, N);
-
-    sofa::type::Mat<3,3,sofa::type::Mat<3,3,SReal>> d2A;
-
-    const auto ka = 1 / (2 * std::sqrt(std::pow(n2, 3)));
-
-    constexpr auto skewSign = type::crossProductMatrix(sofa::type::Vec<3, SReal>{1,1,1});
-
-    for (unsigned int i = 0; i < 3; ++i)
-    {
-        for (unsigned int j = 0; j < 3; ++j)
-        {
-            auto& entry = d2A[i][j];
-
-            const auto i1 = (i + 1) % 3;
-            const auto j1 = (j + 1) % 3;
-            const auto i2 = (i + 2) % 3;
-            const auto j2 = (j + 2) % 3;
-
-            const auto N_cross_Pi1Pi2 = N.cross(vertices[i1] - vertices[i2]);
-            const auto N_cross_Pj1Pj2 = N.cross(vertices[j1] - vertices[j2]);
-
-            const auto outer = sofa::type::dyad(N_cross_Pi1Pi2, N_cross_Pj1Pj2);
-            static const auto& id = sofa::type::Mat<3, 3, SReal>::Identity();
-
-            const auto dot_product = sofa::type::dot(vertices[i1] - vertices[i2], vertices[j1] - vertices[j2]);
-
-            entry = ka * (- outer + n2 * (dot_product * id - sofa::type::dyad(vertices[j1] - vertices[j2], vertices[i1] - vertices[i2])));
-
-            if (i != j)
-            {
-                const auto sign = skewSign[i][j];
-                entry += sign * ka * n2 * type::crossProductMatrix(N);
-            }
-
-        }
-    }
-
-    return d2A;
 }
 
 constexpr SReal small_step = 1e-6;
@@ -146,7 +100,7 @@ TEST(AreaMapping, secondDerivative)
         sofa::type::Vec3{874, -413, -3}
     };
 
-    const auto dA2 = computeSecondDerivativeArea({vertices[0], vertices[1], vertices[2]});
+    const auto dA2 = AreaMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>::computeSecondDerivativeArea({vertices[0], vertices[1], vertices[2]});
 
     for (unsigned int i = 0; i < 3; ++i)
     {
@@ -194,13 +148,8 @@ TEST(AreaMapping, secondDerivative)
 template <typename AreaMapping>
 struct AreaMappingTest : public sofa::mapping_test::Mapping_test<AreaMapping>
 {
-    typedef typename AreaMapping::In InDataTypes;
-    typedef typename InDataTypes::VecCoord InVecCoord;
-    typedef typename InDataTypes::Coord InCoord;
-
-    typedef typename AreaMapping::Out OutDataTypes;
-    typedef typename OutDataTypes::VecCoord OutVecCoord;
-    typedef typename OutDataTypes::Coord OutCoord;
+    using In = typename AreaMapping::In;
+    using Out = typename AreaMapping::Out;
 
     bool test()
     {
@@ -212,13 +161,13 @@ struct AreaMappingTest : public sofa::mapping_test::Mapping_test<AreaMapping>
         triangles->addTriangle(0, 1, 2);
 
         // parent positions
-        InVecCoord incoord(3);
-        InDataTypes::set( incoord[0], 0,0,0 );
-        InDataTypes::set( incoord[1], 1,0,0 );
-        InDataTypes::set( incoord[2], 1,1,0 );
+        VecCoord_t<In> incoord(3);
+        In::set( incoord[0], 0,0,0 );
+        In::set( incoord[1], 1,0,0 );
+        In::set( incoord[2], 1,1,0 );
 
         // expected child positions
-        OutVecCoord expectedoutcoord;
+        VecCoord_t<Out> expectedoutcoord;
         expectedoutcoord.emplace_back( 0.5 );
 
         return this->runTest( incoord, expectedoutcoord );
@@ -229,7 +178,7 @@ struct AreaMappingTest : public sofa::mapping_test::Mapping_test<AreaMapping>
 
 using ::testing::Types;
 typedef Types<
-    sofa::component::mapping::nonlinear::AreaMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>
+    AreaMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>
 > DataTypes;
 
 TYPED_TEST_SUITE( AreaMappingTest, DataTypes );
