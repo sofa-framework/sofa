@@ -149,7 +149,9 @@ void BaseROI<DataTypes>::init()
             {
                 d_positions.setParent(parent);
                 d_positions.setReadOnly(true);
-            }else{
+            }
+            else
+            {
                 msg_warning(this) << "No attribute 'rest_position' in component '" << getName() << "'.\n"
                                   << "The BaseROI component thus have no input and is thus deactivated.\n" ;
                 d_componentState.setValue(ComponentState::Invalid) ;
@@ -162,22 +164,14 @@ void BaseROI<DataTypes>::init()
             this->getContext()->get(loader, core::objectmodel::BaseContext::Local);
             if (loader)
             {
-                BaseData* parent = loader->findData("position");
-                if (parent)
-                {
-                    d_positions.setParent(parent);
-                    d_positions.setReadOnly(true);
-                }else{
-                    msg_warning(this) << "No attribute 'position' in component '" << getName() << "'.\n"
-                                      << "The BaseROI component thus have no input and is thus deactivated.\n" ;
-                    d_componentState.setValue(ComponentState::Invalid) ;
-                    return ;
-                }
+                d_positions.setParent(&loader->d_positions);
+                d_positions.setReadOnly(true);
             }
             else   // no local state, no loader => find upward
             {
                 this->getContext()->get(mstate, core::objectmodel::BaseContext::SearchUp);
-                if(!mstate){
+                if(!mstate)
+                {
                     msg_error(this) <<  "Unable to find a MechanicalObject for this component. "
                                         "To remove this error message you can either:\n"
                                         "   - to specifiy the DOF where to apply the BaseROI with the 'position' attribute.\n"
@@ -187,7 +181,8 @@ void BaseROI<DataTypes>::init()
                 }
 
                 BaseData* parent = mstate->findData("rest_position");
-                if(!parent){
+                if(!parent)
+                {
                     dmsg_error(this) <<  "Unable to find a rest_position attribute in the MechanicalObject '" << mstate->getName() << "'";
                     d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
