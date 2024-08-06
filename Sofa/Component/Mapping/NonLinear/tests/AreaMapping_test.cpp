@@ -186,7 +186,6 @@ TYPED_TEST_SUITE( AreaMappingTest, DataTypes );
 // test case
 TYPED_TEST( AreaMappingTest , test )
 {
-    this->flags &= ~AreaMappingTest<TypeParam>::TEST_getJs;
     ASSERT_TRUE(this->test());
 }
 

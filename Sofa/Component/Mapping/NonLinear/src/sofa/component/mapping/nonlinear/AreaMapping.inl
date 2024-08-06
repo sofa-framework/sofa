@@ -112,6 +112,9 @@ void AreaMapping<TIn, TOut>::init()
     this->getToModel()->resize( nbSurfacePrimitives );
     jacobian.resizeBlocks(nbSurfacePrimitives, pos.size());
 
+    baseMatrices.resize( 1 );
+    baseMatrices[0] = &jacobian;
+
     Inherit1::init();
 }
 
@@ -309,6 +312,13 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* AreaMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+const type::vector<sofa::linearalgebra::BaseMatrix*>* AreaMapping<TIn, TOut>::
+getJs()
+{
+    return &baseMatrices;
 }
 
 }
