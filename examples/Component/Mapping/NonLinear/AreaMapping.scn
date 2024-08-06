@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.91 0" dt="0.05">
+
+    <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" computeBoundingBox="false"/>
+    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
+    <VisualStyle displayFlags="showWireframe showBehaviorModels"/>
+
+    <RegularGridTopology name="grid" nx="5" ny="5" nz="1" xmin="0" xmax="10" ymin="0" ymax="10" zmin="0" zmax="0" />
+    
+    <Node name="M1">
+        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EigenSparseLU name="linearSolver" template="CompressedRowSparseMatrixMat3x3d"/>
+
+        <TriangleSetTopologyContainer src="@../grid" name="topology"/>
+        <MechanicalObject template="Vec3" name="DoFs"/>
+        <GenericConstraintCorrection />
+
+        <MeshMatrixMass totalMass="1000" />
+
+        <BoxROI box="-1 9.9 -1 11 10.1 1" name="roi"/>
+        <FixedProjectiveConstraint indices="@roi.indices" />
+        <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" topology="@topology"/>
+
+        <Node name="constraintSpace">
+            <MechanicalObject template="Vec1" name="areaDoFs"/>
+            <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="1"/>
+            <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
+<!--            <UniformLagrangianConstraint template="Vec1" iterative="false" />-->
+        </Node>
+
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+</Node>
