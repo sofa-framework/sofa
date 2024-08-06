@@ -37,46 +37,39 @@ class AreaMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(AreaMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef TIn In;
-    typedef TOut Out;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename Out::Real Real;
+    using In = TIn;
+    using Out = TOut;
 
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
+    using Real = Real_t<Out>;
 
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut> SparseMatrixEigen;
     static constexpr auto Nin = In::deriv_total_size;
 
     Data<bool> d_computeRestArea;
-    Data<type::vector<Real>> d_restArea;
+    Data<type::vector<Real> > d_restArea;
 
     SingleLink<AreaMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
+    static sofa::type::Mat<3,3,sofa::type::Mat<3,3,Real>> computeSecondDerivativeArea(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triangleVertices);
 
     void init() override;
 
-    void apply(const core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
-    void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
-    void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
-    void applyJT(const core::ConstraintParams *cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
+    void apply(const core::MechanicalParams* mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
+    void applyJ(const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out, const DataVecDeriv_t<In>& in) override;
+    void applyJT(const core::MechanicalParams* mparams, DataVecDeriv_t<In>& out, const DataVecDeriv_t<Out>& in) override;
+    void applyJT(const core::ConstraintParams *cparams, DataMatrixDeriv_t<In>& out, const DataMatrixDeriv_t<Out>& in) override;
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId) override;
+
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) override;
+    const linearalgebra::BaseMatrix* getK() override;
 
 protected:
     AreaMapping();
 
+    using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
+
     SparseMatrixEigen jacobian; ///< Jacobian of the mapping
+    typename AreaMapping::SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
 
     /**
      * @brief Represents an entry in the Jacobian matrix.
@@ -92,6 +85,10 @@ protected:
         typename In::Coord jacobianValue;
         bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
     };
+
+    const VecCoord_t<In>* m_vertices{nullptr};
+
+
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_NONLINEAR_AREAMAPPING_CPP)
