@@ -230,7 +230,7 @@ template <class DataTypes>
 void BoxROI<DataTypes>::roiDraw(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->setLightingEnabled(false);
-    const float linesWidth = std::max(static_cast<float>(this->d_drawSize.getValue()), 1.0f);
+    const float linesWidth = std::max(this->d_drawSize.getValue(), 1.0f);
 
     const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();

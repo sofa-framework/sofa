@@ -430,7 +430,7 @@ void MeshROI<DataTypes>::roiDraw(const VisualParams* vparams)
 {
     std::vector<sofa::type::Vec3> vertices;
 
-    const float drawSize = float((this->d_drawSize.getValue() > 1.0) ? this->d_drawSize.getValue() : 1.0);
+    const float drawSize = (this->d_drawSize.getValue() > 1.0f) ? this->d_drawSize.getValue() : 1.0f;
 
     const VecCoord& x0_i = d_roiPositions.getValue();
     ///draw ROI points

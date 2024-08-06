@@ -90,7 +90,7 @@ BaseROI<DataTypes>::BaseROI()
     , d_drawQuads(initData(&d_drawQuads, false, "drawQuads", "Draw Quads. (default = false)"))
     , d_drawTetrahedra( initData(&d_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra. (default = false)") )
     , d_drawHexahedra( initData(&d_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra. (default = false)") )
-    , d_drawSize(initData(&d_drawSize, 1.0, "drawSize", "rendering size for ROI and topological elements"))
+    , d_drawSize(initData(&d_drawSize, 1.0f, "drawSize", "rendering size for ROI and topological elements"))
     , d_doUpdate( initData(&d_doUpdate,(bool)true,"doUpdate","If true, updates the selection at the beginning of simulation steps. (default = true)") )
 {
     sofa::helper::getWriteOnlyAccessor(d_indices).push_back(0);
@@ -484,7 +484,7 @@ void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         roiDraw(vparams);
     }
 
-    const float sizeFactor = std::max(static_cast<float>(d_drawSize.getValue()), 1.0f);
+    const float sizeFactor = std::max(d_drawSize.getValue(), 1.0f);
 
     vparams->drawTool()->setLightingEnabled(false);
 
