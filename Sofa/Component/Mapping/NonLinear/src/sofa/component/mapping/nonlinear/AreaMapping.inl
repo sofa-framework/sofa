@@ -308,7 +308,7 @@ void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
             {
                 for (unsigned int j = 0; j < 3; ++j)
                 {
-                    K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForce[triangleId][0]);
+                    K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForceTri[0]);
                 }
             }
         }
@@ -358,7 +358,7 @@ void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for (unsigned int j = 0; j < 3; ++j)
                 {
-                    dJdx(triangle[i], triangle[j]) += d2Area_d2x[i][j] * childForce[triangleId][0];
+                    dJdx(triangle[i] * Nin, triangle[j] * Nin) += d2Area_d2x[i][j] * childForceTri[0];
                 }
             }
         }
