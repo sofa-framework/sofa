@@ -79,8 +79,7 @@ public:
     Data<bool> d_useMass; ///< Using this ForceField like a Mass? (rather than using a separated Mass)
     Data<Real> d_totalMass;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<NonUniformHexahedronFEMForceFieldAndMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using Inherit1::l_topology;
 protected:
     NonUniformHexahedronFEMForceFieldAndMass();
 
