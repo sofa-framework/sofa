@@ -782,14 +782,6 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 }
 
 
-void DAGNode::initVisualContext()
-{
-    if (getNbParents())
-    {
-        this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
-    }
-}
-
 void DAGNode::updateContext()
 {
     sofa::core::objectmodel::BaseNode* firstParent = getFirstParent();
