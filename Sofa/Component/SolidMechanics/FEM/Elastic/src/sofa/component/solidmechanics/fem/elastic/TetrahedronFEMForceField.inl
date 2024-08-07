@@ -570,7 +570,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 {
     const VecCoord &initialPoints=d_initialPoints.getValue();
     Element index = *elementIt;
-    const auto [a, b, c, d] = index.array();
+    const auto& [a, b, c, d] = index.array();
 
     // displacements
     Displacement D;
@@ -674,7 +674,7 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             Element index = *it;
-            const auto [a, b, c, d] = index.array();
+            const auto& [a, b, c, d] = index.array();
 
             // displacements
             Displacement D;
@@ -1665,7 +1665,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            const auto [a, b, c, d] = it->array();
+            const auto& [a, b, c, d] = it->array();
             applyStiffnessSmall(df, dx, i, a, b, c, d, kFactor);
         }
     }
@@ -1673,7 +1673,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            const auto [a, b, c, d] = it->array();
+            const auto& [a, b, c, d] = it->array();
             applyStiffnessCorotational(df, dx, i, a, b, c, d, kFactor);
         }
     }
