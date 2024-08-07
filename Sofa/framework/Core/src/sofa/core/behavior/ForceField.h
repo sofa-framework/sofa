@@ -109,6 +109,11 @@ public:
     /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
+    //This is required to tell the compiler addClambda is legitimately overloaded,
+    //and it does not hide the one from BaseForceField.
+    //To be removed once addClambda is disabled
+    using BaseForceField::addClambda;
+
     SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor );
 
