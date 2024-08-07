@@ -240,26 +240,31 @@ void AreaMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
         const auto& triangles = l_topology->getTriangles();
         for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
         {
-            const auto& triangle = triangles[triangleId];
+            const Deriv_t<Out>& childForceTri = childForceAccessor[triangleId];
 
-            const sofa::type::fixed_array<Coord_t<In>, 3> v{
-                (*m_vertices)[triangle[0]],
-                (*m_vertices)[triangle[1]],
-                (*m_vertices)[triangle[2]]
-            };
-
-            //it's a 9x9 matrix, where each entry is a 3x3 matrix
-            const auto d2Area_d2x = computeSecondDerivativeArea(v);
-
-            for (unsigned int i = 0; i < 3; ++i)
+            if( childForceTri[0] < 0 || geometricStiffness==1 )
             {
-                for (unsigned int j = 0; j < 3; ++j)
+                const auto& triangle = triangles[triangleId];
+
+                const sofa::type::fixed_array<Coord_t<In>, 3> v{
+                    (*m_vertices)[triangle[0]],
+                    (*m_vertices)[triangle[1]],
+                    (*m_vertices)[triangle[2]]
+                };
+
+                //it's a 9x9 matrix, where each entry is a 3x3 matrix
+                const auto d2Area_d2x = computeSecondDerivativeArea(v);
+
+                for (unsigned int i = 0; i < 3; ++i)
                 {
-                    parentForceAccessor[triangle[i]] +=
-                        kFactor
-                        * d2Area_d2x[i][j]
-                        * parentDisplacementAccessor[triangle[j]]
-                        * childForceAccessor[triangleId][0];
+                    for (unsigned int j = 0; j < 3; ++j)
+                    {
+                        parentForceAccessor[triangle[i]] +=
+                            kFactor
+                            * d2Area_d2x[i][j]
+                            * parentDisplacementAccessor[triangle[j]]
+                            * childForceTri[0];
+                    }
                 }
             }
         }
@@ -284,22 +289,27 @@ void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
     const auto& triangles = l_topology->getTriangles();
     for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
     {
-        const auto& triangle = triangles[triangleId];
+        const Deriv_t<Out>& childForceTri = childForce[triangleId];
 
-        const sofa::type::fixed_array<Coord_t<In>, 3> v{
-            (*m_vertices)[triangle[0]],
-            (*m_vertices)[triangle[1]],
-            (*m_vertices)[triangle[2]]
-        };
-
-        //it's a 9x9 matrix, where each entry is a 3x3 matrix
-        const auto d2Area_d2x = computeSecondDerivativeArea(v);
-
-        for (unsigned int i = 0; i < 3; ++i)
+        if( childForceTri[0] < 0 || geometricStiffness==1 )
         {
-            for (unsigned int j = 0; j < 3; ++j)
+            const auto& triangle = triangles[triangleId];
+
+            const sofa::type::fixed_array<Coord_t<In>, 3> v{
+                (*m_vertices)[triangle[0]],
+                (*m_vertices)[triangle[1]],
+                (*m_vertices)[triangle[2]]
+            };
+
+            //it's a 9x9 matrix, where each entry is a 3x3 matrix
+            const auto d2Area_d2x = computeSecondDerivativeArea(v);
+
+            for (unsigned int i = 0; i < 3; ++i)
             {
-                K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForce[triangleId][0]);
+                for (unsigned int j = 0; j < 3; ++j)
+                {
+                    K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForce[triangleId][0]);
+                }
             }
         }
     }
@@ -329,22 +339,27 @@ void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     const auto& triangles = l_topology->getTriangles();
     for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
     {
-        const auto& triangle = triangles[triangleId];
+        const Deriv_t<Out>& childForceTri = childForce[triangleId];
 
-        const sofa::type::fixed_array<Coord_t<In>, 3> v{
-            (*m_vertices)[triangle[0]],
-            (*m_vertices)[triangle[1]],
-            (*m_vertices)[triangle[2]]
-        };
-
-        //it's a 9x9 matrix, where each entry is a 3x3 matrix
-        const auto d2Area_d2x = computeSecondDerivativeArea(v);
-
-        for (unsigned int i = 0; i < 3; ++i)
+        if( childForceTri[0] < 0 || geometricStiffness==1 )
         {
-            for (unsigned int j = 0; j < 3; ++j)
+            const auto& triangle = triangles[triangleId];
+
+            const sofa::type::fixed_array<Coord_t<In>, 3> v{
+                (*m_vertices)[triangle[0]],
+                (*m_vertices)[triangle[1]],
+                (*m_vertices)[triangle[2]]
+            };
+
+            //it's a 9x9 matrix, where each entry is a 3x3 matrix
+            const auto d2Area_d2x = computeSecondDerivativeArea(v);
+
+            for (unsigned int i = 0; i < 3; ++i)
             {
-                dJdx(triangle[i], triangle[j]) += d2Area_d2x[i][j] * childForce[triangleId][0];
+                for (unsigned int j = 0; j < 3; ++j)
+                {
+                    dJdx(triangle[i], triangle[j]) += d2Area_d2x[i][j] * childForce[triangleId][0];
+                }
             }
         }
     }
