@@ -958,8 +958,10 @@ ConstraintProblem* ConstraintAnimationLoop::getCP()
         return &CP1;
 }
 
-
-int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
-        .add< ConstraintAnimationLoop >();
+void registerConstraintAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Constraint animation loop manager")
+        .add< ConstraintAnimationLoop >());
+}
 
 } //namespace sofa::component::animationloop
