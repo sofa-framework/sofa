@@ -34,6 +34,8 @@ namespace sofa::topology
 template <typename GeometryElement>
 struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
+    static constexpr auto NumberOfNodes = GeometryElement::NumberOfNodes;
+
     static constexpr sofa::geometry::ElementType Element_type = GeometryElement::Element_type;
     constexpr Element() noexcept
     {
