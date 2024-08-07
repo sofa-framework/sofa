@@ -29,7 +29,7 @@ namespace sofa::component::mapping::nonlinear
 using namespace defaulttype;
 
 // Register in the Factory
-int AreaMappingClass = core::RegisterObject("Mapping each surface primitive (triangle, quad) in a topology to a scalar value representing the its area")
+int AreaMappingClass = core::RegisterObject("Mapping each triangle in a topology to a scalar value representing its area")
         .add< AreaMapping< Vec3Types, Vec1Types > >()
         ;
 
