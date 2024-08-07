@@ -323,4 +323,17 @@ TEST_F(PluginManager_test, failingPlugin)
                 "registered the object has been unloaded, preventing the object creation.")
             != std::string::npos;
         }), description.getErrors().end());
+
+    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries, false);
+    EXPECT_NE(
+        std::find_if(entries.begin(), entries.end(), [](const auto& entry){ return entry->className == "ComponentFailingPlugin";}),
+        entries.end()
+    );
+
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries, true);
+    EXPECT_EQ(
+        std::find_if(entries.begin(), entries.end(), [](const auto& entry){ return entry->className == "ComponentFailingPlugin";}),
+        entries.end()
+    );
 }
