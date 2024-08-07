@@ -23,7 +23,7 @@
 
         <Node name="constraintSpace">
             <MechanicalObject template="Vec1" name="areaDoFs"/>
-            <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="1"/>
+            <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="Stabilized"/>
             <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
 <!--            <UniformLagrangianConstraint template="Vec1" iterative="false" />-->
         </Node>

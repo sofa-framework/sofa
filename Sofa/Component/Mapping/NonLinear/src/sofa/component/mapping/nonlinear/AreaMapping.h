@@ -32,7 +32,7 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-class AreaMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<false>
+class AreaMapping : public core::Mapping<TIn, TOut>, public StabilizedNonLinearMappingData
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(AreaMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
