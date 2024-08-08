@@ -129,7 +129,7 @@ public:
 
     vector_device(const std::initializer_list<T>& t) : vector_device()
     {
-        if (!std::empty(t.size()))
+        if (!std::empty(t))
         {
             fastResize(t.size());
             std::copy(t.begin(), t.end(), hostPointer);
