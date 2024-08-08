@@ -631,7 +631,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(elementIndex);
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    const auto [a, b, c, d] = t.array();
+    const auto& [a, b, c, d] = t.array();
 
     // displacements
     Displacement D;
@@ -1217,7 +1217,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     {
         const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
 
-        const auto [a, b, c, d] = t.array();
+        const auto& [a, b, c, d] = t.array();
         Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
         Coord pa = (x[a]+center)*(Real)0.666667;
         Coord pb = (x[b]+center)*(Real)0.666667;
