@@ -140,6 +140,18 @@ std::string ObjectFactoryJson::dump(ObjectFactory* factory)
 
     const nlohmann::json json = entries;
 
-    return json.dump();
+    std::string dump{};
+
+    try
+    {
+        dump = json.dump();
+    }
+    catch (const nlohmann::json::type_error& e)
+    {
+        msg_error("ObjectFactoryJson") << "Error while dumping json from the object factory: " << e.what();
+        dump = json.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace);
+    }
+
+    return dump;
 }
 }
