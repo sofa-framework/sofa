@@ -26,6 +26,7 @@ set(SOURCE_FILES
     topology/TopologySubsetIndices_test.cpp
     DataEngine_test.cpp
     Engine_test.cpp
+    Gravity_test.cpp
     MatrixAccumulator_test.cpp
     ObjectFactory_test.cpp
     ObjectFactoryJson_test.cpp

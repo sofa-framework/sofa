@@ -146,9 +146,7 @@ void Context::copySimulationContext(Context& c)
     setDt(c.getDt());
     setTime(c.getTime());
     setAnimate(c.getAnimate());
-
-
-
 }
+
 } // namespace sofa::core::objectmodel
 
