@@ -48,6 +48,8 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
+    static VecReal GetDefaultYoungModulusValue();
+
     BaseLinearElasticityFEMForceField();
 
     void init() override;

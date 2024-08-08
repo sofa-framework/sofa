@@ -34,7 +34,6 @@ NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForc
     , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
     , d_useMass(initData(&d_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
     , d_totalMass(initData(&d_totalMass,(Real)0.0,"totalMass",""))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 

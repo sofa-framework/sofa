@@ -34,7 +34,7 @@ namespace sofa::helper
 #endif
 
 /** Generic MemoryManager
- * Its use is informative only and it cannot be instancied (linkage error otherwise).
+ * Its use is informative only, and it cannot be instantiated (linkage error otherwise).
  */
 template <class T>
 class MemoryManager
@@ -42,7 +42,7 @@ class MemoryManager
 public :
     typedef T* host_pointer;
 
-    //have to be changed according of the type of device
+    //have to be changed according to the type of device
     typedef void* device_pointer;
 
     typedef unsigned int buffer_id_type;

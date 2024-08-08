@@ -111,6 +111,34 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 }
 
 
+void findTemplatedCreator(
+    objectmodel::BaseContext* context,
+    const ObjectFactory::Creator::SPtr& creator, const std::string& templateName,
+    std::map<std::string, std::vector<std::string>>& creatorsErrors,
+    std::vector< std::pair<std::string, ObjectFactory::Creator::SPtr> >& creators,
+    objectmodel::BaseObjectDescription* arg)
+{
+    if (helper::system::PluginManager::getInstance().isPluginUnloaded(creator->getTarget()))
+    {
+        creatorsErrors[templateName].emplace_back(
+            "The object was previously registered, but the module that "
+            "registered the object has been unloaded, preventing the object creation.");
+        arg->clearErrors();
+    }
+    else
+    {
+        if (creator->canCreate(context, arg))
+        {
+            creators.emplace_back(templateName, creator);
+        }
+        else
+        {
+            creatorsErrors[templateName] = arg->getErrors();
+            arg->clearErrors();
+        }
+    }
+}
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = nullptr;
@@ -167,7 +195,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     const auto previous_errors = arg->getErrors();
     arg->clearErrors();
 
-    // For every classes in the registery
+    // For every classes in the registry
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
@@ -176,33 +204,21 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
             templatename = entry->defaultTemplate;
 
-        CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
-        if (it2 != entry->creatorMap.end())
+
+        if (auto it2 = entry->creatorMap.find(templatename);
+            it2 != entry->creatorMap.end())
         {
-            Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg)) {
-                creators.push_back(*it2);
-            } else {
-                creators_errors[templatename] = arg->getErrors();
-                arg->clearErrors();
-            }
+            findTemplatedCreator(context, it2->second, it2->first, creators_errors, creators, arg);
         }
 
         // If object cannot be created with the given template (or the default one), try all possible ones
         if (creators.empty())
         {
-            CreatorMap::iterator it3;
-            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
+            for (const auto& [creatorTemplateName, creator] : entry->creatorMap)
             {
-                if (it3->first == templatename)
-                    continue; // We already tried to create the object with the specified (or default) template
-
-                Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg)){
-                    creators.push_back(*it3);
-                } else {
-                    creators_errors[it3->first] = arg->getErrors();
-                    arg->clearErrors();
+                if (creatorTemplateName != templatename)
+                {
+                    findTemplatedCreator(context, creator, creatorTemplateName, creators_errors, creators, arg);
                 }
             }
         }
@@ -219,18 +235,24 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
         using sofa::helper::lifecycle::movedComponents;
+        using sofa::helper::lifecycle::dealiasedComponents;
         if(it == registry.end())
         {
             arg->logError("The object '" + classname + "' is not in the factory.");
-            auto uuncreatableComponent = uncreatableComponents.find(classname);
+            auto uncreatableComponent = uncreatableComponents.find(classname);
             auto movedComponent = movedComponents.find(classname);
-            if( uuncreatableComponent != uncreatableComponents.end() )
+            auto dealiasedComponent = dealiasedComponents.find(classname);
+            if( uncreatableComponent != uncreatableComponents.end() )
             {
-                arg->logError( uuncreatableComponent->second.getMessage() );
+                arg->logError( uncreatableComponent->second.getMessage() );
             }
             else if (movedComponent != movedComponents.end())
             {
                 arg->logError( movedComponent->second.getMessage() );
+            }
+            else if (dealiasedComponent != dealiasedComponents.end())
+            {
+                arg->logError(dealiasedComponent->second.getMessage());
             }
             else
             {
@@ -396,16 +418,44 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
+void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result, const bool filterUnloadedPlugins)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    for (const auto& [className, entry] : registry)
     {
-        ClassEntry::SPtr entry = it->second;
         // Push the entry only if it is not an alias
-        if (entry->className == it->first)
+        if (entry->className == className)
+        {
             result.push_back(entry);
+        }
+    }
+
+    if (filterUnloadedPlugins)
+    {
+        for (auto itEntry = result.begin(); itEntry != result.end();)
+        {
+            auto& creatorMap = (*itEntry)->creatorMap;
+            for (auto itCreator = creatorMap.begin(); itCreator != creatorMap.end();)
+            {
+                if (helper::system::PluginManager::getInstance().isPluginUnloaded(itCreator->second->getTarget()))
+                {
+                    itCreator = creatorMap.erase(itCreator);
+                }
+                else
+                {
+                    ++itCreator;
+                }
+            }
+
+            if (creatorMap.empty())
+            {
+                itEntry = result.erase(itEntry);
+            }
+            else
+            {
+                ++itEntry;
+            }
+        }
     }
 }
 

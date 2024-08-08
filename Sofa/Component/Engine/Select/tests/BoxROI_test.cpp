@@ -34,7 +34,7 @@ using ::testing::Types;
 #include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
 
-#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
 #include <sofa/simulation/graph/DAGSimulation.h>

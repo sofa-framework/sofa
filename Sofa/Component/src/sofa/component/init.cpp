@@ -73,6 +73,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    factory->registerObjectsFromPlugin("Sofa.Component.AnimationLoop");
     factory->registerObjectsFromPlugin("Sofa.Component.StateContainer");
 }
 

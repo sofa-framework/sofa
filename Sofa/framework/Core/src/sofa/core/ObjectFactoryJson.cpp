@@ -59,26 +59,35 @@ inline void to_json(nlohmann::json& json,
 inline void to_json(nlohmann::json& json,
                     const objectmodel::BaseData* data)
 {
-    json["name"] = data->m_name;
-    json["group"] = data->group;
-    json["help"] = data->help;
-    json["type"] = data->getValueTypeString();
-    json["defaultValue"] = data->getDefaultValueString();
+    if (data)
+    {
+        json["name"] = data->m_name;
+        json["group"] = data->group;
+        json["help"] = data->help;
+        json["type"] = data->getValueTypeString();
+        json["defaultValue"] = data->getDefaultValueString();
+    }
 }
 
 inline void to_json(nlohmann::json& json,
                     const objectmodel::BaseLink* link)
 {
-    json["name"] = link->getName();
-    json["help"] = link->getHelp();
-    json["destinationTypeName"] = link->getValueTypeString();
+    if (link)
+    {
+        json["name"] = link->getName();
+        json["help"] = link->getHelp();
+        json["destinationTypeName"] = link->getValueTypeString();
+    }
 }
 
 inline void to_json(nlohmann::json& json,
                     const objectmodel::BaseObject::SPtr& object)
 {
-    json["data"] = object->getDataFields();
-    json["link"] = object->getLinks();
+    if (object)
+    {
+        json["data"] = object->getDataFields();
+        json["link"] = object->getLinks();
+    }
 }
 
 }
@@ -86,29 +95,48 @@ inline void to_json(nlohmann::json& json,
 inline void to_json(nlohmann::json& json,
                     const sofa::core::ObjectFactory::Creator::SPtr& creator)
 {
-    json["target"] = creator->getTarget();
-    json["class"] = *creator->getClass();
-
-    sofa::core::objectmodel::BaseObjectDescription desc;
-    if (const auto object = creator->createInstance(nullptr, &desc))
+    if (creator)
     {
-        json["object"] = object;
+        if (const char* target = creator->getTarget())
+        {
+            json["target"] = target;
+        }
+        else
+        {
+            json["target"] = "targetCannotBeFound";
+        }
+        json["class"] = *creator->getClass();
+
+        sofa::core::objectmodel::BaseObjectDescription desc;
+        if (const auto object = creator->createInstance(nullptr, &desc))
+        {
+            json["object"] = object;
+        }
     }
 }
 
 inline void to_json(nlohmann::json& json,
                     const sofa::core::ObjectFactory::ClassEntry::SPtr& entry)
 {
-    json["className"] = entry->className;
-    json["description"] = entry->description;
+    if (entry)
+    {
+        json["className"] = entry->className;
+        json["description"] = entry->description;
 
-    json["creator"] = entry->creatorMap;
+        json["creator"] = entry->creatorMap;
+    }
 }
 
 std::string ObjectFactoryJson::dump(ObjectFactory* factory)
 {
+    if (!factory)
+    {
+        msg_error("ObjectFactoryJson") << "Invalid factory: cannot dump to json";
+        return {};
+    }
+
     std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-    factory->getAllEntries(entries);
+    factory->getAllEntries(entries, true);
 
     const nlohmann::json json = entries;
 
