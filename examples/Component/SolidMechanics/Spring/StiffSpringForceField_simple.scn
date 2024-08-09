@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
@@ -44,12 +44,12 @@
         <MechanicalObject template="Vec3" name="dofs" position="5 0 0 6 0 0" showObject="true"/>
         <UniformMass/>
         <SphereCollisionModel listRadius="0.25 0.25"/>
-        <StiffSpringForceField template="Vec3" name="spring" spring="0 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
+        <SpringForceField template="Vec3" name="spring" spring="0 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
     </Node>
 
-    <StiffSpringForceField template="Vec3" name="spring1" object1="@fix/dofs"       object2="@sphere1/dofs"   spring="0 0 50 1 1"             showArrowSize="0.05" drawMode="2"/>
-    <StiffSpringForceField template="Vec3" name="spring2" object1="@sphere1/dofs"   object2="@sphere2/dofs"   spring="0 0 50 1 1"             showArrowSize="0.05" drawMode="2"/>
-    <StiffSpringForceField template="Vec3" name="spring3" object1="@sphere2/dofs"   object2="@sphere3-4/dofs" spring="0 0 50 1 1  0 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
-    <StiffSpringForceField template="Vec3" name="spring5" object1="@sphere3-4/dofs" object2="@sphere3-4/dofs" spring="0 1 50 1 1"             showArrowSize="0.05" drawMode="2"/>
-    <StiffSpringForceField template="Vec3" name="spring6" object1="@sphere3-4/dofs" object2="@sphere5-6/dofs" spring="0 0 50 1 1  1 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
+    <SpringForceField template="Vec3" name="spring1" object1="@fix/dofs"       object2="@sphere1/dofs"   spring="0 0 50 1 1"             showArrowSize="0.05" drawMode="2"/>
+    <SpringForceField template="Vec3" name="spring2" object1="@sphere1/dofs"   object2="@sphere2/dofs"   spring="0 0 50 1 1"             showArrowSize="0.05" drawMode="2"/>
+    <SpringForceField template="Vec3" name="spring3" object1="@sphere2/dofs"   object2="@sphere3-4/dofs" spring="0 0 50 1 1  0 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
+    <SpringForceField template="Vec3" name="spring5" object1="@sphere3-4/dofs" object2="@sphere3-4/dofs" spring="0 1 50 1 1"             showArrowSize="0.05" drawMode="2"/>
+    <SpringForceField template="Vec3" name="spring6" object1="@sphere3-4/dofs" object2="@sphere5-6/dofs" spring="0 0 50 1 1  1 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
 </Node>

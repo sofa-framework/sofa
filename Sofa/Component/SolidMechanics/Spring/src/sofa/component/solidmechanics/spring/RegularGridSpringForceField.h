@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
 
@@ -31,12 +31,12 @@ namespace sofa::component::solidmechanics::spring
 {
 
 template<class DataTypes>
-class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
+class RegularGridSpringForceField : public SpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(SpringForceField, DataTypes));
 
-    typedef StiffSpringForceField<DataTypes> Inherit;
+    typedef SpringForceField<DataTypes> Inherit;
     typedef typename Inherit::Spring Spring;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

@@ -19,30 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::solidmechanics::spring
+namespace multithreading::component::solidmechanics::spring
 {
 
-using namespace sofa::defaulttype;
+int ParallelSpringForceFieldClass = sofa::core::RegisterObject("Parallel stiff springs")
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec3Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec2Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec1Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Vec6Types> >()
+    .add< ParallelSpringForceField<sofa::defaulttype::Rigid3Types> >();
 
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec3Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec2Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec1Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Vec6Types>;
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelSpringForceField<sofa::defaulttype::Rigid3Types>;
 
-// Register in the Factory
-int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implicit integration")
-        .add< StiffSpringForceField<Vec3Types> >()
-        .add< StiffSpringForceField<Vec2Types> >()
-        .add< StiffSpringForceField<Vec1Types> >()
-        .add< StiffSpringForceField<Vec6Types> >()
-        .add< StiffSpringForceField<Rigid3Types> >()
-        ;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API StiffSpringForceField<Rigid3Types>;
-
-} // namespace sofa::component::solidmechanics::spring
+}

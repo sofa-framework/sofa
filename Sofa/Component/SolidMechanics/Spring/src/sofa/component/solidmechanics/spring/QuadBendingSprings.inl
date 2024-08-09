@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/QuadBendingSprings.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
@@ -32,8 +32,8 @@ namespace sofa::component::solidmechanics::spring
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
-    : StiffSpringForceField<DataTypes>()
-    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    : SpringForceField<DataTypes>()
+    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     localRange.setParent(&d_localRange);
@@ -59,8 +59,8 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<
     if (springSet.find(ab) != springSet.end()) return;
     springSet.insert(ab);
     const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    Real s = (Real)this->d_ks.getValue();
-    Real d = (Real)this->d_kd.getValue();
+    Real s = (Real)this->d_ks.getValue()[0];
+    Real d = (Real)this->d_kd.getValue()[0];
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }
@@ -123,7 +123,7 @@ void QuadBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 }
 
 

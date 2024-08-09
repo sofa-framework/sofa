@@ -31,4 +31,4 @@ ignore "StandardTetrahedralFEMForceFieldCUDA.scn"
 iterations "TetrahedralTensorMassForceFieldCPU.scn" "10"
 timeout "TetrahedralTensorMassForceFieldCPU.scn" "60"
 ignore "TetrahedralTensorMassForceFieldCUDA.scn"
-
+ignore "TetrahedronFEM_with_SpringForceField.scn"

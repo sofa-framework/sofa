@@ -12,7 +12,7 @@
 		    <p>
             SpringForceField components are used to describe a network of springs between particles. If the network of springs references particles belonging 
 			to the same mechanical object, the ForceField is said to be internal. Otherwise, if it links several mechanical objects, it is said to be an interaction forcefield. 			
-			Examples of SpringForceField components in Sofa are JointSpringForceField (for rigid mechanical objects) StiffSpringForceField, and MeshSpringForceField 
+			Examples of SpringForceField components in Sofa are JointSpringForceField (for rigid mechanical objects) SpringForceField, and MeshSpringForceField
 		    (for deformable mechanical objects). </p>
             <p>			
 			To describe a SpringForceField, we therefore have to specify the following parameters: 
@@ -25,7 +25,7 @@
 		<div id="orangeText">Key Points:</div>
             <ul>
 			<li>If you have a limited number of particles that you want to connect with springs, you can use JointSpringForceField (for rigid bodies) 
-			or StiffSpringForceField (for deformable bodies) and specify manually the indices and spring parameters.</li>
+			or SpringForceField (for deformable bodies) and specify manually the indices and spring parameters.</li>
 			<li>If you load particles from a mesh using a MeshTopology component, there is a corresponding MeshSpringForceField component which 
 			does the job of creating springs for you, leaving you only to specify global parameters for the springs. You can do fine tuning later on
 			if you wish to.</li>

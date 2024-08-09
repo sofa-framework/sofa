@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
@@ -34,7 +34,7 @@
         <TopologicalChangeProcessor useDataInputs="true" pointsToRemove="0 1" timeToRemove="1.2"/>
     </Node>
 
-    <StiffSpringForceField object1="@FixedPointNode/dof" object2="@MassNode/dof" spring="
+    <SpringForceField object1="@FixedPointNode/dof" object2="@MassNode/dof" spring="
         2 0 100 0 1
         1 2 100 0 1
         3 3 100 0 1
