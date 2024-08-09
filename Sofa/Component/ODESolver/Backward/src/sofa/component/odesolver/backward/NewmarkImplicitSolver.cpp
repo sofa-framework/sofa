@@ -151,19 +151,21 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     solveConstraint(dt,vResult,core::ConstraintParams::ConstOrder::VEL);
 
 #else // single-operation optimization
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef core::behavior::VMultiOp VMultiOp;
 
-    VMultiOp ops;
-    ops.resize(2);
-    ops[0].first = newPos;
-    ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-    ops[0].second.push_back(std::make_pair(vel.id(), h));
-    ops[0].second.push_back(std::make_pair(a.id(), h*h*(0.5-beta)));
-    ops[0].second.push_back(std::make_pair(aResult.id(),h*h*beta));//b=vt+at*h/2(1-2*beta)+a(t+h)*h*beta
-    ops[1].first = newVel;
-    ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-    ops[1].second.push_back(std::make_pair(a.id(), h*(1-gamma)));
-    ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
+    VMultiOp ops(2);
+    ops[0] = VMultiOpEntry{ newPos,
+        ScaledConstMultiVecId{pos.id(), 1._sreal} +
+        ScaledConstMultiVecId{vel.id(), h} +
+        ScaledConstMultiVecId{a.id(), h*h*(0.5-beta)} +
+        ScaledConstMultiVecId{aResult.id(), h*h*beta}
+    };
+    ops[1] = VMultiOpEntry{ newVel,
+        ScaledConstMultiVecId{vel.id(), 1._sreal} +
+        ScaledConstMultiVecId{a.id(),  h*(1-gamma)} +
+        ScaledConstMultiVecId{aResult.id(), h*gamma}
+    };
+
     vop.v_multiop(ops);
 
     mop.solveConstraint(vResult,core::ConstraintOrder::VEL);

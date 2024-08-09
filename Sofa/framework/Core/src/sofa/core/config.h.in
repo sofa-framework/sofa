@@ -113,3 +113,31 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "This function is not used.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_ID()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_ID() \
+    SOFA_ATTRIBUTE_DISABLED("", "v24.06", "The attribute 'first' (from std::pair) has been replaced by the attribute 'id'.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_FACTOR()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_FACTOR() \
+    SOFA_ATTRIBUTE_DISABLED("", "v24.06", "The attribute 'second' (from std::pair) has been replaced by the attribute 'factor'.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_OUTPUT()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_OUTPUT() \
+    SOFA_ATTRIBUTE_DISABLED("", "v24.06", "The attribute 'first' (from std::pair) has been removed. Use 'getOutput()' instead.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_LIST()
+#else
+#define SOFA_ATTRIBUTE_DISABLED_VMULTIOPENTRY_LINEARCOMBINATION_LIST() \
+    SOFA_ATTRIBUTE_DISABLED("", "v24.06", "The attribute 'second' (from std::pair) has been removed. Use 'getLinearCombination()' instead.")
+#endif

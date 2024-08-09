@@ -125,7 +125,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     MultiVecDeriv pPrevious(&vop, pID); // get previous momemtum value
     p.eq(pPrevious); // set p to previous momemtum
 
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef core::behavior::VMultiOp VMultiOp;
  
 	if (d_explicit.getValue()) {
 		mop->setImplicit(false); // this solver is explicit only
@@ -154,14 +154,12 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 		mop.solveConstraint(acc, core::ConstraintOrder::ACC);
 		
-        VMultiOp ops;
-        ops.resize(2);
-        // change order of operations depending on the symplectic flag
-        ops[0].first = vel_1;
-        ops[0].second.push_back(std::make_pair(acc.id(),h)); // v(k+1) = 1/m (h*f(q(k)+p(k))
-        ops[1].first = x_1; // q(k+1)=q(k)+h*v(k+1)
-        ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[1].second.push_back(std::make_pair(vel_1.id(),h));
+        VMultiOp ops(2);
+	    ops[0] = VMultiOpEntry{ vel_1,
+            ScaledConstMultiVecId{acc.id(), h}};
+	    ops[1] = VMultiOpEntry{ x_1,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{vel_1.id(), h}};
+
 		vop.v_multiop(ops);
 
 		// p(k+1)=M v(k+1)
@@ -238,20 +236,14 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             }
 
 			/// Updates of q(k,i) ///
-			VMultiOp ops;
-			ops.resize(3);
+		    VMultiOp ops(3);
+		    ops[0] = VMultiOpEntry{ x_1,
+                ScaledConstMultiVecId{oldpos.id(), 1._sreal} + ScaledConstMultiVecId{res.id(), 1._sreal}};
+		    ops[1] = VMultiOpEntry{ resi,
+                ScaledConstMultiVecId{x_1.id(), 1._sreal} + ScaledConstMultiVecId{x_0.id(), -1._sreal}};
+		    ops[2] = VMultiOpEntry{ x_0,
+                ScaledConstMultiVecId{x_1.id(), 1._sreal}};
 
-			//x_1=q(k,i)=res(i)+q(k,0)=res(i)+oldpos
-			ops[0].first = x_1;
-			ops[0].second.push_back(std::make_pair(oldpos.id(),1.0));
-			ops[0].second.push_back(std::make_pair(res.id(),1.0));
-			// resi=q(k,i)-q(k,i-1)  save the residual as a stopping criterion
-			ops[1].first = resi;
-			ops[1].second.push_back(std::make_pair(x_1.id(),1.0));
-			ops[1].second.push_back(std::make_pair(x_0.id(),-1.0));
-			// q(k,i)=q(k,i-1) 
-			ops[2].first = x_0; 
-			ops[2].second.push_back(std::make_pair(x_1.id(),1.0));
 			vop.v_multiop(ops);
 
 			mop.propagateX(x_1);
@@ -275,24 +267,18 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
         /// Updates of v, p and final position ///
 		//v(k+1,0)=(2/h)(q(k,i_end)-q(k,0))
-		VMultiOp opsfin;
-		opsfin.resize(1);
-		opsfin[0].first = vel_1;
-		opsfin[0].second.push_back(std::make_pair(res.id(),2.0/h));
-		vop.v_multiop(opsfin);
+	    vop.v_multiop({VMultiOpEntry{ vel_1,
+            ScaledConstMultiVecId{res.id(), 2.0/h} }});
 
 		sofa::helper::AdvancedTimer::stepBegin("CorrectV");
 		mop.solveConstraint(vel_1,core::ConstraintOrder::VEL);
 
 		// update position
-		VMultiOp opsx;
+	    VMultiOp opsx{VMultiOpEntry{ x_1,
+            ScaledConstMultiVecId{oldpos.id(), 1._sreal} + ScaledConstMultiVecId{vel_1.id(), h/2}}};
 
 		// here x_1=q(k,0)+(h/2)v(k+1,0)
-		opsx.resize(1);
-		opsx[0].first = x_1;
-		opsx[0].second.push_back(std::make_pair(oldpos.id(),1.0));
-		opsx[0].second.push_back(std::make_pair(vel_1.id(),h/2));
-		vop.v_multiop(opsx);
+	    vop.v_multiop(opsx);
 
 		// get p(k+1)= f(q(k,0)+(h/2)v(k+1,0))*h/2 + M*v(k+1)
 		mop.computeForce(f);
@@ -302,7 +288,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 		mop.addMdx(newp,vel_1,1.0);
 
 		// adding (h/2)v(k+1,0) so that x_1=q(k+1,0)=q(k,0)+h*v(k+1,0)
-		opsx[0].second.push_back(std::make_pair(vel_1.id(),h/2));
+		opsx[0].getLinearCombination().emplace_back(vel_1.id(), h/2);
 		vop.v_multiop(opsx);
 
         // Compute hamiltonian energy

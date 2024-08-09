@@ -100,7 +100,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
     mop.solveConstraint(dx, core::ConstraintOrder::ACC);
     // apply the solution
-    if (r==0)
+    if (r == 0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
@@ -110,17 +110,16 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
 #else // single-operation optimization
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
-        ops.resize(2);
+        typedef core::behavior::VMultiOp VMultiOp;
+        VMultiOp ops(2);
+
         // vel += dx * dt
-        ops[0].first = vel2;
-        ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[0].second.push_back(std::make_pair(dx.id(),dt));
+        ops[0] = VMultiOpEntry{ vel2,
+            ScaledConstMultiVecId{vel.id(), 1._sreal} + ScaledConstMultiVecId{dx.id(), dt}};
+
         // pos += vel * dt
-        ops[1].first = pos2;
-        ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+        ops[1] = VMultiOpEntry{ pos2,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{vel2.id(), dt}};
 
         vop.v_multiop(ops);
 
@@ -135,18 +134,17 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
         vel2.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
 #else // single-operation optimization
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
-        ops.resize(2);
-        // vel += dx * dt
-        ops[0].first = vel2;
-        ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[0].second.push_back(std::make_pair(vel.id(),-1.0 + (1/dt - r/2)/(1/dt + r/2)));
-        ops[0].second.push_back(std::make_pair(dx.id(),1/(1/dt + r/2)));
-        // pos += vel * dt
-        ops[1].first = pos2;
-        ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+        typedef core::behavior::VMultiOp VMultiOp;
+        VMultiOp ops(2);
+
+        ops[0] = VMultiOpEntry{ vel2,
+            ScaledConstMultiVecId{vel.id(), 1._sreal} +
+            ScaledConstMultiVecId{vel.id(), -1.0 + (1/dt - r/2)/(1/dt + r/2)} +
+            ScaledConstMultiVecId{dx.id(), 1/(1/dt + r/2)}
+        };
+
+        ops[1] = VMultiOpEntry{ pos2,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{vel2.id(), dt}};
 
         vop.v_multiop(ops);
 
