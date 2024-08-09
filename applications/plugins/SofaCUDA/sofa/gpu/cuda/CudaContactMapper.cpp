@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,57 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDistanceGrid/initSofaDistanceGrid.h>
-#include "components/collision/DistanceGridCollisionModel.h"
-#include "components/forcefield/DistanceGridForceField.h"
-#include "RegisterModelToCollisionFactory.h"
+#define SOFACUDA_CUDACONTACTMAPPER_CPP
 
-namespace sofadistancegrid
+#include <SofaCUDA/sofa/gpu/cuda/CudaContactMapper.h>
+
+namespace sofa::component::collision
 {
-extern "C" {
-SOFA_SOFADISTANCEGRID_API void initExternalModule();
-SOFA_SOFADISTANCEGRID_API const char* getModuleName();
-SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
-SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
-SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
-SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
-}
 
-void initExternalModule()
-{
-    initSofaDistanceGrid();
-}
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, CudaVec3fTypes>;
 
-void initSofaDistanceGrid()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-    sofa::component::collision::registerDistanceGridCollisionModel();
 }
-
-const char* getModuleName()
-{
-    return sofadistancegrid::MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return sofadistancegrid::MODULE_VERSION;
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "A distance grid stores the distance to an object into a 3d regular grid.  "
-           "This is an efficient data structure to get a distance approximation for   "
-           "point in space. This is why it is often used to implement collisions.     ";
-}
-
-} /// namespace sofadistancegrid

@@ -19,57 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDistanceGrid/initSofaDistanceGrid.h>
-#include "components/collision/DistanceGridCollisionModel.h"
-#include "components/forcefield/DistanceGridForceField.h"
-#include "RegisterModelToCollisionFactory.h"
+#pragma once
 
-namespace sofadistancegrid
+#include <SofaDistanceGrid/CUDA/config.h>
+
+namespace sofadistancegrid::cuda
 {
-extern "C" {
-SOFA_SOFADISTANCEGRID_API void initExternalModule();
-SOFA_SOFADISTANCEGRID_API const char* getModuleName();
-SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
-SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
-SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
-SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaDistanceGrid();
-}
-
-void initSofaDistanceGrid()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-    sofa::component::collision::registerDistanceGridCollisionModel();
-}
-
-const char* getModuleName()
-{
-    return sofadistancegrid::MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return sofadistancegrid::MODULE_VERSION;
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "A distance grid stores the distance to an object into a 3d regular grid.  "
-           "This is an efficient data structure to get a distance approximation for   "
-           "point in space. This is why it is often used to implement collisions.     ";
-}
-
-} /// namespace sofadistancegrid
+SOFA_SOFADISTANCEGRID_CUDA_API void init();
+} // namespace sofadistancegrid::cuda

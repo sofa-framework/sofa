@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,57 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDistanceGrid/initSofaDistanceGrid.h>
-#include "components/collision/DistanceGridCollisionModel.h"
-#include "components/forcefield/DistanceGridForceField.h"
-#include "RegisterModelToCollisionFactory.h"
+#include <vector_types.h>
+#include <sofa/gpu/cuda/mycuda.h>
 
-namespace sofadistancegrid
+
+namespace sofa::gpu::cuda
 {
-extern "C" {
-SOFA_SOFADISTANCEGRID_API void initExternalModule();
-SOFA_SOFADISTANCEGRID_API const char* getModuleName();
-SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
-SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
-SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
-SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
+
+extern "C"
+{
+    void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* contacts, void* map);
 }
 
-void initExternalModule()
+struct /*__align__(16)*/ GPUContact
 {
-    initSofaDistanceGrid();
-}
+    int p1;
+    float3 p2;
+    float distance;
+    float3 normal;
+};
 
-void initSofaDistanceGrid()
+struct /*__align__(8)*/ GPUTestEntry
 {
-    static bool first = true;
-    if (first)
+    int firstIndex;
+    int curSize;
+    int maxSize;
+    int newIndex;
+    int elem1,elem2;
+};
+
+__shared__ GPUTestEntry curTestEntry;
+
+__global__ void RigidContactMapperCuda3f_setPoints2_kernel(const GPUTestEntry* tests, const GPUContact* contacts, float3* map)
+{
+    if (threadIdx.x == 0)
+        curTestEntry = tests[blockIdx.x];
+
+    __syncthreads();
+
+    GPUContact c = contacts[curTestEntry.firstIndex + threadIdx.x];
+    if (threadIdx.x < curTestEntry.curSize)
     {
-        first = false;
+        map[curTestEntry.newIndex + threadIdx.x] = c.p2;
     }
-    sofa::component::collision::registerDistanceGridCollisionModel();
 }
 
-const char* getModuleName()
+void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* contacts, void* map)
 {
-    return sofadistancegrid::MODULE_NAME;
+    // round up to 16
+    //maxPoints = (maxPoints+15)&-16;
+    dim3 threads(maxPoints,1);
+    dim3 grid(nbTests,1);
+    {RigidContactMapperCuda3f_setPoints2_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)contacts, (float3*)map); mycudaDebugError("RigidContactMapperCuda3f_setPoints2_kernel");}
 }
 
-const char* getModuleVersion()
-{
-    return sofadistancegrid::MODULE_VERSION;
 }
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "A distance grid stores the distance to an object into a 3d regular grid.  "
-           "This is an efficient data structure to get a distance approximation for   "
-           "point in space. This is why it is often used to implement collisions.     ";
-}
-
-} /// namespace sofadistancegrid
