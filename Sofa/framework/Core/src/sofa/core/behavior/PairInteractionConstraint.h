@@ -143,7 +143,10 @@ public:
             {
                 arg->setAttribute("object2", object2);
             }
-            obj->parse(arg);
+            if (obj)
+            {
+                obj->parse(arg);
+            }
         }
 
         return obj;
