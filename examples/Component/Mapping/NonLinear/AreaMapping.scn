@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.05">
+
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [AreaMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangleFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetTopologyContainer] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    </Node>
+
+    <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" computeBoundingBox="false" parallelODESolving="true"/>
+    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
+    <VisualStyle displayFlags="showWireframe showBehaviorModels"/>
+
+    <RegularGridTopology name="grid" nx="10" ny="10" nz="1" xmin="0" xmax="10" ymin="0" ymax="10" zmin="0" zmax="0" />
+    
+    <Node name="withAreaConstraints">
+        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EigenSimplicialLDLT name="linearSolver" template="CompressedRowSparseMatrixMat3x3d"/>
+
+        <TriangleSetTopologyContainer src="@../grid" name="topology"/>
+        <MechanicalObject template="Vec3" name="DoFs"/>
+        <GenericConstraintCorrection />
+
+        <MeshMatrixMass totalMass="1000" />
+
+        <BoxROI box="-1 9.9 -1 11 10.1 1" name="roi"/>
+        <FixedProjectiveConstraint indices="@roi.indices" />
+        <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" topology="@topology"/>
+
+        <Node name="constraintSpace">
+            <MechanicalObject template="Vec1" name="areaDoFs"/>
+            <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="Exact" applyRestPosition="true"/>
+            <RestShapeSpringsForceField template="Vec1" stiffness="15000"/>
+        </Node>
+
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+
+    <Node name="noConstraints">
+        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EigenSimplicialLDLT name="linearSolver" template="CompressedRowSparseMatrixMat3x3d"/>
+
+        <TriangleSetTopologyContainer src="@../grid" name="topology"/>
+        <MechanicalObject template="Vec3" name="DoFs"/>
+        <GenericConstraintCorrection />
+
+        <MeshMatrixMass totalMass="1000" />
+
+        <BoxROI box="-1 9.9 -1 11 10.1 1" name="roi"/>
+        <FixedProjectiveConstraint indices="@roi.indices" />
+        <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" topology="@topology"/>
+
+        <Node name="constraintSpace">
+            <MechanicalObject template="Vec1" name="areaDoFs"/>
+            <AreaMapping name="areaMapping" topology="@../topology"/>
+        </Node>
+
+        <Node name="Visu">
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+</Node>
