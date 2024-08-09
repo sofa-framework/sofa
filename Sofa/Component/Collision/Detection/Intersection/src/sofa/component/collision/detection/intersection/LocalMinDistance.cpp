@@ -272,6 +272,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     detection->value -= contactDist;
+    detection->barycentricCoords[0] = alpha;
+    detection->barycentricCoords[1] = beta;
 
     return 1;
 }
