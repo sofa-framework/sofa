@@ -60,7 +60,7 @@ void BaseForceField::buildStiffnessMatrix(StiffnessMatrix* matrix)
     if (hasEmittedWarning.insert(this).second)
     {
         dmsg_warning() << "buildStiffnessMatrix not implemented: for compatibility reason, the "
-            "deprecated API (addKToMatrix) will be used. This compatibility will disapear in the "
+            "deprecated API (addKToMatrix) will be used. This compatibility will disappear in the "
             "future, and will cause issues in simulations. Please update the code of " <<
             this->getClassName() << " to ensure right behavior: the function addKToMatrix "
             "has been replaced by buildStiffnessMatrix";

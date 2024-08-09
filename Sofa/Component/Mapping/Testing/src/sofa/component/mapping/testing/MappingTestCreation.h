@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
@@ -112,16 +113,21 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 
 
-    static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
-    static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
-    static const unsigned char TEST_applyJT_matrix = 4; ///< testing applyJT on matrices
-    static const unsigned char TEST_applyDJT = 8; ///< testing applyDJT 
-    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
-    static const unsigned char TEST_GEOMETRIC_STIFFNESS = TEST_applyDJT | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static constexpr unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
+    static constexpr unsigned char TEST_getK = 2; ///< testing getK used in assembly API
+    static constexpr unsigned char TEST_applyJT_matrix = 4; ///< testing applyJT on matrices
+    static constexpr unsigned char TEST_applyDJT = 8; ///< testing applyDJT
+    static constexpr unsigned char TEST_buildGeometricStiffnessMatrix = 16; ///< testing buildGeometricStiffnessMatrix
+    static constexpr unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static constexpr unsigned char TEST_GEOMETRIC_STIFFNESS = TEST_applyDJT | TEST_getK | TEST_buildGeometricStiffnessMatrix; ///< testing functions used in assembly API getJS getKS
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
+    Mapping_test()
+        : deltaRange(1,1000)
+        , errorMax(10)
+        , errorFactorDJ(1)
+        , flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         simulation = sofa::simulation::getSimulation();
 
@@ -272,7 +278,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         size_t Np = inDofs->getSize(), Nc=outDofs->getSize();
 
         InVecCoord xp(Np),xp1(Np);
-        InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);
+        InVecDeriv vp(Np),fp(Np);
+        InVecDeriv dfp_a(Np);
+        InVecDeriv dfp_b(Np);
+        InVecDeriv fp2(Np);
         OutVecCoord xc(Nc),xc1(Nc);
         OutVecDeriv vc(Nc),fc(Nc);
 
@@ -313,11 +322,20 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
         WriteInVecDeriv dxin = inDofs->writeDx();
         sofa::testing::copyToData( dxin, vp );
-        dfp.fill( InDeriv() );
-        sofa::testing::copyToData( fin, dfp );
+        dfp_a.fill( InDeriv() );
+        dfp_b.fill( InDeriv() );
+        sofa::testing::copyToData( fin, dfp_a );
+        sofa::testing::copyToData( fin, dfp_b );
+
+        //calling applyDJT without updateK before
+        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        sofa::testing::copyFromData( dfp_a, inDofs->readForces() ); // fp + df due to geometric stiffness
+        sofa::testing::copyToData( fin, fp2 ); //reset forces
+
+        //calling applyDJT after updateK
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
+        sofa::testing::copyFromData( dfp_b, inDofs->readForces() ); // fp + df due to geometric stiffness
 
         // Jacobian will be obsolete after applying new positions
         if( flags & TEST_getJs )
@@ -415,11 +433,23 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // ================ test applyDJT()
         if( flags & TEST_applyDJT )
         {
-            if(this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
+            //we test the function applyDJT in two different contexts because
+            //the implementation usually depends on the context
+            if (this->vectorMaxDiff(dfp_a,fp12) > errorThreshold * errorFactorDJ)
+            {
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << std::endl
-                    << "dfp    = " << dfp << std::endl
-                    << "fp2-fp = " << fp12 << std::endl;
+                ADD_FAILURE() << "applyDJT (no call to updateK) test failed" << std::endl
+                    << "dfp    = " << dfp_a << std::endl
+                    << "fp2-fp = " << fp12 << std::endl
+                    << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
+            }
+            if (this->vectorMaxDiff(dfp_b, fp12) > errorThreshold * errorFactorDJ)
+            {
+                succeed = false;
+                ADD_FAILURE() << "applyDJT (after call to updateK) test failed" << std::endl
+                    << "dfp    = " << dfp_b << std::endl
+                    << "fp2-fp = " << fp12 << std::endl
+                    << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
             }
         }
 
@@ -456,6 +486,46 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             }
         }
 
+        if( flags & TEST_buildGeometricStiffnessMatrix )
+        {
+            core::GeometricStiffnessMatrix testGeometricStiffness;
+
+            struct GeometricStiffnessAccumulator : core::MappingMatrixAccumulator
+            {
+                void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override
+                {
+                    assembledMatrix.add(row, col, value);
+                }
+                void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override
+                {
+                    assembledMatrix.add(row, col, value);
+                }
+
+                linearalgebra::EigenSparseMatrix<In,In> assembledMatrix;
+            } accumulator;
+
+            testGeometricStiffness.setMatrixAccumulator(&accumulator, mapping->getFromModel(), mapping->getFromModel());
+
+            accumulator.assembledMatrix.resize(mapping->getFromModel()->getSize() * In::deriv_total_size, mapping->getFromModel()->getSize() * In::deriv_total_size);
+            mapping->buildGeometricStiffnessMatrix(&testGeometricStiffness);
+            accumulator.assembledMatrix.compress();
+
+            InVecDeriv Kv(Np);
+            if( accumulator.assembledMatrix.compressedMatrix.nonZeros() )
+            {
+                accumulator.assembledMatrix.mult(Kv,vp);
+            }
+
+            // check that K.vp = dfp
+            if (this->vectorMaxDiff(Kv,fp12) > errorThreshold*errorFactorDJ )
+            {
+                succeed = false;
+                ADD_FAILURE() << "buildGeometricStiffnessMatrix test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
+                              << "Kv    = " << Kv << std::endl
+                              << "dfp = " << fp12 << std::endl;
+            }
+        }
+
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << this->seed << std::endl;}
         return succeed;
@@ -465,7 +535,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     /** Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
      * The mapping is initialized using the first parameter,
-     * @warning this version supposes the mapping initialization does not depends on child positions
+     * @warning this version supposes the mapping initialization does not depend on child positions
      * otherwise, use the runTest functions with 4 parameters
      * the child position is computed from parent position and compared with the expected one.
      * Additionally, the Jacobian-related methods are tested using finite differences.
