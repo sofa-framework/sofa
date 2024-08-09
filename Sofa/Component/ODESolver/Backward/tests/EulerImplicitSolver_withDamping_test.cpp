@@ -61,6 +61,7 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
         sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
 
         // avoid warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});
@@ -78,6 +79,7 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
             { "threshold", simpleapi::str(1e-15)},
             });
         simpleapi::createObject(dampedParticule, "MechanicalObject", {
+            { "template", simpleapi::str("Vec3")},
             { "position", simpleapi::str(zeroVec3)},
             { "velocity", simpleapi::str(oneVec3)},
             { "force", simpleapi::str(zeroVec3)},
@@ -101,10 +103,11 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
         for(int i=0; i<2500; i++)
             sofa::simulation::node::animate(root.get(), 0.02);
 
-        std::vector<MechanicalObject<sofa::defaulttype::Vec3dTypes>*> meca;
-        root->get<MechanicalObject<sofa::defaulttype::Vec3dTypes>>(&meca,std::string("mecaConstraint"),root->SearchDown);
+        // access the MechanicalObect (access position of the dampedParticule)
+        typename MechanicalObject<sofa::defaulttype::Vec3dTypes>::SPtr dofs = dampedParticule->get<MechanicalObject<sofa::defaulttype::Vec3dTypes>>(root->SearchDown);
+        sofa::defaulttype::Vec3dTypes::Coord position = dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
 
-        sofa::defaulttype::Vec3dTypes::Coord position = meca[0]->read(core::ConstVecCoordId::position())->getValue()[0];
+        // save it as Vec3d for comparison with expected result
         Vec3d finalPosition(position[0], position[1], position[2]);
 
         // Position at t∞ is (10,10,10), see https://github.com/sofa-framework/sofa/pull/4848#issuecomment-2263947900
