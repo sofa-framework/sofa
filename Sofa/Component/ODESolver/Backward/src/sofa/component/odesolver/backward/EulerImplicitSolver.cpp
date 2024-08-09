@@ -123,7 +123,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         SCOPED_TIMER("ComputeForce");
         mop->setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        mop.computeForce(f);
+        mop.computeForce(f);                                                               //f = Kx + Bv
 
         msg_info() << "EulerImplicitSolver, initial f = " << f;
     }
@@ -138,15 +138,15 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         // new more powerful visitors
 
         // force in the current configuration
-        b.eq(f,1.0/tr);                                                                         // b = f0
+        b.eq(f,1.0/tr);                                                                    // b = f
 
         msg_info() << "EulerImplicitSolver, f = " << f;
 
         // add the change of force due to stiffness + Rayleigh damping
-        mop.addMBKv(b, -d_rayleighMass.getValue(), 1, h + d_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
+        mop.addMBKv(b, -d_rayleighMass.getValue(), 0, h + d_rayleighStiffness.getValue()); // b =  f + ( rm M + (h+rs) K ) v
 
         // integration over a time step
-        b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
+        b.teq(h*tr);                                                                       // b = h(f + ( rm M + (h+rs) K ) v )
     }
 
     msg_info() << "EulerImplicitSolver, b = " << b;
