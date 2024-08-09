@@ -28,6 +28,10 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+// Tags representing the type of elements (3D materials or 2D materials)
+struct _2DMaterials{};
+struct _3DMaterials{};
+
 template<class DataTypes>
 class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>
 {
@@ -38,7 +42,7 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    Data<Real> d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
+    Data<VecReal > d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
     Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
 
     /// Link to be set to the topology container in the component graph.
@@ -47,16 +51,34 @@ public:
     static VecReal GetDefaultYoungModulusValue();
 
     BaseLinearElasticityFEMForceField();
+
     void init() override;
 
     void setPoissonRatio(Real val);
     void setYoungModulus(Real val);
 
     Real getYoungModulusInElement(sofa::Size elementId);
+    Real getPoissonRatioInElement(sofa::Size elementId);
+
+    static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio);
+    static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio);
+
+protected:
+
+    static constexpr Real defaultYoungModulusValue = 5000;
+    static constexpr Real defaultPoissonRatioValue = 0.45;
+
+    void checkPoissonRatio();
+    void checkYoungModulus();
 };
+
+//instances of types of materials
+static constexpr _2DMaterials _2DMat {};
+static constexpr _3DMaterials _3DMat {};
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Rigid3Types>;
 #endif
 
 }

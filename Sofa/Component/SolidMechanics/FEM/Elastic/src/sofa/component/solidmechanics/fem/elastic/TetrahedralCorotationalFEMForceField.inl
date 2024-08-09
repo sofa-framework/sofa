@@ -369,7 +369,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 {
     const Real youngModulusElement = this->getYoungModulusInElement(tetrahedronId);
     const Real youngModulus = youngModulusElement*(Real)localStiffnessFactor;
-    const Real poissonRatio = this->d_poissonRatio.getValue();
+    const Real poissonRatio = this->getPoissonRatioInElement(tetrahedronId);
 
     materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
     materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =

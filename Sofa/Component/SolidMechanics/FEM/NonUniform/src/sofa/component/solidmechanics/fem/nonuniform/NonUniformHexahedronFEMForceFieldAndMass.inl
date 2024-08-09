@@ -283,7 +283,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     //       //given an elementIndice, find the 8 others from the sparse grid
     //       //compute MaterialStiffness
     MaterialStiffness material;
-    computeMaterialStiffness(material, this->getYoungModulusInElement(0), this->d_poissonRatio.getValue());
+    computeMaterialStiffness(material, this->getYoungModulusInElement(0), this->getPoissonRatioInElement(0));
 
     //Nodes are found using Sparse Grid
     Real stiffnessCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);

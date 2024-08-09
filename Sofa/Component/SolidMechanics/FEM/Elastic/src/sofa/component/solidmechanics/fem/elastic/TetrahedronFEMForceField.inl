@@ -128,7 +128,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
     _initialPoints.setOriginalData(&d_initialPoints);
     f_method.setOriginalData(&d_method);
-    _poissonRatio.setOriginalData(&this->d_poissonRatio);
     _youngModulus.setOriginalData(&this->d_youngModulus);
     _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
     _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
@@ -286,7 +285,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
     const VecReal& localStiffnessFactor = d_localStiffnessFactor.getValue();
     const Real youngModulusElement = this->getYoungModulusInElement(i);
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
-    const Real poissonRatio = this->d_poissonRatio.getValue();
+    const Real poissonRatio = this->getPoissonRatioInElement(i);
 
     materialsStiffnesses[i][0][0] = materialsStiffnesses[i][1][1] = materialsStiffnesses[i][2][2] = 1;
     materialsStiffnesses[i][0][1] = materialsStiffnesses[i][0][2] = materialsStiffnesses[i][1][0]
@@ -1293,23 +1292,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
-    const VecReal& youngModulus = this->d_youngModulus.getValue();
-    assert(!youngModulus.empty());
-    minYoung=youngModulus[0];
-    maxYoung=youngModulus[0];
-    for (unsigned i=0; i<youngModulus.size(); i++)
-    {
-        if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-        if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
-    }
-
-    const Real& poissonRatio = this->d_poissonRatio.getValue();
-    if (poissonRatio < 0 || poissonRatio >= 0.5)
-    {
-        this->d_poissonRatio.setValue((poissonRatio < 0) ? 0.0 : 0.499);
-        msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
-    }
-
     if (d_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
     {
         this->f_listening.setValue(true);
@@ -1320,6 +1302,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
     BaseLinearElasticityFEMForceField<DataTypes>::init();
+
+    const VecReal& youngModulus = this->d_youngModulus.getValue();
+    if (youngModulus.empty())
+    {
+        this->setYoungModulus(BaseLinearElasticityFEMForceField<DataTypes>::defaultYoungModulusValue);
+    }
+    assert(!youngModulus.empty());
+    const auto [yMin, yMax] = std::minmax_element(youngModulus.begin(), youngModulus.end());
+    minYoung = *yMin;
+    maxYoung = *yMax;
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";

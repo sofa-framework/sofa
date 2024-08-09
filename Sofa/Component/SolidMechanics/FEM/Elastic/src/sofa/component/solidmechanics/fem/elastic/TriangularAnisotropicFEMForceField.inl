@@ -125,13 +125,13 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     d_localFiberDirection.beginEdit();
     //f_poisson2.setValue(Inherited::d_poisson.getValue()*(d_young2.getValue()/Inherited::d_young.getValue()));
     type::vector<Real> poiss2;
-    const type::vector<Real> & youngArray = Inherited::d_young.getValue();
     const type::vector<Real> & young2Array = d_young2.getValue();
-    const type::vector<Real> & poissonArray = Inherited::d_poisson.getValue();
 
-    for (unsigned int i = 0; i < poissonArray.size(); i++)
+    for (unsigned int i = 0; i < this->m_topology->getNbTriangles(); i++)
     {
-        poiss2.push_back( poissonArray[i]*(young2Array[i]/youngArray[i]));
+        const auto elementYoungModulus = this->getYoungModulusInElement(i);
+        const auto elementPoissonRatio = this->getPoissonRatioInElement(i);
+        poiss2.push_back( elementPoissonRatio*(young2Array[i]/elementYoungModulus));
     }
 
     f_poisson2.setValue(poiss2);
@@ -183,19 +183,20 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = d_young2.getValue()/(1-Inherited::d_poisson.getValue()*f_poisson2.getValue());
     Q66 = (Real)(Inherited::d_young.getValue() / (2.0*(1 + Inherited::d_poisson.getValue())));*/
 
-    const type::vector<Real> & youngArray = Inherited::d_young.getValue();
     const type::vector<Real> & young2Array = d_young2.getValue();
-    const type::vector<Real> & poissonArray = Inherited::d_poisson.getValue();
     const type::vector<Real> & poisson2Array = f_poisson2.getValue();
 
     unsigned int index = 0;
-    if (i < (int) youngArray.size() )
+    if (i < (int) young2Array.size() )
         index = i;
 
-    Q11 = youngArray[index] /(1-poissonArray[index]*poisson2Array[index]);
-    Q12 = poissonArray[index]*young2Array[index]/(1-poissonArray[index]*poisson2Array[index]);
-    Q22 = young2Array[index]/(1-poissonArray[index]*poisson2Array[index]);
-    Q66 = (Real)(youngArray[index] / (2.0*(1 + poissonArray[index])));
+    const auto elementYoungModulus = this->getYoungModulusInElement(i);
+    const auto elementPoissonRatio = this->getPoissonRatioInElement(i);
+
+    Q11 = elementYoungModulus /(1-elementPoissonRatio*poisson2Array[index]);
+    Q12 = elementPoissonRatio*young2Array[index]/(1-elementPoissonRatio*poisson2Array[index]);
+    Q22 = young2Array[index]/(1-elementPoissonRatio*poisson2Array[index]);
+    Q66 = (Real)(elementYoungModulus / (2.0*(1 + elementPoissonRatio)));
 
     T[0] = (initialPoints)[v2]-(initialPoints)[v1];
     T[1] = (initialPoints)[v3]-(initialPoints)[v1];
