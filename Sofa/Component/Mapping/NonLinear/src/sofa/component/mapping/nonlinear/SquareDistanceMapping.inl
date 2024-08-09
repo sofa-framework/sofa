@@ -192,11 +192,13 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
 
                 SReal tmp = 2*childForce[i][0]*kfactor;
 
-                InDeriv df = (parentDisplacement[links[i][0]]-parentDisplacement[links[i][1]])*tmp;
+                typename In::DPos df = tmp * (
+                    In::getDPos(parentDisplacement[links[i][0]]) -
+                    In::getDPos(parentDisplacement[links[i][1]]));
                 // it is symmetric so    -df  = (parentDisplacement[links[i][1]]-parentDisplacement[links[i][0]])*tmp;
 
-                parentForce[links[i][0]] += df;
-                parentForce[links[i][1]] -= df;
+                In::setDPos(parentForce[links[i][0]], In::getDPos(parentForce[links[i][0]]) + df);
+                In::setDPos(parentForce[links[i][1]], In::getDPos(parentForce[links[i][1]]) - df);
             }
         }
     }
