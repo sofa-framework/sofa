@@ -252,7 +252,7 @@ void AreaMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
                     (*m_vertices)[triangle[2]]
                 };
 
-                //it's a 9x9 matrix, where each entry is a 3x3 matrix
+                //it's a 3x3 matrix, where each entry is a 3x3 matrix
                 const auto d2Area_d2x = computeSecondDerivativeArea(v);
 
                 for (unsigned int i = 0; i < 3; ++i)
@@ -301,7 +301,7 @@ void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
                 (*m_vertices)[triangle[2]]
             };
 
-            //it's a 9x9 matrix, where each entry is a 3x3 matrix
+            //it's a 3x3 matrix, where each entry is a 3x3 matrix
             const auto d2Area_d2x = computeSecondDerivativeArea(v);
 
             for (unsigned int i = 0; i < 3; ++i)
@@ -351,7 +351,7 @@ void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
                 (*m_vertices)[triangle[2]]
             };
 
-            //it's a 9x9 matrix, where each entry is a 3x3 matrix
+            //it's a 3x3 matrix, where each entry is a 3x3 matrix
             const auto d2Area_d2x = computeSecondDerivativeArea(v);
 
             for (unsigned int i = 0; i < 3; ++i)
