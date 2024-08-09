@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
-#include <sofa/type/Mat.h>
-
+#include <sofa/component/mapping/nonlinear/VolumeMapping.h>
+#include <sofa/component/mapping/testing/MappingTestCreation.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -95,43 +96,6 @@ TEST(VolumeMapping, firstDerivative)
     }
 }
 
-sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, SReal> >
-computeSecondDerivativeVolume(
-    const sofa::type::fixed_array<sofa::type::Vec3, 4>& tetrahedronVertices)
-{
-    const sofa::type::fixed_array<sofa::type::Vec3, 3> v {
-        tetrahedronVertices[1] - tetrahedronVertices[0],
-        tetrahedronVertices[2] - tetrahedronVertices[0],
-        tetrahedronVertices[3] - tetrahedronVertices[0]
-    };
-
-    const auto H12 = sofa::type::crossProductMatrix(v[1] - v[2]) / 6;
-    const auto H13 = sofa::type::crossProductMatrix(v[2] - v[0]) / 6;
-    const auto H14 = sofa::type::crossProductMatrix(v[0] - v[1]) / 6;
-
-    const auto H23 = sofa::type::crossProductMatrix(-v[2]) / 6;
-    const auto H24 = sofa::type::crossProductMatrix(v[1]) / 6;
-    const auto H34 = sofa::type::crossProductMatrix(-v[0]) / 6;
-
-    sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, SReal> > hessian;
-
-    hessian(0, 1) = H12;
-    hessian(1, 0) = H12.transposed();
-    hessian(0, 2) = H13;
-    hessian(2, 0) = H13.transposed();
-    hessian(0, 3) = H14;
-    hessian(3, 0) = H14.transposed();
-    hessian(1, 2) = H23;
-    hessian(2, 1) = H23.transposed();
-    hessian(1, 3) = H24;
-    hessian(3, 1) = H24.transposed();
-    hessian(2, 3) = H34;
-    hessian(3, 2) = H34.transposed();
-
-    return hessian;
-}
-
-
 TEST(VolumeMapping, secondDerivative)
 {
     constexpr type::fixed_array<sofa::type::Vec3, 4> vertices{
@@ -141,7 +105,7 @@ TEST(VolumeMapping, secondDerivative)
         sofa::type::Vec3{-76, 3, -12}
     };
 
-    const auto dV2 = computeSecondDerivativeVolume(vertices);
+    const auto dV2 = component::mapping::nonlinear::VolumeMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>::computeSecondDerivativeVolume(vertices);
 
     for (unsigned int i = 0; i < 4; ++i)
     {
@@ -180,5 +144,52 @@ TEST(VolumeMapping, secondDerivative)
 }
 
 
+/**
+ * Test suite for VolumeMapping.
+ */
+template <typename VolumeMapping>
+struct VolumeMappingTest : public mapping_test::Mapping_test<VolumeMapping>
+{
+    using In = typename VolumeMapping::In;
+    using Out = typename VolumeMapping::Out;
+
+    bool test()
+    {
+        VolumeMapping* map = static_cast<VolumeMapping*>( this->mapping );
+        sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
+
+        const auto tetrahedra = sofa::core::objectmodel::New<component::topology::container::dynamic::TetrahedronSetTopologyContainer>();
+        this->root->addObject(tetrahedra);
+        tetrahedra->addTetra(0, 1, 2, 3);
+
+        // parent positions
+        VecCoord_t<In> incoord(4);
+        In::set( incoord[0], 0,0,0 );
+        In::set( incoord[1], 1,0,0 );
+        In::set( incoord[2], 0,1,0 );
+        In::set( incoord[3], 0,0,1 );
+
+        // expected child positions
+        VecCoord_t<Out> expectedoutcoord;
+        expectedoutcoord.emplace_back( 1 / 6_sreal );
+
+        return this->runTest( incoord, expectedoutcoord );
+    }
+
+};
+
+
+using ::testing::Types;
+typedef Types<
+    component::mapping::nonlinear::VolumeMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types>
+> DataTypes;
+
+TYPED_TEST_SUITE( VolumeMappingTest, DataTypes );
+
+// test case
+TYPED_TEST( VolumeMappingTest , test )
+{
+    ASSERT_TRUE(this->test());
+}
 
 }
