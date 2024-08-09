@@ -55,12 +55,11 @@ void MeanComputation<DataTypes>::init()
 
     for (auto mObj : mechObjs)
     {
-        core::objectmodel::TagSet tags = mObj->getTags();
+        const core::objectmodel::TagSet& tags = mObj->getTags();
         if (tags.find(core::objectmodel::Tag("MeanOutput")) != tags.end())
         {
             mObj->x.setValue(*d_result.beginEdit());
             mObj->x.setParent(&d_result, std::string("to"));
-
         }
         else
         {

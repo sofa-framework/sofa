@@ -56,23 +56,23 @@ void DefaultVisualManagerLoop::init()
 }
 
 
-void DefaultVisualManagerLoop::initStep(sofa::core::ExecParams* params)
+void DefaultVisualManagerLoop::initStep(sofa::core::visual::VisualParams* vparams)
 {
     if ( !l_node ) return;
-    l_node->execute<VisualInitVisitor>(params);
+    l_node->execute<VisualInitVisitor>(vparams);
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
-    l_node->execute<VisualUpdateVisitor>(params);
+    l_node->execute<VisualUpdateVisitor>(vparams);
 }
 
-void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
+void DefaultVisualManagerLoop::updateStep(sofa::core::visual::VisualParams* vparams)
 {
     if ( !l_node ) return;
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("UpdateVisual");
 #endif
 
-    l_node->execute<VisualUpdateVisitor>(params);
+    l_node->execute<VisualUpdateVisitor>(vparams);
     
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("UpdateVisual");

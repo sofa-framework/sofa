@@ -59,8 +59,6 @@ protected:
 
 public:
     void init() override;
-    void initVisual() override;
-    void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;
 

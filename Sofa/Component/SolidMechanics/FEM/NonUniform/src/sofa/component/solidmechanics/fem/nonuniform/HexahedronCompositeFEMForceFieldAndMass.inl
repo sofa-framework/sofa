@@ -475,7 +475,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //       //given an elementIndice, find the 8 others from the sparse grid
             //       //compute MaterialStiffness
             MaterialStiffness material;
-            this->computeMaterialStiffness(material, this->d_youngModulus.getValue(), this->d_poissonRatio.getValue());
+            this->computeMaterialStiffness(material, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue());
 
 
             HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->d_elementStiffnesses.beginEdit())[i], material, nodes, i, this->_sparseGrid->getStiffnessCoef(i )); // classical stiffness

@@ -70,7 +70,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     this->setObjectName(name);
 
     m_backend = std::make_unique<GLBackend>();
-    pick = new GLPickHandler();
+    pick = std::make_unique<GLPickHandler>();
 
     groot = nullptr;
     initTexturesDone = false;

@@ -62,7 +62,7 @@ using namespace gpu::cuda;
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::postInit()
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (!map.empty())
     {
         this->data.init(this->fromModel->getSize(), map);
@@ -74,7 +74,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply(
 {
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_apply(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -85,7 +85,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ
 {
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -94,7 +94,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (map.size() == 0) return;
 
     InVecDeriv& out = *dOut.beginEdit();
@@ -112,7 +112,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::postInit()
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (!map.empty())
     {
         this->data.init(this->fromModel->getSize(), map);
@@ -124,7 +124,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 {
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_apply(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -135,7 +135,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 {
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -144,7 +144,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (map.size() == 0) return;
 
     InVecDeriv& out = *dOut.beginEdit();
@@ -160,7 +160,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::postInit()
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (!map.empty())
     {
         this->data.init(this->fromModel->getSize(), map);
@@ -172,7 +172,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 {
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_3f_apply(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -183,7 +183,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 {
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_3f_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -192,7 +192,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (map.size() == 0) return;
 
     InVecDeriv& out = *dOut.beginEdit();
@@ -208,7 +208,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::postInit()
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (!map.empty())
     {
         this->data.init(this->fromModel->getSize(), map);
@@ -220,7 +220,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 {
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_3f1_apply(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -231,7 +231,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 {
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_3f1_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     dOut.endEdit();
@@ -240,7 +240,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 template <>
 void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::applyJT( const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    const IndexArray& map = this->f_indices.getValue();
+    const IndexArray& map = this->d_indices.getValue();
     if (map.size() == 0) return;
 
     InVecDeriv& out = *dOut.beginEdit();

@@ -24,7 +24,7 @@
 #include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactoryJson.h>
-
+#include <sofa/simpleapi/SimpleApi.h>
 
 
 namespace sofa
@@ -68,4 +68,10 @@ TEST(ObjectFactoryJson, oneTemplatedObject)
     EXPECT_EQ(dump, expectedDump);
 }
 
+TEST(ObjectFactoryJson, mainInstance)
+{
+    EXPECT_TRUE(sofa::simpleapi::importPlugin("Sofa.Component"));
+    const auto dump = core::ObjectFactoryJson::dump(core::ObjectFactory::getInstance());
+    EXPECT_NE(dump.find("MechanicalObject"), std::string::npos);
+}
 }

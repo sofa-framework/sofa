@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
@@ -54,8 +54,6 @@ namespace sofa::component::solidmechanics::fem::elastic
 template <class DataTypes>
 HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     : d_method(initData(&d_method, std::string("large"), "method", "\"large\" or \"polar\" displacements"))
-    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.45f, "poissonRatio", ""))
-    , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", ""))
     , d_hexahedronInfo(initData(&d_hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
 {
 
@@ -68,12 +66,8 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
 
-    d_poissonRatio.setRequired(true);
-    d_youngModulus.setRequired(true);
-
     f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&d_poissonRatio);
-    f_youngModulus.setParent(&d_youngModulus);
+    f_poissonRatio.setParent(&this->d_poissonRatio);
     hexahedronInfo.setParent(&d_hexahedronInfo);
 
 }
@@ -88,9 +82,9 @@ HexahedralFEMForceField<DataTypes>::~HexahedralFEMForceField()
 template <class DataTypes>
 void HexahedralFEMForceField<DataTypes>::init()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    this->getContext()->get(_topology);
+    _topology = this->l_topology.get();
 
     if (_topology==nullptr)
     {
@@ -417,7 +411,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, d_youngModulus.getValue(), d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes);
 
     d_hexahedronInfo.endEdit();
@@ -514,7 +508,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
         hexahedronInf[i].rotatedInitialElements[j] = R_0_1 * nodes[j];
     }
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, d_youngModulus.getValue(), d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes );
 
     d_hexahedronInfo.endEdit();

@@ -40,7 +40,7 @@ DirectionProjectiveConstraint<DataTypes>::DirectionProjectiveConstraint()
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , d_direction( initData(&d_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new DirectionProjectiveConstraintInternalData<DataTypes>())    
+    , data(std::make_unique<DirectionProjectiveConstraintInternalData<DataTypes>>())
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -54,7 +54,6 @@ DirectionProjectiveConstraint<DataTypes>::DirectionProjectiveConstraint()
 template <class DataTypes>
 DirectionProjectiveConstraint<DataTypes>::~DirectionProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>

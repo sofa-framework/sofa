@@ -32,7 +32,7 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <sofa/component/engine/select/SphereROI.h>
+#include <sofa/component/engine/select/SphereROI.inl>
 using sofa::component::engine::select::SphereROI ;
 
 #include <sofa/core/visual/VisualParams.h>
@@ -104,6 +104,8 @@ struct SphereROI_test : public BaseSimulationTest,
     /// Shouldn't crash without input data
     void initTest()
     {
+        // Should not crash but should emit an error that it did not find any position
+        EXPECT_MSG_EMIT(Error);
         EXPECT_NO_THROW(m_thisObject->init()) << "The component should succeed in being initialized.";
     }
 

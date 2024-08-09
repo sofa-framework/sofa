@@ -23,7 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/helper/set.h>
+#include <set>
 #include <sofa/type/vector.h>
 
 

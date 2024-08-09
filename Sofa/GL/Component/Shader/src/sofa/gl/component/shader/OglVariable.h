@@ -61,12 +61,17 @@ protected:
     ~OglVariable() override {}
 public:
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
+    virtual void pushValue() = 0;
+    
     void init() override { OglShaderElement::init(); }
-    void initVisual() override { core::visual::VisualModel::initVisual(); }
-    void pushValue() { initVisual(); }
-    void reinit() override { init();	initVisual(); }
-	void updateVisual() override { initVisual(); }
-
+    void doInitVisual(const core::visual::VisualParams*) override
+    {
+        pushValue();
+    }
+    void reinit() override { init();	pushValue(); }
+    void doUpdateVisual(const core::visual::VisualParams* ) override { pushValue(); }
+    
+    
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_VARIABLE; }
     // Returns the value of the shader element
@@ -85,7 +90,7 @@ public:
     OglIntVariable();
     virtual ~OglIntVariable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglInt2Variable : public OglVariable<type::Vec<2, int> >
@@ -97,7 +102,7 @@ public:
     OglInt2Variable();
     virtual ~OglInt2Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglInt3Variable : public OglVariable<type::Vec<3, int> >
@@ -108,7 +113,7 @@ public:
     OglInt3Variable();
     virtual ~OglInt3Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglInt4Variable : public OglVariable<type::Vec<4, int> >
@@ -119,7 +124,7 @@ public:
     OglInt4Variable();
     virtual ~OglInt4Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 /** SINGLE FLOAT VARIABLE **/
@@ -132,7 +137,7 @@ public:
     OglFloatVariable();
     virtual ~OglFloatVariable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloat2Variable : public OglVariable<type::Vec2f>
@@ -143,7 +148,7 @@ public:
     OglFloat2Variable();
     virtual ~OglFloat2Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloat3Variable : public OglVariable<type::Vec3f>
@@ -154,7 +159,7 @@ public:
     OglFloat3Variable();
     virtual ~OglFloat3Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloat4Variable : public OglVariable<type::Vec4f>
@@ -165,7 +170,7 @@ public:
     OglFloat4Variable();
     virtual ~OglFloat4Variable() { }
 
-    void initVisual() override;
+    void pushValue() override;
 };
 
 /** INT VECTOR VARIABLE **/
@@ -178,7 +183,7 @@ public:
     virtual ~OglIntVectorVariable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglIntVector2Variable : public OglIntVectorVariable
@@ -191,7 +196,7 @@ public:
     ~OglIntVector2Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglIntVector3Variable : public OglIntVectorVariable
@@ -203,7 +208,7 @@ public:
     ~OglIntVector3Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglIntVector4Variable : public OglIntVectorVariable
@@ -215,7 +220,7 @@ public:
     ~OglIntVector4Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 /** FLOAT VECTOR VARIABLE **/
@@ -228,7 +233,7 @@ public:
     virtual ~OglFloatVectorVariable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloatVector2Variable : public OglVariable<type::vector<type::Vec2f> >
@@ -240,7 +245,7 @@ public:
     virtual ~OglFloatVector2Variable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloatVector3Variable : public OglVariable<type::vector<type::Vec3f> >
@@ -252,7 +257,7 @@ public:
     virtual ~OglFloatVector3Variable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglFloatVector4Variable : public OglVariable<type::vector<type::Vec4f> >
@@ -264,7 +269,7 @@ public:
     virtual ~OglFloatVector4Variable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 /** Matrix VARIABLE **/
@@ -281,7 +286,7 @@ public:
     virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix3Variable : public OglMatrix2Variable
@@ -293,7 +298,7 @@ public:
     ~OglMatrix3Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix4Variable : public OglMatrix2Variable
@@ -305,7 +310,7 @@ public:
     ~OglMatrix4Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix2x3Variable : public OglMatrix2Variable
@@ -317,7 +322,7 @@ public:
     ~OglMatrix2x3Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix3x2Variable : public OglMatrix2Variable
@@ -329,7 +334,7 @@ public:
     ~OglMatrix3x2Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix2x4Variable : public OglMatrix2Variable
@@ -341,7 +346,7 @@ public:
     ~OglMatrix2x4Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix4x2Variable : public OglMatrix2Variable
@@ -353,7 +358,7 @@ public:
     ~OglMatrix4x2Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix3x4Variable : public OglMatrix2Variable
@@ -365,7 +370,7 @@ public:
     ~OglMatrix3x4Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix4x3Variable : public OglMatrix2Variable
@@ -377,7 +382,7 @@ public:
     ~OglMatrix4x3Variable() override { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 };
 
 class SOFA_GL_COMPONENT_SHADER_API OglMatrix4VectorVariable : public OglVariable<type::vector<type::Mat4x4f> >
@@ -389,7 +394,7 @@ public:
     virtual ~OglMatrix4VectorVariable() { }
 
     void init() override;
-    void initVisual() override;
+    void pushValue() override;
 
     Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
     virtual void setTranspose( const bool& v ) { transpose.setValue(v); }

@@ -50,7 +50,7 @@ public:
     Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    core::topology::HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
+    Data< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
     Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;

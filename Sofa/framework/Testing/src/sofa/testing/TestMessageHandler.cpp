@@ -219,15 +219,14 @@ void MainGtestMessageHandlerPrivate::popFrame(Message::Type type){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 MessageAsTestFailure::MessageAsTestFailure(Message::Type type,
                                                const char* filename, int lineno)
+    : m_frame(std::make_unique<GtestMessageFrameFailure>(type, filename, lineno))
 {
-    m_frame = new GtestMessageFrameFailure(type, filename, lineno) ;
-    MainGtestMessageHandlerPrivate::pushFrame(type, m_frame) ;
+    MainGtestMessageHandlerPrivate::pushFrame(type, m_frame.get()) ;
 }
 
 MessageAsTestFailure::~MessageAsTestFailure(){
     MainGtestMessageHandlerPrivate::popFrame( m_frame->m_type ) ;
     m_frame->finalize() ;
-    delete m_frame ;
 }
 
 ExpectMessage::ExpectMessage(Message::Type type,

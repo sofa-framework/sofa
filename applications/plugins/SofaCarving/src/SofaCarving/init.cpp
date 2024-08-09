@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaCarving/init.h>
 
-namespace sofa::component
+namespace sofacarving
 {
 //Here are just several convenient functions to help user to know what contains the plugin
 
@@ -36,11 +36,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -69,10 +65,13 @@ const char* getModuleComponentList()
     return "CarvingManager";
 }
 
-
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
-} // namespace sofa::component
+} // namespace sofacarving

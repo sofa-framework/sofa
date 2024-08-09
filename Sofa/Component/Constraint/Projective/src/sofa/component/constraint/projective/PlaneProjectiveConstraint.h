@@ -103,7 +103,7 @@ public:
     SingleLink<PlaneProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    PlaneProjectiveConstraintInternalData<DataTypes>* data;
+    std::unique_ptr<PlaneProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class PlaneProjectiveConstraintInternalData<DataTypes>;
 
 

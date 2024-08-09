@@ -60,7 +60,6 @@ protected:
 
     Real m_dist;	// constraint violation
     Real m_thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
-    unsigned int m_cid;
 
 
     SlidingLagrangianConstraint();

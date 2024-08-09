@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/Utils.h>
 
 #if __has_include(<filesystem>)
@@ -79,7 +80,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, Utils::widenString(path).c_str());
+    StringCchCopy(szDir, MAX_PATH, sofa::helper::widenString(path).c_str());
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -104,7 +105,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 
     // Iterate over files and push them in the output vector
     do {
-        std::string filename = Utils::narrowString(ffd.cFileName);
+        std::string filename = sofa::helper::narrowString(ffd.cFileName);
         if (filename != "." && filename != "..")
             outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
@@ -138,7 +139,7 @@ bool FileSystem::createDirectory(const std::string& path)
 {
     std::string error = "FileSystem::createdirectory()";
 #ifdef WIN32
-    if (CreateDirectory(Utils::widenString(path).c_str(), nullptr) == 0)
+    if (CreateDirectory(sofa::helper::widenString(path).c_str(), nullptr) == 0)
     {
         DWORD errorCode = ::GetLastError();
         msg_error(error) << path << ": " << Utils::GetLastError();
@@ -161,7 +162,7 @@ bool FileSystem::createDirectory(const std::string& path)
 bool FileSystem::removeDirectory(const std::string& path)
 {
 #ifdef WIN32
-    if (RemoveDirectory(Utils::widenString(path).c_str()) == 0)
+    if (RemoveDirectory(sofa::helper::widenString(path).c_str()) == 0)
     {
         DWORD errorCode = ::GetLastError();
         msg_error("FileSystem::removedirectory()") << path << ": " << Utils::GetLastError();
@@ -182,7 +183,7 @@ bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
     ::SetLastError(0);
-    if (PathFileExists(Utils::widenString(path).c_str()) != 0)
+    if (PathFileExists(sofa::helper::widenString(path).c_str()) != 0)
         return true;
     else
     {
@@ -210,7 +211,7 @@ bool FileSystem::exists(const std::string& path)
 bool FileSystem::isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    const DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
+    const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;

@@ -54,7 +54,7 @@ class FastTetrahedralCorotationalForceField : public BaseLinearElasticityFEMForc
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField,DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;
     typedef typename DataTypes::Deriv       Deriv       ;

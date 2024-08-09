@@ -61,8 +61,9 @@ protected:
     Data<GLfloat> pointSize; ///< Point size (set if != 1, only for points rendering)
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
-    /// Suppress field for save as function
-    Data < bool > isEnabled;
+
+    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06")
+    DeprecatedAndRemoved isEnabled;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
@@ -102,12 +103,13 @@ protected:
 
     ~OglModel() override;
 public:
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     bool loadTexture(const std::string& filename) override;
     bool loadTextures() override;
 
     void initTextures();
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void init() override { VisualModelImpl::init(); }
 

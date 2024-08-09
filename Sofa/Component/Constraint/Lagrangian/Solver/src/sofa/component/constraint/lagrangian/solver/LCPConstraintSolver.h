@@ -32,7 +32,6 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 
-#include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 

@@ -55,7 +55,7 @@ void VisualManagerSecondaryPass::init()
     multiPassEnabled=checkMultipass(context);
 }
 
-void VisualManagerSecondaryPass::initVisual()
+void VisualManagerSecondaryPass::doInitVisual(const core::visual::VisualParams* vparams)
 {
     if (l_shader.get())
     {
@@ -79,7 +79,7 @@ void VisualManagerSecondaryPass::initVisual()
             m_shaderPostproc->fragFilename.addPath(fragFilename.getFullPath(),true);
 
         m_shaderPostproc->init();
-        m_shaderPostproc->initVisual();
+        m_shaderPostproc->initVisual(vparams);
     }
 
     initShaderInputTexId();

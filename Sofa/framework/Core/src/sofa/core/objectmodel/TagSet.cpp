@@ -20,18 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/TagSet.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa::core::objectmodel
 {
 
 TagSet::TagSet(const Tag& t)
 {
-    this->insert(t);
+    m_set.insert(t);
 }
 
 bool TagSet::includes(const Tag& t) const
 {
-    return this->count(t) > 0;
+    return m_set.count(t) > 0;
 }
 
 bool TagSet::includes(const TagSet& t) const
@@ -70,4 +71,135 @@ bool TagSet::includes(const TagSet& t) const
     return true;
 }
 
+TagSet::iterator TagSet::find(const Tag& _Keyval)
+{
+    return m_set.find(_Keyval);
+}
+
+TagSet::const_iterator TagSet::find(const Tag& _Keyval) const
+{
+    return m_set.find(_Keyval);
+}
+
+bool TagSet::empty() const noexcept
+{
+    return m_set.empty();
+}
+
+std::size_t TagSet::size() const noexcept
+{
+    return m_set.size();
+}
+
+std::size_t TagSet::count(const Tag& _Keyval) const
+{
+    return m_set.count(_Keyval);
+}
+
+TagSet::iterator TagSet::begin() noexcept
+{
+    return m_set.begin();
+}
+
+TagSet::const_iterator TagSet::begin() const noexcept
+{
+    return m_set.begin();
+}
+
+TagSet::iterator TagSet::end() noexcept
+{
+    return m_set.end();
+}
+
+TagSet::const_iterator TagSet::end() const noexcept
+{
+    return m_set.end();
+}
+
+TagSet::reverse_iterator TagSet::rbegin() noexcept
+{
+    return m_set.rbegin();
+}
+
+TagSet::const_reverse_iterator TagSet::rbegin() const noexcept
+{
+    return m_set.rbegin();
+}
+
+TagSet::reverse_iterator TagSet::rend() noexcept
+{
+    return m_set.rend();
+}
+
+TagSet::const_reverse_iterator TagSet::rend() const noexcept
+{
+    return m_set.rend();
+}
+
+TagSet::const_iterator TagSet::cbegin() const noexcept
+{
+    return m_set.cbegin();
+}
+
+TagSet::const_iterator TagSet::cend() const noexcept
+{
+    return m_set.cend();
+}
+
+TagSet::const_reverse_iterator TagSet::crbegin() const noexcept
+{
+    return m_set.crbegin();
+}
+
+TagSet::const_reverse_iterator TagSet::crend() const noexcept
+{
+    return m_set.crend();
+}
+
+std::pair<TagSet::iterator, bool> TagSet::insert(const value_type& _Val)
+{
+    return m_set.insert(_Val);
+}
+
+TagSet::iterator TagSet::erase(const_iterator _Where) noexcept
+{
+    return m_set.erase(_Where);
+}
+
+TagSet::iterator TagSet::erase(const_iterator _First,
+    const_iterator _Last) noexcept
+{
+    return m_set.erase(_First, _Last);
+}
+
+std::size_t TagSet::erase(const Tag& _Keyval) noexcept
+{
+    return m_set.erase(_Keyval);
+}
+
+void TagSet::clear() noexcept
+{
+    m_set.clear();
+}
+
+std::ostream& operator<<(std::ostream& o,
+    const sofa::core::objectmodel::TagSet& tagSet)
+{
+    o << sofa::helper::join(tagSet.begin(), tagSet.end(), ' ');
+    return o;
+}
+
+std::istream& operator>>(std::istream& in,
+    sofa::core::objectmodel::TagSet& tagSet)
+{
+    Tag t;
+    tagSet.clear();
+    while(in>>t)
+        tagSet.insert(t);
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
+}
+
+
 } //namespace sofa::core::objectmodel
+

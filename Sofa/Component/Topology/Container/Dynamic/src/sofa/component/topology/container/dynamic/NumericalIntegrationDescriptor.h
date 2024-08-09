@@ -25,7 +25,7 @@
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
+#include <set>
 
 namespace sofa::component::topology::container::dynamic
 {

@@ -94,6 +94,10 @@ protected:
 public:
 
     vector_device()
+        : vector_device(0)
+    {}
+
+    explicit vector_device(const Size n)
         : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -110,44 +114,26 @@ public:
         deviceReserveSize = 0;
 #endif
         clearSize = 0;
-    }
-    vector_device(Size n)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
-    {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
+
+        if (n > 0)
         {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
+            resize(n);
         }
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
-        clearSize = 0;
-        resize(n);
     }
+
     vector_device(const vector_device<T, MemoryManager, DataTypeInfoManager>& v)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
+        : vector_device()
     {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
-        {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
-        }
-        clearSize = 0;
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
         * this = v;
+    }
+
+    vector_device(const std::initializer_list<T>& t) : vector_device()
+    {
+        if (!std::empty(t))
+        {
+            fastResize(t.size());
+            std::copy(t.begin(), t.end(), hostPointer);
+        }
     }
 
     bool isHostValid() const

@@ -125,22 +125,26 @@ if(UNIX)
     endif()
 endif(UNIX)
 
+
 ### Windows config
 if(MSVC)
+    option(SOFA_USE_DEPENDENCY_PACK "Enable the use of the Windows Dependency Pack" ON)
     # WinDepPack
-    set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
-    if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
-        # force back to default value
-        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
-    endif()
-    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
-    if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
-    else()
-        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
-    endif()
-    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
-    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    if(SOFA_USE_DEPENDENCY_PACK)
+        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
+        if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
+            # force back to default value
+            set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
+        endif()
+        list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
+        if(CMAKE_CL_64)
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
+        else()
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
+        endif()
+        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
+        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    endif ()
 endif()
 
 ### Testing
@@ -164,27 +168,19 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+### Warn the user that the legacy option has been deleted and is useless now
+if(DEFINED SOFA_ENABLE_LEGACY_HEADERS)
+    message(WARNING "SOFA_ENABLE_LEGACY_HEADERS cmake option has been deleted in v24.12 and is now meaningless.")
+endif()
+
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 
 ### Extlibs
 add_subdirectory(extlibs)
 
-### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    message("Using legacy headers is enabled.")
-endif()
-
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
-
-### Compatibility
-# Deprecated (hollow) framework and component modules.
-# All depend on SOFA_ENABLE_LEGACY_HEADERS
-# Some still contain (maybe useful) components not moved in Sofa/ yet.
-# TODO: finally empty those remnants
-add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)

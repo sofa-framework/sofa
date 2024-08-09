@@ -86,7 +86,7 @@ void DataDisplay::init()
 }
 
 
-void DataDisplay::updateVisual()
+void DataDisplay::doUpdateVisual(const core::visual::VisualParams*)
 {
     computeNormals();
 }

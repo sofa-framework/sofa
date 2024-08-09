@@ -197,12 +197,12 @@ void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
 {
-    kineticEnergy=0;
-    potentialEnergy=0;
-    MechanicalComputeEnergyVisitor *energyVisitor = new MechanicalComputeEnergyVisitor(&mparams);
-    executeVisitor(energyVisitor);
-    kineticEnergy=energyVisitor->getKineticEnergy();
-    potentialEnergy=energyVisitor->getPotentialEnergy();
+    kineticEnergy = 0;
+    potentialEnergy = 0;
+    MechanicalComputeEnergyVisitor energyVisitor(&mparams);
+    executeVisitor(&energyVisitor);
+    kineticEnergy = energyVisitor.getKineticEnergy();
+    potentialEnergy = energyVisitor.getPotentialEnergy();
 }
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)

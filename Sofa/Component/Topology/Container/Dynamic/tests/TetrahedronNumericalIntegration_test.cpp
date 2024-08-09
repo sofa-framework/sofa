@@ -24,7 +24,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/set.h>
 // Including constraint, force and mass
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/container/dynamic/NumericalIntegrationDescriptor.h>

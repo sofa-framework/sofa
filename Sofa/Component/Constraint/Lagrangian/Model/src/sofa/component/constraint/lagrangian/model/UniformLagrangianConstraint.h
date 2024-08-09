@@ -54,8 +54,6 @@ public:
     sofa::Data<bool> d_constraintRestPos; ///< if false, constrains the pos to be zero / if true constraint the current position to stay at rest position
 protected:
 
-    unsigned int m_constraintIndex;
-
     UniformLagrangianConstraint();
 
     virtual type::vector<std::string> getConstraintIdentifiers() override final

@@ -33,7 +33,7 @@
 namespace sofa::gpu::cuda
 {
 
-//CPU MemoryManager
+//GPU MemoryManager
 template <class T >
 class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 {

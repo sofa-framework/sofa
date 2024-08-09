@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASETETRAHEDRONFEMFORCEFIELD_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASELINEARELASTICITYFEMFORCEFIELD_CPP
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-template class BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
 }

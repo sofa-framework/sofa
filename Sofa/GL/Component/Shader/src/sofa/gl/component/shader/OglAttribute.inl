@@ -71,7 +71,7 @@ void OglAttribute< size, type, DataTypes>::init()
 }
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::initVisual ()
+void OglAttribute< size, type, DataTypes>::doInitVisual (const core::visual::VisualParams* )
 {
     if ( _abo == GLuint(-1) ) glGenBuffers ( 1, &_abo );
     const type::vector<DataTypes>& data = value.getValue();
@@ -106,7 +106,7 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
 }
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::updateVisual()
+void OglAttribute< size, type, DataTypes>::doUpdateVisual(const core::visual::VisualParams* )
 {
      if ( _abo == GLuint(-1) )
          return; // initVisual not yet called

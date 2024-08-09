@@ -43,9 +43,6 @@ CompositingVisualLoop::CompositingVisualLoop()
 CompositingVisualLoop::~CompositingVisualLoop()
 {}
 
-void CompositingVisualLoop::initVisual()
-{}
-
 void CompositingVisualLoop::init()
 {
     if (!l_node)

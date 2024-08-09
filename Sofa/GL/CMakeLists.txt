@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL LANGUAGES CXX)
 
+# Detect if component is compiled outside SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+   find_package(Sofa.Config REQUIRED)
+endif()
+
 set(SOFAGLSRC_ROOT "src/sofa/gl")
 
 sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)

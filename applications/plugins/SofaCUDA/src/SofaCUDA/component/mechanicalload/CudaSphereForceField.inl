@@ -51,10 +51,10 @@ void SphereForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechanica
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.sphere.center = sphereCenter.getValue();
-    data.sphere.r = sphereRadius.getValue();
-    data.sphere.stiffness = stiffness.getValue();
-    data.sphere.damping = damping.getValue();
+    data.sphere.center = d_sphereCenter.getValue();
+    data.sphere.r = d_sphereRadius.getValue();
+    data.sphere.stiffness = d_stiffness.getValue();
+    data.sphere.damping = d_damping.getValue();
     f.resize(x.size());
     data.penetration.resize(x.size());
     SphereForceFieldCuda3f_addForce(x.size(), &data.sphere, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
@@ -85,10 +85,10 @@ void SphereForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::Mechanic
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.sphere.center = sphereCenter.getValue();
-    data.sphere.r = sphereRadius.getValue();
-    data.sphere.stiffness = stiffness.getValue();
-    data.sphere.damping = damping.getValue();
+    data.sphere.center = d_sphereCenter.getValue();
+    data.sphere.r = d_sphereRadius.getValue();
+    data.sphere.stiffness = d_stiffness.getValue();
+    data.sphere.damping = d_damping.getValue();
     f.resize(x.size());
     data.penetration.resize(x.size());
     SphereForceFieldCuda3f1_addForce(x.size(), &data.sphere, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());

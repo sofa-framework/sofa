@@ -79,7 +79,7 @@ struct FileInfoOwningFilename : public FileInfo
     }
 };
 
-static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
+static FileInfo::SPtr EmptyFileInfo = std::make_shared<FileInfo>(s_unknownFile, 0) ;
 
 #define SOFA_FILE_INFO sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfo(__FILE__, __LINE__))
 #define SOFA_FILE_INFO_COPIED_FROM(file,line) sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfoOwningFilename(file,line))

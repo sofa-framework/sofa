@@ -74,7 +74,7 @@ public:
     typedef type::Mat<3,3,Real> RotationMatrix;
 
 protected:
-    AffineMovementProjectiveConstraintInternalData<DataTypes> *data;
+    std::unique_ptr<AffineMovementProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class AffineMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :

@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <algorithm>
 
@@ -54,81 +54,25 @@ namespace sofa::helper
 
 std::wstring Utils::widenString(const std::string& s)
 {
-    // Set LC_CTYPE according to the environnement variable, for mbsrtowcs().
-    system::TemporaryLocale locale(LC_CTYPE, "");
-
-    const char * src = s.c_str();
-    // Call mbsrtowcs() once to find out the length of the converted string.
-    size_t length = mbsrtowcs(nullptr, &src, 0, nullptr);
-    if (length == size_t(-1)) {
-        const int error = errno;
-        msg_warning("Utils::widenString()") << strerror(error);
-        return L"";
-    }
-
-    // Call mbsrtowcs() again with a correctly sized buffer to actually do the conversion.
-    wchar_t * buffer = new wchar_t[length + 1];
-    length = mbsrtowcs(buffer, &src, length + 1, nullptr);
-    if (length == size_t(-1)) {
-        const int error = errno;
-        msg_warning("Utils::widenString()") << strerror(error);
-        delete[] buffer;
-        return L"";
-    }
-
-    if (src != nullptr) {
-        msg_warning("Utils::widenString()") << "Conversion failed (\"" << s << "\")";
-        delete[] buffer;
-        return L"";
-    }
-
-    std::wstring result(buffer);
-    delete[] buffer;
-    return result;
+    return sofa::helper::widenString(s);
 }
 
 
 std::string Utils::narrowString(const std::wstring& ws)
 {
-    // Set LC_CTYPE according to the environnement variable, for wcstombs().
-    system::TemporaryLocale locale(LC_CTYPE, "");
-
-    const wchar_t * src = ws.c_str();
-    // Call wcstombs() once to find out the length of the converted string.
-    size_t length = wcstombs(nullptr, src, 0);
-    if (length == size_t(-1)) {
-        msg_warning("Utils::narrowString()") << "Conversion failed";
-        return "";
-    }
-
-    // Call wcstombs() again with a correctly sized buffer to actually do the conversion.
-    char * buffer = new char[length + 1];
-    length = wcstombs(buffer, src, length + 1);
-    if (length == size_t(-1)) {
-        msg_warning("Utils::narrowString()") << "Conversion failed";
-        delete[] buffer;
-        return "";
-    }
-
-    std::string result(buffer);
-    delete[] buffer;
-    return result;
+    return sofa::helper::narrowString(ws);
 }
 
 
 std::string Utils::downcaseString(const std::string& s)
 {
-    std::string result = s;
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-    return result;
+    return sofa::helper::downcaseString(s);
 }
 
 
 std::string Utils::upcaseString(const std::string& s)
 {
-    std::string result = s;
-    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
-    return result;
+    return sofa::helper::upcaseString(s);
 }
 
 
@@ -160,7 +104,7 @@ std::string Utils::GetLastError() {
     const std::wstring wsMessage((LPCTSTR)lpMessageBuf);
     LocalFree(lpErrMsgBuf);
     LocalFree(lpMessageBuf);
-    return narrowString(wsMessage);
+    return helper::narrowString(wsMessage);
 }
 #endif
 
@@ -176,7 +120,7 @@ static std::string computeExecutablePath()
     if (ret == 0 || ret == MAX_PATH) {
         msg_error("Utils::computeExecutablePath()") << Utils::GetLastError();
     } else {
-        path = Utils::narrowString(std::wstring(&lpFilename[0]));
+        path = helper::narrowString(std::wstring(&lpFilename[0]));
     }
 
 #elif defined(__APPLE__)

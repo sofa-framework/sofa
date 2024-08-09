@@ -141,11 +141,11 @@ type::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMech
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
 {
-    type::vector<OutDataVecCoord*> vecOutPos;
+    type::vector<DataVecCoord_t<Out>*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
-    type::vector<const In1DataVecCoord*> vecIn1Pos;
+    type::vector<const DataVecCoord_t<In1>*> vecIn1Pos;
     getConstVecIn1Coord(inPos, vecIn1Pos);
-    type::vector<const In2DataVecCoord*> vecIn2Pos;
+    type::vector<const DataVecCoord_t<In2>*> vecIn2Pos;
     getConstVecIn2Coord(inPos, vecIn2Pos);
 
     this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
@@ -154,11 +154,11 @@ void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVe
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
 {
-    type::vector<OutDataVecDeriv*> vecOutVel;
+    type::vector<DataVecDeriv_t<Out>*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
-    type::vector<const In1DataVecDeriv*> vecIn1Vel;
+    type::vector<const DataVecDeriv_t<In1>*> vecIn1Vel;
     getConstVecIn1Deriv(inVel, vecIn1Vel);
-    type::vector<const In2DataVecDeriv*> vecIn2Vel;
+    type::vector<const DataVecDeriv_t<In2>*> vecIn2Vel;
     getConstVecIn2Deriv(inVel, vecIn2Vel);
     this->applyJ(mparams, vecOutVel, vecIn1Vel, vecIn2Vel);
 }
@@ -166,12 +166,12 @@ void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiV
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
 {
-    type::vector<In1DataVecDeriv*> vecOut1Force;
+    type::vector<DataVecDeriv_t<In1>*> vecOut1Force;
     getVecIn1Deriv(inForce, vecOut1Force);
-    type::vector<In2DataVecDeriv*> vecOut2Force;
+    type::vector<DataVecDeriv_t<In2>*> vecOut2Force;
     getVecIn2Deriv(inForce, vecOut2Force);
 
-    type::vector<const OutDataVecDeriv*> vecInForce;
+    type::vector<const DataVecDeriv_t<Out>*> vecInForce;
     getConstVecOutDeriv(outForce, vecInForce);
     this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
 }
@@ -179,12 +179,12 @@ void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, Multi
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
-    type::vector<In1DataMatrixDeriv*> matOut1Const;
+    type::vector<DataMatrixDeriv_t<In1>*> matOut1Const;
     getMatIn1Deriv(inConst, matOut1Const);
-    type::vector<In2DataMatrixDeriv*> matOut2Const;
+    type::vector<DataMatrixDeriv_t<In2>*> matOut2Const;
     getMatIn2Deriv(inConst, matOut2Const);
 
-    type::vector<const OutDataMatrixDeriv*> matInConst;
+    type::vector<const DataMatrixDeriv_t<Out>*> matInConst;
     getConstMatOutDeriv(outConst, matInConst);
     this->applyJT(cparams, matOut1Const, matOut2Const, matInConst);
 }
@@ -192,17 +192,17 @@ void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiM
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
-    type::vector<OutDataVecDeriv*> vecOutAcc;
+    type::vector<DataVecDeriv_t<Out>*> vecOutAcc;
     getVecOutDeriv(outAcc, vecOutAcc);
 
-    type::vector<const In1DataVecDeriv*> vecIn1Vel;
+    type::vector<const DataVecDeriv_t<In1>*> vecIn1Vel;
     getConstVecIn1Deriv(inVel, vecIn1Vel);
-    type::vector<const In1DataVecDeriv*> vecIn1Acc;
+    type::vector<const DataVecDeriv_t<In1>*> vecIn1Acc;
     getConstVecIn1Deriv(inAcc, vecIn1Acc);
 
-    type::vector<const In2DataVecDeriv*> vecIn2Vel;
+    type::vector<const DataVecDeriv_t<In2>*> vecIn2Vel;
     getConstVecIn2Deriv(inVel, vecIn2Vel);
-    type::vector<const In2DataVecDeriv*> vecIn2Acc;
+    type::vector<const DataVecDeriv_t<In2>*> vecIn2Acc;
     getConstVecIn2Deriv(inAcc, vecIn2Acc);
 
     this->computeAccFromMapping(mparams, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);

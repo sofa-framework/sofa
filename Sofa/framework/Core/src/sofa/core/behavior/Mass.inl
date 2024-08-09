@@ -208,9 +208,9 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
     if (!this->getName().empty())
     {
         if (m_gnuplotFileEnergy != nullptr)
-            delete m_gnuplotFileEnergy;
+            m_gnuplotFileEnergy.reset();
 
-        m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
+        m_gnuplotFileEnergy = std::make_unique<std::ofstream>( (path+this->getName()+"_Energy.txt").c_str() );
     }
 }
 

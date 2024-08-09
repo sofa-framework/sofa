@@ -46,13 +46,7 @@ VisualParams::VisualParams()
 /// Get the default VisualParams, to be used to provide a default values for method parameters
 VisualParams* VisualParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(VisualParams, threadParams);
-    VisualParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new VisualParams;
-        threadParams = ptr;
-    }
-    return ptr;
+    thread_local VisualParams threadParams;
+    return &threadParams;
 }
 } // namespace sofa::core::visual

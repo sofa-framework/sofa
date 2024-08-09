@@ -43,10 +43,11 @@ using namespace sofa::simulation;
 namespace sofa::component::animationloop
 {
 
-int MultiTagAnimationLoopClass = core::RegisterObject("Simple animation loop that given a list of tags, animate the graph one tag after another.")
-        .add< MultiTagAnimationLoop >()
-        .addAlias("MultiTagMasterSolver")
-        ;
+void registerMultiTagAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Simple animation loop that given a list of tags, animate the graph one tag after another.")
+        .add< MultiTagAnimationLoop >());
+}
 
 MultiTagAnimationLoop::MultiTagAnimationLoop()
 {

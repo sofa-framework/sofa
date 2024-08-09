@@ -32,7 +32,7 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <sofa/component/engine/select/MeshROI.h>
+#include <sofa/component/engine/select/MeshROI.inl>
 using sofa::component::engine::select::MeshROI ;
 
 #include <sofa/core/visual/VisualParams.h>

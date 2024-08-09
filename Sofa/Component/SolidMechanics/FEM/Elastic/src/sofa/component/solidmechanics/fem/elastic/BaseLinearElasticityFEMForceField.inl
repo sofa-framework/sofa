@@ -27,15 +27,37 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes>
+typename BaseLinearElasticityFEMForceField<DataTypes>::VecReal
+BaseLinearElasticityFEMForceField<DataTypes>::GetDefaultYoungModulusValue()
+{
+    VecReal newY;
+    newY.resize(1);
+    newY[0] = 5000;
+    return newY;
+}
+
+template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
     : d_poissonRatio(initData(&d_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , d_youngModulus(initData(&d_youngModulus, defaultYoungModulusValue, "youngModulus","FEM Young's Modulus in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, GetDefaultYoungModulusValue(), "youngModulus","FEM Young's Modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
     d_poissonRatio.setWidget("poissonRatio");
 
     d_youngModulus.setRequired(true);
+}
+
+template <class DataTypes>
+void BaseLinearElasticityFEMForceField<DataTypes>::init()
+{
+    core::behavior::ForceField<DataTypes>::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 }
 
 template <class DataTypes>

@@ -86,7 +86,6 @@ public:
 
 protected:
 
-    unsigned int cid;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
     Data<int> index;
 

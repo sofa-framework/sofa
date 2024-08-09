@@ -80,10 +80,10 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
   m->setMethod(m->LARGE);
 
   const VecCoord& p = m->mstate->read(sofa::core::ConstVecCoordId::restPosition())->getValue();
-  m->_initialPoints.setValue(p);
+  m->d_initialPoints.setValue(p);
 
   m->_materialsStiffnesses.resize( m->getIndexedElements()->size() );
-  m->_elementStiffnesses.beginEdit()->resize( m->getIndexedElements()->size() );
+  m->d_elementStiffnesses.beginEdit()->resize( m->getIndexedElements()->size() );
 
   m->_rotatedInitialElements.resize(m->getIndexedElements()->size());
   m->_rotations.resize( m->getIndexedElements()->size() );
@@ -128,8 +128,8 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
 
 
   data.nbElementPerVertex = nmax;
-  std::istringstream ptchar(m->_gatherPt.getValue().getSelectedItem());
-  std::istringstream bschar(m->_gatherBsize.getValue().getSelectedItem());
+  std::istringstream ptchar(m->d_gatherPt.getValue().getSelectedItem());
+  std::istringstream bschar(m->d_gatherBsize.getValue().getSelectedItem());
   ptchar >> data.GATHER_PT;
   bschar >> data.GATHER_BSIZE;
 
@@ -145,7 +145,7 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
 
       data.setE(ei, e, &(m->_rotatedInitialElements[ei]));
 
-      data.setS(ei, m->_rotations[ei], m->_elementStiffnesses.getValue()[i]);
+      data.setS(ei, m->_rotations[ei], m->d_elementStiffnesses.getValue()[i]);
 
       for (unsigned j = 0; j < e.size(); ++j)
       {
@@ -168,7 +168,7 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
       }
   }
 
-  m->_elementStiffnesses.endEdit();
+  m->d_elementStiffnesses.endEdit();
 
 }
 

@@ -158,12 +158,12 @@ void OglVolumetricModel::init()
 
 }
 
-void OglVolumetricModel::initVisual()
+void OglVolumetricModel::doInitVisual(const core::visual::VisualParams* vparams)
 {
     const type::vector<Coord>& positions = m_positions.getValue();
 
-    m_mappingTableValues->initVisual();
-    m_runSelectTableValues->initVisual();
+    m_mappingTableValues->initVisual(vparams);
+    m_runSelectTableValues->initVisual(vparams);
 
     glGenBuffersARB(1, &m_vbo);
     unsigned positionsBufferSize;
@@ -218,14 +218,13 @@ void OglVolumetricModel::initVisual()
 
     getContext()->addObject(m_vertexColors);
     m_vertexColors->init();
-    m_vertexColors->initVisual();
+    m_vertexColors->initVisual(vparams);
 
 }
 
-void OglVolumetricModel::updateVisual()
+void OglVolumetricModel::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
     // Workaround if updateVisual() is called without an opengl context
-    const auto* vparams = core::visual::VisualParams::defaultInstance();
     if (!vparams->isSupported(core::visual::API_OpenGL))
     {
         return;
