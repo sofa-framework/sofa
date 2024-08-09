@@ -28,7 +28,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
-#include <sofa/gui/init.h>
+//#include <sofa/gui/init.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
@@ -51,6 +52,7 @@
 #include <QDesktopServices>
 #include <QSettings>
 #include <QMimeData>
+#include <QDebug>
 
 using namespace sofa::core;
 
@@ -71,23 +73,25 @@ using sofa::helper::Utils;
 void SofaModeler::createActions()
 {
 
-    newTabAction = new QAction(QIcon(":/image0.png"), "New &Tab", this);
+    QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/textures/modeler" )).c_str();
+
+    newTabAction = new QAction(QIcon(pathIcon+"/image0.png"), "New &Tab", this);
     newTabAction->setShortcut(QString("Ctrl+T"));
     connect(newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
-    closeTabAction = new QAction(QIcon(":/imageClose.png"), "&Close Tab", this);
+    closeTabAction = new QAction(QIcon(pathIcon+"/imageClose.png"), "&Close Tab", this);
     closeTabAction->setShortcut(QString("Ctrl+W"));
     connect(closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
-    clearTabAction = new QAction(QIcon(":/image0.png"), "Clear", this);
+    clearTabAction = new QAction(QIcon(pathIcon+"/image0.png"), "Clear", this);
     clearTabAction->setShortcut(QString("Ctrl+N"));
     connect(clearTabAction, SIGNAL(triggered()), this, SLOT(clearTab()));
 
-    openAction = new QAction(QIcon(":/image1.png"), "&Open...", this);
+    openAction = new QAction(QIcon(pathIcon+"/image1.png"), "&Open...", this);
     openAction->setShortcut(QString("Ctrl+O"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
-    saveAction = new QAction(QIcon(":/image3.png"), "&Save", this);
+    saveAction = new QAction(QIcon(pathIcon+"/image3.png"), "&Save", this);
     saveAction->setShortcut(QString("Ctrl+S"));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(fileSave()));
 
@@ -100,25 +104,25 @@ void SofaModeler::createActions()
     exitAction = new QAction("E&xit", this);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(exit()));
 
-    undoAction = new QAction(QIcon(":/image5.png"), "&Undo", this);
+    undoAction = new QAction(QIcon(pathIcon+"/image5.png"), "&Undo", this);
     undoAction->setEnabled(false);
     undoAction->setShortcut(QString("Ctrl+Z"));
     connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
 
-    redoAction = new QAction(QIcon(":/image6.png"), "&Redo", this);
+    redoAction = new QAction(QIcon(pathIcon+"/image6.png"), "&Redo", this);
     redoAction->setEnabled(false);
     redoAction->setShortcut(QString("Ctrl+Y"));
     connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
-    cutAction = new QAction(QIcon(":/image7.png"), "&Cut", this);
+    cutAction = new QAction(QIcon(pathIcon+"/image7.png"), "&Cut", this);
     cutAction->setShortcut(QString("Ctrl+X"));
     connect(cutAction, SIGNAL(triggered()), this, SLOT(cut()));
 
-    copyAction = new QAction(QIcon(":/image8.png"), "C&opy", this);
+    copyAction = new QAction(QIcon(pathIcon+"/image8.png"), "C&opy", this);
     copyAction->setShortcut(QString("Ctrl+C"));
     connect(copyAction, SIGNAL(triggered()), this, SLOT(copy()));
 
-    pasteAction = new QAction(QIcon(":/image9.png"), "&Paste", this);
+    pasteAction = new QAction(QIcon(pathIcon+"/image9.png"), "&Paste", this);
     pasteAction->setEnabled(false);
     pasteAction->setShortcut(QString("Ctrl+V"));
     connect(pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
@@ -126,11 +130,11 @@ void SofaModeler::createActions()
     openPluginManagerAction = new QAction("Plugin Manager", this);
     connect(openPluginManagerAction, SIGNAL(triggered()), this, SLOT(showPluginManager()));
 
-    runInSofaAction = new QAction(QIcon(":/image2.png"), "&Run in SOFA", this);
+    runInSofaAction = new QAction(QIcon(pathIcon+"/image2.png"), "&Run in SOFA", this);
     runInSofaAction->setShortcut(QString("Ctrl+R"));
     connect(runInSofaAction, SIGNAL(triggered()), this, SLOT(runInSofa()));
 
-    openTutorialsAction = new QAction(QIcon(":/image11.png"), "Launch the &Tutorials" ,this);
+    openTutorialsAction = new QAction(QIcon(pathIcon+"/image11.png"), "Launch the &Tutorials" ,this);
     connect(openTutorialsAction, SIGNAL(triggered()), this, SLOT(openTutorial()));
 
     exportSofaClassesAction = new QAction("Export Sofa Classes", this);
@@ -572,7 +576,8 @@ void SofaModeler::createTab()
     graph = modelerGraph;
 
     graph->setAcceptDrops(true);
-    currentTabLayout->addWidget(graph,0,0);
+    graph->getGraphListener()->widget->unLock();
+    currentTabLayout->addWidget(graph);
 
     graph->setSofaLibrary(library);
     graph->setPropertyWidget(propertyWidget);
@@ -613,7 +618,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         else if (response == QMessageBox::Ok)
         {
             if (mod->getFilename().empty()) fileSaveAs();
-            else simulation::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str());
+            else simulation::node::exportInXML(mod->getRoot(), mod->getFilename().c_str());
         }
     }
     //If the scene has been launch in Sofa
@@ -625,7 +630,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         range=mapSofa.equal_range(curTab);
         for (multimapIterator it=range.first; it!=range.second; ++it)
         {
-            removeTemporaryFiles(it->second->objectName().toStdString());
+//            removeTemporaryFiles(it->second->objectName().toStdString());
             it->second->kill();
         }
         mapSofa.erase(range.first, range.second);
@@ -679,10 +684,10 @@ void SofaModeler::fileOpen(std::string filename)
     {
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-        Node::SPtr root = NULL;
-        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()).get() );
+        Node::SPtr root = sofa::simulation::node::load(filename.c_str()).get();
         if (root)
         {
+//            sofa::simulation::node::initRoot(root.get());
             createTab();
             fileNew(root.get());
             sceneTab->setCurrentIndex(sceneTab->count()-1);
@@ -826,7 +831,7 @@ void SofaModeler::exportSofaClasses()
         }
     }
 
-    getSimulation()->exportXML(root.get(), filename.toStdString().c_str());
+    sofa::simulation::node::exportInXML(root.get(), filename.toStdString().c_str());
 
     std::cout << "Sofa classes have been XML exported in: " << filename.toStdString() << std::endl << std::endl;
 }
@@ -951,7 +956,7 @@ void SofaModeler::componentDraggedReception( std::string description, std::strin
     mimedata->setText("ComponentCreation");
     dragging->setMimeData(mimedata);
     dragging->exec(Qt::CopyAction | Qt::MoveAction);
-    //dragging->dragCopy();
+//    dragging->dragCopy();
 }
 
 void SofaModeler::changeComponent(const std::string &description)
@@ -966,7 +971,6 @@ void SofaModeler::newGNode()
     QMimeData* mimedata = new QMimeData();
     mimedata->setText("Node");
     dragging->setMimeData(mimedata);
-
     //dragging->dragCopy();
     dragging->exec(Qt::CopyAction | Qt::MoveAction);
 }
@@ -1087,14 +1091,12 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     // Init the scene
     sofa::gui::common::GUIManager::Init("Modeler");
 
-    //Saving the scene in a temporary file ==> doesn't modify the current Node of the simulation
     std::string path;
     if (sceneFilename.empty()) path=presetPath;
     else path = sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str())+std::string("/");
 
 
-    std::string filename=path + std::string("temp") + (++count) + std::string(".scn");
-    simulation::getSimulation()->exportXML(root,filename.c_str());
+    std::string filename=sceneFilename;
 
     //Make a copy of the .view if it exists for the current viewer
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());
@@ -1134,7 +1136,6 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             viewerExtension = ".view";
         }
 
-        // msg_error("SofaModeler") << "viewFile = " << viewFile ;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
@@ -1167,7 +1168,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 #endif
     }
 
-    argv << QString(filename.c_str());
+
 
     messageLaunch = QString("Use command: ")
             + QString(sofaBinary.c_str())
@@ -1195,22 +1196,20 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     for( it = pluginMap.begin(); it != pluginMap.end(); ++it )
     {
         argv << "-l" << QString((it->first).c_str()) << " ";
-        messageLaunch += QString("-l ") + QString((it->first).c_str());
+        messageLaunch += QString(" -l ") + QString((it->first).c_str());
     }
 
+    argv << QString::fromStdString(filename);
 
-    argv << "-t";
-
+    messageLaunch += (" "+QString(filename.c_str()));
 
     QProcess *p = new QProcess(this);
-
 
     p->setWorkingDirectory(QString(binPath.c_str()) );
     p->setObjectName(QString(filename.c_str()) );
 
 
     connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
-    QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
     connect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
     connect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
 
@@ -1257,7 +1256,7 @@ void SofaModeler::sofaExited(int exitCode, QProcess::ExitStatus existStatus)
 
     programName = p->objectName().toStdString();
 
-    removeTemporaryFiles(programName);
+//    removeTemporaryFiles(programName);
     if (existStatus == QProcess::NormalExit )
     {
         p->closeWriteChannel();

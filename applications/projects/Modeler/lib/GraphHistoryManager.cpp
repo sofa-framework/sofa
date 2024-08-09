@@ -248,7 +248,7 @@ void GraphHistoryManager::clearHistory()
         else if (historyOperation[i].ID == Operation::DELETE_Node)
         {
             Node *n=down_cast<Node>(historyOperation[i].sofaComponent->toBaseNode());
-            simulation::getSimulation()->unload(n);
+            sofa::simulation::node::unload(n);
             historyOperation[i].sofaComponent.reset();
         }
     }
@@ -267,7 +267,7 @@ void GraphHistoryManager::clearHistoryUndo()
         else if (historyUndoOperation[i].ID == Operation::DELETE_Node)
         {
             Node *n=down_cast<Node>(historyUndoOperation[i].sofaComponent->toBaseNode());
-            simulation::getSimulation()->unload(n);
+            sofa::simulation::node::unload(n);
             historyUndoOperation[i].sofaComponent.reset();
         }
     }

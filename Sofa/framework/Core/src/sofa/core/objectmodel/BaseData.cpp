@@ -137,8 +137,20 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
 
 std::string BaseData::getLinkPath() const
 {
-    if(m_owner)
-        return "@"+m_owner->getPathName()+"."+getName();
+//    std::string ownerPathName = m_owner->getPathName();
+//    bool isStrFine = false;
+//    for(unsigned int i=0 ; i < ownerPathName.length() ; i++)
+//    {
+//        if(ownerPathName[i] != '/')
+//        {
+//            isStrFine = true;
+//        }
+//    }
+    if(m_owner /*&& ownerPathName != "/"*/)
+    {
+        std::string linkPathStr = "@"+m_owner->getPathName()+"."+getName();
+        return linkPathStr;
+    }
     return "";
 }
 
@@ -158,9 +170,9 @@ void BaseData::doDelInput(DDGNode* n)
 void BaseData::update()
 {
     cleanDirty();
-    for (DDGNode* input : inputs)
+    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {
-        input->updateIfDirty();
+        (*it)->updateIfDirty();
     }
 
     /// Check if there is a parent (so a predecessor in the DDG), if so
@@ -168,6 +180,10 @@ void BaseData::update()
     const auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
     {
+#ifdef SOFA_DDG_TRACE
+        if (m_owner)
+            dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
+#endif
         updateValueFromLink(parent);
         // If the value is dirty clean it
         if(this->isDirty())

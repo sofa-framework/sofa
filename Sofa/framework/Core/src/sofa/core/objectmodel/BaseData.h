@@ -272,7 +272,7 @@ public:
     /// True if this %Data is set, i.e. its value is different from the default value
     bool m_isSet;
     /// Flags indicating the purpose and behaviour of this %Data
-    DataFlags m_dataFlags;
+    DataFlags m_dataFlags = FLAG_PERSISTENT;
     /// Return the Base component owning this %Data
     Base* m_owner {nullptr};
     /// Data name within the Base component
