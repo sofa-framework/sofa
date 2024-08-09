@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/SlidingLagrangianConstraint.h")
 
 namespace sofa::component::constraint::lagrangian::model
 {

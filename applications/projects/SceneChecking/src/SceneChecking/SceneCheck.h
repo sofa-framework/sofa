@@ -22,4 +22,4 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/simulation/SceneCheck.h")
+SOFA_HEADER_DISABLED("v23.06", "v23.12", "sofa/simulation/SceneCheck.h")

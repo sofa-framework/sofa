@@ -23,4 +23,4 @@
 
 #include <SofaCUDA/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v23.12", "v24.12", "SofaCUDA/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h")
+SOFA_HEADER_DEPRECATED("v23.12", "v24.12", "SofaCUDA/component/constraint/projective/CudaLinearMovementProjectiveConstraint.h")

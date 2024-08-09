@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/config.h>
 
-SOFA_DISABLED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+SOFA_HEADER_DISABLED_NOT_REPLACED("v23.06", "v23.12")

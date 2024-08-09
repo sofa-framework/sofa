@@ -23,4 +23,4 @@
 
 #include <sofa/helper/config.h>
 
-SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/geometry/proximity/PointTriangle.h, sofa/geometry/proximity/SegmentTriangle.h or sofa/geometry/proximity/TriangleTriangle.h")
+SOFA_HEADER_DISABLED("v23.06", "v23.12", "sofa/geometry/proximity/PointTriangle.h, sofa/geometry/proximity/SegmentTriangle.h or sofa/geometry/proximity/TriangleTriangle.h")

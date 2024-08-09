@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h")
 
 namespace sofa::component::constraint::projective
 {

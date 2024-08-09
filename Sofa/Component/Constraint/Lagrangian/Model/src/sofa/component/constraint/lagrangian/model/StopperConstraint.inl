@@ -23,4 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.inl")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.inl")
