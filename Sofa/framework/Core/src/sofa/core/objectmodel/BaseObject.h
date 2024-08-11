@@ -66,8 +66,22 @@ public:
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
+        if (obj)
+        {
+            if (context)
+            {
+                context->addObject(obj);
+            }
+            if (arg)
+            {
+                obj->parse(arg);
+            }
+        }
+        else
+        {
+            msg_info(T::GetClass()->className) << "Cannot create an instance";
+        }
+
         return obj;
     }
 

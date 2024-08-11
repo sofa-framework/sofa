@@ -165,7 +165,7 @@ public:
 
 protected:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    Data <sofa::Index> edgeInfo;
+    Data <edgeRestInfoVector> edgeInfo;
 
     core::topology::EdgeData < edgeRestInfoVector > d_edgeInfo; ///< Internal edge data
 

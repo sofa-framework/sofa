@@ -52,21 +52,7 @@ set(SOURCE_FILES
     )
 
 find_package(Sofa.Config REQUIRED)
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    list(APPEND HEADER_FILES
-        src/MultiThreading/AnimationLoopParallelScheduler.h
-        src/MultiThreading/AnimationLoopTasks.h
-        src/MultiThreading/BeamLinearMapping_mt.h
-        src/MultiThreading/BeamLinearMapping_mt.inl
-        src/MultiThreading/BeamLinearMapping_tasks.inl
-        src/MultiThreading/ParallelBVHNarrowPhase.h
-        src/MultiThreading/ParallelBruteForceBroadPhase.h
-        src/MultiThreading/ParallelHexahedronFEMForceField.h
-        src/MultiThreading/ParallelHexahedronFEMForceField.inl
-    )
-endif()
-
-find_package(Sofa.Simulation.Common REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)

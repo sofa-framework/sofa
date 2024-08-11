@@ -864,7 +864,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     Transformation R_0_2, R_2_0;
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Triangle& tri = m_topology->getTriangle(elementIndex);
-    const auto [a, b, c] = tri.array();
+    const auto& [a, b, c] = tri.array();
 
     auto triangleInf = sofa::helper::getWriteOnlyAccessor(d_triangleInfo);
     if (method == SMALL)
@@ -983,7 +983,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real& stress_across_dir, Index elementIndex, const Coord& dir, const type::Vec<3, Real>& stress)
 {
     const Triangle& tri = m_topology->getTriangle(elementIndex);
-    const auto [a, b, c] = tri.array();
+    const auto& [a, b, c] = tri.array();
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b] - x[a], x[c] - x[a]);
     Coord dir_t = cross(dir, n);
@@ -994,7 +994,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real& stress_across_dir, Index elementIndex, const Coord& dir)
 {
     const Triangle& tri = m_topology->getTriangle(elementIndex);
-    const auto [a, b, c] = tri.array();
+    const auto& [a, b, c] = tri.array();
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b] - x[a], x[c] - x[a]);
     Coord dir_t = cross(dir, n);
@@ -1026,7 +1026,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h
     {
         TriangleInformation& tInfo = triangleInf[i];
         const Triangle& tri = m_topology->getTriangle(i);
-        const auto [a, b, c] = tri.array();
+        const auto& [a, b, c] = tri.array();
 
         dX[0] = x[a][0];
         dX[1] = x[a][1];
@@ -1087,7 +1087,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h
     {
         TriangleInformation& tInfo = triangleInf[i];
         const Element& tri = triangles[i];
-        const auto [a, b, c] = tri.array();
+        const auto& [a, b, c] = tri.array();
 
         Transformation R_0_2;
         R_0_2.transpose(tInfo.rotation);
@@ -1136,7 +1136,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const
     {
         TriangleInformation& tInfo = triangleInf[i];
         const Element& tri = m_topology->getTriangle(i);
-        const auto [a, b, c] = tri.array();
+        const auto& [a, b, c] = tri.array();
 
         Coord deforme_a, deforme_b, deforme_c;
         deforme_b = p[b] - p[a];
@@ -1358,7 +1358,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         for (Size i = 0; i < nbTriangles; ++i)
         {
             const Triangle& tri = triangles[i];
-            const auto [a, b, c] = tri.array();
+            const auto& [a, b, c] = tri.array();
             Coord center = (x[a] + x[b] + x[c]) / 3;
             Coord d = triangleInf[i].principalStressDirection * 2.5; //was 0.25
             vertices.push_back(sofa::type::Vec3(center));
@@ -1378,7 +1378,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         for (Size i = 0; i < nbTriangles; ++i)
         {
             const Triangle& tri = triangles[i];
-            const auto [a, b, c] = tri.array();
+            const auto& [a, b, c] = tri.array();
 
             colorVector.push_back(evalColor(vertexInf[a].stress));
             vertices.push_back(sofa::type::Vec3(x[a]));
@@ -1419,7 +1419,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             {
                 color = sofa::type::RGBAColor(float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference) / (maxDifference - minDifference)), 0.0f, 0.0f, 0.5f);
                 const Triangle& tri = triangles[i];
-                const auto [a, b, c] = tri.array();
+                const auto& [a, b, c] = tri.array();
 
                 colorVector.push_back(color);
                 vertices.push_back(sofa::type::Vec3(x[a]));
