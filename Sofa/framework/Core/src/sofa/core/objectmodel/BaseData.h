@@ -226,7 +226,7 @@ public:
     /// @{
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
-    /// (even if the parent's value has not been modified)s
+    /// (even if the parent's value has not been modified)
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
