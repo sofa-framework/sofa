@@ -78,7 +78,7 @@ public:
     DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
-    bool m_isTotalMassUsed; ///< Boolean specifying whether the data totalMass has been initially given (else forces vector is being used)
+    bool m_isTotalMassUsed; ///< Boolean specifying whether the data totalMass has been initially given (else vertexMass vector is being used)
 
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -119,7 +119,6 @@ public:
 
     void loadRigidMass(const std::string& filename);
 
-    void reinit() override;
     void init() override;
     void initDefaultImpl() ;
 

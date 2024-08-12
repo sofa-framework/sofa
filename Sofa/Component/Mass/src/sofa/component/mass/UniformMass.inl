@@ -181,6 +181,8 @@ void UniformMass<DataTypes>::initDefaultImpl()
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
+
+    /// Check indices
     //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
@@ -199,7 +201,8 @@ void UniformMass<DataTypes>::initDefaultImpl()
             indices.push_back(i);
     }
 
-    // check if mass should use topology
+
+    /// Check link to topology
     if (l_topology.empty())
     {
         l_topology.set(this->getContext()->getMeshTopologyLink());
@@ -233,6 +236,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
         });
     }
 
+
     /// Check on data isSet()
     if (d_vertexMass.isSet())
     {
@@ -265,11 +269,13 @@ void UniformMass<DataTypes>::initDefaultImpl()
         if(d_filenameMass.getValue() == "unused")
         {
             msg_error() << "No input mass information has been set. Please define one of both Data: "
-                        << d_vertexMass.getName() << " or " << d_totalMass.getName();
+                        << d_vertexMass.getName() << " or " << d_totalMass.getName()
+                        << "\nFor your information, prior to #3927, default value was totalMass=\"1.0\".";
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
+
 
     /// Trigger callbacks to update data (see constructor)
     if(!this->isComponentStateValid())
@@ -278,14 +284,6 @@ void UniformMass<DataTypes>::initDefaultImpl()
     /// Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " | "
                   "vertexMass = " << d_vertexMass.getValue();
-}
-
-
-template <class DataTypes>
-void UniformMass<DataTypes>::reinit()
-{
-    // update is handled through the callback mechanism
-    // called each time the componentState is checked
 }
 
 
