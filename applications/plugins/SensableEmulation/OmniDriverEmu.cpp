@@ -69,7 +69,7 @@ using namespace core::behavior;
 using type::vector;
 
 OmniDriverEmu::OmniDriverEmu()
-    : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    : forceScale(initData(&forceScale, 1.0, "forceScale","Default scaling factor applied to the force feedback"))
     , scale(initData(&scale, 1.0, "scale","Default scale applied to the Phantom Coordinates. "))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
@@ -372,22 +372,22 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
         defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
         visu_base = sofa::core::objectmodel::New<OglModel>();
-        visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->d_fileMesh.setValue("mesh/omni_test2.obj");
+        visu_base->d_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
-        visu_base->initVisual();
-        visu_base->updateVisual();
+        visu_base->initVisual(sofa::core::visual::visualparams::defaultInstance());
+        visu_base->updateVisual(sofa::core::visual::visualparams::defaultInstance());
         visu_base->applyRotation(orientationBase.getValue());
         visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
 
         visu_end = sofa::core::objectmodel::New<OglModel>();
-        visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->d_fileMesh.setValue("mesh/stylus.obj");
+        visu_end->d_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
-        visu_end->initVisual();
-        visu_end->updateVisual();
+        visu_end->initVisual(sofa::core::visual::visualparams::defaultInstance());
+        visu_end->updateVisual(sofa::core::visual::visualparams::defaultInstance());
         visu_end->applyRotation(world_H_endOmni.getOrientation());
         visu_end->applyTranslation(world_H_endOmni.getOrigin()[0],world_H_endOmni.getOrigin()[1],world_H_endOmni.getOrigin()[2]);
         isInited=true;

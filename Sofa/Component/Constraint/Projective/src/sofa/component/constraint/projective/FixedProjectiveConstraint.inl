@@ -39,10 +39,10 @@ FixedProjectiveConstraint<DataTypes>::FixedProjectiveConstraint()
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
     , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , d_showObject(initData(&d_showObject,true,"showObject","draw or not the fixed constraints"))
-    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
+    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","if true, projects not only a constant but a zero velocity") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new FixedProjectiveConstraintInternalData<DataTypes>())
+    , data(std::make_unique<FixedProjectiveConstraintInternalData<DataTypes>>())
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -60,7 +60,6 @@ FixedProjectiveConstraint<DataTypes>::FixedProjectiveConstraint()
 template <class DataTypes>
 FixedProjectiveConstraint<DataTypes>::~FixedProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>
@@ -362,6 +361,62 @@ void FixedProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior:
 }
 
 template <class DataTypes>
+void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vector<Index>& indices)
+{
+    using Real = typename DataTypes::Real;
+
+    constexpr Real max_real = std::numeric_limits<Real>::max();
+    constexpr Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    const auto drawSize = static_cast<Real>(d_drawSize.getValue());
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    for (const auto index : indices)
+    {
+        const auto x3d = DataTypes::getCPos(x[index]);
+
+        for (unsigned int i = 0; i < x3d.size(); ++i)
+        {
+            maxBBox[i] = std::max(x3d[i] + drawSize, maxBBox[i]);
+            minBBox[i] = std::min(x3d[i] - drawSize, minBBox[i]);
+        }
+    }
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+}
+
+template <class DataTypes>
+void FixedProjectiveConstraint<DataTypes>::computeBBox(
+    const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if( onlyVisible && !d_showObject.getValue() )
+    {
+        return;
+    }
+
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
+    {
+        return;
+    }
+
+    const auto& indices = d_indices.getValue();
+
+    if (d_fixAll.getValue())
+    {
+        const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+        this->f_bbox.setValue(std::move(bbox));
+    }
+    else if (!indices.empty())
+    {
+        computeBBoxForIndices(indices);
+    }
+}
+
+template <class DataTypes>
 void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->d_componentState.getValue() != ComponentState::Valid) return;
@@ -389,9 +444,9 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (const auto index : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
         }
@@ -404,16 +459,18 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
         std::vector< sofa::type::Vec3 > points;
         sofa::type::Vec3 point;
         if( d_fixAll.getValue()==true )
+        {
             for (unsigned i=0; i<x.size(); i++ )
             {
                 point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
+        }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (const auto index : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
         }

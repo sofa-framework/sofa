@@ -62,8 +62,54 @@
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER()
+#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__CORE_INTERSECTION_AS_PARAMETER() \
-    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
+#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER() \
+    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Used only by the deprecated Compliant plugin.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "The parameter is not necessary. Use the function without parameter.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__REMOVED_CID()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REMOVED_CID() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use d_constraintIndex instead.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "This function is not used.")
 #endif

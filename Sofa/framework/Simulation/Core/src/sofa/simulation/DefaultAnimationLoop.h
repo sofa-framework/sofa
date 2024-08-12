@@ -54,7 +54,7 @@ protected:
     ~DefaultAnimationLoop() override;
 
 public:
-    Data<bool> d_parallelODESolving; ///<If true, solves ODE solvers in parallel
+    Data<bool> d_parallelODESolving; ///< If true, solves all the ODEs in parallel
 
     void init() override;
 

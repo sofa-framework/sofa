@@ -58,27 +58,72 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
+    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
-    Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-    Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
-    Data<SReal> sor; ///< Successive Over Relaxation parameter (0-2)
-    Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
-    Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NNCG solver only)
-    Data<bool> d_multithreading; ///< Compliances built concurrently
-    Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<int> maxIt;
 
-    Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
-    Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
-    Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
-    Data<SReal> currentError; ///< OUTPUT: current error
-    Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
-    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> tolerance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> sor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> scaleTolerance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> allVerified;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> computeGraphs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<std::map < std::string, sofa::type::vector<SReal> > >  graphErrors;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<std::map < std::string, sofa::type::vector<SReal> > >  graphConstraints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphForces;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphViolations;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<unsigned int> currentNumConstraints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<unsigned int> currentNumConstraintGroups;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<unsigned int> currentIterations;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<SReal> currentError;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    Data<bool> reverseAccumulateOrder;
+
+    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
+    Data<bool> d_allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)
+    Data<bool> d_multithreading; ///< Build compliances concurrently
+    Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphViolations; ///< Graph of each constraint's violation at each step of the resolution
+
+    Data<int> d_currentNumConstraints; ///< OUTPUT: current number of constraints
+    Data<int> d_currentNumConstraintGroups; ///< OUTPUT: current number of constraints
+    Data<int> d_currentIterations; ///< OUTPUT: current number of constraint groups
+    Data<SReal> d_currentError; ///< OUTPUT: current error
+    Data<bool> d_reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
     sofa::core::MultiVecDerivId getLambda() const override;

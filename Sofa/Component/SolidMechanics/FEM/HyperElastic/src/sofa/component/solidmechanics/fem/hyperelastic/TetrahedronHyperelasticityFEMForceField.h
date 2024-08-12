@@ -30,6 +30,8 @@
 #include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/helper/OptionsGroup.h>
+
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
@@ -133,9 +135,9 @@ public:
 
 public:
     Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
-    Data<std::string> d_materialName; ///< the name of the material
+    Data<sofa::helper::OptionsGroup> d_materialName; ///< the name of the material to be used. Possible options are: 'ArrudaBoyce', 'Costa', 'MooneyRivlin', 'NeoHookean', 'Ogden', 'StVenantKirchhoff', 'VerondaWestman', 'StableNeoHookean'
     Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
-    Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
+    Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material: vector containing anisotropic directions. The vector size is 0 if the material is isotropic, 1 if it is transversely isotropic and 2 for orthotropic materials
 
     TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
     EdgeData<sofa::type::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data

@@ -24,7 +24,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MultiMatrix.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
@@ -45,8 +45,9 @@ int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time inte
         ;
 
 EulerExplicitSolver::EulerExplicitSolver()
-    : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+    : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , l_linearSolver(initLink("linearSolver", "Linear solver used by this component"))
 {
 }
 
@@ -55,6 +56,11 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
                                 sofa::core::MultiVecCoordId xResult,
                                 sofa::core::MultiVecDerivId vResult)
 {
+    if (!isComponentStateValid())
+    {
+        return;
+    }
+
     SCOPED_TIMER("EulerExplicitSolve");
 
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
@@ -91,15 +97,22 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     {
         projectResponse(&mop, f);
 
-        core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
+        if (l_linearSolver.get())
+        {
+            // Build the global matrix. In this solver, it is the global mass matrix
+            // Projective constraints are also projected in this step
+            assembleSystemMatrix(&mop);
 
-        // Build the global matrix. In this solver, it is the global mass matrix
-        // Projective constraints are also projected in this step
-        assembleSystemMatrix(&matrix);
-
-        // Solve the system to find the acceleration
-        // Solve M * a = f
-        solveSystem(&matrix, acc, f);
+            // Solve the system to find the acceleration
+            // Solve M * a = f
+            solveSystem(acc, f);
+        }
+        else
+        {
+            msg_error() << "Due to the presence of non-diagonal masses, the solver requires a linear solver";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
     }
 
     // Compute the new position and new velocity from the acceleration
@@ -243,21 +256,14 @@ SReal EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) co
 void EulerExplicitSolver::init()
 {
     OdeSolver::init();
-    reinit();
-}
 
-void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    Inherit1::parse(arg);
-
-    const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
-    if(val)
+    if (!l_linearSolver.get())
     {
-        msg_deprecated() << "The attribute 'optimizedForDiagonalMatrix' is deprecated since SOFA 21.06." << msgendl
-                         << "This data was previously used to solve the system more efficiently in case the "
-                            "global mass matrix were diagonal." << msgendl
-                         << "Now, this property is detected automatically.";
+        l_linearSolver.set(getContext()->get<LinearSolver>());
     }
+
+    reinit();
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
@@ -310,17 +316,9 @@ void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalO
     mop->solveConstraint(acc, core::ConstraintOrder::ACC);
 }
 
-void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix)
+void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const
 {
     SCOPED_TIMER("MBKBuild");
-
-    // The MechanicalMatrix::M is a simple structure that stores three floats called factors: m, b and k.
-    // In the case of MechanicalMatrix::M:
-    // - factor 1 is associated to the matrix M
-    // - factor 0 is associated to the matrix B
-    // - factor 0 is associated to the matrix K
-    // The = operator first search for a linear solver in the current context. It then calls the
-    //    "setSystemMBKMatrix" method of the linear solver.
 
     //    A. For LinearSolver using a GraphScatteredMatrix (ie, non-assembled matrices), nothing appends.
     //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
@@ -328,14 +326,15 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
-    (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
+    mop->setSystemMBKMatrix(1, 0, 0, l_linearSolver.get());
 }
 
-void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
-                                      core::MultiVecDerivId solution, core::MultiVecDerivId rhs)
+void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const
 {
     SCOPED_TIMER("MBKSolve");
-    matrix->solve(solution, rhs);
+    l_linearSolver->setSystemLHVector(solution);
+    l_linearSolver->setSystemRHVector(rhs);
+    l_linearSolver->solveSystem();
 }
 
 } // namespace sofa::component::odesolver::forward

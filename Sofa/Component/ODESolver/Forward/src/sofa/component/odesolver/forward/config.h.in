@@ -37,3 +37,13 @@ namespace sofa::component::odesolver::forward
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::odesolver::forward
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_FORWARD
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_FORWARD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_FORWARD() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif
+

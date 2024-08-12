@@ -36,42 +36,45 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 DirectionProjectiveConstraint<DataTypes>::DirectionProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
+    , d_indices( initData(&d_indices,"indices","Indices the particles to project") )
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
+    , d_direction( initData(&d_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new DirectionProjectiveConstraintInternalData<DataTypes>())    
+    , data(std::make_unique<DirectionProjectiveConstraintInternalData<DataTypes>>())
 {
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
+
+    f_indices.setParent(&d_indices);
+    f_drawSize.setParent(&d_drawSize);
+    f_direction.setParent(&d_direction);
 }
 
 
 template <class DataTypes>
 DirectionProjectiveConstraint<DataTypes>::~DirectionProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>
 void DirectionProjectiveConstraint<DataTypes>::clearConstraints()
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void DirectionProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void DirectionProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::type::removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
+    sofa::type::removeValue(*d_indices.beginEdit(), index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -94,14 +97,14 @@ void DirectionProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize topological changes support
-        f_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
-    const Indices & indices = f_indices.getValue();
+    const Indices & indices = d_indices.getValue();
 
     const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
@@ -121,11 +124,11 @@ template <class DataTypes>
 void  DirectionProjectiveConstraint<DataTypes>::reinit()
 {
     // normalize the normal vector
-    CPos n = f_direction.getValue();
+    CPos n = d_direction.getValue();
     if( n.norm()==0 )
         n[1]=0;
     else n *= 1/n.norm();
-    f_direction.setValue(n);
+    d_direction.setValue(n);
 
     // create the matrix blocks corresponding to the projection to the line: nn^t or to the identity
     Block bProjection;
@@ -136,7 +139,7 @@ void  DirectionProjectiveConstraint<DataTypes>::reinit()
         }
 
     // get the indices sorted
-    Indices tmp = f_indices.getValue();
+    Indices tmp = d_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
 
     // resize the jacobian
@@ -163,7 +166,7 @@ void  DirectionProjectiveConstraint<DataTypes>::reinit()
     jacobian.compress();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const Indices &indices = f_indices.getValue();
+    const Indices &indices = d_indices.getValue();
     for (const auto id : indices)
     {
         m_origin.push_back(DataTypes::getCPos(x[id]));
@@ -208,9 +211,9 @@ void DirectionProjectiveConstraint<DataTypes>::projectPosition(const core::Mecha
 {
     VecCoord& x = *xData.beginEdit();
 
-    const CPos& n = f_direction.getValue();
+    const CPos& n = d_direction.getValue();
 
-    const Indices& indices = f_indices.getValue();
+    const Indices& indices = d_indices.getValue();
     for(unsigned i=0; i<indices.size(); i++ )
     {
         // replace the point with its projection to the line
@@ -246,9 +249,9 @@ void DirectionProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const Indices & indices = f_indices.getValue();
+    const Indices & indices = d_indices.getValue();
 
-    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    if(d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::type::Vec3 > points;
         sofa::type::Vec3 point;
@@ -268,7 +271,7 @@ void DirectionProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f, 0.35f, 0.35f, 1.0f));
     }
 
 

@@ -37,28 +37,45 @@ namespace sofa::component::collision::detection::intersection
  * - Cube/Cube
  * - Sphere/Sphere (rigid or vec3)
  * MeshMinProximityIntersection adds support for:
- * - Point/Point (if usePointPoint is true)
- * - Line/Point (if useLinePoint is true)
- * - Line/Line (if useLineLine is true)
+ * - Point/Point (if d_usePointPoint is true)
+ * - Line/Point (if d_useLinePoint is true)
+ * - Line/Line (if d_useLineLine is true)
  * - Triangle/Point
- * - Sphere/Point (if useSphereTriangle is true)
- * - RigidSphere/Point (if useSphereTriangle is true)
- * - Triangle/Sphere (if useSphereTriangle is true)
- * - Triangle/RigidSphere (if useSphereTriangle is true)
- * - Line/Sphere (if useSphereTriangle is true)
- * - Line/RigidSphere (if useSphereTriangle is true)
+ * - Sphere/Point (if d_useSphereTriangle is true)
+ * - RigidSphere/Point (if d_useSphereTriangle is true)
+ * - Triangle/Sphere (if d_useSphereTriangle is true)
+ * - Triangle/RigidSphere (if d_useSphereTriangle is true)
+ * - Line/Sphere (if d_useSphereTriangle is true)
+ * - Line/RigidSphere (if d_useSphereTriangle is true)
  * Note that MeshMinProximityIntersection ignores Triangle/Line and Triangle/Triangle intersections.
- * Datas can be set to ignore some pairs of collision models (useSphereTriangle, usePointPoint, etc).
+ * Datas can be set to ignore some pairs of collision models (d_useSphereTriangle, d_usePointPoint, etc).
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
-    Data<bool> useSphereTriangle; ///< activate Sphere-Triangle intersection tests
-    Data<bool> usePointPoint; ///< activate Point-Point intersection tests
-    Data<bool> useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
-    Data<bool> useLinePoint; ///< activate Line-Point intersection tests
-    Data<bool> useLineLine; ///< activate Line-Line  intersection tests
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useSphereTriangle;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> usePointPoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useSurfaceNormals;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLinePoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLineLine;
+
+
+
+    Data<bool> d_useSphereTriangle; ///< activate Sphere-Triangle intersection tests
+    Data<bool> d_usePointPoint; ///< activate Point-Point intersection tests
+    Data<bool> d_useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
+    Data<bool> d_useLinePoint; ///< activate Line-Point intersection tests
+    Data<bool> d_useLineLine; ///< activate Line-Line  intersection tests
 
 protected:
     MinProximityIntersection();

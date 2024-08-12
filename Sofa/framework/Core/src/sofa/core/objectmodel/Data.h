@@ -27,6 +27,7 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
+#include <sofa/core/trait/DataTypes.h>
 namespace sofa
 {
 namespace core::objectmodel
@@ -287,7 +288,7 @@ std::string Data<T>::getDefaultValueString() const
 template<class T>
 std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&getValue());
+    return BaseData::typeName<T>();
 }
 
 template <class T>

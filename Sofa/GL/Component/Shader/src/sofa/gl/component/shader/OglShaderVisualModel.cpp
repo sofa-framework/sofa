@@ -132,15 +132,10 @@ void OglShaderVisualModel::init()
     }
 }
 
-
-void OglShaderVisualModel::initVisual()
+void OglShaderVisualModel::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
-    OglModel::initVisual();
-}
+    OglModel::doUpdateVisual(vparams);
 
-void OglShaderVisualModel::updateVisual()
-{
-    OglModel::updateVisual();
     computeRestPositions();
 }
 
@@ -219,8 +214,8 @@ void OglShaderVisualModel::computeRestNormals()
 {
     if (!vrestpositions || !vrestnormals) return;
     auto& vrestpos = vrestpositions->getValue();
-    auto& triangles = m_triangles.getValue();
-    auto& quads = m_quads.getValue();
+    auto& triangles = d_triangles.getValue();
+    auto& quads = d_quads.getValue();
     auto& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)

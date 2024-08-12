@@ -125,13 +125,13 @@ static std::string DefaultColorSchemes[NDefaultColorMapSchemes] =
 
 ColorMap* ColorMap::getDefault()
 {
-    static ColorMap* defaultColorMap;
-    if (defaultColorMap == nullptr) {
-        defaultColorMap = new ColorMap();
-        std::string tmp("");
+    static std::unique_ptr<ColorMap> defaultColorMap { nullptr };
+    if (defaultColorMap == nullptr)
+    {
+        defaultColorMap = std::make_unique<ColorMap>();
         defaultColorMap->init();
     }
-    return defaultColorMap;
+    return defaultColorMap.get();
 }
 
 ColorMap::ColorMap(unsigned int paletteSize, const std::string& colorScheme)

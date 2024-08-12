@@ -1,10 +1,11 @@
+<?xml version="1.0"?>
 <!-- TrianglePressureForceField example scene -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint FixedPlaneProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedPlaneProjectiveConstraint FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -32,13 +33,13 @@
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.5" />
-        <FixedPlaneProjectiveConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedProjectiveConstraint indices="0" />
+        <FixedProjectiveConstraint indices="0-50" />
         <TetrahedronFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" src="@../Container"/>
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-            <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
+            <BoxROI name="Roi" position="@../Volume.position" triangles="@Container.triangles" box="-0.5 -0.5 0.9   0.5 0.5 1.1"/>
+            <TrianglePressureForceField name="PFF" triangleList="@Roi.triangleIndices" pressure="0 10 10" showForces="1"/>
             <TriangleCollisionModel />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />

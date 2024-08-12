@@ -70,7 +70,7 @@ using sofa::helper::ScopedAdvancedTimer;
 using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
-    m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
+    d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , d_parallelCollisionDetectionAndFreeMotion(initData(&d_parallelCollisionDetectionAndFreeMotion, false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
@@ -78,6 +78,8 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
 {
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
     d_parallelODESolving.setGroup("Multithreading");
+
+    m_solveVelocityConstraintFirst.setParent(&d_solveVelocityConstraintFirst);
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
@@ -401,10 +403,12 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
     }
 }
 
-int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
+void registerFreeMotionAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData(R"(
 The animation loop to use with constraints.
 You must add this loop at the beginning of the scene if you are using constraints.")")
-                                   .add< FreeMotionAnimationLoop >()
-                                   .addAlias("FreeMotionMasterSolver");
+        .add< FreeMotionAnimationLoop >());
+}
 
 } //namespace sofa::component::animationloop

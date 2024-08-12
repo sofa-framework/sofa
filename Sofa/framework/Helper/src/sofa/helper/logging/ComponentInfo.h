@@ -65,7 +65,7 @@ protected:
 /// This function is used in the msg_* macro to handle emitting case based on string.
 inline const ComponentInfo::SPtr getComponentInfo(const std::string& s)
 {
-    return ComponentInfo::SPtr( new ComponentInfo(s) );
+    return std::make_shared<ComponentInfo>(s);
 }
 
 /// This function is used in the msg_* macro to handle emitting case based on string.

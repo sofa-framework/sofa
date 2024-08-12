@@ -34,18 +34,29 @@ namespace sofa::component::mechanicalload
 
 template <class DataTypes>
 OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForceField()
-    : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
-    , moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
-    , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-    , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
-    , center(initData(&center,"center", "Center of rotation"))
-    , penalty(initData(&penalty, Real(1000), "penalty", "Strength of the penalty force"))
-    , frequency(initData(&frequency, Real(1), "frequency", "frequency of oscillation"))
-    , dmin(initData(&dmin,Real(0.0), "dmin", "Minimum distance from the origin along the normal direction"))
-    , dmax(initData(&dmax,Real(0.0), "dmax", "Maximum distance from the origin along the normal direction"))
-    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
+    : d_trianglePressureMap(initData(&d_trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
+    , d_moment(initData(&d_moment, "moment", "Moment force applied on the entire surface"))
+    , d_triangleList(initData(&d_triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    , d_axis(initData(&d_axis, Coord(0, 0, 1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
+    , d_center(initData(&d_center, "center", "Center of rotation"))
+    , d_penalty(initData(&d_penalty, Real(1000), "penalty", "Strength of the penalty force"))
+    , d_frequency(initData(&d_frequency, Real(1), "frequency", "frequency of oscillation"))
+    , d_dmin(initData(&d_dmin, Real(0.0), "dmin", "Minimum distance from the origin along the normal direction"))
+    , d_dmax(initData(&d_dmax, Real(0.0), "dmax", "Maximum distance from the origin along the normal direction"))
+    , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
     , rotationAngle(0)
 {
+    trianglePressureMap.setParent(&d_trianglePressureMap);
+    moment.setParent(&d_moment);
+    triangleList.setParent(&d_triangleList);
+    axis.setParent(&d_axis);
+    center.setParent(&d_center);
+    penalty.setParent(&d_penalty);
+    frequency.setParent(&d_frequency);
+    dmin.setParent(&d_dmin);
+    dmax.setParent(&d_dmax);
+    p_showForces.setParent(&d_showForces);
+
 }
 
 template <class DataTypes>
@@ -58,7 +69,7 @@ template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
-    axis.setValue( axis.getValue() / axis.getValue().norm() );
+    d_axis.setValue(d_axis.getValue() / d_axis.getValue().norm() );
 
     if (l_topology.empty())
     {
@@ -76,11 +87,11 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
         return;
     }
 
-    if (dmin.getValue()!=dmax.getValue())
+    if (d_dmin.getValue() != d_dmax.getValue())
     {
         selectTrianglesAlongPlane();
     }
-    if (triangleList.getValue().size()>0)
+    if (d_triangleList.getValue().size() > 0)
     {
         selectTrianglesFromString();
     }
@@ -94,7 +105,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     origVecFromCenter.resize( numPts );
     origCenter.resize( numPts );
 
-    trianglePressureMap.createTopologyHandler(m_topology);
+    d_trianglePressureMap.createTopologyHandler(m_topology);
 
     initTriangleInformation();
 
@@ -106,7 +117,7 @@ template<class DataTypes>
 SReal OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 {
     SReal t = this->getContext()->getTime();
-    const SReal val = cos( 6.2831853 * frequency.getValue() * t );
+    const SReal val = cos(6.2831853 * d_frequency.getValue() * t );
     return val;
 }
 
@@ -150,7 +161,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     rotationAngle = avgRotAngle;
 
     // calculate and apply penalty forces to ideal positions
-    const type::Quat<SReal> quat( axis.getValue(), avgRotAngle );
+    const type::Quat<SReal> quat(d_axis.getValue(), avgRotAngle );
     Real avgError = 0, maxError = 0;
     int pointCnt = 0;
     Real appliedMoment = 0;
@@ -158,12 +169,12 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
         {
             Coord idealPos = quat.rotate( origVecFromCenter[i] ) + origCenter[i];
             deltaPos = idealPos - x[i];
-            force = deltaPos * penalty.getValue();// * 100*deltaPos.norm();
+            force = deltaPos * d_penalty.getValue();// * 100*deltaPos.norm();
             f[i] += force;
             // get amount of force that is a moment and store
             if (distFromCenter[i] > 1e-10 && origVecFromCenter[i].norm() > 1e-10)
             {
-                momentDir[i] = axis.getValue().cross( vecFromCenter[i] ); momentDir[i].normalize();
+                momentDir[i] = d_axis.getValue().cross(vecFromCenter[i] ); momentDir[i].normalize();
                 appliedMoment += dot( force, momentDir[i] ) * distFromCenter[i];
             }
             // error stats
@@ -176,7 +187,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
 
     // apply remaining moment
     //Real check = 0;
-    Real remainingMoment = (Real)( moment.getValue() * getAmplitude() - appliedMoment );
+    Real remainingMoment = (Real)(d_moment.getValue() * getAmplitude() - appliedMoment );
     for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
         {
             if (distFromCenter[i] > 1e-10)
@@ -220,8 +231,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
     int idx[3];
     Real d[10];
 
-    const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
@@ -259,7 +270,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
     for (unsigned int i=0; i<relMomentToApply.size(); i++) totalMoment += relMomentToApply[i];
     for (unsigned int i=0; i<relMomentToApply.size(); i++) relMomentToApply[i] /= totalMoment;
 
-    trianglePressureMap.endEdit();
+    d_trianglePressureMap.endEdit();
 
     return;
 }
@@ -278,7 +289,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
     type::vector<Index> inputTriangles;
 
     for (size_t n=0; n<m_topology->getNbTriangles(); ++n)
@@ -292,8 +303,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
             inputTriangles.push_back(n);
         }
     }
-    trianglePressureMap.endEdit();
-    trianglePressureMap.setMap2Elements(inputTriangles);
+    d_trianglePressureMap.endEdit();
+    d_trianglePressureMap.setMap2Elements(inputTriangles);
 
     return;
 }
@@ -302,10 +313,10 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
 template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString()
 {
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
-    type::vector<Index> _triangleList = triangleList.getValue();
+    sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
+    type::vector<Index> _triangleList = d_triangleList.getValue();
 
-    trianglePressureMap.setMap2Elements(_triangleList);
+    d_trianglePressureMap.setMap2Elements(_triangleList);
 
     for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
@@ -314,7 +325,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
         my_subset.push_back(t);
     }
 
-    trianglePressureMap.endEdit();
+    d_trianglePressureMap.endEdit();
 
     return;
 }
@@ -325,7 +336,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    if (!p_showForces.getValue())
+    if (!d_showForces.getValue())
         return;
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -337,7 +348,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vec3> vertices;
 
-    const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
+    const sofa::type::vector<Index>& my_map = d_trianglePressureMap.getMap2Elements();
 
     for (unsigned int i = 0; i < my_map.size(); ++i)
     {
@@ -358,8 +369,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
 template<class DataTypes>
 bool OscillatingTorsionPressureForceField<DataTypes>::isPointInPlane(Coord p)
 {
-    Real d=dot(p,axis.getValue());
-    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+    Real d=dot(p, d_axis.getValue());
+    if ((d > d_dmin.getValue()) && (d < d_dmax.getValue()))
         return true;
     else
         return false;
@@ -368,8 +379,8 @@ bool OscillatingTorsionPressureForceField<DataTypes>::isPointInPlane(Coord p)
 template<class DataTypes>
 typename OscillatingTorsionPressureForceField<DataTypes>::Coord OscillatingTorsionPressureForceField<DataTypes>::getVecFromRotAxis( const Coord &x )
 {
-    Coord vecFromCenter = x - center.getValue();
-    Coord axisProj = axis.getValue() * dot( vecFromCenter, axis.getValue() ) + center.getValue();
+    Coord vecFromCenter = x - d_center.getValue();
+    Coord axisProj = d_axis.getValue() * dot(vecFromCenter, d_axis.getValue() ) + d_center.getValue();
     return (x - axisProj);
 }
 
@@ -380,7 +391,7 @@ typename OscillatingTorsionPressureForceField<DataTypes>::Real OscillatingTorsio
     if (dp>1.0) dp=1.0; else if (dp<-1.0) dp=-1.0;
     Real angle = acos( dp );
     // check direction!
-    if (dot( axis.getValue(), v1.cross( v2 ) ) > 0) angle *= -1;
+    if (dot(d_axis.getValue(), v1.cross(v2 ) ) > 0) angle *= -1;
     return angle;
 }
 

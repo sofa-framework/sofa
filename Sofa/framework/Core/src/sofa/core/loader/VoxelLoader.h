@@ -48,7 +48,7 @@ protected:
 public:
 
     Data< type::vector<sofa::type::Vec3 > > positions; ///< Coordinates of the nodes loaded
-    Data< type::vector<Hexahedron > > hexahedra;       ///< Hexahedra loaded
+    Data< type::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 
     void addHexahedron(type::vector< Hexahedron >* pHexahedra, const type::fixed_array<unsigned int,8> &p);
@@ -68,7 +68,7 @@ public:
 
     virtual unsigned char * getSegmentID() = 0;
 
-    // fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
+    // fill the texture by 'image' only where there is the 'segmentation' of 'd_activeValue' and give the 3D texture sizes
     virtual void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) = 0;
 };
 

@@ -31,7 +31,7 @@ using namespace defaulttype;
 
 
 // Register in the Factory
-int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
+int DistanceMappingClass = core::RegisterObject("Mapping each connected pair of Degrees of Freedom (DoFs) in a topology to a scalar value representing the distance between them.")
         .add< DistanceMapping< Vec3Types, Vec1Types > >()
         .add< DistanceMapping< Rigid3Types, Vec1Types > >()
         ;

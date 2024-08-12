@@ -146,7 +146,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     const VecElement& elems = *m->_indexedElements;
 
     const VecCoord& p = m->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    m->_initialPoints.setValue(p);
+    m->d_initialPoints.setValue(p);
 
     m->rotations.resize( m->_indexedElements->size() );
     m->_initialRotations.resize( m->_indexedElements->size() );
@@ -210,8 +210,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
     data.nbElementPerVertex = nmax;
-    std::istringstream ptchar(m->_gatherPt.getValue().getSelectedItem());
-    std::istringstream bschar(m->_gatherBsize.getValue().getSelectedItem());
+    std::istringstream ptchar(m->d_gatherPt.getValue().getSelectedItem());
+    std::istringstream bschar(m->d_gatherBsize.getValue().getSelectedItem());
     ptchar >> data.GATHER_PT;
     bschar >> data.GATHER_BSIZE;
 

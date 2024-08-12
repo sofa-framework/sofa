@@ -27,6 +27,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <QMessageBox>
 #include <QTextEdit>
@@ -147,6 +148,16 @@ void SofaPluginManager::addLibrary()
             msg_error("SofaPluginManager") << "plugin should be loaded: " << pluginFile << msgendl;
             return;
         }
+
+        if ( (plugin->moduleIsInitialized.func && plugin->moduleIsInitialized())
+            || !plugin->moduleIsInitialized.func)
+        {
+            if (const char* moduleName = plugin->getModuleName())
+            {
+                core::ObjectFactory::getInstance()->registerObjectsFromPlugin(moduleName);
+            }
+        }
+
         const QString slicense = plugin->getModuleLicense();
         const QString sname    = plugin->getModuleName();
         const QString sversion = plugin->getModuleVersion();
@@ -249,7 +260,21 @@ void SofaPluginManager::updateComponentList()
         return;
     }
 
-    QString cpts( plugin->getModuleComponentList() );
+    std::string componentListStr{};
+    const char* tempComponentList = plugin->getModuleComponentList();
+
+    // the plugin does not implement getModuleComponentList(), or returns nothing.
+    if (tempComponentList == nullptr)
+    {
+        const char* pluginNameStr = plugin->getModuleName();
+        componentListStr = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(pluginNameStr);
+    }
+    else
+    {
+        componentListStr = tempComponentList;
+    }
+
+    QString cpts(componentListStr.data());
     cpts.replace(", ","\n");
     cpts.replace(",","\n");
     std::istringstream in(cpts.toStdString());
@@ -300,6 +325,11 @@ void SofaPluginManager::loadPluginsFromIniFile()
     m_pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
     msg_info("SofaPluginManager") << "Loading automatically plugin list in " << m_pluginsIniFile;
     sofa::helper::system::PluginManager::getInstance().readFromIniFile(m_pluginsIniFile, m_loadedPlugins);
+
+    for (const auto& loadedPlugin : m_loadedPlugins)
+    {
+        core::ObjectFactory::getInstance()->registerObjectsFromPlugin(loadedPlugin);
+    }
 }
 
 

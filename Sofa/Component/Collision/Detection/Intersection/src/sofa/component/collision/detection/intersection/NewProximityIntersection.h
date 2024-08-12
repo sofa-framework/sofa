@@ -55,8 +55,10 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API NewProximityIntersecti
 {
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLineLine;
 
-    Data<bool> useLineLine; ///< Line-line collision detection enabled
+    Data<bool> d_useLineLine; ///< Line-line collision detection enabled
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 

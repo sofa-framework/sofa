@@ -3,21 +3,22 @@
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
-        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
-        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
-        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
+        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [CompositeLinearSystem MatrixLinearSystem MatrixProjectionMethod] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping SubsetMapping] -->
         <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
-        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+        <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
         <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
         <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
         <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms] -->
         <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
         <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="SofaMatrix"/> <!-- Needed to use components [GlobalSystemMatrixImage] -->
-        <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
-        <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+
     </Node>
 
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
@@ -84,7 +85,7 @@
             <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/a/DOFs @/rigidSections/green/b/DOFs"/>
             <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/b/DOFs @/rigidSections/green/a/DOFs"/>
             <MatrixProjectionMethod areJacobiansConstant="true" mechanicalStates="@/rigidSections/green/b/DOFs @/rigidSections/green/b/DOFs"/>
-            <StiffSpringForceField object1="@a/DOFs" object2="@b/DOFs" spring="0 0 100 1 1" showArrowSize="0.05" drawMode="2"/>
+            <SpringForceField object1="@a/DOFs" object2="@b/DOFs" spring="0 0 100 1 1" showArrowSize="0.05" drawMode="2"/>
 
             <Node name="Visual">
                 <RegularGridTopology name="grid" n="@../grid.n" xmin="-1.5" xmax="1.5" ymin="-9" ymax="-6" zmin="0" zmax="19" computeTriangleList="false" />
@@ -127,13 +128,13 @@
             <VisualStyle displayFlags="showInteractionForceFields" />
 
             <Node name="nonMappedDOFsSpring">
-                <StiffSpringForceField object1="@red/DOFs" object2="@blue/DOFs" spring="19 19 50 1 1" showArrowSize="0.05" drawMode="2"/>
+                <SpringForceField object1="@red/DOFs" object2="@blue/DOFs" spring="19 19 50 1 1" showArrowSize="0.05" drawMode="2"/>
             </Node>
 
             <Node name="springBetweenMappedAndNonMapped">
                 <BoxROI position="@red/FEM/DOFs.position" box="-1.6 -1.6 18.9 -1.4 -1.4 19.1" drawBoxes="true"/>
                 <BoxROI position="@green/DOFs.position" box="-1.6 -6.1 18.9 -1.4 -5.9 19.1" drawBoxes="true"/>
-                <StiffSpringForceField object1="@red/FEM/DOFs" object2="@green/DOFs" spring="304 316 100 1 1" showArrowSize="0.05" drawMode="2"/>
+                <SpringForceField object1="@red/FEM/DOFs" object2="@green/DOFs" spring="304 316 100 1 1" showArrowSize="0.05" drawMode="2"/>
             </Node>
         </Node>
     </Node>

@@ -32,44 +32,46 @@ namespace sofa::component::mapping::linear
 template <class In, class Out>
 BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
-      map(initData(&map,"map", "mapper data")),
-      mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
+      d_map(initData(&d_map, "map", "mapper data")),
+      d_mapOrient(initData(&d_mapOrient, "mapOrient", "mapper data for mapped frames")),
       matrixJ(nullptr),
       updateJ(true)
 {
+    mapOrient.setParent(&d_mapOrient);
+    map.setParent(&d_map);
 }
 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear (std::size_t reserve )
 {
 
-    type::vector<MappingData>& vectorData = *(map.beginEdit());
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.clear();
     if ( reserve>0 )
         vectorData.reserve ( reserve );
-    map.endEdit();
+    d_map.endEdit();
 
-    type::vector<MappingOrientData>& vectorOrientData = *(mapOrient.beginEdit());
+    type::vector<MappingOrientData>& vectorOrientData = *(d_mapOrient.beginEdit());
     vectorOrientData.clear();
     if ( reserve>0 )
         vectorOrientData.reserve ( reserve );
 
-    mapOrient.endEdit();
+    d_mapOrient.endEdit();
 }
 
 template <class In, class Out>
 typename BarycentricMapperTetrahedronSetTopologyRigid<In, Out>::Index
 BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
-    type::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.resize ( map.getValue().size() +1 );
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    vectorData.resize (d_map.getValue().size() + 1 );
     MappingData& data = *vectorData.rbegin();
-    map.endEdit();
+    d_map.endEdit();
     data.in_index = tetraIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return map.getValue().size()-1;
+    return d_map.getValue().size() - 1;
 }
 
 template<class In, class Out>
@@ -78,7 +80,7 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra
 {
     //storing the frame in 3 maps: one direction vector in one map  (3 coor. elements inside a map)
     // IPTR_BARCPP_ADDOR("addPointOrientation BEGIN" << endl);
-    type::vector<MappingOrientData>& vectorData = *(mapOrient.beginEdit());
+    type::vector<MappingOrientData>& vectorData = *(d_mapOrient.beginEdit());
     vectorData.resize ( vectorData.size() +1 );
     MappingOrientData& data = *vectorData.rbegin();
     for (unsigned int dir = 0; dir < 3; dir++)
@@ -93,9 +95,9 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra
         //IPNTR_BARCPP_ADDOR(endl);
 
     }
-    mapOrient.endEdit();
+    d_mapOrient.endEdit();
     // IPTR_BARCPP_ADDOR("addPointOrientation END" << endl);
-    return map.getValue().size()-1;
+    return d_map.getValue().size() - 1;
 }
 
 
@@ -167,7 +169,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(map.getValue().size());
+    toModel->resize(d_map.getValue().size());
 }
 
 template<class In, class Out>
@@ -176,8 +178,8 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
     actualTetraPosition=in;
     //get number of point being mapped
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
-    const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
+    const sofa::type::vector<MappingOrientData >& mapOrient = this->d_mapOrient.getValue();
 
 //    typename In::VecCoord inCopy = in;
 
@@ -196,7 +198,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
 
     sofa::type::vector< sofa::type::Mat<12,3> > rotJ;
     rotJ.resize(map.size());
-    //point running over each DoF (assoc. with frame) in the out vector; get it from the mapOrient[0]
+    //point running over each DoF (assoc. with frame) in the out vector; get it from the d_mapOrient[0]
     for (unsigned int point = 0; point < mapOrient.size(); point++)
     {
         const int index = mapOrient[point][0].in_index;
@@ -235,12 +237,12 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( map.getValue().size() );
+    out.resize(d_map.getValue().size() );
 
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
-    // TODO: use mapOrient
-    //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
+    // TODO: use d_mapOrient
+    //const sofa::type::vector<MappingOrientData >& d_mapOrient = this->d_mapOrient.getValue();
 
     for( size_t i=0 ; i<map.size() ; ++i)
     {
@@ -270,14 +272,14 @@ template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
     typename core::behavior::MechanicalState<Out>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
 
 //    const typename  Out::VecCoord& pX =mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
-    // TODO: use mapOrient
-    //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    // TODO: use d_mapOrient
+    //const sofa::type::vector<MappingOrientData >& d_mapOrient = this->d_mapOrient.getValue();
 
     actualPos.clear();
     actualPos.resize(map.size());
@@ -314,7 +316,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 template<class In, class Out>
 const sofa::linearalgebra::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::getJ(int outSize, int inSize)
 {
-    if (outSize > 0 && map.getValue().size() == 0)
+    if (outSize > 0 && d_map.getValue().size() == 0)
     {
         msg_error() << "Maps not created yet" ;
         return nullptr; // error: maps not yet created ?
@@ -332,11 +334,11 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRi
         matrixJ->clear();
 
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
 
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
-    // TODO: use mapOrient
-    //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    // TODO: use d_mapOrient
+    //const sofa::type::vector<MappingOrientData >& d_mapOrient = this->d_mapOrient.getValue();
 
     for (unsigned int beamNode = 0; beamNode < map.size(); beamNode++)
     {
@@ -383,10 +385,10 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
-    // TODO: use mapOrient
-    //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    // TODO: use d_mapOrient
+    //const sofa::type::vector<MappingOrientData >& d_mapOrient = this->d_mapOrient.getValue();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -421,10 +423,10 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
-    const sofa::type::vector<MappingData >& map = this->map.getValue();
+    const sofa::type::vector<MappingData >& map = this->d_map.getValue();
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
-    // TODO: use mapOrient
-    //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+    // TODO: use d_mapOrient
+    //const sofa::type::vector<MappingOrientData >& d_mapOrient = this->d_mapOrient.getValue();
 
     std::vector< sofa::type::Vec3 > points;
     {

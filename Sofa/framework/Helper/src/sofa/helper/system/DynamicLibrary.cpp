@@ -36,7 +36,7 @@ namespace sofa::helper::system
 
 
 DynamicLibrary::Handle::Handle(const std::string& filename, void *handle)
-    : m_realHandle(handle), m_filename(new std::string(filename))
+    : m_realHandle(handle), m_filename(std::make_shared<std::string>(filename))
 {
 }
 
@@ -114,31 +114,33 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 #if not defined (WIN32)
     else // checking that the symbol really comes from the provided library
     {
-        constexpr auto getRealPath = [] (const auto& strpath)
-        {
-            std::filesystem::path path(strpath);
-            if(std::filesystem::is_symlink(path))
-            {
-                auto symlinkHandlePath = std::filesystem::read_symlink(path);
-                // symlink created by the build process are relative
-                if(symlinkHandlePath.is_relative())
-                {
-                    path = path.parent_path() / symlinkHandlePath;
-                }
-            }
-            return path;
-        };
 
         Dl_info dli;
         ::dladdr(symbolAddress, &dli);
-        std::filesystem::path dlInfoPath = getRealPath(dli.dli_fname);
+        std::filesystem::path dlInfoPath;
+        std::filesystem::path handlePath;
+        std::ostringstream oss;
 
-        std::filesystem::path handlePath = getRealPath(handle.filename());
+        try
+        {
+            dlInfoPath = std::filesystem::canonical(dli.dli_fname);
+            handlePath = std::filesystem::canonical(handle.filename());
+        }
+        catch(std::filesystem::filesystem_error& error)
+        {
+            oss << "An exception was caught when trying to find the real path of the library with the following message : " << error.what();
+
+            // paths are broken, we cannot check if this symbol comes from this lib
+            symbolAddress = nullptr;
+            m_lastError = oss.str();
+
+            return symbolAddress;
+        }
+
 
         // Both paths should be exactly the same
         if(dlInfoPath.compare(handlePath) != 0)
         {
-            std::ostringstream oss;
             oss << symbol << " was found in the library " << dlInfoPath
                 << " , but it should have been found in this library " << handlePath << "\n."
                 << "The most probable reason is that your requested library " << handlePath.filename()

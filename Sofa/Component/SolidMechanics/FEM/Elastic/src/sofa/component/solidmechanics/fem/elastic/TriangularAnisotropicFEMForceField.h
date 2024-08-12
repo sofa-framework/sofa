@@ -72,20 +72,37 @@ public:
     void getFiberDir(int element, Deriv& dir);
 
     //Data<Real> f_poisson2;
-    //Data<Real> f_young2; ///< Young modulus along transverse direction
+    //Data<Real> d_young2; ///< Young modulus along transverse direction
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<type::vector<Real>> f_young2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> f_theta;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<VecCoord> f_fiberCenter;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> showFiber;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> localFiberDirection;
+
+
     Data<type::vector<Real> > f_poisson2;
-    Data<type::vector<Real> > f_young2; ///< Young modulus along transverse direction
-    Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
-    Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
-    Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
+    Data<type::vector<Real> > d_young2; ///< Young modulus along transverse direction
+    Data<Real> d_theta; ///< Fiber angle in global reference frame (in degrees)
+    Data<VecCoord> d_fiberCenter; ///< Concentric fiber center in global reference frame
+    Data<bool> d_showFiber; ///< Flag activating rendering of fiber directions within each triangle
     typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
-    core::topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
+    core::topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > d_localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
 
     /** Method to initialize @sa TriangleFiberDirection when a new Triangle is created.
-    * Will be set as creation callback in the TriangleData @sa localFiberDirection
+    * Will be set as creation callback in the TriangleData @sa d_localFiberDirection
     */
     void createTriangleInfo(Index triangleIndex,
         TriangleFiberDirection&,

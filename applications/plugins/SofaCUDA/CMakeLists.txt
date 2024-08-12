@@ -39,12 +39,14 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.h
 
 
     ### Mass
@@ -71,6 +73,7 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.inl
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.h
@@ -235,72 +238,6 @@ else()
     )
     list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaVisualModel.cu
-    )
-endif()
-
-#Compatibility
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    list(APPEND HEADER_FILES
-        sofa/gpu/cuda/CudaBarycentricMapping.h
-        sofa/gpu/cuda/CudaBarycentricMapping.inl
-        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
-        sofa/gpu/cuda/CudaRigidMapping.h
-        sofa/gpu/cuda/CudaRigidMapping.inl
-        sofa/gpu/cuda/CudaIdentityMapping.h
-        sofa/gpu/cuda/CudaIdentityMapping.inl
-        sofa/gpu/cuda/CudaSubsetMapping.h
-        sofa/gpu/cuda/CudaSubsetMapping.inl
-
-        sofa/gpu/cuda/CudaDiagonalMass.h
-        sofa/gpu/cuda/CudaDiagonalMass.inl
-
-        sofa/gpu/cuda/CudaMeshMatrixMass.h
-        sofa/gpu/cuda/CudaMeshMatrixMass.inl
-
-        sofa/gpu/cuda/CudaUniformMass.h
-        sofa/gpu/cuda/CudaUniformMass.inl
-
-        sofa/gpu/cuda/CudaHexahedronFEMForceField.h
-        sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
-        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
-        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
-        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
-        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-        sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-        sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
-
-        sofa/gpu/cuda/CudaFixedConstraint.h
-        sofa/gpu/cuda/CudaFixedConstraint.inl
-        sofa/gpu/cuda/CudaLinearMovementConstraint.h
-        sofa/gpu/cuda/CudaLinearMovementConstraint.inl
-
-        sofa/gpu/cuda/CudaLineModel.h
-        sofa/gpu/cuda/CudaPointModel.h
-        sofa/gpu/cuda/CudaSphereModel.h
-        sofa/gpu/cuda/CudaTriangleModel.h
-
-        sofa/gpu/cuda/CudaPenalityContactForceField.h
-        sofa/gpu/cuda/CudaPenalityContactForceField.inl
-
-        sofa/gpu/cuda/CudaSpringForceField.h
-        sofa/gpu/cuda/CudaSpringForceField.inl
-
-        sofa/gpu/cuda/CudaSphereForceField.h
-        sofa/gpu/cuda/CudaSphereForceField.inl
-
-        sofa/gpu/cuda/CudaPlaneForceField.h
-        sofa/gpu/cuda/CudaPlaneForceField.inl
-
-        sofa/gpu/cuda/CudaLinearForceField.h
-        sofa/gpu/cuda/CudaLinearForceField.inl
-
-        sofa/gpu/cuda/CudaEllipsoidForceField.h
-        sofa/gpu/cuda/CudaEllipsoidForceField.inl
-
-        sofa/gpu/cuda/CudaMechanicalObject.h
-        sofa/gpu/cuda/CudaMechanicalObject.inl
     )
 endif()
 

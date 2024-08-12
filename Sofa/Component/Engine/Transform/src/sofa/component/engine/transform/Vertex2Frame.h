@@ -33,7 +33,7 @@ namespace sofa::component::engine::transform
 {
 
 /**
- * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position
+ * This class gets as inputs the vertices, texCoords, normals and d_facets of any mesh and returns as output a rigid position
  */
 template <class DataTypes>
 class Vertex2Frame : public  core::DataEngine
@@ -60,7 +60,7 @@ public:
 protected:
     typename sofa::core::behavior::MechanicalState<DataTypes>::SPtr m_mstate;
     Data< type::vector<CPos> > d_vertices; ///< Vertices of the mesh loaded
-    Data< type::vector<sofa::type::Vec2> > d_texCoords; ///< for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    Data< type::vector<sofa::type::Vec2> > d_texCoords; ///< TexCoords of the mesh loaded
     Data< type::vector<CPos> > d_normals; ///< Normals of the mesh loaded
 
     Data<VecCoord> d_frames; ///< Frames at output

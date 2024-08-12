@@ -2,22 +2,22 @@ cmake_minimum_required(VERSION 3.22)
 project(image_gui)
 
 set(HEADER_FILES
-    ImageTransformWidget.h
-    config.h
+    src/image_gui/ImageTransformWidget.h
+    src/image_gui/config.h.in
 )
 
 set(MOC_HEADER_FILES
-    HistogramWidget.h
-    ImagePlaneWidget.h
-    VectorVisualizationWidget.h
+    src/image_gui/HistogramWidget.h
+    src/image_gui/ImagePlaneWidget.h
+    src/image_gui/VectorVisualizationWidget.h
 )
 
 set(SOURCE_FILES
-    HistogramWidget.cpp
-    ImagePlaneWidget.cpp
-    ImageTransformWidget.cpp
-    VectorVisualizationWidget.cpp
-    initImage_gui.cpp
+    src/image_gui/HistogramWidget.cpp
+    src/image_gui/ImagePlaneWidget.cpp
+    src/image_gui/ImageTransformWidget.cpp
+    src/image_gui/VectorVisualizationWidget.cpp
+    src/image_gui/initImage_gui.cpp
 )
 
 include(../imagetoolbox/imagetoolbox.cmake)
@@ -42,9 +42,10 @@ add_definitions("-DSOFA_BUILD_IMAGE_GUI")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} Sofa.GUI.Qt)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME image
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    INCLUDE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
-    )
+)

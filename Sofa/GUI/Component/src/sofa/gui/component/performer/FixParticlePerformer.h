@@ -24,7 +24,7 @@
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/geometry/TriangleModel.h>
@@ -53,7 +53,7 @@ template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
 public:
-    typedef sofa::component::solidmechanics::spring::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::solidmechanics::spring::SpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::statecontainer::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;

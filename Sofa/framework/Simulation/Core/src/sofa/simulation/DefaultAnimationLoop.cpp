@@ -33,7 +33,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -49,7 +48,6 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
@@ -60,6 +58,7 @@ namespace sofa::simulation
 
 int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
                                 .add<DefaultAnimationLoop>()
+                                .addDocumentationURL(std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/animationloops/defaultanimationloop/"))
                                 .addDescription(R"(
 This loop triggers the following steps:
 - build and solve all linear systems in the scene : collision and time integration to compute the new values of the dofs

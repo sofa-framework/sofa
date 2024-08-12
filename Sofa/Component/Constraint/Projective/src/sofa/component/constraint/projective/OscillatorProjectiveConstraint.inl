@@ -31,8 +31,9 @@ namespace sofa::component::constraint::projective
 template <class TDataTypes>
 OscillatorProjectiveConstraint<TDataTypes>::OscillatorProjectiveConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
-    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
+    , d_constraints(initData(&d_constraints, "oscillators", "Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
+    constraints.setParent(&d_constraints);
 }
 
 template <class TDataTypes>
@@ -43,7 +44,7 @@ OscillatorProjectiveConstraint<TDataTypes>::~OscillatorProjectiveConstraint()
 template <class TDataTypes>
 OscillatorProjectiveConstraint<TDataTypes>*  OscillatorProjectiveConstraint<TDataTypes>::addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase)
 {
-    this->constraints.beginEdit()->push_back( Oscillator(index,mean,amplitude,pulsation,phase) );
+    this->d_constraints.beginEdit()->push_back(Oscillator(index, mean, amplitude, pulsation, phase) );
     return this;
 }
 
@@ -52,7 +53,7 @@ template <class TDataTypes> template <class DataDeriv>
 void OscillatorProjectiveConstraint<TDataTypes>::projectResponseT(DataDeriv& res,
     const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
-    const auto& oscillators = constraints.getValue();
+    const auto& oscillators = d_constraints.getValue();
 
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
@@ -73,7 +74,7 @@ template <class TDataTypes>
 void OscillatorProjectiveConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> v = vData;
-    const type::vector<Oscillator>& oscillators = constraints.getValue();
+    const type::vector<Oscillator>& oscillators = d_constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
@@ -90,7 +91,7 @@ template <class TDataTypes>
 void OscillatorProjectiveConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    const type::vector<Oscillator> &oscillators = constraints.getValue();
+    const type::vector<Oscillator> &oscillators = d_constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {

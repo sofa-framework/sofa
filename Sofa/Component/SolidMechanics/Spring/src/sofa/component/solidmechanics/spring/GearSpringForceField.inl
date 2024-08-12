@@ -71,13 +71,18 @@ template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
     , outfile(nullptr)
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
-    , f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
-    , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
+    , d_springs(initData(&d_springs, "spring", "pairs of indices, stiffness, damping"))
+    , d_filename(initData(&d_filename, "filename", "output file name"))
+    , d_period(initData(&d_period, (Real)0.0, "period", "period between outputs"))
+    , d_reinit(initData(&d_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
     , lastTime((Real)0.0)
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
+    springs.setParent(&d_springs);
+    f_filename.setParent(&d_filename);
+    f_period.setParent(&d_period);
+    f_reinit.setParent(&d_reinit);
+    showFactorSize.setParent(&d_showFactorSize);
 }
 
 template<class DataTypes>
@@ -98,7 +103,7 @@ void GearSpringForceField<DataTypes>::init()
 {
     this->Inherit::init();
 
-    const std::string& filename = f_filename.getFullPath();
+    const std::string& filename = d_filename.getFullPath();
     if (!filename.empty())
     {
         outfile = new std::ofstream(filename.c_str());
@@ -117,8 +122,8 @@ void GearSpringForceField<DataTypes>::reinit()
 {
     const VecCoord& x1=this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2=this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    sofa::type::vector<Spring> &springsVector=*(springs.beginEdit());
-    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    sofa::type::vector<Spring> &springsVector=*(d_springs.beginEdit());
+    for (unsigned int i=0; i < d_springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
         if(s.p1==s.m1) { s.angle1 = s.previousAngle1 = 0.0; s.ini1 = x1[s.p1]; }
@@ -126,7 +131,7 @@ void GearSpringForceField<DataTypes>::reinit()
         if(s.p2==s.m2) { s.angle2 = s.previousAngle2 = 0.0; s.ini2 = x2[s.p2]; }
         else s.angle2 = s.previousAngle2 = getAngleAroundAxis(x2[s.p2],x2[s.m2],s.freeAxis[1]);
     }
-    springs.endEdit();
+    d_springs.endEdit();
 }
 
 
@@ -203,17 +208,17 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     // write output file
     if (outfile)
     {
-        if(f_reinit.getValue())  outfile->seekp(std::ios::beg);
+        if(d_reinit.getValue())  outfile->seekp(std::ios::beg);
 
         SReal time = this->getContext()->getTime();
-        if (time >= (lastTime + f_period.getValue()))
+        if (time >= (lastTime + d_period.getValue()))
         {
-            lastTime += f_period.getValue();
+            lastTime += d_period.getValue();
             (*outfile) << "T= "<< time << "\n";
             (*outfile) << "  Angles= " << spring.angle1 << " , " << spring.angle2 << "\n";
             (*outfile) << "  F= " << f << "\n";
 
-            if(f_reinit.getValue()) (*outfile) << "\n\n\n\n\n";
+            if(d_reinit.getValue()) (*outfile) << "\n\n\n\n\n";
 
             outfile->flush();
         }
@@ -274,7 +279,7 @@ void GearSpringForceField<DataTypes>::addForce(const sofa::core::MechanicalParam
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    type::vector<Spring>& springs = *this->springs.beginEdit();
+    type::vector<Spring>& springs = *this->d_springs.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -283,7 +288,7 @@ void GearSpringForceField<DataTypes>::addForce(const sofa::core::MechanicalParam
     {
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 
     data_f1.endEdit();
     data_f2.endEdit();
@@ -304,12 +309,12 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     //const type::vector<Spring>& springs = this->springs.getValue();
-    type::vector<Spring>& springs = *this->springs.beginEdit();
+    type::vector<Spring>& springs = *this->d_springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
     }
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 
     data_df1.endEdit();
     data_df2.endEdit();
@@ -333,15 +338,15 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 
     vparams->drawTool()->disableLighting();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->d_springs.getValue();
 
-    float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp
+    float radius = d_showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp
 
     for (unsigned int i=0; i<springs.size(); i++)
     {
         if(springs[i].freeAxis[0] == 0)
         {
-            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+            typename DataTypes::CPos vec = Vector((Real)(1.0 * d_showFactorSize.getValue()), 0, 0);
 
             typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
             typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
@@ -350,7 +355,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         if(springs[i].freeAxis[0] == 1)
         {
-            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0 * d_showFactorSize.getValue()), 0.0);
 
             typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
             typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
@@ -359,7 +364,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         if(springs[i].freeAxis[0] == 2)
         {
-            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0 * d_showFactorSize.getValue()));
 
             typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
             typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
@@ -369,7 +374,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         if(springs[i].freeAxis[1] == 0)
         {
-            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+            typename DataTypes::CPos vec = Vector((Real)(1.0 * d_showFactorSize.getValue()), 0, 0);
 
             typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
             typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
@@ -378,7 +383,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         if(springs[i].freeAxis[1] == 1)
         {
-            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0 * d_showFactorSize.getValue()), 0.0);
 
             typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
             typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;
@@ -387,7 +392,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         if(springs[i].freeAxis[1] == 2)
         {
-            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0 * d_showFactorSize.getValue()));
 
             typename DataTypes::CPos v0 = p2[springs[i].m2].getCenter();
             typename DataTypes::CPos v1 = p2[springs[i].m2].getOrientation().rotate(vec) + v0;

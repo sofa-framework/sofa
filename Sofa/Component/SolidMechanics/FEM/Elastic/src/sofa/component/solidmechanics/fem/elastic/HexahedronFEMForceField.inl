@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -50,20 +50,17 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
-    : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" or \"small\" displacements" ))
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
-    , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus","FEM Young's modulus in Hooke's law"))
-    , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
-    , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-    , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-    , f_drawing(initData(&f_drawing,true,"drawing","draw the forcefield if true"))
-    , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
+    : d_method(initData(&d_method, std::string("large"), "method", "\"large\" or \"polar\" or \"small\" displacements" ))
+    , d_updateStiffnessMatrix(initData(&d_updateStiffnessMatrix, false, "updateStiffnessMatrix", ""))
+    , d_gatherPt(initData(&d_gatherPt, "gatherPt", "number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+    , d_gatherBsize(initData(&d_gatherBsize, "gatherBsize", "number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+    , d_drawing(initData(&d_drawing, true, "drawing", "draw the forcefield if true"))
+    , d_drawPercentageOffset(initData(&d_drawPercentageOffset, (Real)0.15, "drawPercentageOffset", "size of the hexa"))
     , needUpdateTopology(false)
-    , l_topology(initLink("topology", "link to the topology container"))
-    , _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
+    , d_elementStiffnesses(initData(&d_elementStiffnesses, "stiffnessMatrices", "Stiffness matrices per element (K_i)"))
     , m_topology(nullptr)
     , _sparseGrid(nullptr)
-    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
 {
     data->initPtrData(this);
@@ -94,8 +91,16 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 
     _alreadyInit=false;
 
-    f_poissonRatio.setRequired(true);
-    f_youngModulus.setRequired(true);
+    f_method.setParent(&d_method);
+    f_poissonRatio.setParent(&this->d_poissonRatio);
+    f_updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
+    _gatherPt.setParent(&d_gatherPt);
+    _gatherBsize.setParent(&d_gatherBsize);
+    f_drawing.setParent(&d_drawing);
+    f_drawPercentageOffset.setParent(&d_drawPercentageOffset);
+    _elementStiffnesses.setParent(&d_elementStiffnesses);
+    _initialPoints.setParent(&d_initialPoints);
+
 }
 
 
@@ -108,13 +113,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
     _alreadyInit=true;
 
-    this->core::behavior::ForceField<DataTypes>::init();
-
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -149,18 +148,18 @@ template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    _initialPoints.setValue(p);
+    d_initialPoints.setValue(p);
 
     _materialsStiffnesses.resize(this->getIndexedElements()->size() );
     _rotations.resize( this->getIndexedElements()->size() );
     _rotatedInitialElements.resize(this->getIndexedElements()->size());
     _initialrotations.resize( this->getIndexedElements()->size() );
 
-    if (f_method.getValue() == "large")
+    if (d_method.getValue() == "large")
         this->setMethod(LARGE);
-    else if (f_method.getValue() == "polar")
+    else if (d_method.getValue() == "polar")
         this->setMethod(POLAR);
-    else if (f_method.getValue() == "small")
+    else if (d_method.getValue() == "small")
         this->setMethod(SMALL);
 
     switch(method)
@@ -297,7 +296,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
         }
 
         Displacement F;
-        computeForce( F, X, _elementStiffnesses.getValue()[i] );
+        computeForce(F, X, d_elementStiffnesses.getValue()[i] );
 
         for(int w=0; w<8; ++w)
         {
@@ -705,18 +704,19 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
+    const auto poissonRatio = this->d_poissonRatio.getValue();
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = f_poissonRatio.getValue()/(1-f_poissonRatio.getValue());
+                    _materialsStiffnesses[i][2][1] = poissonRatio / (1 - poissonRatio);
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
     _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
     _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
     _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*f_poissonRatio.getValue())/(2*(1-f_poissonRatio.getValue()));
-    _materialsStiffnesses[i] *= (f_youngModulus.getValue()*(1-f_poissonRatio.getValue()))/((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
+    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1- 2 * poissonRatio) / (2 * (1 - poissonRatio));
+    _materialsStiffnesses[i] *= (this->getYoungModulusInElement(i) * (1 - poissonRatio)) / ((1 + poissonRatio) * (1 - 2 * poissonRatio));
     // S = [ U V V 0 0 0 ]
     //     [ V U V 0 0 0 ]
     //     [ V V U 0 0 0 ]
@@ -748,9 +748,9 @@ void HexahedronFEMForceField<DataTypes>::initSmall(sofa::Index i, const Element 
     _rotations[i] = t;
 
     for(int w=0; w<8; ++w)
-        _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[w]];
+        _rotatedInitialElements[i][w] = _rotations[i] * d_initialPoints.getValue()[elem[w]];
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -780,8 +780,8 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
             D[index+j] = _rotatedInitialElements[i][k][j] - nodes[k][j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
-    if(f_updateStiffnessMatrix.getValue())
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
+    if(d_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
     Displacement F; //forces
@@ -812,7 +812,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(sofa::Index i, const Element 
     // edges mean on 3 directions
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = _initialPoints.getValue()[elem[w]];
+        nodes[w] = d_initialPoints.getValue()[elem[w]];
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -822,9 +822,9 @@ void HexahedronFEMForceField<DataTypes>::initLarge(sofa::Index i, const Element 
     _initialrotations[i] = _rotations[i];
 
     for(int w=0; w<8; ++w)
-        _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[w]];
+        _rotatedInitialElements[i][w] = _rotations[i] * d_initialPoints.getValue()[elem[w]];
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -883,12 +883,12 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
             D[index+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
-    if(f_updateStiffnessMatrix.getValue())
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
+    if(d_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
     Displacement F; //forces
-    computeForce( F, D, _elementStiffnesses.getValue()[i] ); // compute force on element
+    computeForce(F, D, d_elementStiffnesses.getValue()[i] ); // compute force on element
 
     for(int w=0; w<8; ++w)
         f[elem[w]] += _rotations[i].multTranspose( Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  ) );
@@ -913,7 +913,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(sofa::Index i, const Element&
 {
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = _initialPoints.getValue()[elem[j]];
+        nodes[j] = d_initialPoints.getValue()[elem[j]];
 
     computeRotationPolar( _rotations[i], nodes );
 
@@ -924,7 +924,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(sofa::Index i, const Element&
         _rotatedInitialElements[i][j] =  _rotations[i] * nodes[j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -1081,13 +1081,13 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     //forces
     Displacement F;
 
-    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
-    if(f_updateStiffnessMatrix.getValue())
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(d_elementStiffnesses);
+    if(d_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0);
 
 
     // compute force on element
-    computeForce( F, D, _elementStiffnesses.getValue()[i] );
+    computeForce(F, D, d_elementStiffnesses.getValue()[i] );
 
 
     for(int j=0; j<8; ++j)
@@ -1121,9 +1121,9 @@ inline void HexahedronFEMForceField<DataTypes>::setMethod(int val)
     method = val;
     switch(val)
     {
-    case POLAR: f_method.setValue("polar"); break;
-    case SMALL: f_method.setValue("small"); break;
-    default   : f_method.setValue("large");
+    case POLAR: d_method.setValue("polar"); break;
+    case SMALL: d_method.setValue("small"); break;
+    default   : d_method.setValue("large");
     }
 }
 
@@ -1142,7 +1142,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
     sofa::Index e { 0 }; //index of the element in the topology
 
-    const auto& stiffnesses = _elementStiffnesses.getValue();
+    const auto& stiffnesses = d_elementStiffnesses.getValue();
     const auto* indexedElements = this->getIndexedElements();
 
     for (const auto& element : *indexedElements)
@@ -1176,7 +1176,7 @@ void HexahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
 {
     sofa::Index e { 0 }; //index of the element in the topology
 
-    const auto& stiffnesses = _elementStiffnesses.getValue();
+    const auto& stiffnesses = d_elementStiffnesses.getValue();
     const auto* indexedElements = this->getIndexedElements();
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
@@ -1236,7 +1236,7 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!f_drawing.getValue()) return;
+    if (!d_drawing.getValue()) return;
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) return;
     if (!this->mstate) return;
     if (!m_topology) return;
@@ -1255,7 +1255,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    const Real percentage = f_drawPercentageOffset.getValue();
+    const Real percentage = d_drawPercentageOffset.getValue();
     const Real oneMinusPercentage = static_cast<Real>(1) - percentage;
 
     const auto* indexedElements = this->getIndexedElements();

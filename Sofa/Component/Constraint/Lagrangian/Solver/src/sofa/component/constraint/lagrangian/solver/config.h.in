@@ -54,3 +54,12 @@ namespace sofa::component::constraint::lagrangian::solver
     SOFA_ATTRIBUTE_DISABLED( \
         "v23.12", "v23.12", "Use ConstraintSolverImpl::l_constraintCorrections instead")
 #endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif

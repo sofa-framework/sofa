@@ -58,13 +58,31 @@ public:
     typedef typename Coord::value_type Real;
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
     Data<bool> m_rotations;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
     Data<bool> m_restRotations;
 
-    Data<bool> recompute; ///< if true, always recompute the compliance
-	Data<SReal> debugViewFrameScale; ///< Scale on computed node's frame
-	sofa::core::objectmodel::DataFileName f_fileCompliance; ///< Precomputed compliance matrix data file
-	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    Data<bool> recompute;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    Data<SReal> debugViewFrameScale;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    Data<std::string> f_fileCompliance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    Data<std::string> fileDir;
+
+    Data<bool> d_rotations;
+    Data<bool> d_restRotations;
+
+    Data<bool> d_recompute; ///< if true, always recompute the compliance
+    Data<SReal> d_debugViewFrameScale; ///< Scale on computed node's frame
+    sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
+    Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);

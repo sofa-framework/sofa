@@ -77,7 +77,7 @@ void OglViewport::init()
     }
 }
 
-void OglViewport::initVisual()
+void OglViewport::doInitVisual(const core::visual::VisualParams*)
 {
     if (p_useFBO.getValue())
     {
@@ -95,7 +95,7 @@ bool OglViewport::isVisible(const core::visual::VisualParams*)
     {
         sofa::component::visual::VisualStyle* vstyle = nullptr;
         this->getContext()->get(vstyle);
-        if (vstyle && !vstyle->displayFlags.getValue().getShowAdvancedRendering())
+        if (vstyle && !vstyle->d_displayFlags.getValue().getShowAdvancedRendering())
             return false;
     }
     return true;

@@ -61,10 +61,23 @@ public:
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
-    Data<bool> filterIntersection; ///< Activate LMD filter
-    Data<double> angleCone; ///< Filtering cone extension angle
-    Data<double> coneFactor; ///< Factor for filtering cone angle computation
-    Data<bool> useLMDFilters; ///< Use external cone computation (Work in Progress)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> filterIntersection;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<double> angleCone;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<double> coneFactor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLMDFilters;
+
+
+    Data<bool> d_filterIntersection; ///< Activate LMD filter
+    Data<double> d_angleCone; ///< Filtering cone extension angle
+    Data<double> d_coneFactor; ///< Factor for filtering cone angle computation
+    Data<bool> d_useLMDFilters; ///< Use external cone computation
 
 protected:
     LocalMinDistance();

@@ -47,14 +47,14 @@ public:
     virtual bool startPartial(const BodyPicked& picked) override;
     /*
     initialise MouseForceField according to template.
-    StiffSpringForceField for Vec3
+    SpringForceField for Vec3
     JointSpringForceField for Rigid3
     */
 
     void setStiffness(SReal s) {m_stiffness=s;}
     void setArrowSize(float s) {m_size=s;}
 
-    virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
+    virtual void configure(sofa::component::setting::MouseButtonSetting* setting) override
     {
         const auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)

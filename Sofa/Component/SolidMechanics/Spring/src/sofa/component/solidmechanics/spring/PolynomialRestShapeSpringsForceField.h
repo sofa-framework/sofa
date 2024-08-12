@@ -78,11 +78,11 @@ public:
 
 
     Data<bool> d_recomputeIndices; ///< Recompute indices (should be false for BBOX)
-    Data<bool> d_drawSpring;                      ///< draw Spring
+    Data<bool> d_drawSpring; ///< draw Spring
     Data<sofa::type::RGBAColor> d_springColor; ///< spring color
     Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
 
-    Data<VecReal> d_zeroLength;       ///< Springs initial lengths
+    Data<VecReal> d_zeroLength; ///< initial virtual length of the spring
     Data<Real> d_smoothShift; ///< denominator correction adding shift value
     Data<Real> d_smoothScale; ///< denominator correction adding scale
 

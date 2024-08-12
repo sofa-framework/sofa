@@ -121,8 +121,8 @@ namespace sofa::component::haptics
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
-    , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
+    : d_forceCoef(initData(&d_forceCoef, 0.03, "forceCoef", "multiply haptic force by this coef."))
+    , d_solverTimeout(initData(&d_solverTimeout, 0.0008, "solverTimeout", "max time to spend solving constraints."))
     , d_solverMaxIt(initData(&d_solverMaxIt, 100, "solverMaxIt", "max iteration to spend solving constraints"))
     , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
     , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
@@ -144,6 +144,10 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     _timer = new helper::system::thread::CTime();
     time_buf = _timer->getTime();
     timer_iterations = 0;
+
+    forceCoef.setParent(&d_forceCoef);
+    solverTimeout.setParent(&d_solverTimeout);
+
 }
 
 
@@ -287,7 +291,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
         s_mtx.lock();
 
         // Solving constraints
-        cp->solveTimed(cp->tolerance * 0.001, d_solverMaxIt.getValue(), solverTimeout.getValue());	// tol, maxIt, timeout
+        cp->solveTimed(cp->tolerance * 0.001, d_solverMaxIt.getValue(), d_solverTimeout.getValue());	// d_tol, maxIt, timeout
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
@@ -320,7 +324,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
         for(unsigned int i = 0; i < stateSize; ++i)
         {
-            forces[i] = tempForces[i] * forceCoef.getValue();
+            forces[i] = tempForces[i] * d_forceCoef.getValue();
         }
     }
 }

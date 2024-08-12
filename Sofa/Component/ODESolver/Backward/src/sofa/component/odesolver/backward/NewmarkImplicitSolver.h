@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
@@ -46,7 +47,9 @@ namespace sofa::component::odesolver::backward
  * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
  *
 */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewmarkImplicitSolver
+    : public sofa::core::behavior::OdeSolver
+    , public sofa::core::behavior::LinearSolverAccessor
 {
 protected:
     unsigned int cpt;
@@ -55,7 +58,7 @@ protected:
     NewmarkImplicitSolver();
 
 public:
-    SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
     Data<SReal> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)

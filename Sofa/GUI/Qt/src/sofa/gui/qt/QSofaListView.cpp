@@ -397,11 +397,6 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     updateMatchingObjectmodel(item);
 
     QAction* act;
-    bool object_hasData = false;
-    if(object_.type == typeObject)
-    {
-        object_hasData = object_.ptr.Object->getDataFields().size() > 0 ? true : false;
-    }
     QMenu *contextMenu = new QMenu ( this );
     contextMenu->setObjectName( "ContextMenu");
     if( object_.isNode() )

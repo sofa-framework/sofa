@@ -44,7 +44,13 @@ namespace sofa::simpleapi
 
 bool importPlugin(const std::string& name)
 {
-    const auto status = PluginManager::getInstance().loadPlugin(name);
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+
+    const auto status = pluginManager.loadPlugin(name);
+    if(status == PluginManager::PluginLoadStatus::SUCCESS)
+    {
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(name);
+    }
     return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
 
@@ -91,12 +97,14 @@ BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
 {
     /// Create the object.
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
-    if (obj==nullptr)
+    if (obj == nullptr)
     {
         std::stringstream msg;
         msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
-        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            msg << " " << *it << msgendl ;
+        for (const auto& error : desc.getErrors())
+        {
+            msg << " " << error << msgendl ;
+        }
         msg_error(parent.get()) << msg.str() ;
         return nullptr;
     }
@@ -109,9 +117,9 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type.c_str(),type.c_str());
-    for(auto& kv : params)
+    for(const auto& [dataName, dataValue] : params)
     {
-        desc.setAttribute(kv.first.c_str(), kv.second);
+        desc.setAttribute(dataName.c_str(), dataValue);
     }
 
     return createObject(parent, desc);

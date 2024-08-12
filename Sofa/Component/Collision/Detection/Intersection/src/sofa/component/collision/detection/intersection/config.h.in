@@ -43,3 +43,11 @@ namespace sofa::component::collision::detection::intersection
 #define SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", \
+    "Data renamed according to the guidelines")
+#endif

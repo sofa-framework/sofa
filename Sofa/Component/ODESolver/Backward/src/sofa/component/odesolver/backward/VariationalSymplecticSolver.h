@@ -24,6 +24,8 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <fstream>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
+
 
 namespace sofa::component::odesolver::backward
 {
@@ -35,21 +37,53 @@ namespace sofa::component::odesolver::backward
  * several Newton steps to estimate the velocity
  *
 */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver
+    : public sofa::core::behavior::OdeSolver
+    , public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    Data<SReal>       f_newtonError; ///< Error tolerance for Newton iterations
-    Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
-    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
-    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-    Data<bool> f_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
-    Data<bool>       f_explicit; ///< Use explicit integration scheme
-    Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
-    Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
-    Data<SReal> f_hamiltonianEnergy; ///< hamiltonian energy
-    Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_newtonError;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<unsigned int> f_newtonSteps;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_rayleighStiffness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_rayleighMass;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_saveEnergyInFile;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_explicit;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<std::string> f_fileName;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_computeHamiltonian;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_hamiltonianEnergy;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_useIncrementalPotentialEnergy;
+
+    Data<SReal>       d_newtonError; ///< Error tolerance for Newton iterations
+    Data<unsigned int> d_newtonSteps; ///< Maximum number of Newton steps
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+    Data<bool> d_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
+    Data<bool>       d_explicit; ///< Use explicit integration scheme
+    Data<std::string> d_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
+    Data<bool> d_computeHamiltonian; ///< Compute hamiltonian
+    Data<SReal> d_hamiltonianEnergy; ///< hamiltonian energy
+    Data<bool> d_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
     SOFA_ATTRIBUTE_DISABLED__ODESOLVER_BACKWARD_VERBOSEDATA()

@@ -24,90 +24,45 @@
 
 
 #include <sofa/helper/map.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/fwd.h>
-#include <sofa/linearalgebra/FullMatrix.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/simulation/fwd.h>
 
 #include <vector>
 
+namespace sofa::simulation::mechanicalvisitor
+{
+    class MechanicalAccumulateMatrixDeriv;
+    class MechanicalBuildConstraintMatrix;
+}
+
+namespace sofa::component::constraint::lagrangian::solver
+{
+    class MechanicalGetConstraintResolutionVisitor;
+}
+
 namespace sofa::component::animationloop
 {
 
-class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
-        : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset), _cparams(params)
-    {}
+using MechanicalGetConstraintResolutionVisitor
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor instead.")
+= sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
 
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
+using MechanicalSetConstraint
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix instead.")
+= sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
 
-private:
-    std::vector<core::behavior::ConstraintResolution*>& _res;
-    unsigned int _offset;
-    const sofa::core::ConstraintParams *_cparams;
-};
-
-
-class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , contactId(_contactId)
-        , cparams(_cparams)
-    {}
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-protected:
-
-    sofa::core::MultiMatrixDerivId res;
-    unsigned int &contactId;
-    const sofa::core::ConstraintParams *cparams;
-};
-
-
-class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , cparams(_cparams)
-    {}
-
-    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-protected:
-    core::MultiMatrixDerivId res;
-    const sofa::core::ConstraintParams *cparams;
-};
-
+using MechanicalAccumulateConstraint2
+SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv instead.")
+= sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
 
 class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
@@ -157,7 +112,7 @@ public:
     Data<SReal> d_tol; ///< Tolerance of the Gauss-Seidel
     Data<int> d_maxIt; ///< Maximum number of iterations of the Gauss-Seidel
     Data<bool> d_doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
-    Data<bool> d_doubleBuffer; ///< Buffer the constraint problem in a SReal buffer to be accessible with an other thread
+    Data<bool> d_doubleBuffer; ///< Double the buffer dedicated to the constraint problem to make it accessible to another thread
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)

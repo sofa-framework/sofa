@@ -134,8 +134,6 @@ void SlicedVolumetricModel::init()
     }
 
     reinit();
-
-    updateVisual();
 }
 
 void SlicedVolumetricModel::reinit()

@@ -45,12 +45,17 @@ int MinProximityIntersectionClass = core::RegisterObject("A set of methods to co
 
 MinProximityIntersection::MinProximityIntersection()
     : BaseProximityIntersection()
-    , useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
-    , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
-    , useSurfaceNormals(initData(&useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
-    , useLinePoint(initData(&useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
-    , useLineLine(initData(&useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
+    , d_useSphereTriangle(initData(&d_useSphereTriangle, true, "useSphereTriangle", "activate Sphere-Triangle intersection tests"))
+    , d_usePointPoint(initData(&d_usePointPoint, true, "usePointPoint", "activate Point-Point intersection tests"))
+    , d_useSurfaceNormals(initData(&d_useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
+    , d_useLinePoint(initData(&d_useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
+    , d_useLineLine(initData(&d_useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
 {
+    useSphereTriangle.setParent(&d_useSphereTriangle);
+    usePointPoint.setParent(&d_usePointPoint);
+    useLinePoint.setParent(&d_useLinePoint);
+    useLineLine.setParent(&d_useLineLine);
+    useSurfaceNormals.setParent(&d_useSurfaceNormals);
 }
 
 void MinProximityIntersection::init()
@@ -93,7 +98,7 @@ int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
 
 bool MinProximityIntersection::getUseSurfaceNormals() const
 {
-    return useSurfaceNormals.getValue();
+    return d_useSurfaceNormals.getValue();
 }
 
 } // namespace sofa::component::collision::detection::intersection

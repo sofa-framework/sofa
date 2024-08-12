@@ -33,15 +33,20 @@ namespace sofa::component::constraint::projective
 template< class DataTypes>
 FixedTranslationProjectiveConstraint<DataTypes>::FixedTranslationProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
+    , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
+    , d_coordinates( initData(&d_coordinates,"coordinates","Coordinates of the fixed points") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     // default to indice 0
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
+
+    f_indices.setParent(&d_indices);
+    f_fixAll.setParent(&d_fixAll);
+    _drawSize.setParent(&d_drawSize);
+    f_coordinates.setParent(&d_coordinates);
 }
 
 
@@ -54,22 +59,22 @@ FixedTranslationProjectiveConstraint<DataTypes>::~FixedTranslationProjectiveCons
 template <class DataTypes>
 void FixedTranslationProjectiveConstraint<DataTypes>::clearIndices()
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void FixedTranslationProjectiveConstraint<DataTypes>::addIndex(Index index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void FixedTranslationProjectiveConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::type::removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
+    sofa::type::removeValue(*d_indices.beginEdit(), index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -89,8 +94,8 @@ void FixedTranslationProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        f_indices.createTopologyHandler(_topology);
-        f_coordinates.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
+        d_coordinates.createTopologyHandler(_topology);
     }
     else
     {
@@ -116,7 +121,7 @@ template <class DataTypes> template <class DataDeriv>
 void FixedTranslationProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
-    if (f_fixAll.getValue())
+    if (d_fixAll.getValue())
     {
         for (std::size_t i = 0; i < dx.size(); i++)
         {
@@ -125,7 +130,7 @@ void FixedTranslationProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv
     }
     else
     {
-        const SetIndexArray & indices = f_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for (const auto index : indices)
         {
             clear(dx, index);
@@ -165,7 +170,7 @@ void FixedTranslationProjectiveConstraint<DataTypes>::projectJacobianMatrix(cons
 template <class DataTypes>
 void FixedTranslationProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -176,7 +181,7 @@ void FixedTranslationProjectiveConstraint<DataTypes>::draw(const core::visual::V
     std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
-    if (f_fixAll.getValue() == true)
+    if (d_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {

@@ -54,7 +54,7 @@ generatePositiveDefiniteMatrix(sofa::testing::LinearCongruentialRandomGenerator&
 
     // Making the matrix positive definite
     const Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real, 3, 3> > eigensolver(A);
-    const Eigen::Vector<Real, 3>& eigenvalues = eigensolver.eigenvalues();
+    const Eigen::Matrix<Real, 3, 1>& eigenvalues = eigensolver.eigenvalues();
     const Real min_eigval = eigenvalues.minCoeff();
     if (min_eigval <= 0)
     {
@@ -214,7 +214,6 @@ void testApplyElasticityTensor(
     HyperelasticMaterial<defaulttype::Vec3Types>& material,
     const MaterialParameters<defaulttype::Vec3Types>& materialParameters)
 {
-    using Real = defaulttype::Vec3Types::Coord::value_type;
     using MatrixSym = StrainInformation<defaulttype::Vec3Types>::MatrixSym;
     using Matrix6 = HyperelasticMaterial<defaulttype::Vec3Types>::Matrix6;
 

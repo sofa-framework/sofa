@@ -36,3 +36,12 @@ namespace sofa::component::engine::analyze
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::engine::analyze
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_ANALYZE
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif

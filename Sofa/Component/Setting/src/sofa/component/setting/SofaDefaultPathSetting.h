@@ -37,7 +37,10 @@ public:
 protected:
     SofaDefaultPathSetting();   ///<Default constructor.
 public:
-    sofa::core::objectmodel::Data<std::string> gnuplotPath; ///<Path where will be saved the gnuplot files.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
+    sofa::core::objectmodel::Data<std::string> gnuplotPath;
+
+    sofa::core::objectmodel::Data<std::string> d_gnuplotPath; ///< Path where will be saved the gnuplot files
 };
 
 } // namespace sofa::component::setting

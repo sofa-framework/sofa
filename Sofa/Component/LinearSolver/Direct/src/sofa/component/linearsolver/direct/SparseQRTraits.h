@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/config.h>
-SOFA_DISABLED_HEADER_NOT_REPLACED("v24.06", "v24.12")
+SOFA_HEADER_DISABLED_NOT_REPLACED("v24.06", "v24.12")
 
 namespace sofa::component::linearsolver::direct
 {

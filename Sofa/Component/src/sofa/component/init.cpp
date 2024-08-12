@@ -44,13 +44,16 @@
 #include <sofa/component/topology/init.h>
 #include <sofa/component/visual/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory * factory);
 }
 
 void initExternalModule()
@@ -66,6 +69,12 @@ const char* getModuleName()
 const char* getModuleVersion()
 {
     return MODULE_VERSION;
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin("Sofa.Component.AnimationLoop");
+    factory->registerObjectsFromPlugin("Sofa.Component.StateContainer");
 }
 
 void init()

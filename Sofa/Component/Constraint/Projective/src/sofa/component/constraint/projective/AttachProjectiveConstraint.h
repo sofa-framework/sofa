@@ -51,7 +51,7 @@ public:
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
-    Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
+    Data<bool> f_twoWay; ///< if true, projects the constraint vertices of both object1 and object2 towards their average degrees of freedom and derivatives. If false, the position of the object1 are projected onto the object2. Therefore, object2 only follows object1 without affecting the motion of object1
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
     Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
     Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)
@@ -59,10 +59,10 @@ public:
     Data<type::Vec3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
     Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
     Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
-    Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
-    Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
-    Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
-    Data< type::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
+    Data< Real > d_positionFactor; ///< IN: Factor applied to projection of position
+    Data< Real > d_velocityFactor; ///< IN: Factor applied to projection of velocity
+    Data< Real > d_responseFactor; ///< IN: Factor applied to projection of force/acceleration
+    Data< type::vector<Real> > d_constraintFactor; ///< Vector of factors adapting the application of the constraint per pair of points (0 -> the constraint is released. 1 -> the constraint is fully constrained)
 
     type::vector<bool> activeFlags;
     type::vector<bool> constraintReleased;

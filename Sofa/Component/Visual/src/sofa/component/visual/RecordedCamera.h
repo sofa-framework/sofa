@@ -49,9 +49,9 @@ public:
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
 
-    Data<double> p_zoomSpeed; ///< Zoom Speed
-    Data<double> p_panSpeed; ///< Pan Speed
-    Data<int> p_pivot; ///< Pivot (0 => Scene center, 1 => World Center
+    Data<double> d_zoomSpeed; ///< Zoom Speed
+    Data<double> d_panSpeed; ///< Pan Speed
+    Data<int> d_pivot; ///< Pivot (0 => Scene center, 1 => World Center
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -77,24 +77,79 @@ private:
     void drawRotation();
 
 public:
-    Data<SReal> m_startTime; ///< Time when the camera moves will start
-    Data<SReal> m_endTime; ///< Time when the camera moves will end (or loop)
 
-    Data <bool> m_rotationMode; ///< If true, rotation will be performed
-    Data <bool> m_translationMode; ///< If true, translation will be performed
-    Data <bool> m_navigationMode; ///< If true, navigation will be performed
-    Data <SReal> m_rotationSpeed; ///< rotation Speed
-    Data <type::Vec3> m_rotationCenter; ///< Rotation center coordinates
-    Data <type::Vec3> m_rotationStartPoint; ///< Rotation start position coordinates
-    Data <type::Vec3> m_rotationLookAt; ///< Position to be focused during rotation
-    Data <type::Vec3> m_rotationAxis; ///< Rotation axis
-    Data <type::Vec3> m_cameraUp; ///< Camera Up axis
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_zoomSpeed;
 
-    Data <bool> p_drawRotation; ///< If true, will draw the rotation path
-    Data <bool> p_drawTranslation; ///< If true, will draw the translation path
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_panSpeed;
 
-    Data <sofa::type::vector<type::Vec3> > m_translationPositions; ///< Intermediate camera's positions
-    Data <sofa::type::vector<Quat> > m_translationOrientations; ///< Intermediate camera's orientations
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<int> p_pivot;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<SReal> m_startTime;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<SReal> m_endTime;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> m_rotationMode;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> m_translationMode;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> m_navigationMode;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<SReal> m_rotationSpeed;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> m_rotationCenter;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> m_rotationStartPoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> m_rotationLookAt;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> m_rotationAxis;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> m_cameraUp;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> p_drawRotation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> p_drawTranslation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::vector<type::Vec3>> m_translationPositions;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data <sofa::type::vector<Quat> > m_translationOrientations;
+
+    Data<SReal> d_startTime; ///< Time when the camera moves will start
+    Data<SReal> d_endTime; ///< Time when the camera moves will end (or loop)
+
+    Data <bool> d_rotationMode; ///< If true, rotation will be performed
+    Data <bool> d_translationMode; ///< If true, translation will be performed
+    Data <bool> d_navigationMode; ///< If true, navigation will be performed
+    Data <SReal> d_rotationSpeed; ///< rotation Speed
+    Data <type::Vec3> d_rotationCenter; ///< Rotation center coordinates
+    Data <type::Vec3> d_rotationStartPoint; ///< Rotation start position coordinates
+    Data <type::Vec3> d_rotationLookAt; ///< Position to be focused during rotation
+    Data <type::Vec3> d_rotationAxis; ///< Rotation axis
+    Data <type::Vec3> d_cameraUp; ///< Camera Up axis
+
+    Data <bool> d_drawRotation; ///< If true, will draw the rotation path
+    Data <bool> d_drawTranslation; ///< If true, will draw the translation path
+
+    Data <sofa::type::vector<type::Vec3> > d_translationPositions; ///< Intermediate camera's positions
+    Data <sofa::type::vector<Quat> > d_translationOrientations; ///< Intermediate camera's orientations
 
 protected:
     double m_nextStep;

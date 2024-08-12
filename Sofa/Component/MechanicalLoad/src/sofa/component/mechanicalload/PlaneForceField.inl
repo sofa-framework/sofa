@@ -120,9 +120,9 @@ void PlaneForceField<DataTypes>::init(){
 
     Vec<2,int> tmp = d_localRange.getValue() ;
     if( d_localRange.isSet() && (tmp.x() < 0 || tmp.y() < 0 || tmp.x() > tmp.y()) ){
-        msg_warning(this) << "The 'localRange="<< d_localRange.getValueString() << "' parameter is not valid as it needs two indices in numerical order.  "
+        msg_warning(this) << "The 'd_localRange="<< d_localRange.getValueString() << "' parameter is not valid as it needs two indices in numerical order.  "
                              "Continuing with the default value=[0, 0] (no local range).  "
-                             "To remove this warning message you need to set the 'localRange' to correct value." ;
+                             "To remove this warning message you need to set the 'd_localRange' to correct value." ;
 
         tmp.set(-1,-1);
         d_localRange.setValue(tmp) ;

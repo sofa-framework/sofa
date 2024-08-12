@@ -71,10 +71,6 @@ void SquareDistanceMapping<TIn, TOut>::init()
 
     this->getToModel()->resize( links.size() );
 
-    // only used for warning message
-    const bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
-    msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
@@ -189,7 +185,7 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
         for(unsigned i=0; i<links.size(); i++ )
         {
             // force in compression (>0) can lead to negative eigen values in geometric stiffness
-            // this results in a undefinite implicit matrix that causes instabilies
+            // this results in an undefinite implicit matrix that causes instabilities
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
@@ -210,9 +206,9 @@ template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
     SOFA_UNUSED(cparams);
-    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
-    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
+    auto childMatRa  = sofa::helper::getReadAccessor(in);
+    auto parentMatWa = sofa::helper::getWriteAccessor(out);
+    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
 }
 
 
@@ -245,7 +241,7 @@ void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mpa
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -289,7 +285,7 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
         const sofa::topology::Edge link = links[i];
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {

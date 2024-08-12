@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.GUI.Qt LANGUAGES CXX)
 
+# Detect if component is compiled outside SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+    find_package(Sofa.Config REQUIRED)
+    sofa_find_package(Sofa.GUI.Common REQUIRED)
+endif()
+
 # Qt dependencies
 set(SOFA_GUI_QT_TARGETS "")
 set(QT_USE_IMPORTED_TARGETS 1)
@@ -9,24 +15,21 @@ set(QT5_NO_LINK_QTMAIN 1)
 
 
 
-# Will only use Qt6 if Qt6 is found and Qt5 is not found
-# if Qt5 and Qt6 are both found, Qt5 will take priority
-# Qt6 needs cmake >= 3.16, https://doc.qt.io/qt-6/cmake-get-started.html 
-find_package(Qt5 COMPONENTS Core QUIET)
-if (NOT Qt5Core_FOUND)
-    if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
-        find_package(Qt6 COMPONENTS Core CoreTools QUIET)
-    endif()
+# Will only use Qt5 if Qt5 is found and Qt6 is not found
+# if Qt5 and Qt6 are both found, Qt6 will take priority
+find_package(Qt6 COMPONENTS Core CoreTools QUIET)
+if (NOT Qt6Core_FOUND)
+    find_package(Qt5 COMPONENTS Core QUIET)
 endif()
 
-if (Qt5Core_FOUND)
-    message("${PROJECT_NAME}: will use Qt5")
+if (Qt6Core_FOUND)
+    message("${PROJECT_NAME}: will use Qt6")
+    sofa_find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets REQUIRED)
+    set(SOFA_GUI_QT_TARETS ${SOFA_GUI_QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets )
+elseif (Qt5Core_FOUND)
+    message("${PROJECT_NAME}: will use Qt5 (deprecated)")
     sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL REQUIRED)
     set(SOFA_GUI_QT_TARGETS ${SOFA_GUI_QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
-elseif (Qt6Core_FOUND)
-    message("${PROJECT_NAME}: will use Qt6 (beta)")
-    sofa_find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets REQUIRED)
-    set(SOFA_GUI_QT_TARGETS ${SOFA_GUI_QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets )
 else()
     message(SEND_ERROR "${PROJECT_NAME}: Could not find either Qt5 or Qt6.")
 endif()
@@ -69,7 +72,7 @@ elseif (Qt6Core_FOUND)
 endif()
 
 
-find_package(Sofa.GL QUIET)
+sofa_find_package(Sofa.GL QUIET)
 
 # QtViewer and QGLViewer
 if(Sofa.GL_FOUND)
@@ -291,7 +294,7 @@ if(SOFA_GUI_QT_ENABLE_QDOCBROWSER)
     list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/panels/QDocBrowser.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/panels/QDocBrowser.cpp)
 else()
-    message(STATUS "${PROJECT_NAME}: Qt5WebEngine not found, QDocBrowser will not be built.")
+    message(STATUS "${PROJECT_NAME}: QtWebEngine not found, QDocBrowser will not be built.")
 endif()
 
 
@@ -342,6 +345,7 @@ if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
 if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
     endif()

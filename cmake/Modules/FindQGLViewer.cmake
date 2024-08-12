@@ -21,7 +21,7 @@ if(NOT TARGET QGLViewer)
 
   if(NOT QGLViewer_LIBRARY)
   find_library(QGLViewer_LIBRARY
-    NAMES QGLViewer QGLViewer-qt5
+    NAMES QGLViewer QGLViewer2 QGLViewer-qt5
     PATH_SUFFIXES lib
   )
   endif()
@@ -35,20 +35,18 @@ if(NOT TARGET QGLViewer)
   endif()
 
   # Same checks as Sofa.GUI.Qt
-  # i.e find Qt5, then if not, Qt6, then if not error
-  find_package(Qt5 COMPONENTS Core QUIET)
-  if (NOT Qt5Core_FOUND)
-      if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
-          find_package(Qt6 COMPONENTS Core CoreTools QUIET)
-      endif()
+  # i.e find Qt6, then if not, Qt5, then if not error
+  find_package(Qt6 COMPONENTS Core CoreTools QUIET)
+  if (NOT Qt6Core_FOUND)
+    find_package(Qt5 COMPONENTS Core QUIET)
   endif()
 
   if (Qt5Core_FOUND)
-      find_package(Qt5 COMPONENTS Core Charts Gui Xml OpenGL Widgets REQUIRED)
-      set(QT_TARGETS Qt5::Core Qt5::Charts Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
+      find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets REQUIRED)
+      set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
   elseif (Qt6Core_FOUND)
-      find_package(Qt6 COMPONENTS Gui Charts GuiTools Widgets WidgetsTools OpenGLWidgets Xml REQUIRED)
-      set(QT_TARGETS ${QT_TARGETS} Qt::Core Qt::Charts Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
+      find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets Xml REQUIRED)
+      set(QT_TARGETS ${QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
   endif()
 
   if(QGLViewer_FOUND)

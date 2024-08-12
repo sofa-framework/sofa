@@ -23,18 +23,13 @@
 #include <sofa/component/odesolver/forward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
 namespace sofa::simulation::common
 {
 class MechanicalOperations;
 class VectorOperations;
-}
-
-namespace sofa::core::behavior
-{
-template<class T>
-class MultiMatrix;
 }
 
 namespace sofa::component::odesolver::forward
@@ -80,8 +75,10 @@ protected:
 public:
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    Data<bool> d_symplectic; ///< If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).
+    Data<bool> d_symplectic; ///< If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
+
+    SingleLink<EulerExplicitSolver, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
@@ -93,8 +90,6 @@ public:
     SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
 
     void init() override ;
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 
@@ -125,10 +120,9 @@ protected:
 
     static void solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc);
 
-    static void assembleSystemMatrix(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix);
+    void assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const;
 
-    static void solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
-                            core::MultiVecDerivId solution, core::MultiVecDerivId rhs);
+    void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
 };
 
 } // namespace sofa::component::odesolver::forward

@@ -61,7 +61,7 @@ public:
     virtual ~Operation() {}
     virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
     virtual void configure(PickHandler* picker, sofa::component::setting::MouseButtonSetting* s)
-    { setSetting(s); configure(picker,GetMouseId(s->button.getValue().getSelectedId())); }
+    { setSetting(s); configure(picker,GetMouseId(s->d_button.getValue().getSelectedId())); }
     virtual void start();                      /// This function is called each time the mouse is clicked.
     virtual void execution() {}
     virtual void end();                        /// This function is called after each mouse click.

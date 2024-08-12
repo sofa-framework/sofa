@@ -71,7 +71,11 @@ protected:
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
 public:
-    Data<bool> f_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
+    Data<bool> f_keepAlive;
+
+    Data<bool> d_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     void cleanup() override;
 
@@ -84,10 +88,10 @@ public:
     void removeResponse() override;
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
-    bool keepAlive() override { return f_keepAlive.getValue(); }
+    bool keepAlive() override { return d_keepAlive.getValue(); }
 
     /// Control the keepAlive flag of the contact.
-    void setKeepAlive(bool val) override { f_keepAlive.setValue(val); }
+    void setKeepAlive(bool val) override { d_keepAlive.setValue(val); }
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

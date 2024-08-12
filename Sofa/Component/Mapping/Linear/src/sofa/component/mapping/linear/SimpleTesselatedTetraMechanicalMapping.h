@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -34,11 +35,11 @@ namespace sofa::component::mapping::linear
 
 
 template <class TIn, class TOut>
-class SimpleTesselatedTetraMechanicalMapping : public core::Mapping<TIn, TOut>
+class SimpleTesselatedTetraMechanicalMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SimpleTesselatedTetraMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
-    typedef core::Mapping<TIn, TOut> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE2(SimpleTesselatedTetraMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
 

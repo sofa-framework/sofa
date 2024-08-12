@@ -34,7 +34,6 @@ NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForc
     , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
     , d_useMass(initData(&d_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
     , d_totalMass(initData(&d_totalMass,(Real)0.0,"totalMass",""))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -78,10 +77,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
 
-    if (this->_initialPoints.getValue().size() == 0)
+    if (this->d_initialPoints.getValue().size() == 0)
     {
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        this->_initialPoints.setValue(p);
+        this->d_initialPoints.setValue(p);
     }
 
     this->_materialsStiffnesses.resize(this->getIndexedElements()->size() );
@@ -107,7 +106,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
 
-    this->_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
+    this->d_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
     this->d_elementMasses.beginEdit()->resize(this->getIndexedElements()->size());
 
 
@@ -115,16 +114,16 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     //////////////////////
 
 
-    if (this->f_method.getValue() == "large")
+    if (this->d_method.getValue() == "large")
         this->setMethod(HexahedronFEMForceFieldT::LARGE);
-    else if (this->f_method.getValue() == "polar")
+    else if (this->d_method.getValue() == "polar")
         this->setMethod(HexahedronFEMForceFieldT::POLAR);
 
     for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
         sofa::type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-            nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
+            nodes[w] = this->d_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 
 
         // compute initial configuration in order to compute corotationnal deformations
@@ -139,19 +138,19 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         else
             this->computeRotationPolar( this->_rotations[i], nodes);
         for(int w=0; w<8; ++w)
-            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
+            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->d_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
     }
     //////////////////////
 
 
-    // compute mechanichal matrices (mass and stiffness) by condensating from _nbVirtualFinerLevels
+    // compute mechanichal matrices (mass and stiffness) by condensating from d_nbVirtualFinerLevels
     computeMechanicalMatricesByCondensation( );
     // hack to use true mass matrices or masses concentrated in particules
     if(d_useMass.getValue() )
     {
 
         MassT::init();
-        this->_particleMasses.resize( this->_initialPoints.getValue().size() );
+        this->_particleMasses.resize( this->d_initialPoints.getValue().size() );
 
 
         int i=0;
@@ -159,7 +158,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         {
             sofa::type::Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
-                nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+                nodes[w] = this->d_initialPoints.getValue()[(*it)[w]];
 
             // volume of a element
             Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -181,7 +180,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
         if( this->d_lumpedMass.getValue() )
         {
-            this->_lumpedMasses.resize( this->_initialPoints.getValue().size() );
+            this->_lumpedMasses.resize( this->d_initialPoints.getValue().size() );
             i=0;
             for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
             {
@@ -211,7 +210,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     }
     else
     {
-        this->_particleMasses.resize( this->_initialPoints.getValue().size() );
+        this->_particleMasses.resize( this->d_initialPoints.getValue().size() );
         Real mass = d_totalMass.getValue() / Real(this->getIndexedElements()->size());
         for(unsigned i=0; i<this->_particleMasses.size(); ++i)
             this->_particleMasses[ i ] = mass;
@@ -230,7 +229,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 {
     for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
-        computeMechanicalMatricesByCondensation( (*this->_elementStiffnesses.beginEdit())[i],
+        computeMechanicalMatricesByCondensation( (*this->d_elementStiffnesses.beginEdit())[i],
                 (*this->d_elementMasses.beginEdit())[i],i,0);
     }
 }
@@ -284,7 +283,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     //       //given an elementIndice, find the 8 others from the sparse grid
     //       //compute MaterialStiffness
     MaterialStiffness material;
-    computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+    computeMaterialStiffness(material, this->getYoungModulusInElement(0), this->d_poissonRatio.getValue());
 
     //Nodes are found using Sparse Grid
     Real stiffnessCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);

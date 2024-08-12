@@ -43,3 +43,12 @@ namespace sofa::component::odesolver::backward
 #define SOFA_ATTRIBUTE_DISABLED__ODESOLVER_BACKWARD_VERBOSEDATA() \
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "This Data is no longer used")
 #endif // SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_BACKWARD
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_BACKWARD
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif

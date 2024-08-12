@@ -52,11 +52,15 @@ int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (f
 
 LocalMinDistance::LocalMinDistance()
     : BaseProximityIntersection()
-    , filterIntersection(initData(&filterIntersection, true, "filterIntersection","Activate LMD filter"))
-    , angleCone(initData(&angleCone, 0.0, "angleCone","Filtering cone extension angle"))
-    , coneFactor(initData(&coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
-    , useLMDFilters(initData(&useLMDFilters, false, "useLMDFilters", "Use external cone computation (Work in Progress)"))
+    , d_filterIntersection(initData(&d_filterIntersection, true, "filterIntersection", "Activate LMD filter"))
+    , d_angleCone(initData(&d_angleCone, 0.0, "angleCone", "Filtering cone extension angle"))
+    , d_coneFactor(initData(&d_coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
+    , d_useLMDFilters(initData(&d_useLMDFilters, false, "useLMDFilters", "Use external cone computation"))
 {
+    filterIntersection.setParent(&d_filterIntersection);
+    angleCone.setParent(&d_angleCone);
+    coneFactor.setParent(&d_coneFactor);
+    useLMDFilters.setParent(&d_useLMDFilters);
 }
 
 void LocalMinDistance::init()
@@ -142,7 +146,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2, const core::collisio
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -221,7 +225,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     // filter for LMD //
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
         {
@@ -321,7 +325,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1, const core::col
     if (PQ.norm2() < alarmDist*alarmDist)
     {
         //filter for LMD
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -382,7 +386,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
     // filter for LMD
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -475,7 +479,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1, const core::co
 
         //filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -536,7 +540,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
     // filter for LMD
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -605,7 +609,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1, const core::collisi
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -658,7 +662,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     const auto QP = -PQ;
 
     // filter for LMD
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -723,7 +727,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1, const core::collis
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -772,7 +776,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
         return 0;
 
     // filter for LMD
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -826,7 +830,7 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2, const core::collis
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -861,7 +865,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 
     // filter for LMD
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -913,7 +917,7 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2, const core::colli
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -946,7 +950,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 
     // filter for LMD
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -996,7 +1000,7 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2, const core::coll
     {
         // filter for LMD
 
-        if (!useLMDFilters.getValue())
+        if (!d_useLMDFilters.getValue())
         {
             if (!testValidity(e1, PQ))
                 return false;
@@ -1028,7 +1032,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 
     // filter for LMD
 
-    if (!useLMDFilters.getValue())
+    if (!d_useLMDFilters.getValue())
     {
         if (!testValidity(e1, PQ))
             return 0;
@@ -1189,7 +1193,7 @@ int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector*
 
 bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
 {
-    if (!filterIntersection.getValue())
+    if (!d_filterIntersection.getValue())
         return true;
 
     const Vec3 pt = p.p();
@@ -1230,9 +1234,9 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
     {
         /// validity test with nMean, except if bothSide
         const PointCollisionModel<sofa::defaulttype::Vec3Types> *pM = p.getCollisionModel();
-        const bool bothSide_computation = pM->bothSide.getValue();
+        const bool bothSide_computation = pM->d_bothSide.getValue();
         nMean.normalize();
-        if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
+        if (dot(nMean, PQ) < -d_angleCone.getValue() * PQ.norm() && !bothSide_computation)
         {
             return false;
         }
@@ -1243,10 +1247,10 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
         const auto& ped = topology->getEdge(e);
         Vec3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
-        double computedAngleCone = dot(nMean , l) * coneFactor.getValue();
+        double computedAngleCone = dot(nMean , l) * d_coneFactor.getValue();
         if (computedAngleCone<0)
             computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
+        computedAngleCone+=d_angleCone.getValue();
         if (dot(l , PQ) < -computedAngleCone*PQ.norm())
         {
             return false;
@@ -1258,11 +1262,11 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
 
 bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
 {
-    if (!filterIntersection.getValue())
+    if (!d_filterIntersection.getValue())
         return true;
 
     const LineCollisionModel<sofa::defaulttype::Vec3Types> *lM = l.getCollisionModel();
-    const bool bothSide_computation = lM->bothSide.getValue();
+    const bool bothSide_computation = lM->d_bothSide.getValue();
 
     Vec3 n1;
 
@@ -1313,10 +1317,10 @@ bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
         }
 
         // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
-        double computedAngleCone = (nMean * t1) * coneFactor.getValue();
+        double computedAngleCone = (nMean * t1) * d_coneFactor.getValue();
         if (computedAngleCone<0)
             computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
+        computedAngleCone+=d_angleCone.getValue();
 
         if (t1*PQ < -computedAngleCone*PQ.norm())
         {
@@ -1326,10 +1330,10 @@ bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
         }
 
         // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
-        computedAngleCone = (nMean * t2) * coneFactor.getValue();
+        computedAngleCone = (nMean * t2) * d_coneFactor.getValue();
         if (computedAngleCone<0)
             computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
+        computedAngleCone+=d_angleCone.getValue();
 
         if (t2*PQ < -computedAngleCone*PQ.norm())
         {
@@ -1344,7 +1348,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
     {
         n1 = PQ;
         n1.normalize();
-        if (fabs(dot(AB,n1)) > angleCone.getValue() + 0.0001 )		// dot(AB,n1) should be equal to 0
+        if (fabs(dot(AB,n1)) > d_angleCone.getValue() + 0.0001 )		// dot(AB,n1) should be equal to 0
         {
             // means that proximity was detected with a null determinant
             // in function computeIntersection
@@ -1361,7 +1365,7 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vec3 &PQ) const
     const TriangleCollisionModel<sofa::defaulttype::Vec3Types> *tM = t.getCollisionModel();
     const bool bothSide_computation = tM->d_bothSide.getValue();
 
-    if (!filterIntersection.getValue()  || bothSide_computation)
+    if (!d_filterIntersection.getValue() || bothSide_computation)
         return true;
 
     const Vec3& pt1 = t.p1();

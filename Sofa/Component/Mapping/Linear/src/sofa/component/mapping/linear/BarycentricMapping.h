@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h>
 
@@ -36,11 +37,11 @@ namespace sofa::component::mapping::linear
 using sofa::defaulttype::Vec3Types;
 
 template <class TIn, class TOut>
-class BarycentricMapping : public core::Mapping<TIn, TOut>
+class BarycentricMapping : public LinearMapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut),
-               SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+               SOFA_TEMPLATE2(LinearMapping, TIn, TOut));
 
     typedef TIn In;
     typedef TOut Out;
@@ -61,7 +62,7 @@ public:
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
 
 public:
-    Data< bool > d_useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
+    Data< bool > d_useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
 
     SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> d_mapper;
     SingleLink<BarycentricMapping<In,Out>,BaseMeshTopology,BaseLink::FLAG_STRONGLINK> d_input_topology;

@@ -87,8 +87,14 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data<Real> f_youngModulus;
+
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -122,26 +128,26 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue(modulus);
+        d_youngModulus.setValue(modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue(ratio);
+        d_poissonRatio.setValue(ratio);
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    /** Method to update @sa edgeInfo when a new Tetrahedron is created.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
+    /** Method to update @sa d_edgeInfo when a new Tetrahedron is created.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAADDED event is fired
     * to create a new spring in created Tetrahedron.
     */
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
@@ -150,15 +156,18 @@ public:
         const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAREMOVED event is fired
     * to remove spring if needed or update adjacent Tetrahedron.
     */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
-    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
+    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    core::topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    Data <edgeRestInfoVector> edgeInfo;
+
+    core::topology::EdgeData < edgeRestInfoVector > d_edgeInfo; ///< Internal edge data
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

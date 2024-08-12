@@ -36,12 +36,16 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     : Inherit()
-    , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
-    , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
-    , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    , d_indices(initData(&d_indices, "indices", "Indices of the parent points"))
+    , d_targetPositions(initData(&d_targetPositions, "targetPositions", "Positions to compute the distances from"))
+    , d_restDistances(initData(&d_restDistances, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {
+    f_indices.setParent(&d_indices);
+    f_targetPositions.setParent(&d_targetPositions);
+    f_restDistances.setParent(&d_restDistances);
+
 }
 
 template <class TIn, class TOut>
@@ -52,9 +56,9 @@ DistanceFromTargetMapping<TIn, TOut>::~DistanceFromTargetMapping()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const InCoord &position, Real distance)
 {
-    helper::WriteAccessor< Data< type::vector<Real> > > distances(f_restDistances);
-    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(f_indices);
-    helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
+    helper::WriteAccessor< Data< type::vector<Real> > > distances(d_restDistances);
+    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(d_indices);
+    helper::WriteAccessor< Data<InVecCoord > > targetPositions(d_targetPositions);
 
     indices.push_back(index);
     targetPositions.push_back(position);
@@ -64,8 +68,8 @@ void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const In
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, const InCoord &position)
 {
-    helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
-    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor< Data<InVecCoord > > targetPositions(d_targetPositions);
+    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(d_indices);
 
     // find the target with given index
     unsigned i=0; while(i<indices.size() && indices[i]!=index) i++;
@@ -84,9 +88,9 @@ void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, SReal x,
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::clear()
 {
-    helper::WriteAccessor< Data< type::vector<Real> > > distances(f_restDistances);
-    helper::WriteAccessor< Data<InVecCoord > > positions(f_targetPositions);
-    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor< Data< type::vector<Real> > > distances(d_restDistances);
+    helper::WriteAccessor< Data<InVecCoord > > positions(d_targetPositions);
+    helper::WriteAccessor< Data<type::vector<unsigned> > > indices(d_indices);
 
     distances.clear();
     positions.clear();
@@ -100,19 +104,19 @@ void DistanceFromTargetMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_targetPositions.getValue().size()) ;
+    assert(d_indices.getValue().size() == d_targetPositions.getValue().size()) ;
 
     // unset distances are set to 0
-    if(f_restDistances.getValue().size() != f_indices.getValue().size())
+    if(d_restDistances.getValue().size() != d_indices.getValue().size())
     {
-        helper::WriteAccessor< Data< type::vector<Real> > > distances(f_restDistances);
+        helper::WriteAccessor< Data< type::vector<Real> > > distances(d_restDistances);
         const unsigned prevsize = distances.size();
-        distances.resize( f_indices.getValue().size() );
+        distances.resize(d_indices.getValue().size() );
         for(unsigned i=prevsize; i<distances.size(); i++ )
             distances[i] = 0;
     }
 
-    this->getToModel()->resize( f_indices.getValue().size() );
+    this->getToModel()->resize(d_indices.getValue().size() );
 
 
     baseMatrices.resize( 1 );
@@ -132,9 +136,9 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::WriteAccessor<Data<type::vector<Real> > > restDistances(f_restDistances);
-    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
-    helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
+    helper::WriteAccessor<Data<type::vector<Real> > > restDistances(d_restDistances);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
+    helper::ReadAccessor< Data<InVecCoord > > targetPositions(d_targetPositions);
 
     jacobian.resizeBlocks(out.size(),in.size());
     directions.resize(out.size());
@@ -205,9 +209,9 @@ template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
     SOFA_UNUSED(cparams);
-    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
-    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
+    auto childMatRa = sofa::helper::getReadAccessor(in);
+    auto parentMatWa = sofa::helper::getWriteAccessor(out);
+    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
 }
 
 
@@ -221,12 +225,12 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
-    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -290,7 +294,7 @@ void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     }
 
     const auto childForce = this->toModel->readTotalForces();
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
     for(sofa::Size i=0; i<indices.size(); i++)
@@ -298,7 +302,7 @@ void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         const OutDeriv force_i = childForce[i];
 
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {
@@ -327,14 +331,14 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
-    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
     K.resizeBlocks(in.size(),in.size());
     for(size_t i=0; i<indices.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -369,8 +373,8 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
     if( arrowsize<0 ) return;
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-    helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
-    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<InVecCoord > > targetPositions(d_targetPositions);
+    const helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
 
     type::vector< sofa::type::Vec3 > points;
 

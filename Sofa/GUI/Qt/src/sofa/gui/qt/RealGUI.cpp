@@ -1038,9 +1038,9 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 void RealGUI::setViewerConfiguration(sofa::component::setting::ViewerSetting* viewerConf)
 {
-    const type::Vec<2,int> &res=viewerConf->resolution.getValue();
+    const type::Vec<2,int> &res=viewerConf->d_resolution.getValue();
 
-    if (viewerConf->fullscreen.getValue())
+    if (viewerConf->d_fullscreen.getValue())
         setFullScreen();
     else
         setViewerResolution(res[0], res[1]);
@@ -1231,7 +1231,7 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
         root->get(visualStyle);
         if(visualStyle)
         {
-            displayFlag = new DisplayFlagsDataWidget(tabView,"displayFlagwidget",&visualStyle->displayFlags, true);
+            displayFlag = new DisplayFlagsDataWidget(tabView, "displayFlagwidget", &visualStyle->d_displayFlags, true);
             displayFlag->createWidgets();
             displayFlag->updateWidgetValue();
             connect( displayFlag, SIGNAL( WidgetDirty(bool) ), this, SLOT(showhideElements() ));
@@ -1548,7 +1548,6 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( newRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( lockAnimation(bool) ) );
-    connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( activateNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );

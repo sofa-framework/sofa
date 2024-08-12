@@ -142,15 +142,15 @@ public:
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /** Method to initialize @sa EdgeInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void applyEdgeCreation(Index edgeIndex, EdgeInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    /** Method to update @sa edgeInfo when a new quad is created.
-    * Will be set as callback in the EdgeData @sa edgeInfo when QUADSADDED event is fired
+    /** Method to update @sa d_edgeInfo when a new quad is created.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when QUADSADDED event is fired
     * to create a new spring between new created triangles.
     */
     void applyQuadCreation(const sofa::type::vector<Index>& quadAdded,
@@ -158,16 +158,16 @@ public:
         const sofa::type::vector<sofa::type::vector<Index> >&,
         const sofa::type::vector<sofa::type::vector<SReal> >&);
 
-    /** Method to update @sa edgeInfo when a quad is removed.
-    * Will be set as callback in the EdgeData @sa edgeInfo when QUADSREMOVED event is fired
+    /** Method to update @sa d_edgeInfo when a quad is removed.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when QUADSREMOVED event is fired
     * to remove spring if needed or update pair of quad.
     */
     void applyQuadDestruction(const sofa::type::vector<Index>& quadRemoved);
 
-    /// Method to update @sa edgeInfo when a point is removed. Will be set as callback when POINTSREMOVED event is fired
+    /// Method to update @sa d_edgeInfo when a point is removed. Will be set as callback when POINTSREMOVED event is fired
     void applyPointDestruction(const sofa::type::vector<Index>& pointIndices);
 
-    /// Method to update @sa edgeInfo when points are renumbered. Will be set as callback when POINTSRENUMBERING event is fired
+    /// Method to update @sa d_edgeInfo when points are renumbered. Will be set as callback when POINTSRENUMBERING event is fired
     void applyPointRenumbering(const sofa::type::vector<Index>& pointToRenumber);
 
 

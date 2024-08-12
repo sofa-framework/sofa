@@ -81,11 +81,11 @@ protected:
     ~OglTetrahedralModel() override;
 public:
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void computeMesh();
 };
 

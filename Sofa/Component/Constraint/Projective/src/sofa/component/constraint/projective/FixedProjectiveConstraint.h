@@ -80,13 +80,13 @@ public:
     SetIndex d_indices;
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
     Data<bool> d_showObject; ///< draw or not the fixed constraints
-    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
-    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity to zero
+    Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
+    Data<bool> d_projectVelocity; ///< if true, projects not only a constant but a zero velocity
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
-    FixedProjectiveConstraintInternalData<DataTypes>* data;
+    std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class FixedProjectiveConstraintInternalData<DataTypes>;
 
 
@@ -115,6 +115,7 @@ public:
 
     void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     bool fixAllDOFs() const { return d_fixAll.getValue(); }
@@ -122,6 +123,8 @@ public:
 protected :
     /// Function check values of given indices
     void checkIndices();
+
+    void computeBBoxForIndices(const type::vector<Index>& indices);
 
 };
 

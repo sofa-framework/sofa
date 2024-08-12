@@ -63,13 +63,13 @@ public:
     Data<SReal> d_totalMass;    ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<bool>  d_showCenterOfGravity; ///< to display the center of gravity of the system
-    Data<float> d_showAxisSize;        ///< to display the center of gravity of the system
+    Data<bool>  d_showCenterOfGravity; ///< display the center of gravity of the system
+    Data<float> d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
 
     Data<bool>  d_computeMappingInertia; ///< to be used if the mass is placed under a mapping
     Data<bool>  d_showInitialCenterOfGravity; ///< display the initial center of gravity of the system
 
-    Data<bool>  d_showX0; ///< to display the rest positions
+    Data<bool>  d_showX0; ///< display the rest positions
 
     /// optional range of local DOF indices. Any computation involving only
     /// indices outside of this range are discarded (useful for parallelization

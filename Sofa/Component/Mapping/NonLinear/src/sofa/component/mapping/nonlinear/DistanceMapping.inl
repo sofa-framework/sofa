@@ -26,11 +26,9 @@
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ConstraintParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
-#include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>
 
@@ -39,20 +37,15 @@ namespace sofa::component::mapping::nonlinear
 
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
-    : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+    : d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , d_restLengths(initData(&d_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color,sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    f_computeDistance.setParent(&d_computeDistance);
+    f_restLengths.setParent(&d_restLengths);
 }
-
-template <class TIn, class TOut>
-DistanceMapping<TIn, TOut>::~DistanceMapping()
-{
-}
-
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::init()
@@ -67,8 +60,8 @@ void DistanceMapping<TIn, TOut>::init()
 
     if (l_topology->getNbEdges() < 1)
     {
-        msg_error() << "No topology component containg edges found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error() << "No topology component containing edges found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -81,50 +74,32 @@ void DistanceMapping<TIn, TOut>::init()
     directions.resize(links.size());
     invlengths.resize(links.size());
 
-    // only used for warning message
-    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
-
     // compute the rest lengths if they are not known
-    if( f_restLengths.getValue().size() != links.size() )
+    if(d_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteOnlyAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
-        restLengths.resize( links.size() );
-        if(!(f_computeDistance.getValue()))
-        {
-            for(unsigned i=0; i<links.size(); i++ )
-            {
-                restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
+        helper::WriteOnlyAccessor< Data<type::vector<Real> > > restLengths(d_restLengths);
+        restLengths->resize( links.size(), 0);
 
-                msg_error_when(restLengths[i] <= std::numeric_limits<SReal>::epsilon() && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
+        if(!d_computeDistance.getValue())
+        {
+            for (std::size_t i = 0; i < links.size(); i++)
+            {
+                const auto& edge = links[i];
+                restLengths[i] = (pos[edge[0]] - pos[edge[1]]).norm();
             }
         }
-        else
-        {
-            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
-            for(unsigned i=0; i<links.size(); i++ )
-                restLengths[i] = (Real)0.;
-        }
-    }
-    else if (compliance) // for warning message
-    {
-        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
-        std::stringstream sstream;
-        for (unsigned i = 0; i < links.size(); i++)
-            if (restLengths[i] <= std::numeric_limits<SReal>::epsilon()) 
-                sstream << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance \n";
-        msg_error_when(!sstream.str().empty()) << sstream.str();
     }
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-    this->Inherit::init();  // applies the mapping, so after the Data init
+    this->Inherit1::init();  // applies the mapping, so after the Data init
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b )
 {
-    r = TIn::getCPos(b)-TIn::getCPos(a);
+    r = TIn::getCPos(b) - TIn::getCPos(a);
 }
 
 template <class TIn, class TOut>
@@ -132,59 +107,48 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(d_restLengths);
     const SeqEdges& links = l_topology->getEdges();
 
     jacobian.clear();
 
-    for(unsigned i=0; i<links.size(); i++ )
+    for (unsigned int i = 0; i < links.size(); ++i)
     {
-        Direction& gap = directions[i];
+        Direction& direction = directions[i];
+        const auto& link = links[i];
 
-        // gap = in[links[i][1]] - in[links[i][0]] (only for position)
-        computeCoordPositionDifference( gap, in[links[i][0]], in[links[i][1]] );
+        // gap = in[link[1]] - in[link[0]] (only for position)
+        computeCoordPositionDifference( direction, in[link[0]], in[link[1]] );
 
-        Real gapNorm = gap.norm();
-        out[i] = gapNorm - restLengths[i];  // output
+        const Real distance = direction.norm();
+        out[i] = distance - restLengths[i];  // output
 
         // normalize
-        if( gapNorm>std::numeric_limits<SReal>::epsilon() )
+        if (distance > std::numeric_limits<SReal>::epsilon())
         {
-            invlengths[i] = 1/gapNorm;
-            gap *= invlengths[i];
+            invlengths[i] = 1 / distance;
+            direction *= invlengths[i];
         }
         else
         {
             invlengths[i] = 0;
 
-            // arbritary vector mapping all directions
+            // arbitrary vector mapping all directions
             static const Real p = static_cast<Real>(1) / std::sqrt(static_cast<Real>(In::spatial_dimensions));
-            gap.fill(p);
+            direction.fill(p);
         }
 
-        // insert in increasing column order
-        if( links[i][1]<links[i][0])
+        sofa::type::fixed_array<JacobianEntry, 2> jacobianEntries {JacobianEntry{link[0], -direction}, JacobianEntry{link[1], direction}};
+
+        //invert to insert in increasing column order
+        std::sort(jacobianEntries.begin(), jacobianEntries.end());
+
+        jacobian.beginRow(i);
+        for (const auto& [vertexId, jacobianValue] : jacobianEntries)
         {
-            jacobian.beginRow(i);
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
+            for (unsigned k = 0; k < In::spatial_dimensions; ++k)
             {
-                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
-            }
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
-            }
-        }
-        else
-        {
-            jacobian.beginRow(i);
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
-            }
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
+                jacobian.insertBack(i, vertexId * Nin + k, jacobianValue[k]);
             }
         }
     }
@@ -237,7 +201,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
         for(unsigned i=0; i<links.size(); i++ )
         {
             // force in compression (>0) can lead to negative eigen values in geometric stiffness
-            // this results in a undefinite implicit matrix that causes instabilies
+            // this results in an undefinite implicit matrix that causes instabilities
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
@@ -274,9 +238,9 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
     SOFA_UNUSED(cparams);
-    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
-    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
+    auto childMatRa  = sofa::helper::getReadAccessor(in);
+    auto parentMatWa = sofa::helper::getWriteAccessor(out);
+    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
 }
 
 
@@ -310,7 +274,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -360,7 +324,7 @@ void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         const OutDeriv force_i = childForce[i];
 
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {
@@ -386,6 +350,18 @@ void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 }
 
 template <class TIn, class TOut>
+void DistanceMapping<TIn, TOut>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (!onlyVisible) return;
+    if (!this->getFromModel()) return;
+
+    const auto bbox = this->getFromModel()->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+    this->f_bbox.setValue(std::move(bbox));
+}
+
+template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
@@ -399,20 +375,21 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
         type::vector< type::Vec3 > points;
-        for(std::size_t i=0; i<links.size(); i++ )
+        points.reserve(2 * links.size());
+        for (const auto& link : links)
         {
-            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][1]]) ));
+            points.emplace_back( TIn::getCPos(pos[link[0]]) );
+            points.emplace_back( TIn::getCPos(pos[link[1]]) );
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
     else
     {
         vparams->drawTool()->enableLighting();
-        for(std::size_t i=0; i<links.size(); i++ )
+        for (const auto& link : links)
         {
-            type::Vec3 p0 = TIn::getCPos(pos[links[i][0]]);
-            type::Vec3 p1 = TIn::getCPos(pos[links[i][1]]);
+            const type::Vec3 p0 = TIn::getCPos(pos[link[0]]);
+            const type::Vec3 p1 = TIn::getCPos(pos[link[1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }

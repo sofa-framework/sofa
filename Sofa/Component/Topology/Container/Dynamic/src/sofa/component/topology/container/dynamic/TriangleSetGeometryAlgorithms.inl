@@ -29,12 +29,6 @@
 #include <sofa/component/topology/container/dynamic/CommonAlgorithms.h>
 #include <fstream>
 
-#ifdef NDEBUG
-#define DO_EXTRADEBUG_MESSAGES false
-#else
-#define DO_EXTRADEBUG_MESSAGES true
-#endif //
-
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -451,24 +445,17 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(PointID ind_p,
 
     if(ind_p == indices[0])
     {
-        p[0]= (Real) c2[0];
-        p[1]= (Real) c2[1];
-        p[2]= (Real) c2[2];
+        p = { c2[0], c2[1], c2[2] };
+    }
+    else if (ind_p == indices[1])
+    {
+        p = { c1[0], c1[1], c1[2] };
     }
     else
     {
-        if(ind_p == indices[1])
-        {
-            p[0]= (Real) c1[0];
-            p[1]= (Real) c1[1];
-            p[2]= (Real) c1[2];
-        }
-        else
-        {
-            p[0]= (Real) ((1.0-coord_p)*c1[0] + coord_p*c2[0]);
-            p[1]= (Real) ((1.0-coord_p)*c1[1] + coord_p*c2[1]);
-            p[2]= (Real) ((1.0-coord_p)*c1[2] + coord_p*c2[2]);
-        }
+        p[0]= (Real) ((1.0-coord_p)*c1[0] + coord_p*c2[0]);
+        p[1]= (Real) ((1.0-coord_p)*c1[1] + coord_p*c2[1]);
+        p[2]= (Real) ((1.0-coord_p)*c1[2] + coord_p*c2[2]);
     }
 
     return p;
@@ -481,26 +468,11 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const Tri
     const Triangle &t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    const typename DataTypes::Coord& c0 = vect_c[t[0]];
-    const typename DataTypes::Coord& c1 = vect_c[t[1]];
-    const typename DataTypes::Coord& c2 = vect_c[t[2]];
-
-    sofa::type::Vec<3,Real> p0;
-    p0[0] = (Real) (c0[0]);
-    p0[1] = (Real) (c0[1]);
-    p0[2] = (Real) (c0[2]);
-    sofa::type::Vec<3,Real> p1;
-    p1[0] = (Real) (c1[0]);
-    p1[1] = (Real) (c1[1]);
-    p1[2] = (Real) (c1[2]);
-    sofa::type::Vec<3,Real> p2;
-    p2[0] = (Real) (c2[0]);
-    p2[1] = (Real) (c2[1]);
-    p2[2] = (Real) (c2[2]);
-
-    sofa::type::Vec<3,Real> normal_t=(p1-p0).cross( p2-p0);
-
-    return normal_t;
+    sofa::type::Vec<3, Real> p0; DataTypes::get(p0[0], p0[1], p0[2], vect_c[t[0]]);
+    sofa::type::Vec<3, Real> p1; DataTypes::get(p1[0], p1[1], p1[2], vect_c[t[1]]);
+    sofa::type::Vec<3, Real> p2; DataTypes::get(p2[0], p2[1], p2[2], vect_c[t[2]]);
+    
+    return sofa::geometry::Triangle::normal(p0, p1, p2);
 }
 
 // barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
@@ -565,6 +537,7 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
         coef_a = (Real) (1.0/3.0);
         coef_b = (Real) (1.0/3.0);
         coef_c = (Real) (1.0 - (coef_a + coef_b));
+
     }
     else
     {
@@ -944,11 +917,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         const typename DataTypes::Coord& p3,
         const typename DataTypes::Coord& p4)
 {
-    // use formula with angles
-    // A----B     p1----p2
-    //   \   \     \     \
-    //    D----C    p4----p3
-    // if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+    /* use formula with angles
+     * A----B     p1----p2
+     *   \   \     \     \
+     *    D----C    p4----p3
+     * if the sum of opposites angles (not on the common edge) is < 180deg, the triangles meet the Delaunay condition
+     */
     sofa::type::Vec<3, Real> AB = { p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2] };
     sofa::type::Vec<3, Real> AD = { p4[0] - p1[0], p4[1] - p1[1], p4[2] - p1[2] };
     
@@ -1116,8 +1090,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     point_p[1]= (Real) c_p[1];
     point_p[2]= (Real) c_p[2];
 
-    sofa::type::Vec<3,Real> point_from=(sofa::type::Vec<3,Real>) getOppositePoint(ind_p, indices_from, coord_from);
-    sofa::type::Vec<3,Real> point_to=(sofa::type::Vec<3,Real>) getOppositePoint(ind_p, indices_to, coord_to);
+    sofa::type::Vec<3, Real> point_from = getOppositePoint(ind_p, indices_from, coord_from);
+    sofa::type::Vec<3, Real> point_to = getOppositePoint(ind_p, indices_to, coord_to);
 
     //Vec<3,Real> point_from=(Vec<3,Real>) computeBaryEdgePoint((sofa::type::vector< TriangleID>&) indices_from, coord_from);
     //Vec<3,Real> point_to=(Vec<3,Real>) computeBaryEdgePoint((sofa::type::vector< TriangleID>&) indices_to, coord_to);
@@ -1361,27 +1335,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     const typename DataTypes::Coord& c1=vect_c[t[1]];
     const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-    sofa::type::Vec<3,Real> p0;
-    p0[0] = (Real) (c0[0]);
-    p0[1] = (Real) (c0[1]);
-    p0[2] = (Real) (c0[2]);
-    sofa::type::Vec<3,Real> p1;
-    p1[0] = (Real) (c1[0]);
-    p1[1] = (Real) (c1[1]);
-    p1[2] = (Real) (c1[2]);
-    sofa::type::Vec<3,Real> p2;
-    p2[0] = (Real) (c2[0]);
-    p2[1] = (Real) (c2[1]);
-    p2[2] = (Real) (c2[2]);
+    sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
+    sofa::type::Vec<3,Real> p1 = { c1[0], c1[1], c1[2] };
+    sofa::type::Vec<3,Real> p2 = { c2[0], c2[1], c2[2] };
 
-    sofa::type::Vec<3,Real> pa;
-    pa[0] = (Real) (a[0]);
-    pa[1] = (Real) (a[1]);
-    pa[2] = (Real) (a[2]);
-    sofa::type::Vec<3,Real> pb;
-    pb[0] = (Real) (b[0]);
-    pb[1] = (Real) (b[1]);
-    pb[2] = (Real) (b[2]);
+    sofa::type::Vec<3,Real> pa = { a[0], a[1], a[2] };
+    sofa::type::Vec<3,Real> pb = { b[0], b[1], b[2] };
 
     sofa::type::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
     Real norm_v_normal = v_normal.norm(); // WARN : square root COST
@@ -1968,27 +1927,24 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if (ind_ta == ind_tb)
     {
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
-        }
+        msg_warning() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
         return false;
     }
 
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        dmsg_info() << "*********************************" << msgendl
-                    << "ind_t_current: " << ind_t_current << msgendl
-                    << "p_current: " << p_current << msgendl
-                    << "coord_t: " << coord_t << msgendl
-                    << "coord_k: " << coord_k << msgendl
-                    << "indices: " << indices << msgendl
-                    << "last_point: " << last_point << msgendl
-                    << "a: " << a << msgendl
-                    << "b: " << b << msgendl
-                    << "is_intersected: "<< is_intersected << msgendl
-                    << "*********************************" ;
-    }
-
+    dmsg_info() << "*********************************" << msgendl
+                << "* computeIntersectedPointsList * " << msgendl
+                << "ind_t_current: " << ind_t_current << msgendl
+                << "p_current: " << p_current << msgendl
+                << "coord_t: " << coord_t << msgendl
+                << "coord_k: " << coord_k << msgendl
+                << "indices: " << indices << msgendl
+                << "last_point: " << last_point << msgendl
+                << "a: " << a << msgendl
+                << "b: " << b << msgendl
+                << "is_intersected: "<< is_intersected << msgendl
+                << "*********************************" ;
+    
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
 
@@ -2210,23 +2166,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        if(is_reached)
-        {
-            dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
-        }
+    if(is_reached)
+    {
+        dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
+    }
 
-        if(is_on_boundary)
-        {
-            dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
-        }
+    if(is_on_boundary)
+    {
+        dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
     }
 
     if(!is_reached && !is_on_boundary)
     {
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
-        }
+        dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
@@ -2235,12 +2187,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
 template <typename DataTypes>
-bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
-        const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
-        TriangleID& ind_ta, TriangleID& ind_tb,// A verifier pourquoi la ref!
-        sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const
+bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point, const Vec3& pointA, const Vec3& pointB,
+    TriangleID& ind_triA, TriangleID& ind_triB,
+    sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+    sofa::type::vector< ElemID >& intersected_indices,
+    sofa::type::vector< Vec3 >& intersected_barycoefs) const
 {
     //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
     //// ** TODO: create the real function handle different objects intersection **
@@ -2249,88 +2200,83 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     // Output declarations
     sofa::type::vector<TriangleID> triangles_list;
     sofa::type::vector<EdgeID> edges_list;
-    sofa::type::vector< Real > coordsEdge_list;
-    bool pathOK;
-    bool isOnPoint = false;
+    sofa::type::vector< Real > edge_barycoefs_list;
     bool is_on_boundary = false;
-
     // using old function:
-    pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    bool pathOK = this->computeIntersectedPointsList(last_point, pointA, pointB, ind_triA, ind_triB, triangles_list, edges_list, edge_barycoefs_list, is_on_boundary);
+    dmsg_info() << "*********************************" << msgendl
+                << "* computeIntersectedObjectsList *" << msgendl
+                << "last_point: " << last_point << msgendl
+                << "pointA: " << pointA << msgendl
+                << "pointB: " << pointB << msgendl
+                << "triangles_list: "<< triangles_list << msgendl
+                << "edges_list: "<< edges_list << msgendl
+                << "edge_barycoefs_list: "<< edge_barycoefs_list << msgendl
+                << "*********************************" ;
 
-    if(DO_EXTRADEBUG_MESSAGES){
-        dmsg_info() << "*********************************" << msgendl
-                    << "last_point: " << last_point << msgendl
-                    << "a: " << a << msgendl
-                    << "b: " << b << msgendl
-                    << "triangles_list: "<< triangles_list << msgendl
-                    << "edges_list: "<< edges_list << msgendl
-                    << "coordsEdge_list: "<< coordsEdge_list << msgendl
-                    << "*********************************" ;
-    }
+    if (!pathOK)
+        return false;
 
-    if (pathOK)
+    // creating new declaration path:
+    sofa::type::Vec<3,Real> baryCoords;
+
+    // 1 - First point a (for the moment: always a point in a triangle)
+    if (last_point != sofa::InvalidID)
     {
-        // creating new declaration path:
-        sofa::type::Vec<3,Real> baryCoords;
-
-        // 1 - First point a (for the moment: always a point in a triangle)
-        if (last_point != sofa::InvalidID)
-        {
-            topoPath_list.push_back (geometry::ElementType::POINT);
-            indices_list.push_back (last_point);
-            const typename DataTypes::VecCoord& realC =(this->object->read(core::ConstVecCoordId::position())->getValue());
-            for (unsigned int i = 0; i<3; i++)
-                baryCoords[i]=realC[last_point][i];
-        }
-        else
-        {
-            auto coefs_a = computeTriangleBarycoefs (ind_ta, a);
-            topoPath_list.push_back (geometry::ElementType::TRIANGLE);
-            indices_list.push_back (ind_ta);
-            for (unsigned int i = 0; i<3; i++)
-                baryCoords[i]=coefs_a[i];
-        }
-
-        coords_list.push_back (baryCoords);
-
-
-        // 2 - All edges intersected (only edges for now)
-        for (size_t i = 0; i< edges_list.size(); i++)
-        {
-            topoPath_list.push_back (geometry::ElementType::EDGE);
-            indices_list.push_back (edges_list[i]);
-
-            baryCoords[0] = coordsEdge_list[i];
-            baryCoords[1] = 0.0; // or 1 - coordsEdge_list[i] ??
-            baryCoords[2] = 0.0;
-
-            coords_list.push_back (baryCoords);
-        }
-
-        // 3 - Last point b (for the moment: always a point in a triangle)
-        auto coefs_b = computeTriangleBarycoefs (ind_tb, b);
-
+        intersected_topoElements.push_back (sofa::geometry::ElementType::POINT);
+        intersected_indices.push_back (last_point);
+        const typename DataTypes::VecCoord& realC =(this->object->read(core::ConstVecCoordId::position())->getValue());
         for (unsigned int i = 0; i<3; i++)
-            if (coefs_b[i] > 0.9999 )
-            {
-                topoPath_list.push_back (geometry::ElementType::POINT);
-                indices_list.push_back (this->m_topology->getTriangle (ind_tb)[i]);
-                isOnPoint = true;
-                break;
-            }
-
-        if (!isOnPoint)
-        {
-            topoPath_list.push_back (geometry::ElementType::TRIANGLE);
-            indices_list.push_back (ind_tb);
-        }
+            baryCoords[i]=realC[last_point][i];
+    }
+    else
+    {
+        auto coefs_a = computeTriangleBarycoefs (ind_triA, pointA);
+        intersected_topoElements.push_back (sofa::geometry::ElementType::TRIANGLE);
+        intersected_indices.push_back (ind_triA);
         for (unsigned int i = 0; i<3; i++)
-            baryCoords[i]=coefs_b[i];
+            baryCoords[i]=coefs_a[i];
+    }
+    intersected_barycoefs.push_back (baryCoords);
 
-        coords_list.push_back (baryCoords);
+
+    // 2 - All edges intersected (only edges for now)
+    for (size_t i = 0; i< edges_list.size(); i++)
+    {
+        intersected_topoElements.push_back (sofa::geometry::ElementType::EDGE);
+        intersected_indices.push_back (edges_list[i]);
+
+        baryCoords[0] = edge_barycoefs_list[i];
+        baryCoords[1] = 0.0; // or 1 - edge_barycoefs_list[i] ??
+        baryCoords[2] = 0.0;
+
+        intersected_barycoefs.push_back (baryCoords);
     }
 
-    return pathOK;
+    // 3 - Last point b (for the moment: always a point in a triangle)
+    auto coefs_b = computeTriangleBarycoefs (ind_triB, pointB);
+    bool isOnPoint = false;
+    for (unsigned int i = 0; i<3; i++)
+        if (coefs_b[i] > 0.9999 )
+        {
+            intersected_topoElements.push_back (sofa::geometry::ElementType::POINT);
+            intersected_indices.push_back (this->m_topology->getTriangle (ind_triB)[i]);
+            isOnPoint = true;
+            break;
+        }
+
+    if (!isOnPoint)
+    {
+        intersected_topoElements.push_back (sofa::geometry::ElementType::TRIANGLE);
+        intersected_indices.push_back (ind_triB);
+    }
+    for (unsigned int i = 0; i<3; i++)
+        baryCoords[i]=coefs_b[i];
+
+    intersected_barycoefs.push_back (baryCoords);
+ 
+
+    return true;
 }
 
 
@@ -2457,12 +2403,11 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             }
         }
 
-        if(DO_EXTRADEBUG_MESSAGES){
-            dmsg_info() << "_neighTri: "<< _neighTri << msgendl
-                        << "_neighTri2: "<< _neighTri2 <<msgendl
-                        << "buffk: "<< buffK <<msgendl
-                        << "buffkk: "<< buffKK <<msgendl ;
-        }
+
+        dmsg_info() << "_neighTri: "<< _neighTri << msgendl
+                    << "_neighTri2: "<< _neighTri2 <<msgendl
+                    << "buffk: "<< buffK <<msgendl
+                    << "buffkk: "<< buffKK <<msgendl ;
         cpt_secu++;
     }
 
@@ -3247,28 +3192,28 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
 
 
 template<class DataTypes>
-int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-    sofa::type::vector<ElemID>& indices_list,
-    sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
-    sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath, Real epsilonSnapBorder)
+int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coord& pointA, PointID ind_B, Coord& pointB,
+    sofa::type::vector< sofa::geometry::ElementType >& intersected_topoElements,
+    sofa::type::vector< ElemID >& intersected_indices,
+    sofa::type::vector< Vec3 >& intersected_barycoefs,
+    sofa::type::vector< EdgeID >& new_edges, Real epsilonSnapPath, Real epsilonSnapBorder)
 {
     //////// STEP 1.a : MODIFY PATH IF SNAP = TRUE (don't change border case here if they are near an edge)
-    if (indices_list.empty()) return 0;
+    if (intersected_indices.empty()) return 0;
 
     sofa::type::vector< sofa::type::vector<Real> > points2Snap;
 
     //	Real epsilon = 0.25; // to change to an input for snaping
 
     if (epsilonSnapPath != 0.0)
-        SnapAlongPath(topoPath_list, indices_list, coords_list, points2Snap, epsilonSnapPath);
+        SnapAlongPath(intersected_topoElements, intersected_indices, intersected_barycoefs, points2Snap, epsilonSnapPath);
 
     //STEP 1.b : Modify border case path if snap = true
     if (epsilonSnapBorder != 0.0)
-        SnapBorderPath(pa, a, pb, b, topoPath_list, indices_list, coords_list, points2Snap, epsilonSnapBorder);
+        SnapBorderPath(ind_A, pointA, ind_B, pointB, intersected_topoElements, intersected_indices, intersected_barycoefs, points2Snap, epsilonSnapBorder);
 
     // Output declarations:
-    const size_t nb_points = indices_list.size();
+    const size_t nb_points = intersected_indices.size();
     sofa::type::vector< sofa::type::vector< PointID > > p_ancestors; 
     p_ancestors.reserve(nb_points);// WARNING
     sofa::type::vector< sofa::type::vector< SReal > > p_baryCoefs; 
@@ -3296,13 +3241,13 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         auto& baryCoefs = p_baryCoefs.back();
 
 
-        switch (topoPath_list[i])
+        switch (intersected_topoElements[i])
         {
 
         case geometry::ElementType::POINT:
         {
             // qlq chose a faire?
-            new_edge_points.push_back(indices_list[i]);
+            new_edge_points.push_back(intersected_indices[i]);
 
             p_ancestors.resize(p_ancestors.size() - 1);
             p_baryCoefs.resize(p_baryCoefs.size() - 1);
@@ -3310,11 +3255,11 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             // For snaping:
             if ((epsilonSnapPath != 0.0) || (!points2Snap.empty()))
                 for (size_t j = 0; j < points2Snap.size(); j++)
-                    if (points2Snap[j][0] == indices_list[i])
+                    if (points2Snap[j][0] == intersected_indices[i])
                     {
                         if (i == 0 || i == nb_points - 1) //should not append, 0 and nb_points-1 correspond to bordersnap
                         {
-                            PointID the_point = indices_list[i];
+                            PointID the_point = intersected_indices[i];
                             const sofa::type::vector<EdgeID>& shell = m_container->getEdgesAroundVertex(the_point);
                             unsigned int cptSnap = 0;
 
@@ -3340,11 +3285,11 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                         points2Snap[j].push_back(next_point - 1);
                         points2Snap[j].push_back(next_point);
 
-                        if (topoPath_list[i - 1] == geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
-                            points2Snap[j][4] = indices_list[i - 1];
+                        if (intersected_topoElements[i - 1] == sofa::geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
+                            points2Snap[j][4] = intersected_indices[i - 1];
 
-                        if (topoPath_list[i + 1] == geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
-                            points2Snap[j][5] = indices_list[i + 1];
+                        if (intersected_topoElements[i + 1] == sofa::geometry::ElementType::POINT) //second dof has to be moved, first acestor must be pa
+                            points2Snap[j][5] = intersected_indices[i + 1];
 
                         break;
                     }
@@ -3354,15 +3299,15 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
         case geometry::ElementType::EDGE:
         {
-            Edge theEdge = m_container->getEdge(indices_list[i]);
+            Edge theEdge = m_container->getEdge(intersected_indices[i]);
             ancestors.push_back(theEdge[0]);
             ancestors.push_back(theEdge[1]);
 
-            baryCoefs.push_back(1.0 - coords_list[i][0]);
-            baryCoefs.push_back(coords_list[i][0]);
+            baryCoefs.push_back(1.0 - intersected_barycoefs[i][0]);
+            baryCoefs.push_back(intersected_barycoefs[i][0]);
 
-            srcElems.push_back(core::topology::PointAncestorElem(geometry::ElementType::EDGE, indices_list[i],
-                core::topology::PointAncestorElem::LocalCoords(coords_list[i][0], 0, 0)));
+            srcElems.push_back(core::topology::PointAncestorElem(sofa::geometry::ElementType::EDGE, intersected_indices[i],
+                core::topology::PointAncestorElem::LocalCoords(intersected_barycoefs[i][0], 0, 0)));
 
             new_edge_points.push_back(next_point);
             ++next_point;
@@ -3371,18 +3316,18 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         case geometry::ElementType::TRIANGLE:
         {
 
-            Triangle theTriangle = m_container->getTriangle(indices_list[i]);
+            Triangle theTriangle = m_container->getTriangle(intersected_indices[i]);
 
             ancestors.push_back(theTriangle[0]);
             ancestors.push_back(theTriangle[1]);
             ancestors.push_back(theTriangle[2]);
 
-            baryCoefs.push_back(coords_list[i][0]);
-            baryCoefs.push_back(coords_list[i][1]);
-            baryCoefs.push_back(coords_list[i][2]);
+            baryCoefs.push_back(intersected_barycoefs[i][0]);
+            baryCoefs.push_back(intersected_barycoefs[i][1]);
+            baryCoefs.push_back(intersected_barycoefs[i][2]);
 
-            srcElems.push_back(core::topology::PointAncestorElem(geometry::ElementType::TRIANGLE, indices_list[i],
-                core::topology::PointAncestorElem::LocalCoords(coords_list[i][1], coords_list[i][2], 0)));
+            srcElems.push_back(core::topology::PointAncestorElem(sofa::geometry::ElementType::TRIANGLE, intersected_indices[i],
+                core::topology::PointAncestorElem::LocalCoords(intersected_barycoefs[i][1], intersected_barycoefs[i][2], 0)));
 
             new_edge_points.push_back(next_point);// hum...? pour les edges to split
             ++next_point;
@@ -3398,21 +3343,21 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
     // STEP 2: Computing triangles along path
 
-    for (size_t i = 0; i < indices_list.size() - 1; ++i)
+    for (size_t i = 0; i < intersected_indices.size() - 1; ++i)
     {
-        ElemID firstObject = indices_list[i];
+        ElemID firstObject = intersected_indices[i];
 
-        switch (topoPath_list[i])
+        switch (intersected_topoElements[i])
         {
         case geometry::ElementType::POINT:
         {
             PointID thePointFirst = firstObject;
 
-            switch (topoPath_list[i + 1])
+            switch (intersected_topoElements[i + 1])
             {
             case geometry::ElementType::POINT: // Triangle to create: 0 / Triangle to remove: 0
             {
-                PointID thePointSecond = indices_list[i + 1];
+                PointID thePointSecond = intersected_indices[i + 1];
                 sofa::type::vector<EdgeID> edgevertexshell = m_container->getEdgesAroundVertex(thePointSecond);
                 bool test = false;
 
@@ -3436,7 +3381,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             }
             case geometry::ElementType::EDGE: // Triangle to create: 2 / Triangle to remove: 1
             {
-                EdgeID edgeIDSecond = indices_list[i + 1];
+                EdgeID edgeIDSecond = intersected_indices[i + 1];
                 TriangleID triId;
                 Triangle tri;
 
@@ -3484,7 +3429,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             }
             case geometry::ElementType::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
             {
-                TriangleID triangleIDSecond = indices_list[i + 1];
+                TriangleID triangleIDSecond = intersected_indices[i + 1];
                 Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
 
                 triangles_ancestors.resize(triangles_ancestors.size() + 3);
@@ -3519,14 +3464,14 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             PointID p1 = new_edge_points[i];
             EdgeID edgeIDFirst = firstObject;
             Edge theEdgeFirst = m_container->getEdge(firstObject);
-            sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
+            sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, intersected_barycoefs[i][0]);
 
-            switch (topoPath_list[i + 1])
+            switch (intersected_topoElements[i + 1])
             {
 
             case geometry::ElementType::POINT: // Triangle to create: 2 / Triangle to remove: 1
             {
-                PointID thePointSecond = indices_list[i + 1];
+                PointID thePointSecond = intersected_indices[i + 1];
 
                 TriangleID triId;
                 Triangle tri;
@@ -3573,9 +3518,9 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             case geometry::ElementType::EDGE: // Triangle to create: 3 / Triangle to remove: 1
             {
                 PointID p2 = new_edge_points[i + 1];
-                EdgeID edgeIDSecond = indices_list[i + 1];
+                EdgeID edgeIDSecond = intersected_indices[i + 1];
                 Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
-                sofa::type::Vec<3, Real> pos2 = computeBaryEdgePoint(theEdgeSecond, coords_list[i + 1][0]);
+                sofa::type::Vec<3, Real> pos2 = computeBaryEdgePoint(theEdgeSecond, intersected_barycoefs[i + 1][0]);
 
                 TriangleID triId;
                 Triangle tri;
@@ -3655,7 +3600,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             case geometry::ElementType::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
             {
                 PointID p2 = new_edge_points[i + 1];
-                TriangleID triangleIDSecond = indices_list[i + 1];
+                TriangleID triangleIDSecond = intersected_indices[i + 1];
                 Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
 
                 const EdgesInTriangle triedge = m_container->getEdgesInTriangle(triangleIDSecond);
@@ -3704,11 +3649,11 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         case geometry::ElementType::TRIANGLE:
         {
             Triangle theTriangleFirst = m_container->getTriangle(firstObject);
-            TriangleID triangleIDFirst = indices_list[i];
+            TriangleID triangleIDFirst = intersected_indices[i];
             PointID p1 = new_edge_points[i];
             PointID p2 = new_edge_points[i + 1];
 
-            switch (topoPath_list[i + 1])
+            switch (intersected_topoElements[i + 1])
             {
             case geometry::ElementType::POINT: // Triangle to create: 3 / Triangle to remove: 1
             {
@@ -3734,7 +3679,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             }
             case geometry::ElementType::EDGE: // Triangle to create: 4 / Triangle to remove: 1
             {
-                EdgeID edgeIDSecond = indices_list[i + 1];
+                EdgeID edgeIDSecond = intersected_indices[i + 1];
 
                 const EdgesInTriangle triedge = m_container->getEdgesInTriangle(triangleIDFirst);
                 int edgeInTriangle = m_container->getEdgeIndexInTriangle(triedge, edgeIDSecond);
@@ -3773,7 +3718,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             }
             case geometry::ElementType::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
             {
-                TriangleID triangleIDSecond = indices_list[i + 1];
+                TriangleID triangleIDSecond = intersected_indices[i + 1];
 
                 if (triangleIDSecond != triangleIDFirst)
                 {
@@ -3789,21 +3734,21 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 for (unsigned int j = 0; j < 3; j++) // find first corners
                 {
-                    if (coords_list[i][j] > tmp1)
+                    if (intersected_barycoefs[i][j] > tmp1)
                     {
-                        tmp1 = coords_list[i][j];
+                        tmp1 = intersected_barycoefs[i][j];
                         cornerP1[0] = j;
                     }
 
-                    if (coords_list[i + 1][j] > tmp2)
+                    if (intersected_barycoefs[i + 1][j] > tmp2)
                     {
-                        tmp2 = coords_list[i + 1][j];
+                        tmp2 = intersected_barycoefs[i + 1][j];
                         cornerP2[0] = j;
                     }
                 }
 
                 // sort other corners by decreasing barycoef
-                if (coords_list[i][(cornerP1[0] + 1) % 3] > coords_list[i][(cornerP1[0] + 2) % 3])
+                if (intersected_barycoefs[i][(cornerP1[0] + 1) % 3] > intersected_barycoefs[i][(cornerP1[0] + 2) % 3])
                 {
                     cornerP1[1] = (cornerP1[0] + 1) % 3;
                     cornerP1[2] = (cornerP1[0] + 2) % 3;
@@ -3814,7 +3759,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                     cornerP1[2] = (cornerP1[0] + 1) % 3;
                 }
 
-                if (coords_list[i + 1][(cornerP2[0] + 1) % 3] > coords_list[i + 1][(cornerP2[0] + 2) % 3])
+                if (intersected_barycoefs[i + 1][(cornerP2[0] + 1) % 3] > intersected_barycoefs[i + 1][(cornerP2[0] + 2) % 3])
                 {
                     cornerP2[1] = (cornerP2[0] + 1) % 3;
                     cornerP2[2] = (cornerP2[0] + 2) % 3;
@@ -3836,7 +3781,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                         quad[0][0] = p1; quad[0][1] = theTriangleFirst[cornerP1InTriangle];
                         quad[0][3] = p2; quad[0][2] = theTriangleFirst[cornerP2InTriangle];
 
-                        if (coords_list[i][(cornerP1InTriangle + 2) % 3] > coords_list[i + 1][(cornerP1InTriangle + 2) % 3]) // second quad in other direction
+                        if (intersected_barycoefs[i][(cornerP1InTriangle + 2) % 3] > intersected_barycoefs[i + 1][(cornerP1InTriangle + 2) % 3]) // second quad in other direction
                         {
                             quad[1][0] = p2; quad[1][1] = theTriangleFirst[(cornerP1InTriangle + 1) % 3];
                             quad[1][3] = p1; quad[1][2] = theTriangleFirst[(cornerP1InTriangle + 2) % 3];
@@ -3854,7 +3799,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                         quad[0][0] = p2; quad[0][1] = theTriangleFirst[cornerP2InTriangle];
                         quad[0][3] = p1; quad[0][2] = theTriangleFirst[cornerP1InTriangle];
 
-                        if (coords_list[i][(cornerP2InTriangle + 2) % 3] > coords_list[i + 1][(cornerP2InTriangle + 2) % 3]) // second quad in other direction
+                        if (intersected_barycoefs[i][(cornerP2InTriangle + 2) % 3] > intersected_barycoefs[i + 1][(cornerP2InTriangle + 2) % 3]) // second quad in other direction
                         {
                             quad[1][0] = p1; quad[1][1] = theTriangleFirst[(cornerP1InTriangle + 1) % 3];
                             quad[1][3] = p2; quad[1][2] = theTriangleFirst[(cornerP1InTriangle + 2) % 3];
@@ -3907,11 +3852,11 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                         if (quad[j][k] == p1)
                             for (unsigned int u = 0; u < 3; u++)
                                 for (unsigned int v = 0; v < 3; v++)
-                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v] * (Real)coords_list[i][u];
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v] * (Real)intersected_barycoefs[i][u];
                         else if (quad[j][k] == p2)
                             for (unsigned int u = 0; u < 3; u++)
                                 for (unsigned int v = 0; v < 3; v++)
-                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v] * (Real)coords_list[i + 1][u];
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v] * (Real)intersected_barycoefs[i + 1][u];
                         else
                             pos[k] = coords[quad[j][k]];
 
@@ -4099,20 +4044,20 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-    sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+    sofa::type::vector<ElemID>& intersected_indices, sofa::type::vector< Vec3 >& intersected_barycoefs,
     sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
     Real epsilonSnapPath)
 {
     std::map <PointID, sofa::type::vector<PointID> > map_point2snap;
     std::map <PointID, sofa::type::vector<PointID> >::iterator it;
-    std::map <PointID, sofa::type::Vec<3, Real> > map_point2bary;
+    std::map <PointID, Vec3 > map_point2bary;
     Real epsilon = epsilonSnapPath;
 
     //// STEP 1 - First loop to find concerned points
-    for (size_t i = 0; i < indices_list.size(); i++)
+    for (size_t i = 0; i < intersected_indices.size(); i++)
     {
-        switch (topoPath_list[i])
+        switch (intersected_topoElements[i])
         {
             // New case to handle other topological object can be added.
             // Default: if object is a POINT , nothing has to be done.
@@ -4121,14 +4066,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         {
             PointID Vertex2Snap;
 
-            if (coords_list[i][0] < epsilon)  // This point has to be snaped
+            if (intersected_barycoefs[i][0] < epsilon)  // This point has to be snaped
             {
-                Vertex2Snap = m_container->getEdge(indices_list[i])[0];
+                Vertex2Snap = m_container->getEdge(intersected_indices[i])[0];
                 it = map_point2snap.find(Vertex2Snap);
             }
-            else if (coords_list[i][0] > (1.0 - epsilon))
+            else if (intersected_barycoefs[i][0] > (1.0 - epsilon))
             {
-                Vertex2Snap = m_container->getEdge(indices_list[i])[1];
+                Vertex2Snap = m_container->getEdge(intersected_indices[i])[1];
                 it = map_point2snap.find(Vertex2Snap);
             }
             else
@@ -4139,7 +4084,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             if (it == map_point2snap.end()) // First time this point is encounter
             {
                 map_point2snap[Vertex2Snap] = sofa::type::vector<PointID>();
-                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, Real>();
+                map_point2bary[Vertex2Snap] = Vec3();
             }
 
             break;
@@ -4147,14 +4092,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         case geometry::ElementType::TRIANGLE:
         {
             PointID Vertex2Snap;
-            sofa::type::Vec<3, Real>& barycoord = coords_list[i];
+            Vec3& barycoord = intersected_barycoefs[i];
             bool TriFind = false;
 
             for (unsigned int j = 0; j < 3; j++)
             {
                 if (barycoord[j] > (1.0 - epsilon))  // This point has to be snaped
                 {
-                    Vertex2Snap = m_container->getTriangleArray()[indices_list[i]][j];
+                    Vertex2Snap = m_container->getTriangleArray()[intersected_indices[i]][j];
                     it = map_point2snap.find(Vertex2Snap);
                     TriFind = true;
                     break;
@@ -4164,7 +4109,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             if (TriFind && (it == map_point2snap.end())) // First time this point is encounter
             {
                 map_point2snap[Vertex2Snap] = sofa::type::vector<PointID>();
-                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, Real>();
+                map_point2bary[Vertex2Snap] = Vec3();
             }
 
             break;
@@ -4184,24 +4129,24 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
 
     //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point
-    for (size_t i = 0; i < indices_list.size(); i++)
+    for (size_t i = 0; i < intersected_indices.size(); i++)
     {
-        switch (topoPath_list[i])
+        switch (intersected_topoElements[i])
         {
         case geometry::ElementType::POINT:
         {
-            if (map_point2snap.find(indices_list[i]) != map_point2snap.end())
+            if (map_point2snap.find(intersected_indices[i]) != map_point2snap.end())
             {
-                map_point2snap[indices_list[i]].push_back((PointID)i);
+                map_point2snap[intersected_indices[i]].push_back((PointID)i);
 
                 for (unsigned int j = 0; j < 3; j++)
-                    map_point2bary[indices_list[i]][j] += coords[indices_list[i]][j];
+                    map_point2bary[intersected_indices[i]][j] += coords[intersected_indices[i]][j];
             }
             break;
         }
         case geometry::ElementType::EDGE:
         {
-            Edge theEdge = m_container->getEdge(indices_list[i]);
+            Edge theEdge = m_container->getEdge(intersected_indices[i]);
             bool PointFind = false;
 
             for (EdgeID indEdge = 0; indEdge < 2; indEdge++)
@@ -4213,7 +4158,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
                     map_point2snap[thePoint].push_back((PointID)i);
                     // Compute new position.
                     // Step 1/3: Compute real coord of incision point on the edge
-                    const sofa::type::Vec<3, Real>& coord_bary = computeBaryEdgePoint(theEdge, coords_list[i][0]);
+                    const Vec3& coord_bary = computeBaryEdgePoint(theEdge, intersected_barycoefs[i][0]);
 
                     // Step 2/3: Sum the different incision point position.
                     for (PointID j = 0; j < 3; j++)
@@ -4227,19 +4172,19 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         }
         case geometry::ElementType::TRIANGLE:
         {
-            Triangle theTriangle = m_container->getTriangleArray()[indices_list[i]];
+            Triangle theTriangle = m_container->getTriangleArray()[intersected_indices[i]];
             bool PointFind = false;
 
             for (TriangleID indTri = 0; indTri < 3; indTri++)
             {
                 PointID thePoint = theTriangle[indTri];
 
-                if ((map_point2snap.find(thePoint) != map_point2snap.end()) && (coords_list[i][indTri] > (1 - epsilon)))
+                if ((map_point2snap.find(thePoint) != map_point2snap.end()) && (intersected_barycoefs[i][indTri] > (1 - epsilon)))
                 {
                     PointFind = true;
                     map_point2snap[thePoint].push_back((PointID)i);
 
-                    const sofa::type::Vec<3, Real>& coord_bary = computeBaryTrianglePoint(theTriangle, coords_list[i]);
+                    const Vec3& coord_bary = computeBaryTrianglePoint(theTriangle, intersected_barycoefs[i]);
 
                     for (TriangleID j = 0; j < 3; j++)
                         map_point2bary[thePoint][j] += coord_bary[j];
@@ -4299,9 +4244,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         cpt++;
 
         // Change enum of the first object to snap to POINT, change id and label it as snaped
-        topoPath_list[((*it).second)[0]] = geometry::ElementType::POINT;
-        indices_list[((*it).second)[0]] = (*it).first;
-        coords_list[((*it).second)[0]][0] = -1.0;
+        intersected_topoElements[((*it).second)[0]] = sofa::geometry::ElementType::POINT;
+        intersected_indices[((*it).second)[0]] = (*it).first;
+        intersected_barycoefs[((*it).second)[0]][0] = -1.0;
 
         // If more objects are concerned, remove them from the path  (need to stock and get out of the loop to delete them)
         for (size_t i = 1; i < size; i++)
@@ -4314,9 +4259,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
     for (size_t i = 1; i <= field2remove.size(); i++) //Delete in reverse order
     {
-        topoPath_list.erase(topoPath_list.begin() + field2remove[field2remove.size() - i]);
-        indices_list.erase(indices_list.begin() + field2remove[field2remove.size() - i]);
-        coords_list.erase(coords_list.begin() + field2remove[field2remove.size() - i]);
+        intersected_topoElements.erase(intersected_topoElements.begin() + field2remove[field2remove.size() - i]);
+        intersected_indices.erase(intersected_indices.begin() + field2remove[field2remove.size() - i]);
+        intersected_barycoefs.erase(intersected_barycoefs.begin() + field2remove[field2remove.size() - i]);
     }
 
     return;
@@ -4325,9 +4270,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,
-    sofa::type::vector<ElemID>& indices_list,
-    sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    sofa::type::vector< sofa::geometry::ElementType>& intersected_topoElements,
+    sofa::type::vector<ElemID>& intersected_indices,
+    sofa::type::vector< Vec3 >& intersected_barycoefs,
     sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
     Real epsilonSnapBorder)
 {
@@ -4349,13 +4294,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
     }
 
     // Test if point need to be snap on an edge
-    if (!snap_a  && topoPath_list[0] == geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_a  && intersected_topoElements[0] == sofa::geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i < 3; i++)
         {
-            if (coords_list[0][i] < epsilon)
+            if (intersected_barycoefs[0][i] < epsilon)
             {
-                const EdgeID theEdge = m_container->getEdgesInTriangle(indices_list[0])[i];
+                const EdgeID theEdge = m_container->getEdgesInTriangle(intersected_indices[0])[i];
                 bool find = false;
                 bool allDone = false;
                 bool pointDone = false;
@@ -4363,44 +4308,44 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 if ((m_container->getTrianglesAroundEdge(theEdge)).size() > 1) //snap to point and not edge
                 {
                     for (unsigned int j = 0; j < 3; j++)
-                        if (coords_list[0][j] > 1 - epsilon)
+                        if (intersected_barycoefs[0][j] > 1 - epsilon)
                         {
-                            thePoint = m_container->getTriangle(indices_list[0])[j];
-                            topoPath_list[0] = geometry::ElementType::POINT;
-                            indices_list[0] = thePoint;
+                            thePoint = m_container->getTriangle(intersected_indices[0])[j];
+                            intersected_topoElements[0] = sofa::geometry::ElementType::POINT;
+                            intersected_indices[0] = thePoint;
                             find = true;
                             break;
                         }
 
-                    if (topoPath_list.size() <= 2)
+                    if (intersected_topoElements.size() <= 2)
                         break;
 
                     while (find)
                     {
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[1] == geometry::ElementType::EDGE) // just remove or need to projection?
+                        if (intersected_topoElements[1] == sofa::geometry::ElementType::EDGE) // just remove or need to projection?
                         {
                             const sofa::type::vector<EdgeID>& shell = m_container->getEdgesAroundVertex(thePoint);
                             for (size_t k = 0; k < shell.size(); k++)
                             {
-                                if (shell[k] == indices_list[1])
+                                if (shell[k] == intersected_indices[1])
                                 {
-                                    topoPath_list.erase(topoPath_list.begin() + 1);
-                                    indices_list.erase(indices_list.begin() + 1);
-                                    coords_list.erase(coords_list.begin() + 1);
+                                    intersected_topoElements.erase(intersected_topoElements.begin() + 1);
+                                    intersected_indices.erase(intersected_indices.begin() + 1);
+                                    intersected_barycoefs.erase(intersected_barycoefs.begin() + 1);
                                     allDone = false;
                                     break;
                                 }
                             }
                         }
-                        else if (topoPath_list[1] == geometry::ElementType::POINT)
+                        else if (intersected_topoElements[1] == sofa::geometry::ElementType::POINT)
                         {
-                            if (indices_list[1] == thePoint)
+                            if (intersected_indices[1] == thePoint)
                             {
-                                topoPath_list.erase(topoPath_list.begin() + 1);
-                                indices_list.erase(indices_list.begin() + 1);
-                                coords_list.erase(coords_list.begin() + 1);
+                                intersected_topoElements.erase(intersected_topoElements.begin() + 1);
+                                intersected_indices.erase(intersected_indices.begin() + 1);
+                                intersected_barycoefs.erase(intersected_barycoefs.begin() + 1);
                                 pointDone = false;
                             }
                         }
@@ -4414,17 +4359,17 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
 
 
-                if ((indices_list[1] == theEdge) && (topoPath_list[1] == geometry::ElementType::EDGE)) // Only keep this one? or need to project?
+                if ((intersected_indices[1] == theEdge) && (intersected_topoElements[1] == sofa::geometry::ElementType::EDGE)) // Only keep this one? or need to project?
                 {
-                    msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and is an Edge. Report this issue.";
-                    topoPath_list.erase(topoPath_list.begin());
-                    indices_list.erase(indices_list.begin());
-                    coords_list.erase(coords_list.begin());
+                    msg_warning() << "Unexpected case reached: where intersected_indices[1] == theEdge and is an Edge. Report this issue.";
+                    intersected_topoElements.erase(intersected_topoElements.begin());
+                    intersected_indices.erase(intersected_indices.begin());
+                    intersected_barycoefs.erase(intersected_barycoefs.begin());
                     break;
                 }
                 else // need to create this point by projection
                 {
-                    sofa::type::Vec<3, Real> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
+                    Vec3 thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
 
                     auto new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
@@ -4433,15 +4378,15 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                         continue;
                     }
 
-                    topoPath_list[0] = geometry::ElementType::EDGE;
+                    intersected_topoElements[0] = sofa::geometry::ElementType::EDGE;
 
-                    indices_list[0] = theEdge;
-                    coords_list[0][0] = new_coord[1];  // not the same order as barycoef in the incision path
-                    coords_list[0][1] = new_coord[0];
-                    coords_list[0][2] = 0.0;
+                    intersected_indices[0] = theEdge;
+                    intersected_barycoefs[0][0] = new_coord[1];  // not the same order as barycoef in the incision path
+                    intersected_barycoefs[0][1] = new_coord[0];
+                    intersected_barycoefs[0][2] = 0.0;
 
                     const Edge theEdgeFirst = m_container->getEdge(theEdge);
-                    sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
+                    Vec3 pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
 
@@ -4452,13 +4397,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
     }
 
     // Same for last point
-    if (!snap_b  && topoPath_list.back() == geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_b  && intersected_topoElements.back() == sofa::geometry::ElementType::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i < 3; i++)
         {
-            if (coords_list.back()[i] < epsilon)
+            if (intersected_barycoefs.back()[i] < epsilon)
             {
-                const EdgeID theEdge = m_container->getEdgesInTriangle(indices_list.back())[i];
+                const EdgeID theEdge = m_container->getEdgesInTriangle(intersected_indices.back())[i];
                 bool find = false;
                 bool allDone = false;
                 bool pointDone = false;
@@ -4467,45 +4412,45 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 if ((m_container->getTrianglesAroundEdge(theEdge)).size() > 1) //snap to point and not edge
                 {
                     for (unsigned int j = 0; j < 3; j++)
-                        if (coords_list.back()[j] > 1 - epsilon)
+                        if (intersected_barycoefs.back()[j] > 1 - epsilon)
                         {
-                            thePoint = m_container->getTriangle(indices_list.back())[j];
-                            topoPath_list.back() = geometry::ElementType::POINT;
-                            indices_list.back() = thePoint;
+                            thePoint = m_container->getTriangle(intersected_indices.back())[j];
+                            intersected_topoElements.back() = sofa::geometry::ElementType::POINT;
+                            intersected_indices.back() = thePoint;
                             find = true;
                             break;
                         }
 
-                    if (topoPath_list.size() <= 2)
+                    if (intersected_topoElements.size() <= 2)
                         break;
 
                     while (find)
                     {
-                        const size_t pos = topoPath_list.size() - 2;
+                        const size_t pos = intersected_topoElements.size() - 2;
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[pos] == geometry::ElementType::EDGE) // just remove or need to projection?
+                        if (intersected_topoElements[pos] == sofa::geometry::ElementType::EDGE) // just remove or need to projection?
                         {
                             const sofa::type::vector<EdgeID> &shell = m_container->getEdgesAroundVertex(thePoint);
                             for (size_t k = 0; k < shell.size(); k++)
                             {
-                                if (shell[k] == indices_list[pos])
+                                if (shell[k] == intersected_indices[pos])
                                 {
-                                    topoPath_list.erase(topoPath_list.begin() + pos);
-                                    indices_list.erase(indices_list.begin() + pos);
-                                    coords_list.erase(coords_list.begin() + pos);
+                                    intersected_topoElements.erase(intersected_topoElements.begin() + pos);
+                                    intersected_indices.erase(intersected_indices.begin() + pos);
+                                    intersected_barycoefs.erase(intersected_barycoefs.begin() + pos);
                                     allDone = false;
                                     break;
                                 }
                             }
                         }
-                        else if (topoPath_list[pos] == geometry::ElementType::POINT)
+                        else if (intersected_topoElements[pos] == sofa::geometry::ElementType::POINT)
                         {
-                            if (indices_list[pos] == thePoint)
+                            if (intersected_indices[pos] == thePoint)
                             {
-                                topoPath_list.erase(topoPath_list.begin() + pos);
-                                indices_list.erase(indices_list.begin() + pos);
-                                coords_list.erase(coords_list.begin() + pos);
+                                intersected_topoElements.erase(intersected_topoElements.begin() + pos);
+                                intersected_indices.erase(intersected_indices.begin() + pos);
+                                intersected_barycoefs.erase(intersected_barycoefs.begin() + pos);
                                 pointDone = false;
                             }
                         }
@@ -4520,17 +4465,17 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
 
 
-                if ((indices_list[indices_list.size() - 2] == theEdge) && (topoPath_list[topoPath_list.size() - 2] == geometry::ElementType::EDGE)) // Only keep this one? or need to projection?
+                if ((intersected_indices[intersected_indices.size() - 2] == theEdge) && (intersected_topoElements[intersected_topoElements.size() - 2] == sofa::geometry::ElementType::EDGE)) // Only keep this one? or need to projection?
                 {
-                    msg_warning() << "Unexpected case reached: where indices_list[1] == theEdge and topoPath_list[1] is an Edge. Report this issue.";
-                    topoPath_list.pop_back();
-                    indices_list.pop_back();
-                    coords_list.pop_back();
+                    msg_warning() << "Unexpected case reached: where intersected_indices[1] == theEdge and intersected_topoElements[1] is an Edge. Report this issue.";
+                    intersected_topoElements.pop_back();
+                    intersected_indices.pop_back();
+                    intersected_barycoefs.pop_back();
                     break;
                 }
                 else
                 {
-                    sofa::type::Vec<3, Real> thePoint; 
+                    Vec3 thePoint; 
                     DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
                     auto new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
@@ -4539,14 +4484,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                         continue;
                     }
 
-                    topoPath_list.back() = geometry::ElementType::EDGE;
-                    indices_list.back() = theEdge;
-                    coords_list.back()[0] = new_coord[1];
-                    coords_list.back()[1] = new_coord[0];
-                    coords_list.back()[2] = 0.0;
+                    intersected_topoElements.back() = sofa::geometry::ElementType::EDGE;
+                    intersected_indices.back() = theEdge;
+                    intersected_barycoefs.back()[0] = new_coord[1];
+                    intersected_barycoefs.back()[1] = new_coord[0];
+                    intersected_barycoefs.back()[2] = 0.0;
 
                     const Edge theEdgeLast = m_container->getEdge(theEdge);
-                    sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
+                    Vec3 pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
 
@@ -4782,6 +4727,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
 
     // Draw Triangles indices
     if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)

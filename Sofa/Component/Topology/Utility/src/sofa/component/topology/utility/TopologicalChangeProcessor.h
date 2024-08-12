@@ -51,31 +51,81 @@ public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
 
     using Index = sofa::Index;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<std::string> m_filename;
 
-    sofa::core::objectmodel::DataFileName m_filename;
-    Data < type::vector< type::vector<Index> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data < type::vector< type::vector<Index> > > m_listChanges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<double> m_interval;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<double> m_shift;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<bool> m_loop;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<bool> m_useDataInputs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<double> m_timeToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<sofa::type::vector<Index> >m_pointsToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<sofa::type::vector<Index> > m_edgesToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<sofa::type::vector<Index> > m_trianglesToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<sofa::type::vector<Index> > m_quadsToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<sofa::type::vector<Index> > m_tetrahedraToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data <sofa::type::vector<Index> > m_hexahedraToRemove;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<bool> m_saveIndicesAtInit;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<SReal> m_epsilonSnapPath;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<SReal> m_epsilonSnapBorder;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
+    Data<bool> m_draw;
+
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < type::vector< type::vector<Index> > > d_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
 
     // Parameters for time
-    Data < double > m_interval; ///< time duration between 2 actions
-    Data < double > m_shift; ///< shift between times in the file and times when they will be read
-    Data < bool > m_loop; ///< set to 'true' to re-read the file when reaching the end
+    Data < double > d_interval; ///< time duration between 2 actions
+    Data < double > d_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > d_loop; ///< set to 'true' to re-read the file when reaching the end
 
     // Inputs for operations on Data
-    Data <bool> m_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
-    Data <double> m_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
-    Data <sofa::type::vector<Index> > m_pointsToRemove; ///< List of point IDs to be removed.
-    Data <sofa::type::vector<Index> > m_edgesToRemove; ///< List of edge IDs to be removed.
-    Data <sofa::type::vector<Index> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
-    Data <sofa::type::vector<Index> > m_quadsToRemove; ///< List of quad IDs to be removed.
-    Data <sofa::type::vector<Index> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
-    Data <sofa::type::vector<Index> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
+    Data <bool> d_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
+    Data <double> d_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
+    Data <sofa::type::vector<Index> > d_pointsToRemove; ///< List of point IDs to be removed.
+    Data <sofa::type::vector<Index> > d_edgesToRemove; ///< List of edge IDs to be removed.
+    Data <sofa::type::vector<Index> > d_trianglesToRemove; ///< List of triangle IDs to be removed.
+    Data <sofa::type::vector<Index> > d_quadsToRemove; ///< List of quad IDs to be removed.
+    Data <sofa::type::vector<Index> > d_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
+    Data <sofa::type::vector<Index> > d_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
 
-    Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
+    Data <bool> d_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
-    Data<SReal>  m_epsilonSnapPath; ///< epsilon snap path
-    Data<SReal>  m_epsilonSnapBorder; ///< epsilon snap path
+    Data<SReal>  d_epsilonSnapPath; ///< epsilon snap path
+    Data<SReal>  d_epsilonSnapBorder; ///< epsilon snap path
 
-    Data<bool>  m_draw; ///< draw information
+    Data<bool>  d_draw; ///< draw information
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TopologicalChangeProcessor, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

@@ -39,32 +39,46 @@ int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume m
         ;
 
 MeshTetraStuffing::MeshTetraStuffing()
-    : vbbox(initData(&vbbox,"vbbox","BBox to restrict the volume to"))
-    , size(initData(&size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
-    , inputPoints(initData(&inputPoints,"inputPoints","Input surface mesh points"))
-    , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
-    , inputQuads(initData(&inputQuads,"inputQuads","Input surface mesh quads"))
-    , outputPoints(initData(&outputPoints,"outputPoints","Output volume mesh points"))
-    , outputTetrahedra(initData(&outputTetrahedra,"outputTetrahedra","Output volume mesh tetrahedra"))
-    , alphaLong(initData(&alphaLong,(Real)0.24999,"alphaLong","Minimum alpha values on long edges when snapping points"))
-    , alphaShort(initData(&alphaShort,(Real)0.42978,"alphaShort","Minimum alpha values on short edges when snapping points"))
-    , bSnapPoints(initData(&bSnapPoints,false,"snapPoints","Snap points to the surface if intersections on edges are closed to given alpha values"))
-    , bSplitTetrahedra(initData(&bSplitTetrahedra,false,"splitTetrahedra","Split tetrahedra crossing the surface"))
-    , bDraw(initData(&bDraw,false,"draw","Activate rendering of internal datasets"))
+    : d_vbbox(initData(&d_vbbox, "vbbox", "BBox to restrict the volume to"))
+    , d_size(initData(&d_size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
+    , d_inputPoints(initData(&d_inputPoints, "inputPoints", "Input surface mesh points"))
+    , d_inputTriangles(initData(&d_inputTriangles, "inputTriangles", "Input surface mesh triangles"))
+    , d_inputQuads(initData(&d_inputQuads, "inputQuads", "Input surface mesh quads"))
+    , d_outputPoints(initData(&d_outputPoints, "outputPoints", "Output volume mesh points"))
+    , d_outputTetrahedra(initData(&d_outputTetrahedra, "outputTetrahedra", "Output volume mesh tetrahedra"))
+    , d_alphaLong(initData(&d_alphaLong, (Real)0.24999, "alphaLong", "Minimum alpha values on long edges when snapping points"))
+    , d_alphaShort(initData(&d_alphaShort, (Real)0.42978, "alphaShort", "Minimum alpha values on short edges when snapping points"))
+    , d_bSnapPoints(initData(&d_bSnapPoints, false, "snapPoints", "Snap points to the surface if intersections on edges are closed to given alpha values"))
+    , d_bSplitTetrahedra(initData(&d_bSplitTetrahedra, false, "splitTetrahedra", "Split tetrahedra crossing the surface"))
+    , d_bDraw(initData(&d_bDraw, false, "draw", "Activate rendering of internal datasets"))
 {
-    addAlias(&outputTetrahedra,"outputTetras");
-    addAlias(&bSplitTetrahedra,"splitTetras");
+    addAlias(&d_outputTetrahedra, "outputTetras");
+    addAlias(&d_bSplitTetrahedra, "splitTetras");
 
-    addInput(&inputPoints);
-    addInput(&inputTriangles);
-    addInput(&inputQuads);
-    addInput(&alphaLong);
-    addInput(&alphaShort);
-    addInput(&bSnapPoints);
-    addInput(&bSplitTetrahedra);
+    addInput(&d_inputPoints);
+    addInput(&d_inputTriangles);
+    addInput(&d_inputQuads);
+    addInput(&d_alphaLong);
+    addInput(&d_alphaShort);
+    addInput(&d_bSnapPoints);
+    addInput(&d_bSplitTetrahedra);
 
     //addOutput(&outputPoints);
     //addOutput(&outputTetrahedra);
+
+    vbbox.setParent(&d_vbbox);
+    size.setParent(&d_size);
+    inputPoints.setParent(&d_inputPoints);
+    inputTriangles.setParent(&d_inputTriangles);
+    inputQuads.setParent(&d_inputQuads);
+    outputPoints.setParent(&d_outputPoints);
+    outputTetrahedra.setParent(&d_outputTetrahedra);
+    alphaLong.setParent(&d_alphaLong);
+    alphaShort.setParent(&d_alphaShort);
+    bSnapPoints.setParent(&d_bSnapPoints);
+    bSplitTetrahedra.setParent(&d_bSplitTetrahedra);
+    bDraw.setParent(&d_bDraw);
+
 }
 
 MeshTetraStuffing::~MeshTetraStuffing()
@@ -80,9 +94,9 @@ void MeshTetraStuffing::init()
 
 void MeshTetraStuffing::doUpdate()
 {
-    const SeqPoints& inP = inputPoints.getValue();
-    SeqTriangles inT = inputTriangles.getValue();
-    const SeqQuads& inQ = inputQuads.getValue();
+    const SeqPoints& inP = d_inputPoints.getValue();
+    SeqTriangles inT = d_inputTriangles.getValue();
+    const SeqQuads& inQ = d_inputQuads.getValue();
     if (inP.empty() || (inT.empty() && inQ.empty()))
     {
         msg_error() << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader";
@@ -118,15 +132,15 @@ void MeshTetraStuffing::doUpdate()
         }
     }
 
-    type::fixed_array<Point, 2>& bb = *vbbox.beginEdit();
+    type::fixed_array<Point, 2>& bb = *d_vbbox.beginEdit();
     if (bb[0][0] >= bb[1][0])
     {
         bb[0] = inputBBox[0] - (inputBBox[1]-inputBBox[0])*0.01;
         bb[1] = inputBBox[1] + (inputBBox[1]-inputBBox[0])*0.01;
     }
-    vbbox.endEdit();
+    d_vbbox.endEdit();
 
-    cellsize = size.getValue();
+    cellsize = d_size.getValue();
     if (cellsize < 0)
     {
         Point b = bb[1]-bb[0];
@@ -158,8 +172,8 @@ void MeshTetraStuffing::doUpdate()
 
     msg_info() << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">";
 
-    auto outP = sofa::helper::getWriteOnlyAccessor(outputPoints);
-    auto outT = sofa::helper::getWriteOnlyAccessor(outputTetrahedra);
+    auto outP = sofa::helper::getWriteOnlyAccessor(d_outputPoints);
+    auto outT = sofa::helper::getWriteOnlyAccessor(d_outputTetrahedra);
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
@@ -291,10 +305,10 @@ void MeshTetraStuffing::doUpdate()
         if (pInside[p] > 0) insides.push_back(outP[p]);
     }
 
-    if (bSnapPoints.getValue())
+    if (d_bSnapPoints.getValue())
     {
-        const Real alphaLong = this->alphaLong.getValue();
-        const Real alphaShort = this->alphaShort.getValue();
+        const Real alphaLong = this->d_alphaLong.getValue();
+        const Real alphaShort = this->d_alphaShort.getValue();
         vector<bool> pViolated;
         pViolated.resize(nbp);
         std::set<int> violatedInsidePoints;
@@ -455,7 +469,7 @@ void MeshTetraStuffing::doUpdate()
     }
 
     // Create cut points
-    if (bSplitTetrahedra.getValue())
+    if (d_bSplitTetrahedra.getValue())
     {
         for (int p=0; p<nbp; ++p)
         {
@@ -654,7 +668,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     if (in3 < 0) pneg[nneg++]=p3; else if (in3 > 0) ppos[npos++]=p3; else pzero[nzero++]=p3;
     if (in4 < 0) pneg[nneg++]=p4; else if (in4 > 0) ppos[npos++]=p4; else pzero[nzero++]=p4;
     if (npos == 0 && nneg > 0) return ; // no tetra
-    if (nneg == 0 || !bSplitTetrahedra.getValue()) // full tetra
+    if (nneg == 0 || !d_bSplitTetrahedra.getValue()) // full tetra
     {
         addFinalTetra(outT,outP, p1,p2,p3,p4, false,__LINE__);
     }
@@ -722,7 +736,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         const bool flip1 = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
         const bool flip2 = flipDiag(outP, ppos[1],ppos[2],cut3,cut2,pneg[0]);
         bool flip3 = flipDiag(outP, ppos[2],ppos[0],cut1,cut3,pneg[0]);
-        if (flip1 == flip2 && flip2 == flip3)
+         if (flip1 == flip2 && flip2 == flip3)
         {
             msg_error() << "Invalid tetra split";
             flip3 = !flip1;
@@ -908,10 +922,10 @@ MeshTetraStuffing::Point MeshTetraStuffing::getEdgeDir(int e)
 
 void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
 {
-    if (!bDraw.getValue())
+    if (!d_bDraw.getValue())
         return;
 
-    const SeqPoints& outP = outputPoints.getValue();
+    const SeqPoints& outP = d_outputPoints.getValue();
 
     std::vector<type::Vec3> verticesP;
     std::vector<type::Vec3> verticesIntersections;

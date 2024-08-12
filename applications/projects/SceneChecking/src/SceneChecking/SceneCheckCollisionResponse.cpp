@@ -68,7 +68,7 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
         }
         else
         {
-            const std::string response = contactManager[0]->response.getValue().getSelectedItem();
+            const std::string response = contactManager[0]->d_response.getValue().getSelectedItem();
 
             /// If StickContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop and a GenericConstraintSolver (specifically)
             if ( response == "StickContactConstraint" )

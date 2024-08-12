@@ -52,16 +52,35 @@ public:
 
     using Index = sofa::Index;
 
-    Data<Deriv> pressure; ///< Pressure force per unit area
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Deriv> pressure;
 
-    Data<sofa::type::vector<Index> > quadList; ///< Indices of quads separated with commas where a pressure is applied
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<std::string> quadList;
 
-    /// the normal used to define the edge subjected to the pressure force.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
     Data<Deriv> normal;
 
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces; ///< draw quads which have a given pressure
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Real> dmin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<Real> dmax;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<bool> p_showForces;
+
+
+    Data<Deriv> d_pressure; ///< Pressure force per unit area
+
+    Data<sofa::type::vector<Index> > d_quadList; ///< Indices of quads separated with commas where a pressure is applied
+
+    /// the normal used to define the edge subjected to the pressure force.
+    Data<Deriv> d_normal;
+
+    Data<Real> d_dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> d_dmax; ///< Maximum distance from the origin along the normal direction
+    Data<bool> d_showForces; ///< draw quads which have a given pressure
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<QuadPressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -97,8 +116,10 @@ protected:
             return in;
         }
     };
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    Data<sofa::Index> quadPressureMap;
 
-    sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< map between quad indices and their pressure
+    sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > d_quadPressureMap; ///< Map between quad indices and their pressure
 
     /// Pointer to the current topology                                                                        /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
@@ -125,9 +146,9 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax) {dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
-    void setNormal(const Coord n) { normal.setValue(n);}
-    void setPressure(Deriv _pressure) { this->pressure = _pressure; updateQuadInformation(); }
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax) {d_dmin.setValue((Real)_dmin); d_dmax.setValue((Real)_dmax);}
+    void setNormal(const Coord n) { d_normal.setValue(n);}
+    void setPressure(Deriv _pressure) { this->d_pressure = _pressure; updateQuadInformation(); }
 
 protected :
     void selectQuadsAlongPlane();

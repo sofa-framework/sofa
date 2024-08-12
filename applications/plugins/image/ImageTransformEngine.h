@@ -60,9 +60,9 @@ public:
     Data< TransformType > inputTransform;
     Data< TransformType > outputTransform;
 
-    Data<type::Vec3> translation; ///< translation
-    Data<type::Vec3> rotation; ///< rotation
-    Data<Real> scale; ///< scale
+    Data<type::Vec3> translation; ///< translation vector 
+    Data<type::Vec3> rotation; ///< rotation vector 
+    Data<Real> scale; ///< scale factor
     Data<bool> inverse; ///< true to apply inverse transformation
 
     ImageTransformEngine()    :   Inherited()

@@ -47,7 +47,6 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     {"Monitor", Pluginized("v20.06", "SofaValidation")},
 
     // SofaGraphComponent was pluginized in #1531
-    { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
     { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
 
     // SofaUserInteraction was pluginized in #1588
@@ -221,7 +220,7 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "InteractiveCamera", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualModelImpl", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualStyle", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
-    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.UserInterface.ConfigurationSetting") },
+    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Setting") },
 
     // SofaGeneralVisual was deprecated in #2679
     { "RecordedCamera", Moved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
@@ -620,8 +619,10 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
-    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") }
-
+    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+    
+    // Moved to Sofa.Component.MechanicalLoad
+    { "Gravity", Moved("v24.12", "SofaGraphComponent", "Sofa.Component.Mechanicalload") }
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
@@ -756,8 +757,18 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"SlidingConstraint", Renamed("v24.06","v25.06","SlidingLagrangianConstraint")},
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
-    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")}
+    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
+    {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
+    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")}
 
+};
+
+
+const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
+    {"MasterConstraintSolver", Dealiased("v24.12","ConstraintAnimationLoop")},
+    {"FreeMotionMasterSolver", Dealiased("v24.12","FreeMotionAnimationLoop")},
+    {"MultiStepMasterSolver", Dealiased("v24.12","MultiStepAnimationLoop")},
+    {"MultiTagMasterSolver", Dealiased("v24.12","MultiTagAnimationLoop")}
 };
 
 } // namespace sofa::helper::lifecycle

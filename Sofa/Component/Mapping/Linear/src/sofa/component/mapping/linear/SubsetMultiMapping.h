@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -36,12 +37,12 @@ namespace sofa::component::mapping::linear
  * @brief Compute a subset of input points
  */
 template <class TIn, class TOut>
-class SubsetMultiMapping : public core::MultiMapping<TIn, TOut>
+class SubsetMultiMapping : public LinearMultiMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(LinearMultiMapping, TIn, TOut));
 
-    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef LinearMultiMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -88,8 +89,10 @@ public:
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data< type::vector<unsigned> > indexPairs;
 
-    Data< type::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
+    Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
 
 protected :
 

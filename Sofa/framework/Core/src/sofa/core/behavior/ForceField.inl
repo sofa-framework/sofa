@@ -69,16 +69,6 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
     }
 }
 
-
-template<class DataTypes>
-void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVecDerivId resId, MultiVecDerivId lambdaId, SReal cFactor )
-{
-    if (mparams && this->mstate)
-    {
-        addClambda(mparams, *resId[this->mstate.get()].write(), *lambdaId[this->mstate.get()].read(), cFactor);
-    }
-}
-
 template<class DataTypes>
 void ForceField<DataTypes>::addClambda(const MechanicalParams* /*mparams*/, DataVecDeriv& /*df*/, const DataVecDeriv& /*lambda*/, SReal /*cFactor*/ )
 {

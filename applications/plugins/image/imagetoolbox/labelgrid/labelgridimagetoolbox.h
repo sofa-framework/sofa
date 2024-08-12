@@ -16,7 +16,7 @@
 #include <image/ImageTypes.h>
 
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <sofa/helper/rmath.h>
 
 

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/geometry/ElementType.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/Mat.h>
 #include <cmath>
@@ -37,6 +38,7 @@ namespace sofa::geometry
 struct Hexahedron
 {
     static constexpr sofa::Size NumberOfNodes = 8;
+    static constexpr ElementType Element_type = ElementType::HEXAHEDRON;
 
     Hexahedron() = delete;
 

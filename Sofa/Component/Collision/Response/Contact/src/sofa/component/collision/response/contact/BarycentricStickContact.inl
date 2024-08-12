@@ -30,10 +30,12 @@ namespace sofa::component::collision::response::contact
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(nullptr), parent(nullptr)
-    , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
+    , d_keepAlive(initData(&d_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
+
+    f_keepAlive.setParent(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -170,7 +172,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         index2 = mapper2.addPointB(o->point[1], index2, r2);
 
         const double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
-        ff->m_stiffness.setValue(stiffness);
+        ff->d_stiffness.setValue(stiffness);
 
         const double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
 

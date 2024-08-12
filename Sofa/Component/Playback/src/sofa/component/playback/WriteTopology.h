@@ -55,12 +55,31 @@ class SOFA_COMPONENT_PLAYBACK_API WriteTopology: public core::objectmodel::BaseO
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < bool > f_writeContainers; ///< flag enabling output of common topology containers.
-    Data < bool > f_writeShellContainers; ///< flag enabling output of specific shell topology containers.
-    Data < double > f_interval; ///< time duration between outputs
-    Data < type::vector<double> > f_time; ///< set time to write outputs
-    Data < double > f_period; ///< period between outputs
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    Data < bool > f_writeContainers;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    Data < bool > f_writeShellContainers;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    Data < double > f_interval;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    Data < type::vector<double> > f_time;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    Data < double > f_period;
+
+
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < bool > d_writeContainers; ///< flag enabling output of common topology containers.
+    Data < bool > d_writeShellContainers; ///< flag enabling output of specific shell topology containers.
+    Data < double > d_interval; ///< time duration between outputs
+    Data < type::vector<double> > d_time; ///< set time to write outputs
+    Data < double > d_period; ///< period between outputs
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<WriteTopology, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

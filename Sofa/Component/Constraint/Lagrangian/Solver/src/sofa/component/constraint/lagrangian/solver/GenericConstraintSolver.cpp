@@ -62,23 +62,23 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 
 GenericConstraintSolver::GenericConstraintSolver()
     : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
-    , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
-    , tolerance( initData(&tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
-    , sor( initData(&sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
-    , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
-    , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
+    , d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
+    , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
+    , d_allVerified(initData(&d_allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
-    , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
-    , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
-    , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
-    , graphForces( initData(&graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
-    , graphViolations( initData(&graphViolations, "graphViolations", "Graph of each constraint's violation at each step of the resolution"))
-    , currentNumConstraints(initData(&currentNumConstraints, 0, "currentNumConstraints", "OUTPUT: current number of constraints"))
-    , currentNumConstraintGroups(initData(&currentNumConstraintGroups, 0, "currentNumConstraintGroups", "OUTPUT: current number of constraints"))
-    , currentIterations(initData(&currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
-    , currentError(initData(&currentError, 0.0_sreal, "currentError", "OUTPUT: current error"))
-    , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
+    , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
+    , d_graphErrors(initData(&d_graphErrors, "graphErrors", "Sum of the constraints' errors at each iteration"))
+    , d_graphConstraints(initData(&d_graphConstraints, "graphConstraints", "Graph of each constraint's error at the end of the resolution"))
+    , d_graphForces(initData(&d_graphForces, "graphForces", "Graph of each constraint's force at each step of the resolution"))
+    , d_graphViolations(initData(&d_graphViolations, "graphViolations", "Graph of each constraint's violation at each step of the resolution"))
+    , d_currentNumConstraints(initData(&d_currentNumConstraints, 0, "currentNumConstraints", "OUTPUT: current number of constraints"))
+    , d_currentNumConstraintGroups(initData(&d_currentNumConstraintGroups, 0, "currentNumConstraintGroups", "OUTPUT: current number of constraints"))
+    , d_currentIterations(initData(&d_currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
+    , d_currentError(initData(&d_currentError, 0.0_sreal, "currentError", "OUTPUT: current error"))
+    , d_reverseAccumulateOrder(initData(&d_reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
@@ -90,31 +90,47 @@ GenericConstraintSolver::GenericConstraintSolver()
     m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
     d_resolutionMethod.setValue(m_newoptiongroup);
 
-    addAlias(&maxIt, "maxIt");
+    addAlias(&d_maxIt, "maxIt");
 
-    graphErrors.setWidget("graph");
-    graphErrors.setGroup("Graph");
+    d_graphErrors.setWidget("graph");
+    d_graphErrors.setGroup("Graph");
 
-    graphConstraints.setWidget("graph");
-    graphConstraints.setGroup("Graph");
+    d_graphConstraints.setWidget("graph");
+    d_graphConstraints.setGroup("Graph");
 
-    graphForces.setWidget("graph_linear");
-    graphForces.setGroup("Graph2");
+    d_graphForces.setWidget("graph_linear");
+    d_graphForces.setGroup("Graph2");
 
-    graphViolations.setWidget("graph_linear");
-    graphViolations.setGroup("Graph2");
+    d_graphViolations.setWidget("graph_linear");
+    d_graphViolations.setGroup("Graph2");
 
-    currentNumConstraints.setReadOnly(true);
-    currentNumConstraints.setGroup("Stats");
-    currentNumConstraintGroups.setReadOnly(true);
-    currentNumConstraintGroups.setGroup("Stats");
-    currentIterations.setReadOnly(true);
-    currentIterations.setGroup("Stats");
-    currentError.setReadOnly(true);
-    currentError.setGroup("Stats");
+    d_currentNumConstraints.setReadOnly(true);
+    d_currentNumConstraints.setGroup("Stats");
+    d_currentNumConstraintGroups.setReadOnly(true);
+    d_currentNumConstraintGroups.setGroup("Stats");
+    d_currentIterations.setReadOnly(true);
+    d_currentIterations.setGroup("Stats");
+    d_currentError.setReadOnly(true);
+    d_currentError.setGroup("Stats");
 
-    maxIt.setRequired(true);
-    tolerance.setRequired(true);
+    d_maxIt.setRequired(true);
+    d_tolerance.setRequired(true);
+
+    maxIt.setParent(&d_maxIt);
+    tolerance.setParent(&d_tolerance);
+    sor.setParent(&d_sor);
+    scaleTolerance.setParent(&d_scaleTolerance);
+    allVerified.setParent(&d_allVerified);
+    computeGraphs.setParent(&d_computeGraphs);
+    graphErrors.setParent(&d_graphErrors);
+    graphConstraints.setParent(&d_graphConstraints);
+    graphForces.setParent(&d_graphForces);
+    graphViolations.setParent(&d_graphViolations);
+    currentNumConstraints.setParent(&d_currentNumConstraints);
+    currentNumConstraintGroups.setParent(&d_currentNumConstraintGroups);
+    currentIterations.setParent(&d_currentIterations);
+    currentError.setParent(&d_currentError);
+    reverseAccumulateOrder.setParent(&d_reverseAccumulateOrder);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -405,11 +421,11 @@ void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool p
 
 bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    current_cp->tolerance = tolerance.getValue();
-    current_cp->maxIterations = maxIt.getValue();
-    current_cp->scaleTolerance = scaleTolerance.getValue();
-    current_cp->allVerified = allVerified.getValue();
-    current_cp->sor = sor.getValue();
+    current_cp->tolerance = d_tolerance.getValue();
+    current_cp->maxIterations = d_maxIt.getValue();
+    current_cp->scaleTolerance = d_scaleTolerance.getValue();
+    current_cp->allVerified = d_allVerified.getValue();
+    current_cp->sor = d_sor.getValue();
 
 
     // Resolution depending on the method selected
@@ -445,10 +461,10 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     }
 
 
-    this->currentError.setValue(current_cp->currentError);
-    this->currentIterations.setValue(current_cp->currentIterations);
-    this->currentNumConstraints.setValue(current_cp->getNumConstraints());
-    this->currentNumConstraintGroups.setValue(current_cp->getNumConstraintGroups());
+    this->d_currentError.setValue(current_cp->currentError);
+    this->d_currentIterations.setValue(current_cp->currentIterations);
+    this->d_currentNumConstraints.setValue(current_cp->getNumConstraints());
+    this->d_currentNumConstraintGroups.setValue(current_cp->getNumConstraintGroups());
 
     if(notMuted())
     {

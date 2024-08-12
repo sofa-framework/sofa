@@ -47,6 +47,25 @@
     SOFA_ATTRIBUTE_DISABLED( \
         "v23.12", "v24.06", "This data is not used anymore: the drawing is now controlled by a draw flag")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM() \
+    SOFA_ATTRIBUTE_DEPRECATED(\
+        "v24.06", "v24.12",\
+        "data renamed according to the guidelines")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM
+#define SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA() \
+    SOFA_ATTRIBUTE_DEPRECATED(\
+        "v24.06", "v24.12",\
+        "This Data was not used")
+#endif
+
 namespace sofa::component::collision::detection::algorithm
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

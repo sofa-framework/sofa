@@ -11,7 +11,7 @@
 #include "../labelimagetoolboxaction.h"
 //#include "zonegeneratorimagetoolbox.h"
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 namespace sofa
 {

@@ -96,7 +96,7 @@ void OglLabel::reinit()
         if (backgroundSetting)
         {
             //in contrast mode, the text color is selected between black or white depending on the background color
-            const RGBAColor& backgroundColor = backgroundSetting->color.getValue();
+            const RGBAColor& backgroundColor = backgroundSetting->d_color.getValue();
             float yiq = (float)(backgroundColor[0]*255*299 + backgroundColor[1]*255*587 + backgroundColor[2]*255*114);
             yiq /= 1000;
             if (yiq >= 128)
@@ -118,7 +118,7 @@ void OglLabel::reinit()
     }
 }
 
-void OglLabel::updateVisual()
+void OglLabel::doUpdateVisual(const core::visual::VisualParams*)
 {
     if (!d_updateLabelEveryNbSteps.getValue()) m_internalLabel = d_label.getValue();
 }

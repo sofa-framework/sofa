@@ -63,8 +63,14 @@ protected:
     constraint::lagrangian::model::UnilateralLagrangianConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
-    Data<double> mu; ///< friction coefficient (0 for frictionless contacts)
-    Data<double> tol; ///< tolerance for the constraints resolution (0 for default tolerance)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
+    Data<double> mu;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
+    Data<double> tol;
+
+    Data<double> d_mu; ///< friction coefficient (0 for frictionless contacts)
+    Data<double> d_tol; ///< tolerance for the constraints resolution (0 for default tolerance)
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
 

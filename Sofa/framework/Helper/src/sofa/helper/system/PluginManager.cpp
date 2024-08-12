@@ -24,7 +24,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
-#include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #if __has_include(<filesystem>)
@@ -40,30 +40,8 @@ using sofa::helper::system::FileSystem;
 #include <fstream>
 #include <array>
 
-using sofa::helper::Utils;
-
 namespace sofa::helper::system
 {
-
-namespace
-{
-
-template <class LibraryEntry>
-[[nodiscard]] bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
-{
-    typedef typename LibraryEntry::FuncPtr FuncPtr;
-    entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
-    if( entry.func == 0 )
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-} // namespace
 
 const char* Plugin::GetModuleComponentList::symbol    = "getModuleComponentList";
 const char* Plugin::InitExternalModule::symbol        = "initExternalModule";
@@ -194,7 +172,7 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
     {
         if(! getPluginEntry(p.initExternalModule,d))
         {
-            const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
+            const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found. The following error was received: "+ DynamicLibrary::getLastError();
             msg_error("PluginManager") << msg;
             if (errlog) (*errlog) << msg << std::endl;
             return PluginLoadStatus::MISSING_SYMBOL;
@@ -244,6 +222,12 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
         }
     }
 
+    if (const auto unloadedIt = m_unloadedPlugins.find(p.getModuleName());
+        unloadedIt != m_unloadedPlugins.end())
+    {
+        m_unloadedPlugins.erase(unloadedIt);
+    }
+
     return PluginLoadStatus::SUCCESS;
 }
 
@@ -269,7 +253,7 @@ std::string PluginManager::GetPluginNameFromPath(const std::string& pluginPath)
         return filename.substr(0,pos);
     }
 
-    return sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());;
+    return sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
 }
 
 auto PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase,
@@ -308,19 +292,50 @@ auto PluginManager::loadPlugin(const std::string& plugin, const std::string& suf
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
 {
-    if(!pluginIsLoaded(pluginPath))
+    const auto [foundPluginPath, isPluginLoaded] = this->isPluginLoaded(pluginPath);
+    if(!isPluginLoaded)
     {
-        const std::string msg = "Plugin not loaded: " + pluginPath;
-        msg_error("PluginManager::unloadPlugin()") << msg;
-        if (errlog) (*errlog) << msg << std::endl;
+        const std::string msg = "Trying to unload a plugin that was not already loaded: '" + pluginPath + "'";
+        msg_error("PluginManager") << msg;
+        if (errlog)
+        {
+            (*errlog) << msg << msgendl;
+        }
         return false;
     }
-    else
+
+    if (const auto it = m_pluginMap.find(foundPluginPath);
+        it != m_pluginMap.end())
     {
-        m_pluginMap.erase(m_pluginMap.find(pluginPath));
-        removeOnPluginLoadedCallback(pluginPath);
+        m_unloadedPlugins.insert(it->second.getModuleName());
+
+        m_pluginMap.erase(it);
+        removeOnPluginLoadedCallback(foundPluginPath);
+
         return true;
     }
+
+    //this should not happen
+    const std::string msg = "Trying to unload a plugin that is not found, even"
+                            " if it has been detected as loaded (probably a bug)"
+                            ": '" + pluginPath + "' (loaded path found: '"
+                            + foundPluginPath + "')";
+    msg_error("PluginManager") << msg;
+    if (errlog)
+    {
+        (*errlog) << msg << msgendl;
+    }
+    return false;
+}
+
+const std::unordered_set<std::string>& PluginManager::unloadedPlugins() const
+{
+    return m_unloadedPlugins;
+}
+
+bool PluginManager::isPluginUnloaded(const std::string& pluginName) const
+{
+    return m_unloadedPlugins.find(pluginName) != m_unloadedPlugins.end();
 }
 
 Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
@@ -420,7 +435,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     name  += suffix;
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
-    // First try: case sensitive
+    // First try: case-sensitive
     for (const auto & prefix : searchPaths)
     {
         const std::array<std::string, 4> paths = {
@@ -436,11 +451,11 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         }
     }
 
-    // Second try: case insensitive and recursive
+    // Second try: case-insensitive and recursive
     if (ignoreCase)
     {
         if(!recursive) maxRecursiveDepth = 0;
-        const std::string downcaseLibName = Utils::downcaseString(libName);
+        const std::string downcaseLibName = helper::downcaseString(libName);
 
         for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
         {
@@ -459,7 +474,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
-                    const std::string downcaseFilename = Utils::downcaseString(filename);
+                    const std::string downcaseFilename = helper::downcaseString(filename);
 
                     if (downcaseFilename == downcaseLibName)
                     {
@@ -481,7 +496,15 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
 bool PluginManager::pluginIsLoaded(const std::string& plugin)
 {
-    if (plugin.empty()) return false;
+    return isPluginLoaded(plugin).second;
+}
+
+std::pair<std::string, bool> PluginManager::isPluginLoaded(const std::string& plugin)
+{
+    if (plugin.empty())
+    {
+        return {plugin, false};
+    }
 
     std::string pluginPath;
 
@@ -495,22 +518,22 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
         {
             // path is invalid
             msg_error("PluginManager") << "Could not check if the plugin is loaded as the path is invalid: " << plugin;
-            return false;
+            return {plugin, false};
         }
 
         pluginPath = plugin;
 
-        // argument is a path but we need to check if it was not already loaded with a different path
+        // argument is a path, but we need to check if it was not already loaded with a different path
         const auto& pluginName = GetPluginNameFromPath(pluginPath);
         for (const auto& [loadedPath, loadedPlugin] : m_pluginMap)
         {
             if (pluginName == loadedPlugin.getModuleName() && pluginPath != loadedPath)
             {
                 // we did find a plugin with the same, but it does not have the same path...
-                msg_warning("PluginManager") << "This plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
+                msg_warning("PluginManager") << "The plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
                                              << "You tried to load: " << pluginPath << msgendl
                                              << "Already loaded: " << loadedPath;
-                return true;
+                return {loadedPath, true};
             }
         }
 
@@ -518,12 +541,11 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
     else
     {
         // plugin argument is a name
-        /// Here is the iteration in the loaded plugin map
-        for(auto k : m_pluginMap)
+        for(const auto& [loadedPath, loadedPlugin] : m_pluginMap)
         {
-            if(plugin == k.second.getModuleName())
+            if (plugin == loadedPlugin.getModuleName())
             {
-                return true;
+                return {loadedPath, true};
             }
         }
 
@@ -534,7 +556,8 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
 
     /// Check that the path (either provided by user or through the call to findPlugin()
     /// leads to a loaded plugin.
-    return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+    const bool isPluginPathInMap = m_pluginMap.find(pluginPath) != m_pluginMap.end();
+    return {pluginPath, isPluginPathInMap};
 }
 
 bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath)
@@ -551,6 +574,16 @@ bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::strin
     }
 
     return false;
+}
+
+auto PluginManager::registerPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog) -> PluginLoadStatus
+{
+    // The plugin is not known by SOFA (i.e the pluginManager was not used)
+    // - either it was never ever loaded (by SOFA or by the OS itself)
+    // - or it was loaded implicitly by the OS (static dependency)
+    
+    // If it was already loaded by the OS before, this will just update the pluginmanager's map
+    return loadPlugin(plugin, suffix, ignoreCase, recursive, errlog);
 }
 
 }

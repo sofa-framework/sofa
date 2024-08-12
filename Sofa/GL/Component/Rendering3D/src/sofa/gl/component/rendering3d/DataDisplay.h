@@ -52,7 +52,7 @@ public:
     Data<VecCellData> f_quadData; ///< Data associated with quads
     Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
-    Data<sofa::type::RGBAColor> f_colorNaN; ///< Color for NaNs
+    Data<sofa::type::RGBAColor> f_colorNaN; ///< Color used for NaN values (default=[0.0,0.0,0.0,1.0])
     Data<type::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
@@ -70,7 +70,7 @@ public:
 
     void init() override;
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
