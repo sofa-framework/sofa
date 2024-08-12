@@ -23,4 +23,4 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v24.12", "v24.12", "sofa/component/mechanicalload/Gravity.h")
+SOFA_HEADER_DISABLED("v24.12", "v24.12", "sofa/component/mechanicalload/Gravity.h")
