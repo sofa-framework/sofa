@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/component/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
@@ -50,7 +50,7 @@ class SOFA_GUI_COMPONENT_API SuturePointPerformer: public TInteractionPerformer<
 public:
     typedef typename DataTypes::Real Real;
     typedef sofa::component::solidmechanics::spring::LinearSpring<Real> Spring;
-    typedef sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes> SpringObjectType;
+    typedef sofa::component::solidmechanics::spring::SpringForceField<DataTypes> SpringObjectType;
     typedef sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes> FixObjectType;
 
     SuturePointPerformer(BaseMouseInteractor *i);
