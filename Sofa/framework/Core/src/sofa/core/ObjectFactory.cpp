@@ -263,7 +263,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                     possibleNames.emplace_back(k.first);
                 }
 
-                arg->logError("But the following exits:");
+                arg->logError("But the following object(s) exist:");
                 for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
                 {
                     arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
