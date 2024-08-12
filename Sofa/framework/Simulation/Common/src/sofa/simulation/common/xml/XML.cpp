@@ -246,26 +246,21 @@ BaseElement* loadFromFile(const char *filename)
     // decimal separator is a dot '.').
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-    // this initialize the library and check potential ABI mismatches
+    // this initializes the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared
     // library used.
-    tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument; // the resulting document tree
+    tinyxml2::XMLDocument doc; // the resulting document tree
 
     // xmlSubstituteEntitiesDefault(1);
 
-    if (doc->LoadFile(filename) != tinyxml2::XML_SUCCESS)
+    if (doc.LoadFile(filename) != tinyxml2::XML_SUCCESS)
     {
-        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc->ErrorStr() << " at line " << doc->ErrorLineNum();
-        delete doc;
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorStr() << " at line " << doc.ErrorLineNum();
         return nullptr;
     }
 
-    BaseElement* r = processXMLLoading(filename, *doc);
-    //dmsg_error("XML") << "clear doc";
-    doc->Clear();
-    //dmsg_error("XML") << "delete doc";
-    delete doc;
-    //dmsg_error("XML") << "<loadFromFile";
+    BaseElement* r = processXMLLoading(filename, doc);
+    doc.Clear();
     return r;
 }
 

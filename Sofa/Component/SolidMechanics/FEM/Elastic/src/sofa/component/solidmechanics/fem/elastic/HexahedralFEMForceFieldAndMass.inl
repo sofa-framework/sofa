@@ -54,13 +54,13 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    this->getContext()->get(this->_topology);
+    this->_topology = this->l_topology.get();
 
     if(this->_topology == nullptr)
     {
-        msg_error() << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology.";
+        msg_error() << "object must have a HexahedronSetTopology.";
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

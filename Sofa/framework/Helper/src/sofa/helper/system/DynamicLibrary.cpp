@@ -36,7 +36,7 @@ namespace sofa::helper::system
 
 
 DynamicLibrary::Handle::Handle(const std::string& filename, void *handle)
-    : m_realHandle(handle), m_filename(new std::string(filename))
+    : m_realHandle(handle), m_filename(std::make_shared<std::string>(filename))
 {
 }
 

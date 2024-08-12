@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -34,6 +36,7 @@ using sofa::helper::system::FileSystem;
 
 static std::string pluginAName = "TestPluginA";
 static std::string pluginBName = "TestPluginB";
+static std::string failingPluginName = "FailingPlugin";
 
 #ifdef NDEBUG
 static std::string pluginAFileName = "TestPluginA";
@@ -284,4 +287,53 @@ TEST_F(PluginManager_test, testPluginAAsDependencyOfPluginB)
     EXPECT_FALSE(p.getModuleDescription.func != nullptr);
     EXPECT_FALSE(p.getModuleComponentList.func != nullptr);
 
+}
+
+
+TEST_F(PluginManager_test, failingPlugin)
+{
+    std::string testModuleName = "FailingPlugin";
+    PluginManager&pm = PluginManager::getInstance();
+
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
+
+    EXPECT_EQ(pm.unloadedPlugins().find(failingPluginName), pm.unloadedPlugins().end());
+    EXPECT_FALSE(sofa::core::ObjectFactory::getInstance()->hasCreator("ComponentFailingPlugin"));
+    {
+        EXPECT_MSG_EMIT(Error); //because initialization will fail
+        pm.loadPluginByName(failingPluginName);
+    }
+    EXPECT_NE(pm.unloadedPlugins().find(failingPluginName), pm.unloadedPlugins().end());
+
+    const std::string pluginPath = pm.findPlugin(failingPluginName);
+    EXPECT_EQ(pm.getPluginMap().find(pluginPath), pm.getPluginMap().end());
+
+    EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator("ComponentFailingPlugin"));
+
+    sofa::core::objectmodel::BaseObjectDescription description("ComponentFailingPlugin", "ComponentFailingPlugin");
+    const auto tmpNode = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("tmp");
+    EXPECT_EQ(sofa::core::ObjectFactory::getInstance()->createObject(tmpNode.get(), &description), nullptr);
+
+    EXPECT_FALSE(description.getErrors().empty());
+    EXPECT_NE(std::find_if(description.getErrors().begin(), description.getErrors().end(),
+        [](const std::string& error)
+        {
+            return error.find(
+                "The object was previously registered, but the module that "
+                "registered the object has been unloaded, preventing the object creation.")
+            != std::string::npos;
+        }), description.getErrors().end());
+
+    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries, false);
+    EXPECT_NE(
+        std::find_if(entries.begin(), entries.end(), [](const auto& entry){ return entry->className == "ComponentFailingPlugin";}),
+        entries.end()
+    );
+
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries, true);
+    EXPECT_EQ(
+        std::find_if(entries.begin(), entries.end(), [](const auto& entry){ return entry->className == "ComponentFailingPlugin";}),
+        entries.end()
+    );
 }

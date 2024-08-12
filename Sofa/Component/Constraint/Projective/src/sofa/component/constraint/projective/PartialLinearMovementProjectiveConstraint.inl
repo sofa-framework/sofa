@@ -38,7 +38,7 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 PartialLinearMovementProjectiveConstraint<DataTypes>::PartialLinearMovementProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , data(new PartialLinearMovementProjectiveConstraintInternalData<DataTypes>)
+    , data(std::make_unique<PartialLinearMovementProjectiveConstraintInternalData<DataTypes>>())
     , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )
     , d_keyTimes(  initData(&d_keyTimes,"keyTimes","key times for the movements") )
     , d_keyMovements(  initData(&d_keyMovements,"movements","movements corresponding to the key times") )

@@ -210,7 +210,7 @@ sofa_find_package(Sofa.Topology REQUIRED)
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 # The default binary suffix for libraries/plugins is "_d" when using a debug build.

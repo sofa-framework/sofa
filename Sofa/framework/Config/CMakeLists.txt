@@ -100,7 +100,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOFACONFIG_BUILD_OPTIONS_SR
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 
@@ -166,8 +166,14 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 
     option(SOFA_ENABLE_THREAD_SANITIZER "Enable thread sanitizer (only gcc or clang)" OFF)
     if(SOFA_ENABLE_THREAD_SANITIZER)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=thread")
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=thread;-fno-omit-frame-pointer")
         list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=thread")
+    endif()
+
+    option(SOFA_ENABLE_MEMORY_SANITIZER "Enable memory sanitizer (only gcc or clang)" OFF)
+    if(SOFA_ENABLE_MEMORY_SANITIZER)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=address;-fno-omit-frame-pointer")
+        list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=address")
     endif()
 endif()
 

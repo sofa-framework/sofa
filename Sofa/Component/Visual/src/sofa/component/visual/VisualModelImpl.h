@@ -449,16 +449,14 @@ public:
     virtual void updateBuffers() {}
     virtual void deleteBuffers() {}
     virtual void deleteTextures() {}
-
-    void updateVisual() override;
+    
+    void doUpdateVisual(const core::visual::VisualParams*) override;
 
     void init() override;
     void initFromTopology();
     void initPositionFromVertices();
     void initFromFileMesh();
-
-    void initVisual() override;
-
+    
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them

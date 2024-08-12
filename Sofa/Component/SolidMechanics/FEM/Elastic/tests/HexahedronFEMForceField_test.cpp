@@ -90,7 +90,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
 
         // Set force parameters
         Inherited::force->d_poissonRatio.setValue(0);
-        Inherited::force->d_youngModulus.setValue(10);
+        Inherited::force->setYoungModulus(10);
         Inherited::force->setMethod(2); // small method
 
         // Init simulation

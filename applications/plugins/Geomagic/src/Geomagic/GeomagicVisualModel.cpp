@@ -122,8 +122,8 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         visualNode[i].visu->d_vtexcoords.setParent(&visualNode[i].loader->d_texCoords);
         
         visualNode[i].visu->init();
-        visualNode[i].visu->initVisual();
-        visualNode[i].visu->updateVisual();
+        visualNode[i].visu->initVisual(sofa::core::visual::visualparams::defaultInstance());
+        visualNode[i].visu->updateVisual(sofa::core::visual::visualparams::defaultInstance());
 
         // create the visual mapping and at it to the graph //
         visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::nonlinear::RigidMapping< Rigid3Types, Vec3Types > >();

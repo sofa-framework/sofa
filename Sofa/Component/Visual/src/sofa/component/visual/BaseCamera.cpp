@@ -824,14 +824,13 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
 
     BaseCameraXMLExportSingleParameter(root, d_position, "Vector of 3 reals (x, y, z)");
     BaseCameraXMLExportSingleParameter(root, d_orientation, "Quaternion (x, y, z, w)");
-    BaseCameraXMLExportSingleParameter(root, d_lookAt, "Vector of 3 reals (x, y, z)");
     BaseCameraXMLExportSingleParameter(root, d_fieldOfView, "Real");
     BaseCameraXMLExportSingleParameter(root, d_distance, "Real");
     BaseCameraXMLExportSingleParameter(root, d_zNear, "Real");
     BaseCameraXMLExportSingleParameter(root, d_zFar, "Real");
     BaseCameraXMLExportSingleParameter(root, d_type, "Int (0 -> Perspective, 1 -> Orthographic)");
 
-    return doc.SaveFile( viewFilename.c_str() );
+    return (doc.SaveFile(viewFilename.c_str()) == tinyxml2::XML_SUCCESS);
 }
 
 bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
@@ -896,7 +895,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     {
         BaseCameraXMLImportSingleParameter(root, d_position, this);
         BaseCameraXMLImportSingleParameter(root, d_orientation, this);
-        BaseCameraXMLImportSingleParameter(root, d_lookAt, this);
         BaseCameraXMLImportSingleParameter(root, d_fieldOfView, this);
         BaseCameraXMLImportSingleParameter(root, d_distance, this);
         BaseCameraXMLImportSingleParameter(root, d_zNear, this);

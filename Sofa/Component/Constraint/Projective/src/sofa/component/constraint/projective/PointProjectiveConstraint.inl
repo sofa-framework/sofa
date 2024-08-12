@@ -42,7 +42,7 @@ PointProjectiveConstraint<DataTypes>::PointProjectiveConstraint()
     , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new PointProjectiveConstraintInternalData<DataTypes>())    
+    , data(std::make_unique<PointProjectiveConstraintInternalData<DataTypes>>())
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -57,7 +57,6 @@ PointProjectiveConstraint<DataTypes>::PointProjectiveConstraint()
 template <class DataTypes>
 PointProjectiveConstraint<DataTypes>::~PointProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>

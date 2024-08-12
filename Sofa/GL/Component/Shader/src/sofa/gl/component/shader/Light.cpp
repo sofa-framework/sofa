@@ -183,7 +183,7 @@ void Light::init()
     }
 }
 
-void Light::initVisual()
+void Light::doInitVisual(const core::visual::VisualParams* vparams)
 {
     //init Shadow part
     computeShadowMapSize();
@@ -204,14 +204,14 @@ void Light::initVisual()
     m_depthShader->vertFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,true);
     m_depthShader->fragFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER,true);
     m_depthShader->init();
-    m_depthShader->initVisual();
+    m_depthShader->initVisual(vparams);
     m_blurShader->vertFilename.addPath(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER,true);
     m_blurShader->fragFilename.addPath(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER,true);
     m_blurShader->init();
-    m_blurShader->initVisual();
+    m_blurShader->initVisual(vparams);
 }
 
-void Light::updateVisual()
+void Light::doUpdateVisual(const core::visual::VisualParams*)
 {
     if (!b_needUpdate) return;
     computeShadowMapSize();
@@ -223,10 +223,10 @@ void Light::reinit()
     b_needUpdate = true;
 }
 
-void Light::drawLight()
+void Light::drawLight(const core::visual::VisualParams* vparams)
 {
     if (b_needUpdate)
-        updateVisual();
+        updateVisual(vparams);
     glLightf(GL_LIGHT0+m_lightID, GL_SPOT_CUTOFF, 180.0);
     const GLfloat c[4] = { (GLfloat)d_color.getValue()[0], (GLfloat)d_color.getValue()[1], (GLfloat)d_color.getValue()[2], 1.0 };
     glLightfv(GL_LIGHT0+m_lightID, GL_AMBIENT, c);
@@ -236,10 +236,10 @@ void Light::drawLight()
 
 }
 
-void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
+void Light::preDrawShadow(core::visual::VisualParams* vp)
 {
     if (b_needUpdate)
-        updateVisual();
+        updateVisual(vp);
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -407,9 +407,9 @@ DirectionalLight::~DirectionalLight()
 
 }
 
-void DirectionalLight::drawLight()
+void DirectionalLight::drawLight(const core::visual::VisualParams* vparams)
 {
-    Light::drawLight();
+    Light::drawLight(vparams);
     GLfloat dir[4];
 
     dir[0]=(GLfloat)(d_direction.getValue()[0]);
@@ -612,9 +612,9 @@ PositionalLight::~PositionalLight()
 
 }
 
-void PositionalLight::drawLight()
+void PositionalLight::drawLight(const core::visual::VisualParams* vparams)
 {
-    Light::drawLight();
+    Light::drawLight(vparams);
 
     GLfloat pos[4];
     pos[0]=(GLfloat)(d_position.getValue()[0]);
@@ -682,9 +682,9 @@ SpotLight::~SpotLight()
 
 }
 
-void SpotLight::drawLight()
+void SpotLight::drawLight(const core::visual::VisualParams* vparams)
 {
-    PositionalLight::drawLight();
+    PositionalLight::drawLight(vparams);
     type::Vec3 d = d_direction.getValue();
     if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();

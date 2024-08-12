@@ -29,7 +29,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>
-class BaseLinearElasticityFEMForceField : public core::behavior::ForceField<DataTypes>
+class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>
 {
 public:
     using Coord = typename DataTypes::Coord;
@@ -44,15 +44,10 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
-    static inline const VecReal defaultYoungModulusValue = []()
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = 5000;
-        return newY;
-    }();
+    static VecReal GetDefaultYoungModulusValue();
 
     BaseLinearElasticityFEMForceField();
+    void init() override;
 
     void setPoissonRatio(Real val);
     void setYoungModulus(Real val);

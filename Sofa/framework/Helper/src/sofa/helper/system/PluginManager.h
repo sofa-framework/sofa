@@ -29,7 +29,7 @@
 #include <map>
 #include <memory>
 #include <functional>
-
+#include <unordered_set>
 #include <sofa/type/vector.h>
 
 namespace sofa::helper::system
@@ -188,7 +188,7 @@ public:
     /// - If not registered and not loaded in memory, it will load the plugin in memory, call entrypoints and register into the map
     /// @param plugin Can be just the filename of the library to load (without extension) or the full path
     /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds and is empty otherwise.
-    /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
+    /// @param ignoreCase Specify if the plugin search should be case-insensitive (activated by default).
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
     PluginLoadStatus loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
@@ -201,7 +201,7 @@ public:
     /// Loads a plugin library in process memory. 
     /// @param pluginName The filename without extension of the plugin to load
     /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds, empty otherwise.
-    /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
+    /// @param ignoreCase Specify if the plugin search should be case-insensitive (activated by default).
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
     PluginLoadStatus loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
@@ -213,12 +213,27 @@ public:
     /// Register a plugin. Merely an alias for loadPlugin()
     PluginLoadStatus registerPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
 
+    [[nodiscard]] const std::unordered_set<std::string>& unloadedPlugins() const;
+
+    [[nodiscard]] bool isPluginUnloaded(const std::string& pluginName) const;
+
     void init();
     void init(const std::string& pluginPath);
     void cleanup();
 
     std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 3);
     bool pluginIsLoaded(const std::string& plugin);
+
+    /**
+     * Determine if a plugin name or plugin path is known from the plugin
+     * manager (i.e. has been loaded by the plugin manager) with the found path.
+     * @param plugin A path to a plugin or a plugin name
+     * @return A pair consisting of the found plugin path (or the plugin path
+     * that was last tried) and a bool value set to true if the plugin has been
+     * found in the plugin registration map
+     */
+    std::pair<std::string, bool> isPluginLoaded(const std::string& plugin);
+
     bool checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
@@ -234,7 +249,7 @@ public:
 
     Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
     Plugin* getPluginByName(const std::string& pluginName);
-    
+
     template <typename Entry>
     bool getEntryFromPlugin(const Plugin* plugin, Entry& entry)
     {
@@ -264,6 +279,9 @@ private:
     PluginMap m_pluginMap;
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
     std::map<std::string, std::function<void()>> m_onPluginCleanupCallbacks;
+
+    // contains the list of plugin names that were unloaded
+    std::unordered_set<std::string> m_unloadedPlugins;
 };
 
 
