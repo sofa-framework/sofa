@@ -164,18 +164,14 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
     Mass<DataTypes>::init();
 
-    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
-    
-    if(mstate==nullptr)
-    {
-        msg_warning(this) << "Missing mechanical state. \n"
-                             "UniformMass need to be used with an object also having a MechanicalState. \n"
-                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
-                             " containing this <UniformMass/>";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
+    if(!this->isComponentStateValid())
         return;
-    }
 
+
+    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+        
+    /// Check filename
     if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
     {
         loadRigidMass(d_filenameMass.getFullPath()) ;
