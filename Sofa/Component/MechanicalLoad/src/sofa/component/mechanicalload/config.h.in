@@ -51,7 +51,7 @@ namespace sofa::component::mechanicalload
 #else
 #define SOFA_ATTRIBUTE_DISABLED__CONSTANTFF_FORCE_DATA() \
     SOFA_ATTRIBUTE_DISABLED( \
-    "v23.12 (PR#XXXX)", "v24.06",\
+    "v23.12 (PR#4019)", "v24.06",\
     "The \'force\' data is no longer used, please use the \'forces\' vector instead (with size = 1).")
 #endif
 
