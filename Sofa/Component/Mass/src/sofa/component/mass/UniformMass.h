@@ -78,11 +78,11 @@ public:
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     /// Enumeration specifying which data was used for initialization
-    enum InitMethod {
-        totalMass,
-        vertexMass
+    enum class InitMethod {
+        TOTALMASS = 0,
+        VERTEXMASS
     };
-    InitMethod m_initMethod = totalMass;
+    InitMethod m_initMethod = InitMethod::TOTALMASS;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

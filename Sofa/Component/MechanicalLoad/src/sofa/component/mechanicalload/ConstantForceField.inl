@@ -58,12 +58,12 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces, &d_indices}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == forcesVector)
+        if(m_initMethod == InitMethod::FORCESVECTOR)
         {
             msg_info() << "dataInternalUpdate: data forces has changed";
             return updateFromForcesVector();
         }
-        else if(m_initMethod == totalForce)
+        else if(m_initMethod == InitMethod::TOTALFORCE)
         {
             msg_info() << "totalForce data is initially used, the callback associated with the forces vector is skipped";
             return updateFromTotalForce();
@@ -72,12 +72,12 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce, &d_indices}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == totalForce)
+        if(m_initMethod == InitMethod::TOTALFORCE)
         {
             msg_info() << "dataInternalUpdate: data totalForce has changed";
             return updateFromTotalForce();
         }
-        else if(m_initMethod == forcesVector)
+        else if(m_initMethod == InitMethod::FORCESVECTOR)
         {
             msg_info() << "forces data is initially used, the callback associated with the totalForce is skipped";
             return updateFromForcesVector();
@@ -125,14 +125,14 @@ void ConstantForceField<DataTypes>::init()
                          << "Vector \'forces\' is used. Please set only one force input to remove this warning";
         }
 
-        m_initMethod = forcesVector;
+        m_initMethod = InitMethod::FORCESVECTOR;
         d_totalForce.setReadOnly(true);
 
         msg_info() << "Input vector forces is used for initialization";
     }
     else if (d_totalForce.isSet())
     {
-        m_initMethod = totalForce;
+        m_initMethod = InitMethod::TOTALFORCE;
         d_forces.setReadOnly(true);
 
         msg_info() << "Input totalForce is used for initialization";
@@ -409,11 +409,11 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
     if(!this->isComponentStateValid())
         return;
 
-    if(m_initMethod == totalForce)
+    if(m_initMethod == InitMethod::TOTALFORCE)
     {
         msg_warning() << "\'forces\' vector is modified using setForce() while totalMass is initially used. "
                       << "Now the 'forces\' vector is used.";
-        m_initMethod = forcesVector;
+        m_initMethod = InitMethod::FORCESVECTOR;
     }
 
     auto indices = sofa::helper::getWriteAccessor(d_indices);

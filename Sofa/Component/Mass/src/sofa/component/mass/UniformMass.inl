@@ -82,12 +82,12 @@ UniformMass<DataTypes>::UniformMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == totalMass)
+        if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "dataInternalUpdate: data totalMass has changed";
             return updateFromTotalMass();
         }
-        else if(m_initMethod == vertexMass)
+        else if(m_initMethod == InitMethod::VERTEXMASS)
         {
             msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
             return updateFromVertexMass();
@@ -97,12 +97,12 @@ UniformMass<DataTypes>::UniformMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == vertexMass)
+        if(m_initMethod == InitMethod::VERTEXMASS)
         {
             msg_info() << "dataInternalUpdate: data vertexMass has changed";
             return updateFromVertexMass();
         }
-        else if(m_initMethod == totalMass)
+        else if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
             return updateFromTotalMass();
@@ -239,12 +239,12 @@ void UniformMass<DataTypes>::initDefaultImpl()
                                  "vertexMass = totalMass / nb_dofs. \n"
                                  "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
 
-            m_initMethod = totalMass;
+            m_initMethod = InitMethod::TOTALMASS;
             d_vertexMass.setReadOnly(true);
         }
         else
         {
-            m_initMethod = vertexMass;
+            m_initMethod = InitMethod::VERTEXMASS;
             d_totalMass.setReadOnly(true);
 
             msg_info() << "Input vertexMass is used for initialization";
@@ -252,7 +252,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
     else if (d_totalMass.isSet())
     {
-        m_initMethod = totalMass;
+        m_initMethod = InitMethod::TOTALMASS;
         d_vertexMass.setReadOnly(true);
 
         msg_info() << "Input totalForce is used for initialization";
