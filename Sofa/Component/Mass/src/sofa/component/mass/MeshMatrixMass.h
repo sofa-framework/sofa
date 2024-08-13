@@ -131,7 +131,8 @@ protected:
 
     sofa::geometry::ElementType checkTopology();
     void initTopologyHandlers(sofa::geometry::ElementType topologyType);
-    void massInitialization();
+    void massInitializationMethod();
+    void printInitializationOuput();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType, GeometricalTypes> data;

@@ -1025,11 +1025,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 
     m_massLumpingCoeff = 0.0;
 
-    Inherited::init();
-
     /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
-    if(!this->isComponentStateValid())
-        return;
+    sofa::core::behavior::Mass<DataTypes>::init();
+
+
+    /// Check which input data isSet() to define mass initialization
+    massInitializationMethod();
+
 
     /// Check link to topology
     const geometry::ElementType topoType = checkTopology();
@@ -1039,11 +1041,20 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
         return;
     }
 
+    /// Set the type of topology on which the mass is integrated
     setMassTopologyType(topoType);
 
+    /// Initialize all data structures and mass vectors according to the topology type
     initTopologyHandlers(topoType);
 
-    massInitialization();
+    /// Print mass initialization information
+    printInitializationOuput();
+
+
+    /// Trigger callbacks to update data (see constructor)
+    if(!this->isComponentStateValid())
+        msg_error() << "Initialization process is invalid";
+
 
     //Reset the graph
     f_graph.beginEdit()->clear();
@@ -1052,12 +1063,50 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
     //Function for GPU-CUDA version only
     this->copyVertexMass();
 
-    // Adding callback warning in case d_lumping data is modified after init()
+    /// Adding callback warning in case d_lumping data is modified after init()
     sofa::core::objectmodel::Base::addUpdateCallback("updateLumping", {&d_lumping}, [this](const core::DataTracker& )
     {
         msg_error() << "Data \'lumping\' should not be modified after the component initialization";
         return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
+}
+
+
+template <class DataTypes, class GeometricalTypes>
+void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitializationMethod()
+{
+    /// Check which data is set to define initialization method
+    if( d_massDensity.isSet() || d_totalMass.isSet() )
+    {
+        //totalMass data has priority over massDensity
+        if (d_totalMass.isSet())
+        {
+            if(d_massDensity.isSet())
+            {
+                msg_warning(this) << "totalMass value overriding other mass information (massDensity).\n"
+                                  << "To remove this warning you need to define only one single input data for mass initialization";
+            }
+            m_initMethod = totalMass;
+            d_vertexMass.setReadOnly(true);
+            d_edgeMass.setReadOnly(true);
+            d_massDensity.setReadOnly(true);
+        }
+        //massDensity is subsequently considered
+        else if(d_massDensity.isSet())
+        {
+            m_initMethod = massDensity;
+            d_vertexMass.setReadOnly(true);
+            d_edgeMass.setReadOnly(true);
+            d_totalMass.setReadOnly(true);
+        }
+    }
+    // if no mass information provided
+    else
+    {
+        msg_error() << "No mass information is given as input, please set totalMass or massDensity";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 
@@ -1291,55 +1340,15 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initTopologyHandlers(sofa::geo
     }
 }
 
-template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitialization()
-{
-    /// Mass initialization process
-    if( d_massDensity.isSet() || d_totalMass.isSet() )
-        {
-        //totalMass data has priority over massDensity, vertexMass, edgeMass
-        if (d_totalMass.isSet())
-        {
-            if(d_vertexMass.isSet() || d_massDensity.isSet())
-            {
-                msg_warning(this) << "totalMass value overriding other mass information (vertexMass or massDensity).\n"
-                                  << "To remove this warning you need to define only one single mass information data field";
-            }
-            m_initMethod = totalMass;
-            d_vertexMass.setReadOnly(true);
-            d_edgeMass.setReadOnly(true);
-            d_massDensity.setReadOnly(true);
-        }
-        //massDensity is secondly considered
-        else if(d_massDensity.isSet())
-        {
-            if(d_vertexMass.isSet())
-            {
-                msg_warning(this) << "massDensity value overriding the value of the attribute vertexMass.\n"
-                                  << "To remove this warning you need to set either vertexMass or massDensity data field, but not both";
-            }
-            m_initMethod = massDensity;
-            d_vertexMass.setReadOnly(true);
-            d_edgeMass.setReadOnly(true);
-            d_totalMass.setReadOnly(true);
-        }
-    }
-    // if no mass information provided
-    else
-    {
-        msg_error() << "No mass information is given as input, please set totalMass or massDensity";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
 
+template <class DataTypes, class GeometricalTypes>
+void MeshMatrixMass<DataTypes, GeometricalTypes>::printInitializationOuput()
+{
+    /// Print mass initialization method
     if(m_initMethod == totalMass)
         msg_info() << "totalMass INIT";
     if(m_initMethod == massDensity)
         msg_info() << "massDensity INIT";
-
-    /// Trigger callbacks to update data (see constructor)
-    if(!this->isComponentStateValid())
-        msg_error() << "Initialization process is invalid";
 
     /// Info post-init
     printMass();
