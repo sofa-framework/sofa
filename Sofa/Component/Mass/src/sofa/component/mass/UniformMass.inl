@@ -82,12 +82,12 @@ UniformMass<DataTypes>::UniformMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
     {
-        if(m_isTotalMassUsed)
+        if(m_initMethod == totalMass)
         {
             msg_info() << "dataInternalUpdate: data totalMass has changed";
             return updateFromTotalMass();
         }
-        else
+        else if(m_initMethod == vertexMass)
         {
             msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
             return updateFromVertexMass();
@@ -97,12 +97,12 @@ UniformMass<DataTypes>::UniformMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass}, [this](const core::DataTracker& )
     {
-        if(!m_isTotalMassUsed)
+        if(m_initMethod == vertexMass)
         {
             msg_info() << "dataInternalUpdate: data vertexMass has changed";
             return updateFromVertexMass();
         }
-        else
+        else if(m_initMethod == totalMass)
         {
             msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
             return updateFromTotalMass();
@@ -162,14 +162,10 @@ void UniformMass<DataTypes>::initDefaultImpl()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-    Mass<DataTypes>::init();
 
     /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
-    if(!this->isComponentStateValid())
-        return;
+    Mass<DataTypes>::init();
 
-
-    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
         
     /// Check filename
     if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
@@ -179,6 +175,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
 
     /// Check indices
+    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
     //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
@@ -233,7 +230,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
 
 
-    /// Check on data isSet()
+    /// Check which input data isSet() to define mass initialization
     if (d_vertexMass.isSet())
     {
         if(d_totalMass.isSet())
@@ -242,12 +239,12 @@ void UniformMass<DataTypes>::initDefaultImpl()
                                  "vertexMass = totalMass / nb_dofs. \n"
                                  "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
 
-            m_isTotalMassUsed = true;
+            m_initMethod = totalMass;
             d_vertexMass.setReadOnly(true);
         }
         else
         {
-            m_isTotalMassUsed = false;
+            m_initMethod = vertexMass;
             d_totalMass.setReadOnly(true);
 
             msg_info() << "Input vertexMass is used for initialization";
@@ -255,7 +252,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
     else if (d_totalMass.isSet())
     {
-        m_isTotalMassUsed = true;
+        m_initMethod = totalMass;
         d_vertexMass.setReadOnly(true);
 
         msg_info() << "Input totalForce is used for initialization";
@@ -276,6 +273,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     /// Trigger callbacks to update data (see constructor)
     if(!this->isComponentStateValid())
         msg_error() << "Initialization process is invalid";
+
 
     /// Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " | "
