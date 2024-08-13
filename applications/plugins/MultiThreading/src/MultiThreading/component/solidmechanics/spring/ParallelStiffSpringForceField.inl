@@ -22,5 +22,5 @@
 #pragma once
 #include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.inl>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/solidmechanics/spring/ParallelSpringForceField.inl")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/solidmechanics/spring/ParallelSpringForceField.inl")
 

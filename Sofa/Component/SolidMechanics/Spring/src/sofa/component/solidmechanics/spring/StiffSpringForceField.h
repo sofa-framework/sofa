@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "sofa/component/solidmechanics/spring/SpringForceField.h")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/solidmechanics/spring/SpringForceField.h")
 
 namespace sofa::component::solidmechanics::spring
 {

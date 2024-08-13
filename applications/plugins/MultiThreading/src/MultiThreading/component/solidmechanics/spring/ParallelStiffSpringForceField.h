@@ -22,7 +22,7 @@
 #pragma once
 #include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h")
+SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h")
 
 namespace multithreading::component::solidmechanics::spring
 {
