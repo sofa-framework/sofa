@@ -21,12 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/config.h>
-
-SOFA_DEPRECATED_HEADER("v23.12", "v24.06", "sofa/component/mass/MeshMatrixMass.h")
-
-#include <sofa/component/mass/config.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 
+SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/mass/MeshMatrixMass.h")
+
+#include <sofa/component/mass/config.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -39,6 +38,7 @@ SOFA_DEPRECATED_HEADER("v23.12", "v24.06", "sofa/component/mass/MeshMatrixMass.h
 #include <sofa/component/mass/RigidMassType.h>
 
 #include <type_traits>
+#include <string>
 
 namespace sofa::component::mass
 {
@@ -61,6 +61,21 @@ protected:
     DiagonalMass()
     {
         this->d_lumping.setValue(true);
+    }
+
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        typedef sofa::component::mass::MeshMatrixMass<DataTypes> Inherited;
+
+        const char* prefix = "Rigid";
+
+        if (strncmp(arg->getAttribute("template"), prefix, std::strlen(prefix)) == 0)
+        {
+            msg_warning() << "DiagonalMass templated on Rigid types has been removed since #3912. "
+                             "For rigid bodies, UniformMass should be prefered";
+        }
+
+        Inherited::parse(arg);
     }
 };
 
