@@ -41,97 +41,11 @@ int FixedProjectiveConstraintClass = core::RegisterObject("Attach given particle
         .add< FixedProjectiveConstraint<Rigid2Types> >()
         ;
 
-
-// methods specilizations declaration
-template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
-void FixedProjectiveConstraint<defaulttype::Rigid3Types >::draw(const core::visual::VisualParams* vparams);
-template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
-void FixedProjectiveConstraint<defaulttype::Rigid2Types >::draw(const core::visual::VisualParams* vparams);
-
-
-
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec2Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec1Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec6Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Rigid3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Rigid2Types>;
-
-
-
-// methods specilizations definition
-template <>
-void FixedProjectiveConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparams)
-{
-    if (this->d_componentState.getValue() != ComponentState::Valid) return;
-    if (!d_showObject.getValue()) return;
-    if (!this->isActive()) return;
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-    const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    std::vector< type::Vec3 > points;
-
-    if (d_fixAll.getValue())
-    {
-        for (unsigned i = 0; i < x.size(); i++)
-            points.push_back(x[i].getCenter());
-    }
-    else
-    {
-        if( x.size() < indices.size() )
-        {
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[indices[i]].getCenter());
-        }
-        else
-        {
-            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                points.push_back(x[*it].getCenter());
-        }
-    }
-
-    if( d_drawSize.getValue() == 0) // old classical drawing by points
-        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
-    else
-        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
-
-
-}
-
-template <>
-void FixedProjectiveConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparams)
-{
-    if (this->d_componentState.getValue() != ComponentState::Valid) return;
-    if (!d_showObject.getValue()) return;
-    if (!this->isActive()) return;
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-    const SetIndexArray& indices = d_indices.getValue();
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    vparams->drawTool()->setLightingEnabled(false);
-    constexpr sofa::type::RGBAColor color (1,0.5,0.5,1);
-    std::vector<sofa::type::Vec3> vertices;
-
-    if(d_fixAll.getValue())
-    {
-        for (unsigned i=0; i<x.size(); i++ )
-            vertices.emplace_back(x[i].getCenter()[0], x[i].getCenter()[1], 0.0);
-    }
-    else
-    {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            vertices.emplace_back(x[*it].getCenter()[0], x[*it].getCenter()[1], 0.0);
-    }
-
-    vparams->drawTool()->drawPoints(vertices, 10, color);
-
-}
 
 } // namespace sofa::component::constraint::projective

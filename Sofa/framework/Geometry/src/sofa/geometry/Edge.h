@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/geometry/ElementType.h>
 #include <sofa/type/Vec.h>
 #include <cmath>
 #include <numeric>
@@ -35,6 +36,7 @@ namespace sofa::geometry
 struct Edge
 {
     static constexpr sofa::Size NumberOfNodes = 2;
+    static constexpr ElementType Element_type = ElementType::EDGE;
 
     Edge() = delete;
 
@@ -216,7 +218,7 @@ struct Edge
     * @tparam   T scalar
     * @param	pA, pB nodes of the first edge
     * @param	pC, pD nodes of the second edge
-    * @param    intersection node will be filled if there is an intersection otherwise will return std::numeric_limits<T>::min()
+    * @param    intersectionBaryCoord barycentric coordinates of the intersection point expressed as alpa * pA + beta * pB if there is an intersection ,  node will be filled if there is an intersection otherwise will return [0, 0]
     * @return	bool true if there is an intersection, otherwise false
     */
     template<typename Node,
@@ -224,7 +226,7 @@ struct Edge
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
         [[nodiscard]]
-    static constexpr bool intersectionWithEdge(const Node& pA, const Node& pB, const Node& pC, const Node& pD, Node& intersection)
+    static constexpr bool intersectionWithEdge(const Node& pA, const Node& pB, const Node& pC, const Node& pD, sofa::type::Vec<2, T>& intersectionBaryCoord)
     {
         // The 2 segment equations using pX on edge1 and pY on edge2 can be defined by:
         // pX = pA + alpha (pB - pA)
@@ -243,7 +245,7 @@ struct Edge
             
             if (alphaDenom < std::numeric_limits<T>::epsilon()) // collinear
             {
-                intersection = sofa::type::Vec<2, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
+                intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
             
@@ -251,12 +253,12 @@ struct Edge
 
             if (alpha < 0 || alpha > 1)
             {
-                intersection = sofa::type::Vec<2, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
+                intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
             else
             {
-                intersection = pA + alpha * AB;
+                intersectionBaryCoord = sofa::type::Vec<2, T>(1-alpha, alpha);
                 return true;
             }
         }
@@ -286,7 +288,7 @@ struct Edge
 
             if (alphaDenom < std::numeric_limits<T>::epsilon()) // alpha == inf, not sure what it means geometrically, colinear?
             {
-                intersection = sofa::type::Vec<3, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
+                intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
 
@@ -300,12 +302,12 @@ struct Edge
                 || alpha > 1 || beta > 1 // if alpha > 1 means intersection but after outside from [AB]
                 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) // if pY and pX are not se same means no intersection.
             {
-                intersection = sofa::type::Vec<3, T>(std::numeric_limits<T>::min(), std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
+                intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
             else
             {
-                intersection = pX;
+                intersectionBaryCoord = sofa::type::Vec<2, T>(1-alpha, alpha);
                 return true;
             }
         }

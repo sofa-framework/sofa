@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Mapping.Linear LANGUAGES CXX)
 
 set(SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR "src/sofa/component/mapping/linear")
@@ -47,6 +47,7 @@ set(HEADER_FILES
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/IdentityMapping.inl
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/IdentityMultiMapping.h
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/IdentityMultiMapping.inl
+    ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/LinearMapping.h
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/LineSetSkinningMapping.h
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/LineSetSkinningMapping.inl
     ${SOFACOMPONENTMAPPINGLINEAR_SOURCE_DIR}/Mesh2PointMechanicalMapping.h

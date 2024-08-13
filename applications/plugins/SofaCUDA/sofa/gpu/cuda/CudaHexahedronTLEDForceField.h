@@ -67,13 +67,8 @@ Year = {2009}                                                                   
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -97,10 +92,10 @@ public:
     float Lambda, Mu;                       // Lame coefficients
 
     // TLED configuration
-    Data<Real> timestep;                    ///< time step of the simulation
-    Data<unsigned int> isViscoelastic;      ///< flag = 1 to enable viscoelasticity
-    Data<unsigned int> isAnisotropic;       ///< flag = 1 to enable transverse isotropy
-    Data<Vec3f> preferredDirection;         ///< uniform preferred direction for transverse isotropy
+    Data<Real> timestep; ///< Simulation timestep
+    Data<unsigned int> isViscoelastic; ///< Viscoelasticity flag
+    Data<unsigned int> isAnisotropic; ///< Anisotropy flag
+    Data<Vec3f> preferredDirection; ///< Transverse isotropy direction
 
     CudaHexahedronTLEDForceField();
     virtual ~CudaHexahedronTLEDForceField();
@@ -164,10 +159,7 @@ protected:
     float4* m_device_F7 { nullptr };
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif

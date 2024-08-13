@@ -33,9 +33,9 @@ int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button conf
         ;
 
 AttachBodyButtonSetting::AttachBodyButtonSetting():
-    stiffness(initData(&stiffness, 1000.0_sreal, "stiffness", "Stiffness of the spring to attach a particule"))
-    , arrowSize(initData(&arrowSize, 0.0_sreal, "arrowSize", "Size of the drawn spring: if >0 an arrow will be drawn"))
-    , showFactorSize(initData(&showFactorSize, 1.0_sreal, "showFactorSize", "Show factor size of the JointSpringForcefield  when interacting with rigids"))
+    d_stiffness(initData(&d_stiffness, 1000.0_sreal, "stiffness", "Stiffness of the spring to attach a particule"))
+    , d_arrowSize(initData(&d_arrowSize, 0.0_sreal, "arrowSize", "Size of the drawn spring: if >0 an arrow will be drawn"))
+    , d_showFactorSize(initData(&d_showFactorSize, 1.0_sreal, "showFactorSize", "Show factor size of the JointSpringForcefield  when interacting with rigids"))
 {
 }
 

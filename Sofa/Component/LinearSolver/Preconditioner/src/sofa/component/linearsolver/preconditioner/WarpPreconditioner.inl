@@ -44,7 +44,7 @@ namespace sofa::component::linearsolver::preconditioner
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to build the warp conditioner"))
-    , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    , d_useRotationFinder(initData(&d_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
     , d_updateStep(initData(&d_updateStep, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
 {
     rotationWork[0] = nullptr;
@@ -52,6 +52,8 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
 
     first = true;
     indexwork = 0;
+
+    f_useRotationFinder.setParent(&d_useRotationFinder);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
@@ -160,14 +162,14 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
 
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
+        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
         if (l_linearSolver.get()->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
 
         if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
 
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
+        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
         this->l_linearSystem->resizeSystem(updateSystemSize);
         this->l_linearSystem->getSystemMatrix()->setIdentity(); // identity rotationa after update
@@ -181,7 +183,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
 
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
+        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
         if (l_linearSolver.get()->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
 
@@ -194,7 +196,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         this->l_linearSystem->resizeSystem(currentSystemSize);
         this->l_linearSystem->getSystemMatrix()->clear();
 
-        rotationFinders[f_useRotationFinder.getValue()]->getRotations(this->l_linearSystem->getSystemMatrix());
+        rotationFinders[d_useRotationFinder.getValue()]->getRotations(this->l_linearSystem->getSystemMatrix());
 
         this->l_linearSystem->getSystemMatrix()->opMulTM(this->l_linearSystem->getSystemMatrix(),rotationWork[indexwork]);
     }

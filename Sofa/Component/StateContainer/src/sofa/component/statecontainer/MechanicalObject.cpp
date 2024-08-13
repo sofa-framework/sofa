@@ -23,24 +23,14 @@
 
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 #include <sofa/type/Quat.h>
-#include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::statecontainer
 {
 
 using namespace core::behavior;
 using namespace defaulttype;
-
-int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
-        .add< MechanicalObject<Vec3Types> >(true) // default template
-        .add< MechanicalObject<Vec2Types> >()
-        .add< MechanicalObject<Vec1Types> >()
-        .add< MechanicalObject<Vec6Types> >()
-        .add< MechanicalObject<Rigid3Types> >()
-        .add< MechanicalObject<Rigid2Types> >()
-
-        ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
@@ -51,20 +41,26 @@ template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec6Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid3Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
 
-
-
-
-
+void registerMechanicalObject(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("mechanical state vectors")
+        .add< MechanicalObject<Vec3Types> >(true) // default template
+        .add< MechanicalObject<Vec2Types> >()
+        .add< MechanicalObject<Vec1Types> >()
+        .add< MechanicalObject<Vec6Types> >()
+        .add< MechanicalObject<Rigid3Types> >()
+        .add< MechanicalObject<Rigid2Types> >());
+}
 
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
 
-    for (unsigned int i = 0; i < x.size(); i++)
+    for (RigidCoord<3, SReal>& xi : x)
     {
-        x[i].getCenter() = q.rotate(x[i].getCenter());
-        x[i].getOrientation() = q * x[i].getOrientation();
+        xi.getCenter() = q.rotate(xi.getCenter());
+        xi.getOrientation() = q * xi.getOrientation();
     }
 }
 

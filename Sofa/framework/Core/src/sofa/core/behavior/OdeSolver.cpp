@@ -24,13 +24,8 @@
 #include <cmath>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 OdeSolver::OdeSolver()
@@ -61,9 +56,9 @@ bool OdeSolver::removeInNode( objectmodel::BaseNode* node )
 }
 
 
-} // namespace behavior
+} // namespace sofa::core::behavior
 
-} // namespace core
 
-} // namespace sofa
+
+
 

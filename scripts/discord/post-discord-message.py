@@ -18,16 +18,19 @@ data = {
     "username" : bot_name
 }
 
-#leave this out if you dont want an embed
-data["embeds"] = [
-    {
-        "description" : embeds_description,
-        "title" : embeds_title,
-        "type" : "rich",
-        "url" : embeds_url,
-        "color" : "15224347"
-    }
-]
+# Check whether an embed is expected. If not (empty title), enforce no embed using the "flag"
+if embeds_title == "":
+    data["flags"] = 4
+else:
+    data["embeds"] = [
+        {
+            "description" : embeds_description,
+            "title" : embeds_title,
+            "type" : "rich",
+            "url" : embeds_url,
+            "color" : "15224347"
+        }
+    ]
 
 # Send message to Discord
 response = requests.post(discord_token, json=data)

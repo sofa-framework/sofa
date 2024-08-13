@@ -40,10 +40,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 // Empty class to be used to highlight deprecated objects in SofaCUDA plugin at compilation time.
@@ -62,19 +60,7 @@ struct DataTypeInfoManager
 };
 
 template<class T>
-class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
-{
-public :
-    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
-    typedef size_t Size;
-
-    CudaVector() : Inherit() {}
-
-    CudaVector(Size n) : Inherit(n) {}
-
-    CudaVector(const Inherit& v) : Inherit(v) {}
-
-};
+using CudaVector = type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class CudaVectorTypes
@@ -886,9 +872,8 @@ inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::type:
     return r;
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 // Overload helper::ReadAccessor and helper::WriteAccessor on CudaVector
 
@@ -992,10 +977,8 @@ public:
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class T>
@@ -1020,9 +1003,8 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 
 /// \endcond
 
-} // namespace defaulttype
+} // namespace sofa::defaulttype
 
-} // namespace sofa
 
 // define MassType for CudaTypes
 namespace sofa::component::mass

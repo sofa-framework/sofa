@@ -135,7 +135,7 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
+    Data<bool> d_bothSide; ///< activate collision on both side of the triangle model
     Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
     Data<bool> d_useCurvature; ///< use the curvature of the mesh to avoid some self-intersection test
     

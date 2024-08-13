@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(ArticulatedSystemPlugin VERSION 1.0 LANGUAGES CXX)
 
 set(ARTICULATEDSYSTEMPLUGIN_SRC_DIR src/ArticulatedSystemPlugin)

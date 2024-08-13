@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
 #include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa::component::linearsolver::direct
@@ -28,7 +29,6 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -46,19 +46,33 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+template<class EigenSolverFactory, class Scalar>
+void registerOrderingMethods()
+{
+    EigenSolverFactory::template registerSolver<Eigen::AMDOrdering<int>, Scalar >("AMD");
+    EigenSolverFactory::template registerSolver<Eigen::COLAMDOrdering<int>, Scalar >("COLAMD");
+    EigenSolverFactory::template registerSolver<Eigen::NaturalOrdering<int>, Scalar >("Natural");
+}
+
+template<class Scalar>
+void registerOrderingMethods()
+{
+    registerOrderingMethods<MainSimplicialLDLTFactory, Scalar>();
+    registerOrderingMethods<MainSimplicialLLTFactory, Scalar>();
+    registerOrderingMethods<MainLUFactory, Scalar>();
+    registerOrderingMethods<MainQRFactory, Scalar>();
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        registerOrderingMethods<float>();
+        registerOrderingMethods<double>();
+
         first = false;
     }
 }
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
-}
 } // namespace sofa::component::linearsolver::direct

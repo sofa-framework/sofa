@@ -66,8 +66,22 @@ public:
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
+        if (obj)
+        {
+            if (context)
+            {
+                context->addObject(obj);
+            }
+            if (arg)
+            {
+                obj->parse(arg);
+            }
+        }
+        else
+        {
+            msg_info(T::GetClass()->className) << "Cannot create an instance";
+        }
+
         return obj;
     }
 
@@ -211,14 +225,14 @@ protected:
 
 public:
 
-    /// the component can insert itseft direclty in the right sequence in the Node
-    /// so the Node does not have to test its type against every known types.
-    /// \returns true iff the component was inserted
+    /// the component can insert itself directly in the right sequence in the Node
+    /// so the Node does not have to test its type against all known types
+    /// \returns true if the component was inserted
     virtual bool insertInNode( BaseNode* /*node*/ ) { return false; }
 
-    /// the component can remove itseft direclty in the right sequence in the Node
-    /// so the Node does not have to test its type against every known types.
-    /// \returns true iff the component was removed
+    /// the component can remove itself directly in the right sequence in the Node
+    /// so the Node does not have to test its type against all known types
+    /// \returns true if the component was removed
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
 };
 

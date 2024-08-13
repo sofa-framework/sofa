@@ -94,11 +94,11 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     hdGetIntegerv(HD_CURRENT_BUTTONS, &driver->m_hapticData.buttonState);
 
 
-    Vector3 currentForce;
+    Vec3 currentForce;
     if (driver->m_forceFeedback)
     {
-        Vector3 pos(driver->m_hapticData.transform[12+0]*0.1,driver->m_hapticData.transform[12+1]*0.1,driver->m_hapticData.transform[12+2]*0.1);
-        Vector3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
+        Vec3 pos(driver->m_hapticData.transform[12+0]*0.1,driver->m_hapticData.transform[12+1]*0.1,driver->m_hapticData.transform[12+2]*0.1);
+        Vec3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
 
         driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
         driver->m_isInContact = false;
@@ -111,7 +111,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
     else
     {
-        Vector3 inputForceFeedback = driver->d_inputForceFeedback.getValue();
+        Vec3 inputForceFeedback = driver->d_inputForceFeedback.getValue();
         double normValue = inputForceFeedback.norm();
         double maxInputForceFeedback = driver->d_maxInputForceFeedback.getValue();
 
@@ -135,7 +135,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         }
     }
 
-    Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
+    Vec3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
 
     GeomagicDriver::SHDdouble omni_force[3];
     omni_force[0] = force_in_omni[0];
@@ -158,7 +158,7 @@ GeomagicDriver::GeomagicDriver()
     , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the device base in the SOFA scene world coordinates"))
     , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the SOFA scene world coordinates"))
     , d_scale(initData(&d_scale, 1.0, "scale", "Default scale applied to the Device coordinates"))
-    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale", "Default forceScale applied to the force feedback. "))
+    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale", "Default scaling factor applied to the force feedback"))
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback", "Maximum value of the normed input force feedback for device security"))
     , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3(0, 0, 0), "inputForceFeedback", "Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
     , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
@@ -346,6 +346,7 @@ void GeomagicDriver::initDevice()
     updatePosition();
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 #else
+    msg_error() << "GeomagicDriver initialization failed because the Geomagic plugin was built without OpenHaptics (HD/hd.h). If you build the plugin yourself, install OpenHaptics and specify OpenHaptics_DIR at CMake configure stage.";
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 #endif
 }
@@ -478,9 +479,9 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
         const GeomagicDriver::Coord& posDevice = d_posDevice.getValue();
 
         float glRadius = (float)d_scale.getValue()*0.1f;
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(2,0,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::red() );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(0,2,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::green() );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vector3(0,0,2)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::blue() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(2,0,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::red() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(0,2,0)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::green() );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(type::Vec3(0,0,2)*d_scale.getValue()), glRadius, sofa::type::RGBAColor::blue() );
     }
 
     if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)
@@ -490,8 +491,11 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 }
 
 
-void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
+void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    if (!onlyVisible) return;
+
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 

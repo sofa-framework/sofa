@@ -61,13 +61,7 @@ public:
 
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
-    Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
-
-    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    core::objectmodel::lifecycle::RemovedData d_linearSolversName {this, "v22.12", "v23.06", "solverName", "replace solverName with an explicit data link named \"linearSolver\" (PR #3152)"};
-
-    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    core::objectmodel::lifecycle::RemovedData d_ODESolverName {this, "v22.12", "v23.06", "ODESolverName", "replace sODESolverName with an explicit data link named \"ODESolver\" (PR #3152)"};
+    Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix
 
 protected:
     GenericConstraintCorrection();

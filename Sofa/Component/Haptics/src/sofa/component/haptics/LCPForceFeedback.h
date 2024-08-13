@@ -60,11 +60,18 @@ public:
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    Data< double > forceCoef; ///< multiply haptic force by this coef.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
+    Data<double> forceCoef;
 
-    Data< double > solverTimeout; ///< max time to spend solving constraints.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
+    Data<double> solverTimeout;
 
-    Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints.
+
+    Data< double > d_forceCoef; ///< multiply haptic force by this coef.
+
+    Data< double > d_solverTimeout; ///< max time to spend solving constraints.
+
+    Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints
 
     // deriv (or not) the rotations when updating the violations
     Data <bool> d_derivRotations; ///< if true, deriv the rotations when updating the violations
@@ -75,9 +82,9 @@ public:
     void computeForce(SReal x, SReal y, SReal z,
                       SReal u, SReal v, SReal w,
                       SReal q, SReal& fx, SReal& fy, SReal& fz) override;
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
-                       const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world,
-                       sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
+    void computeWrench(const sofa::type::Transform<SReal> &world_H_tool,
+                       const sofa::type::SpatialVector<SReal> &V_tool_world,
+                       sofa::type::SpatialVector<SReal> &W_tool_world ) override;
     void computeForce(const  VecCoord& state,  VecDeriv& forces) override;
 
 protected:

@@ -60,8 +60,6 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
     SReal m_ks=getKs();
     SReal m_kd=getKd();
 
-    unsigned int u,v;
-
     const typename DataTypes::VecCoord& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
@@ -77,7 +75,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te2[j]]; // ff->d_edgeInfo
             if(!(ei.is_initialized))
             {
                 unsigned int edgeIndex = te2[j];
@@ -160,7 +158,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::v
         for(unsigned int j=0; j<4; ++j)
         {
 
-            EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+            EdgeInformation &ei = edgeData[te[j]]; // ff->d_edgeInfo
             if(ei.is_initialized)
             {
 
@@ -613,8 +611,6 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     std::vector<sofa::type::RGBAColor> colors;
     constexpr sofa::type::RGBAColor green_color = sofa::type::RGBAColor::green();
     constexpr sofa::type::RGBAColor red_color   = sofa::type::RGBAColor::red();
-    constexpr sofa::type::RGBAColor color1 = sofa::type::RGBAColor(1,0.5, 0,1);
-    constexpr sofa::type::RGBAColor color2 = sofa::type::RGBAColor(0,1,0.5,1);
 
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {

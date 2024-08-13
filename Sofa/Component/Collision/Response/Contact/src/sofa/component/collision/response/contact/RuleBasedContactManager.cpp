@@ -34,20 +34,19 @@ int RuleBasedContactManagerClass = core::RegisterObject("Create different respon
 
 RuleBasedContactManager::RuleBasedContactManager()
     : d_variables(initData(&d_variables, "variables", "Define a list of variables to be used inside the rules"))
-    , rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
+    , d_rules(initData(&d_rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
             "The first two define either the name of the collision model, its group number, or * meaning any model.\n"
             "The last string define the response algorithm to use for contacts matched by this rule.\n"
             "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
 {
+    rules.setParent(&d_rules);
 }
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
-        itend = variablesData.end(); it != itend; ++it)
+    for(const auto& d : variablesData)
     {
-        //this->removeData(it->second);
-        delete it->second;
+        delete d.second;
     }
 }
 
@@ -125,11 +124,11 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     if (!response1.empty()) return response1;
     else if (!response2.empty()) return response2;
 
-    const type::vector<Rule>& r = rules.getValue();
-    for (type::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
+    const type::vector<Rule>& rulesValue = d_rules.getValue();
+    for (const auto& rule : rulesValue)
     {
-        if (it->match(model1, model2) || it->match(model2, model1))
-            return replaceVariables(it->response); // rule it matched
+        if (rule.match(model1, model2) || rule.match(model2, model1))
+            return replaceVariables(rule.response); // rule it matched
     }
     // no rule matched
     return replaceVariables(CollisionResponse::getContactResponse(model1, model2));

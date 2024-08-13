@@ -22,7 +22,7 @@
 #ifndef IMAGETOOLBOX_H
 #define IMAGETOOLBOX_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <image/ImageTypes.h>
 #include <image/VectorVis.h>
 
@@ -49,7 +49,7 @@ namespace misc
 
 using namespace cimg_library;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 
 
 template<class _ImageTypes>

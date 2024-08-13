@@ -43,15 +43,18 @@ using namespace sofa::simulation;
 namespace sofa::component::animationloop
 {
 
-int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
-        .add< MultiStepAnimationLoop >()
-        .addAlias("MultiStepMasterSolver")
-        ;
+void registerMultiStepAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Multi steps animation loop, multi integration steps in a single animation step are managed.")
+        .add< MultiStepAnimationLoop >());
+}
 
 MultiStepAnimationLoop::MultiStepAnimationLoop() :
-      collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
-    , integrationSteps( initData(&integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
+      d_collisionSteps( initData(&d_collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
+    , d_integrationSteps( initData(&d_integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
 {
+    collisionSteps.setParent(&d_collisionSteps);
+    integrationSteps.setParent(&d_integrationSteps);
 }
 
 MultiStepAnimationLoop::~MultiStepAnimationLoop()
@@ -85,8 +88,8 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     UpdateInternalDataVisitor uid(params);
     node->execute ( uid );
 
-    const int ncollis = collisionSteps.getValue();
-    const int ninteg = integrationSteps.getValue();
+    const int ncollis = d_collisionSteps.getValue();
+    const int ninteg = d_integrationSteps.getValue();
 
     SReal stepDt = dt / (ncollis * ninteg);
 

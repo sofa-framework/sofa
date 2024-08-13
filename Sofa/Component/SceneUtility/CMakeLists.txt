@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.SceneUtility LANGUAGES CXX)
 
 set(SOFACOMPONENTSCENEUTILITY_SOURCE_DIR "src/sofa/component/sceneutility")

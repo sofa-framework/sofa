@@ -137,11 +137,12 @@ void LineSetSkinningMapping<TIn, TOut>::init()
                     {
                         lines[i].lineIndex = lines[i-1].lineIndex;
                         lines[i].weight = lines[i-1].weight;
-                        lines[i].position = lines[i-1].position;
+                        lines[i].position = lines[i - 1].position;
                     }
                     lines[lineInfluencedIndex].lineIndex = lineIndex;
                     lines[lineInfluencedIndex].weight = _weight;
-                    lines[lineInfluencedIndex].position = xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
+                    lines[lineInfluencedIndex].position =
+                            xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
                     break;
                 }
             }

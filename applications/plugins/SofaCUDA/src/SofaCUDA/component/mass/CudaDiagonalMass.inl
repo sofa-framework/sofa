@@ -48,10 +48,7 @@ extern "C"
 }
 
 
-namespace component
-{
-
-namespace mass
+namespace component::mass
 {
 
 template<>
@@ -164,9 +161,8 @@ void DiagonalMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mpar
 
 #endif
 
-} // namespace mass
+} // namespace component::mass
 
-} // namespace component
 
 } // namespace sofa
 

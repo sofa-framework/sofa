@@ -86,16 +86,6 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
 }
 
 
-RGBAColor::RGBAColor(const type::fixed_array<float, NumberOfComponents>& c)
-    : m_components{ c[0], c[1], c[2], c[3] }
-{
-}
-
-RGBAColor::RGBAColor(const type::Vec4f& c)
-    : m_components{ c[0], c[1], c[2], c[3] }
-{
-}
-
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     std::stringstream s(str);
@@ -172,26 +162,6 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
     }
 
     return rgba;
-}
-
-RGBAColor RGBAColor::fromVec4(const type::fixed_array<float, 4>& color)
-{
-    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
-}
-
-RGBAColor RGBAColor::fromVec4(const type::fixed_array<double, 4>& color)
-{
-    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
-}
-
-RGBAColor RGBAColor::fromVec4(const type::Vec4f& color)
-{
-    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
-}
-
-RGBAColor RGBAColor::fromVec4(const type::Vec4d& color)
-{
-    return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
 
 /// This function remove the leading space in the stream.

@@ -135,7 +135,7 @@ public:
 
 
 
-    Data<double> forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<double> forceScale; ///< Default scaling factor applied to the force feedback
     Data<double> scale; ///< Default scale applied to the Phantom Coordinates. 
     Data<Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
     Data<Quat> orientationBase; ///< Orientation of the interface base in the scene world coordinates

@@ -36,24 +36,29 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 LinearMovementProjectiveConstraint<DataTypes>::LinearMovementProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , data(new LinearMovementProjectiveConstraintInternalData<DataTypes>)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
-    , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
+    , data(std::make_unique<LinearMovementProjectiveConstraintInternalData<DataTypes>>())
+    , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , d_keyTimes(initData(&d_keyTimes, "keyTimes", "key times for the movements") )
+    , d_keyMovements(initData(&d_keyMovements, "movements", "movements corresponding to the key times") )
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
-    , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , d_showMovement(initData(&d_showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
     , finished(false)
 {
     // default to indice 0
-    m_indices.beginEdit()->push_back(0);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
 
     //default valueEvent to 0
-    m_keyTimes.beginEdit()->push_back( 0.0 );
-    m_keyTimes.endEdit();
-    m_keyMovements.beginEdit()->push_back( Deriv() );
-    m_keyMovements.endEdit();
+    d_keyTimes.beginEdit()->push_back(0.0 );
+    d_keyTimes.endEdit();
+    d_keyMovements.beginEdit()->push_back(Deriv() );
+    d_keyMovements.endEdit();
+
+    m_indices.setParent(&d_indices);
+    m_keyTimes.setParent(&d_keyTimes);
+    m_keyMovements.setParent(&d_keyMovements);
+    showMovement.setParent(&d_showMovement);
 }
 
 
@@ -67,40 +72,40 @@ LinearMovementProjectiveConstraint<DataTypes>::~LinearMovementProjectiveConstrai
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::clearIndices()
 {
-    m_indices.beginEdit()->clear();
-    m_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::addIndex(Index index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::type::removeValue(*m_indices.beginEdit(),index);
-    m_indices.endEdit();
+    sofa::type::removeValue(*d_indices.beginEdit(), index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::clearKeyMovements()
 {
-    m_keyTimes.beginEdit()->clear();
-    m_keyTimes.endEdit();
-    m_keyMovements.beginEdit()->clear();
-    m_keyMovements.endEdit();
+    d_keyTimes.beginEdit()->clear();
+    d_keyTimes.endEdit();
+    d_keyMovements.beginEdit()->clear();
+    d_keyMovements.endEdit();
 }
 
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::addKeyMovement(Real time, Deriv movement)
 {
-    m_keyTimes.beginEdit()->push_back( time );
-    m_keyTimes.endEdit();
-    m_keyMovements.beginEdit()->push_back( movement );
-    m_keyMovements.endEdit();
+    d_keyTimes.beginEdit()->push_back(time );
+    d_keyTimes.endEdit();
+    d_keyMovements.beginEdit()->push_back(movement );
+    d_keyMovements.endEdit();
 }
 
 // -- Constraint interface
@@ -120,7 +125,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        m_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -159,7 +164,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& 
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -189,7 +194,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectVelocity(const core::
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -209,7 +214,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectPosition(const core::
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         x0.resize(x.size());
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -233,7 +238,7 @@ template <class DataTypes>
 template <class MyCoord>
 void LinearMovementProjectiveConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
@@ -259,7 +264,7 @@ template <class DataTypes>
 template <class MyCoord>
 void LinearMovementProjectiveConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
@@ -300,17 +305,17 @@ void LinearMovementProjectiveConstraint<DataTypes>::findKeyTimes()
     Real cT = static_cast<Real>(this->getContext()->getTime());
     finished = false;
 
-    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
+    if(d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin() && cT <= *d_keyTimes.getValue().rbegin())
     {
-        nextT = *m_keyTimes.getValue().begin();
+        nextT = *d_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename type::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
+        typename type::vector<Real>::const_iterator it_t = d_keyTimes.getValue().begin();
+        typename VecDeriv::const_iterator it_m = d_keyMovements.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
         //here we search between which keyTimes we are, to know which are the motion to interpolate
-        while( it_t != m_keyTimes.getValue().end() && !finished)
+        while(it_t != d_keyTimes.getValue().end() && !finished)
         {
             if( *it_t <= cT)
             {
@@ -336,7 +341,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
     // clears the rows and columns associated with fixed particles
-    for (const auto id : m_indices.getValue())
+    for (const auto id : d_indices.getValue())
     {
         M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
     }
@@ -352,7 +357,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
     {
         const unsigned int N = Deriv::size();
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -376,7 +381,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::
         const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned int c=0; c<N; ++c)
@@ -391,7 +396,7 @@ void LinearMovementProjectiveConstraint<TDataTypes>::applyConstraint(
 {
     constexpr unsigned int N = Deriv::size();
 
-    for (const auto index : m_indices.getValue())
+    for (const auto index : d_indices.getValue())
     {
         for (unsigned int c = 0; c < N; ++c)
         {
@@ -404,13 +409,13 @@ void LinearMovementProjectiveConstraint<TDataTypes>::applyConstraint(
 template <class DataTypes>
 void LinearMovementProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
+    if (!vparams->displayFlags().getShowBehaviorModels() || d_keyTimes.getValue().size() == 0)
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
-    if (showMovement.getValue())
+    if (d_showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
 
@@ -418,11 +423,11 @@ void LinearMovementProjectiveConstraint<DataTypes>::draw(const core::visual::Vis
 
         constexpr auto minDimensions = std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u);
 
-        const SetIndexArray & indices = m_indices.getValue();
-        const VecDeriv& keyMovements = m_keyMovements.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
+        const VecDeriv& keyMovements = d_keyMovements.getValue();
         if (d_relativeMovements.getValue()) 
         {
-            for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+            for (unsigned int i = 0; i < d_keyMovements.getValue().size() - 1; i++)
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
@@ -460,7 +465,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::draw(const core::visual::Vis
 
         sofa::type::vector<type::Vec3> points;
         type::Vec3 point;
-        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             point = DataTypes::getCPos(x[*it]);

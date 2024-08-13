@@ -48,7 +48,7 @@ protected:
     void init() override;
     void handleEvent(core::objectmodel::Event *event) override;
 
-    Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget
+    Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
     SingleLink<ComplianceMatrixImage, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 };
 

@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
 
@@ -31,12 +31,12 @@ namespace sofa::component::solidmechanics::spring
 {
 
 template<class DataTypes>
-class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
+class RegularGridSpringForceField : public SpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(SpringForceField, DataTypes));
 
-    typedef StiffSpringForceField<DataTypes> Inherit;
+    typedef SpringForceField<DataTypes> Inherit;
     typedef typename Inherit::Spring Spring;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -49,61 +49,61 @@ public:
 
 
 protected:
-    Data< Real > linesStiffness; ///< Lines Stiffness
-    Data< Real > linesDamping; ///< Lines Damping
-    Data< Real > quadsStiffness; ///< Quads Stiffness
-    Data< Real > quadsDamping; ///< Quads Damping
-    Data< Real > cubesStiffness; ///< Cubes Stiffness
-    Data< Real > cubesDamping; ///< Cubes Damping
+    Data< Real > d_linesStiffness; ///< Lines Stiffness
+    Data< Real > d_linesDamping; ///< Lines Damping
+    Data< Real > d_quadsStiffness; ///< Quads Stiffness
+    Data< Real > d_quadsDamping; ///< Quads Damping
+    Data< Real > d_cubesStiffness; ///< Cubes Stiffness
+    Data< Real > d_cubesDamping; ///< Cubes Damping
 
     RegularGridSpringForceField();
     RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2);
 
 public:
-    Real getStiffness() const { return linesStiffness.getValue(); }
-    Real getLinesStiffness() const { return linesStiffness.getValue(); }
-    Real getQuadsStiffness() const { return quadsStiffness.getValue(); }
-    Real getCubesStiffness() const { return cubesStiffness.getValue(); }
+    Real getStiffness() const { return d_linesStiffness.getValue(); }
+    Real getLinesStiffness() const { return d_linesStiffness.getValue(); }
+    Real getQuadsStiffness() const { return d_quadsStiffness.getValue(); }
+    Real getCubesStiffness() const { return d_cubesStiffness.getValue(); }
     void setStiffness(Real val)
     {
-        linesStiffness.setValue(val);
-        quadsStiffness.setValue(val);
-        cubesStiffness.setValue(val);
+        d_linesStiffness.setValue(val);
+        d_quadsStiffness.setValue(val);
+        d_cubesStiffness.setValue(val);
     }
     void setLinesStiffness(Real val)
     {
-        linesStiffness.setValue(val);
+        d_linesStiffness.setValue(val);
     }
     void setQuadsStiffness(Real val)
     {
-        quadsStiffness.setValue(val);
+        d_quadsStiffness.setValue(val);
     }
     void setCubesStiffness(Real val)
     {
-        cubesStiffness.setValue(val);
+        d_cubesStiffness.setValue(val);
     }
 
-    Real getDamping() const { return linesDamping.getValue(); }
-    Real getLinesDamping() const { return linesDamping.getValue(); }
-    Real getQuadsDamping() const { return quadsDamping.getValue(); }
-    Real getCubesDamping() const { return cubesDamping.getValue(); }
+    Real getDamping() const { return d_linesDamping.getValue(); }
+    Real getLinesDamping() const { return d_linesDamping.getValue(); }
+    Real getQuadsDamping() const { return d_quadsDamping.getValue(); }
+    Real getCubesDamping() const { return d_cubesDamping.getValue(); }
     void setDamping(Real val)
     {
-        linesDamping.setValue(val);
-        quadsDamping.setValue(val);
-        cubesDamping.setValue(val);
+        d_linesDamping.setValue(val);
+        d_quadsDamping.setValue(val);
+        d_cubesDamping.setValue(val);
     }
     void setLinesDamping(Real val)
     {
-        linesDamping.setValue(val);
+        d_linesDamping.setValue(val);
     }
     void setQuadsDamping(Real val)
     {
-        quadsDamping.setValue(val);
+        d_quadsDamping.setValue(val);
     }
     void setCubesDamping(Real val)
     {
-        cubesDamping.setValue(val);
+        d_cubesDamping.setValue(val);
     }
 
     void init() override;

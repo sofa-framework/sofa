@@ -35,7 +35,7 @@ namespace sofa::gui::component::performer
 
     void StartNavigationPerformer::start()
     {
-        const sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
+        const sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( m_interactor->getContext()->getRootContext() );
         if(root)
         {
             sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
@@ -43,7 +43,7 @@ namespace sofa::gui::component::performer
             if(currentCamera)
             {
                 // The navigation mode of Recorded Camera is set to true
-                currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
+                currentCamera->d_navigationMode.setValue(!currentCamera->d_navigationMode.getValue());
             }
         }
     }

@@ -27,10 +27,8 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 using type::Mat;
@@ -116,7 +114,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
 
                 edgez.normalizeWithNorm( helper::rsqrt(nz) );
 
-                // check the main direction of edgez to try to take a not too close arbritary vector
+                // check the main direction of edgez to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgez[0] );
                 Real abs1 = helper::rabs( edgez[1] );
                 Real abs2 = helper::rabs( edgez[2] );
@@ -159,7 +157,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
             {
                 //msg_info()<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
 
-                // check the main direction of edgey to try to take a not too close arbritary vector
+                // check the main direction of edgey to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgey[0] );
                 Real abs1 = helper::rabs( edgey[1] );
                 Real abs2 = helper::rabs( edgey[2] );
@@ -215,7 +213,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
             {
                 //msg_info()<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
 
-                // check the main direction of edgex to try to take a not too close arbritary vector
+                // check the main direction of edgex to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgex[0] );
                 Real abs1 = helper::rabs( edgex[1] );
                 Real abs2 = helper::rabs( edgex[2] );
@@ -298,7 +296,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
             degenerated = true;
             edgey.normalizeWithNorm( helper::rsqrt(ny) );
 
-            // check the main direction of edgex to try to take a not too close arbritary vector
+            // check the main direction of edgex to try to take a not too close arbitrary vector
             Real abs0 = helper::rabs( edgey[0] );
             Real abs1 = helper::rabs( edgey[1] );
             Real abs2 = helper::rabs( edgey[2] );
@@ -338,7 +336,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
         {
             degenerated = true;
 
-            // check the main direction of edgex to try to take a not too close arbritary vector
+            // check the main direction of edgex to try to take a not too close arbitrary vector
             Real abs0 = helper::rabs( edgex[0] );
             Real abs1 = helper::rabs( edgex[1] );
             Real abs2 = helper::rabs( edgex[2] );
@@ -1769,7 +1767,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
 
         Vec<3,Real> edge0, edge1, edge2( U[0][Sorder[2]], U[1][Sorder[2]], U[2][Sorder[2]] );
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge2[0] );
         Real abs1 = helper::rabs( edge2[1] );
         Real abs2 = helper::rabs( edge2[2] );
@@ -1876,7 +1874,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
 
         Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
         Real abs1 = helper::rabs( edge1[1] );
         Real abs2 = helper::rabs( edge1[2] );
@@ -2016,7 +2014,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
 
         Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
         Real abs1 = helper::rabs( edge1[1] );
         Real abs2 = helper::rabs( edge1[2] );
@@ -2895,8 +2893,7 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif // SOFA_HELPER_DECOMPOSE_INL

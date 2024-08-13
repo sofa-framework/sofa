@@ -31,24 +31,17 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsCudaVisualModel;
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
-namespace component
-{
-
-namespace visualmodel
+namespace component::visualmodel
 {
 
 template <class TDataTypes>
@@ -114,9 +107,10 @@ public:
     virtual void doDrawVisual(const core::visual::VisualParams*) override;
     virtual void drawTransparent(const core::visual::VisualParams*) override;
     virtual void drawShadow(const core::visual::VisualParams*) override;
-    virtual void updateVisual() override;
+    virtual void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void updateTopology();
     virtual void updateNormals();
+    virtual void updateTopologyAndNormals();
     virtual void handleTopologyChange() override;
 
     virtual void computeBBox(const core::ExecParams* params, bool=false) override;
@@ -151,9 +145,8 @@ protected:
     SingleLink<CudaVisualModel<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> topology;
 };
 
-} // namespace visualmodel
+} // namespace component::visualmodel
 
-} // namespace component
 
 } // namespace sofa
 

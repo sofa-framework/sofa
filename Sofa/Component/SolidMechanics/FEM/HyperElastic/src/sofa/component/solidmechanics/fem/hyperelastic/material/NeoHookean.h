@@ -33,40 +33,66 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
-/** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
-The material is described based on continuum mechanics and the description is independent
-to any discretization method like the finite element method.
-A material is generically described by a strain energy function and its first and second derivatives.
-In practice the energy is the sum of several energy terms which depends on 2 quantities :
-the determinant of the deformation gradient J and the right Cauchy Green deformation tensor */
+/**
+ * Compressible Neo-Hookean material
+ */
 template <class DataTypes>
 class NeoHookean : public HyperelasticMaterial<DataTypes>
 {
+public:
+    static constexpr std::string_view Name = "NeoHookean";
+
     typedef typename DataTypes::Coord::value_type Real;
     typedef type::Mat<3, 3, Real> Matrix3;
     typedef type::Mat<6, 6, Real> Matrix6;
     typedef type::MatSym<3, Real> MatrixSym;
 
+    /**
+     * Strain energy density function for a compressible Neo-Hookean material,
+     * taken from:
+     * "Javier Bonet and Richard D Wood. 2008. Nonlinear continuum mechanics for
+     * finite element analysis. Cambridge University Press"
+     */
     Real getStrainEnergy(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param) override
     {
-        Real mu = param.parameterArray[0];
-        Real k = param.parameterArray[1];
-        Real I1 = sinfo->trC;
-        return (Real)mu*(Real)(1.0/2.0)*(I1-3)-mu*log(sinfo->J)+k*log(sinfo->J)*log(sinfo->J)/2;
+        //Lamé constants
+        const Real mu = param.parameterArray[0];
+        const Real lambda = param.parameterArray[1];
+
+        //trace(C) -> first invariant
+        const Real IC = sinfo->trC;
+
+        //det(F) = J
+        const Real J = sinfo->J;
+
+        return 0.5 * mu * (IC - 3)
+            - mu * std::log(J)
+            + 0.5 * lambda * std::pow(std::log(J), 2);
     }
 
+    /**
+     * Compute the second Piola-Kirchhoff stress tensor in terms of the right
+     * Cauchy-Green deformation tensor
+     */
     void deriveSPKTensor(StrainInformation<DataTypes>* sinfo,
                          const MaterialParameters<DataTypes>& param,
                          MatrixSym& SPKTensorGeneral) override
     {
-        MatrixSym inversematrix;
-        invertMatrix(inversematrix, sinfo->deformationTensor);
-        Real mu = param.parameterArray[0];
-        Real k = param.parameterArray[1];
-        MatrixSym ID;
-        ID.identity();
-        SPKTensorGeneral = mu*ID+inversematrix*(-mu+k*log(sinfo->J));
+        // inverse of the right Cauchy-Green deformation tensor
+        MatrixSym inverse_C;
+        sofa::type::invertMatrix(inverse_C, sinfo->deformationTensor);
+
+        //Lamé constants
+        const Real mu = param.parameterArray[0];
+        const Real lambda = param.parameterArray[1];
+
+        //det(F) = J
+        const Real J = sinfo->J;
+
+        //second Piola-Kirchhoff stress tensor
+        SPKTensorGeneral = mu * ID
+            + (lambda * std::log(J) - mu) * inverse_C;
     }
 
 
@@ -74,74 +100,94 @@ class NeoHookean : public HyperelasticMaterial<DataTypes>
                                const MaterialParameters<DataTypes>& param,
                                const MatrixSym& inputTensor, MatrixSym& outputTensor) override
     {
-        Real mu = param.parameterArray[0];
-        Real k = param.parameterArray[1];
-        MatrixSym inversematrix;
-        invertMatrix(inversematrix, sinfo->deformationTensor);
-        MatrixSym ID;
-        ID.identity();
-        Real trHC = inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*
-                    inversematrix[5]
-                    +2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*
-                    inputTensor[4]*inversematrix[4];
+        //Lamé constants
+        const Real mu = param.parameterArray[0];
+        const Real lambda = param.parameterArray[1];
+
+        // inverse of the right Cauchy-Green deformation tensor
+        MatrixSym inverse_C;
+        sofa::type::invertMatrix(inverse_C, sinfo->deformationTensor);
+
+        // trace(C^-1 * H)
+        Real trHC = inputTensor[0] * inverse_C[0] + inputTensor[2] * inverse_C[2] + inputTensor[5] * inverse_C[5]
+                + 2 * inputTensor[1] * inverse_C[1] + 2 * inputTensor[3] * inverse_C[3] + 2 *
+                inputTensor[4] * inverse_C[4];
+
+        // C^-1 * H * C^-1
         MatrixSym Firstmatrix;
-        Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),
-                            Firstmatrix);
-        outputTensor = Firstmatrix*(mu-k*log(sinfo->J))+inversematrix*(k*trHC/2);
+        MatrixSym::Mat2Sym(inverse_C * (inputTensor * inverse_C), Firstmatrix);
+
+        outputTensor = Firstmatrix * (mu - lambda * log(sinfo->J))
+            + inverse_C * (lambda * trHC / 2);
     }
 
     void ElasticityTensor(StrainInformation<DataTypes>* sinfo,
                           const MaterialParameters<DataTypes>& param, Matrix6& outputTensor) override
     {
-        Real mu = param.parameterArray[0];
-        Real k = param.parameterArray[1];
-        MatrixSym _C;
-        invertMatrix(_C, sinfo->deformationTensor);
-        MatrixSym CC;
-        CC = _C;
-        CC[1] += _C[1];
-        CC[3] += _C[3];
-        CC[4] += _C[4];
-        Matrix6 C_H_C;
-        C_H_C[0][0] = _C[0]*_C[0];
-        C_H_C[1][1] = _C[1]*_C[1]+_C[0]*_C[2];
-        C_H_C[2][2] = _C[2]*_C[2];
-        C_H_C[3][3] = _C[3]*_C[3]+_C[0]*_C[5];
-        C_H_C[4][4] = _C[4]*_C[4]+_C[2]*_C[5];
-        C_H_C[5][5] = _C[5]*_C[5];
-        C_H_C[1][0] = _C[0]*_C[1];
-        C_H_C[0][1] = 2*C_H_C[1][0];
-        C_H_C[2][0] = C_H_C[0][2] = _C[1]*_C[1];
-        C_H_C[5][0] = C_H_C[0][5] = _C[3]*_C[3];
-        C_H_C[3][0] = _C[0]*_C[3];
-        C_H_C[0][3] = 2*C_H_C[3][0];
-        C_H_C[4][0] = _C[1]*_C[3];
-        C_H_C[0][4] = 2*C_H_C[4][0];
-        C_H_C[1][2] = _C[2]*_C[1];
-        C_H_C[2][1] = 2*C_H_C[1][2];
-        C_H_C[1][5] = _C[3]*_C[4];
-        C_H_C[5][1] = 2*C_H_C[1][5];
-        C_H_C[3][1] = C_H_C[1][3] = _C[0]*_C[4]+_C[1]*_C[3];
-        C_H_C[1][4] = C_H_C[4][1] = _C[1]*_C[4]+_C[2]*_C[3];
-        C_H_C[3][2] = _C[4]*_C[1];
-        C_H_C[2][3] = 2*C_H_C[3][2];
-        C_H_C[4][2] = _C[4]*_C[2];
-        C_H_C[2][4] = 2*C_H_C[4][2];
-        C_H_C[2][5] = C_H_C[5][2] = _C[4]*_C[4];
-        C_H_C[3][5] = _C[3]*_C[5];
-        C_H_C[5][3] = 2*C_H_C[3][5];
-        C_H_C[4][3] = C_H_C[3][4] = _C[3]*_C[4]+_C[5]*_C[1];
-        C_H_C[4][5] = _C[4]*_C[5];
-        C_H_C[5][4] = 2*C_H_C[4][5];
-        Matrix6 trC_HC_;
-        trC_HC_[0] = _C[0]*CC;
-        trC_HC_[1] = _C[1]*CC;
-        trC_HC_[2] = _C[2]*CC;
-        trC_HC_[3] = _C[3]*CC;
-        trC_HC_[4] = _C[4]*CC;
-        trC_HC_[5] = _C[5]*CC;
+        //Lamé constants
+        const Real mu = param.parameterArray[0];
+        const Real lambda = param.parameterArray[1];
 
-        outputTensor = (C_H_C*(mu-k*log(sinfo->J))+trC_HC_*k/(Real)2.0)*2.0;
+        MatrixSym inverse_C;
+        invertMatrix(inverse_C, sinfo->deformationTensor);
+
+        MatrixSym CC;
+        CC = inverse_C;
+        CC[1] += inverse_C[1];
+        CC[3] += inverse_C[3];
+        CC[4] += inverse_C[4];
+
+        Matrix6 C_H_C;
+        C_H_C[0][0] = inverse_C[0] * inverse_C[0];
+        C_H_C[1][1] = inverse_C[1] * inverse_C[1] + inverse_C[0] * inverse_C[2];
+        C_H_C[2][2] = inverse_C[2] * inverse_C[2];
+        C_H_C[3][3] = inverse_C[3] * inverse_C[3] + inverse_C[0] * inverse_C[5];
+        C_H_C[4][4] = inverse_C[4] * inverse_C[4] + inverse_C[2] * inverse_C[5];
+        C_H_C[5][5] = inverse_C[5] * inverse_C[5];
+        C_H_C[1][0] = inverse_C[0] * inverse_C[1];
+        C_H_C[0][1] = 2 * C_H_C[1][0];
+        C_H_C[2][0] = C_H_C[0][2] = inverse_C[1] * inverse_C[1];
+        C_H_C[5][0] = C_H_C[0][5] = inverse_C[3] * inverse_C[3];
+        C_H_C[3][0] = inverse_C[0] * inverse_C[3];
+        C_H_C[0][3] = 2 * C_H_C[3][0];
+        C_H_C[4][0] = inverse_C[1] * inverse_C[3];
+        C_H_C[0][4] = 2 * C_H_C[4][0];
+        C_H_C[1][2] = inverse_C[2] * inverse_C[1];
+        C_H_C[2][1] = 2 * C_H_C[1][2];
+        C_H_C[1][5] = inverse_C[3] * inverse_C[4];
+        C_H_C[5][1] = 2 * C_H_C[1][5];
+        C_H_C[3][1] = C_H_C[1][3] = inverse_C[0] * inverse_C[4] + inverse_C[1] * inverse_C[3];
+        C_H_C[1][4] = C_H_C[4][1] = inverse_C[1] * inverse_C[4] + inverse_C[2] * inverse_C[3];
+        C_H_C[3][2] = inverse_C[4] * inverse_C[1];
+        C_H_C[2][3] = 2 * C_H_C[3][2];
+        C_H_C[4][2] = inverse_C[4] * inverse_C[2];
+        C_H_C[2][4] = 2 * C_H_C[4][2];
+        C_H_C[2][5] = C_H_C[5][2] = inverse_C[4] * inverse_C[4];
+        C_H_C[3][5] = inverse_C[3] * inverse_C[5];
+        C_H_C[5][3] = 2 * C_H_C[3][5];
+        C_H_C[4][3] = C_H_C[3][4] = inverse_C[3] * inverse_C[4] + inverse_C[5] * inverse_C[1];
+        C_H_C[4][5] = inverse_C[4] * inverse_C[5];
+        C_H_C[5][4] = 2 * C_H_C[4][5];
+
+        Matrix6 trC_HC_;
+        trC_HC_[0] = inverse_C[0] * CC;
+        trC_HC_[1] = inverse_C[1] * CC;
+        trC_HC_[2] = inverse_C[2] * CC;
+        trC_HC_[3] = inverse_C[3] * CC;
+        trC_HC_[4] = inverse_C[4] * CC;
+        trC_HC_[5] = inverse_C[5] * CC;
+
+        outputTensor =
+            (C_H_C * (mu - lambda * std::log(sinfo->J)) * 2 + trC_HC_ * lambda) ;
     }
+
+private:
+    //identity tensor
+    inline static const MatrixSym ID = []()
+    {
+        MatrixSym id;
+        id.identity();
+        return id;
+    }();
 };
 } // namespace sofa::component::solidmechanics::fem::hyperelastic::material

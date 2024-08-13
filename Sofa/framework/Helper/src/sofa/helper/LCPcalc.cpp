@@ -30,10 +30,8 @@
 #include <cstring>
 #include <iomanip>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 using namespace std;
@@ -220,11 +218,6 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
 }
 
 
-int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
-{
-    return solveLCP(dim, q, M, res);
-}
-
 //#include "mex.h"
 /* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
@@ -334,9 +327,8 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
         // si le pivot est nul, le LCP echoue
         if (fabs(pivot)<EPSILON_LCP)
         {
-            afficheLCP(q,M,dim);
+            printLCP(q,M,dim);
             printf("*** Pas de solution *** \n");
-//            boucles=MAX_BOU;
             result=0;
             for(compteur=0; compteur<dim; compteur++)
             {
@@ -409,21 +401,6 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
     free(base);
 
     return result;
-}
-
-void afficheSyst(SReal* q, SReal** M, int* base, SReal** mat, int dim)
-{
-    printSyst(q, M, base, mat, dim);
-}
-
-void afficheLCP(SReal* q, SReal** M, int dim)
-{
-    printLCP(q, M, dim);
-}
-
-void afficheLCP(SReal* q, SReal** M, SReal* f, int dim)
-{
-    printLCP(q, M, f, dim);
 }
 
 
@@ -801,7 +778,7 @@ struct listSortAscending
    Classe
    - NLCP {dim , dfree, W , f
 
-    void NLCPSolve( int numIteration, const SReal &tol, bool convergenceTest)
+    void NLCPSolve( int numIteration, const SReal &d_tol, bool convergenceTest)
     }
 
 
@@ -1940,6 +1917,6 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+

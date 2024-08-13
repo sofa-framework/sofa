@@ -32,11 +32,8 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/gl/component/shader/OglVariable.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 /**
@@ -84,11 +81,11 @@ protected:
     ~OglTetrahedralModel() override;
 public:
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void computeMesh();
 };
 
@@ -97,11 +94,7 @@ extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaultty
 
 #endif
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel
 
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

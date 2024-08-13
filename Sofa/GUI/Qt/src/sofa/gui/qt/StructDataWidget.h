@@ -27,6 +27,7 @@
 #include <sofa/component/solidmechanics/spring/JointSpring.h>
 #include <sofa/component/solidmechanics/spring/JointSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
 
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/type/RGBAColor.h>
@@ -522,5 +523,42 @@ template<> STRUCT_DATA_VAR_CHECK(sofa::type::Material, 5, "Shininess", "Shin", f
 template<>
 class data_widget_container < sofa::type::Material > : public struct_data_widget_container < sofa::type::Material >
 {};
+
+
+
+////////////////////////////////////////////////////////////////
+/// sofa::component::interactionforcefield::PenalityContactForceField Contact support
+////////////////////////////////////////////////////////////////
+
+#define CLASS typename sofa::component::collision::response::contact::PenalityContact< T >
+
+template<class T>
+class struct_data_trait < CLASS >
+{
+public:
+    typedef CLASS data_type;
+    enum { NVAR = 9 };
+    static void set(data_type& /*d*/)
+    {
+    }
+};
+
+template<class T> STRUCT_DATA_VAR(CLASS, 0, "VertexId 1", "VertexId 1", sofa::Index, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1, "VertexId 2", "VertexId 2", sofa::Index, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 2, "ElemId 1", "ElemId 1", sofa::Index, index1);
+template<class T> STRUCT_DATA_VAR(CLASS, 3, "ElemId 2", "ElemId 2", sofa::Index, index2);
+
+template<class T> STRUCT_DATA_VAR(CLASS, 4, "Normal", "Norm", typename data_type::Deriv, norm);
+template<class T> STRUCT_DATA_VAR(CLASS, 5, "Distance", "Dist", typename data_type::Real, dist);
+
+template<class T> STRUCT_DATA_VAR(CLASS, 6, "Stiffness", "Ks", typename data_type::Real, ks);
+template<class T> STRUCT_DATA_VAR(CLASS, 7, "Penetration", "Pene", typename data_type::Real, pen);
+template<class T> STRUCT_DATA_VAR(CLASS, 8, "Age", "Age", int, age);
+
+template<class T>
+class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >
+{};
+
+#undef CLASS
 
 } //namespace sofa::gui::qt

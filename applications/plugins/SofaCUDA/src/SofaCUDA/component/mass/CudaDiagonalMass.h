@@ -27,11 +27,8 @@ SOFA_DEPRECATED_HEADER("v23.12", "v24.06", "SofaCUDA/component/mass/CudaMeshMatr
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/mass/DiagonalMass.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace mass
+
+namespace sofa::component::mass
 {
 
 using namespace sofa::gpu::cuda;
@@ -91,10 +88,7 @@ extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3dT
 #endif
 #endif
 
-} // namespace mass
+} // namespace sofa::component::mass
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

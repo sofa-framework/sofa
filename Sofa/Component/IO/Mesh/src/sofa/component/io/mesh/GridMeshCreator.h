@@ -40,16 +40,23 @@ public:
     virtual std::string type() { return "This object is procedurally created"; }
     bool canLoad() override { return true; }
     bool doLoad() override; ///< create the grid
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< type::Vec2i > resolution;
 
-    Data< type::Vec2i > resolution;  ///< Number of vertices in each direction
-    Data< int > trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< int > trianglePattern;
+
+
+
+    Data< type::Vec2i > d_resolution; ///< Number of vertices in each direction
+    Data< int > d_trianglePattern; ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles
 
 protected:
     GridMeshCreator();
 
     void doClearBuffers() override;
     ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.
-    unsigned vert( unsigned x, unsigned y) { return x + y*resolution.getValue()[0]; }
+    unsigned vert( unsigned x, unsigned y) { return x + y * d_resolution.getValue()[0]; }
 
     // To avoid edge redundancy, we insert the edges to a set, an then dump the set. Edge (a,b) is considered equal to (b,a), so only one of them is inserted
     std::set<Edge> uniqueEdges;                                ///< edges without redundancy

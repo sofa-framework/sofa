@@ -39,8 +39,15 @@ protected:
     BackgroundSetting();                                         ///< Default constructor
 
 public:
-    Data<sofa::type::RGBAColor> color;                          ///< Color of the Background of the Viewer.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
+    Data<sofa::type::RGBAColor> color;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
+
+
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the background
+    sofa::core::objectmodel::DataFileName d_image;                 ///< Image to be used as background of the viewer.
 
 };
 

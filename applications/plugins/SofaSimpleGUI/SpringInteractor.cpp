@@ -5,8 +5,9 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 typedef sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Vec3Types> FixedConstraint3;
 
 SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
@@ -27,7 +28,7 @@ SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     fixed->init();
 
     // create spring to drag the picked object
-    _spring = sofa::core::objectmodel::New<StiffSpringForceField3>(_interactorDof.get(),pickedDof);
+    _spring = sofa::core::objectmodel::New<SpringForceField3>(_interactorDof.get(),pickedDof);
     _interactionNode->addObject(_spring);
     _spring->addSpring(0,picked.index,stiffness,0.1,0.);
 
@@ -64,5 +65,4 @@ void SpringInteractor::detach()
     _interactionNode->addObject(_spring);
 }
 
-}//newgui
-}//sofa
+}

@@ -45,3 +45,12 @@ namespace sofa::component::visual
         "v23.06", "v23.12", \
         "Vec3State is now an alias of sofa::core::visual::VisualState<defaulttype::Vec3Types>.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_VISUAL
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif

@@ -64,6 +64,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/collision/testing/SpherePrimitiveCreator.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa {
 
@@ -71,6 +72,8 @@ struct TestSphere : public BaseSimulationTest
 {
     void SetUp() override
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+
         m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);

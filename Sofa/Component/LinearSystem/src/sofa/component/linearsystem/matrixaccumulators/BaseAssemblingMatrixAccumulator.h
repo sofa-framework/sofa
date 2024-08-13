@@ -52,9 +52,9 @@ protected:
 
     BaseAssemblingMatrixAccumulator();
 
-    Data< sofa::type::Vec2u > d_matrixSize; /// Size of the local matrix
-    Data< sofa::type::Vec2u > d_positionInGlobalMatrix; /// Position of this local matrix in the global matrix
-    Data< SReal > d_factor; /// factor applied on matrix entries
+    Data< sofa::type::Vec2u > d_matrixSize; ///< Size of the local matrix
+    Data< sofa::type::Vec2u > d_positionInGlobalMatrix; ///< Position of this local matrix in the global matrix
+    Data< SReal > d_factor; ///< Factor applied to matrix entries. This factor depends on the ODE solver and the associated component.
 
     sofa::linearalgebra::BaseMatrix* m_globalMatrix { nullptr };
 

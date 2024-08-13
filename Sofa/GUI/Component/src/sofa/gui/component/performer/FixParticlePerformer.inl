@@ -34,7 +34,7 @@ namespace sofa::gui::component::performer
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::start()
 {
-    const BodyPicked &picked=this->interactor->getBodyPicked();
+    const BodyPicked &picked=this->m_interactor->getBodyPicked();
 
     type::vector<unsigned int > points;
     typename DataTypes::Coord fixPoint;

@@ -114,16 +114,30 @@ protected:
         }
     };
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<VecCoord> _initialPoints;
 
-   
-    Data< VecCoord > _initialPoints;										///< the intial positions of the points
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<Real> f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<Real> f_dampingRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<bool> f_useAngularSprings;
+
+
+    Data< VecCoord > d_initialPoints; ///< Initial Position
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
-    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
-    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> d_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> d_useAngularSprings; ///< If Angular Springs should be used or not
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -151,15 +165,15 @@ public:
 
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        d_youngModulus.setValue((Real)modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        d_poissonRatio.setValue((Real)ratio);
     }
     void includeAngularSprings(const bool useAngularSprings)
     {
-        f_useAngularSprings.setValue(useAngularSprings);
+        d_useAngularSprings.setValue(useAngularSprings);
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -167,7 +181,7 @@ public:
     void updateLameCoefficients();
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void applyEdgeCreation(Index edgeIndex,
         EdgeRestInformation& ei,
@@ -176,23 +190,29 @@ public:
         const sofa::type::vector< SReal >& coefs);
 
     /** Method to initialize @sa TriangleRestInformation when a new triangle is created.
-    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    * Will be set as creation callback in the TriangleData @sa d_triangleInfo
     */
     void applyTriangleCreation(Index triangleIndex, TriangleRestInformation& tinfo,
         const core::topology::BaseMeshTopology::Triangle& triangle,
         const sofa::type::vector<Index>& ancestors,
         const sofa::type::vector<SReal>& coefs);
 
-    /** Method to update @sa triangleInfo when a triangle is removed.
-    * Will be set as destruction callback in the TriangleData @sa triangleInfo
+    /** Method to update @sa d_triangleInfo when a triangle is removed.
+    * Will be set as destruction callback in the TriangleData @sa d_triangleInfo
     */
     void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
 protected :
-    sofa::core::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
-    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<sofa::Index> triangleInfo;
 
-    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<sofa::Index> edgeInfo;
+
+    sofa::core::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > d_triangleInfo; ///< Internal triangle data
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
+
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return d_edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Helper_test)
 
@@ -25,7 +25,10 @@ set(SOURCE_FILES
     system/thread/CircularQueue_test.cpp
 )
 
-add_subdirectory(system/TestPlugin)
+add_subdirectory(system/TestPluginA)
+add_subdirectory(system/TestPluginB)
+add_subdirectory(system/TestPluginC)
+add_subdirectory(system/FailingPlugin)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Helper)

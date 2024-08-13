@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.LinearAlgebra LANGUAGES CXX)
 
 set(SOFALINEARALGEBRASRC_ROOT "src/sofa/linearalgebra")
@@ -13,8 +13,6 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/BaseVector.h
     ${SOFALINEARALGEBRASRC_ROOT}/BlockFullMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/BlockFullMatrix.inl
-    ${SOFALINEARALGEBRASRC_ROOT}/BlocFullMatrix.h
-    ${SOFALINEARALGEBRASRC_ROOT}/BlocFullMatrix.inl
     ${SOFALINEARALGEBRASRC_ROOT}/BlockDiagonalMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/BlockDiagonalMatrix.inl
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.h
@@ -37,8 +35,7 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct.h
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].h
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct.inl
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/TriangularSystemSolver.h
@@ -59,15 +56,13 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/FullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/FullVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
 )
 
-sofa_find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 3.3.5 REQUIRED)
 
-if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.10)
+if (SOFA_OPENMP)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFA_LINEARALGEBRA_HAVE_OPENMP
 endif()
 

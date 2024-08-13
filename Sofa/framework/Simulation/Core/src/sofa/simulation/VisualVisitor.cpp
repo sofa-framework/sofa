@@ -34,10 +34,8 @@
 #define DO_DEBUG_DRAW false
 #endif // DEBUG_DRAW
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
@@ -159,7 +157,7 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
     helper::ScopedAdvancedTimer timer("VisualUpdateVisitor process: " + vm->getName());
-    vm->updateVisual();
+    vm->updateVisual(vparams);
 }
 
 
@@ -171,7 +169,7 @@ Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
 }
 void VisualInitVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    vm->initVisual();
+    vm->initVisual(vparams);
 }
 
 VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* params)
@@ -206,7 +204,7 @@ void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::Beh
     bm->addBBox(minBBox, maxBBox);
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

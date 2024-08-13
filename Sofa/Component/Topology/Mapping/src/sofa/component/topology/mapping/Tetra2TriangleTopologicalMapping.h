@@ -81,9 +81,19 @@ public:
     bool checkTopologies() override;
 
 protected:
-    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
-    Data<bool> noNewTriangles; ///< If true no new triangles are being created
-    Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> flipNormals;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> noNewTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> noInitialTriangles;
+
+
+    Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
+    Data<bool> d_noNewTriangles; ///< If true no new triangles are being created
+    Data<bool> d_noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
     sofa::type::vector<Index> addedTriangleIndex;
     container::dynamic::TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };

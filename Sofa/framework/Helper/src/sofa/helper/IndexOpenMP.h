@@ -22,10 +22,8 @@
 #ifndef SOFA_HELPER_INDEX_TYPE_H
 #define SOFA_HELPER_INDEX_TYPE_H
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 /// From any given index type, this struct gives a OpenMP valid index
@@ -41,8 +39,6 @@ struct IndexOpenMP
 #endif
 }; // struct IndexOpenMP
 
-} // helper
-
-} // sofa
+}
 
 #endif // SOFA_HELPER_INDEX_TYPE_H

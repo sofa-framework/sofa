@@ -36,3 +36,12 @@ namespace sofa::component::mapping::linear
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::mapping::linear
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MAPPING_LINEAR
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Data renamed according to the guidelines")
+#endif

@@ -29,19 +29,13 @@
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
-    , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
+    , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used)"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
 {
@@ -373,9 +367,9 @@ std::string BaseObject::getPathName() const {
     return result;
 }
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+
 

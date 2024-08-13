@@ -72,7 +72,7 @@ public:
     ///// WARNING this method only add diagonal elements in the given matrix !
     void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    bool isDiagonal() const override { return _useLumpedMass.getValue(); }
+    bool isDiagonal() const override { return d_useLumpedMass.getValue(); }
 
     using HexahedralFEMForceFieldT::addKToMatrix;
     using MassT::addKToMatrix;
@@ -106,8 +106,8 @@ public:
 
     SReal getElementMass(sofa::Index index) const override;
 
-    void setDensity(Real d) {_density.setValue( d );}
-    Real getDensity() {return _density.getValue();}
+    void setDensity(Real d) {d_density.setValue(d );}
+    Real getDensity() {return d_density.getValue();}
 
 
 
@@ -122,14 +122,33 @@ protected:
     void computeLumpedMasses();
 
 protected:
-    Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
-    Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
-    core::topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    core::topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< total mass per element
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<Real> _density;
 
-    core::topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
-    core::topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<bool> _useLumpedMass;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> _elementMasses;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> _elementTotalMass;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> _particleMasses;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    Data<sofa::Index> _lumpedMasses;
+
+    Data<Real> d_density; ///< density == volumetric mass in english (kg.m-3)
+    Data<bool> d_useLumpedMass; ///< Does it use lumped masses?
+
+    core::topology::HexahedronData<sofa::type::vector<ElementMass> > d_elementMasses; ///< Mass matrices per element (M_i)
+    core::topology::HexahedronData<sofa::type::vector<Real> > d_elementTotalMass; ///< Total mass per element
+
+    core::topology::PointData<sofa::type::vector<Real> > d_particleMasses; ///< Mass per particle
+    core::topology::PointData<sofa::type::vector<Coord> > d_lumpedMasses; ///< Lumped masses
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

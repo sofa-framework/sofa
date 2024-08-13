@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Helper LANGUAGES CXX)
 
 # Eigen (header only)
@@ -210,7 +210,7 @@ sofa_find_package(Sofa.Topology REQUIRED)
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 # The default binary suffix for libraries/plugins is "_d" when using a debug build.
@@ -258,7 +258,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JS
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")
 
 # DiffLib (header only)
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${DIFFLIB_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${difflib_INCLUDE_DIR}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

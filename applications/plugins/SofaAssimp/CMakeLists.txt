@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaAssimp VERSION 0.2)
 
 
@@ -22,7 +22,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 ### Dependencies
 find_package(Sofa.Core REQUIRED)
-sofa_find_package(Assimp REQUIRED)
+sofa_find_package(assimp REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
 sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.Mapping REQUIRED)
@@ -35,7 +35,7 @@ sofa_find_package(Flexible QUIET)
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAASSIMP")
-target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARY} Sofa.Core Sofa.Component.Constraint.Projective Sofa.Component.Mass Sofa.Component.Mapping Sofa.GL.Component.Rendering3D Sofa.Component.StateContainer Sofa.Component.Collision.Geometry) 
+target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARIES} Sofa.Core Sofa.Component.Constraint.Projective Sofa.Component.Mass Sofa.Component.Mapping Sofa.GL.Component.Rendering3D Sofa.Component.StateContainer Sofa.Component.Collision.Geometry)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)

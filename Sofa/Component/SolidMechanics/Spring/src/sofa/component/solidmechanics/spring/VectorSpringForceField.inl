@@ -85,15 +85,15 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 {
-    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
     springArrayData.resize(n);
-    springArray.endEdit();
+    d_springArray.endEdit();
 }
 
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
-    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
 
     if (useTopology && m_topology)
     {
@@ -124,14 +124,20 @@ template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2)
     : Inherit(_object1, _object2)
     , m_potentialEnergy( 0.0 ), useTopology( false )
-    , springArray( initData(&springArray, "springs", "springs data"))
-    , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
-    , m_stiffness( initData(&m_stiffness,SReal(1.0),"stiffness","Default edge stiffness used in absence of file information") )
-    , m_viscosity( initData(&m_viscosity, SReal(1.0),"viscosity","Default edge viscosity used in absence of file information") )
-    , m_useTopology( initData(&m_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
+    , d_springArray(initData(&d_springArray, "springs", "springs data"))
+    , d_filename(initData(&d_filename, std::string(""), "filename", "File name from which the spring informations are loaded") )
+    , d_stiffness(initData(&d_stiffness, SReal(1.0), "stiffness", "Default edge stiffness used in absence of file information") )
+    , d_viscosity(initData(&d_viscosity, SReal(1.0), "viscosity", "Default edge viscosity used in absence of file information") )
+    , d_useTopology(initData(&d_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
     , l_topology(initLink("topology", "link to the topology container"))    
     , m_topology(nullptr)
 {
+    springArray.setParent(&d_springArray);
+    m_filename.setParent(&d_filename);
+    m_stiffness.setParent(&d_stiffness);
+    m_viscosity.setParent(&d_viscosity);
+    m_useTopology.setParent(&d_useTopology);
+
 }
 
 template<class DataTypes>
@@ -143,7 +149,7 @@ VectorSpringForceField<DataTypes>::~VectorSpringForceField()
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
-    if (m_useTopology.getValue()) 
+    if (d_useTopology.getValue())
     {
         if (l_topology.empty())
         {
@@ -164,11 +170,11 @@ void VectorSpringForceField<DataTypes>::init()
 
     if(m_topology)
     {
-        springArray.createTopologyHandler(m_topology);
-        springArray.setCreationCallback([this](Index edgeIndex, Spring& t,
-            const core::topology::BaseMeshTopology::Edge& e,
-            const sofa::type::vector<Index>& ancestors,
-            const sofa::type::vector<SReal>& coefs)
+        d_springArray.createTopologyHandler(m_topology);
+        d_springArray.setCreationCallback([this](Index edgeIndex, Spring& t,
+                                                 const core::topology::BaseMeshTopology::Edge& e,
+                                                 const sofa::type::vector<Index>& ancestors,
+                                                 const sofa::type::vector<SReal>& coefs)
         {
             createEdgeInformation(edgeIndex, t, e, ancestors, coefs);
         });
@@ -181,14 +187,14 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::bwdInit()
 {
     this->Inherit::bwdInit();
-    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
 
     if (springArrayData.empty())
     {
-        if (!m_filename.getValue().empty())
+        if (!d_filename.getValue().empty())
         {
             // load the springs from a file
-            load(m_filename.getFullPath().c_str());
+            load(d_filename.getFullPath().c_str());
             return;
         }
 
@@ -209,12 +215,12 @@ void VectorSpringForceField<DataTypes>::bwdInit()
             {
                 edgeArray[i][0] = i;
                 edgeArray[i][1] = i;
-                springArrayData[i].ks=Real(m_stiffness.getValue());
-                springArrayData[i].kd=Real(m_viscosity.getValue());
+                springArrayData[i].ks=Real(d_stiffness.getValue());
+                springArrayData[i].kd=Real(d_viscosity.getValue());
                 springArrayData[i].restVector = Coord();
             }
         }
-        springArray.endEdit();
+        d_springArray.endEdit();
     }
 }
 
@@ -223,19 +229,19 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
     msg_info() << "Creating "<< m_topology->getNbEdges() <<" Vector Springs from EdgeSetTopology";
 
-    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
 
     springArrayData.resize(m_topology->getNbEdges());
     const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        springArrayData[i].ks=Real(m_stiffness.getValue());
-        springArrayData[i].kd=Real(m_viscosity.getValue());
-        springArrayData[i].restVector = x0[m_topology->getEdge(i)[1]]-x0[m_topology->getEdge(i)[0]];
+        springArrayData[i].ks=Real(d_stiffness.getValue());
+        springArrayData[i].kd=Real(d_viscosity.getValue());
+        springArrayData[i].restVector = x0[m_topology->getEdge(i)[1]] - x0[m_topology->getEdge(i)[0]];
     }
 
-    springArray.endEdit();
+    d_springArray.endEdit();
 }
 
 template<class DataTypes>
@@ -254,7 +260,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
 
     if(useTopology)
     {
@@ -293,7 +299,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
             f2[e[1]]-=force;
         }
     }
-    springArray.endEdit();
+    d_springArray.endEdit();
 
     data_f1.endEdit();
     data_f2.endEdit();
@@ -313,7 +319,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    const type::vector<Spring>& springArrayData = springArray.getValue();
+    const type::vector<Spring>& springArrayData = d_springArray.getValue();
 
     if(useTopology)
     {
@@ -370,10 +376,10 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     std::vector< Vec3 > points;
     if(useTopology)
     {
-        for (unsigned int i=0; i<springArray.getValue().size(); i++)
+        for (unsigned int i=0; i < d_springArray.getValue().size(); i++)
         {
             const core::topology::BaseMeshTopology::Edge &e=m_topology->getEdge(i);
-            //const Spring &s=springArray[i];
+            //const Spring &s=d_springArray[i];
 
             points.push_back(Vec3(x1[e[0]]));
             points.push_back(Vec3(x2[e[1]]));
@@ -383,10 +389,10 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     else
     {
 
-        for (unsigned int i=0; i<springArray.getValue().size(); i++)
+        for (unsigned int i=0; i < d_springArray.getValue().size(); i++)
         {
             const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
-            //const Spring &s=springArray[i];
+            //const Spring &s=d_springArray[i];
 
             points.push_back(Vec3(x1[e[0]]));
             points.push_back(Vec3(x2[e[1]]));

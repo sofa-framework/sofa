@@ -1,59 +1,34 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <script-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
 if [ "$#" -ge 2 ]; then
-    BUILD_DIR="$(cd $1 && pwd)"
-    INSTALL_DIR="$(cd $2 && pwd)"
-    QT_LIB_DIR="$3"
-    QT_DATA_DIR="$4"
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    BUILD_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
+    QT_LIB_DIR="$4"
+    QT_DATA_DIR="$5"
 else
     usage; exit 1
 fi
+
+
+echo "SCRIPT_DIR = $SCRIPT_DIR"
+echo "BUILD_DIR = $BUILD_DIR"
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
+
 
 # Adapt INSTALL_DIR to IFW install
 if [ -d "$INSTALL_DIR/packages/Runtime/data" ]; then
     INSTALL_DIR="$INSTALL_DIR/packages/Runtime/data"
 fi
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+source $SCRIPT_DIR/common.sh
+clean_default_plugins "$INSTALL_DIR/lib"
 
 echo "Fixing up libs..."
 
@@ -218,6 +193,7 @@ for deps_file in postinstall_deps_SOFA.tmp postinstall_deps_plugin_*.tmp; do
     done
 done
 
+move_metis "$INSTALL_DIR"
 
 # Add QtWebEngine dependencies
 if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then

@@ -73,6 +73,9 @@ using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
+#include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 
 /// Change that to true if you want to print extra message on this component.
 /// You can eventually link that to an object attribute.
@@ -86,70 +89,6 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::behavior;
 using namespace sofa::simulation;
-
-sofa::simulation::Visitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-{
-    if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-    {
-        const ctime_t t0 = begin(node, c);
-        c->getConstraintResolution(_cparams, _res, _offset);
-        end(node, c, t0);
-    }
-    return RESULT_CONTINUE;
-}
-
-bool MechanicalGetConstraintResolutionVisitor::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-{
-    return false; // !map->isMechanical();
-}
-
-sofa::simulation::Visitor::Result MechanicalSetConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
-{
-    const ctime_t t0 = begin(node, c);
-
-    c->setConstraintId(contactId);
-    c->buildConstraintMatrix(cparams, res, contactId);
-
-    end(node, c, t0);
-    return RESULT_CONTINUE;
-}
-
-const char* MechanicalSetConstraint::getClassName() const
-{
-    return "MechanicalSetConstraint";
-}
-
-bool MechanicalSetConstraint::isThreadSafe() const
-{
-    return false;
-}
-
-bool MechanicalSetConstraint::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-{
-    return false; // !map->isMechanical();
-}
-
-void MechanicalAccumulateConstraint2::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    const ctime_t t0 = begin(node, map);
-    map->applyJT(cparams, res, res);
-    end(node, map, t0);
-}
-
-const char* MechanicalAccumulateConstraint2::getClassName() const
-{
-    return "MechanicalAccumulateConstraint2";
-}
-
-bool MechanicalAccumulateConstraint2::isThreadSafe() const
-{
-    return false;
-}
-
-bool MechanicalAccumulateConstraint2::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-{
-    return false; // !map->isMechanical();
-}
 
 ConstraintProblem::ConstraintProblem(bool printLog)
 {
@@ -279,7 +218,7 @@ ConstraintAnimationLoop::ConstraintAnimationLoop() :
     , d_tol( initData(&d_tol, 0.00001_sreal, "tolerance", "Tolerance of the Gauss-Seidel"))
     , d_maxIt( initData(&d_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
     , d_doCollisionsFirst(initData(&d_doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
-    , d_doubleBuffer( initData(&d_doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a doublebuffer to be accessible with an other thread"))
+    , d_doubleBuffer( initData(&d_doubleBuffer, false, "doubleBuffer","Double the buffer dedicated to the constraint problem to make it accessible to another thread"))
     , d_scaleTolerance( initData(&d_scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints"))
     , d_allVerified( initData(&d_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)"))
     , d_sor( initData(&d_sor, 1.0_sreal, "sor","Successive Over Relaxation parameter (0-2)"))
@@ -1019,9 +958,10 @@ ConstraintProblem* ConstraintAnimationLoop::getCP()
         return &CP1;
 }
 
-
-int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
-        .add< ConstraintAnimationLoop >()
-        .addAlias("MasterConstraintSolver");
+void registerConstraintAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Constraint animation loop manager")
+        .add< ConstraintAnimationLoop >());
+}
 
 } //namespace sofa::component::animationloop

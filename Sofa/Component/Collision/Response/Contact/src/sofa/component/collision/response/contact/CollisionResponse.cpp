@@ -36,9 +36,11 @@ int CollisionResponseClass = core::RegisterObject("Default class to create react
         ;
 
 CollisionResponse::CollisionResponse()
-    : response(initData(&response, "response", "contact response class"))
-    , responseParams(initData(&responseParams, "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
+    : d_response(initData(&d_response, "response", "contact response class"))
+    , d_responseParams(initData(&d_responseParams, "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
 {
+    response.setParent(&d_response);
+    responseParams.setParent(&d_responseParams);
 }
 
 sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::core::objectmodel::BaseContext *context)
@@ -70,9 +72,9 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
 void CollisionResponse::init()
 {
     Inherit1::init();
-    if (response.getValue().size() == 0)
+    if (d_response.getValue().size() == 0)
     {
-        response.setValue(initializeResponseOptions(getContext()));
+        d_response.setValue(initializeResponseOptions(getContext()));
     }
 }
 
@@ -96,17 +98,17 @@ void CollisionResponse::reset()
 
 void CollisionResponse::setDefaultResponseType(const std::string &responseT)
 {
-    if (response.getValue().size() == 0)
+    if (d_response.getValue().size() == 0)
     {
         const type::vector<std::string> listResponse(1,responseT);
         const sofa::helper::OptionsGroup responseOptions(listResponse);
-        response.setValue(responseOptions);
+        d_response.setValue(responseOptions);
     }
     else
     {
-        sofa::helper::OptionsGroup* options = response.beginEdit();
+        sofa::helper::OptionsGroup* options = d_response.beginEdit();
         options->setSelectedItem(responseT);
-        response.endEdit();
+        d_response.endEdit();
     }
 }
 
@@ -144,16 +146,15 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
 {
     std::stringstream errorStream;
 
-    for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
-        outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
+    for (const auto& [models, output] : outputsMap)
     {
-        const auto contactInsert = contactMap.insert(ContactMap::value_type(outputsIt->first, core::collision::Contact::SPtr()));
+        const auto contactInsert = contactMap.insert(ContactMap::value_type(models, core::collision::Contact::SPtr()));
         const ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second) //insertion success
         {
             // new contact
-            core::CollisionModel* model1 = outputsIt->first.first;
-            core::CollisionModel* model2 = outputsIt->first.second;
+            core::CollisionModel* model1 = models.first;
+            core::CollisionModel* model2 = models.second;
 
             dmsg_error_when(model1 == nullptr || model2 == nullptr) << "Contact found with an invalid collision model";
 
@@ -182,7 +183,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
                     setContactTags(model1, model2, contact);
                     contact->f_printLog.setValue(notMuted());
                     contact->init();
-                    contact->setDetectionOutputs(outputsIt->second);
+                    contact->setDetectionOutputs(output);
                     ++nbContact;
                 }
             }
@@ -190,7 +191,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
         else
         {
             // pre-existing and still active contact
-            contactIt->second->setDetectionOutputs(outputsIt->second);
+            contactIt->second->setDetectionOutputs(output);
             ++nbContact;
         }
     }
@@ -288,8 +289,8 @@ void CollisionResponse::setNumberOfContacts() const
 
 std::string CollisionResponse::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
 {
-    std::string responseUsed = response.getValue().getSelectedItem();
-    const std::string params = responseParams.getValue();
+    std::string responseUsed = d_response.getValue().getSelectedItem();
+    const std::string params = d_responseParams.getValue();
     if (!params.empty())
     {
         responseUsed += '?';

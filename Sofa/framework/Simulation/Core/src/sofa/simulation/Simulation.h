@@ -103,84 +103,84 @@ public:
     Simulation& operator=(const Simulation& n) = delete;
 
     /// Print all object in the graph
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_PRINT()
-    virtual void print(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_PRINT()
+    virtual void print(Node* root) = delete;
 
     /// Initialize the objects
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INIT()
-    virtual void init(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INIT()
+    virtual void init(Node* root) = delete;
 
     ///Init a node without changing the context of the simulation.
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITNODE()
-    virtual void initNode(Node* node);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INITNODE()
+    virtual void initNode(Node* node) = delete;
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_ANIMATE()
-    virtual void animate(Node* root, SReal dt=0.0);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_ANIMATE()
+    virtual void animate(Node* root, SReal dt=0.0) = delete;
 
     /// Update the Visual Models: triggers the Mappings
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUAL()
-    virtual void updateVisual(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATEVISUAL()
+    virtual void updateVisual(Node* root) = delete;
 
     /// Reset to initial state
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_RESET()
-    virtual void reset(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_RESET()
+    virtual void reset(Node* root) = delete;
 
     /// Initialize the textures
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_INITTEXTURE()
-    virtual void initTextures(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INITTEXTURE()
+    virtual void initTextures(Node* root) = delete;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATECONTEXT()
-    virtual void updateContext(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATECONTEXT()
+    virtual void updateContext(Node* root) = delete;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UPDATEVISUALCONTEXT()
-    virtual void updateVisualContext(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATEVISUALCONTEXT()
+    virtual void updateVisualContext(Node* root) = delete;
 
     /** Compute the bounding box of the scene.
      * If init is set to "true", then minBBox and maxBBox will be initialised to a default value
      * @warning MechanicalObjects with showObject member set to false are ignored
      * @sa computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
      */
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTEBBOX()
-    virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_COMPUTEBBOX()
+    virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true) = delete;
 
     /** Compute the bounding box of the scene.
      * Includes all objects, may they be displayed or not.
      * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
      * @deprecated
      */
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_COMPUTETOTALBBOX()
-    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_COMPUTETOTALBBOX()
+    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox) = delete;
 
     /// Render the scene
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DRAW()
-    virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_DRAW()
+    virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root) = delete;
 
     /// Export a scene to an OBJ 3D Scene
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTOBJ()
-    virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTOBJ()
+    virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true) = delete;
 
     /// Print all object in the graph in XML format
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTXML()
-    virtual void exportXML(Node* root, const char* fileName=nullptr);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTXML()
+    virtual void exportXML(Node* root, const char* fileName=nullptr) = delete;
 
     /// Print all objects in the graph in the given file (format is given by the filename extension)
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTGRAPH()
-    virtual void exportGraph(Node* root, const char* filename=nullptr);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTGRAPH()
+    virtual void exportGraph(Node* root, const char* filename=nullptr) = delete;
 
     /// Dump the current state in the given stream
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_DUMPSTATE()
-    virtual void dumpState( Node* root, std::ofstream& out );
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_DUMPSTATE()
+    virtual void dumpState( Node* root, std::ofstream& out ) = delete;
 
     /// Load a scene from a file
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_LOAD()
-    virtual NodeSPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_LOAD()
+    virtual NodeSPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0)) = delete;
 
     /// Unload a scene from a Node.
-    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_UNLOAD()
-    virtual void unload(NodeSPtr root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UNLOAD()
+    virtual void unload(NodeSPtr root) = delete;
 
     /// create a new graph(or tree) and return its root node.
     virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method

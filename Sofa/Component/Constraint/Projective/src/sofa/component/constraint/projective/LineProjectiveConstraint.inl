@@ -35,43 +35,47 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_origin( initData(&f_origin,CPos(),"origin","A point in the line"))
-    , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
+    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
+    , d_origin( initData(&d_origin,CPos(),"origin","A point in the line"))
+    , d_direction( initData(&d_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(new LineProjectiveConstraintInternalData<DataTypes>())    
+    , data(std::make_unique<LineProjectiveConstraintInternalData<DataTypes>>())
 {
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
+
+    f_indices.setParent(&d_indices);
+    f_drawSize.setParent(&d_drawSize);
+    f_origin.setParent(&d_origin);
+    f_direction.setParent(&d_direction);
 }
 
 
 template <class DataTypes>
 LineProjectiveConstraint<DataTypes>::~LineProjectiveConstraint()
 {
-    delete data;
 }
 
 template <class DataTypes>
 void LineProjectiveConstraint<DataTypes>::clearConstraints()
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void LineProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void LineProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::type::removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
+    sofa::type::removeValue(*d_indices.beginEdit(), index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -93,14 +97,14 @@ void LineProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize topological changes support
-        f_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
-    const Indices & indices = f_indices.getValue();
+    const Indices & indices = d_indices.getValue();
 
     const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
@@ -126,11 +130,11 @@ template <class DataTypes>
 void  LineProjectiveConstraint<DataTypes>::updateJacobian()
 {
     // normalize the normal vector
-    CPos n = f_direction.getValue();
+    CPos n = d_direction.getValue();
     if( n.norm()==0 )
-        n[0]=1; // arbritary normal vector
+        n[0]=1; // arbitrary normal vector
     else n *= 1/n.norm();
-    f_direction.setValue(n);
+    d_direction.setValue(n);
 
     // create the matrix blocks corresponding to the projection to the line: nn^t or to the identity
     Block bProjection;
@@ -141,7 +145,7 @@ void  LineProjectiveConstraint<DataTypes>::updateJacobian()
         }
 
     // get the indices sorted
-    Indices tmp = f_indices.getValue();
+    Indices tmp = d_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
 
     // resize the jacobian
@@ -212,10 +216,10 @@ void LineProjectiveConstraint<DataTypes>::projectPosition(const core::Mechanical
 {
     VecCoord& x = *xData.beginEdit();
 
-    const CPos& n = f_direction.getValue();
-    const CPos& o = f_origin.getValue();
+    const CPos& n = d_direction.getValue();
+    const CPos& o = d_origin.getValue();
 
-    const Indices& indices = f_indices.getValue();
+    const Indices& indices = d_indices.getValue();
     for(unsigned i=0; i<indices.size(); i++ )
     {
         // replace the point with its projection to the line
@@ -252,9 +256,9 @@ void LineProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const Indices & indices = f_indices.getValue();
+    const Indices & indices = d_indices.getValue();
 
-    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    if(d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::type::Vec3 > points;
         sofa::type::Vec3 point;
@@ -277,7 +281,7 @@ void LineProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f, 0.35f, 0.35f, 1.0f));
     }
 
 

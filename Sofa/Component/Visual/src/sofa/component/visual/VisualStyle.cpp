@@ -52,15 +52,17 @@ showAll, hideAll,\n\
         showWireframe hideWireframe").add<VisualStyle>();
 
 VisualStyle::VisualStyle()
-    :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
+    : d_displayFlags(initData(&d_displayFlags, "displayFlags", "Display Flags"))
 {
-    displayFlags.setWidget("widget_displayFlags");
+    d_displayFlags.setWidget("widget_displayFlags");
+
+    displayFlags.setParent(&d_displayFlags);
 }
 
 void VisualStyle::fwdDraw(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
-    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, displayFlags.getValue());
+    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, d_displayFlags.getValue());
 }
 
 void VisualStyle::bwdDraw(VisualParams* vparams)
@@ -72,7 +74,7 @@ helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulati
 {
     const VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
     node->addObject(visualStyle);
-    return helper::getWriteAccessor(visualStyle->displayFlags);
+    return helper::getWriteAccessor(visualStyle->d_displayFlags);
 }
 
 } // namespace sofa::component::visual

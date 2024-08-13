@@ -37,28 +37,45 @@ namespace sofa::component::collision::detection::intersection
  * - Cube/Cube
  * - Sphere/Sphere (rigid or vec3)
  * MeshMinProximityIntersection adds support for:
- * - Point/Point (if usePointPoint is true)
- * - Line/Point (if useLinePoint is true)
- * - Line/Line (if useLineLine is true)
+ * - Point/Point (if d_usePointPoint is true)
+ * - Line/Point (if d_useLinePoint is true)
+ * - Line/Line (if d_useLineLine is true)
  * - Triangle/Point
- * - Sphere/Point (if useSphereTriangle is true)
- * - RigidSphere/Point (if useSphereTriangle is true)
- * - Triangle/Sphere (if useSphereTriangle is true)
- * - Triangle/RigidSphere (if useSphereTriangle is true)
- * - Line/Sphere (if useSphereTriangle is true)
- * - Line/RigidSphere (if useSphereTriangle is true)
+ * - Sphere/Point (if d_useSphereTriangle is true)
+ * - RigidSphere/Point (if d_useSphereTriangle is true)
+ * - Triangle/Sphere (if d_useSphereTriangle is true)
+ * - Triangle/RigidSphere (if d_useSphereTriangle is true)
+ * - Line/Sphere (if d_useSphereTriangle is true)
+ * - Line/RigidSphere (if d_useSphereTriangle is true)
  * Note that MeshMinProximityIntersection ignores Triangle/Line and Triangle/Triangle intersections.
- * Datas can be set to ignore some pairs of collision models (useSphereTriangle, usePointPoint, etc).
+ * Datas can be set to ignore some pairs of collision models (d_useSphereTriangle, d_usePointPoint, etc).
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
-    Data<bool> useSphereTriangle; ///< activate Sphere-Triangle intersection tests
-    Data<bool> usePointPoint; ///< activate Point-Point intersection tests
-    Data<bool> useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
-    Data<bool> useLinePoint; ///< activate Line-Point intersection tests
-    Data<bool> useLineLine; ///< activate Line-Line  intersection tests
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useSphereTriangle;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> usePointPoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useSurfaceNormals;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLinePoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLineLine;
+
+
+
+    Data<bool> d_useSphereTriangle; ///< activate Sphere-Triangle intersection tests
+    Data<bool> d_usePointPoint; ///< activate Point-Point intersection tests
+    Data<bool> d_useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
+    Data<bool> d_useLinePoint; ///< activate Line-Point intersection tests
+    Data<bool> d_useLineLine; ///< activate Line-Line  intersection tests
 
 protected:
     MinProximityIntersection();
@@ -68,22 +85,41 @@ public:
     void init() override;
 
     bool getUseSurfaceNormals() const;
-
-    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
-    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+        
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection) override;
 
     template<typename SphereType1, typename SphereType2>
-    bool testIntersection(SphereType1& sph1, SphereType2& sph2)
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2, const core::collision::Intersection* currentIntersection)
     {
-        const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
         return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
     }
     template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
+    {
+        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+        const auto contactDist = currentIntersection->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+        return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
+    }
+
+
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+
+    template<typename SphereType1, typename SphereType2>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2)
+    {
+        return testIntersection(sph1, sph2, this);
+    }
+    template<typename SphereType1, typename SphereType2>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts)
     {
-        const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-        const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-        return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
+        return computeIntersection(sph1, sph2, contacts, this);
     }
 
 };

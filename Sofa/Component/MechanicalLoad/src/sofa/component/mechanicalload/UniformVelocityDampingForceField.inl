@@ -32,10 +32,11 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
-    : dampingCoefficient(initData(&dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
+    : d_dampingCoefficient(initData(&d_dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
     , d_implicit(initData(&d_implicit, false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
 {
-    core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
+    core::objectmodel::Base::addAlias(&d_dampingCoefficient, "damping" );
+    dampingCoefficient.setParent(&d_dampingCoefficient);
 }
 
 template<class DataTypes>
@@ -45,7 +46,7 @@ void UniformVelocityDampingForceField<DataTypes>::addForce (const core::Mechanic
     const VecDeriv& v = _v.getValue();
 
     for(unsigned int i=0; i<v.size(); i++)
-        f[i] -= v[i]*dampingCoefficient.getValue();
+        f[i] -= v[i] * d_dampingCoefficient.getValue();
 }
 
 template<class DataTypes>
@@ -62,7 +63,7 @@ void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::Mechanic
         sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
         const VecDeriv& dx = d_dx.getValue();
 
-        bfactor *= dampingCoefficient.getValue();
+        bfactor *= d_dampingCoefficient.getValue();
 
         for(unsigned int i=0; i<dx.size(); i++)
             df[i] -= dx[i]*bfactor;
@@ -75,7 +76,7 @@ void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgeb
     if( !d_implicit.getValue() ) return;
 
     const sofa::Size size = this->mstate->getMatrixSize();
-    const auto dampingContribution = -dampingCoefficient.getValue() * bFact;
+    const auto dampingContribution = -d_dampingCoefficient.getValue() * bFact;
 
     for( sofa::Size i = 0 ; i < size; ++i )
     {
@@ -92,7 +93,7 @@ void UniformVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behav
                        .withRespectToVelocityIn(this->mstate);
 
     const sofa::Size size = this->mstate->getMatrixSize();
-    const auto damping = sofa::helper::ReadAccessor(dampingCoefficient);
+    const auto damping = sofa::helper::ReadAccessor(d_dampingCoefficient);
     for( sofa::Size i = 0; i < size; ++i)
     {
         dfdv(i, i) += -damping.ref();

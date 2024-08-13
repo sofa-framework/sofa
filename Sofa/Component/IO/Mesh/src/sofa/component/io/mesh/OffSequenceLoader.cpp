@@ -39,8 +39,8 @@ int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at
 
 OffSequenceLoader::OffSequenceLoader()
     : MeshOffLoader()
-    , nbFiles( initData(&nbFiles,(int)1,"nbOfFiles","number of files in the sequence") )
-    , stepDuration( initData(&stepDuration,0.04,"stepDuration","how long each file is loaded") )
+    , d_nbFiles(initData(&d_nbFiles, (int)1, "nbOfFiles", "number of files in the sequence") )
+    , d_stepDuration(initData(&d_stepDuration, 0.04, "stepDuration", "how long each file is loaded") )
     , firstIndex(0) , currentIndex(0)
 {
     this->f_listening.setValue(true);
@@ -57,6 +57,10 @@ OffSequenceLoader::OffSequenceLoader()
     d_polygonsGroups.setDisplayed(false);
     d_tetrahedraGroups.setDisplayed(false);
     d_hexahedraGroups.setDisplayed(false);
+
+    nbFiles.setParent(&d_nbFiles);
+    stepDuration.setParent(&d_stepDuration);
+
 }
 
 
@@ -97,10 +101,10 @@ void OffSequenceLoader::handleEvent(sofa::core::objectmodel::Event* event)
     //load the next file at the beginning of animation step and if the current file duration is over
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
-        if ( (currentIndex-firstIndex)*stepDuration.getValue() <= this->getContext()->getTime())
+        if ((currentIndex-firstIndex) * d_stepDuration.getValue() <= this->getContext()->getTime())
         {
             currentIndex++;
-            if (currentIndex < firstIndex+nbFiles.getValue())
+            if (currentIndex < firstIndex + d_nbFiles.getValue())
             {
                 std::ostringstream os;
                 os << currentIndex;

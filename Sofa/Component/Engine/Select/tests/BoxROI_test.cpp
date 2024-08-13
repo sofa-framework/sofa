@@ -34,7 +34,7 @@ using ::testing::Types;
 #include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
 
-#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -59,7 +59,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 template <typename TDataType>
 struct BoxROITest :  public sofa::testing::BaseTest

@@ -26,7 +26,7 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/odesolver/forward/EulerSolver.h>
 #include <sofa/component/visual/VisualStyle.h>
@@ -104,8 +104,8 @@ int main(int argc, char** argv)
 
 
     // force field
-    using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<sofa::defaulttype::Vec3Types>;
-    auto spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
+    using SpringForceField3 = sofa::component::solidmechanics::spring::SpringForceField<sofa::defaulttype::Vec3Types>;
+    auto spring = sofa::core::objectmodel::New<SpringForceField3>();
     deformableBody->addObject(spring);
     spring->setName("F1");
     spring->addSpring( 1,0, 100., 1, splength );
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
 
 
     // ---------------- Interaction force between the deformable and the rigid body
-    StiffSpringForceField3::SPtr iff = sofa::core::objectmodel::New<StiffSpringForceField3>( DOF.get(), rigidParticleDOF.get() );
+    SpringForceField3::SPtr iff = sofa::core::objectmodel::New<SpringForceField3>( DOF.get(), rigidParticleDOF.get() );
     iff->setPathObject1("@"+deformableBody->getName()+"/"+DOF->getName());
     iff->setPathObject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     groot->addObject(iff);
@@ -180,7 +180,7 @@ int main(int argc, char** argv)
     // Display Flags
     sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
-    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    sofa::core::visual::DisplayFlags& flags = *style->d_displayFlags.beginEdit();
     flags.setShowNormals(false);
     flags.setShowInteractionForceFields(true);
     flags.setShowMechanicalMappings(true);
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
     flags.setShowWireFrame(false);
     flags.setShowVisualModels(true);
     flags.setShowBehaviorModels(true);
-    style->displayFlags.endEdit();
+    style->d_displayFlags.endEdit();
 
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph

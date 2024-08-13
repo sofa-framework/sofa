@@ -470,7 +470,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                         currentMeshTopology->setName(nameStream.str());
 
                         // filling up position array
-                        currentMeshTopology->seqPoints.setParent(&currentMechanicalObject->x);
+                        currentMeshTopology->d_seqPoints.setParent(&currentMechanicalObject->x);
 
                         unsigned int numTriangles = 0, numQuads = 0;
                         for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
@@ -480,7 +480,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 ++numQuads;
 
 
-                        type::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
+                        type::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->d_seqTriangles.beginEdit();
 #if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
@@ -530,7 +530,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 #endif
                         {
                             if( numTriangles ) seqTriangles.reserve(numTriangles);
-                            type::vector<core::topology::BaseMeshTopology::Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
+                            type::vector<core::topology::BaseMeshTopology::Quad>& seqQuads = *currentMeshTopology->d_seqQuads.beginEdit();
                             if( numQuads ) seqQuads.reserve(numQuads);
 
                             for( unsigned int k = 0 ; k < currentAiMesh->mNumFaces ; ++k )
@@ -567,10 +567,10 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 }
                             }
 
-                            currentMeshTopology->seqQuads.endEdit();
+                            currentMeshTopology->d_seqQuads.endEdit();
                         }
 
-                        currentMeshTopology->seqTriangles.endEdit();
+                        currentMeshTopology->d_seqTriangles.endEdit();
                     }
 
 
@@ -1096,8 +1096,9 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             localRigid.getCenter()[0] = localTranformation[0][3];
             localRigid.getCenter()[1] = localTranformation[1][3];
             localRigid.getCenter()[2] = localTranformation[2][3];
-            Mat3x3d rot; rot = localTranformation;
-            localRigid.getOrientation().fromMatrix(rot);
+            Mat3x3d localRotation;
+            localRotation = localTranformation;
+            localRigid.getOrientation().fromMatrix(localRotation);
 
             // apply the mesh transformation to the skeleton root joint only
             // we know that this joint is the root if the corresponding aiNode is the mesh node or its parent

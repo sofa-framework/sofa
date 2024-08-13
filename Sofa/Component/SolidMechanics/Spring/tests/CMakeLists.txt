@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.SolidMechanics.Spring_test)
 
 set(SOURCE_FILES
     PolynomialRestShapeSpringsForceField_test.cpp
     RestShapeSpringsForceField_test.cpp
-    StiffSpringForceField_test.cpp
+    SpringForceField_test.cpp
     TriangularBendingSprings_test.cpp
 )
 

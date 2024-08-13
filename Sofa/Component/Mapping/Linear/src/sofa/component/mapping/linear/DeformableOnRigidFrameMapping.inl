@@ -31,16 +31,23 @@ namespace sofa::component::mapping::linear
 
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
-    : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
-    , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
-    , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
-    , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
-    , m_rootAngularForceScaleFactor(initData(&m_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
-    , m_rootLinearForceScaleFactor(initData(&m_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
+    : d_index (initData (&d_index, ( unsigned ) 0, "index", "input DOF index" ) )
+    , d_indexFromEnd(initData (&d_indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector") )
+    , d_repartition (initData (&d_repartition, "repartition", "number of dest dofs per entry dof" ) )
+    , d_globalToLocalCoords (initData (&d_globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates" ) )
+    , d_rootAngularForceScaleFactor(initData(&d_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
+    , d_rootLinearForceScaleFactor(initData(&d_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
     , m_fromModel(nullptr)
     , m_toModel(nullptr)
     , m_fromRootModel(nullptr)
 {
+    index.setParent(&d_index);
+    indexFromEnd.setParent(&d_indexFromEnd);
+    repartition.setParent(&d_repartition);
+    globalToLocalCoords.setParent(&d_globalToLocalCoords);
+    m_rootAngularForceScaleFactor.setParent(&d_rootAngularForceScaleFactor);
+    m_rootLinearForceScaleFactor.setParent(&d_rootLinearForceScaleFactor);
+
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -96,10 +103,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::clear(int /*reserve*/)
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(unsigned int value)
 {
-    type::vector<unsigned int>& rep = *this->repartition.beginEdit();
+    type::vector<unsigned int>& rep = *this->d_repartition.beginEdit();
     rep.clear();
     rep.push_back(value);
-    this->repartition.endEdit();
+    this->d_repartition.endEdit();
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -141,20 +148,20 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
 
         rotatedPoints.resize(inDeformed.size());
         out.resize(inDeformed.size());
-        switch (repartition.getValue().size())
+        switch (d_repartition.getValue().size())
         {
         case 0 :
-            if (indexFromEnd.getValue())
+            if (d_indexFromEnd.getValue())
             {
-                translation = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getCenter();
-                (*inRigid)[(*inRigid).size() - 1 - index.getValue()].writeRotationMatrix(rotation);
-                rootX = (*inRigid)[(*inRigid).size() - 1 - index.getValue()];
+                translation = (*inRigid)[(*inRigid).size() - 1 - d_index.getValue()].getCenter();
+                (*inRigid)[(*inRigid).size() - 1 - d_index.getValue()].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[(*inRigid).size() - 1 - d_index.getValue()];
             }
             else
             {
-                translation = (*inRigid)[index.getValue()].getCenter();
-                (*inRigid)[index.getValue()].writeRotationMatrix(rotation);
-                rootX = (*inRigid)[index.getValue()];
+                translation = (*inRigid)[d_index.getValue()].getCenter();
+                (*inRigid)[d_index.getValue()].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[d_index.getValue()];
             }
 
             for(unsigned int i=0; i<inDeformed.size(); i++)
@@ -165,8 +172,8 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
             }
             break;
 
-        case 1 ://one value specified : uniform repartition mapping on the input dofs
-            val = repartition.getValue()[0];
+        case 1 ://one value specified : uniform d_repartition mapping on the input dofs
+            val = d_repartition.getValue()[0];
             cptOut=0;
             for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++)
             {
@@ -185,9 +192,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
             break;
 
         default :
-            if (repartition.getValue().size() != (*inRigid).size())
+            if (d_repartition.getValue().size() != (*inRigid).size())
             {
-                msg_error()<<"Error : mapping dofs repartition is not correct";
+                msg_error()<<"Error : mapping dofs d_repartition is not correct";
                 return;
             }
             cptOut=0;
@@ -198,7 +205,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
                 (*inRigid)[ifrom].writeRotationMatrix(rotation);
                 rootX = (*inRigid)[ifrom];
 
-                for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+                for(unsigned int ito=0; ito < d_repartition.getValue()[ifrom]; ito++)
                 {
                     rotatedPoints[cptOut] = rotation*inDeformed[cptOut];
                     out[cptOut] = rotatedPoints[cptOut];
@@ -250,15 +257,15 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
     {
         Deriv v,omega;//Vec3d
         out.resize(inDeformed.size());
-        if (indexFromEnd.getValue())
+        if (d_indexFromEnd.getValue())
         {
-            v = getVCenter((*inRigid)[(*inRigid).size() - 1 - index.getValue()]);
-            omega = getVOrientation((*inRigid)[(*inRigid).size() - 1 - index.getValue()]);
+            v = getVCenter((*inRigid)[(*inRigid).size() - 1 - d_index.getValue()]);
+            omega = getVOrientation((*inRigid)[(*inRigid).size() - 1 - d_index.getValue()]);
         }
         else
         {
-            v = getVCenter((*inRigid)[index.getValue()]);
-            omega = getVOrientation((*inRigid)[index.getValue()]);
+            v = getVCenter((*inRigid)[d_index.getValue()]);
+            omega = getVOrientation((*inRigid)[d_index.getValue()]);
         }
 
 
@@ -332,19 +339,19 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
             omega += cross(rotatedPoints[i],f);
         }
 
-        if (indexFromEnd.getValue())
+        if (d_indexFromEnd.getValue())
         {
 
-            getVCenter((*outRoot)[(*outRoot).size() - 1 - index.getValue()]) += v;
-            getVOrientation((*outRoot)[(*outRoot).size() - 1 - index.getValue()]) += omega;
+            getVCenter((*outRoot)[(*outRoot).size() - 1 - d_index.getValue()]) += v;
+            getVOrientation((*outRoot)[(*outRoot).size() - 1 - d_index.getValue()]) += omega;
             for(unsigned int i=0; i<in.size(); i++)
                 out[i]+=rootX.getOrientation().inverseRotate(in[i]);
         }
         else
         {
 
-            getVCenter((*outRoot)[index.getValue()]) += v;
-            getVOrientation((*outRoot)[index.getValue()]) += omega;
+            getVCenter((*outRoot)[d_index.getValue()]) += v;
+            getVOrientation((*outRoot)[d_index.getValue()]) += omega;
             for(unsigned int i=0; i<in.size(); i++)
                 out[i]+=rootX.getOrientation().inverseRotate(in[i]);
         }
@@ -426,16 +433,16 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     ++colIt;
                 }
 
-                const InRootDeriv result(m_rootLinearForceScaleFactor.getValue() * v, m_rootAngularForceScaleFactor.getValue() * omega);
+                const InRootDeriv result(d_rootLinearForceScaleFactor.getValue() * v, d_rootAngularForceScaleFactor.getValue() * omega);
 
-                if (!indexFromEnd.getValue())
+                if (!d_indexFromEnd.getValue())
                 {
-                    oRoot.addCol(index.getValue(), result);
+                    oRoot.addCol(d_index.getValue(), result);
                 }
                 else
                 {
                     const unsigned int numDofs = m_fromModel->getSize();
-                    oRoot.addCol(numDofs - 1 - index.getValue(), result);
+                    oRoot.addCol(numDofs - 1 - d_index.getValue(), result);
                 }
             }
         }

@@ -30,11 +30,8 @@
 #include <sofa/type/BoundingBox.h>
 #include <limits>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 template<class DataTypes>
@@ -139,12 +136,11 @@ void OglTetrahedralModel<DataTypes>::init()
     useTopology = true;
     modified = true;
     VisualModel::init();
-    updateVisual();
 
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::initVisual()
+void OglTetrahedralModel<DataTypes>::doInitVisual(const sofa::core::visual::VisualParams* vparams)
 {
     const type::vector<Coord> tmpvertices = m_positions.getValue();
     type::vector<type::Vec3f> vertices;
@@ -154,8 +150,8 @@ void OglTetrahedralModel<DataTypes>::initVisual()
         vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
-    m_mappingTableValues->initVisual();
-    m_runSelectTableValues->initVisual();
+    m_mappingTableValues->initVisual(vparams);
+    m_runSelectTableValues->initVisual(vparams);
 
     glGenBuffersARB(1, &m_vbo);
     unsigned positionsBufferSize;
@@ -176,10 +172,9 @@ void OglTetrahedralModel<DataTypes>::initVisual()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::updateVisual()
+void OglTetrahedralModel<DataTypes>::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
     // Workaround if updateVisual() is called without an opengl context
-    const auto* vparams = core::visual::VisualParams::defaultInstance();
     if (!vparams->isSupported(core::visual::API_OpenGL))
     {
         return;
@@ -382,10 +377,6 @@ void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 }
 
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel
 
 #endif //OGLTETRAHEDRALMODEL_H_

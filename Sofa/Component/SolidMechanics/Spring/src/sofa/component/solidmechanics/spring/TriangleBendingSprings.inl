@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangleBendingSprings.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
@@ -46,8 +46,8 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
     const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    Real s = (Real)this->ks.getValue();
-    Real d = (Real)this->kd.getValue();
+    Real s = (Real)this->d_ks.getValue()[0];
+    Real d = (Real)this->d_kd.getValue()[0];
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }
@@ -106,7 +106,7 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
     this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
-    StiffSpringForceField<DataTypes>::clear();
+    SpringForceField<DataTypes>::clear();
 
     // Set the bending springs
 
@@ -148,7 +148,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 
 }
 

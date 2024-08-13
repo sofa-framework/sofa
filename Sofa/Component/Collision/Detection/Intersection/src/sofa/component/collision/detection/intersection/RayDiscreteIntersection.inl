@@ -31,8 +31,10 @@ namespace sofa::component::collision::detection::intersection
 
 
 template<class T>
-bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, collision::geometry::TSphere<T>& sph2)
+bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, collision::geometry::TSphere<T>& sph2, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     // Center of the sphere
     const type::Vec3 sph2Pos(sph2.center());
     // Radius of the sphere
@@ -49,8 +51,10 @@ bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, 
 }
 
 template<class T>
-int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1, collision::geometry::TSphere<T>& sph2, OutputVector* contacts)
+int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1, collision::geometry::TSphere<T>& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     // Center of the sphere
     const type::Vec3 sph2Pos(sph2.center());
     // Radius of the sphere
@@ -81,6 +85,19 @@ int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1,
     detection->id = ray1.getIndex();
 
     return 1;
+}
+
+
+template<class T>
+bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, collision::geometry::TSphere<T>& sph2)
+{
+    return testIntersection(ray1, sph2, intersection);
+}
+
+template<class T>
+int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1, collision::geometry::TSphere<T>& sph2, OutputVector* contacts)
+{
+    return computeIntersection(ray1, sph2, contacts, intersection);
 }
 
 } //namespace sofa::component::collision::detection::intersection

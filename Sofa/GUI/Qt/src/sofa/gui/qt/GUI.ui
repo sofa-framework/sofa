@@ -78,11 +78,8 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="fileNewAction"/>
     <addaction name="fileOpenAction"/>
     <addaction name="fileReloadAction"/>
-    <addaction name="fileSaveAction"/>
-    <addaction name="fileSaveAsAction"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="fileExitAction"/>
@@ -659,24 +656,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
     </layout>
    </widget>
   </widget>
-  <action name="fileNewAction">
-   <property name="icon">
-    <iconset>
-     <normaloff>image2</normaloff>image2</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New</string>
-   </property>
-   <property name="iconText">
-    <string>New</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>fileNewAction</cstring>
-   </property>
-  </action>
   <action name="fileOpenAction">
    <property name="icon">
     <iconset>
@@ -707,41 +686,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
    </property>
    <property name="name" stdset="0">
     <cstring>fileReloadAction</cstring>
-   </property>
-  </action>
-  <action name="fileSaveAction">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>image4</normaloff>image4</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Save</string>
-   </property>
-   <property name="iconText">
-    <string>Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>fileSaveAction</cstring>
-   </property>
-  </action>
-  <action name="fileSaveAsAction">
-   <property name="text">
-    <string>Save &amp;As...</string>
-   </property>
-   <property name="iconText">
-    <string>Save As</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>fileSaveAsAction</cstring>
    </property>
   </action>
   <action name="fileExitAction">
@@ -887,22 +831,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
  <resources/>
  <connections>
   <connection>
-   <sender>fileNewAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>fileNew()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>fileOpenAction</sender>
    <signal>triggered()</signal>
    <receiver>GUI</receiver>
@@ -923,38 +851,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
    <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileReload()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>fileSaveAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>fileSave()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>fileSaveAsAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>fileSaveAs()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -1101,7 +997,6 @@ State 2: dirty, in that state the button reflect the fact that the scene graph v
   <slot>popupOpenFileSelector()</slot>
   <slot>fileReload()</slot>
   <slot>fileSave()</slot>
-  <slot>fileSaveAs()</slot>
   <slot>fileExit()</slot>
   <slot>editRecordDirectory()</slot>
   <slot>showPluginManager()</slot>

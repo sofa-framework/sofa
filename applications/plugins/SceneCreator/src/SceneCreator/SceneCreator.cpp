@@ -33,14 +33,14 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
 
-namespace sofa
+
+namespace sofa::modeling
 {
-namespace modeling {
 
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
@@ -669,7 +669,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
                                 {"name",oss.str()+"_mass"},
                                 {"vertexMass", str(totalMass/numParticles)}});
 
-    simpleapi::createObject(node, "StiffSpringForceField", {
+    simpleapi::createObject(node, "SpringForceField", {
                                 {"name", oss.str()+"_spring"},
                                 {"spring", springs.str()}
                             });
@@ -712,8 +712,4 @@ void setDataLink(BaseData* source, BaseData* target)
 
 
 
-} // modeling
-
-
-
-} // sofa
+}

@@ -56,11 +56,10 @@ protected:
     Data<int> d_m1; ///< index of the spliding point on the first model
     Data<int> d_m2a; ///< index of one end of the sliding axis
     Data<int> d_m2b; ///< index of the other end of the sliding axis
-    Data<Deriv> d_force; ///< interaction force
+    Data<Deriv> d_force; ///< force (impulse) used to solve the constraint
 
     Real m_dist;	// constraint violation
     Real m_thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
-    unsigned int m_cid;
 
 
     SlidingLagrangianConstraint();

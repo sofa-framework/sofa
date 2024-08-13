@@ -26,10 +26,8 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source)
@@ -75,7 +73,7 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE; // continue the propagation of state changes
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

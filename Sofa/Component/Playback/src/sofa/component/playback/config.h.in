@@ -47,3 +47,12 @@ namespace sofa::component::playback
 #ifndef SOFAEXPORTER_HAVE_ZLIB
 #define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_PLAYBACK
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif

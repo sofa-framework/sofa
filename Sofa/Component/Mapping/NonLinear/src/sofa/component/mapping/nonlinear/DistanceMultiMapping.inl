@@ -34,13 +34,16 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+    , d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , d_restLengths(initData(&d_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    f_computeDistance.setParent(&d_computeDistance);
+    f_restLengths.setParent(&d_restLengths);
+
 }
 
 template <class TIn, class TOut>
@@ -97,43 +100,34 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
-    // only used for warning message
-    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
-
     // compute the rest lengths if they are not known
-    if( f_restLengths.getValue().size() != links.size() )
+    if(d_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
+        helper::WriteAccessor< Data<type::vector<Real> > > restLengths(d_restLengths);
         restLengths.resize( links.size() );
-        if(!(f_computeDistance.getValue()))
+        if(!(d_computeDistance.getValue()))
         {
             for(unsigned i=0; i<links.size(); i++ )
             {
                 const type::Vec2i& pair0 = pairs[ links[i][0] ];
                 const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-                const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-                const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+                auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+                auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+                const InCoord& pos0 = posPair0[pair0[1]];
+                const InCoord& pos1 = posPair1[pair1[1]];
 
                 restLengths[i] = (pos0 - pos1).norm();
-
-                msg_error_when(restLengths[i] == 0 && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
+            {
                 restLengths[i] = (Real)0.;
+            }
         }
-    }
-    else if( compliance ) // manually set // for warning message
-    {
-        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
-        std::stringstream sstream;
-        for(unsigned i=0; i<links.size(); i++ )
-            if( restLengths[i]<=std::numeric_limits<SReal>::epsilon() ) sstream <<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance \n";
-        msg_error_when(!sstream.str().empty()) << sstream.str();
     }
 
     alloc();
@@ -153,7 +147,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
     OutVecCoord& out = *outPos[0];
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
-    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(d_restLengths);
     const SeqEdges& links = l_topology->getEdges();
 
 
@@ -196,7 +190,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
         {
             invlengths[i] = 0;
 
-            // arbritary vector mapping all directions
+            // arbitrary vector mapping all directions
             static const Real p = static_cast<Real>(1) / std::sqrt(static_cast<Real>(In::spatial_dimensions));
             gap.fill(p);
         }
@@ -268,7 +262,8 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     if( !geometricStiffness ) return;
 
     const SReal kfactor = mparams->kFactor();
-    const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
+    auto childForceRa = this->getToModels()[0]->readForces();
+    const OutVecDeriv& childForce = childForceRa.ref();
     const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
@@ -287,7 +282,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for(unsigned i=0; i<links.size(); i++ )
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -357,7 +352,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
@@ -425,7 +420,7 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         const OutDeriv force_i = childForce[i];
 
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
+        // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( force_i[0] < 0 || geometricStiffness==1 )
         {
@@ -469,6 +464,8 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     const SeqEdges& links = l_topology->getEdges();
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
@@ -481,8 +478,11 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
             const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-            const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-            const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+            auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+            auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+            const InCoord& pos0 = posPair0[pair0[1]];
+            const InCoord& pos1 = posPair1[pair1[1]];
 
             points.push_back( type::Vec3( TIn::getCPos(pos0) ) );
             points.push_back( type::Vec3( TIn::getCPos(pos1) ) );
@@ -496,8 +496,11 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
             const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
-            const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
-            const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
+            auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
+            auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
+
+            const InCoord& pos0 = posPair0[pair0[1]];
+            const InCoord& pos1 = posPair1[pair1[1]];
 
             type::Vec3 p0 = TIn::getCPos(pos0);
             type::Vec3 p1 = TIn::getCPos(pos1);

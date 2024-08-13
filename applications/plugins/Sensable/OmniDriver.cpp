@@ -338,7 +338,7 @@ int OmniDriver::initDevice(OmniData& data)
 
 OmniDriver::OmniDriver()
     : scale(initData(&scale, 1.0, "scale","Default scale applied to the Phantom Coordinates. "))
-    , forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    , forceScale(initData(&forceScale, 1.0, "forceScale","Default scaling factor applied to the force feedback"))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
     , positionTool(initData(&positionTool, Vec3d(0,0,0), "positionTool","Position of the tool in the omni end effector frame"))
@@ -451,7 +451,7 @@ void OmniDriver::draw()
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
                 visu_base->name.setValue("BaseOmni");
-        visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -462,7 +462,7 @@ void OmniDriver::draw()
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
                 visu_end->name.setValue("Stylus");
-        visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue(type::Vec3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -573,7 +573,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 unsigned char buttonState = 0;
                 if(btn1) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask;
                 if(!toolSelector.getValue() && btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask;
-                Vector3 dummyVector;
+                Vec3 dummyVector;
                 Quat dummyQuat;
                 sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,buttonState);
                 simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
@@ -634,7 +634,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='H' || kpe->getKey()=='h')
         {
             sout << "emulated button 1 pressed" << sendl;
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
@@ -644,7 +644,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='J' || kpe->getKey()=='j')
         {
             sout << "emulated button 2 pressed" << sendl;
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
@@ -662,7 +662,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             || kre->getKey()=='J' || kre->getKey()=='j')
         {
             sout << "emulated button released" << sendl;
-            Vector3 dummyVector;
+            Vec3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node

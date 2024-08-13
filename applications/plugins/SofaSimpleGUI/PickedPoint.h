@@ -9,8 +9,9 @@ using sofa::core::behavior::BaseMechanicalState;
 typedef std::size_t nat;
 typedef sofa::type::Vec3 Vec3;
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 
 /**
  * @brief The PickedPoint struct represents a vertex of a State, typically picked using the mouse.
@@ -58,6 +59,6 @@ struct SOFA_SOFASIMPLEGUI_API PickedPoint
 };
 
 }
-}
+
 
 #endif // GLPICKEDPOINT_H

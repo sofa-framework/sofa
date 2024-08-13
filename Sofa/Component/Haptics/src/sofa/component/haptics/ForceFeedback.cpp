@@ -36,7 +36,7 @@ void ForceFeedback::init()
     context = sofa::simulation::node::getNodeFrom(getContext());
 }
 
-void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+void ForceFeedback::setReferencePosition(sofa::type::Transform<SReal>& referencePosition)
 {
     SOFA_UNUSED(referencePosition);
 }

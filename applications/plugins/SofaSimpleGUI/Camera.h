@@ -4,8 +4,9 @@
 #include <SofaSimpleGUI/config.h>
 #include <Eigen/Geometry>
 
-namespace sofa{
-namespace simplegui{
+
+namespace sofa::simplegui
+{
 
 /**
  * @brief The Camera class implements a simple viewpoint transformation, and its update using the mouse.
@@ -79,7 +80,6 @@ protected:
 
 
 
-}
 }
 
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Core_test)
 
@@ -23,10 +23,12 @@ set(SOURCE_FILES
     objectmodel/SingleLink_test.cpp
     objectmodel/VectorData_test.cpp
     topology/BaseMeshTopology_test.cpp
+    topology/TopologySubsetIndices_test.cpp
     DataEngine_test.cpp
     Engine_test.cpp
     MatrixAccumulator_test.cpp
     ObjectFactory_test.cpp
+    ObjectFactoryJson_test.cpp
     PathResolver_test.cpp
     TestEngine.cpp
     TrackedData_test.cpp

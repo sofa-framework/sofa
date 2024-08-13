@@ -23,122 +23,44 @@
 
 #include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/type/isRigidType.h>
 
 namespace sofa::gui::component::performer
 {
 
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::start()
-{
-    if (m_constraint)
-    {
-        clear();
-        return;
-    }
-    const BodyPicked picked=this->interactor->getBodyPicked();
-    if (!picked.body && !picked.mstate) return;
-
-    if (!start_partial(picked)) return; //template specialized code is here
-
-    double distanceFromMouse=picked.rayLength;
-    this->interactor->setDistanceFromMouse(distanceFromMouse);
-    sofa::component::collision::geometry::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    m_constraint->init();
-    this->interactor->setMouseAttached(true);
-}
-
-
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::execute()
-{
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::mechanicalparams::defaultInstance());
-    mapping->applyJ(core::mechanicalparams::defaultInstance());
-    this->interactor->setMouseAttached(true);
-}
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (m_constraint)
-    {
-        core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
-        const core::visual::DisplayFlags backup = vp->displayFlags();
-        vp->displayFlags() = flags;
-        m_constraint->draw(vp);
-        vp->displayFlags() = backup;
-    }
-}
 
 template <class DataTypes>
 ConstraintAttachBodyPerformer<DataTypes>::ConstraintAttachBodyPerformer(BaseMouseInteractor *i):
-    TInteractionPerformer<DataTypes>(i),
-    mapper(nullptr)
-{
-    flags.setShowVisualModels(false);
-    flags.setShowInteractionForceFields(true);
-}
-
-template <class DataTypes>
-void ConstraintAttachBodyPerformer<DataTypes>::clear()
-{
-    if (m_constraint)
-    {
-        m_constraint->cleanup();
-        m_constraint->getContext()->removeObject(m_constraint);
-        m_constraint.reset();
-    }
-
-    if (mapper)
-    {
-        mapper->cleanup();
-        delete mapper; mapper=nullptr;
-    }
-
-    this->interactor->setDistanceFromMouse(0);
-    this->interactor->setMouseAttached(false);
-}
+  BaseAttachBodyPerformer<DataTypes>(i)
+{}
 
 
 template <class DataTypes>
-ConstraintAttachBodyPerformer<DataTypes>::~ConstraintAttachBodyPerformer()
-{
-    clear();
-}
-
-template <class DataTypes>
-bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
+bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& picked)
 {
     core::behavior::MechanicalState<DataTypes>* mstateCollision=nullptr;
     int index;
     if (picked.body)
     {
-        mapper = MouseContactMapper::Create(picked.body);
-        if (!mapper)
+        this->m_mapper = MouseContactMapper::Create(picked.body);
+        if (!(this->m_mapper))
         {
-            msg_error(this->interactor) << "Problem with Mouse Mapper creation.";
+            msg_error(this->m_interactor) << "Problem with Mouse Mapper creation.";
             return false;
         }
         const std::string name = "contactMouse";
-        mstateCollision = mapper->createMapping(name.c_str());
-        mapper->resize(1);
-
-        const typename DataTypes::Coord pointPicked=picked.point;
+        mstateCollision = this->m_mapper->createMapping(name.c_str());
+        this->m_mapper->resize(1);
+        
         const int idx=picked.indexCollisionElement;
+        typename DataTypes::CPos pointPicked = picked.point;
         typename DataTypes::Real r=0.0;
-
-        index = mapper->addPointB(pointPicked, idx, r);
-        mapper->update();
+        typename DataTypes::Coord dofPicked;
+        DataTypes::setCPos(dofPicked, pointPicked);
+        index = this->m_mapper->addPointB(dofPicked, idx, r);
+        this->m_mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -161,27 +83,46 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            msg_error(this->interactor) << "incompatible MState during Mouse Interaction.";
+            msg_error(this->m_interactor) << "incompatible MState during Mouse Interaction.";
             return false;
         }
     }
 
-    mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
-    mstate2 = mstateCollision;
-
-    type::Vec3d point1;
-    type::Vec3d point2;
+    m_mstate1 = dynamic_cast<MouseContainer*>(this->m_interactor->getMouseContainer());
+    m_mstate2 = mstateCollision;
 
     using sofa::component::constraint::lagrangian::model::BilateralLagrangianConstraint;
 
-    m_constraint = sofa::core::objectmodel::New<BilateralLagrangianConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
-    BilateralLagrangianConstraint< DataTypes >* bconstraint = static_cast< BilateralLagrangianConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
+
+    this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<DataTypes> >(m_mstate1, m_mstate2);
+    auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< DataTypes >* >(this->m_interactionObject.get());
+
+    if constexpr (sofa::type::isRigidType<DataTypes>())
+    {
+        // BilateralLagrangianConstraint::d_keepOrientDiff is protected
+        auto* keepOrientDiffBaseData = bconstraint->findData("keepOrientationDifference");
+        assert(keepOrientDiffBaseData);
+        auto* keepOrientDiffData = dynamic_cast<Data<bool>*>(keepOrientDiffBaseData);
+        assert(keepOrientDiffData);
+
+        // setting "keepOrientDiffData" to True
+        // would avoid having the beam forced to be oriented with the world frame.
+        // But it is unstable in v24.12 so for now, we set to false.
+        keepOrientDiffData->setValue(false);
+        
+        bconstraint->init();
+    }
+
     bconstraint->setName("Constraint-Mouse-Contact");
 
-    type::Vec3d normal = point1-point2;
+    static const typename DataTypes::Coord point1 {};
+    static const typename DataTypes::Coord point2 {};
+    static const typename DataTypes::Deriv normal {};
 
-    bconstraint->addContact(normal, point1, point2, normal.norm(), 0, index, point2, point1);
-
+    bconstraint->addContact(normal, point1, point2, 0.0, 0, index, point2, point1);
+    
+    bconstraint->bwdInit();
+    
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (auto tag : tags)
         bconstraint->addTag(tag);

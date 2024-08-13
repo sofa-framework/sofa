@@ -37,7 +37,7 @@ using sofa::simulation::graph::DAGSimulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;

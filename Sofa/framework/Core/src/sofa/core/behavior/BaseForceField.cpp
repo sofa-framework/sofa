@@ -31,7 +31,7 @@ namespace sofa::core::behavior
 
 BaseForceField::BaseForceField()
     : StateAccessor()
-    , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
+    , isCompliance(this, "v24.12", "v25.06", "isCompliance", "Consider the component as a compliance, else as a stiffness")
     , rayleighStiffness( initData(&rayleighStiffness, 0_sreal, "rayleighStiffness", "Rayleigh damping - stiffness matrix coefficient"))
 {
 }

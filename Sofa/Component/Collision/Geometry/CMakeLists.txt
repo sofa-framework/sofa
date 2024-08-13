@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Collision.Geometry LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR "src/sofa/component/collision/geometry")

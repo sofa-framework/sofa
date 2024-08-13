@@ -34,11 +34,7 @@
 #include <sofa/gl/component/shader/OglAttribute.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 /**
@@ -99,13 +95,13 @@ private:
 
 public:
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
     void handleTopologyChange() override;
 
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     void computeMeshFromTopology();
 
     bool insertInNode(core::objectmodel::BaseNode* node) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
@@ -113,11 +109,7 @@ public:
 
 };
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel
 
 
 #endif // OGLVOLUMETRICMODEL_H_

@@ -29,10 +29,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -111,14 +109,10 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace visualmodel
+namespace component::visualmodel
 {
 
 using namespace gpu::cuda;
@@ -138,13 +132,13 @@ void CudaVisualModel< TDataTypes >::init()
     {
         topology = this->getContext()->getMeshTopology();
     }
-    updateVisual();
+    updateTopologyAndNormals();
 }
 
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::reinit()
 {
-    updateVisual();
+    updateTopologyAndNormals();
 }
 
 template<class TDataTypes>
@@ -290,11 +284,17 @@ void CudaVisualModel< TDataTypes >::updateNormals()
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::updateVisual()
+void CudaVisualModel< TDataTypes >::updateTopologyAndNormals()
 {
     updateTopology();
     if (computeNormals.getValue())
         updateNormals();
+}
+
+template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::doUpdateVisual(const core::visual::VisualParams* vparams)
+{
+    updateTopologyAndNormals();
 }
 
 template<class TDataTypes>
@@ -482,9 +482,8 @@ void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, 
 }
 
 
-} // namespace visualmodel
+} // namespace component::visualmodel
 
-} // namespace component
 
 } // namespace sofa
 

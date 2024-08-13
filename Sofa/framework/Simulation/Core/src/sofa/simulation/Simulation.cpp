@@ -230,12 +230,12 @@ void animate(Node* root, SReal dt)
 void updateVisual(Node* root)
 {
     SCOPED_TIMER("Simulation::updateVisual");
-
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
 
     if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
-        vloop->updateStep(params);
+        vloop->updateStep(vparams);
     }
     else
     {
@@ -271,18 +271,17 @@ void reset(Node* root)
     root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
     root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     root->execute<UpdateMappingVisitor>(params);
-    root->execute<VisualUpdateVisitor>(params);
 }
 
 void initTextures(Node* root)
 {
     if (!root)
         return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
 
     if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
-        vloop->initStep(params);
+        vloop->initStep(vparams);
     }
     else
     {
@@ -291,7 +290,7 @@ void initTextures(Node* root)
     }
 
     SimulationInitTexturesDoneEvent endInit;
-    PropagateEventVisitor pe{params, &endInit};
+    PropagateEventVisitor pe{vparams, &endInit};
     root->execute(pe);
 }
 
@@ -480,122 +479,12 @@ Simulation::Simulation()
         sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Core", "sofa::simulation::common::init()");
 }
 
-
 Simulation::~Simulation()
 {}
-
-void setSimulation ( Simulation* s )
-{
-    SOFA_UNUSED(s);
-}
 
 Simulation* getSimulation()
 {
     return Simulation::theSimulation.get();
 }
 
-/// Print all object in the graph
-void Simulation::print ( Node* root )
-{
-    sofa::simulation::node::print(root);
-}
-
-/// Print all object in the graph
-void Simulation::exportXML ( Node* root, const char* fileName )
-{
-    sofa::simulation::node::exportInXML(root, fileName);
-}
-
-/// Print all object in the graph
-void Simulation::exportGraph ( Node* root, const char* filename )
-{
-    sofa::simulation::node::exportGraph(root, filename);
-}
-
-/// Initialize the scene.
-void Simulation::init ( Node* root )
-{
-    sofa::simulation::node::initRoot(root);
-}
-
-void Simulation::initNode( Node* node)
-{
-    sofa::simulation::node::init(node);
-}
-
-/// Execute one timestep. If do is 0, the dt parameter in the graph will be used
-void Simulation::animate ( Node* root, SReal dt )
-{
-    sofa::simulation::node::animate(root, dt);
-}
-
-void Simulation::updateVisual ( Node* root)
-{
-    sofa::simulation::node::updateVisual(root);
-}
-
-/// Reset to initial state
-void Simulation::reset ( Node* root )
-{
-    sofa::simulation::node::reset(root);
-}
-
-/// Initialize the textures
-void Simulation::initTextures ( Node* root )
-{
-    sofa::simulation::node::initTextures(root);
-}
-
-/// Compute the bounding box of the scene.
-void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
-{
-    sofa::simulation::node::computeBBox(root, minBBox, maxBBox, init);
-}
-
-/// Compute the bounding box of the scene.
-void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
-{
-    sofa::simulation::node::computeTotalBBox(root, minBBox, maxBBox);
-}
-
-/// Update contexts. Required before drawing the scene if root flags are modified.
-void Simulation::updateContext ( Node* root )
-{
-    sofa::simulation::node::updateContext(root);
-}
-
-/// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
-void Simulation::updateVisualContext (Node* root)
-{
-    sofa::simulation::node::updateVisualContext(root);
-}
-
-/// Render the scene
-void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
-{
-    sofa::simulation::node::draw(vparams, root);
-}
-
-/// Export a scene to an OBJ 3D Scene
-void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
-{
-    sofa::simulation::node::exportOBJ(root, filename, exportMTL);
-}
-
-void Simulation::dumpState ( Node* root, std::ofstream& out )
-{
-    sofa::simulation::node::dumpState(root, out);
-}
-
-/// Load a scene from a file
-Node::SPtr Simulation::load ( const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs )
-{
-    return sofa::simulation::node::load(filename, reload, sceneArgs);
-}
-
-/// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload(Node::SPtr root)
-{
-    sofa::simulation::node::unload(root);
-}
 } // namespace sofa::simulation

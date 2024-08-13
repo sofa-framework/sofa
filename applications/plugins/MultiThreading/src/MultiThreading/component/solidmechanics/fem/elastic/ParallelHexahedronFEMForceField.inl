@@ -92,8 +92,8 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const sofa::core::Mech
     const auto* indexedElements = this->getIndexedElements();
     this->m_potentialEnergy = 0;
 
-    const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
-    updateStiffnessMatrices = this->f_updateStiffnessMatrix.getValue();
+    const auto& elementStiffnesses = this->d_elementStiffnesses.getValue();
+    updateStiffnessMatrices = this->d_updateStiffnessMatrix.getValue();
     if (updateStiffnessMatrices)
     {
         static bool first = true;
@@ -170,15 +170,15 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
     sofa::type::Vec<24, Real> D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int index = k*3;
         for(int j=0 ; j<3 ; ++j )
-            D[indice+j] = this->_rotatedInitialElements[elementId][k][j] - deformed[k][j];
+            D[index+j] = this->_rotatedInitialElements[elementId][k][j] - deformed[k][j];
     }
 
     if(updateStiffnessMatrices)
     {
         //Not thread safe: a message warned the user earlier that updating the stiffness matrices is not fully supported
-        this->computeElementStiffness((*this->_elementStiffnesses.beginEdit())[elementId], this->_materialsStiffnesses[elementId], deformed, elementId, this->_sparseGrid ? this->_sparseGrid->getStiffnessCoef(elementId) : 1.0 );
+        this->computeElementStiffness((*this->d_elementStiffnesses.beginEdit())[elementId], this->_materialsStiffnesses[elementId], deformed, elementId, this->_sparseGrid ? this->_sparseGrid->getStiffnessCoef(elementId) : 1.0 );
     }
 
     sofa::type::Vec<24, Real> F; //forces
@@ -208,7 +208,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const sofa::core::Me
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
 
-    const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
+    const auto& elementStiffnesses = this->d_elementStiffnesses.getValue();
     const auto& indexedElements = *this->getIndexedElements();
 
     m_elementsDf.resize(indexedElements.size());

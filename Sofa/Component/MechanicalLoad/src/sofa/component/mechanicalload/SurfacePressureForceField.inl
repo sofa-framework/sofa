@@ -39,23 +39,38 @@ namespace sofa::component::mechanicalload
 
 template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField()
-    : m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area"))
-    , m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box"))
-    , m_max(initData(&m_max, Coord(), "max", "Upper bond of the selection box"))
-    , m_triangleIndices(initData(&m_triangleIndices, "triangleIndices", "Indices of affected triangles"))
-    , m_quadIndices(initData(&m_quadIndices, "quadIndices", "Indices of affected quads"))
-    , m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application"))
-    , m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)"))
-    , m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode"))
-    , m_volumeConservationMode(initData(&m_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation"))
-    , m_useTangentStiffness(initData(&m_useTangentStiffness, true, "useTangentStiffness", "Whether (non-symmetric) stiffness matrix should be used"))
-    , m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume"))
-    , m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application"))
-    , m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
+    : d_pressure(initData(&d_pressure, (Real)0.0, "pressure", "Pressure force per unit area"))
+    , d_min(initData(&d_min, Coord(), "min", "Lower bound of the selection box"))
+    , d_max(initData(&d_max, Coord(), "max", "Upper bound of the selection box"))
+    , d_triangleIndices(initData(&d_triangleIndices, "triangleIndices", "Indices of affected triangles"))
+    , d_quadIndices(initData(&d_quadIndices, "quadIndices", "Indices of affected quads"))
+    , d_pulseMode(initData(&d_pulseMode, false, "pulseMode", "Cyclic pressure application"))
+    , d_pressureLowerBound(initData(&d_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)"))
+    , d_pressureSpeed(initData(&d_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode"))
+    , d_volumeConservationMode(initData(&d_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation"))
+    , d_useTangentStiffness(initData(&d_useTangentStiffness, true, "useTangentStiffness", "Whether (non-symmetric) stiffness matrix should be used"))
+    , d_defaultVolume(initData(&d_defaultVolume, (Real) - 1.0, "defaultVolume", "Default Volume"))
+    , d_mainDirection(initData(&d_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application"))
+    , d_drawForceScale(initData(&d_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
     , l_topology(initLink("topology", "link to the topology container"))
     , state(INCREASE)
     , m_topology(nullptr)
-{}
+{
+    m_pressure.setParent(&d_pressure);
+    m_min.setParent(&d_min);
+    m_max.setParent(&d_max);
+    m_triangleIndices.setParent(&d_triangleIndices);
+    m_quadIndices.setParent(&d_quadIndices);
+    m_pulseMode.setParent(&d_pulseMode);
+    m_pressureLowerBound.setParent(&d_pressureLowerBound);
+    m_pressureSpeed.setParent(&d_pressureSpeed);
+    m_volumeConservationMode.setParent(&d_volumeConservationMode);
+    m_useTangentStiffness.setParent(&d_useTangentStiffness);
+    m_defaultVolume.setParent(&d_defaultVolume);
+    m_mainDirection.setParent(&d_mainDirection);
+    m_drawForceScale.setParent(&d_drawForceScale);
+
+}
 
 
 template <class DataTypes>
@@ -84,12 +99,12 @@ void SurfacePressureForceField<DataTypes>::init()
         return;
     }
 
-    state = m_pressure.getValue() > 0 ? INCREASE : DECREASE;
+    state = d_pressure.getValue() > 0 ? INCREASE : DECREASE;
 
-    if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
+    if (d_pulseMode.getValue() && (d_pressureSpeed.getValue() == 0.0))
     {
         msg_warning() << "Default pressure speed value has been set in SurfacePressureForceField";
-        m_pressureSpeed.setValue((Real)fabs(m_pressure.getValue()));
+        d_pressureSpeed.setValue((Real)fabs(d_pressure.getValue()));
     }
 
     m_pulseModePressure = 0.0;
@@ -135,22 +150,22 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
         m_f[i].clear(); // store forces for visualization
     }
 
-    Real p = m_pulseMode.getValue() ? computePulseModePressure() : m_pressure.getValue();
+    Real p = d_pulseMode.getValue() ? computePulseModePressure() : d_pressure.getValue();
 
     if (m_topology)
     {
-        if (m_volumeConservationMode.getValue())
+        if (d_volumeConservationMode.getValue())
         {
-            if (m_defaultVolume.getValue() == -1)
+            if (d_defaultVolume.getValue() == -1)
             {
-                m_defaultVolume.setValue(computeMeshVolume(f, x));
+                d_defaultVolume.setValue(computeMeshVolume(f, x));
             }
-            else if (m_defaultVolume.getValue() != 0)
+            else if (d_defaultVolume.getValue() != 0)
             {
-                p *= m_defaultVolume.getValue() / computeMeshVolume(f, x);
+                p *= d_defaultVolume.getValue() / computeMeshVolume(f, x);
             }
         }
-        bool useStiffness = m_useTangentStiffness.getValue();
+        bool useStiffness = d_useTangentStiffness.getValue();
         // Triangles
 
         derivTriNormalValues.clear();
@@ -164,11 +179,11 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
             derivTriNormalIndices[i].clear();
         }
 
-        if (m_triangleIndices.getValue().size() > 0)
+        if (d_triangleIndices.getValue().size() > 0)
         {
-            for (unsigned int i = 0; i < m_triangleIndices.getValue().size(); i++)
+            for (unsigned int i = 0; i < d_triangleIndices.getValue().size(); i++)
             {
-                addTriangleSurfacePressure(m_triangleIndices.getValue()[i], m_f, x, v, p, useStiffness);
+                addTriangleSurfacePressure(d_triangleIndices.getValue()[i], m_f, x, v, p, useStiffness);
             }
         }
         else if (m_topology->getNbTriangles() > 0)
@@ -185,11 +200,11 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         // Quads
 
-        if (m_quadIndices.getValue().size() > 0)
+        if (d_quadIndices.getValue().size() > 0)
         {
-            for (unsigned int i = 0; i < m_quadIndices.getValue().size(); i++)
+            for (unsigned int i = 0; i < d_quadIndices.getValue().size(); i++)
             {
-                addQuadSurfacePressure(m_quadIndices.getValue()[i], m_f, x, v, p);
+                addQuadSurfacePressure(d_quadIndices.getValue()[i], m_f, x, v, p);
             }
         }
         else if (m_topology->getNbQuads() > 0)
@@ -217,7 +232,7 @@ template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     Real kFactor = (Real)mparams->kFactor();
-    if (m_useTangentStiffness.getValue())
+    if (d_useTangentStiffness.getValue())
     {
         VecDeriv& df = *(d_df.beginEdit());
         const VecDeriv& dx = d_dx.getValue();
@@ -244,7 +259,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     const int N = Coord::total_size;
-    if (m_useTangentStiffness.getValue())
+    if (d_useTangentStiffness.getValue())
     {
         for (unsigned int i = 0; i < derivTriNormalIndices.size(); i++)
         {
@@ -268,7 +283,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    if (m_useTangentStiffness.getValue())
+    if (d_useTangentStiffness.getValue())
     {
         static constexpr auto N = Deriv::total_size;
 
@@ -304,7 +319,7 @@ SReal SurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::Mecha
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::setPressure(const Real _pressure)
 {
-    this->m_pressure.setValue(_pressure);
+    this->d_pressure.setValue(_pressure);
 }
 
 template <class DataTypes>
@@ -315,7 +330,7 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
 
     Real volume = 0;
     unsigned int nTriangles = 0;
-    const VecIndex& triangleIndices = m_triangleIndices.getValue();
+    const VecIndex& triangleIndices = d_triangleIndices.getValue();
     if (!triangleIndices.empty())
     {
         nTriangles = triangleIndices.size();
@@ -344,7 +359,7 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
     }
 
     unsigned int nQuads = 0;
-    const VecIndex& quadIndices = m_quadIndices.getValue();
+    const VecIndex& quadIndices = d_quadIndices.getValue();
     if (!quadIndices.empty())
     {
         nQuads = quadIndices.size();
@@ -422,11 +437,11 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(unsigned i
     }
 
 
-    if (m_mainDirection.getValue() != Deriv())
+    if (d_mainDirection.getValue() != Deriv())
     {
         Deriv n = ab.cross(ac);
         n.normalize();
-        Real scal = n * m_mainDirection.getValue();
+        Real scal = n * d_mainDirection.getValue();
         p *= fabs(scal);
     }
 
@@ -460,17 +475,17 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(unsigned int q
 template <class DataTypes>
 bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord& x) const
 {
-    if ((m_max.getValue() == Coord()) && (m_min.getValue() == Coord()))
+    if ((d_max.getValue() == Coord()) && (d_min.getValue() == Coord()))
     {
         return true;
     }
 
-    return ((x[0] >= m_min.getValue()[0])
-        && (x[0] <= m_max.getValue()[0])
-        && (x[1] >= m_min.getValue()[1])
-        && (x[1] <= m_max.getValue()[1])
-        && (x[2] >= m_min.getValue()[2])
-        && (x[2] <= m_max.getValue()[2]));
+    return ((x[0] >= d_min.getValue()[0])
+        && (x[0] <= d_max.getValue()[0])
+        && (x[1] >= d_min.getValue()[1])
+        && (x[1] <= d_max.getValue()[1])
+        && (x[2] >= d_min.getValue()[2])
+        && (x[2] <= d_max.getValue()[2]));
 }
 
 template <class DataTypes>
@@ -480,9 +495,9 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
 
     if (state == INCREASE)
     {
-        Real pUpperBound = (m_pressure.getValue() > 0) ? m_pressure.getValue() : m_pressureLowerBound.getValue();
+        Real pUpperBound = (d_pressure.getValue() > 0) ? d_pressure.getValue() : d_pressureLowerBound.getValue();
 
-        m_pulseModePressure += (Real)(m_pressureSpeed.getValue() * dt);
+        m_pulseModePressure += (Real)(d_pressureSpeed.getValue() * dt);
 
         if (m_pulseModePressure >= pUpperBound)
         {
@@ -495,9 +510,9 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
 
     if (state == DECREASE)
     {
-        Real pLowerBound = (m_pressure.getValue() > 0) ? m_pressureLowerBound.getValue() : m_pressure.getValue();
+        Real pLowerBound = (d_pressure.getValue() > 0) ? d_pressureLowerBound.getValue() : d_pressure.getValue();
 
-        m_pulseModePressure -= (Real)(m_pressureSpeed.getValue() * dt);
+        m_pulseModePressure -= (Real)(d_pressureSpeed.getValue() * dt);
 
         if (m_pulseModePressure <= pLowerBound)
         {
@@ -531,7 +546,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     constexpr sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
-    vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
+    vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(d_min.getValue()), DataTypes::getCPos(d_max.getValue()));
 
     if (vparams->displayFlags().getShowWireFrame())
     {
@@ -540,7 +555,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
-    if (m_drawForceScale.getValue() && m_f.size() == x.size())
+    if (d_drawForceScale.getValue() && m_f.size() == x.size())
     {
         std::vector<type::Vec3> points;
         constexpr sofa::type::RGBAColor color(0, 1, 0.5, 1);
@@ -548,7 +563,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
         for (unsigned int i = 0; i < x.size(); i++)
         {
             points.push_back(DataTypes::getCPos(x[i]));
-            points.push_back(DataTypes::getCPos(x[i]) + DataTypes::getDPos(m_f[i]) * m_drawForceScale.getValue());
+            points.push_back(DataTypes::getCPos(x[i]) + DataTypes::getDPos(m_f[i]) * d_drawForceScale.getValue());
         }
         vparams->drawTool()->drawLines(points, 1, color);
     }

@@ -29,7 +29,7 @@ namespace sofa::component::engine::select
 
 template <class DataTypes>
 PlaneROI<DataTypes>::PlaneROI()
-    : planes( initData(&planes, "plane", "Plane defined by 3 points and a depth distance") )
+    : planes( initData(&planes, "plane", "List of planes defined by 3 points and a depth distance") )
     , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )

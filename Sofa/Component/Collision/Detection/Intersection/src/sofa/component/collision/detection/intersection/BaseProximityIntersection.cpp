@@ -27,22 +27,25 @@ namespace sofa::component::collision::detection::intersection
 using namespace sofa::component::collision::geometry;
 
 BaseProximityIntersection::BaseProximityIntersection()
-    : alarmDistance(initData(&alarmDistance, 1.0_sreal, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, 0.5_sreal, "contactDistance","Distance below which a contact is created"))
+    : d_alarmDistance(initData(&d_alarmDistance, 1.0_sreal, "alarmDistance", "Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broad phase algorithms to reduce the search area"))
+    , d_contactDistance(initData(&d_contactDistance, 0.5_sreal, "contactDistance", "Distance below which a contact is created"))
 {
-	alarmDistance.setRequired(true);
-	contactDistance.setRequired(true);
+    d_alarmDistance.setRequired(true);
+    d_contactDistance.setRequired(true);
+
+    alarmDistance.setParent(&d_alarmDistance);
+    contactDistance.setParent(&d_contactDistance);
 }
 
 
-bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2, const core::collision::Intersection* currentIntersection)
 {
     const auto& minVect1 = cube1.minVect();
     const auto& minVect2 = cube2.minVect();
     const auto& maxVect1 = cube1.maxVect();
     const auto& maxVect2 = cube2.maxVect();
 
-    const auto alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
+    const auto alarmDist = currentIntersection->getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
 
     for (int i = 0; i < 3; i++)
     {
@@ -53,13 +56,25 @@ bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
     return true;
 }
 
-int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     SOFA_UNUSED(cube1);
     SOFA_UNUSED(cube2);
     SOFA_UNUSED(contacts);
+    SOFA_UNUSED(currentIntersection);
 
     return 0;
+}
+
+
+bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    return testIntersection(cube1, cube2, this);
+}
+
+int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    return computeIntersection(cube1, cube2, contacts, this);
 }
 
 

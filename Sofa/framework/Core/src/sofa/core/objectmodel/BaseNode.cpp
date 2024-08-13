@@ -26,13 +26,8 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 BaseNode::BaseNode()
@@ -121,8 +116,8 @@ std::string BaseNode::getRootPath() const {
     return str;
 }
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+

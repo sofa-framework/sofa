@@ -66,26 +66,78 @@ public:
 
     };
 
-    Data<type::Vec3> p_position; ///< Camera's position
-    Data<Quat> p_orientation; ///< Camera's orientation
-    Data<type::Vec3> p_lookAt; ///< Camera's look at
-    Data<double> p_distance; ///< Distance between camera and look at
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> p_position;
 
-    Data<double> p_fieldOfView; ///< Camera's FOV
-    Data<double> p_zNear; ///< Camera's zNear
-    Data<double> p_zFar; ///< Camera's zFar
-    Data<bool> p_computeZClip; ///< Compute Z clip planes (Near and Far) according to the bounding box
-    Data<type::Vec3> p_minBBox; ///< minBBox
-    Data<type::Vec3> p_maxBBox; ///< maxBBox
-    Data<unsigned int> p_widthViewport; ///< widthViewport
-    Data<unsigned int> p_heightViewport; ///< heightViewport
-    Data<sofa::helper::OptionsGroup> p_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<Quat> p_orientation;
 
-    Data<bool> p_activated; ///< Camera activated ?
-	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> p_lookAt;
 
-    Data<type::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
-    Data<type::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_distance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_fieldOfView;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_zNear;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<double> p_zFar;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> p_computeZClip;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> p_minBBox;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::Vec3> p_maxBBox;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<unsigned int> p_widthViewport;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<unsigned int> p_heightViewport;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<sofa::helper::OptionsGroup> p_type;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> p_activated;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<bool> p_fixedLookAtPoint;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::vector<SReal> > p_modelViewMatrix;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
+    Data<type::vector<SReal> > p_projectionMatrix;
+
+
+    Data<type::Vec3> d_position; ///< Camera's position
+    Data<Quat> d_orientation; ///< Camera's orientation
+    Data<type::Vec3> d_lookAt; ///< Camera's look at
+    Data<double> d_distance; ///< Distance between camera and look at
+
+    Data<double> d_fieldOfView; ///< Camera's FOV
+    Data<double> d_zNear; ///< Camera's zNear
+    Data<double> d_zFar; ///< Camera's zFar
+    Data<bool> d_computeZClip; ///< Compute Z clip planes (Near and Far) according to the bounding box
+    Data<type::Vec3> d_minBBox; ///< minBBox
+    Data<type::Vec3> d_maxBBox; ///< maxBBox
+    Data<unsigned int> d_widthViewport; ///< widthViewport
+    Data<unsigned int> d_heightViewport; ///< heightViewport
+    Data<sofa::helper::OptionsGroup> d_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
+
+    Data<bool> d_activated; ///< Camera activated ?
+    Data<bool> d_fixedLookAtPoint; ///< keep the lookAt point always fixed
+
+    Data<type::vector<SReal> > d_modelViewMatrix; ///< ModelView Matrix
+    Data<type::vector<SReal> > d_projectionMatrix; ///< Projection Matrix
 
     BaseCamera();
     ~BaseCamera() override;
@@ -137,24 +189,24 @@ public:
 
     type::Vec3 getPosition()
     {
-        return p_position.getValue();
+        return d_position.getValue();
     }
 
     Quat getOrientation() ;
     type::Vec3 getLookAt()
     {
-        return p_lookAt.getValue();
+        return d_lookAt.getValue();
     }
 
     double getDistance()
     {
-        p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
-        return p_distance.getValue();
+        d_distance.setValue((d_lookAt.getValue() - d_position.getValue()).norm());
+        return d_distance.getValue();
     }
 
     double getFieldOfView()
     {
-        return p_fieldOfView.getValue();
+        return d_fieldOfView.getValue();
     }
 
     double getHorizontalFieldOfView() ;
@@ -165,8 +217,8 @@ public:
 
     void setBoundingBox(const type::Vec3 &min, const type::Vec3 &max)
     {
-        p_minBBox.setValue(min);
-        p_maxBBox.setValue(max);
+        d_minBBox.setValue(min);
+        d_maxBBox.setValue(max);
 
         sceneCenter = (min + max)*0.5;
         sceneRadius = 0.5*(max - min).norm();
@@ -176,8 +228,8 @@ public:
 
     void setViewport(unsigned int w, unsigned int h)
     {
-        p_widthViewport.setValue(w);
-        p_heightViewport.setValue(h);
+        d_widthViewport.setValue(w);
+        d_heightViewport.setValue(h);
     }
 
     double getZNear()

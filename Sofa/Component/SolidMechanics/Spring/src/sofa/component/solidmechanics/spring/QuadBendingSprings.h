@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <map>
 #include <set>
 
@@ -35,16 +35,20 @@ Bending springs added between vertices of quads sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 */
 template<class DataTypes>
-class QuadBendingSprings : public StiffSpringForceField<DataTypes>
+class QuadBendingSprings : public SpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingSprings, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingSprings, DataTypes), SOFA_TEMPLATE(SpringForceField, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    Data<type::Vec<2,int>> localRange;
+
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< type::Vec<2,int> > localRange;
+    Data< type::Vec<2,int> > d_localRange;
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<QuadBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

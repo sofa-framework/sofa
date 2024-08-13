@@ -37,16 +37,24 @@ template <class DataTypes> QuadPressureForceField<DataTypes>::~QuadPressureForce
 
 template <class DataTypes>
 QuadPressureForceField<DataTypes>::QuadPressureForceField()
-    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-    , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
-    , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
-    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
+    : d_pressure(initData(&d_pressure, "pressure", "Pressure force per unit area"))
+    , d_quadList(initData(&d_quadList, "quadList", "Indices of quads separated with commas where a pressure is applied"))
+    , d_normal(initData(&d_normal, "normal", "Normal direction for the plane selection of quads"))
+    , d_dmin(initData(&d_dmin, (Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , d_dmax(initData(&d_dmax, (Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
+    , d_quadPressureMap(initData(&d_quadPressureMap, "quadPressureMap", "Map between quad indices and their pressure"))
     , m_topology(nullptr)
 {
+    pressure.setParent(&d_pressure);
+    quadList.setParent(&d_quadList);
+    normal.setParent(&d_normal);
+    dmin.setParent(&d_dmin);
+    dmax.setParent(&d_dmax);
+    p_showForces.setParent(&d_showForces);
+    quadPressureMap.setParent(&d_quadPressureMap);
+
 }
 
 template <class DataTypes>
@@ -70,16 +78,16 @@ void QuadPressureForceField<DataTypes>::init()
         return;
     }
 
-    if (dmin.getValue()!=dmax.getValue())
+    if (d_dmin.getValue() != d_dmax.getValue())
     {
         selectQuadsAlongPlane();
     }
-    if (quadList.getValue().size()>0)
+    if (d_quadList.getValue().size() > 0)
     {
         selectQuadsFromString();
     }
 
-    quadPressureMap.createTopologyHandler(m_topology);
+    d_quadPressureMap.createTopologyHandler(m_topology);
 
     initQuadInformation();
 }
@@ -90,8 +98,8 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     Deriv force;
 
-    const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
-    const sofa::type::vector<QuadPressureInformation>& my_subset = quadPressureMap.getValue();
+    const sofa::type::vector<Index>& my_map = d_quadPressureMap.getMap2Elements();
+    const sofa::type::vector<QuadPressureInformation>& my_subset = d_quadPressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
@@ -123,8 +131,8 @@ void QuadPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::initQuadInformation()
 {
-    const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
-    auto my_subset = sofa::helper::getWriteOnlyAccessor(quadPressureMap);
+    const sofa::type::vector<Index>& my_map = d_quadPressureMap.getMap2Elements();
+    auto my_subset = sofa::helper::getWriteOnlyAccessor(d_quadPressureMap);
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
@@ -138,7 +146,7 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
         const auto& n3 = DataTypes::getCPos(x0[q[3]]);
 
         my_subset[i].area = sofa::geometry::Quad::area(n0, n1, n2, n3);
-        my_subset[i].force=pressure.getValue()*my_subset[i].area;
+        my_subset[i].force= d_pressure.getValue() * my_subset[i].area;
     }
 }
 
@@ -146,12 +154,12 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::updateQuadInformation()
 {
-    sofa::type::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
+    sofa::type::vector<QuadPressureInformation>& my_subset = *(d_quadPressureMap).beginEdit();
 
     for (unsigned int i=0; i<my_subset.size(); ++i)
-        my_subset[i].force=(pressure.getValue()*my_subset[i].area);
+        my_subset[i].force=(d_pressure.getValue() * my_subset[i].area);
 
-    quadPressureMap.endEdit();
+    d_quadPressureMap.endEdit();
 }
 
 
@@ -168,7 +176,7 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    sofa::type::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
+    sofa::type::vector<QuadPressureInformation>& my_subset = *(d_quadPressureMap).beginEdit();
     type::vector<Index> inputQuads;
 
     for (size_t n=0; n<m_topology->getNbQuads(); ++n)
@@ -182,8 +190,8 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
             inputQuads.push_back(n);
         }
     }
-    quadPressureMap.endEdit();
-    quadPressureMap.setMap2Elements(inputQuads);
+    d_quadPressureMap.endEdit();
+    d_quadPressureMap.setMap2Elements(inputQuads);
 
     return;
 }
@@ -192,10 +200,10 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
 template <class DataTypes>
 void QuadPressureForceField<DataTypes>::selectQuadsFromString()
 {
-    sofa::type::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
-    type::vector<Index> _quadList = quadList.getValue();
+    sofa::type::vector<QuadPressureInformation>& my_subset = *(d_quadPressureMap).beginEdit();
+    type::vector<Index> _quadList = d_quadList.getValue();
 
-    quadPressureMap.setMap2Elements(_quadList);
+    d_quadPressureMap.setMap2Elements(_quadList);
 
     for (unsigned int i = 0; i < _quadList.size(); ++i)
     {
@@ -204,7 +212,7 @@ void QuadPressureForceField<DataTypes>::selectQuadsFromString()
         my_subset.push_back(q);
     }
 
-    quadPressureMap.endEdit();
+    d_quadPressureMap.endEdit();
 
     return;
 }
@@ -212,8 +220,8 @@ void QuadPressureForceField<DataTypes>::selectQuadsFromString()
 template <class DataTypes>
 bool QuadPressureForceField<DataTypes>::isPointInPlane(Coord p)
 {
-    Real d=dot(p,normal.getValue());
-    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+    Real d=dot(p, d_normal.getValue());
+    if ((d > d_dmin.getValue()) && (d < d_dmax.getValue()))
         return true;
     else
         return false;
@@ -237,7 +245,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    if (!p_showForces.getValue())
+    if (!d_showForces.getValue())
         return;
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -249,7 +257,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     std::vector<sofa::type::Vec3> vertices;
     const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
 
-    const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
+    const sofa::type::vector<Index>& my_map = d_quadPressureMap.getMap2Elements();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {

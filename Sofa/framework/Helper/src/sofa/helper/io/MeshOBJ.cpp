@@ -27,13 +27,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <istream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -232,7 +227,7 @@ void MeshOBJ::readMTL(const char* filename)
     bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
 
     file = fopen(filename, "r");
-    Material *mat = nullptr;
+    std::unique_ptr<Material> mat;
     if (file)
     {
         /* now, read in the data */
@@ -257,10 +252,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if (mat != nullptr)
                 {
                     materials.push_back(*mat);
-                    delete mat;
-                    mat = nullptr;
+                    mat.reset();
                 }
-                mat = new Material();
+                mat = std::make_unique<Material>();
                 if ( fgets(buf, sizeof(buf), file) == nullptr)
                 {
                     if (feof (file) )
@@ -437,14 +431,13 @@ void MeshOBJ::readMTL(const char* filename)
     if (mat != nullptr)
     {
         materials.push_back(*mat);
-        delete mat;
-        mat = nullptr;
+        mat.reset();
     }
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

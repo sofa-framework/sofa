@@ -31,6 +31,9 @@
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
 #include <optional>
+#include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
+#include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
+
 
 namespace sofa::component::linearsystem
 {
@@ -121,13 +124,13 @@ protected:
         std::shared_ptr<LocalMappedMatrixType<Real> >
     > > m_localMappedMatrices;
 
-
+    sofa::type::vector<std::shared_ptr<MappedMassMatrixObserver<Real> > > m_mappedMassMatrixObservers;
 
     /**
-     * Asks all the matrix accumulators to accumulate the contribution of a specific type of contribution
+     * return a mass observer if there is any associated to the provided mass
      */
-    template<Contribution c>
-    void contribute(const core::MechanicalParams* mparams);
+    MappedMassMatrixObserver<Real>* getMassObserver(BaseMass* mass);
+
 
     template<Contribution c>
     void contribute(const core::MechanicalParams* mparams, IndependentContributors& contributors);
@@ -184,16 +187,9 @@ protected:
 
 
     /**
-     * Project the assembled matrices from mapped states to the global matrix
+     * Project the assembled matrices from mapped states a destination matrix
      */
-    virtual void projectMappedMatrices(const core::MechanicalParams* mparams);
-
-
-    /**
-     * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
-     * sense of mappings)
-     */
-    MappingJacobians<JacobianMatrixType> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, LocalMappedMatrixType<Real>* crs);
+    virtual void projectMappedMatrices(const core::MechanicalParams* mparams, linearalgebra::BaseMatrix* destination);
 
     /**
      * Assemble the matrices under mappings into the global matrix
@@ -238,9 +234,6 @@ protected:
     void buildGroupsOfComponentAssociatedToMechanicalStates(
         std::map< PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups);
 
-    /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
-    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, LocalMappedMatrixType<Real>* crs);
-
     /// An object with factory methods to create local matrices
     std::tuple<
         std::unique_ptr<CreateMatrixDispatcher<Contribution::STIFFNESS          >>,
@@ -252,6 +245,27 @@ protected:
     /// Define the type of dispatcher, itself defining the type of local matrices
     /// To override if matrix accumulation methods differs from this class.
     virtual void makeCreateDispatcher();
+
+    virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component);
+
+    std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
+
+    virtual typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
+
+    /**
+     * Find a projection method in the scene graph given a pair of mechanical states
+     */
+    BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*
+    findProjectionMethod(const PairMechanicalStates& pair);
+
+    /**
+     * Assemble the precomputed mapped mass matrices
+     */
+    void assemblePrecomputedMappedMassMatrix(const core::MechanicalParams* mparams,
+                                             linearalgebra::BaseMatrix* destination);
+
+    void recomputeMappedMassMatrix(const core::MechanicalParams* mparams, BaseMass* mass);
 
 private:
     template<Contribution c>
@@ -268,7 +282,7 @@ struct LocalMatrixMaps
     /// The local matrix (value) that has been created and associated to a mapped component (key)
     std::map< ComponentType*, std::map<PairMechanicalStates, AssemblingMappedMatrixAccumulator<c, Real>*> > mappedLocalMatrix;
     /// A verification strategy allowing to verify that the matrix indices provided are valid
-    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::RangeVerification> > indexVerificationStrategy;
+    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::IndexVerificationStrategy> > indexVerificationStrategy;
 
 
     std::map< ComponentType*, std::map<PairMechanicalStates, BaseAssemblingMatrixAccumulator<c>* > > componentLocalMatrix;

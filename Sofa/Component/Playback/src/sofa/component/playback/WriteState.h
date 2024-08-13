@@ -57,7 +57,7 @@ public:
     Data < bool > d_writeX0; ///< flag enabling output of X0 vector
     Data < bool > d_writeV; ///< flag enabling output of V vector
     Data < bool > d_writeF; ///< flag enabling output of F vector
-    Data < type::vector<double> > d_time; ///< set time to write outputs
+    Data < type::vector<double> > d_time; ///< set time to write outputs (by default export at t=0)
     Data < double > d_period; ///< period between outputs
     Data < type::vector<unsigned int> > d_DOFsX; ///< set the position DOFs to write
     Data < type::vector<unsigned int> > d_DOFsV; ///< set the velocity DOFs to write
@@ -113,7 +113,7 @@ class SOFA_COMPONENT_PLAYBACK_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
-    WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c=0);
+    WriteStateCreator(const core::ExecParams* params, const std::string &_sceneName, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int _counterState=0);
     Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
@@ -124,7 +124,8 @@ public:
     void setCounter(int c) { counterWriteState = c; }
     const char* getClassName() const override { return "WriteStateCreator"; }
 
-    void setExportTimes(const type::vector<double> times) { m_times = times; }
+    void setExportTimes(const type::vector<double>& times) { m_times = times; }
+    void setPeriod(double period) { m_period = period; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -134,6 +135,7 @@ protected:
     bool createInMapping;
 
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
+    double m_period = 0.0;
 
     void addWriteState(sofa::core::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
 

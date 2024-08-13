@@ -45,26 +45,6 @@ public:
     /// Output Model Type
     typedef TOut Out;
 
-    typedef typename In1::VecCoord In1VecCoord;
-    typedef typename In1::VecDeriv In1VecDeriv;
-    typedef typename In1::MatrixDeriv In1MatrixDeriv;
-    typedef Data<In1VecCoord> In1DataVecCoord;
-    typedef Data<In1VecDeriv> In1DataVecDeriv;
-    typedef Data<In1MatrixDeriv> In1DataMatrixDeriv;
-    typedef typename In2::VecCoord In2VecCoord;
-    typedef typename In2::VecDeriv In2VecDeriv;
-    typedef typename In2::MatrixDeriv In2MatrixDeriv;
-    typedef Data<In2VecCoord> In2DataVecCoord;
-    typedef Data<In2VecDeriv> In2DataVecDeriv;
-    typedef Data<In2MatrixDeriv> In2DataMatrixDeriv;
-
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-
     typedef MultiLink<Multi2Mapping<In1,In2,Out>, State< In1 >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels1;
     typedef typename LinkFromModels1::Container VecFromModels1;
     typedef MultiLink<Multi2Mapping<In1,In2,Out>, State< In2 >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels2;
@@ -80,7 +60,7 @@ protected:
 
 public:
 
-    Data<bool> f_applyRestPosition; ///< @todo document this
+    Data<bool> f_applyRestPosition; ///< set to true to apply this mapping to restPosition at init
 protected:
 
     /// Constructor
@@ -123,9 +103,10 @@ public:
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
     virtual void apply(
-        const MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos,
-        const type::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
-        const type::vector<const In2DataVecCoord*>& dataVecIn2Pos) = 0;
+        const MechanicalParams* mparams,
+        const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos,
+        const type::vector<const DataVecCoord_t<In1>*>& dataVecIn1Pos ,
+        const type::vector<const DataVecCoord_t<In2>*>& dataVecIn2Pos) = 0;
 
     /// ApplyJ ///
     /// This method computes
@@ -138,19 +119,20 @@ public:
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
     virtual void applyJ(
-        const MechanicalParams*, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const type::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-        const type::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
+        const MechanicalParams*,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecOutVel,
+        const type::vector<const DataVecDeriv_t<In1>*>& dataVecIn1Vel,
+        const type::vector<const DataVecDeriv_t<In2>*>& dataVecIn2Vel)
     {
         //Not optimized at all...
-        type::vector<OutVecDeriv*> vecOutVel;
+        type::vector<VecDeriv_t<Out>*> vecOutVel;
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
             vecOutVel.push_back(dataVecOutVel[i]->beginEdit());
 
-        type::vector<const In1VecDeriv*> vecIn1Vel;
+        type::vector<const VecDeriv_t<In1>*> vecIn1Vel;
         for(unsigned int i=0; i<dataVecIn1Vel.size(); i++)
             vecIn1Vel.push_back(&dataVecIn1Vel[i]->getValue());
-        type::vector<const In2VecDeriv*> vecIn2Vel;
+        type::vector<const VecDeriv_t<In2>*> vecIn2Vel;
         for(unsigned int i=0; i<dataVecIn2Vel.size(); i++)
             vecIn2Vel.push_back(&dataVecIn2Vel[i]->getValue());
         this->applyJ(vecOutVel, vecIn1Vel, vecIn2Vel);
@@ -161,9 +143,9 @@ public:
     }
     /// Compat Method
     /// @deprecated
-    virtual void applyJ(const type::vector< OutVecDeriv*>& /* outDeriv */,
-            const type::vector<const In1VecDeriv*>& /* inDeriv1 */,
-            const type::vector<const In2VecDeriv*>& /* inDeriv2 */) {}
+    virtual void applyJ(const type::vector< VecDeriv_t<Out>*>& /* outDeriv */,
+            const type::vector<const VecDeriv_t<In1>*>& /* inDeriv1 */,
+            const type::vector<const VecDeriv_t<In2>*>& /* inDeriv2 */) {}
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.
@@ -174,20 +156,21 @@ public:
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
     virtual void applyJT(
-        const MechanicalParams* mparams, const type::vector< In1DataVecDeriv*>& dataVecOut1Force,
-        const type::vector< In2DataVecDeriv*>& dataVecOut2Force,
-        const type::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
+        const MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<In1>*>& dataVecOut1Force,
+        const type::vector< DataVecDeriv_t<In2>*>& dataVecOut2Force,
+        const type::vector<const DataVecDeriv_t<Out>*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
     void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT(
-        const ConstraintParams* /* cparams */, const type::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
-        const type::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */,
-        const type::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
+        const ConstraintParams* /* cparams */, const type::vector< DataMatrixDeriv_t<In1>*>& /* dataMatOut1Const */ ,
+        const type::vector< DataMatrixDeriv_t<In2>*>&  /* dataMatOut2Const */,
+        const type::vector<const DataMatrixDeriv_t<Out>*>& /* dataMatInConst */)
     {
-        msg_error() << "This mapping does not support constraint because Multi2Mapping::applyJT(const ConstraintParams*, const type::vector< In1DataMatrixDeriv*>&, const type::vector< In2DataMatrixDeriv*>&, const type::vector<const OutDataMatrixDeriv*>&) is not overloaded.";
+        msg_error() << "This mapping does not support constraint because Multi2Mapping::applyJT(const ConstraintParams*, const type::vector< DataMatrixDeriv_t<In1>*>&, const type::vector< DataMatrixDeriv_t<In2>*>&, const type::vector<const DataMatrixDeriv_t<Out>*>&) is not overloaded.";
     }
 
     /// computeAccFromMapping
@@ -195,11 +178,11 @@ public:
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
-        const MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& /* dataVecOutAcc */,
-        const type::vector<const In1DataVecDeriv*>& /* dataVecIn1Vel */,
-        const type::vector<const In2DataVecDeriv*>& /* dataVecIn2Vel */,
-        const type::vector<const In1DataVecDeriv*>& /* dataVecIn1Acc */,
-        const type::vector<const In2DataVecDeriv*>& /* dataVecIn2Acc */)
+        const MechanicalParams* /* mparams */, const type::vector< DataVecDeriv_t<Out>*>& /* dataVecOutAcc */,
+        const type::vector<const DataVecDeriv_t<In1>*>& /* dataVecIn1Vel */,
+        const type::vector<const DataVecDeriv_t<In2>*>& /* dataVecIn2Vel */,
+        const type::vector<const DataVecDeriv_t<In1>*>& /* dataVecIn1Acc */,
+        const type::vector<const DataVecDeriv_t<In2>*>& /* dataVecIn2Acc */)
     {
     }
 
@@ -265,43 +248,43 @@ public:
     }
 
 protected:
-    void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      In1DataVecCoord*> &v) const
+    void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstVecIn1Coord(const ConstMultiVecCoordId id,    type::vector<const In1DataVecCoord*> &v) const
+    void getConstVecIn1Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
-    void getVecIn1Deriv     (const MultiVecDerivId id,         type::vector<      In1DataVecDeriv*> &v) const
+    void getVecIn1Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstVecIn1Deriv(const ConstMultiVecDerivId id,    type::vector<const In1DataVecDeriv*> &v) const
+    void getConstVecIn1Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
-    void getMatIn1Deriv     (const MultiMatrixDerivId id,      type::vector<      In1DataMatrixDeriv*> &v) const
+    void getMatIn1Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstMatIn1Deriv(const ConstMultiMatrixDerivId id, type::vector<const In1DataMatrixDeriv*> &v) const
+    void getConstMatIn1Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
 
-    void getVecIn2Coord     (const MultiVecCoordId id,         type::vector<      In2DataVecCoord*> &v) const
+    void getVecIn2Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstVecIn2Coord(const ConstMultiVecCoordId id,    type::vector<const In2DataVecCoord*> &v) const
+    void getConstVecIn2Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
-    void getVecIn2Deriv     (const MultiVecDerivId id,         type::vector<      In2DataVecDeriv*> &v) const
+    void getVecIn2Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstVecIn2Deriv(const ConstMultiVecDerivId id,    type::vector<const In2DataVecDeriv*> &v) const
+    void getConstVecIn2Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
-    void getMatIn2Deriv     (const MultiMatrixDerivId id,      type::vector<      In2DataMatrixDeriv*> &v) const
+    void getMatIn2Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstMatIn2Deriv(const ConstMultiMatrixDerivId id, type::vector<const In2DataMatrixDeriv*> &v) const
+    void getConstMatIn2Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
 
-    void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      OutDataVecCoord*> &v) const
+    void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const OutDataVecCoord*> &v) const
+    void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-    void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      OutDataVecDeriv*> &v) const
+    void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const OutDataVecDeriv*> &v) const
+    void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-    void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      OutDataMatrixDeriv*> &v) const
+    void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const OutDataMatrixDeriv*> &v) const
+    void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
 
 };

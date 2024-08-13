@@ -19,119 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/linearalgebra/SparseMatrixProduct[CompressedRowSparseMatrix].h>
-#include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
-#include <sofa/testing/NumericTest.h>
-#include <Sofa.LinearAlgebra.Testing/SparseMatrixTest.h>
+#include <Sofa.LinearAlgebra.Testing/SparseMatrixProduct_test.h>
+#include <sofa/linearalgebra/SparseMatrixProduct.inl>
 
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <Eigen/Sparse>
-#include <sofa/helper/random.h>
-
-template <class TMatrix, class TReal>
-struct TestSparseMatrixProductTraits
+namespace sofa
 {
-    using Matrix = TMatrix;
-    using Real = TReal;
-};
 
-/**
- * Test the class SparseMatrixProduct
- * The class is designed to use the templates defined in TestSparseMatrixProductTraits
- * The type of matrix can be any of the types supported by SparseMatrixProduct.
- */
-template <class T>
-struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename T::Real>
-{
-    using Matrix = typename T::Matrix;
-    using Real = typename T::Real;
-    using Base = sofa::testing::SparseMatrixTest<typename T::Real>;
-    using Base::generateRandomSparseMatrix;
-    using Base::copyFromEigen;
-    using Base::compareSparseMatrix;
+using namespace sofa::linearalgebra::testing;
 
-    bool checkMatrix(typename Matrix::Index nbRowsA, typename Matrix::Index nbColsA, typename Matrix::Index nbColsB, Real sparsity)
-    {
-        Eigen::SparseMatrix<Real> eigen_a, eigen_b;
-
-        generateRandomSparseMatrix(eigen_a, nbRowsA, nbColsA, sparsity);
-        generateRandomSparseMatrix(eigen_b, nbColsA, nbColsB, sparsity);
-
-        Matrix A, B;
-        copyFromEigen(A, eigen_a);
-        copyFromEigen(B, eigen_b);
-
-        EXPECT_GT(eigen_a.outerSize(), 0);
-        EXPECT_GT(eigen_b.outerSize(), 0);
-
-        Eigen::SparseMatrix<Real> eigen_c = eigen_a * eigen_b;
-
-        EXPECT_EQ(eigen_c.rows(), nbRowsA);
-        EXPECT_EQ(eigen_c.cols(), nbColsB);
-        EXPECT_GT(eigen_c.outerSize(), 0); //to make sure that there are non-zero values in the result matrix
-
-        sofa::linearalgebra::SparseMatrixProduct<Matrix> product(&A, &B);
-        product.computeProduct();
-
-        EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
-
-        //the second time computeProduct is called uses the faster algorithm
-        product.computeProduct();
-        EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
-
-        // force re-computing the intersection
-        product.computeProduct(true);
-        EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
-
-        //modify the values of A, but not its pattern
-        for (int i = 0; i < eigen_a.nonZeros(); ++i)
-        {
-            eigen_a.valuePtr()[i] = static_cast<SReal>(sofa::helper::drand(1));
-        }
-
-        eigen_c = eigen_a * eigen_b; //result is updated using the regular matrix product
-        copyFromEigen(A, eigen_a);
-
-        product.matrixA = &A;
-        product.computeProduct(); //intersection is already computed: uses the faster algorithm
-        EXPECT_TRUE(compareSparseMatrix(eigen_c, product.getProductResult()));
-
-        return true;
-    }
-};
-
-using CRSMatrixScalar = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
+#define DEFINE_TEST_FOR_TYPE(scalar, StorageLHS, StorageRHS, StorageResult)\
+    sofa::linearalgebra::SparseMatrixProduct<\
+        Eigen::SparseMatrix<scalar, StorageLHS>,\
+        Eigen::SparseMatrix<scalar, StorageRHS>,\
+        Eigen::SparseMatrix<scalar, StorageResult>\
+    >
+#define DEFINE_TEST_FOR_STORAGE(StorageLHS, StorageRHS, StorageResult)\
+    DEFINE_TEST_FOR_TYPE(float, StorageLHS, StorageRHS, StorageResult),\
+    DEFINE_TEST_FOR_TYPE(double, StorageLHS, StorageRHS, StorageResult)
 
 using TestSparseMatrixProductImplementations = ::testing::Types<
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, double>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, double>
-    // TestSparseMatrixProductTraits<CRSMatrixScalar, SReal, 1000, std::ratio<1, 1000> >
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::ColMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::ColMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::ColMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::ColMajor, Eigen::RowMajor, Eigen::RowMajor),
+    DEFINE_TEST_FOR_STORAGE(Eigen::RowMajor, Eigen::RowMajor, Eigen::RowMajor)
 >;
-TYPED_TEST_SUITE(TestSparseMatrixProduct, TestSparseMatrixProductImplementations);
 
-TYPED_TEST(TestSparseMatrixProduct, squareMatrix )
-{
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 5, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 5, 3. / 5. ) );
+#undef DEFINE_TEST_FOR_STORAGE
+#undef DEFINE_TEST_FOR_TYPE
 
-    ASSERT_TRUE( this->checkMatrix( 100, 1000, 1000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 1000, 1000, 20. / 1000. ) );
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    TestSparseMatrixProduct,
+    TestSparseMatrixProduct,
+    TestSparseMatrixProductImplementations
+);
 
-    ASSERT_TRUE( this->checkMatrix( 20, 20, 20, 1. ) );
-}
-
-TYPED_TEST(TestSparseMatrixProduct, rectangularMatrix )
-{
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 3. / 5. ) );
-
-    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 3. / 5. ) );
-
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 20. / 1000. ) );
-
-    ASSERT_TRUE( this->checkMatrix( 20, 30, 10, 1. ) );
 }

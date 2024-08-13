@@ -27,13 +27,7 @@
 #include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/type/Mat.h>
-#include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
-
-// The following header is included just for compatibility (see #3707). To remove in v23.12
-#include <sofa/component/mapping/nonlinear/DistanceMultiMapping.h>
-
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -50,17 +44,15 @@ namespace sofa::component::mapping::nonlinear
  * @author Francois Faure
  */
 template <class TIn, class TOut>
-class DistanceMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<true>
+class DistanceMapping : public core::Mapping<TIn, TOut>, public StabilizedNonLinearMappingData
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
@@ -71,21 +63,21 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
     typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+    static constexpr auto Nin = In::deriv_total_size;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
+    Data<bool> f_computeDistance;
 
-    Data<bool> f_computeDistance;                    ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
-    Data<type::vector<Real>> f_restLengths;          ///< Rest lengths of the connections
-    Data<Real> d_showObjectScale;                    ///< Scale for object display
-    Data<sofa::type::RGBAColor> d_color;             ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
+    Data<std::string> f_restLengths;
+
+
+    Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
+    Data<type::vector<Real>> d_restLengths; ///< Rest lengths of the connections
+    Data<Real> d_showObjectScale; ///< Scale for object display
+    Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<DistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -93,8 +85,6 @@ public:
 
 
     void init() override;
-
-    using Inherit::apply;
 
     void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
@@ -113,11 +103,11 @@ public:
     const linearalgebra::BaseMatrix* getK() override;
     void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     DistanceMapping();
-    ~DistanceMapping() override;
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
@@ -127,6 +117,21 @@ protected:
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
+
+    /**
+     * @brief Represents an entry in the Jacobian matrix.
+     *
+     * The JacobianEntry struct is used to store information about an entry in the
+     * Jacobian matrix, specifically the vertex identifier and the corresponding
+     * Jacobian value. It also provides a comparison operator for sorting entries
+     * by vertex ID.
+     */
+    struct JacobianEntry
+    {
+        sofa::Index vertexId;
+        Direction jacobianValue;
+        bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
+    };
 };
 
 

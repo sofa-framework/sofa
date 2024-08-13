@@ -36,21 +36,30 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 AffineMovementProjectiveConstraint<DataTypes>::AffineMovementProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , data(new AffineMovementProjectiveConstraintInternalData<DataTypes>)
-    , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
-    , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
-    , m_rotation(  initData(&m_rotation,"rotation","rotation applied to border points") )
-    , m_quaternion( initData(&m_quaternion,"quaternion","quaternion applied to border points") )
-    , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
-    , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , data(std::make_unique<AffineMovementProjectiveConstraintInternalData<DataTypes>>())
+    , d_meshIndices(initData(&d_meshIndices, "meshIndices", "Indices of the mesh") )
+    , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
+    , d_beginConstraintTime(initData(&d_beginConstraintTime, "beginConstraintTime", "Begin time of the bilinear constraint") )
+    , d_endConstraintTime(initData(&d_endConstraintTime, "endConstraintTime", "End time of the bilinear constraint") )
+    , d_rotation(initData(&d_rotation, "rotation", "rotation applied to border points") )
+    , d_quaternion(initData(&d_quaternion, "quaternion", "quaternion applied to border points") )
+    , d_translation(initData(&d_translation, "translation", "translation applied to border points") )
+    , d_drawConstrainedPoints(initData(&d_drawConstrainedPoints, "drawConstrainedPoints", "draw constrained points") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    if(!m_beginConstraintTime.isSet())
-        m_beginConstraintTime = 0;
-    if(!m_endConstraintTime.isSet())
-        m_endConstraintTime = 20;
+    if(!d_beginConstraintTime.isSet())
+        d_beginConstraintTime = 0;
+    if(!d_endConstraintTime.isSet())
+        d_endConstraintTime = 20;
+
+    m_meshIndices.setParent(&d_meshIndices);
+    m_indices.setParent(&d_indices);
+    m_beginConstraintTime.setParent(&d_beginConstraintTime);
+    m_endConstraintTime.setParent(&d_endConstraintTime);
+    m_rotation.setParent(&d_rotation);
+    m_quaternion.setParent(&d_quaternion);
+    m_translation.setParent(&d_translation);
+    m_drawConstrainedPoints.setParent(&d_drawConstrainedPoints);
 }
 
 
@@ -64,22 +73,22 @@ AffineMovementProjectiveConstraint<DataTypes>::~AffineMovementProjectiveConstrai
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::clearConstraints()
 {
-    m_indices.beginEdit()->clear();
-    m_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::addConstraint(Index index)
 {
-    m_indices.beginEdit()->push_back(index);
-    m_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::removeConstraint(Index index)
 {
-    removeValue(*m_indices.beginEdit(),index);
-    m_indices.endEdit();
+    removeValue(*d_indices.beginEdit(), index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -101,14 +110,14 @@ void AffineMovementProjectiveConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        m_indices.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
     }
 
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     auto maxIndex=this->mstate->getSize();
     for (Size i=0; i<indices.size(); ++i)
@@ -126,7 +135,7 @@ void AffineMovementProjectiveConstraint<DataTypes>::init()
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::projectResponseImpl(VecDeriv& dx)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
     {
         dx[indices[i]]=Deriv();
@@ -155,20 +164,20 @@ template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     // Time
-    SReal beginTime = m_beginConstraintTime.getValue();
-    SReal endTime = m_endConstraintTime.getValue();
+    SReal beginTime = d_beginConstraintTime.getValue();
+    SReal endTime = d_endConstraintTime.getValue();
     SReal totalTime = endTime - beginTime;
 
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
-        this->initializeInitialPositions(m_meshIndices.getValue(),xData,meshPointsX0);
+        this->initializeInitialPositions(d_meshIndices.getValue(), xData, meshPointsX0);
 
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
-        this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
+        this->initializeFinalPositions(d_meshIndices.getValue(), xData, meshPointsX0, meshPointsXf);
 
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
@@ -203,7 +212,7 @@ void AffineMovementProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
     // clears the rows and columns associated with constrained particles
     const unsigned blockSize = DataTypes::deriv_total_size;
 
-    for (const auto id : m_indices.getValue())
+    for (const auto id : d_indices.getValue())
     {
         M->clearRowsCols( id * blockSize, (id+1) * blockSize );
     }
@@ -213,7 +222,7 @@ template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,DataVecCoord& xData)
 {
     // Indices of mesh points
-    const SetIndexArray & meshIndices = m_meshIndices.getValue();
+    const SetIndexArray & meshIndices = d_meshIndices.getValue();
 
     // Initialize final positions
     if(meshPointsXf.size()==0)
@@ -247,9 +256,9 @@ void AffineMovementProjectiveConstraint<defaulttype::Rigid3Types>::transform(con
 {
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
-    const Quat quat =  m_quaternion.getValue();
+    const Quat quat =  d_quaternion.getValue();
     quat.toMatrix(rotationMat);
-    const Vec3 translation = m_translation.getValue();
+    const Vec3 translation = d_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
@@ -264,11 +273,11 @@ void AffineMovementProjectiveConstraint<defaulttype::Rigid3Types>::transform(con
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
 {
-    Vec3 translation = m_translation.getValue();
+    Vec3 translation = d_translation.getValue();
 
     for (size_t i=0; i < indices.size() ; ++i)
     {
-        DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
+        DataTypes::setCPos(xf[indices[i]], (d_rotation.getValue()) * DataTypes::getCPos(x0[indices[i]]) + translation);
     }
 }
 
@@ -290,11 +299,11 @@ void AffineMovementProjectiveConstraint<DataTypes>::initializeFinalPositions (co
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Vec3 point;
 
-    if(m_drawConstrainedPoints.getValue())
+    if(d_drawConstrainedPoints.getValue())
     {
         std::vector< Vec3 > points;
         for( auto& index : indices )

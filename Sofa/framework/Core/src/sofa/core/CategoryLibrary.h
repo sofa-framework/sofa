@@ -64,7 +64,7 @@ public:
      *  CollisionAlgorithm, CollisionAlgorithm, CollisionAlgorithm,
      *  CollisionModel, ConfigurationSetting, ConstraintSet,
      *  ConstraintSolver, ConstraintSolver, ContextObject, Controller,
-     *  Engine, ForceField, InteractionForceField, LinearSolver,
+     *  Engine, ForceField, InteractionForceField, LinearSolver, LinearSystem,
      *  Loader, Mapping, Mass, MechanicalState, OdeSolver,
      *  ProjectiveConstraintSet, TopologicalMapping, Topology,
      *  TopologyObject, and VisualModel

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/testing/BaseSimulationTest.h>
 

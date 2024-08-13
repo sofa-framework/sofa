@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GUI.Component LANGUAGES CXX)
 
 set(SOFAGUICOMPONENT_SOURCE_DIR src/sofa/gui/component)
@@ -10,9 +10,12 @@ set(HEADER_FILES
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AddRecordedCameraButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AttachBodyButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/FixPickedParticleButtonSetting.h
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/ConstraintAttachButtonSetting.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AddRecordedCameraPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.inl
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/BaseAttachBodyPerformer.h
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/BaseAttachBodyPerformer.inl
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.h
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.inl
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ConstraintAttachBodyPerformer.h
@@ -37,6 +40,7 @@ set(SOURCE_FILES
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AddRecordedCameraButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/AttachBodyButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/FixPickedParticleButtonSetting.cpp
+    ${SOFAGUICOMPONENT_SOURCE_DIR}/ConstraintAttachButtonSetting.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AddRecordedCameraPerformer.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/AttachBodyPerformer.cpp
     ${SOFAGUICOMPONENT_SOURCE_DIR}/performer/ComponentMouseInteraction.cpp

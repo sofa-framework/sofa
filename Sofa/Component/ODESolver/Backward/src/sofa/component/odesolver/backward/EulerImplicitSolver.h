@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
@@ -93,17 +94,37 @@ namespace sofa::component::odesolver::backward
  *   \f$ ( M + h/2 K ) v_{t+h} = f_{ext} \f$
  *
  */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver :
+    public sofa::core::behavior::OdeSolver,
+    public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(EulerImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
-    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-    Data<SReal> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
-    Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
-    Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
-    Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_rayleighStiffness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_rayleighMass;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<SReal> f_velocityDamping;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_firstOrder;
+
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
+    Data<bool> f_solveConstraint;
+
+
+
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+    Data<SReal> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<bool> d_firstOrder; ///< Use backward Euler scheme for first order ODE system, which means that only the first derivative of the DOFs (state) appears in the equation. Higher derivatives are absent
+    Data<bool> d_trapezoidalScheme; ///< Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)
+    Data<bool> d_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
 protected:

@@ -13,7 +13,7 @@ discord_token = os.environ['DISCORD_MAIN_WEBHOOK_URL']
 repos=[['sofa-framework','sofa']]
 
 # List of reviewers on GitHub Discussions
-reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["VannesteFelix"],["EulalieCoevoet"],["adagolodjo"],["github-actions"]]
+reviewer_logins=[["alxbilger"],["hugtalbot"],["bakpaul"],["fredroy"],["epernod"],["damienmarchal"],["rmolazem"],["samuelmyoussef"],["VannesteFelix"],["EulalieCoevoet"],["adagolodjo"],["github-actions"]]
 
 
 def computeListOfOpenDiscussionsPerCategory():
@@ -55,7 +55,7 @@ def computeListOfOpenDiscussionsPerCategory():
 
                 lastReplyOnLastComment = len(discussion["comments"]["nodes"][lastCommentId]["replies"]["nodes"]) - 1
 
-                # No replies on the last comment
+                # No reply on the last comment
                 if(lastReplyOnLastComment < 0):
                     author = discussion["comments"]["nodes"][lastCommentId]["author"]["login"]
                 # Select the last reply of the last comment
@@ -78,7 +78,7 @@ def computeListOfOpenDiscussionsPerCategory():
 
 
 def printDiscussionsPerCategory(categories, discussions_numbers):
-    Message = ":speech_balloon: GitHub pending discussion topics :point_down: "
+    Message = ":speech_balloon: GitHub pending discussion topics :speech_balloon: "
     postOnDiscord(Message)
 
     categoryDone = []
@@ -111,9 +111,13 @@ def printDiscussionsPerCategory(categories, discussions_numbers):
 
 # Function posting a message on Discord
 def postOnDiscord(message):
-    payload = {'content': message}
+    payload = {
+        'content' : message,
+        'username' : 'SOFA Github bot',
+        'flags' : 4,
+    }
     response = requests.post(discord_token, json=payload)
-    print(response)
+    print("Status: "+str(response.status_code)+"\nReason: "+str(response.reason)+"\nText: "+str(response.text))
     return
 
 

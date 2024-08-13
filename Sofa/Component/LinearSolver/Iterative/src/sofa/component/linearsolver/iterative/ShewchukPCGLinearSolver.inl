@@ -36,19 +36,27 @@ namespace sofa::component::linearsolver::iterative
 
 template<class TMatrix, class TVector>
 ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioner") )
+    : d_maxIter(initData(&d_maxIter, (unsigned)25, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
+    , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
+    , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
-    , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of precondtioners") )
+    , d_build_precond(initData(&d_build_precond, true, "build_precond", "Build the preconditioners, if false build the preconditioner only at the initial step") )
+    , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
     , newton_iter(0)
 {
-    f_graph.setWidget("graph");
+    d_graph.setWidget("graph");
     first = true;
     this->f_listening.setValue(true);
+
+    f_maxIter.setParent(&d_maxIter);
+    f_tolerance.setParent(&d_tolerance);
+    f_use_precond.setParent(&d_use_precond);
+    f_update_step.setParent(&d_update_step);
+    f_build_precond.setParent(&d_build_precond);
+    f_graph.setParent(&d_graph);
+
 }
 
 template<class TMatrix, class TVector>
@@ -106,14 +114,14 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         first = false;
         next_refresh_step = 1;
     }
-    else if (f_build_precond.getValue())
+    else if (d_build_precond.getValue())
     {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
         SCOPED_TIMER_VARNAME(mbkTimer, "PCG::PrecondSetSystemMBKMatrix");
 
-        if (f_update_step.getValue()>0)
+        if (d_update_step.getValue() > 0)
         {
-            if (next_refresh_step>=f_update_step.getValue())
+            if (next_refresh_step >= d_update_step.getValue())
             {
                 l_preconditioner.get()->setSystemMBKMatrix(mparams);
                 next_refresh_step=1;
@@ -146,7 +154,7 @@ void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         newton_iter = 0;
-        std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
+        std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
         graph.clear();
     }
 }
@@ -157,7 +165,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 {
     SCOPED_TIMER_VARNAME(solveTimer, "PCGLinearSolver::solve");
 
-    std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
+    std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
 //    sofa::type::vector<double>& graph_error = graph["Error"];
 
     newton_iter++;
@@ -171,10 +179,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
-    const bool apply_precond = l_preconditioner.get()!=nullptr && f_use_precond.getValue();
+    const bool apply_precond = l_preconditioner.get()!=nullptr && d_use_precond.getValue();
 
     const double b_norm = b.dot(b);
-    const double tol = f_tolerance.getValue() * b_norm;
+    const double tol = d_tolerance.getValue() * b_norm;
 
     r = M * x;
     cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
@@ -195,7 +203,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     graph_error.push_back(r_norm/b_norm);
 
     unsigned iter=1;
-    while ((iter <= f_maxIter.getValue()) && (r_norm > tol))
+    while ((iter <= d_maxIter.getValue()) && (r_norm > tol))
     {
         s = M * w;
         const double dtq = w.dot(s);
@@ -227,7 +235,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         iter++;
     }
 
-    f_graph.endEdit();
+    d_graph.endEdit();
 
     vtmp.deleteTempVector(&r);
     vtmp.deleteTempVector(&w);

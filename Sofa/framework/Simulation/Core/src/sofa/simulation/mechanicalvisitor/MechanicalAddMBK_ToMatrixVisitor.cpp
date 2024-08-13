@@ -44,7 +44,6 @@ Visitor::Result MechanicalAddMBK_ToMatrixVisitor::fwdForceField(simulation::Node
 {
     if (matrix != nullptr)
     {
-        assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
         ff->addMBKToMatrix(this->mparams, matrix);
     }
 

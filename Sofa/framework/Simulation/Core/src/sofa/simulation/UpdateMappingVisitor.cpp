@@ -25,26 +25,21 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
+
+namespace sofa::simulation
 {
 
-namespace simulation
+void UpdateMappingVisitor::processMapping(simulation::Node* n, core::BaseMapping* obj)
 {
-
-void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
-{
-    const std::string msg = "MappingVisitor - processMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
-
+    SOFA_UNUSED(n);
     obj->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
     obj->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* n, core::BaseMapping* obj)
 {
-    // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
-    const std::string msg = "MappingVisitor - processMechanicalMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
+    SOFA_UNUSED(n);
+    SOFA_UNUSED(obj);
 }
 
 Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
@@ -55,7 +50,7 @@ Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

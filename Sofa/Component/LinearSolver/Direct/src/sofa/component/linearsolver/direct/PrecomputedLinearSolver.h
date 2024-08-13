@@ -80,12 +80,19 @@ public:
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
-    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
-    Data<bool> use_file; ///< Dump system matrix in a file
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    Data<bool> jmjt_twostep;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    Data<bool> use_file;
+
+
+    Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> d_use_file; ///< Dump system matrix in a file
     Data<double> init_Tolerance;
 
-    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
-    Data<bool> f_verbose; ///< Dump system state at each iteration
+    SOFA_ATTRIBUTE_DISABLED__SOLVER_DIRECT_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b) override;

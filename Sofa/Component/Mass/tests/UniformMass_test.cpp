@@ -29,7 +29,7 @@ using namespace sofa::defaulttype ;
 
 using sofa::component::mass::UniformMass ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -115,7 +115,7 @@ struct UniformMassTest :  public BaseTest
         return ;
     }
 
-    /// totalMass, mass and localRange..
+    /// totalMass, mass and d_localRange..
     /// case where NO mass info give, default totalMass = 1.0
     void checkNoAttributes(){
         const string scene =
@@ -138,7 +138,7 @@ struct UniformMassTest :  public BaseTest
         }
     }
 
-    /// totalMass, mass and localRange..
+    /// totalMass, mass and d_localRange..
     /// case where NO mass info give, default totalMass = 1.0
     void checkRigidAttribute()
     {
@@ -338,7 +338,7 @@ struct UniformMassTest :  public BaseTest
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='-8.0' vertexMass=-4.0/>   "
+                "   <UniformMass name='m_mass' totalMass='-8.0' vertexMass='-4.0'/>   "
                 "</Node>                                                     " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());

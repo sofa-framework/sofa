@@ -29,10 +29,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -62,14 +60,10 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace mass
+namespace component::mass
 {
 
 using namespace gpu::cuda;
@@ -415,9 +409,8 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes>::draw(const core::visual::VisualPa
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace mass
+} // namespace component::mass
 
-} // namespace component
 
 } // namespace sofa
 

@@ -26,7 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
@@ -438,7 +438,7 @@ public:
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             for (int id = 0; id < 2; id++)
             {
-                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
+                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
                 const Mat33& rotMat = triangleInfo.rotation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -583,7 +583,7 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
-            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
+            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.rotation;
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -656,7 +656,7 @@ public:
             return;
 
         const int nbrTest = 10;
-        double diffTimeMs = 0;
+        //double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
@@ -675,7 +675,7 @@ public:
             if (timeMax < diffTimed)
                 timeMax = diffTimed;
 
-            diffTimeMs += diffTimed;
+            //diffTimeMs += diffTimed;
             sofa::simulation::node::reset(m_root.get());
         }
 

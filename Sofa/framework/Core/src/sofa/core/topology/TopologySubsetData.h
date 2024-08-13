@@ -76,6 +76,12 @@ public:
     */
     virtual Index indexOfElement(Index index) const;
 
+    /** Method to return the indices position of all the occurrence of the element inside the vector map @sa m_map2Elements
+    * @param {Index} element index of the full Data vector to find in the vector map
+    * @return {type::vector<Index>} positions of all the occurrence of the element in the vector map. return empty vector if not found.
+    */
+    virtual const type::vector<Index> indicesOfElement(Index index) const;
+
     /// Swaps values of this subsetmap at indices i1 and i2. (only if i1 and i2 < subset size())
     void swap(Index i1, Index i2) override;
 
@@ -99,7 +105,7 @@ public:
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const sofa::type::vector< AncestorElem >& ancestorElems) override;
 
-    /// Remove the data using a set of indices. Will remove only the data contains by this subset.
+    /// Remove elems with inputted indices. Will remove only the data contains by this subset.
     void remove(const sofa::type::vector<Index>& index) override;
 
     /// Reorder the values. TODO epernod 2021-05-24: check if needed and implement it if needed.
@@ -131,7 +137,7 @@ protected:
     * Internal method called at the end of @sa remove method to apply internal mechanism, such as updating the map size
     * @param nbElements Number of element removed.
     */
-    virtual void removePostProcess(sofa::Size nbElements);
+    virtual void removePostProcess(sofa::Index elemId);
 
     /**
     * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.

@@ -95,31 +95,32 @@ protected:
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<unsigned int> m1;
 
-    DataSubsetIndices m1; ///< index of the constraint on the first model
-    DataSubsetIndices m2; ///< index of the constraint on the second model
-    Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<unsigned int> m2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<Vec3Types::VecCoord> restVector;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    Data<bool> keepOrientDiff;
+
+    DataSubsetIndices d_m1; ///< index of the constraint on the first model
+    DataSubsetIndices d_m2; ///< index of the constraint on the second model
+    Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<bool> d_activate; ///< bool to control constraint activation
-    Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+    Data<bool> d_activate; ///< control constraint activation (true by default)
+    Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
 
     std::vector<Vec3d> prevForces;
-
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been removed, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
-    sofa::core::objectmodel::lifecycle::RemovedData  activateAtIteration{this, "v22.12", "v23.06", "activateAtIteration", "use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327)."};
-
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    sofa::core::objectmodel::lifecycle::RemovedData  merge{this, "v22.12", "v23.06", "merge", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
-
-    SOFA_ATTRIBUTE_DISABLED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been removed. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
-    sofa::core::objectmodel::lifecycle::RemovedData derivative{this, "v22.12", "v23.06", "derivative", "Its behavior was unused, undocumented, untested, and unclear (see PR #3328), please report to sofa-dev if you want the feature back."};
-
 
     BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralLagrangianConstraint(MechanicalState* object) ;

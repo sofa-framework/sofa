@@ -190,6 +190,7 @@ public:
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     /// Write the current field values to the given map of name -> value pairs
+    SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS()
     void writeDatas (std::map<std::string,std::string*>& str);
 
     /// Write the current field values to the given output stream
@@ -394,7 +395,7 @@ public:
 
     Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
+    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< The state of the component among (Dirty, Valid, Undefined, Loading, Invalid).
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
@@ -487,7 +488,7 @@ public:
 /// This construct a new ComponentInfo object from a Base object.
 inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
 {
-    return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+    return std::make_shared<SofaComponentInfo>(t);
 }
 
 } // namespace sofa::helper::logging

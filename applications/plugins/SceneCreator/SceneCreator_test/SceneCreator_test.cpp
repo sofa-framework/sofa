@@ -53,13 +53,15 @@ using sofa::core::objectmodel::BaseContext;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
 
+#include <sofa/simpleapi/SimpleApi.h>
+
 class SceneCreator_test : public BaseSimulationTest
 {
 public:
     void SetUp() override
     {
-        importPlugin("Sofa.Component");
-        importPlugin("Sofa.GL.Component.Rendering3D");
+        sofa::simpleapi::importPlugin("Sofa.Component");
+        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
     }
 
     bool createCubeFailed();
@@ -144,7 +146,7 @@ bool SceneCreator_test::createCubeSuccess()
     EXPECT_EQ(grids.size(), 1u);
 
     const TetrahedronFEMForceField3* fem = FEMs[0];
-    EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
+    EXPECT_EQ(fem->d_poissonRatio.getValue(), poissonRatio);
 
     return true;
 }
@@ -244,7 +246,7 @@ bool SceneCreator_test::createCylinderSuccess()
     EXPECT_EQ(grids.size(), 1u);
 
     const TetrahedronFEMForceField3* fem = FEMs[0];
-    EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
+    EXPECT_EQ(fem->d_poissonRatio.getValue(), poissonRatio);
 
     return true;
 }
@@ -342,7 +344,7 @@ bool SceneCreator_test::createSphereSuccess()
     EXPECT_EQ(grids.size(), (size_t)1);
 
     const TetrahedronFEMForceField3* fem = FEMs[0];
-    EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
+    EXPECT_EQ(fem->d_poissonRatio.getValue(), poissonRatio);
 
     return true;
 }

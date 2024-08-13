@@ -38,7 +38,7 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<SReal>, lineara
     const SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     const Index n = M.rowSize();
-    const Real w = (Real)f_omega.getValue();
+    const Real w = (Real)d_omega.getValue();
 
     const Matrix::VecIndex& colsIndex = M.getColsIndex();
     const Matrix::VecBlock& colsValue = M.getColsValue();
@@ -87,7 +87,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
     static constexpr sofa::Size BlocSize = 3;
 
     const Index nb = M.rowBSize();
-    const Real w = (Real)f_omega.getValue();
+    const Real w = (Real)d_omega.getValue();
 
     const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
     const typename Matrix::VecBlock& colsValue = M.getColsValue();

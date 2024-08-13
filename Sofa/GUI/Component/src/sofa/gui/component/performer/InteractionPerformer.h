@@ -39,7 +39,7 @@ class SOFA_GUI_COMPONENT_API InteractionPerformer
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
 
-    InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
+    InteractionPerformer(BaseMouseInteractor *i):m_interactor(i),m_freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
 
     virtual void configure(sofa::component::setting::MouseButtonSetting* /*setting*/) {}
@@ -50,15 +50,19 @@ public:
     virtual void handleEvent(core::objectmodel::Event * ) {}
     virtual void draw(const core::visual::VisualParams* ) {}
 
-    virtual void setPerformerFreeze() {freezePerformer = true;}
+    virtual void setPerformerFreeze() {m_freezePerformer = true;}
 
     template <class RealObject>
     static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
         return new RealObject(interactor);
     }
-    BaseMouseInteractor *interactor;
-    bool freezePerformer;
+    BaseMouseInteractor *m_interactor;
+    bool m_freezePerformer;
+
+    SOFA_ATTRIBUTE_DISABLED__NAMING("v24.06", "v24.06", interactor,m_interactor);
+    SOFA_ATTRIBUTE_DISABLED__NAMING("v24.06", "v24.06", freezePerformer,m_freezePerformer);
+
 };
 
 

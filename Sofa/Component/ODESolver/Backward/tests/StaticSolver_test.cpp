@@ -23,7 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <vector>
 #include <algorithm>
@@ -65,15 +65,19 @@ public:
         createObject(root, "TetrahedronSetTopologyModifier");
         createObject(root, "Hexa2TetraTopologicalMapping", {{"input", "@grid"}, {"output", "@mechanical_topology"}});
         createObject(root, "TetrahedronHyperelasticityFEMForceField", {
+            {"name", "FEM"},
             {"materialName", "StVenantKirchhoff"},
             {"ParameterSet", std::to_string(mu) + " " + std::to_string(l)},
             {"topology", "@mechanical_topology"}
         });
+        ASSERT_NE(root->getObject("FEM"), nullptr);
+        ASSERT_NE(root->getObject("FEM")->findData("materialName"), nullptr);
+        ASSERT_EQ(root->getObject("FEM")->findData("materialName")->getValueString(), "StVenantKirchhoff");
 
-        createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}});
+        createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}, {"triangles", "@mechanical_topology.triangles"}});
         createObject(root, "FixedProjectiveConstraint", {{"indices", "@top_roi.indices"}});
 
-        createObject(root, "BoxROI", {{"name", "base_roi"}, {"box", "-7.5 -7.5 79.9 7.5 7.5 80.1"}});
+        createObject(root, "BoxROI", {{"name", "base_roi"}, {"box", "-7.5 -7.5 79.9 7.5 7.5 80.1"}, {"triangles", "@mechanical_topology.triangles"}});
         createObject(root, "SurfacePressureForceField", {{"pressure", "100"}, {"mainDirection", "0 -1 0"}, {"triangleIndices", "@base_roi.trianglesInROI"}});
 
         solver = dynamic_cast<StaticSolver *> (s.get());
@@ -104,16 +108,16 @@ TEST_F(StaticSolverTest, Residuals) {
     // These are the expected force residual if we do not activate any convergence threshold
     // and force the solve to do 10 Newton iterations
     const std::vector<double> expected_force_residual_norms = {
-        2551.7326458060306,
-        381.91182992522732,
-        44.367042885694701,
-        3.4122807603419312,
-        0.40321094066950214,
-        0.023070078859990586,
-        0.0036006702672518268,
-        0.00014283984897951575,
-        0.000030818164546577138,
-        0.0000012847345051708047
+        2535.2291278587031,
+        196.33640050006048,
+        35.551907341224727,
+        2.4346076657342617,
+        0.25822327664821382,
+        0.028069066914505583,
+        0.0041872264223336737,
+        0.00058185560326781769,
+        8.5402692438165759e-05,
+        1.2283305451908398e-05
     };
 
     // Disable all convergence criteria
@@ -146,8 +150,8 @@ TEST_F(StaticSolverTest, RelativeResiduals) {
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
 
     const sofa::type::vector<SReal> actual_force_residual_norms = this->execute().first;
-    EXPECT_EQ(actual_force_residual_norms.size(), 6)
-    << "The static ODE solver is supposed to converge after 6 Newton steps when using a relative residual threshold of 1e-5.\n"
+    EXPECT_EQ(actual_force_residual_norms.size(), 7)
+    << "The static ODE solver is supposed to converge after 7 Newton steps when using a relative residual threshold of 1e-5.\n"
     << actual_force_residual_norms;
 }
 
@@ -173,16 +177,16 @@ TEST_F(StaticSolverTest, Increments) {
     // and force the solve to do 10 Newton iterations
 
     const std::vector<double> expected_increment_norms = {
-        23.149116745347889,
-        4.7185304859032309,
-        0.95755125409873631,
-        0.053244570231523215,
-        0.0040133773093344888,
-        0.0003421565281377296,
-        0.000036312620114208186,
-        0.0000019664565731698484,
-        0.00000033108990100908061,
-        0.0000000073088563878990673
+        22.297538536402058,
+        4.3606022998860619,
+        0.99483878944198267,
+        0.051485395498607853,
+        0.004446587487513475,
+        0.00046108630684311004,
+        6.8123139478945454e-05,
+        9.3980023748021393e-06,
+        1.3822152675332613e-06,
+        1.9854698499894074e-07
     };
 
     // Disable all convergence criteria

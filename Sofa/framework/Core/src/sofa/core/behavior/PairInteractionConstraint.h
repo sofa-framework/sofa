@@ -58,7 +58,7 @@ protected:
 
     ~PairInteractionConstraint() override;
 public:
-    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;
@@ -143,7 +143,10 @@ public:
             {
                 arg->setAttribute("object2", object2);
             }
-            obj->parse(arg);
+            if (obj)
+            {
+                obj->parse(arg);
+            }
         }
 
         return obj;

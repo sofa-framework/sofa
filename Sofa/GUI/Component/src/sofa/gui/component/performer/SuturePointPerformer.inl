@@ -44,26 +44,26 @@ void SuturePointPerformer<DataTypes>::start()
 {
     if (first) //first click
     {
-        const BodyPicked picked = this->interactor->getBodyPicked();
+        const BodyPicked picked = this->m_interactor->getBodyPicked();
         const auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            msg_error(this->interactor) << "No picked body in first clic.";
+            msg_error(this->m_interactor) << "No picked body in first clic.";
             return;
         }
 
-        firstPicked = this->interactor->getBodyPicked();
+        firstPicked = this->m_interactor->getBodyPicked();
         first = false;
     }
     else // second click
     {
-        const BodyPicked picked = this->interactor->getBodyPicked();
+        const BodyPicked picked = this->m_interactor->getBodyPicked();
         auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
-            msg_error(this->interactor) << "No picked body in second clic.";
+            msg_error(this->m_interactor) << "No picked body in second clic.";
             return;
         }
 
@@ -79,27 +79,27 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (!SpringObject)
         {
-            msg_error(this->interactor) << "Can't find StiffSpringForceField.";
+            msg_error(this->m_interactor) << "Can't find SpringForceField.";
             return;
         }
         else if (!triangleContainer)
         {
-            msg_error(this->interactor) << "Can't find a topology.";
+            msg_error(this->m_interactor) << "Can't find a topology.";
             return;
         }
         else if (triangleContainer->getTriangles().empty())
         {
-            msg_error(this->interactor) << "Can't find a topology with triangles.";
+            msg_error(this->m_interactor) << "Can't find a topology with triangles.";
             return;
         }
         else if (!MechanicalObject)
         {
-            msg_error(this->interactor) << "Can't find MechanicalObject.";
+            msg_error(this->m_interactor) << "Can't find MechanicalObject.";
             return;
         }
         else if (!FixObject)
         {
-            msg_error(this->interactor) << "Can't find FixObject.";
+            msg_error(this->m_interactor) << "Can't find FixObject.";
             return;
         }
 

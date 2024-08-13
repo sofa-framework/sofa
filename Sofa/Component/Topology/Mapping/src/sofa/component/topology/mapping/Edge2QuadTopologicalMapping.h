@@ -88,10 +88,10 @@ public:
     Index getFromIndex(Index ind) override;
 
 
-    Data<unsigned int> d_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
-    Data<SReal> d_radius; ///< radius of the circles around each point of the input topology (1 by default)
-    Data<SReal> d_radiusFocal; ///< in case of ellipse, (extra) radius on the focal axis (0 by default)
-    Data<type::Vec3> d_focalAxis; ///< in case of ellipse, focal axis (default [0,0,1])
+    Data<unsigned int> d_nbPointsOnEachCircle; ///< Discretization of created circles
+    Data<SReal> d_radius; ///< Radius of created circles in yz plan
+    Data<SReal> d_radiusFocal; ///< If greater than 0., radius in focal axis of created ellipses
+    Data<type::Vec3> d_focalAxis; ///< In case of ellipses
 
     Data<VecIndex> d_edgeList; ///< list of input edges for the topological mapping: by default, all considered
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)

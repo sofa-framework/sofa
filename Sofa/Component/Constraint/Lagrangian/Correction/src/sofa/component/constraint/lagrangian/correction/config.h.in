@@ -38,9 +38,10 @@ namespace sofa::component::constraint::lagrangian::correction
 } // namespace sofa::component::constraint::lagrangian::correction
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION
-#define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
 #else
-#define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12 (#3152)", "v23.06", "String data of this ConstraintCorrection were replaced by explicit links")
-#endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.06", "v24.12", \
+        "Data renamed according to the guidelines")
+#endif

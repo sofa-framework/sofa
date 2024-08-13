@@ -36,8 +36,15 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API CollisionResponse : public c
 public :
     SOFA_CLASS(CollisionResponse,sofa::core::collision::ContactManager);
 
-    Data<sofa::helper::OptionsGroup> response; ///< contact response class
-    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
+    Data<sofa::helper::OptionsGroup> response;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
+    Data<std::string> responseParams;
+
+
+    Data<sofa::helper::OptionsGroup> d_response; ///< contact response class
+    Data<std::string> d_responseParams; ///< contact response parameters (syntax: name1=value1&name2=value2&...)
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
@@ -53,7 +60,7 @@ public :
         {
             context->addObject(obj);
             sofa::helper::OptionsGroup options = initializeResponseOptions(context);
-            obj->response.setValue(options);
+            obj->d_response.setValue(options);
         }
 
         if (arg)
@@ -98,7 +105,7 @@ public :
 
     void setDefaultResponseType(const std::string &responseT);
 
-    std::string getDefaultResponseType() const { return response.getValue().getSelectedItem(); }
+    std::string getDefaultResponseType() const { return d_response.getValue().getSelectedItem(); }
 
 protected:
     typedef sofa::helper::map_ptr_stable_compare<

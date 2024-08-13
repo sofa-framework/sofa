@@ -70,24 +70,37 @@ public:
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
 protected:
-    LinearMovementProjectiveConstraintInternalData<DataTypes> *data;
+    std::unique_ptr<LinearMovementProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class LinearMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-    /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
-    /// the key frames when the motion is defined by the user
-    Data<type::vector<Real> > m_keyTimes;
-    /// the motions corresponding to the key frames
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data< sofa::type::vector< sofa::Index> > m_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<type::vector<Real> >  m_keyTimes;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
     Data<VecDeriv > m_keyMovements;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
+    Data<bool> showMovement;
+
+    /// indices of the DOFs the constraint is applied to
+    SetIndex d_indices;
+    /// the key frames when the motion is defined by the user
+    Data<type::vector<Real> > d_keyTimes;
+    /// the motions corresponding to the key frames
+    Data<VecDeriv > d_keyMovements;
 
     /// indicates whether movements are relative to the dof or absolute
     Data< bool > d_relativeMovements;
 
     /// attributes to precise display
-    /// if showMovement is true we display the expected movement
+    /// if d_showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
-    Data< bool > showMovement;
+    Data< bool > d_showMovement;
 
 
     /// the key times surrounding the current simulation time (for interpolation)

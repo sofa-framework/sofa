@@ -62,26 +62,32 @@ protected:
 public:
     void init() override;
 
-    Data<VecCoord> f_X; ///< position vector
-    Data<VecDeriv> f_V; ///< velocity vector
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
+    Data<VecCoord> f_X;
 
-    void resize(Size vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
+    Data<VecCoord> f_V;
 
-    VecCoord* getX()  { return f_X.beginEdit(); }
-    VecDeriv* getV()  { return f_V.beginEdit(); }
+    Data<VecCoord> d_X; ///< position vector
+    Data<VecDeriv> d_V; ///< velocity vector
 
-    const VecCoord* getX()  const { return &f_X.getValue();  }
-    const VecDeriv* getV()  const { return &f_V.getValue();  }
+    void resize(Size vsize) override { d_X.beginEdit()->resize(vsize); d_X.endEdit(); d_V.beginEdit()->resize(vsize); d_V.endEdit(); }
+
+    VecCoord* getX()  { return d_X.beginEdit(); }
+    VecDeriv* getV()  { return d_V.beginEdit(); }
+
+    const VecCoord* getX()  const { return &d_X.getValue();  }
+    const VecDeriv* getV()  const { return &d_V.getValue();  }
 
     Size getSize() const override
     {
-        return Size(f_X.getValue().size());
+        return Size(d_X.getValue().size());
     }
 
     Data< VecCoord >* write(core::VecCoordId v) override
     {
         if(v == core::VecCoordId::position())
-            return &f_X;
+            return &d_X;
 
         return nullptr;
     }
@@ -89,7 +95,7 @@ public:
     const Data< VecCoord >* read(core::ConstVecCoordId v) const override
     {
         if(v == core::ConstVecCoordId::position())
-            return &f_X;
+            return &d_X;
         else
             return nullptr;
     }
@@ -97,7 +103,7 @@ public:
     Data< VecDeriv >* write(core::VecDerivId v) override
     {
         if(v == core::VecDerivId::velocity())
-            return &f_V;
+            return &d_V;
         else
             return nullptr;
     }
@@ -105,7 +111,7 @@ public:
     const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
     {
         if(v == core::ConstVecDerivId::velocity())
-            return &f_V;
+            return &d_V;
         else
             return nullptr;
     }

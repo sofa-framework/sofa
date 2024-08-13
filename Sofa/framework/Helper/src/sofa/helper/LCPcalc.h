@@ -30,10 +30,7 @@
 #include <ostream>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 #define EPSILON_LCP		0.00000000001	// epsilon pour tests = 0
@@ -99,13 +96,12 @@ inline SOFA_HELPER_API SReal absError(SReal f1x, SReal f1y, SReal f1z, SReal f2x
 {return sqrt ((f2x-f1x)*(f2x-f1x) + (f2y-f1y)*(f2y-f1y) + (f2z-f1z)*(f2z-f1z));}
 
 
-SOFA_HELPER_API SOFA_LCPCALC_RESOUDRELCP_DEPRECATED() int resoudreLCP(int, SReal *, SReal **, SReal *);
+SOFA_LCPCALC_RESOUDRELCP_DISABLED() int resoudreLCP(int, SReal *, SReal **, SReal *) = delete;
+SOFA_LCPCALC_AFFICHESYST_DISABLED() void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim) = delete;
+SOFA_LCPCALC_AFFICHELCP_DISABLED() void afficheLCP(SReal *q, SReal **M, int dim) = delete;
+SOFA_LCPCALC_AFFICHELCP_DISABLED() void afficheLCP(SReal *q, SReal **M, SReal *f, int dim) = delete;
+
 SOFA_HELPER_API int solveLCP(int, SReal *, SReal **, SReal *);
-
-
-SOFA_HELPER_API SOFA_LCPCALC_AFFICHESYST_DEPRECATED() void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim);
-SOFA_HELPER_API SOFA_LCPCALC_AFFICHELCP_DEPRECATED() void afficheLCP(SReal *q, SReal **M, int dim);
-SOFA_HELPER_API SOFA_LCPCALC_AFFICHELCP_DEPRECATED() void afficheLCP(SReal *q, SReal **M, SReal *f, int dim);
 SOFA_HELPER_API void printSyst(SReal* q, SReal** M, int* base, SReal** mat, int dim);
 SOFA_HELPER_API void printLCP(SReal* q, SReal** M, int dim);
 SOFA_HELPER_API void printLCP(SReal* q, SReal** M, SReal* f, int dim);
@@ -157,8 +153,7 @@ SOFA_HELPER_API int nlcp_multiGrid_Nlevels(int dim, SReal *dfree, SReal**W, SRea
 SOFA_HELPER_API int nlcp_gaussseidel(int dim, SReal*dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, bool verbose = false, SReal minW=0.0, SReal maxF=0.0, std::vector<SReal>* residuals = nullptr, std::vector<SReal>* violations = nullptr);
 // Timed Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidelTimed(int, SReal*, SReal**, SReal*, SReal, SReal, int, bool, SReal timeout, bool verbose=false);
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

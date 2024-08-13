@@ -27,9 +27,8 @@
 #include <string>
 #include <map>
 
-namespace sofa
-{
-namespace helper
+
+namespace sofa::helper
 {
 
 /// @brief Contains possibly useful functions, that don't fit anywhere else.
@@ -40,17 +39,21 @@ public:
 /// @brief Convert a string to a wstring.
 ///
 /// @return The converted string on success, or a empty string on failure.
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
 static std::wstring widenString(const std::string& s);
 
 /// @brief Convert a wstring to a string.
 ///
 /// @return The converted string on success, or a empty string on failure.
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
 static std::string narrowString(const std::wstring& ws);
 
 /// @brief Convert a string to lower case.
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
 static std::string downcaseString(const std::string& s);
 
 /// @brief Convert a string to upper case.
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
 static std::string upcaseString(const std::string& s);
 
 #if defined WIN32
@@ -96,8 +99,7 @@ static std::map<std::string, std::string> readBasicIniFile(const std::string& pa
 };
 
 
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper
 
 
 #endif

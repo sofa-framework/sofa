@@ -19,25 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <tinyxml.h>
+#include <tinyxml2.h>
 #include "xmlvisitor.h"
 #include <sofa/core/init.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-TiXmlDocument* loadFromFile(const char *filename)
+tinyxml2::XMLDocument* loadFromFile(const char *filename)
 {
     // this initialize the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared
     // library used.
     //
 
-    TiXmlDocument* doc = new TiXmlDocument; // the resulting document tree
+    tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument; // the resulting document tree
 
     // xmlSubstituteEntitiesDefault(1);
 
-    if (!(doc->LoadFile(filename)))
+    if (doc->LoadFile(filename) != tinyxml2::XML_SUCCESS)
     {
-        std::cerr << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() << std::endl;
+        std::cerr << "Failed to open " << filename << "\n" << doc->ErrorStr() << " at line " << doc->ErrorLineNum() << std::endl;
         delete doc;
         return NULL;
     }
@@ -50,7 +50,7 @@ using namespace sofa::xml;
 int main(int argc, char** argv)
 {
     if( argc <  2 ) return -1;
-    TiXmlDocument* doc = loadFromFile(argv[1]);
+    tinyxml2::XMLDocument* doc = loadFromFile(argv[1]);
 
     sofa::core::init();
     int retValue = 0;
@@ -74,22 +74,22 @@ int main(int argc, char** argv)
 
         if( v_nodes.rootNode() )
         {
-            std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*>::iterator it_root;
+            std::map<const tinyxml2::XMLElement*,sofa::core::visual::DisplayFlags*>::iterator it_root;
             it_root = v_displayFlags.map_displayFlags.find(v_nodes.rootNode());
             if( it_root != v_displayFlags.map_displayFlags.end() )
             {
                 DisplayFlags* root_flags = it_root->second;
                 convert_false_to_neutral(*root_flags);
-                TiXmlElement* visualStyle;
+                tinyxml2::XMLElement* visualStyle;
                 if( ! root_flags->isNeutral() )
                 {
                     if( (visualStyle = v_nodes.rootNode()->FirstChildElement("VisualStyle") ) == NULL )
                     {
-                        TiXmlElement* visualstyle = new TiXmlElement("VisualStyle");
+                        tinyxml2::XMLElement* visualstyle = new tinyxml2::XMLElement("VisualStyle");
                         std::ostringstream oss;
                         oss << *root_flags;
                         visualstyle->SetAttribute("displayFlags",oss.str());
-                        TiXmlElement* first_child = v_nodes.rootNode()->FirstChildElement();
+                        tinyxml2::XMLElement* first_child = v_nodes.rootNode()->FirstChildElement();
                         if(first_child) v_nodes.rootNode()->InsertBeforeChild(first_child,*visualstyle);
                         else v_nodes.rootNode()->LinkEndChild(visualstyle);
                     }

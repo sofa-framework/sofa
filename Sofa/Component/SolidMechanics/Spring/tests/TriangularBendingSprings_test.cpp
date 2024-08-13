@@ -26,7 +26,7 @@
 #include <sofa/component/solidmechanics/spring/TriangularBendingSprings.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
@@ -204,7 +204,7 @@ public:
         typename TriangleBS::SPtr triBS = m_root->getTreeObject<TriangleBS>();
         ASSERT_TRUE(triBS.get() != nullptr);
         
-        const VecEdgeInfo& EdgeInfos = triBS->edgeInfo.getValue();
+        const VecEdgeInfo& EdgeInfos = triBS->d_edgeInfo.getValue();
         ASSERT_EQ(EdgeInfos.size(), 5);
 
         // only one commun edge == only one spring between [0; 3] with restLength = ||(1,1,1)||
@@ -250,7 +250,7 @@ public:
         ASSERT_TRUE(triBS.get() != nullptr);
         ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 0.0);
 
-        const VecEdgeInfo& EdgeInfos = triBS->edgeInfo.getValue();
+        const VecEdgeInfo& EdgeInfos = triBS->d_edgeInfo.getValue();
         
         ASSERT_EQ(EdgeInfos.size(), 1121);
         ASSERT_EQ(EdgeInfos[0].is_activated, true);
@@ -291,7 +291,7 @@ public:
         ASSERT_TRUE(triBS.get() != nullptr);
         ASSERT_TRUE(triModif.get() != nullptr);
 
-        const VecEdgeInfo& EdgeInfos = triBS->edgeInfo.getValue();
+        const VecEdgeInfo& EdgeInfos = triBS->d_edgeInfo.getValue();
         ASSERT_EQ(EdgeInfos.size(), 56);
 
         const sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 

@@ -460,7 +460,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
     type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-//	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+//	tetrahedronRestInfoVector& tetrahedronInf = *(d_tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
 
@@ -533,7 +533,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
     }
     edgeInfo.endEdit();
-//	tetrahedronInfo.endEdit();
+//	d_tetrahedronInfo.endEdit();
     d_df.beginEdit();
 }
 
@@ -612,7 +612,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    drawHyperelasticTets(vparams, x, m_topology, f_materialName.getValue());
+    drawHyperelasticTets<DataTypes>(vparams, x, m_topology, f_materialName.getValue());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);

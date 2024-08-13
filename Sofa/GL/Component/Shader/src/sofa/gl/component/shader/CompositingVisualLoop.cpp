@@ -43,9 +43,6 @@ CompositingVisualLoop::CompositingVisualLoop()
 CompositingVisualLoop::~CompositingVisualLoop()
 {}
 
-void CompositingVisualLoop::initVisual()
-{}
-
 void CompositingVisualLoop::init()
 {
     if (!l_node)
@@ -71,7 +68,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
     l_node->get(visualStyle);
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
-    const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
+    const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->d_displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
     renderingState = vparams->displayFlags().getShowAdvancedRendering();
 

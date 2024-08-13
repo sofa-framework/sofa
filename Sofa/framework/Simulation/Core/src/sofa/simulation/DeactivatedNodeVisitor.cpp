@@ -22,10 +22,8 @@
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Result DeactivationVisitor::processNodeTopDown(simulation::Node* node)
@@ -52,7 +50,7 @@ void DeactivationVisitor::processNodeBottomUp(simulation::Node* node)
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

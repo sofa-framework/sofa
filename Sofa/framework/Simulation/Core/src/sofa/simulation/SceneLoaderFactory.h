@@ -29,10 +29,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -48,6 +46,8 @@ class SOFA_SIMULATION_CORE_API SceneLoader
 {
 public:
     typedef std::vector<std::string> ExtensionList;
+
+    virtual ~SceneLoader() = default;
 
     /// Pre-loading check
     virtual bool canLoadFileName(const char *filename);
@@ -115,6 +115,8 @@ public:
     /// Get the ObjectFactory singleton instance
     static SceneLoaderFactory* getInstance();
 
+    ~SceneLoaderFactory();
+
 protected:
 
     /// Main class registry
@@ -145,9 +147,7 @@ public:
 
 };
 
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation
 
 
 #endif // SOFA_SIMULATION_SCENELOADERFACTORY_H

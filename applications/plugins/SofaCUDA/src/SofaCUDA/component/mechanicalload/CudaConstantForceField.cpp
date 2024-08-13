@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_CUDACONSTANTFORCEFIELD_CPP
+#include <SofaCUDA/component/mechanicalload/CudaConstantForceField.h>
 #include <sofa/component/mechanicalload/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>

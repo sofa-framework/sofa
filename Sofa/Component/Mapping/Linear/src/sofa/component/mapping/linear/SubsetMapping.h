@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -47,12 +48,12 @@ public:
  * @brief Compute a subset of input points
  */
 template <class TIn, class TOut>
-class SubsetMapping : public core::Mapping<TIn, TOut>
+class SubsetMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -83,14 +84,37 @@ public:
     /// Correspondance array
     using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
-    SetIndex f_indices;
 
-    Data < Index > f_first; ///< first index (use if indices are sequential)
-    Data < Index > f_last; ///< last index (use if indices are sequential)
-    Data < Real > f_radius; ///< search radius to find corresponding points in case no indices are given
-    Data < bool > f_handleTopologyChange; ///< Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)
-    Data < bool > f_ignoreNotFound; ///< True to ignore points that are not found in the input model, they will be treated as fixed points
-    Data < bool > f_resizeToModel; ///< True to resize the output MechanicalState to match the size of indices
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<IndexArray> f_indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<Index> f_first;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<int> f_last;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<Index>  f_radius;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<bool> f_handleTopologyChange;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<bool> f_ignoreNotFound;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    Data<bool> f_resizeToModel;
+
+
+    SetIndex d_indices;
+
+    Data < Index > d_first; ///< first index (use if indices are sequential)
+    Data < Index > d_last; ///< last index (use if indices are sequential)
+    Data < Real > d_radius; ///< search radius to find corresponding points in case no indices are given
+    Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::d_pointD2S)
+    Data < bool > d_ignoreNotFound; ///< True to ignore points that are not found in the input model, they will be treated as fixed points
+    Data < bool > d_resizeToModel; ///< True to resize the output MechanicalState to match the size of indices
     SubsetMappingInternalData<In, Out> data;
     void postInit();
     /// Link to be set to the topology container in the component graph. 

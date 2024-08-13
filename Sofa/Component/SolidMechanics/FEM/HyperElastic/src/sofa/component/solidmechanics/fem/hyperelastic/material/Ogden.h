@@ -48,6 +48,8 @@ the determinant of the deformation gradient J and the right Cauchy Green deforma
 template<class DataTypes>
 class Ogden: public HyperelasticMaterial<DataTypes>
 {
+public:
+    static constexpr std::string_view Name = "Ogden";
 
     typedef typename DataTypes::Coord::value_type Real;
     typedef type::Mat<3,3,Real> Matrix3;

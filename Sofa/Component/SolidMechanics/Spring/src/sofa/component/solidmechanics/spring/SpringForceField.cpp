@@ -40,7 +40,6 @@ int SpringForceFieldClass = core::RegisterObject("Springs")
         .add< SpringForceField<Rigid3Types> >()
         ;
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;

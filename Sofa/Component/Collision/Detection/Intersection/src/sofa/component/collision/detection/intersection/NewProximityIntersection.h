@@ -55,8 +55,10 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API NewProximityIntersecti
 {
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
+    Data<bool> useLineLine;
 
-    Data<bool> useLineLine; ///< Line-line collision detection enabled
+    Data<bool> d_useLineLine; ///< Line-line collision detection enabled
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
@@ -65,15 +67,25 @@ public:
     static inline int
     doIntersectionPointPoint(SReal dist2, const type::Vec3& p, const type::Vec3& q,
                              OutputVector* contacts, int id);
-
-    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
-    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, const core::collision::Intersection* currentIntersection) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection) override;
 
     template<typename SphereType1, typename SphereType2>
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2, const core::collision::Intersection* currentIntersection);
+    template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
+
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    template<typename SphereType1, typename SphereType2>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     bool testIntersection(SphereType1& sph1, SphereType2& sph2);
     template<typename SphereType1, typename SphereType2>
+    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts);
-
 protected:
     NewProximityIntersection();
 

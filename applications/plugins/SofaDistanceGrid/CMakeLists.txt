@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaDistanceGrid LANGUAGES CXX)
 
 option(SOFADISTANCEGRID_USE_MINIFLOWVR "Build and use the miniFlowVR library with DistanceGrid." OFF)

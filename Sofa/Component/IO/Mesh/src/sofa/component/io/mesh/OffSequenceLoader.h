@@ -48,10 +48,16 @@ public:
     void clear();
 
 private:
-    /// the number of files in the sequences
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data<int> nbFiles;
-    /// duration each file must be loaded
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     Data<double> stepDuration;
+
+
+    /// the number of files in the sequences
+    Data<int> d_nbFiles;
+    /// duration each file must be loaded
+    Data<double> d_stepDuration;
 
     /// index of the first file
     int firstIndex;

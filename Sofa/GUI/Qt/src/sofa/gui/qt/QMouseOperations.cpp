@@ -67,13 +67,13 @@ QAttachOperation::QAttachOperation()
 
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
-    stiffnessWidget = createWidgetFromData(&(setting->stiffness));
+    stiffnessWidget = createWidgetFromData(&(setting->d_stiffness));
 
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
-    arrowSizeWidget = createWidgetFromData(&(setting->arrowSize));
+    arrowSizeWidget = createWidgetFromData(&(setting->d_arrowSize));
 
     QLabel *labelShowFactor=new QLabel(QString("Show Factor Size"), this);
-    showSizeFactorWidget = createWidgetFromData(&(setting->showFactorSize));
+    showSizeFactorWidget = createWidgetFromData(&(setting->d_showFactorSize));
 
     layout->addWidget(label);
     layout->addWidget(stiffnessWidget);
@@ -90,15 +90,15 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::setting::
 {
     if (const sofa::gui::component::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(button))
     {
-        AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
-        setting->stiffness.copyValueFrom(&(attachSetting->stiffness));
-        setting->arrowSize.copyValueFrom(&(attachSetting->arrowSize) );
-        setting->showFactorSize.copyValueFrom(&( attachSetting->showFactorSize) ) ;
+        AttachOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
+        setting->d_stiffness.copyValueFrom(&(attachSetting->d_stiffness));
+        setting->d_arrowSize.copyValueFrom(&(attachSetting->d_arrowSize) );
+        setting->d_showFactorSize.copyValueFrom(&( attachSetting->d_showFactorSize) ) ;
 
         stiffnessWidget->updateWidgetValue();
         arrowSizeWidget->updateWidgetValue();
     }
-    else AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    else AttachOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
 }
 //*******************************************************************************************
 
@@ -111,9 +111,9 @@ void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component
 {
     if (dynamic_cast<sofa::gui::component::AddRecordedCameraButtonSetting*>(button))
     {
-        AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+        AddRecordedCameraOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
     }
-    else AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    else AddRecordedCameraOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
 }
 
 //*******************************************************************************************
@@ -127,9 +127,9 @@ void QStartNavigationOperation::configure(PickHandler *picker, sofa::component::
 {
     if (dynamic_cast<sofa::gui::component::StartNavigationButtonSetting*>(button))
     {
-        StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+        StartNavigationOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
     }
-    else StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    else StartNavigationOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
 }
 
 //*******************************************************************************************
@@ -151,12 +151,12 @@ void QFixOperation::configure(PickHandler *picker, sofa::component::setting::Mou
 {
     if (const auto* fixSetting=dynamic_cast<sofa::gui::component::FixPickedParticleButtonSetting*>(button))
     {
-        FixOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId() )) ;
+        FixOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId() )) ;
         setting->stiffness.setValue(fixSetting->stiffness.getValue());
 
         stiffnessWidget->updateWidgetValue();
     }
-    else FixOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    else FixOperation::configure(picker,GetMouseId(button->d_button.getValue().getSelectedId()));
 }
 
 //*******************************************************************************************

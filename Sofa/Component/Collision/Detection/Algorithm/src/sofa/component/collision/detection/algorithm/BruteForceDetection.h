@@ -40,13 +40,20 @@ public:
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        const BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(broadPhase);
+        if (context)
+        {
+            if (const BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>())
+            {
+                context->addObject(broadPhase);
+                broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
+            }
 
-        const BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
-        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(narrowPhase);
+            if (const BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>())
+            {
+                context->addObject(narrowPhase);
+                narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
+            }
+        }
 
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (context) context->addObject(obj);

@@ -74,7 +74,12 @@ public:
     Index getFromIndex(Index ind) override;
 
 protected:
-    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
+    Data<bool> flipNormals;
+
+
+    Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
 
 };
 

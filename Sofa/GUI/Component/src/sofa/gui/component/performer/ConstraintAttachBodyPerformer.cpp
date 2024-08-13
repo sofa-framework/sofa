@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP
 
+#include <sofa/gui/component/performer/BaseAttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
@@ -32,5 +33,8 @@ namespace sofa::gui::component::performer
 
 template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3Types> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
+
+template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::RigidTypes>;
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::RigidTypes> >  ConstraintAttachBodyPerformerRigidClass("ConstraintAttachBody",true);
 
 } // namespace sofa::gui::component::performer

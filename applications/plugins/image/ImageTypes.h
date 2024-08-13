@@ -133,7 +133,14 @@ public:
 
     friend std::ostream& operator << ( std::ostream& out, const Histogram& h )
     {
-        out<<h.getClamp();
+        if constexpr (std::is_same_v<T, unsigned char>)
+        {
+            out << sofa::type::Vec<2, int>(h.getClamp());
+        }
+        else
+        {
+            out<<h.getClamp();
+        }
         return out;
     }
 
@@ -295,7 +302,7 @@ public:
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
             sofa::component::visual::VisualStyle::SPtr ptr = visualModels[m]->getContext()->template get<sofa::component::visual::VisualStyle>();
-            if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
+            if (ptr && !ptr->d_displayFlags.getValue().getShowVisualModels()) continue;
 
             const sofa::type::vector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
 
@@ -305,7 +312,7 @@ public:
             {
                 tposition[i]=transform->toImage(Coord((Real)verts[i][0],(Real)verts[i][1],(Real)verts[i][2]));
             }
-            helper::ReadAccessor<Data< sofa::type::Material > > mat(visualModels[m]->material);
+            helper::ReadAccessor<Data< sofa::type::Material > > mat(visualModels[m]->d_material);
             const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};
 
             cimg_library::CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());

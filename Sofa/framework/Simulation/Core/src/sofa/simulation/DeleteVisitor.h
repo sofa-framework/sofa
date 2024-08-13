@@ -24,10 +24,8 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API DeleteVisitor : public Visitor
@@ -39,8 +37,7 @@ public:
     const char* getClassName() const override { return "DeleteVisitor"; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

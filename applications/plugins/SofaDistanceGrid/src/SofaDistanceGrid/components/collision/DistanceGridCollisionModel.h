@@ -594,11 +594,11 @@ public:
                 //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
                 {
                     DistanceGrid::Coord coefs;
-                    int i = prevGrid->index(P, coefs);
-                    SReal d = prevGrid->interp(i,coefs);
+                    int ii = prevGrid->index(P, coefs);
+                    SReal d = prevGrid->interp(ii, coefs);
                     if (sofa::helper::rabs(d) < 0.3) // todo : control threshold
                     {
-                        DistanceGrid::Coord n = prevGrid->grad(i,coefs);
+                        DistanceGrid::Coord n = prevGrid->grad(ii, coefs);
                         v += n * (d  / ( n.norm() * gdt));
                     }
                 }

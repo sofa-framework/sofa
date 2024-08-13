@@ -54,20 +54,65 @@ protected:
     std::string segmentString(std::string str, unsigned int n);
 
 public:
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
     sofa::core::objectmodel::DataFileName vtkFilename;
-    Data<bool> fileFormat;	///< 0 for Simple Legacy Formats, 1 for XML File Format
-    Data<defaulttype::Vec3Types::VecCoord> position; ///< points position (will use points from topology or mechanical state if this is empty)
-    Data<bool> writeEdges; ///< write edge topology
-    Data<bool> writeTriangles; ///< write triangle topology
-    Data<bool> writeQuads; ///< write quad topology
-    Data<bool> writeTetras; ///< write tetra topology
-    Data<bool> writeHexas; ///< write hexa topology
-    Data<type::vector<std::string> > dPointsDataFields; ///< Data to visualize (on points)
-    Data<type::vector<std::string> > dCellsDataFields; ///< Data to visualize (on cells)
-    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
-    Data<bool> exportAtBegin; ///< export file at the initialization
-    Data<bool> exportAtEnd; ///< export file when the simulation is finished
-    Data<bool> overwrite; ///< overwrite the file, otherwise create a new file at each export, with suffix in the filename
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > fileFormat;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<defaulttype::Vec3Types::VecCoord> position;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > writeEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > writeTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > writeQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > writeTetras;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > writeHexas;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<type::vector<std::string> > dPointsDataFields;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data<type::vector<std::string> > dCellsDataFields;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< unsigned int > exportEveryNbSteps;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > exportAtBegin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > exportAtEnd;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    Data< bool > overwrite;
+
+
+
+
+    sofa::core::objectmodel::DataFileName d_vtkFilename;
+    Data<bool> d_fileFormat; ///< Set to true to use XML format
+    Data<defaulttype::Vec3Types::VecCoord> d_position; ///< points position (will use points from topology or mechanical state if this is empty)
+    Data<bool> d_writeEdges; ///< write edge topology
+    Data<bool> d_writeTriangles; ///< write triangle topology
+    Data<bool> d_writeQuads; ///< write quad topology
+    Data<bool> d_writeTetras; ///< write tetra topology
+    Data<bool> d_writeHexas; ///< write hexa topology
+    Data<type::vector<std::string> > d_dPointsDataFields; ///< Data to visualize (on points)
+    Data<type::vector<std::string> > d_dCellsDataFields; ///< Data to visualize (on cells)
+    Data<unsigned int> d_exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> d_exportAtBegin; ///< export file at the initialization
+    Data<bool> d_exportAtEnd; ///< export file when the simulation is finished
+    Data<bool> d_overwrite; ///< overwrite the file, otherwise create a new file at each export, with suffix in the filename
 
     int nbFiles;
 
