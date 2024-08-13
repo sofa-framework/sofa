@@ -65,12 +65,12 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == totalMass)
+        if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "dataInternalUpdate: data totalMass has changed";
             return updateFromTotalMass();
         }
-        else if(m_initMethod == massDensity)
+        else if(m_initMethod == InitMethod::MASSDENSITY)
         {
             msg_info() << "another mass input data is used at initialization, the callback associated with the totalMass is skipped";
             return updateFromMassDensity();
@@ -79,12 +79,12 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromMassDensity", {&d_massDensity}, [this](const core::DataTracker& )
     {
-        if(m_initMethod == massDensity)
+        if(m_initMethod == InitMethod::MASSDENSITY)
         {
             msg_info() << "dataInternalUpdate: data massDensity has changed";
             return updateFromMassDensity();
         }
-        else if(m_initMethod == totalMass)
+        else if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "another mass input data is used at initialization, the callback associated with the massDensity is skipped";
             return updateFromTotalMass();
@@ -1086,7 +1086,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitializationMethod()
                 msg_warning(this) << "totalMass value overriding other mass information (massDensity).\n"
                                   << "To remove this warning you need to define only one single input data for mass initialization";
             }
-            m_initMethod = totalMass;
+            m_initMethod = InitMethod::TOTALMASS;
             d_vertexMass.setReadOnly(true);
             d_edgeMass.setReadOnly(true);
             d_massDensity.setReadOnly(true);
@@ -1094,7 +1094,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitializationMethod()
         //massDensity is subsequently considered
         else if(d_massDensity.isSet())
         {
-            m_initMethod = massDensity;
+            m_initMethod = InitMethod::MASSDENSITY;
             d_vertexMass.setReadOnly(true);
             d_edgeMass.setReadOnly(true);
             d_totalMass.setReadOnly(true);
@@ -1345,9 +1345,9 @@ template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::printInitializationOuput()
 {
     /// Print mass initialization method
-    if(m_initMethod == totalMass)
+    if(m_initMethod == InitMethod::TOTALMASS)
         msg_info() << "totalMass INIT";
-    if(m_initMethod == massDensity)
+    if(m_initMethod == InitMethod::MASSDENSITY)
         msg_info() << "massDensity INIT";
 
     /// Info post-init

@@ -92,11 +92,12 @@ public:
     /// @}
 
     /// Enumeration specifying which data was used for initialization
-    enum InitMethod {
-        totalMass,
-        massDensity
+    enum class InitMethod
+    {
+        TOTALMASS,
+        MASSDENSITY
     };
-    InitMethod m_initMethod = totalMass;
+    InitMethod m_initMethod = InitMethod::TOTALMASS;
 
     /// Values of the particles masses stored on vertices
     core::topology::PointData<type::vector<MassType> >  d_vertexMass;
