@@ -38,7 +38,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshMinProximityInters
     typedef MinProximityIntersection::OutputVector OutputVector;
 
 public:
-    MeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf=true);
+    MeshMinProximityIntersection(MinProximityIntersection* intersection, bool addSelf=true);
     
     bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
     template<class T> bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
@@ -93,11 +93,6 @@ public:
     template<class T> 
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
-
-protected:
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    MinProximityIntersection* intersection;
 };
 
 

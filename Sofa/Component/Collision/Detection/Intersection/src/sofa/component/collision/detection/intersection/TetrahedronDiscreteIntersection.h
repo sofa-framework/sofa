@@ -36,7 +36,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API TetrahedronDiscreteInt
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    TetrahedronDiscreteIntersection(DiscreteIntersection* object);
+    TetrahedronDiscreteIntersection(DiscreteIntersection* intersection);
     
     bool testIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
     bool testIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, const core::collision::Intersection* currentIntersection);
@@ -45,16 +45,14 @@ public:
     int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*, const core::collision::Intersection* currentIntersection);
 
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&) = delete;
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, OutputVector*) = delete;
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*);
-protected:
-    DiscreteIntersection* intersection;
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*) = delete;
 
 };
 

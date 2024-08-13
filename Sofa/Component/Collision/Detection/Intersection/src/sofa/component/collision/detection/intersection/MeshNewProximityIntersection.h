@@ -35,7 +35,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshNewProximityInters
     typedef NewProximityIntersection::OutputVector OutputVector;
 
 public:
-    MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
+    MeshNewProximityIntersection(NewProximityIntersection* intersection, bool addSelf=true);
     
     bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
@@ -112,10 +112,6 @@ public:
     template <class T>
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
     int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*) = delete;
-
-protected:
-
-    NewProximityIntersection* intersection;
 };
 
 } // namespace sofa::component::collision::detection::intersection

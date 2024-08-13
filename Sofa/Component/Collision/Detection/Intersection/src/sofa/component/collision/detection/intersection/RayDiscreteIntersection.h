@@ -40,7 +40,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayDiscreteIntersectio
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
+    RayDiscreteIntersection(DiscreteIntersection* intersection, bool addSelf=true);
         
     template<class T> bool testIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, const core::collision::Intersection* currentIntersection);
     bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, const core::collision::Intersection* currentIntersection);
@@ -51,21 +51,15 @@ public:
 
     template<class T> 
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&) = delete;
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&) = delete;
 
     template<class T> 
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, OutputVector*);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
     SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
-
-protected:
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    DiscreteIntersection* intersection;
-
+        int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*) = delete;
 };
 
 } //namespace sofa::component::collision::detection::intersection
