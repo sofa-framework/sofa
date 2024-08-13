@@ -36,3 +36,11 @@ namespace sofa::component::mass
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::mass
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MASS
+#define SOFA_ATTRIBUTE_DEPRECATED__MESHMATRIXMASS_ONLY_DENSITYANDTOTALMASS()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__MESHMATRIXMASS_ONLY_DENSITYANDTOTALMASS() \
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Inputs of the MeshMatrixMass are now only the massDensity or the totalMass. Please use associated setters")
+#endif
