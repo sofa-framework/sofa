@@ -55,6 +55,20 @@ protected:
 
 public:
 
+    /// Use parse to allow isotropic and anisotropic damping
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit::parse(arg);
+
+        if (arg->getAttribute("dampingCoefficient") != nullptr)
+        {
+            SReal isotropicDamping = (SReal)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
+            if(isotropicDamping != -1.0)
+                d_dampingCoefficients.setValue(isotropicDamping * Deriv());
+        }
+    }
+
+    /// Definition of the ForceField API
     void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
