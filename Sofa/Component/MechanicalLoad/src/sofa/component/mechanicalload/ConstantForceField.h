@@ -130,7 +130,7 @@ protected:
     /// Enumeration specifying which data was used for initialization
     enum class InitMethod
     {
-        TOTALFORCE ,
+        TOTALFORCE,
         FORCESVECTOR
     };
     InitMethod m_initMethod = InitMethod::TOTALFORCE;
