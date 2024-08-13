@@ -105,8 +105,8 @@ public:
 
         addTetraFEMForceField(m_root, young, poisson, method);
 
-        simpleapi::createObject(m_root, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","0.1"} });
+        simpleapi::createObject(m_root, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","0.1"}, {"lumping","1"} });
         /// Init simulation
         sofa::simulation::node::initRoot(m_root.get());
     }
@@ -161,8 +161,8 @@ public:
         simpleapi::createObject(FEMNode, "FixedProjectiveConstraint", { {"mstate", "@dof"},
             {"name","fixC"}, {"indices","@ROI1.indices"} });
 
-        simpleapi::createObject(FEMNode, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","1.0"} });
+        simpleapi::createObject(FEMNode, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","1.0"}, {"lumping","1"} });
 
         addTetraFEMForceField(FEMNode, 600, 0.3, "large");
 
