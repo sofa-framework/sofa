@@ -21,25 +21,98 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h>
+#include <sofa/component/mechanicalload/NodalLinearDampingForceField.h>
+
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
-
 
 namespace sofa::component::mechanicalload
 {
 
+
 template<class DataTypes>
-DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
-    : d_dampingCoefficients(initData(&d_dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
+NodalLinearDampingForceField<DataTypes>::NodalLinearDampingForceField()
+    : d_dampingCoefficients(initData(&d_dampingCoefficients, "dampingCoefficient", "Velocity damping coefficients (by cinematic dof)"))
 {
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromDampingCoefficient", {&d_dampingCoefficients}, [this](const core::DataTracker& )
+    {
+        msg_info() << "call back update: from dampingCoefficient";
+        return updateFromDampingCoefficient();
+    }, {});
 }
 
 
+template<class DataTypes>
+sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>::updateFromDampingCoefficient()
+{
+    const auto coefs = sofa::helper::getReadAccessor(d_dampingCoefficients);
+    const unsigned int sizeCoefs = coefs.size();
+
+
+    // Check if the dampingCoefficients vector has a null size
+    if(sizeCoefs == 0)
+    {
+        msg_error() << "Size of the \'dampingCoefficients\' vector is null";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+
+    // Recover mstate size
+    const unsigned int sizeMState = this->mstate->getSize();
+
+
+    // If the sizes of the dampingCoefficients vector and the mechanical state mismatch
+    if(sizeCoefs != sizeMState && sizeCoefs != 1)
+    {
+        msg_error() << "Size of the \'dampingCoefficients\' vector does not fit the associated MechanicalObject size";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }
+
+
+    // If size=1, make a constant vector which size fits the MechanicalObject
+    if(sizeCoefs == 1)
+    {
+        sofa::helper::WriteAccessor<Data<VecDeriv> > accessorCoefficient = this->d_dampingCoefficients;
+        VecDeriv constantCoef = accessorCoefficient[0];
+        accessorCoefficient.resize(sizeMState);
+
+        for(unsigned j = 0; j < Deriv::total_size; ++j)
+        {
+            if(constantCoef[j] < 0_sreal)
+            {
+                msg_error() << "Negative \'dampingCoefficients\' given";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+        }
+
+        for (int i = 0; i < sizeMState; ++i)
+        {
+            accessorCoefficient[i] = constantCoef;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < sizeMState; ++i)
+        {
+            for(unsigned j = 0; j < Deriv::total_size; ++j)
+            {
+                if(coefs[i][j] < 0)
+                {
+                    msg_error() << "Negative value at the " << i << "th entry of the \'dampingCoefficients\' vector";
+                    return sofa::core::objectmodel::ComponentState::Invalid;
+                }
+            }
+        }
+    }
+
+    msg_info() << "Update from dampingCoefficient successfully done";
+    return sofa::core::objectmodel::ComponentState::Valid;
+}
+
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord&, const DataVecDeriv&_v)
+void NodalLinearDampingForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord& _x, const DataVecDeriv&_v)
 {
+    SOFA_UNUSED(_x);
     const auto coefs = sofa::helper::getReadAccessor(d_dampingCoefficients);
 
     if( !coefs.empty() )
@@ -61,7 +134,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void NodalLinearDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     const auto& coefs = d_dampingCoefficients.getValue();
     std::size_t nbDampingCoeff = coefs.size();
@@ -76,90 +149,66 @@ void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::Mechani
         {
             for (unsigned j = 0; j < Deriv::total_size; j++)
             {
-                if (i < nbDampingCoeff)
-                {
-                    df[i][j] -= dx[i][j] * coefs[i][j] * bfactor;
-                }
-                else
-                {
-                    df[i][j] -= dx[i][j] * coefs.back()[j] * bfactor;
-                }
+                df[i][j] -= dx[i][j] * coefs[i][j] * bfactor;
             }
         }
     }
 }
 
 template <class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+void NodalLinearDampingForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
 {
-    // DiagonalVelocityDampingForceField is a pure damping component: stiffness is not computed
+    // NodalLinearDampingForceField is a pure damping component
+    // No stiffness is computed
 }
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
+void NodalLinearDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
     const auto& coefs = d_dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
 
-    if (!nbDampingCoeff)
+    if (nbDampingCoeff && bFact)
     {
-        return;
-    }
-
-    const unsigned int size = this->mstate->getSize();
-    for (std::size_t i = 0; i < size; i++)
-    {
-        const unsigned blockrow = offset + i * Deriv::total_size;
-        for (unsigned j = 0; j < Deriv::total_size; j++)
+        const unsigned int size = this->mstate->getSize();
+        for (std::size_t i = 0; i < size; i++)
         {
-            unsigned row = blockrow + j;
-            if (i < nbDampingCoeff)
+            const unsigned blockrow = offset + i * Deriv::total_size;
+            for (unsigned j = 0; j < Deriv::total_size; j++)
             {
+                unsigned row = blockrow + j;
                 mat->add(row, row, -coefs[i][j] * bFact);
             }
-            else
-            {
-                mat->add(row, row, -coefs.back()[j] * bFact);
-            }
         }
     }
 }
 
 template <class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
+void NodalLinearDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
 {
     const auto& coefs = d_dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
 
-    if (!nbDampingCoeff)
+    if (nbDampingCoeff)
     {
-        return;
-    }
+        auto dfdv = matrix->getForceDerivativeIn(this->mstate)
+                           .withRespectToVelocityIn(this->mstate);
 
-    auto dfdv = matrix->getForceDerivativeIn(this->mstate)
-                       .withRespectToVelocityIn(this->mstate);
-
-    const unsigned int size = this->mstate->getSize();
-    for (std::size_t i = 0; i < size; i++)
-    {
-        const unsigned blockrow = i * Deriv::total_size;
-        for (unsigned j = 0; j < Deriv::total_size; j++)
+        const unsigned int size = this->mstate->getSize();
+        for (std::size_t i = 0; i < size; i++)
         {
-            const unsigned row = blockrow + j;
-            if (i < nbDampingCoeff)
+            const unsigned blockrow = i * Deriv::total_size;
+            for (unsigned j = 0; j < Deriv::total_size; j++)
             {
+                const unsigned row = blockrow + j;
                 dfdv(row, row) += -coefs[i][j];
-            }
-            else
-            {
-                dfdv(row, row) += -coefs.back()[j];
             }
         }
     }
 }
 
 template <class DataTypes>
-SReal DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
+SReal NodalLinearDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
     return 0;
 }
