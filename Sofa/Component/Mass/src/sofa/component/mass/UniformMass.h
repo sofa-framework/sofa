@@ -78,8 +78,9 @@ public:
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     /// Enumeration specifying which data was used for initialization
-    enum class InitMethod {
-        TOTALMASS = 0,
+    enum class InitMethod
+    {
+        TOTALMASS,
         VERTEXMASS
     };
     InitMethod m_initMethod = InitMethod::TOTALMASS;

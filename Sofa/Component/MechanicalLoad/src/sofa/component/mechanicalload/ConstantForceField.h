@@ -128,8 +128,9 @@ protected:
     size_t m_systemSize;
 
     /// Enumeration specifying which data was used for initialization
-    enum class InitMethod {
-        TOTALFORCE = 0,
+    enum class InitMethod
+    {
+        TOTALFORCE ,
         FORCESVECTOR
     };
     InitMethod m_initMethod = InitMethod::TOTALFORCE;
