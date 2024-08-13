@@ -162,14 +162,10 @@ void UniformMass<DataTypes>::initDefaultImpl()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-    Mass<DataTypes>::init();
 
     /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
-    if(!this->isComponentStateValid())
-        return;
+    Mass<DataTypes>::init();
 
-
-    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
         
     /// Check filename
     if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
@@ -179,6 +175,8 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
 
     /// Check indices
+    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+
     //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
