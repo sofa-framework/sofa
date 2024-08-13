@@ -62,9 +62,18 @@ public:
 
         if (arg->getAttribute("dampingCoefficient") != nullptr)
         {
-            SReal isotropicDamping = (SReal)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
+            Real isotropicDamping = (Real)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
             if(isotropicDamping != -1.0)
-                d_dampingCoefficients.setValue(isotropicDamping * Deriv());
+            {
+                VecDeriv coef;
+                coef.resize(1);
+
+                const typename DataTypes::DPos& dpos = DataTypes::getDPos(coef[0]);
+                for(Size j=0 ; j<dpos.size() && j<3; j++)
+                    coef[0][j] = isotropicDamping;
+
+                d_dampingCoefficients.setValue(coef);
+            }
         }
     }
 
