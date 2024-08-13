@@ -23,4 +23,4 @@
 
 #include <sofa/component/mechanicalload/NodalLinearDampingForceField.inl>
 
-SOFA_HEADER_DEPRECATED("v25.06", "v25.12", "sofa/component/mechanicalload/NodalLinearDampingForceField.inl")
+SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/mechanicalload/NodalLinearDampingForceField.inl")
