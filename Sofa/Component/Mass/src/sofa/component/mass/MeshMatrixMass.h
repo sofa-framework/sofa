@@ -94,11 +94,8 @@ public:
     /// Enumeration specifying which data was used for initialization
     enum InitMethod {
         totalMass,
-        massDensity,
-        vertexMass,
-        vertexAndEdgeMass
+        massDensity
     };
-
     InitMethod m_initMethod = totalMass;
 
     /// Values of the particles masses stored on vertices
@@ -143,7 +140,6 @@ protected:
 public:
     virtual void clear();
 
-    void reinit() override;
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event *event) override;
 
@@ -176,7 +172,9 @@ public:
     virtual const sofa::type::vector< MassType > &getMassDensity();
     virtual const Real &getTotalMass();
 
+    SOFA_ATTRIBUTE_DEPRECATED__MESHMATRIXMASS_ONLY_DENSITYANDTOTALMASS()
     virtual void setVertexMass(sofa::type::vector< MassType > vertexMass);
+
     virtual void setMassDensity(sofa::type::vector< MassType > massDensity);
     virtual void setMassDensity(MassType massDensityValue);
     virtual void setTotalMass(MassType totalMass);
@@ -205,12 +203,9 @@ public:
     /// Functions updating data
     sofa::core::objectmodel::ComponentState updateFromTotalMass();
     sofa::core::objectmodel::ComponentState updateFromMassDensity();
-    sofa::core::objectmodel::ComponentState updateFromVertexAndEdgeMass();
-    sofa::core::objectmodel::ComponentState updateFromVertexMass();
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
     void copyVertexMass();
-
 
     /// Mass API
     void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
@@ -411,6 +406,7 @@ protected:
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
+
     /// Pointer to the state owning geometrical positions, associated with the topology
     typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 };

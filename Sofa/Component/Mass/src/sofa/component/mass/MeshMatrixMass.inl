@@ -42,8 +42,8 @@ using namespace sofa::core::topology;
 
 template <class DataTypes, class GeometricalTypes>
 MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
-    : d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
-                                                             "If unspecified or wrongly set, the totalMass information is used.") )
+    : d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density.\n"
+                                                             "If unspecified or wrongly set, the totalMass information is used") )
     , d_totalMass( initData(&d_totalMass, Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                   "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
     , d_vertexMass( initData(&d_vertexMass, "vertexMass", "internal values of the particles masses on vertices, supporting topological changes") )
@@ -70,17 +70,10 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
             msg_info() << "dataInternalUpdate: data totalMass has changed";
             return updateFromTotalMass();
         }
-        else
+        else if(m_initMethod == massDensity)
         {
             msg_info() << "another mass input data is used at initialization, the callback associated with the totalMass is skipped";
-            //if(m_initMethod == massDensity)
-                return updateFromMassDensity();
-            //else if(m_initMethod == vertexAndEdgeMass)
-            //    return updateFromVertexAndEdgeMass();
-            //else if(m_initMethod == vertexMass)
-            //    return updateFromVertexMass();
-            //else
-            //    return sofa::core::objectmodel::ComponentState::Invalid;
+            return updateFromMassDensity();
         }
     }, {});
 
@@ -91,43 +84,12 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
             msg_info() << "dataInternalUpdate: data massDensity has changed";
             return updateFromMassDensity();
         }
-        else
+        else if(m_initMethod == totalMass)
         {
             msg_info() << "another mass input data is used at initialization, the callback associated with the massDensity is skipped";
-            //if(m_initMethod == totalMass)
-                return updateFromTotalMass();
-            //else if(m_initMethod == vertexAndEdgeMass)
-            //    return updateFromVertexAndEdgeMass();
-            //else if(m_initMethod == vertexMass)
-            //    return updateFromVertexMass();
-            //else
-            //    return sofa::core::objectmodel::ComponentState::Invalid;
+            return updateFromTotalMass();
         }
     }, {});
-
-    /*sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass, &d_edgeMass}, [this](const core::DataTracker& tracker)
-    {
-        if(m_initMethod == vertexAndEdgeMass)
-        {
-            msg_info() << "dataInternalUpdate: data vertexMass and edgeMass have changed";
-            return updateFromVertexAndEdgeMass();
-        }
-        else if(m_initMethod == vertexMass && tracker.hasChanged(d_vertexMass))
-        {
-            msg_info() << "dataInternalUpdate: data vertexMass has changed";
-            return updateFromVertexMass();
-        }
-        else
-        {
-            msg_info() << "another mass input data is used at initialization, the callback associated with the vertexMass / edgeMass is skipped";
-            if(m_initMethod == totalMass)
-                return updateFromTotalMass();
-            else if(m_initMethod == massDensity)
-                return updateFromMassDensity();
-            else
-                return sofa::core::objectmodel::ComponentState::Invalid;
-        }
-    }, {});*/
 }
 
 template <class DataTypes, class GeometricalTypes>
@@ -1059,13 +1021,19 @@ using sofa::geometry::ElementType;
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 {
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
     m_massLumpingCoeff = 0.0;
 
     Inherited::init();
 
+    /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
+    if(!this->isComponentStateValid())
+        return;
+
+    /// Check link to topology
     const geometry::ElementType topoType = checkTopology();
+
     if(topoType == geometry::ElementType::POINT)
     {
         return;
@@ -1098,7 +1066,7 @@ sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTo
 {
     if (l_topology.empty())
     {
-        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
@@ -1115,13 +1083,13 @@ sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTo
 
     if (l_geometryState.empty())
     {
-        msg_info() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_info() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 
         if (baseState == nullptr)
         {
-            msg_error() << "No compatible state associated with the topology has been found.";
+            msg_error() << "No compatible state associated with the topology has been found";
             return sofa::geometry::ElementType::POINT;
         }
         else
@@ -1129,7 +1097,7 @@ sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTo
             typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr geometryState = boost::dynamic_pointer_cast<sofa::core::behavior::MechanicalState<GeometricalTypes>>(baseState);
             if (geometryState == nullptr)
             {
-                msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
+                msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch)";
                 return sofa::geometry::ElementType::POINT;
             }
             else
@@ -1142,32 +1110,32 @@ sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTo
         
     if (l_topology->getNbHexahedra() > 0)
     {
-        msg_info() << "Hexahedral topology found.";
+        msg_info() << "Hexahedral topology found";
         return geometry::ElementType::HEXAHEDRON;
     }
     else if (l_topology->getNbTetrahedra() > 0)
     {
-        msg_info() << "Tetrahedral topology found.";
+        msg_info() << "Tetrahedral topology found";
         return geometry::ElementType::TETRAHEDRON;
     }
     else if (l_topology->getNbQuads() > 0)
     {
-        msg_info() << "Quad topology found.";
+        msg_info() << "Quad topology found";
         return geometry::ElementType::QUAD;
     }
     else if (l_topology->getNbTriangles() > 0)
     {
-        msg_info() << "Triangular topology found.";
+        msg_info() << "Triangular topology found";
         return geometry::ElementType::TRIANGLE;
     }
     else if (l_topology->getNbEdges() > 0)
     {
-        msg_info() << "Edge topology found.";
+        msg_info() << "Edge topology found";
         return geometry::ElementType::EDGE;
     }
     else
     {
-        msg_error() << "Topology empty.";
+        msg_error() << "checkTopology : topology is empty";
         return geometry::ElementType::POINT;
     }
 }
@@ -1327,15 +1295,15 @@ template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitialization()
 {
     /// Mass initialization process
-    if(d_vertexMass.isSet() || d_massDensity.isSet() || d_totalMass.isSet() )
-    {
+    if( d_massDensity.isSet() || d_totalMass.isSet() )
+        {
         //totalMass data has priority over massDensity, vertexMass, edgeMass
         if (d_totalMass.isSet())
         {
             if(d_vertexMass.isSet() || d_massDensity.isSet())
             {
                 msg_warning(this) << "totalMass value overriding other mass information (vertexMass or massDensity).\n"
-                                  << "To remove this warning you need to define only one single mass information data field.";
+                                  << "To remove this warning you need to define only one single mass information data field";
             }
             m_initMethod = totalMass;
             d_vertexMass.setReadOnly(true);
@@ -1348,41 +1316,18 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitialization()
             if(d_vertexMass.isSet())
             {
                 msg_warning(this) << "massDensity value overriding the value of the attribute vertexMass.\n"
-                                  << "To remove this warning you need to set either vertexMass or massDensity data field, but not both.";
+                                  << "To remove this warning you need to set either vertexMass or massDensity data field, but not both";
             }
             m_initMethod = massDensity;
             d_vertexMass.setReadOnly(true);
             d_edgeMass.setReadOnly(true);
             d_totalMass.setReadOnly(true);
         }
-        //finally, the vertexMass is used
-        else if(d_vertexMass.isSet())
-        {
-            if(d_edgeMass.isSet())
-            {
-                m_initMethod = vertexAndEdgeMass;
-                d_massDensity.setReadOnly(true);
-                d_totalMass.setReadOnly(true);
-            }
-            else if(isLumped() && !d_edgeMass.isSet())
-            {
-                m_initMethod = vertexMass;
-                d_edgeMass.setReadOnly(true);
-                d_massDensity.setReadOnly(true);
-                d_totalMass.setReadOnly(true);
-            }
-            else
-            {
-                msg_error() << "Initialization using vertexMass requires the lumping option or the edgeMass information";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-                return;
-            }
-        }
     }
     // if no mass information provided
     else
     {
-        msg_error() << "No mass information is given as input";
+        msg_error() << "No mass information is given as input, please set totalMass or massDensity";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -1391,8 +1336,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitialization()
         msg_info() << "totalMass INIT";
     if(m_initMethod == massDensity)
         msg_info() << "massDensity INIT";
-    if(m_initMethod == vertexMass)
-        msg_info() << "vertexMass INIT";
 
     /// Trigger callbacks to update data (see constructor)
     if(!this->isComponentStateValid())
@@ -1430,38 +1373,6 @@ sofa::core::objectmodel::ComponentState MeshMatrixMass<DataTypes, GeometricalTyp
     else
     {
         msg_error() << "dataInternalUpdate: incorrect update from massDensity";
-        return sofa::core::objectmodel::ComponentState::Invalid;
-    }
-}
-
-
-template <class DataTypes, class GeometricalTypes>
-sofa::core::objectmodel::ComponentState MeshMatrixMass<DataTypes, GeometricalTypes>::updateFromVertexAndEdgeMass()
-{
-    if(checkVertexMass() && checkEdgeMass())
-    {
-        initFromVertexAndEdgeMass();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }
-    else
-    {
-        msg_error() << "dataInternalUpdate: incorrect update from vertexMass and edgeMass";
-        return sofa::core::objectmodel::ComponentState::Invalid;
-    }
-}
-
-
-template <class DataTypes, class GeometricalTypes>
-sofa::core::objectmodel::ComponentState MeshMatrixMass<DataTypes, GeometricalTypes>::updateFromVertexMass()
-{
-    if(checkVertexMass())
-    {
-        initFromVertexMass();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }
-    else
-    {
-        msg_error() << "dataInternalUpdate: incorrect update from vertexMass";
         return sofa::core::objectmodel::ComponentState::Invalid;
     }
 }
@@ -1628,14 +1539,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::reinit()
-{
-    // Now update is handled through the callback mechanism
-    // called each time the componentState is checked
-}
-
-
-template <class DataTypes, class GeometricalTypes>
 bool MeshMatrixMass<DataTypes, GeometricalTypes>::checkTotalMass()
 {
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
@@ -1659,7 +1562,7 @@ bool MeshMatrixMass<DataTypes, GeometricalTypes>::checkVertexMass()
     //Check size of the vector
     if (vertexMass.size() != size_t(l_topology->getNbPoints()))
     {
-        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< l_topology->getNbPoints() <<").";
+        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< l_topology->getNbPoints() <<")";
         return false;
     }
     else
@@ -1716,7 +1619,7 @@ bool MeshMatrixMass<DataTypes, GeometricalTypes>::checkEdgeMass()
     //Check size of the vector
     if (edgeMass.size() != l_topology->getNbEdges())
     {
-        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.";
+        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size";
         return false;
     }
     else
@@ -1947,7 +1850,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::setVertexMass(sofa::type::vect
     if(!checkVertexMass())
     {
         msg_warning() << "Given values to setVertexMass() are not correct.\n"
-                      << "Previous values are used.";
+                      << "Previous values are used";
         d_vertexMass.setValue(currentVertexMass);
     }
     else
@@ -1966,7 +1869,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::setMassDensity(sofa::type::vec
     if(!checkMassDensity())
     {
         msg_warning() << "Given values to setMassDensity() are not correct.\n"
-                      << "Previous values are used.";
+                      << "Previous values are used";
         d_massDensity.setValue(currentMassDensity);
     }
 }
@@ -1985,7 +1888,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::setMassDensity(MassType massDe
     if(!checkMassDensity())
     {
         msg_warning() << "Given values to setMassDensity() are not correct.\n"
-                      << "Previous values are used.";
+                      << "Previous values are used";
         d_massDensity.setValue(currentMassDensity);
     }
 }
@@ -2146,7 +2049,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::Mechanica
     if( !isLumped() )
     {
         msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
-                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
+                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent)";
         return;
     }
 
@@ -2262,7 +2165,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addGravityToV(const core::Mech
         for (unsigned int i=0; i<v.size(); i++)
             v[i] += hg;
     }
-
 }
 
 
@@ -2285,7 +2187,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgeb
 
     if((mat->colSize()) != (linearalgebra::BaseMatrix::Index)(l_topology->getNbPoints()*N) || (mat->rowSize()) != (linearalgebra::BaseMatrix::Index)(l_topology->getNbPoints()*N))
     {
-        msg_error() <<"Wrong size of the input Matrix: need resize in addMToMatrix function.";
+        msg_error() <<"Wrong size of the input Matrix: need resize in addMToMatrix function";
         mat->resize(l_topology->getNbPoints()*N,l_topology->getNbPoints()*N);
     }
 
