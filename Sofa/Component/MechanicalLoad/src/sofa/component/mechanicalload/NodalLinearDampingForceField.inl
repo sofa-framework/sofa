@@ -72,30 +72,30 @@ sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>:
     if(sizeCoefs == 1)
     {
         sofa::helper::WriteAccessor<Data<VecDeriv> > accessorCoefficient = this->d_dampingCoefficients;
-        VecDeriv constantCoef = accessorCoefficient[0];
+        Deriv constantCoef = accessorCoefficient[0];
         accessorCoefficient.resize(sizeMState);
 
         for(unsigned j = 0; j < Deriv::total_size; ++j)
         {
-            if(constantCoef[j] < 0_sreal)
+            if(constantCoef[j] < 0.)
             {
                 msg_error() << "Negative \'dampingCoefficients\' given";
                 return sofa::core::objectmodel::ComponentState::Invalid;
             }
         }
 
-        for (int i = 0; i < sizeMState; ++i)
+        for (unsigned i = 0; i < sizeMState; ++i)
         {
             accessorCoefficient[i] = constantCoef;
         }
     }
     else
     {
-        for (int i = 0; i < sizeMState; ++i)
+        for (unsigned i = 0; i < sizeMState; ++i)
         {
             for(unsigned j = 0; j < Deriv::total_size; ++j)
             {
-                if(coefs[i][j] < 0)
+                if(coefs[i][j] < 0.)
                 {
                     msg_error() << "Negative value at the " << i << "th entry of the \'dampingCoefficients\' vector";
                     return sofa::core::objectmodel::ComponentState::Invalid;

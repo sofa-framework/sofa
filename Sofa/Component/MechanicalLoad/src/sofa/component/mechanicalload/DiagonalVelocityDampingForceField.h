@@ -28,5 +28,5 @@ SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/mechanicalload/NodalL
 namespace sofa::component::mechanicalload
 {
 template<class T>
-using UniformVelocityDampingForceField SOFA_ATTRIBUTE_DEPRECATED("v24.12 ", "v25.12", "UniformVelocityDampingForceField has been removed. Use instead NodalLinearDampingForceField") = NodalLinearDampingForceField<T>;
+using DiagonalVelocityDampingForceField SOFA_ATTRIBUTE_DEPRECATED("v24.12 ", "v25.12", "DiagonalVelocityDampingForceField has been renamed to NodalLinearDampingForceField") = NodalLinearDampingForceField<T>;
 }

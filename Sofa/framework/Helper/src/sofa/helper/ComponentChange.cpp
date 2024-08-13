@@ -29,7 +29,8 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
-    {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
+    {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead")},
+    {"UniformVelocityDampingForceField", Deprecated("v24.12", "v25.06", "You can use the NodalLinearDampingForceField instead")},
 };
 
 const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
@@ -759,7 +760,8 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
-    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")}
+    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
+    {"DiagonalVelocityDampingForceField", Renamed("v24.12","v25.12","NodalLinearDampingForceField")}
 
 };
 
