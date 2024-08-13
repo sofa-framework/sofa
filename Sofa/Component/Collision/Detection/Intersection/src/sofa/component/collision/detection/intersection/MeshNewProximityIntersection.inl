@@ -505,40 +505,4 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
     return 1;
 }
 
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
 } // namespace sofa::component::collision::detection::intersection

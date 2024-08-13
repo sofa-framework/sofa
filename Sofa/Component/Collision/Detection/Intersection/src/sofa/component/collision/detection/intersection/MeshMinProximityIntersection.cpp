@@ -519,47 +519,4 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     return 1;
 }
 
-
-
-
-bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
-{
-    return testIntersection(e2, e1, intersection);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
-{
-    return computeIntersection(e2, e1, contacts, intersection);
-}
-
-bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
-{
-    return testIntersection(e2, e1, intersection);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
-{
-    return computeIntersection(e2, e1, contacts, intersection);
-}
-
-bool MeshMinProximityIntersection::testIntersection(Point& e1, Point& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
 } // namespace sofa::component::collision::detection::intersection
