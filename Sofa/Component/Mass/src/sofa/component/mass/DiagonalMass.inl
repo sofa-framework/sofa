@@ -19,40 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
+#pragma once
+#include <sofa/component/mass/MeshMatrixMass.inl>
 
-#include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/core/ObjectFactory.h>
+SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/mass/MeshMatrixMass.inl")
 
-namespace sofa::component::mass
-{
-
-using sofa::core::objectmodel::ComponentState ;
-
-using namespace sofa::type;
-using namespace sofa::defaulttype;
-
-// Register in the Factory
-int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
-        .add< DiagonalMass<Vec3Types> >()
-        .add< DiagonalMass<Vec2Types, Vec3Types> >()
-        .add< DiagonalMass<Vec1Types> >()
-        .add< DiagonalMass<Vec1Types, Vec2Types> >()
-        .add< DiagonalMass<Vec1Types, Vec3Types> >()
-//        .add< DiagonalMass<Rigid3Types> >()
-//        .add< DiagonalMass<Rigid2Types> >()
-//        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
-
-        ;
-
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types, Vec3Types>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types, Vec2Types>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types, Vec3Types>;
-//template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3Types>;
-//template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2Types>;
-//template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2Types, Rigid3Types>;
-
-} // namespace sofa::component::mass
