@@ -50,8 +50,6 @@ set(HEADER_FILES
 
 
     ### Mass
-    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.h
-    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.inl
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.h
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.inl
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.h
@@ -194,7 +192,6 @@ set(CUDA_SOURCES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cu
 
     ### Mass
-    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cu
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cu
 
