@@ -122,7 +122,7 @@ bool TestSphere::rigidRigid1(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //looking for an intersection (with proximities)
-    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -178,7 +178,7 @@ bool TestSphere::rigidRigid2(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -225,7 +225,7 @@ bool TestSphere::rigidSoft2(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -272,7 +272,7 @@ bool TestSphere::rigidSoft1(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -320,7 +320,7 @@ bool TestSphere::rigidSoft3(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -367,7 +367,7 @@ bool TestSphere::rigidSoft4(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -403,7 +403,7 @@ bool TestSphere::softSoft1(){
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT,m_proxIntersection.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)

@@ -1313,6 +1313,8 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
+    SOFA_UNUSED(vparams);
+
     if (modified && !getVertices().empty())
     {
         if (useTopology)
