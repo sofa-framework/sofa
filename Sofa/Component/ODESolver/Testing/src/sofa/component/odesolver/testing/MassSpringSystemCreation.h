@@ -74,7 +74,7 @@ inline simulation::Node::SPtr createMassSpringSystem(
     oss << 0 << " " << 0 << " " << stiffness << " " << 0 << " " << restLength;
 
     // attach a spring
-    simpleapi::createObject(root, "StiffSpringForceField", {
+    simpleapi::createObject(root, "SpringForceField", {
         { "name","ff"},
         { "spring", oss.str()},
         { "object1", "@FixedPointNode/fixedPoint"},

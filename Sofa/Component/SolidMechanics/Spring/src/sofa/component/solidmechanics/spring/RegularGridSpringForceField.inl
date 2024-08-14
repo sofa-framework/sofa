@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/RegularGridSpringForceField.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::solidmechanics::spring
@@ -36,7 +36,7 @@ RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField()
 
 template<class DataTypes>
 RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
-    : StiffSpringForceField<DataTypes>(object1, object2),
+    : SpringForceField<DataTypes>(object1, object2),
       d_linesStiffness  (initData(&d_linesStiffness, Real(100), "linesStiffness", "Lines Stiffness"))
       , d_linesDamping  (initData(&d_linesDamping  , Real(5), "linesDamping"  , "Lines Damping"))
       , d_quadsStiffness(initData(&d_quadsStiffness, Real(100), "quadsStiffness", "Quads Stiffness"))
@@ -62,7 +62,7 @@ void RegularGridSpringForceField<DataTypes>::init()
     {
         topology = dynamic_cast<topology::container::grid::RegularGridTopology*>(this->mstate1->getContext()->getMeshTopology());
     }
-    this->StiffSpringForceField<DataTypes>::init();
+    this->SpringForceField<DataTypes>::init();
 }
 
 template<class DataTypes>
@@ -70,7 +70,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalPara
 //addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
+    this->SpringForceField<DataTypes>::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
     // Compute topological springs
 
     VecDeriv& f1       = *data_f1.beginEdit();
@@ -257,7 +257,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 //addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addDForce(mparams, data_df1, data_df2, data_dx1, data_dx2);
+    this->SpringForceField<DataTypes>::addDForce(mparams, data_df1, data_df2, data_dx1, data_dx2);
     // Compute topological springs
 
     VecDeriv&        df1 = *data_df1.beginEdit();
@@ -443,7 +443,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw any custom springs
-    this->StiffSpringForceField<DataTypes>::draw(vparams);
+    this->SpringForceField<DataTypes>::draw(vparams);
     // Compute topological springs
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();

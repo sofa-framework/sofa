@@ -702,7 +702,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);
 
-        const auto [a, b, c, d] = t.array();
+        const auto& [a, b, c, d] = t.array();
         Coord center = (x[a] + x[b] + x[c] + x[d])*0.125;
         Coord pa = (x[a] + center)*(Real)0.666667;
         Coord pb = (x[b] + center)*(Real)0.666667;

@@ -228,7 +228,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
-        const auto [a, b, c] = (*_indexedElements)[i].array();
+        const auto& [a, b, c] = (*_indexedElements)[i].array();
 
         const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
 
@@ -298,7 +298,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
-        const auto [a, b, c] = it->array();
+        const auto& [a, b, c] = it->array();
 
         const auto deforme_b = p[b] - p[a];
         const auto deforme_c = p[c] - p[a];
@@ -350,7 +350,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, 
     unsigned int i(0);
     for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
-        const auto [a, b, c] = it->array();
+        const auto& [a, b, c] = it->array();
 
         Displacement dX;
 
@@ -443,7 +443,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
         // triangle vertex indices
-        const auto [a, b, c] = it->array();
+        const auto& [a, b, c] = it->array();
 
         const Coord& pA = p[a];
         const Coord& pB = p[b];
@@ -514,7 +514,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, 
 
     for (auto it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
-        const auto [a, b, c] = it->array();
+        const auto& [a, b, c] = it->array();
 
         Transformation R_0_2(type::NOINIT);
         R_0_2.transpose(_rotations[i]);
@@ -584,7 +584,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     typename VecElement::const_iterator it;
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it)
     {
-        const auto [a, b, c] = it->array();
+        const auto& [a, b, c] = it->array();
 
         colorVector.push_back(sofa::type::RGBAColor::green());
         vertices.push_back(sofa::type::Vec3(x[a]));
