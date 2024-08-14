@@ -48,6 +48,39 @@ TEST(UtilsTest, getSofaPathPrefix)
     EXPECT_TRUE(FileSystem::exists(prefix + "/bin"));
 }
 
+// Following tests can fail (or not really relevant)
+// if the user has a custom/non-standard home directory
+// (moreso if the user does not have a home directory or is being disabled for security reason)
+bool testGetUserLocalDirectory()
+{
+    bool result = true;
+
+    const std::string path = Utils::getUserLocalDirectory();
+#if defined(WIN32)
+    result = result && (path.find("AppData") != std::string::npos);
+    result = result && (path.find("Local") != std::string::npos);
+#elif defined (__APPLE__)
+    result = result && (path.find("Library") != std::string::npos);
+    result = result && (path.find("Application Support") != std::string::npos);
+#else // Linux
+    result = result && (path.find(".config") != std::string::npos);
+#endif
+
+    return result;
+}
+
+TEST(UtilsTest, getUserLocalDirectory)
+{
+    EXPECT_TRUE(testGetUserLocalDirectory());
+}
+
+TEST(UtilsTest, getSofaUserLocalDirectory)
+{
+    const std::string path = Utils::getSofaUserLocalDirectory();
+    EXPECT_TRUE(testGetUserLocalDirectory());
+    EXPECT_TRUE(path.find("SOFA") != std::string::npos);
+}
+
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 {
     // this test will raise an error on purpose
