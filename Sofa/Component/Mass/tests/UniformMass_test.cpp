@@ -427,7 +427,7 @@ struct UniformMassTest :  public BaseTest
                 "   <UniformMass filename='BehaviorModels/card.rigid'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
-        EXPECT_MSG_EMIT(Warning);
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
@@ -439,7 +439,7 @@ struct UniformMassTest :  public BaseTest
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
-        EXPECT_MSG_EMIT(Warning);
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
@@ -447,18 +447,14 @@ struct UniformMassTest :  public BaseTest
         const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
-        EXPECT_MSG_EMIT(Warning);
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
-    void reinitTest(){
-        // TODO
-        EXPECT_TRUE(todo == false) ;
-    }
 
 };
 
@@ -546,8 +542,4 @@ TYPED_TEST(UniformMassTest, loadFromAFileForRigid) {
 
 TYPED_TEST(UniformMassTest, checkRigidAttribute) {
     ASSERT_NO_THROW(this->checkRigidAttribute()) ;
-}
-
-TYPED_TEST(UniformMassTest, reinitTest) {
-    //ASSERT_NO_THROW(this->reinitTest()) ;
 }
