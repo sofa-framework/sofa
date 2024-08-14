@@ -23,15 +23,9 @@
 #define SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/mass/CudaDiagonalMass.inl>
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
+#include <SofaCUDA/component/mass/DiagonalMass.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
+
 
 namespace sofa
 {
