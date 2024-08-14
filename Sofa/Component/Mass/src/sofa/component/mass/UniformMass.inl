@@ -176,6 +176,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
     /// Check indices
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+
     //If d_localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
