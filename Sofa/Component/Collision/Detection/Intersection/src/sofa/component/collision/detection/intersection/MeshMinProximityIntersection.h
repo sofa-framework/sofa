@@ -282,7 +282,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
     }
     else
     {
-        msg_warning(intersection) << "Null distance between contact detected";
+        msg_warning(currentIntersection) << "Null distance between contact detected";
         detection->normal= type::Vec3(1,0,0);
     }
     detection->point[0]=Q;
