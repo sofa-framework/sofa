@@ -109,7 +109,8 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         if (!m_times.empty())
             ws->d_time.setValue(m_times);
 
-        if (m_period > 0.0) {
+        if (m_period > 0.0) 
+        {
             ws->d_period.setValue(m_period);
         }
 
