@@ -54,18 +54,15 @@ namespace sofa::component::mass
 template <class DataTypes, class GeometricalTypes = DataTypes>
 class DiagonalMass : public MeshMatrixMass<DataTypes, GeometricalTypes>
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes));
 
-protected:
-    DiagonalMass()
-    {
-        this->d_lumping.setValue(true);
-    }
+public:
+    typedef sofa::component::mass::MeshMatrixMass<DataTypes, GeometricalTypes> Inherited;
+
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes));
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
-        typedef sofa::component::mass::MeshMatrixMass<DataTypes> Inherited;
+        Inherited::parse(arg);
 
         const char* prefix = "Rigid";
 
@@ -74,9 +71,14 @@ protected:
             msg_warning() << "DiagonalMass templated on Rigid types has been removed since #3912. "
                              "For rigid bodies, UniformMass should be prefered";
         }
-
-        Inherited::parse(arg);
     }
+
+protected:
+    DiagonalMass()
+    {
+        this->d_lumping.setValue(true);
+    }
+
 };
 
 } // namespace sofa::component::mass
