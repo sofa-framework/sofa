@@ -62,14 +62,14 @@ void ClipPlane::init()
 
 void ClipPlane::reinit()
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         msg_error() << "Reiniting an invalid component is not allowed. It must be inited first" ;
 }
 
 void ClipPlane::fwdDraw(core::visual::VisualParams*)
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
-        return ;
+    if(!this->isComponentStateValid())
+        return;
 
     wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
     if (active.getValue())

@@ -98,7 +98,7 @@ public:
         const type::vector<const InDataVecCoord*>& dataVecInPos ,
         const type::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
     {
-        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        if(!this->isComponentStateValid())
             return;
 
         if(dataVecOutPos.empty() || dataVecInPos.empty())
@@ -125,7 +125,7 @@ public:
         const type::vector<const InDataVecDeriv*>& dataVecInVel,
         const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
     {
-        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        if(!this->isComponentStateValid())
             return;
 
         if(dataVecOutVel.empty() || dataVecInVel.empty())
@@ -152,7 +152,7 @@ public:
         const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
         const type::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
-        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        if(!this->isComponentStateValid())
             return;
 
         if(dataVecOutForce.empty() || dataVecInForce.empty())
@@ -188,7 +188,7 @@ public:
         const type::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
         const type::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
     {
-        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        if(!this->isComponentStateValid())
             return;
 
         if(dataMatOutConst.empty() || dataMatInConst.empty())

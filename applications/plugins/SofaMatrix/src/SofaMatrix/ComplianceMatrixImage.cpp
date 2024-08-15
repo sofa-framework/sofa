@@ -65,10 +65,8 @@ void ComplianceMatrixImage::handleEvent(core::objectmodel::Event* event)
 {
     BaseObject::handleEvent(event);
 
-    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
-    {
+    if(!this->isComponentStateValid())
         return;
-    }
 
     if (simulation::AnimateEndEvent::checkEventType(event))
     {

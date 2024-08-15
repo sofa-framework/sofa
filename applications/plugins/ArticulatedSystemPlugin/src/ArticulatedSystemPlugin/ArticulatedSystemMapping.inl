@@ -169,7 +169,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::reset()
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  )
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     const Data< OutVecCoord > &xtoData = *m_toModel->read(core::VecCoordId::position());
@@ -354,7 +354,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     Data<OutVecCoord>* xtoData = m_toModel->write(core::VecCoordId::position());
@@ -414,7 +414,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     const OutVecCoord& xto = m_toModel->read(core::VecCoordId::position())->getValue();
@@ -472,7 +472,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
@@ -554,7 +554,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     if (vparams->displayFlags().getShowMappings())

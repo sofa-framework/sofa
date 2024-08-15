@@ -57,7 +57,7 @@ void SparseGridRamificationTopology::init()
 {
     SparseGridTopology::init();
 
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     if(this->isVirtual || d_nbVirtualFinerLevels.getValue() > 0)
@@ -418,7 +418,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 {
     SparseGridRamificationTopology* finerSparseGridRamification = dynamic_cast<SparseGridRamificationTopology*>(_finerSparseGrid);
 
-    if (finerSparseGridRamification->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if (!finerSparseGridRamification->isComponentStateValid())
     {
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;

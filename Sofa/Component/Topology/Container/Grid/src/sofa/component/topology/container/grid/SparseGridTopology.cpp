@@ -1017,7 +1017,7 @@ void SparseGridTopology::computeBoundingBox(const type::vector<type::Vec3>& vert
 
 void SparseGridTopology::buildFromFiner()
 {
-    if (_finerSparseGrid->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if (!_finerSparseGrid->isComponentStateValid())
     {
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;

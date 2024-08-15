@@ -3204,7 +3204,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);

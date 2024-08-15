@@ -109,7 +109,7 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
         return;
 
     // don't draw if the component is not in valid state
-    if( vm->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+    if( !vm->isComponentStateValid() )
         return;
 
     if(vparams->pass() == core::visual::VisualParams::Shadow)

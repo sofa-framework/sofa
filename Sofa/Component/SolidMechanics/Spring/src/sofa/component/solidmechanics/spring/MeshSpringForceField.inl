@@ -213,7 +213,7 @@ void MeshSpringForceField<DataTypes>::init()
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid || !mstate1 || !mstate2)
+    if( !this->isComponentStateValid() || !mstate1 || !mstate2 )
         return ;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

@@ -1435,8 +1435,8 @@ void TetrahedronFEMForceField<DataTypes>::reset()
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::reinit()
 {
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
-        return ;
+    if(!this->isComponentStateValid())
+        return;
 
     if (!this->mstate || !m_topology){
         // Need to affect a vector to the pointer even if it is empty.
@@ -1846,7 +1846,7 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return ;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -2247,8 +2247,8 @@ void TetrahedronFEMForceField<DataTypes>::setMethod(int val)
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 {
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
-        return ;
+    if(!this->isComponentStateValid())
+        return;
 
     if ( ! isComputeVonMisesStressMethodSet() )
     {

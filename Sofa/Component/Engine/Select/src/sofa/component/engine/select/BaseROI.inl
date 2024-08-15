@@ -278,11 +278,8 @@ bool BaseROI<DataTypes>::isPointIn(const PointID pid) const
 template <class DataTypes>
 void BaseROI<DataTypes>::doUpdate()
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
-    {
-        return ;
-    }
-
+    if(!this->isComponentStateValid())
+        return;
 
     if(d_doUpdate.getValue())
     {
@@ -452,8 +449,8 @@ void BaseROI<DataTypes>::doUpdate()
 template <class DataTypes>
 void BaseROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
-        return ;
+    if(!this->isComponentStateValid())
+        return;
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -613,7 +610,7 @@ void BaseROI<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVi
     if (onlyVisible && !this->d_drawROI.getValue())
         return;
 
-    if (this->d_componentState.getValue() == ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     sofa::type::BoundingBox bbox{};

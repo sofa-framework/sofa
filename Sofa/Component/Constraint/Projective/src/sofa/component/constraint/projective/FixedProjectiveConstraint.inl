@@ -398,10 +398,8 @@ void FixedProjectiveConstraint<DataTypes>::computeBBox(
         return;
     }
 
-    if(this->d_componentState.getValue() == ComponentState::Invalid)
-    {
+    if(!this->isComponentStateValid())
         return;
-    }
 
     const auto& indices = d_indices.getValue();
 

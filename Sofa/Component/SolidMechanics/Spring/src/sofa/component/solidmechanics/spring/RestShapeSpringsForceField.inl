@@ -130,7 +130,8 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     recomputeIndices();
-    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+
+    if(!this->isComponentStateValid())
         return;
 
     const BaseMechanicalState* state = this->getContext()->getMechanicalState();

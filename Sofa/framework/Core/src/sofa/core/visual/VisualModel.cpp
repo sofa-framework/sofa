@@ -41,7 +41,7 @@ void VisualModel::drawVisual(const VisualParams* vparams)
         return;
 
     // don't draw if the component is not in valid state
-    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+    if(!this->isComponentStateValid())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
@@ -65,7 +65,7 @@ void VisualModel::updateVisual(const VisualParams* vparams)
         return;
 
     // don't update if the component is not in valid state
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     doUpdateVisual(vparams);
@@ -79,7 +79,7 @@ void VisualModel::updateVisual()
 void VisualModel::initVisual(const VisualParams* vparams)
 {
     // don't init visual things if the component is not in valid state
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    if(!this->isComponentStateValid())
         return;
 
     doInitVisual(vparams);
