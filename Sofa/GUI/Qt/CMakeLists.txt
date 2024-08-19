@@ -90,7 +90,7 @@ if(Sofa.GL_FOUND)
             include(FetchContent)
             FetchContent_Declare(QGLViewer
                     GIT_REPOSITORY https://github.com/sofa-framework/libQGLViewer/
-                    GIT_TAG v2.8.1
+                    GIT_TAG v2.8.1_SOFA
             )
             FetchContent_MakeAvailable(QGLViewer)
         elseif (NOT QGLViewer_FOUND)
