@@ -34,7 +34,6 @@ NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::NonUniformHexahedronFEMForc
     , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
     , d_useMass(initData(&d_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
     , d_totalMass(initData(&d_totalMass,(Real)0.0,"totalMass",""))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
 }
 
@@ -284,7 +283,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     //       //given an elementIndice, find the 8 others from the sparse grid
     //       //compute MaterialStiffness
     MaterialStiffness material;
-    computeMaterialStiffness(material, this->d_youngModulus.getValue(), this->d_poissonRatio.getValue());
+    computeMaterialStiffness(material, this->getYoungModulusInElement(0), this->d_poissonRatio.getValue());
 
     //Nodes are found using Sparse Grid
     Real stiffnessCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);

@@ -54,19 +54,20 @@ private:
 
 public:
     OglTetrahedralModel();
-    virtual ~OglTetrahedralModel();
+    virtual ~OglTetrahedralModel() override;
 
-    void init();
-    void drawTransparent(const core::visual::VisualParams*);
-    bool addBBox(SReal* minBBox, SReal* maxBBox);
+    void init() override;
+    void drawTransparent(const core::visual::VisualParams*) override;
+    bool addBBox(SReal* minBBox, SReal* maxBBox) override;
 
-    void handleTopologyChange()
+    void handleTopologyChange() override
     {
         needUpdateTopology = true;
     }
 
-    void updateVisual()
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override
     {
+        SOFA_UNUSED(vparams);
         //if (!getContext()->getShowVisualModels()) return;
         updateTopology();
     }

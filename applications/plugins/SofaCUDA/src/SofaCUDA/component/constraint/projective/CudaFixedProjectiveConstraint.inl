@@ -60,6 +60,9 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void FixedProjectiveConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
+    assert(m != nullptr);
+    assert(m->data != nullptr);
+
     Data& data = *m->data;
     data.minIndex = sofa::InvalidID;
     data.maxIndex = sofa::InvalidID;

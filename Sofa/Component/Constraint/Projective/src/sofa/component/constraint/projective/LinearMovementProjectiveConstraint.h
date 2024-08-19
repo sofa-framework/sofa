@@ -70,7 +70,7 @@ public:
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
 protected:
-    LinearMovementProjectiveConstraintInternalData<DataTypes> *data;
+    std::unique_ptr<LinearMovementProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class LinearMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :

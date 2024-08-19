@@ -86,7 +86,7 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
-    FixedProjectiveConstraintInternalData<DataTypes>* data;
+    std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class FixedProjectiveConstraintInternalData<DataTypes>;
 
 

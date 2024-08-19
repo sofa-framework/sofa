@@ -61,7 +61,7 @@ public:
 
 
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams*) override;
 
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;

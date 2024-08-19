@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
@@ -21,12 +21,12 @@
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" />
         <FixedProjectiveConstraint template="Vec3" name="Fix Particles" indices="0" />
-        <StiffSpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
     </Node>
     <Node name="SecondObject" gravity="0 -9.81 0">
         <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping hideOptions" />
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="2 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" />
     </Node>
-    <StiffSpringForceField template="Vec3" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
+    <SpringForceField template="Vec3" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
 </Node>

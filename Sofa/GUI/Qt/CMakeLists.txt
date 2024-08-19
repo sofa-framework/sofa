@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.GUI.Qt LANGUAGES CXX)
 
+# Detect if component is compiled outside SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+    find_package(Sofa.Config REQUIRED)
+    sofa_find_package(Sofa.GUI.Common REQUIRED)
+endif()
+
 # Qt dependencies
 set(SOFA_GUI_QT_TARGETS "")
 set(QT_USE_IMPORTED_TARGETS 1)
@@ -66,7 +72,7 @@ elseif (Qt6Core_FOUND)
 endif()
 
 
-find_package(Sofa.GL QUIET)
+sofa_find_package(Sofa.GL QUIET)
 
 # QtViewer and QGLViewer
 if(Sofa.GL_FOUND)
@@ -348,6 +354,7 @@ if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
 if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
         include_directories(${PROJECT_NAME} PUBLIC ${qglviewer_SOURCE_DIR})

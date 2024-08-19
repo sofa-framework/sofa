@@ -99,7 +99,7 @@ public:
     SingleLink<DirectionProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    DirectionProjectiveConstraintInternalData<DataTypes>* data;
+    std::unique_ptr<DirectionProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class DirectionProjectiveConstraintInternalData<DataTypes>;
 
     type::vector<CPos> m_origin;

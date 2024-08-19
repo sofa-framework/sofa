@@ -33,6 +33,7 @@
 
 #include <sofa/helper/ColorMap.h>
 #include <sofa/simulation/ParallelForEach.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -80,16 +81,16 @@ public:
     SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecReal VecReal;
-    typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    using VecCoord = VecCoord_t<DataTypes>;
+    using VecDeriv = VecDeriv_t<DataTypes>;
+    using VecReal = VecReal_t<DataTypes>;
+    using Coord = Coord_t<DataTypes>;
+    using Deriv = Deriv_t<DataTypes>;
+    using Real = Real_t<DataTypes>;
+    using DataVecDeriv = DataVecDeriv_t<DataTypes>;
+    using DataVecCoord = DataVecCoord_t<DataTypes>;
 
-    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
-    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    using Vector = VecCoord;
 
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
@@ -189,28 +190,28 @@ public:
     const type::vector<Mat33>& getRotations() override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecCoord> _initialPoints;
+    core::objectmodel::RenamedData<VecCoord> _initialPoints;
 
     Data< VecCoord > d_initialPoints; ///< Initial Position
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> _poissonRatio;
+    core::objectmodel::RenamedData<Real> _poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecReal> _youngModulus;
+    core::objectmodel::RenamedData<VecReal> _youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecReal> _localStiffnessFactor;
+    core::objectmodel::RenamedData<VecReal> _localStiffnessFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _updateStiffnessMatrix;
+    core::objectmodel::RenamedData<bool> _updateStiffnessMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _assembling;
+    core::objectmodel::RenamedData<bool> _assembling;
 
     Data<std::string> d_method; ///< "small", "large" (by QR), "polar" or "svd" displacements
 
@@ -219,13 +220,13 @@ public:
     Data<bool> d_assembling;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> _plasticMaxThreshold;
+    core::objectmodel::RenamedData<Real> _plasticMaxThreshold;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> _plasticYieldThreshold;
+    core::objectmodel::RenamedData<Real> _plasticYieldThreshold;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> _plasticCreep;
+    core::objectmodel::RenamedData<Real> _plasticCreep;
 
     /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     /// @{
@@ -235,13 +236,13 @@ public:
     /// @}
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::helper::OptionsGroup> _gatherPt;
+    core::objectmodel::RenamedData<sofa::helper::OptionsGroup> _gatherPt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::helper::OptionsGroup> _gatherBsize;
+    core::objectmodel::RenamedData<sofa::helper::OptionsGroup> _gatherBsize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> drawHeterogeneousTetra;
+    core::objectmodel::RenamedData<bool> drawHeterogeneousTetra;
 
     Data< sofa::helper::OptionsGroup > d_gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
     Data< sofa::helper::OptionsGroup > d_gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
@@ -259,16 +260,16 @@ public:
     Real prevMaxStress;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<int> _computeVonMisesStress;
+    core::objectmodel::RenamedData<int> _computeVonMisesStress;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real> > _vonMisesPerElement;
+    core::objectmodel::RenamedData<type::vector<Real> > _vonMisesPerElement;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real> >  _vonMisesPerNode;
+    core::objectmodel::RenamedData<type::vector<Real> >  _vonMisesPerNode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<type::RGBAColor> > _vonMisesStressColors;
+    core::objectmodel::RenamedData<type::vector<type::RGBAColor> > _vonMisesStressColors;
 
     Data<int> d_computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1
     Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
@@ -279,22 +280,22 @@ public:
     Real m_maxVonMisesPerNode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> _showStressColorMap;
+    core::objectmodel::RenamedData<std::string> _showStressColorMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<float> _showStressAlpha;
+    core::objectmodel::RenamedData<float> _showStressAlpha;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _showVonMisesStressPerNode;
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerNode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _showVonMisesStressPerNodeColorMap;
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerNodeColorMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _showVonMisesStressPerElement;
+    core::objectmodel::RenamedData<bool> _showVonMisesStressPerElement;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _updateStiffness;
+    core::objectmodel::RenamedData<bool> _updateStiffness;
 
     Data<std::string> d_showStressColorMap; ///< Color map used to show stress values
     Data<float> d_showStressAlpha; ///< Alpha for vonMises visualisation
@@ -359,8 +360,6 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
-    virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
 protected:
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );

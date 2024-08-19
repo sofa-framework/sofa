@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
@@ -102,7 +102,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
-    StiffSpringForceField<DataTypes>::clear();
+    SpringForceField<DataTypes>::clear();
     if(!(mstate1) || !(mstate2))
         mstate2 = mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
@@ -206,7 +206,7 @@ void MeshSpringForceField<DataTypes>::init()
         }
     }
 
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 }
 
 

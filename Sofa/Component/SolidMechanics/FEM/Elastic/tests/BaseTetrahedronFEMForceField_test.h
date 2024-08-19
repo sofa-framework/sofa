@@ -265,7 +265,15 @@ public:
         createSingleTetrahedronFEMScene(-100, -0.3, "toto");
     }
 
-    virtual void computeMatricesCheckInit(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId) {}
+    virtual void computeMatricesCheckInit(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId)
+    {
+        SOFA_UNUSED(initRot);
+        SOFA_UNUSED(curRot);
+        SOFA_UNUSED(stiffnessMat);
+        SOFA_UNUSED(strainD);
+        SOFA_UNUSED(initPosition);
+        SOFA_UNUSED(elementId);
+    }
 
     void setupCheckInit(Transformation& exp_initRot, TetraCoord& exp_initPos, Transformation& exp_curRot, MaterialStiffness& exp_stiffnessMat, StrainDisplacement& exp_strainD)
     {

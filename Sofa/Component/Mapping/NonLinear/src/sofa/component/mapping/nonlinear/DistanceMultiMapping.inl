@@ -464,6 +464,8 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     const SeqEdges& links = l_topology->getEdges();
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
