@@ -29,6 +29,8 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::haptics
 {
 
@@ -61,10 +63,10 @@ public:
     }
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
-    Data<double> forceCoef;
+    sofa::core::objectmodel::RenamedData<double> forceCoef;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
-    Data<double> solverTimeout;
+    sofa::core::objectmodel::RenamedData<double> solverTimeout;
 
 
     Data< double > d_forceCoef; ///< multiply haptic force by this coef.

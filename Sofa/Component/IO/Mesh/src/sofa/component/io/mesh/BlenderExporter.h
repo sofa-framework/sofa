@@ -38,6 +38,8 @@
 
 #include <fstream>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component
 {
 namespace _blenderexporter_
@@ -71,19 +73,19 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<std::string> path;
+    sofa::core::objectmodel::RenamedData<std::string> path;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<std::string> baseName;
+    sofa::core::objectmodel::RenamedData<std::string> baseName;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<int> simulationType;
+    sofa::core::objectmodel::RenamedData<int> simulationType;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<int> simulationStep;
+    sofa::core::objectmodel::RenamedData<int> simulationStep;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<int> nbPtsByHair;
+    sofa::core::objectmodel::RenamedData<int> nbPtsByHair;
 
 
     Data < std::string > d_path; ///< output path
