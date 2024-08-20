@@ -155,7 +155,6 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
     unsigned int nbMSSASamples = 1;
@@ -259,12 +258,6 @@ int main(int argc, char** argv)
         ->default_value("false")->implicit_value("true"),
         "tmp",
         "the loaded scene won't appear in history of opened files"
-    );
-    argParser->addArgument(
-        cxxopts::value<bool>(testMode)
-        ->default_value("false")->implicit_value("true"),
-        "test",
-        "select test mode with xml output after N iteration"
     );
     argParser->addArgument(
         cxxopts::value<std::string>(verif)
@@ -518,13 +511,6 @@ int main(int argc, char** argv)
     if (int err = GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
     groot = dynamic_cast<Node*>( GUIManager::CurrentSimulation() );
-
-    if (testMode)
-    {
-        string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
-        msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::node::exportInXML(groot.get(), xmlname.c_str());
-    }
 
     if (groot!=nullptr)
         sofa::simulation::node::unload(groot);
