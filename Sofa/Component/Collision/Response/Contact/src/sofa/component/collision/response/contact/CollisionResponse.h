@@ -27,7 +27,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
-#include <sofa/core/objectmodel/RenameData.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -38,10 +38,10 @@ public :
     SOFA_CLASS(CollisionResponse,sofa::core::collision::ContactManager);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    RenamedData<sofa::helper::OptionsGroup> response;
+    sofa::core::objectmodel::RenamedData<sofa::helper::OptionsGroup> response;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    RenamedData<std::string> responseParams;
+    sofa::core::objectmodel::RenamedData<std::string> responseParams;
 
 
     Data<sofa::helper::OptionsGroup> d_response; ///< contact response class

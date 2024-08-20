@@ -24,7 +24,7 @@
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/objectmodel/RenameData.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::core::behavior
 {
@@ -45,7 +45,7 @@ public:
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
-    RenamedData<bool> m_solveVelocityConstraintFirst;
+    sofa::core::objectmodel::RenamedData<bool> m_solveVelocityConstraintFirst;
 
     Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.

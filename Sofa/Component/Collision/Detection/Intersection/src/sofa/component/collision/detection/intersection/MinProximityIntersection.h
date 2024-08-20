@@ -24,7 +24,7 @@
 
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-#include <sofa/core/objectmodel/RenameData.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -57,19 +57,19 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersecti
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    RenamedData<bool> useSphereTriangle;
+    sofa::core::objectmodel::RenamedData<bool> useSphereTriangle;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    RenamedData<bool> usePointPoint;
+    sofa::core::objectmodel::RenamedData<bool> usePointPoint;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    RenamedData<bool> useSurfaceNormals;
+    sofa::core::objectmodel::RenamedData<bool> useSurfaceNormals;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    RenamedData<bool> useLinePoint;
+    sofa::core::objectmodel::RenamedData<bool> useLinePoint;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    RenamedData<bool> useLineLine;
+    sofa::core::objectmodel::RenamedData<bool> useLineLine;
 
 
 

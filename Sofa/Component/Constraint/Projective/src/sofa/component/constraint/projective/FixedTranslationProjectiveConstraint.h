@@ -26,6 +26,8 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
@@ -63,16 +65,16 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< sofa::type::vector<sofa::Index> > f_indices;
+    sofa::core::objectmodel::RenamedData< sofa::type::vector<sofa::Index> > f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<bool> f_fixAll;
+    sofa::core::objectmodel::RenamedData<bool> f_fixAll;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<SReal> _drawSize;
+    sofa::core::objectmodel::RenamedData<SReal> _drawSize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< sofa::type::vector<sofa::Index> > f_coordinates;
+    sofa::core::objectmodel::RenamedData< sofa::type::vector<sofa::Index> > f_coordinates;
 
     SetIndex d_indices; ///< Indices of the fixed points
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object

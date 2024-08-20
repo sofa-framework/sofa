@@ -35,6 +35,8 @@
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
@@ -83,16 +85,16 @@ protected:
 
 public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< sofa::type::vector< sofa::Index > >  f_indices;
+    sofa::core::objectmodel::RenamedData< sofa::type::vector< sofa::Index > >  f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<CPos> f_origin;
+    sofa::core::objectmodel::RenamedData<CPos> f_origin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<CPos> f_normal;
+    sofa::core::objectmodel::RenamedData<CPos> f_normal;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<SReal> f_drawSize;
+    sofa::core::objectmodel::RenamedData<SReal> f_drawSize;
 
     IndexSubsetData d_indices;  ///< the particles to project
     Data<CPos> d_origin; ///< A point in the plane
