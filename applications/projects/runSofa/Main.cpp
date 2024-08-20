@@ -33,7 +33,7 @@ using std::vector;
 
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -166,18 +166,11 @@ int main(int argc, char** argv)
     string gui = "";
     string verif = "";
 
-#if defined(SOFA_HAVE_DAG)
-    string simulationType = "dag";
-#else
-    string simulationType = "tree";
-#endif
-
     vector<string> plugins;
     vector<string> files;
 
     string colorsStatus = "unset";
     string messageHandler = "auto";
-    bool enableInteraction = false ;
     int width = 800;
     int height = 600;
 
@@ -262,11 +255,6 @@ int main(int argc, char** argv)
         "load most recently opened file"
     );
     argParser->addArgument(
-        cxxopts::value<std::string>(simulationType),
-        "s,simu", 
-        "select the type of simulation (bgl, dag, tree)"
-    );
-    argParser->addArgument(
         cxxopts::value<bool>(temporaryFile)
         ->default_value("false")->implicit_value("true"),
         "tmp",
@@ -298,13 +286,6 @@ int main(int argc, char** argv)
         "select the message formatting to use (auto, clang, sofa, rich, test)"
     );
     argParser->addArgument(
-        cxxopts::value<bool>(enableInteraction)
-        ->default_value("false")
-        ->implicit_value("true"),
-        "i,interactive",
-        "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
-    );
-    argParser->addArgument(
         cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
         "argv",
         "forward extra args to the python interpreter"
@@ -329,8 +310,6 @@ int main(int argc, char** argv)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
 
-    if (simulationType == "tree")
-        msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
     assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
