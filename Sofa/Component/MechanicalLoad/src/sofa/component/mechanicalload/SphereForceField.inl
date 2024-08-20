@@ -61,13 +61,13 @@ SphereForceField<DataTypes>::SphereForceField()
     , d_bilateral(initData(&d_bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {
     contacts.setParent(&d_contacts);
-    sphereCenter.setParent(&d_sphereCenter);
-    sphereRadius.setParent(&d_sphereRadius);
-    stiffness.setParent(&d_stiffness);
-    damping.setParent(&d_damping);
-    color.setParent(&d_color);
-    localRange.setParent(&d_localRange);
-    bilateral.setParent(&d_bilateral);
+    sphereCenter.setOriginalData(&d_sphereCenter);
+    sphereRadius.setOriginalData(&d_sphereRadius);
+    stiffness.setOriginalData(&d_stiffness);
+    damping.setOriginalData(&d_damping);
+    color.setOriginalData(&d_color);
+    localRange.setOriginalData(&d_localRange);
+    bilateral.setOriginalData(&d_bilateral);
 
 }
 

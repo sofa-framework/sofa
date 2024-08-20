@@ -41,12 +41,12 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , m_toModel(nullptr)
     , m_fromRootModel(nullptr)
 {
-    index.setParent(&d_index);
-    indexFromEnd.setParent(&d_indexFromEnd);
-    repartition.setParent(&d_repartition);
-    globalToLocalCoords.setParent(&d_globalToLocalCoords);
-    m_rootAngularForceScaleFactor.setParent(&d_rootAngularForceScaleFactor);
-    m_rootLinearForceScaleFactor.setParent(&d_rootLinearForceScaleFactor);
+    index.setOriginalData(&d_index);
+    indexFromEnd.setOriginalData(&d_indexFromEnd);
+    repartition.setOriginalData(&d_repartition);
+    globalToLocalCoords.setOriginalData(&d_globalToLocalCoords);
+    m_rootAngularForceScaleFactor.setOriginalData(&d_rootAngularForceScaleFactor);
+    m_rootLinearForceScaleFactor.setOriginalData(&d_rootLinearForceScaleFactor);
 
 }
 

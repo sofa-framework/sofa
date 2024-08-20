@@ -47,13 +47,13 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
     , d_quadPressureMap(initData(&d_quadPressureMap, "quadPressureMap", "Map between quad indices and their pressure"))
     , m_topology(nullptr)
 {
-    pressure.setParent(&d_pressure);
-    quadList.setParent(&d_quadList);
-    normal.setParent(&d_normal);
-    dmin.setParent(&d_dmin);
-    dmax.setParent(&d_dmax);
-    p_showForces.setParent(&d_showForces);
-    quadPressureMap.setParent(&d_quadPressureMap);
+    pressure.setOriginalData(&d_pressure);
+    quadList.setOriginalData(&d_quadList);
+    normal.setOriginalData(&d_normal);
+    dmin.setOriginalData(&d_dmin);
+    dmax.setOriginalData(&d_dmax);
+    p_showForces.setOriginalData(&d_showForces);
+    quadPressureMap.setOriginalData(&d_quadPressureMap);
 
 }
 

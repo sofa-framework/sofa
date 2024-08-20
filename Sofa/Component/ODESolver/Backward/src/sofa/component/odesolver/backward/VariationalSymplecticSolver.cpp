@@ -49,16 +49,16 @@ VariationalSymplecticSolver::VariationalSymplecticSolver()
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
-    f_newtonError.setParent(&d_newtonError);
-    f_newtonSteps.setParent(&d_newtonSteps);
-    f_rayleighStiffness.setParent(&d_rayleighStiffness);
-    f_rayleighMass.setParent(&d_rayleighMass);
-    f_saveEnergyInFile.setParent(&d_saveEnergyInFile);
-    f_explicit.setParent(&d_explicit);
-    f_fileName.setParent(&d_fileName);
-    f_computeHamiltonian.setParent(&d_computeHamiltonian);
-    f_hamiltonianEnergy.setParent(&d_hamiltonianEnergy);
-    f_useIncrementalPotentialEnergy.setParent(&d_useIncrementalPotentialEnergy);
+    f_newtonError.setOriginalData(&d_newtonError);
+    f_newtonSteps.setOriginalData(&d_newtonSteps);
+    f_rayleighStiffness.setOriginalData(&d_rayleighStiffness);
+    f_rayleighMass.setOriginalData(&d_rayleighMass);
+    f_saveEnergyInFile.setOriginalData(&d_saveEnergyInFile);
+    f_explicit.setOriginalData(&d_explicit);
+    f_fileName.setOriginalData(&d_fileName);
+    f_computeHamiltonian.setOriginalData(&d_computeHamiltonian);
+    f_hamiltonianEnergy.setOriginalData(&d_hamiltonianEnergy);
+    f_useIncrementalPotentialEnergy.setOriginalData(&d_useIncrementalPotentialEnergy);
 }
 
 void VariationalSymplecticSolver::init()

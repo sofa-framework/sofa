@@ -25,6 +25,8 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mechanicalload
 {
 
@@ -81,37 +83,37 @@ protected:
     sofa::core::topology::BaseMeshTopology* _completeTopology{nullptr};
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<sofa::Index> edgePressureMap;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector< EdgePressureInformation> > edgePressureMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> pressure;
+    sofa::core::objectmodel::RenamedData<Deriv> pressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<type::vector<Index> >edgeIndices;
+    sofa::core::objectmodel::RenamedData<type::vector<Index> >edgeIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<type::vector<sofa::core::topology::Edge> > edges;
+    sofa::core::objectmodel::RenamedData<type::vector<sofa::core::topology::Edge> > edges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> normal;
+    sofa::core::objectmodel::RenamedData<Deriv> normal;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> dmin;
+    sofa::core::objectmodel::RenamedData<Real> dmin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> dmax;
+    sofa::core::objectmodel::RenamedData<Real> dmax;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<SReal> arrowSizeCoef;
+    sofa::core::objectmodel::RenamedData<SReal> arrowSizeCoef;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data< type::vector<Real> >  p_intensity;
+    sofa::core::objectmodel::RenamedData< type::vector<Real> >  p_intensity;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Coord> p_binormal;
+    sofa::core::objectmodel::RenamedData<Coord> p_binormal;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<bool> p_showForces;
+    sofa::core::objectmodel::RenamedData<bool> p_showForces;
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area
     Data<type::vector<Index> > d_edgeIndices; ///< Indices of edges separated with commas where a pressure is applied

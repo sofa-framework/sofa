@@ -42,9 +42,9 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {
-    f_indices.setParent(&d_indices);
-    f_targetPositions.setParent(&d_targetPositions);
-    f_restDistances.setParent(&d_restDistances);
+    f_indices.setOriginalData(&d_indices);
+    f_targetPositions.setOriginalData(&d_targetPositions);
+    f_restDistances.setOriginalData(&d_restDistances);
 
 }
 

@@ -41,8 +41,8 @@ DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    f_computeDistance.setParent(&d_computeDistance);
-    f_restLengths.setParent(&d_restLengths);
+    f_computeDistance.setOriginalData(&d_computeDistance);
+    f_restLengths.setOriginalData(&d_restLengths);
 
 }
 
