@@ -25,6 +25,9 @@
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
 
+#include <sofa/core/objectmodel/RenameData.h>
+
+
 namespace sofa::component::collision::detection::intersection
 {
 
@@ -38,10 +41,10 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API BaseProximityIntersect
 public:
     SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    Data<SReal> alarmDistance;
+    RenamedData<SReal> alarmDistance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    Data<SReal> contactDistance;
+    RenamedData<SReal> contactDistance;
 
 
     Data<SReal> d_alarmDistance; ///< Distance above which the intersection computations ignores the promixity pair. This distance can also be used in some broad phase algorithms to reduce the search area
