@@ -170,6 +170,8 @@ int main(int argc, char** argv)
 
     string colorsStatus = "unset";
     string messageHandler = "auto";
+    string configPath = "";
+
     int width = 800;
     int height = 600;
 
@@ -289,6 +291,13 @@ int main(int argc, char** argv)
         "msaa",
         "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
     );
+    
+    argParser->addArgument(
+        cxxopts::value<std::string>(configPath)
+        ->default_value(Utils::getSofaUserLocalDirectory()),
+        "config",
+       "change the configuration path."
+    );
 
     // first option parsing to see if the user requested to show help
     argParser->parse();
@@ -362,8 +371,14 @@ int main(int argc, char** argv)
     msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
-    BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
-    BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
+    if(!FileSystem::exists(FileSystem::cleanPath(configPath)))
+    {
+        msg_warning("runSofa") << "The configuration path " << configPath << " is not accessible or is invalid, using default " << Utils::getSofaUserLocalDirectory();
+        configPath = Utils::getSofaUserLocalDirectory();
+    }
+
+    BaseGUI::setConfigDirectoryPath(configPath + "/config", true);
+    BaseGUI::setScreenshotDirectoryPath(configPath + "/screenshots", true);
 
     // Add Batch GUI (runSofa without any GUIs wont be useful)
     sofa::gui::batch::init();
