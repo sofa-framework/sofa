@@ -83,7 +83,7 @@ public:
         TOTALMASS,
         VERTEXMASS
     };
-    InitMethod m_initMethod = InitMethod::TOTALMASS;
+    InitMethod m_initMethod;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

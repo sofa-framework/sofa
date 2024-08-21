@@ -133,7 +133,7 @@ protected:
         TOTALFORCE,
         FORCESVECTOR
     };
-    InitMethod m_initMethod = InitMethod::TOTALFORCE;
+    InitMethod m_initMethod;
 };
 
 template <>
