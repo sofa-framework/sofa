@@ -33,6 +33,8 @@
 #include <map>
 #endif
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::helper
 {
     class ColorMap;
@@ -185,10 +187,10 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> triangleInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<TriangleInformation>> triangleInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> vertexInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<VertexInformation> > vertexInfo;
 
     /// Topology Data
     core::topology::TriangleData<sofa::type::vector<TriangleInformation> > d_triangleInfo;
@@ -263,37 +265,37 @@ public:
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    sofa::core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real>> f_poisson;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_poisson;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real>> f_young;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_young;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index > m_rotatedInitialElements;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<type::fixed_array<Coord,3> >  > m_rotatedInitialElements;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> m_initialTransformation;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Transformation> > m_initialTransformation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> hosfordExponant;
+    sofa::core::objectmodel::RenamedData<Real> hosfordExponant;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> criteriaValue;
+    sofa::core::objectmodel::RenamedData<Real> criteriaValue;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showStressValue;
+    sofa::core::objectmodel::RenamedData<bool> showStressValue;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showStressVector;
+    sofa::core::objectmodel::RenamedData<bool> showStressVector;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showFracturableTriangles;
+    sofa::core::objectmodel::RenamedData<bool> showFracturableTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> f_computePrincipalStress;
+    sofa::core::objectmodel::RenamedData<bool> f_computePrincipalStress;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
     Data<type::vector<Real> > d_poisson; ///< Poisson ratio in Hooke's law (vector)

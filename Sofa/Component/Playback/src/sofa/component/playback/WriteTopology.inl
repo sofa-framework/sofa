@@ -51,11 +51,11 @@ WriteTopology::WriteTopology()
     this->f_listening.setValue(true);
 
     f_filename.setParent(&d_filename);
-    f_writeContainers.setParent(&d_writeContainers);
-    f_writeShellContainers.setParent(&d_writeShellContainers);
-    f_interval.setParent(&d_interval);
-    f_time.setParent(&d_time);
-    f_period.setParent(&d_period);
+    f_writeContainers.setOriginalData(&d_writeContainers);
+    f_writeShellContainers.setOriginalData(&d_writeShellContainers);
+    f_interval.setOriginalData(&d_interval);
+    f_time.setOriginalData(&d_time);
+    f_period.setOriginalData(&d_period);
 }
 
 

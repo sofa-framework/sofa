@@ -49,12 +49,12 @@ TriangleFEMForceField()
     d_poisson.setRequired(true);
     d_young.setRequired(true);
 
-    _initialPoints.setParent(&d_initialPoints);
-    f_method.setParent(&d_method);
-    f_poisson.setParent(&d_poisson);
-    f_young.setParent(&d_young);
-    f_thickness.setParent(&d_thickness);
-    f_planeStrain.setParent(&d_planeStrain);
+    _initialPoints.setOriginalData(&d_initialPoints);
+    f_method.setOriginalData(&d_method);
+    f_poisson.setOriginalData(&d_poisson);
+    f_young.setOriginalData(&d_young);
+    f_thickness.setOriginalData(&d_thickness);
+    f_planeStrain.setOriginalData(&d_planeStrain);
 
 }
 
