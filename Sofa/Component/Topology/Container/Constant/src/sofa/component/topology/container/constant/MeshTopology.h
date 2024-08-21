@@ -27,6 +27,8 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::topology::container::constant
 {
 
@@ -304,40 +306,40 @@ public:
     typedef type::vector<type::Vec3> SeqPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data< SeqPoints > seqPoints;
+    sofa::core::objectmodel::RenamedData< SeqPoints > seqPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqEdges> seqEdges;
+    sofa::core::objectmodel::RenamedData<SeqEdges> seqEdges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqTriangles> seqTriangles;
+    sofa::core::objectmodel::RenamedData<SeqTriangles> seqTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqQuads> seqQuads;
+    sofa::core::objectmodel::RenamedData<SeqQuads> seqQuads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqTetrahedra> seqTetrahedra;
+    sofa::core::objectmodel::RenamedData<SeqTetrahedra> seqTetrahedra;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqHexahedra> seqHexahedra;
+    sofa::core::objectmodel::RenamedData<SeqHexahedra> seqHexahedra;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<SeqUV> seqUVs;
+    sofa::core::objectmodel::RenamedData<SeqUV> seqUVs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> _drawEdges;
+    sofa::core::objectmodel::RenamedData<bool> _drawEdges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> _drawTriangles;
+    sofa::core::objectmodel::RenamedData<bool> _drawTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> _drawQuads;
+    sofa::core::objectmodel::RenamedData<bool> _drawQuads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> _drawTetra;
+    sofa::core::objectmodel::RenamedData<bool> _drawTetra;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> _drawHexa;
+    sofa::core::objectmodel::RenamedData<bool> _drawHexa;
 
     Data< SeqPoints > d_seqPoints; ///< List of point positions
     Data<SeqEdges> d_seqEdges; ///< List of edge indices
