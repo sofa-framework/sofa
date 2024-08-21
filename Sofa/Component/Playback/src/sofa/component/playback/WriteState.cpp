@@ -109,7 +109,10 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         if (!m_times.empty())
             ws->d_time.setValue(m_times);
 
-        ws->d_period.setValue(m_period);
+        if (m_period > 0.0) 
+        {
+            ws->d_period.setValue(m_period);
+        }
 
         ws->init();
         ws->f_listening.setValue(true);  //Activated at init

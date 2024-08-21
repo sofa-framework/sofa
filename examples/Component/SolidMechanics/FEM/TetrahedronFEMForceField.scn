@@ -29,7 +29,7 @@
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
-                                  method="small" computeVonMisesStress="2" showVonMisesStressPerElement="true"/>
+                                  method="small" computeVonMisesStress="2" showVonMisesStressPerNodeColorMap="true"/>
 
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
@@ -50,7 +50,7 @@
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
-                                  method="large" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
+                                  method="large" computeVonMisesStress="1" showVonMisesStressPerNodeColorMap="true"/>
 
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
@@ -70,7 +70,7 @@
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
-                                  method="polar" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
+                                  method="polar" computeVonMisesStress="1" showVonMisesStressPerNodeColorMap="true"/>
 
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
@@ -90,7 +90,7 @@
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
-                                  method="svd" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
+                                  method="svd" computeVonMisesStress="1" showVonMisesStressPerNodeColorMap="true"/>
 
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />

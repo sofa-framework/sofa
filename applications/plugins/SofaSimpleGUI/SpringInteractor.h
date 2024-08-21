@@ -5,7 +5,7 @@
 #include "Interactor.h"
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 
@@ -13,7 +13,7 @@ namespace sofa::simplegui
 {
     using sofa::defaulttype::Vec3Types ;
     using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<Vec3Types> ;
-    using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<Vec3Types> ;
+    using SpringForceField3 = sofa::component::solidmechanics::spring::SpringForceField<Vec3Types> ;
 
 /**
  * @brief Interaction using a spring.
@@ -25,7 +25,7 @@ class SOFA_SOFASIMPLEGUI_API SpringInteractor: public Interactor
     typedef Interactor Inherited;
 protected:
     MechanicalObject3::SPtr _interactorDof;
-    StiffSpringForceField3::SPtr _spring;
+    SpringForceField3::SPtr _spring;
 public:
     /**
      * @brief SpringInteractor

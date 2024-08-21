@@ -1143,12 +1143,10 @@ void SofaPhysicsSimulation::calcProjection()
                 vparams->zNear(), vparams->zFar());
     }
 
-    double xForeground, yForeground, xBackground, yBackground;
-
-    xForeground = -zForeground * xNear / vparams->zNear();
-    yForeground = -zForeground * yNear / vparams->zNear();
-    xBackground = -zBackground * xNear / vparams->zNear();
-    yBackground = -zBackground * yNear / vparams->zNear();
+    double xForeground = -zForeground * xNear / vparams->zNear();
+    double yForeground = -zForeground * yNear / vparams->zNear();
+    double xBackground = -zBackground * xNear / vparams->zNear();
+    double yBackground = -zBackground * yNear / vparams->zNear();
 
     xForeground *= xFactor;
     yForeground *= yFactor;

@@ -1,5 +1,5 @@
 <Node name="Group">
-  <StiffSpringForceField 
+  <SpringForceField
 	  name="ExternalSprings" 
 	  spring="2 0 500 5 3.5
 		  5 3 500 5 3.5
