@@ -30,10 +30,11 @@ namespace sofa::component::setting
 using namespace sofa::type;
 using namespace sofa::helper;
 
-int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
-        .add< ViewerSetting >()
-        .addAlias("Viewer")
-        ;
+void registerViewerSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Configuration for the Viewer of your application.")
+        .add< ViewerSetting >());
+}
 
 ViewerSetting::ViewerSetting()
     : d_resolution(initData(&d_resolution, Vec<2,int>(800, 600), "resolution", "resolution of the Viewer"))

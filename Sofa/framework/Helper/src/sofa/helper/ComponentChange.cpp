@@ -768,7 +768,12 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"MasterConstraintSolver", Dealiased("v24.12","ConstraintAnimationLoop")},
     {"FreeMotionMasterSolver", Dealiased("v24.12","FreeMotionAnimationLoop")},
     {"MultiStepMasterSolver", Dealiased("v24.12","MultiStepAnimationLoop")},
-    {"MultiTagMasterSolver", Dealiased("v24.12","MultiTagAnimationLoop")}
+    {"MultiTagMasterSolver", Dealiased("v24.12","MultiTagAnimationLoop")},
+    {"Background", Dealiased("v24.12","BackgroundSetting")},
+    {"SofaDefaultPath", Dealiased("v24.12","SofaDefaultPathSetting")},
+    {"Stats", Dealiased("v24.12","StatsSetting")},
+    {"Viewer", Dealiased("v24.12","ViewerSetting")},
+    
 };
 
 } // namespace sofa::helper::lifecycle
