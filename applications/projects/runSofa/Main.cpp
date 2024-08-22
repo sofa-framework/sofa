@@ -157,7 +157,6 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
-    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -282,6 +281,17 @@ int main(int argc, char** argv)
         cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
         "argv",
         "forward extra args to the python interpreter"
+    );
+    
+    // these options are actually read in RealGUI
+    bool enableInteraction = false;
+    unsigned int nbMSSASamples = 1;
+    argParser->addArgument(
+        cxxopts::value<bool>(enableInteraction)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "i,interactive",
+        "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
     );
     argParser->addArgument(
         cxxopts::value<unsigned int>(nbMSSASamples)
