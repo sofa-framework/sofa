@@ -117,10 +117,10 @@ public:
     using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::Index > pointInfo;
+    sofa::core::objectmodel::RenamedData<VecMat3x3 > pointInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::Index >  edgeInfo;
+    sofa::core::objectmodel::RenamedData<VecMat3x3 >  edgeInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     sofa::core::objectmodel::RenamedData<VecTetrahedronRestInformation >  tetrahedronInfo;

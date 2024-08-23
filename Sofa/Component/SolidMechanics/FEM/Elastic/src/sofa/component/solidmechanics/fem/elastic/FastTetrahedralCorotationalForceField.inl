@@ -152,16 +152,16 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , m_topology(nullptr)
     , updateMatrix(true)
 {
-    pointInfo.setParent(&d_pointInfo);
-    edgeInfo.setParent(&d_edgeInfo);
-    tetrahedronInfo.setParent(&d_tetrahedronInfo);
-    f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&this->d_poissonRatio);
-    f_drawing.setParent(&d_drawing);
-    drawColor1.setParent(&d_drawColor1);
-    drawColor2.setParent(&d_drawColor2);
-    drawColor3.setParent(&d_drawColor3);
-    drawColor4.setParent(&d_drawColor4);
+    pointInfo.setOriginalData(&d_pointInfo);
+    edgeInfo.setOriginalData(&d_edgeInfo);
+    tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
+    f_method.setOriginalData(&d_method);
+    f_poissonRatio.setOriginalData(&this->d_poissonRatio);
+    f_drawing.setOriginalData(&d_drawing);
+    drawColor1.setOriginalData(&d_drawColor1);
+    drawColor2.setOriginalData(&d_drawColor2);
+    drawColor3.setOriginalData(&d_drawColor3);
+    drawColor4.setOriginalData(&d_drawColor4);
 
 }
 
