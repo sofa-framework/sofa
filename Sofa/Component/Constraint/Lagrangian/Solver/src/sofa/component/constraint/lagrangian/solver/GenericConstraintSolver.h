@@ -93,13 +93,13 @@ public:
     sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > graphViolations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<unsigned int> currentNumConstraints;
+    sofa::core::objectmodel::RenamedData<int> currentNumConstraints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<unsigned int> currentNumConstraintGroups;
+    sofa::core::objectmodel::RenamedData<int> currentNumConstraintGroups;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<unsigned int> currentIterations;
+    sofa::core::objectmodel::RenamedData<int> currentIterations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     sofa::core::objectmodel::RenamedData<SReal> currentError;
@@ -120,9 +120,9 @@ public:
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphViolations; ///< Graph of each constraint's violation at each step of the resolution
 
-    Data<unsigned int> d_currentNumConstraints; ///< OUTPUT: current number of constraints
-    Data<unsigned int> d_currentNumConstraintGroups; ///< OUTPUT: current number of constraints
-    Data<unsigned int> d_currentIterations; ///< OUTPUT: current number of constraint groups
+    Data<int> d_currentNumConstraints; ///< OUTPUT: current number of constraints
+    Data<int> d_currentNumConstraintGroups; ///< OUTPUT: current number of constraints
+    Data<int> d_currentIterations; ///< OUTPUT: current number of constraint groups
     Data<SReal> d_currentError; ///< OUTPUT: current error
     Data<bool> d_reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
