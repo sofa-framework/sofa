@@ -330,9 +330,9 @@ Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     Real m = d_vertexMass.getValue().mass;
-    const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
     type::Vec6d momentum;
 
@@ -341,7 +341,7 @@ Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
         typename RigidTypes::Vec3 linearMomentum = m*v[index].getLinear();
         for( int j=0 ; j< 3 ; ++j ) momentum[j] += linearMomentum[j];
 
-        typename RigidTypes::Vec3 angularMomentum = cross( x[index].getCenter(), linearMomentum ) + ( I * v[index].getAngular() );
+        typename RigidTypes::Vec3 angularMomentum = cross( x[index].getCenter(), linearMomentum ) + ( d_vertexMass.getValue().rotate(pos[index].getOrientation()).inertiaMassMatrix * v[index].getAngular() );
         for( int j=0 ; j< 3 ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 

@@ -400,6 +400,7 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
 {
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
 
@@ -408,7 +409,13 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
         m *= typename DataTypes::Real(factor);
 
     for (const auto i : indices)
-        res[i] += dx[i] * m;
+    {
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            res[i] += dx[i] * m.rotate(pos[i].getOrientation());
+        else
+            res[i] += dx[i] * m;
+
+    }
 }
 
 
@@ -419,12 +426,18 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
 {
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     MassType m = d_vertexMass.getValue();
     for (const auto i : indices)
-        a[i] = f[i] / m;
+    {
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            a[i] = f[i] / m.rotate(pos[i].getOrientation());
+        else
+            a[i] = f[i] / m;
+    }
 }
 
 
@@ -473,6 +486,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
         return;
 
     helper::WriteAccessor<DataVecDeriv> f = vf;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     // weight
     const SReal* g = getContext()->getGravity().ptr();
@@ -480,16 +494,16 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
     const MassType& m = d_vertexMass.getValue();
-    Deriv mg = theGravity * m;
-
-    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     // add weight and inertia force
     for (const auto i : indices)
     {
-        f[i] += mg;
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            f[i] += theGravity*m.rotate(pos[i].getOrientation());
+        else
+            f[i] += theGravity*m;
     }
 }
 
@@ -501,12 +515,18 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
 
     ReadAccessor<DataVecDeriv> v = d_v;
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
 
     for (const auto i : indices)
-        e += v[i] * m * v[i];
+    {
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            e += v[i] * m.rotate(pos[i].getOrientation()) * v[i];
+        else
+            e += v[i] * m * v[i];
+    }
 
     return e/2;
 }
@@ -518,6 +538,7 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
@@ -526,10 +547,14 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
     Deriv gravity;
     DataTypes::set(gravity, g[0], g[1], g[2]);
 
-    Deriv mg = gravity * m;
 
     for (const auto i : indices)
-        e -= mg * x[i];
+    {
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            e -= gravity * m.rotate(pos[i].getOrientation())* x[i];
+        else
+            e -= gravity * m * x[i];
+    }
 
     return e;
 }
@@ -559,6 +584,7 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
                                                      const MultiMatrixAccessor* matrix)
 {
     const MassType& m = d_vertexMass.getValue();
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     static constexpr auto N = Deriv::total_size;
 
@@ -570,7 +596,10 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for (auto id : *indices)
     {
-        calc ( r.matrix, m, int(r.offset + N * id), mFactor);
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            calc(  r.matrix, m.rotate(pos[id].getOrientation()), int(r.offset + N * id), mFactor);
+        else
+            calc( r.matrix, m, int(r.offset + N * id), mFactor);
     }
 }
 
@@ -578,6 +607,8 @@ template <class DataTypes>
 void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     const MassType& m = d_vertexMass.getValue();
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
+
     static constexpr auto N = Deriv::total_size;
 
     AddMToMatrixFunctor<Deriv,MassType, core::behavior::MassMatrixAccumulator> calc;
@@ -585,7 +616,10 @@ void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAcc
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for (const auto index : indices)
     {
-        calc( matrices, m, N * index, 1.);
+        if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+            calc( matrices, m.rotate(pos[index].getOrientation()), N * index, 1.);
+        else
+            calc( matrices, m, N * index, 1.);
     }
 }
 
@@ -602,13 +636,17 @@ void UniformMass<DataTypes>::getElementMass (sofa::Index  index ,
                                                         BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
+    const auto & pos = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     static const BaseMatrix::Index dimension = BaseMatrix::Index(DataTypeInfo<Deriv>::size());
     if ( m->rowSize() != dimension || m->colSize() != dimension )
         m->resize ( dimension, dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix>() ( m, d_vertexMass.getValue(), 0, 1 );
+    if constexpr (std::is_same<defaulttype::Rigid3Types, DataTypes>::value)
+        AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix>() ( m, d_vertexMass.getValue().rotate(pos[index].getOrientation()), 0, 1 );
+    else
+        AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix>() ( m, d_vertexMass.getValue(), 0, 1 );
 }
 
 
