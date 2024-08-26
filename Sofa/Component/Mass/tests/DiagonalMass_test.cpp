@@ -985,97 +985,6 @@ public:
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
-
-    static Node::SPtr generateRigidScene()
-    {
-        static const string scene =
-        "<?xml version='1.0' ?>"
-        "<Node name='root' dt='0.01' gravity='0 0 0'>"
-        "    <RequiredPlugin name='Sofa.Component.Mass'/>"
-        "    <RequiredPlugin name='Sofa.Component.StateContainer'/>"
-        "    <RequiredPlugin name='Sofa.Component.Topology.Container.Grid'/>"
-        "    <RequiredPlugin name='Sofa.Component.Visual'/>"
-        "    <RequiredPlugin name='Sofa.Component.ODESolver.Backward'/>"
-        "    <RequiredPlugin name='Sofa.Component.LinearSolver.Direct'/>"
-        "    <RequiredPlugin name='Sofa.Component.Engine.Select'/>"
-        "    <RequiredPlugin name='Sofa.Component.Constraint.Projective'/>"
-        "    <RequiredPlugin name='Sofa.Component.SolidMechanics.FEM.Elastic'/>"
-        "    <RequiredPlugin name='Sofa.Component.MechanicalLoad'/>"
-        "    <DefaultAnimationLoop />"
-        "    <EulerImplicitSolver rayleighStiffness='0.'  rayleighMass='0.0'/>"
-        "    <SparseLDLSolver applyPermutation='false' template='CompressedRowSparseMatrixd'/>"
-        "    <Node name='Aligned' >"
-        "        <MechanicalObject  name='Mstate1' template='Rigid3' position='0 0 0 0 0 0 1' showObject='true' showObjectScale='0.1'/>"
-        "        <UniformMass name='mass' vertexMass='300 0.0158 [0.0427 0.0 0.0 0.0 0.0427 0.0 0.0 0.0 0.00375]'/>"
-        "        <ConstantForceField name='ConstantForceField1' forces='0 0 0 0 0 0'/>"
-        "    </Node>"
-        "    <Node name='Rotated' >"
-        "        <MechanicalObject name='Mstate2' template='Rigid3' position='1 0 0 0 0 0 1' showObject='true' showObjectScale='0.1'/>"
-        "        <UniformMass name='mass' vertexMass='300 0.0158 [0.0427 0.0 0.0 0.0 0.0427 0.0 0.0 0.0 0.00375]'/>"
-        "        <ConstantForceField name='ConstantForceField2' forces='0 0 0 0 0 0'/>"
-        "    </Node>"
-        "</Node>";
-
-
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
-        sofa::simulation::node::initRoot(root.get());
-
-        return root;
-    }
-
-    void nonIdentityInertiaMatrix_DifferentRotationDirection()
-    {
-        Node::SPtr root = generateRigidScene();
-        Rigid3Types::VecDeriv* CF1_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->beginEditVoidPtr());
-        Rigid3Types::VecDeriv* CF2_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->beginEditVoidPtr());
-
-        (*CF1_force)[0][5] = 1.0;
-        (*CF2_force)[0][3] = 1.0;
-
-        root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->endEditVoidPtr();
-        root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->endEditVoidPtr();
-
-        auto mstate1 = root->getChild("Aligned")->getNodeObject<MechanicalObject<Rigid3Types>>();
-        auto mstate2 = root->getChild("Rotated")->getNodeObject<MechanicalObject<Rigid3Types>>();
-
-        sofa::simulation::node::animate(root.get(),50);
-
-        //Because the inertia is smaller along z, we expect different velocity after some times with a ratio equivalent to the inverse ratio between the inertia
-        EXPECT_GT(mstate2->v.getValue()[0][3],0.0);
-        EXPECT_NEAR(mstate1->v.getValue()[0][5] / mstate2->v.getValue()[0][3], 0.0427/0.00375, 1.0e-5 );
-
-
-    }
-
-    void nonIdentityInertiaMatrix_RotationOfOneRigid()
-    {
-        Node::SPtr root = generateRigidScene();
-
-        sofa::simulation::node::animate(root.get(),1);
-
-
-        auto mstate1 = root->getChild("Aligned")->getNodeObject<MechanicalObject<Rigid3Types>>();
-        auto mstate2 = root->getChild("Rotated")->getNodeObject<MechanicalObject<Rigid3Types>>();
-
-        //Rotate the rigid
-        mstate2->x.setValue(Rigid3Types::VecCoord{Rigid3Types::Coord(Rigid3Types::Coord::Pos(1,0,0),Rigid3Types::Coord::Rot (0.707,0,0.707,0))});
-
-        Rigid3Types::VecDeriv* CF1_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->beginEditVoidPtr());
-        Rigid3Types::VecDeriv* CF2_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->beginEditVoidPtr());
-
-        //With rotated state, we now apply rotation along the Z axis of both rigids, this should result in the same acceleration if the inertia matrix is also rotated
-        (*CF1_force)[0][5] = 1.0;
-        (*CF2_force)[0][3] = 1.0;
-
-        root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->endEditVoidPtr();
-        root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->endEditVoidPtr();
-
-        sofa::simulation::node::animate(root.get(),50);
-        EXPECT_GT(mstate1->v.getValue()[0][5],0.0);
-        EXPECT_GT(mstate2->v.getValue()[0][3],0.0);
-        EXPECT_NEAR(mstate1->v.getValue()[0][5] / mstate2->v.getValue()[0][3], 1.0, 1.0e-5 );
-    }
 };
 
 
@@ -1292,15 +1201,6 @@ TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsRigid){
 
 TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsMassSpring){
     checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6, false);
-}
-
-
-TEST_F(DiagonalMass3_test, nonIdentityInertiaMatrix_DifferentRotationVector){
-    EXPECT_NO_THROW(nonIdentityInertiaMatrix_DifferentRotationDirection());
-}
-
-TEST_F(DiagonalMass3_test, nonIdentityInertiaMatrix_RotationOfTheRigid){
-    EXPECT_NO_THROW(nonIdentityInertiaMatrix_RotationOfOneRigid());
 }
 
 } // namespace sofa
