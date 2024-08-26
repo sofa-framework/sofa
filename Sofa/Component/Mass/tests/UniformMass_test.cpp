@@ -51,6 +51,7 @@ using sofa::testing::BaseTest;
 using testing::Types;
 
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/VecId.h>
 
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
@@ -430,7 +431,7 @@ struct UniformMassTest :  public BaseTest
         "    <RequiredPlugin name='Sofa.Component.MechanicalLoad'/>"
         "    <DefaultAnimationLoop />"
         "    <EulerImplicitSolver rayleighStiffness='0.'  rayleighMass='0.0'/>"
-        "    <SparseLDLSolver applyPermutation='false' template='CompressedRowSparseMatrixd'/>"
+        "    <SparseLDLSolver template='CompressedRowSparseMatrixd'/>"
         "    <Node name='Aligned' >"
         "        <MechanicalObject  name='Mstate1' template='Rigid3' position='0 0 0 0 0 0 1' showObject='true' showObjectScale='0.1'/>"
         "        <UniformMass name='mass' vertexMass='300 0.0158 [0.0427 0.0 0.0 0.0 0.0427 0.0 0.0 0.0 0.00375]'/>"
@@ -469,8 +470,10 @@ struct UniformMassTest :  public BaseTest
         sofa::simulation::node::animate(root.get(),50);
 
         //Because the inertia is smaller along z, we expect different velocity after some times with a ratio equivalent to the inverse ratio between the inertia
-        EXPECT_GT(mstate2->v.getValue()[0][3],0.0);
-        EXPECT_NEAR(mstate1->v.getValue()[0][5] / mstate2->v.getValue()[0][3], 0.0427/0.00375, 1.0e-5 );
+        EXPECT_GT(mstate2->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][3],0.0);
+        EXPECT_NEAR(mstate1->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][5] /
+                    mstate2->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][3],
+                    0.0427/0.00375, 1.0e-5 );
 
 
     }
@@ -486,7 +489,7 @@ struct UniformMassTest :  public BaseTest
         auto mstate2 = root->getChild("Rotated")->getNodeObject<MechanicalObject<Rigid3Types>>();
 
         //Rotate the rigid
-        mstate2->x.setValue(Rigid3Types::VecCoord{Rigid3Types::Coord(Rigid3Types::Coord::Pos(1,0,0),Rigid3Types::Coord::Rot (0.707,0,0.707,0))});
+        mstate2->write(sofa::core::VecCoordId::position())->setValue({Rigid3Types::Coord(Rigid3Types::Coord::Pos(1,0,0),Rigid3Types::Coord::Rot (0.707106781,0,0.707106781,0))});
 
         Rigid3Types::VecDeriv* CF1_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->beginEditVoidPtr());
         Rigid3Types::VecDeriv* CF2_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->beginEditVoidPtr());
@@ -499,9 +502,11 @@ struct UniformMassTest :  public BaseTest
         root->getChild("Rotated")->getObject("ConstantForceField2")->findData("forces")->endEditVoidPtr();
 
         sofa::simulation::node::animate(root.get(),50);
-        EXPECT_GT(mstate1->v.getValue()[0][5],0.0);
-        EXPECT_GT(mstate2->v.getValue()[0][3],0.0);
-        EXPECT_NEAR(mstate1->v.getValue()[0][5] / mstate2->v.getValue()[0][3], 1.0, 1.0e-5 );
+        EXPECT_GT(mstate1->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][5],0.0);
+        EXPECT_GT(mstate2->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][3],0.0);
+        EXPECT_NEAR(mstate1->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][5] /
+                    mstate2->read(sofa::core::ConstVecDerivId::velocity())->getValue()[0][3],
+                    1.0, 1.0e-5 );
     }
 
 };

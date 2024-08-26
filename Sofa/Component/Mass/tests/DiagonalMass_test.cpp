@@ -39,7 +39,6 @@ using sofa::core::ExecParams ;
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -1202,5 +1201,6 @@ TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsRigid){
 TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsMassSpring){
     checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6, false);
 }
+
 
 } // namespace sofa
