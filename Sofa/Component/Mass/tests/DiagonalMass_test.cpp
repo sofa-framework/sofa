@@ -1003,7 +1003,7 @@ public:
         "    <RequiredPlugin name='Sofa.Component.MechanicalLoad'/>"
         "    <DefaultAnimationLoop />"
         "    <EulerImplicitSolver rayleighStiffness='0.'  rayleighMass='0.0'/>"
-        "    <SparseLDLSolver applyPermutation='false' template='CompressedRowSparseMatrixMat3x3d'/>"
+        "    <SparseLDLSolver applyPermutation='false' template='CompressedRowSparseMatrixd'/>"
         "    <Node name='Aligned' >"
         "        <MechanicalObject  name='Mstate1' template='Rigid3' position='0 0 0 0 0 0 1' showObject='true' showObjectScale='0.1'/>"
         "        <UniformMass name='mass' vertexMass='300 0.0158 [0.0427 0.0 0.0 0.0 0.0427 0.0 0.0 0.0 0.00375]'/>"
@@ -1024,7 +1024,7 @@ public:
         return root;
     }
 
-    void nonIdentityIntertiaMatrix_DifferentRotationDirection()
+    void nonIdentityInertiaMatrix_DifferentRotationDirection()
     {
         Node::SPtr root = generateRigidScene();
         Rigid3Types::VecDeriv* CF1_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->beginEditVoidPtr());
@@ -1048,7 +1048,7 @@ public:
 
     }
 
-    void nonIdentityIntertiaMatrix_RotationOfOneRigid()
+    void nonIdentityInertiaMatrix_RotationOfOneRigid()
     {
         Node::SPtr root = generateRigidScene();
 
@@ -1295,12 +1295,12 @@ TEST_F(DiagonalMass3_test, checkAttributeLoadFromXpsMassSpring){
 }
 
 
-TEST_F(DiagonalMass3_test, nonIdentityIntertiaMatrix_DifferentRotationVector){
-    EXPECT_NO_THROW(nonIdentityIntertiaMatrix_DifferentRotationDirection());
+TEST_F(DiagonalMass3_test, nonIdentityInertiaMatrix_DifferentRotationVector){
+    EXPECT_NO_THROW(nonIdentityInertiaMatrix_DifferentRotationDirection());
 }
 
-TEST_F(DiagonalMass3_test, nonIdentityIntertiaMatrix_RotationOfTheRigid){
-    EXPECT_NO_THROW(nonIdentityIntertiaMatrix_RotationOfOneRigid());
+TEST_F(DiagonalMass3_test, nonIdentityInertiaMatrix_RotationOfTheRigid){
+    EXPECT_NO_THROW(nonIdentityInertiaMatrix_RotationOfOneRigid());
 }
 
 } // namespace sofa
