@@ -509,6 +509,55 @@ struct UniformMassTest :  public BaseTest
                     1.0, 1.0e-5 );
     }
 
+    void nonIdentityInertiaMatrix_CentrifugalForces()
+    {
+        Node::SPtr root = generateRigidScene();
+
+        sofa::simulation::node::animate(root.get(), 1);
+
+        constexpr sofa::type::Vec3 zAxis(0, 0, 1);
+        auto * mstate1 = root->getChild("Aligned")->getNodeObject<MechanicalObject<Rigid3Types>>();
+        const auto * DataPos = mstate1->read(sofa::core::ConstVecId::position());
+        const auto * DataVel = mstate1->read(sofa::core::ConstVecDerivId::velocity());
+
+        Rigid3Types::VecDeriv* CF1_force = reinterpret_cast<Rigid3Types::VecDeriv*>(root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->beginEditVoidPtr());
+
+        //We apply two different rotation, one exactly normal to z and one slightly along z
+        (*CF1_force)[0][3] = 1.0;
+        (*CF1_force)[0][5] = 0.1;
+
+        root->getChild("Aligned")->getObject("ConstantForceField1")->findData("forces")->endEditVoidPtr();
+
+        sofa::simulation::node::animate(root.get(),100);
+
+        //After rotating for some time, the centrifugal forces should have made the Z axis (along which most of the mass is located) normal to the axis of rotation
+        sofa::type::Vec3 Vel1 = DataVel->getValue()[0].getVOrientation();
+        sofa::type::Vec3 ori1_z = DataPos->getValue()[0].getOrientation().rotate(zAxis);
+        EXPECT_GT(norm(Vel1),0.0);
+        EXPECT_NEAR(dot(Vel1/norm(Vel1),ori1_z), 0.0, 1.0e-5 );
+
+        //To make sure the first try wasn't a fluke, we continue the rotation a bit and we check again
+        sofa::simulation::node::animate(root.get(),5);
+        Vel1 = DataVel->getValue()[0].getVOrientation();
+        ori1_z = DataPos->getValue()[0].getOrientation().rotate(zAxis);
+        EXPECT_GT(norm(Vel1),0.0);
+        EXPECT_NEAR(dot(Vel1/norm(Vel1),ori1_z), 0.0, 1.0e-5 );
+
+        //and again
+        sofa::simulation::node::animate(root.get(),5);
+        Vel1 = DataVel->getValue()[0].getVOrientation();
+        ori1_z = DataPos->getValue()[0].getOrientation().rotate(zAxis);
+        EXPECT_GT(norm(Vel1),0.0);
+        EXPECT_NEAR(dot(Vel1/norm(Vel1),ori1_z), 0.0, 1.0e-5 );
+
+        //and one final time
+        sofa::simulation::node::animate(root.get(),5);
+        Vel1 = DataVel->getValue()[0].getVOrientation();
+        ori1_z = DataPos->getValue()[0].getOrientation().rotate(zAxis);
+        EXPECT_GT(norm(Vel1),0.0);
+        EXPECT_NEAR(dot(Vel1/norm(Vel1),ori1_z), 0.0, 1.0e-5 );
+    }
+
 };
 
 
@@ -597,6 +646,10 @@ TYPED_TEST(UniformMassTest, nonIdentityInertiaMatrix_DifferentRotationDirection)
 
 TYPED_TEST(UniformMassTest, nonIdentityInertiaMatrix_RotationOfOneRigid){
     EXPECT_NO_THROW(this->nonIdentityInertiaMatrix_RotationOfOneRigid());
+}
+
+TYPED_TEST(UniformMassTest, nonIdentityInertiaMatrix_CentrifugalForces){
+    EXPECT_NO_THROW(this->nonIdentityInertiaMatrix_CentrifugalForces());
 }
 
 
