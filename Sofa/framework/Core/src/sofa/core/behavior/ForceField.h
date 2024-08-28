@@ -76,16 +76,6 @@ public:
     /// method implemented by the component.
     void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
-    /// Given the current position and velocity states, update the current force
-    /// vector by computing and adding the forces associated with this
-    /// ForceField.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// \f$ f += B v + K x \f$
-    ///
-    /// This is the method that should be implemented by the component
-    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) = 0;
-
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
     ///
@@ -100,14 +90,6 @@ public:
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
     void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
-
-    /// Internal addDForce
-    /// Overloaded function, usually called from the generic addDForce version.
-    /// This addDForce version directly gives access to df and dx vectors through its parameters.
-    /// @param mparams
-    /// @param df Output vector to fill, result of \f$ kFactor K dx + bFactor B dx \f$
-    /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
     //This is required to tell the compiler addClambda is legitimately overloaded,
     //and it does not hide the one from BaseForceField.
@@ -126,9 +108,6 @@ public:
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
     SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
 
-    virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
-
-
     /// @}
 
     /// @name Matrix operations
@@ -136,52 +115,8 @@ public:
 
     void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    /// Internal addKToMatrix
-    /// Overloaded function, usually called from the generic addKToMatrix version.
-    /// This addKToMatrix version directly gives access to the matrix to fill, the stiffness factor and
-    /// the offset used to identify where the force field must add its contributions in the matrix.
-    /// @param matrix the global stiffness matrix in which the force field adds its contribution. The matrix is global,
-    /// i.e. different objects can add their contribution into the same large matrix. Each object adds its contribution
-    /// to a different section of the matrix. That is why, an offset is used to identify where in the matrix the force
-    /// field must start adding its contribution.
-    /// @param kFact stiffness factor that needs to be multiplied to each matrix entry.
-    /// @param offset Starting index of the submatrix to fill in the global matrix.
-    virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
-
     void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
-    \param bm the global assembly matrix
-    \param offset start index of the local DOFs within the global matrix
-    \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
-    \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
-    \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
-    */
-    template<class IndexArray, class ElementMat>
-    void addToMatrix(sofa::linearalgebra::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
-    {
-        constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
-        for (unsigned n1=0; n1<nodeIndex.size(); n1++)
-        {
-            for(unsigned i=0; i<S; i++)
-            {
-                const unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
-                const unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
-
-                for (unsigned n2=0; n2<nodeIndex.size(); n2++)
-                {
-                    for (unsigned j=0; j<S; j++)
-                    {
-                        const unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
-                        const unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
-                        bm->add( ROW,COLUMN, em[row][column]* scale );
-                    }
-                }
-            }
-        }
-    }
-
-    virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
     /// @}
 
     /// Pre-construction check method called by ObjectFactory.
@@ -219,6 +154,76 @@ public:
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
+    }
+
+
+protected:
+
+    /// Given the current position and velocity states, update the current force
+    /// vector by computing and adding the forces associated with this
+    /// ForceField.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// \f$ f += B v + K x \f$
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) = 0;
+
+    /// Internal addDForce
+    /// Overloaded function, usually called from the generic addDForce version.
+    /// This addDForce version directly gives access to df and dx vectors through its parameters.
+    /// @param mparams
+    /// @param df Output vector to fill, result of \f$ kFactor K dx + bFactor B dx \f$
+    /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
+
+    virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
+
+    /// Internal addKToMatrix
+    /// Overloaded function, usually called from the generic addKToMatrix version.
+    /// This addKToMatrix version directly gives access to the matrix to fill, the stiffness factor and
+    /// the offset used to identify where the force field must add its contributions in the matrix.
+    /// @param matrix the global stiffness matrix in which the force field adds its contribution. The matrix is global,
+    /// i.e. different objects can add their contribution into the same large matrix. Each object adds its contribution
+    /// to a different section of the matrix. That is why, an offset is used to identify where in the matrix the force
+    /// field must start adding its contribution.
+    /// @param kFact stiffness factor that needs to be multiplied to each matrix entry.
+    /// @param offset Starting index of the submatrix to fill in the global matrix.
+    virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
+
+    virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+
+
+    /**
+     * Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
+     * \param bm the global assembly matrix
+     * \param offset start index of the local DOFs within the global matrix
+     * \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
+     * \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
+     * \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
+     */
+    template<class IndexArray, class ElementMat>
+    void addToMatrix(sofa::linearalgebra::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
+    {
+        constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+        for (unsigned n1=0; n1<nodeIndex.size(); n1++)
+        {
+            for(unsigned i=0; i<S; i++)
+            {
+                const unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
+                const unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
+
+                for (unsigned n2=0; n2<nodeIndex.size(); n2++)
+                {
+                    for (unsigned j=0; j<S; j++)
+                    {
+                        const unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
+                        const unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
+                        bm->add( ROW,COLUMN, em[row][column]* scale );
+                    }
+                }
+            }
+        }
     }
 
 };

@@ -145,7 +145,7 @@ protected:
 #endif
 
         /// Stiffness matrix assembly
-        void addStiffness( sofa::linearalgebra::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const;
+        void addStiffness( sofa::linearalgebra::BaseMatrix *bm, unsigned int offset, SReal scale, FastTriangularBendingSprings< _DataTypes>* ff ) const;
         /// Compliant stiffness matrix assembly
         void getStiffness( StiffnessMatrix &K ) const;
         /// replace a vertex index with another one
@@ -165,6 +165,7 @@ protected:
             return in;
         }
     };
+    friend EdgeSpring;
 
     /// The list of edge springs, one for each edge between two triangles
     sofa::core::topology::EdgeData<type::vector<EdgeSpring> > d_edgeSprings;

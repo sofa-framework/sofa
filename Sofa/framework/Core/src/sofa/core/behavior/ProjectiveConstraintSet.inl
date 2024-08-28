@@ -50,6 +50,11 @@ bool ProjectiveConstraintSet<DataTypes>::isActive() const
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (!isActive())
         return;
 
@@ -64,11 +69,16 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (!isActive())
         return;
     if (this->mstate)
     {
-            projectResponse(mparams, *dxId[this->mstate.get()].write());
+        projectResponse(mparams, *dxId[this->mstate.get()].write());
     }
     msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
@@ -76,13 +86,17 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (!isActive())
         return;
 
     if (this->mstate)
     {
-
-            projectVelocity(mparams, *vId[this->mstate.get()].write());
+        projectVelocity(mparams, *vId[this->mstate.get()].write());
     }
     msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
@@ -90,13 +104,17 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (!isActive())
         return;
 
     if (this->mstate)
     {
-
-            projectPosition(mparams, *xId[this->mstate.get()].write());
+        projectPosition(mparams, *xId[this->mstate.get()].write());
     }
 }
 

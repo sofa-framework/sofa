@@ -94,15 +94,6 @@ public:
     /// the component.
     void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
 
-    /// Project dx to constrained space (dx models an acceleration).
-    virtual void projectResponse(const MechanicalParams* /*mparams*/, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    virtual void projectVelocity(const MechanicalParams* /*mparams*/, DataVecDeriv& v1, DataVecDeriv& v2) = 0;
-
-    /// Project x to constrained space (x models a position).
-    virtual void projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& x1, DataVecCoord& x2) = 0;
-
     /// @}
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
@@ -171,6 +162,18 @@ public:
 
     using Inherit2::getMechModel1;
     using Inherit2::getMechModel2;
+
+protected:
+
+    /// Project dx to constrained space (dx models an acceleration).
+    virtual void projectResponse(const MechanicalParams* /*mparams*/, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
+
+    /// Project v to constrained space (v models a velocity).
+    virtual void projectVelocity(const MechanicalParams* /*mparams*/, DataVecDeriv& v1, DataVecDeriv& v2) = 0;
+
+    /// Project x to constrained space (x models a position).
+    virtual void projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& x1, DataVecCoord& x2) = 0;
+
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)

@@ -66,19 +66,11 @@ public:
     /// addMDx(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&, SReal) method implemented by the component.
     void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) override;
 
-    virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
-
     ///                            $ dx = M^-1 f $
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
     void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
-
-    virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
-
-
-    /// Mass forces (gravity) often have null derivative
-    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -97,14 +89,12 @@ public:
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const MechanicalParams*, const DataVecDeriv&) method implemented by the component.
     SReal getKineticEnergy( const MechanicalParams* mparams) const override;
-    virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
 
     ///                         $ e = M g x $
     ///
     /// This method retrieves the positions vector and call the internal
     /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
     SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
-    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
@@ -113,21 +103,13 @@ public:
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
     type::Vec6 getMomentum( const MechanicalParams* mparams ) const override;
-    virtual type::Vec6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
-
-
 
     /// @}
 
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
-    void addBToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
-
     void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
-
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -155,6 +137,24 @@ public:
     void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
 protected:
+
+    virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+
+    virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
+
+    /// Mass forces (gravity) often have null derivative
+    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
+
+    virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
+    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+
+    virtual type::Vec6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
+
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
+    void addBToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
+    virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
+
+
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::unique_ptr<std::ofstream> m_gnuplotFileEnergy;
 

@@ -49,6 +49,11 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         getConstraintViolation(cParams, v, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()), 
@@ -59,6 +64,11 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, 

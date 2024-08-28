@@ -43,6 +43,11 @@ ForceField<DataTypes>::~ForceField() = default;
 template<class DataTypes>
 void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     auto mstate = this->mstate.get();
     if (mparams && mstate)
     {
@@ -53,6 +58,11 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mparams && this->mstate)
     {
 
@@ -80,6 +90,11 @@ void ForceField<DataTypes>::addClambda(const MechanicalParams* /*mparams*/, Data
 template<class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
+    if (isComponentStateInvalid())
+    {
+        return 0;
+    }
+
     if (this->mstate)
         return getPotentialEnergy(mparams, *mparams->readX(this->mstate.get()));
     return 0;
@@ -88,6 +103,11 @@ SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams)
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (this->mstate)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
@@ -114,6 +134,11 @@ void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (this->mstate)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);

@@ -68,35 +68,12 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
 
-    /// Construct the Constraint violations vector of each constraint
-    ///
-    /// \param v is the result vector that contains the whole constraints violations
-    /// \param x1 and x2 are the position vectors used to compute contraint position violation
-    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    ///
-    /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-            , const DataVecDeriv &v1, const DataVecDeriv &v2) = 0;
-
     /// Construct the Jacobian Matrix
     ///
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
-
-    /// Construct the Jacobian Matrix
-    ///
-    /// \param c1 and c2 are the results constraint sparse matrix
-    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param x1 and x2 are the position vectors used for contraint equation computation
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    ///
-    /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
-            , const DataVecCoord &x1, const DataVecCoord &x2) = 0;
-
 
     void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
@@ -157,14 +134,36 @@ public:
 
 protected:
 
-     virtual type::vector<std::string> getInteractionIdentifiers() override final
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param x1 and x2 are the position vectors used to compute contraint position violation
+    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+            , const DataVecDeriv &v1, const DataVecDeriv &v2) = 0;
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param c1 and c2 are the results constraint sparse matrix
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param x1 and x2 are the position vectors used for contraint equation computation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+            , const DataVecCoord &x1, const DataVecCoord &x2) = 0;
+
+    virtual type::vector<std::string> getInteractionIdentifiers() override final
      {
             type::vector<std::string> ids = getPairInteractionIdentifiers();
             ids.push_back("Pair");
             return ids;
      }
 
-     virtual type::vector<std::string> getPairInteractionIdentifiers(){ return {}; }
+    virtual type::vector<std::string> getPairInteractionIdentifiers(){ return {}; }
 
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::linearalgebra::BaseVector* lambda);

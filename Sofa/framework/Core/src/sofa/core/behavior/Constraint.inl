@@ -57,6 +57,11 @@ void Constraint<DataTypes>::init()
 template<class DataTypes>
 void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         getConstraintViolation(cParams, v, *cParams->readX(this->mstate.get()), *cParams->readV(this->mstate.get()));
@@ -67,6 +72,11 @@ void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 template<class DataTypes>
 void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, *cParams->readX(this->mstate.get()));
@@ -77,6 +87,11 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 template<class DataTypes>
 void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         storeLambda(cParams, *res[this->mstate.get()].write(), *cParams->readJ(this->mstate.get()), lambda);

@@ -47,6 +47,11 @@ Mass<DataTypes>::~Mass()
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mparams)
     {
         auto mstate = this->mstate.get();
@@ -64,6 +69,11 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& 
 template<class DataTypes>
 void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if(mparams)
     {
         auto mstate = this->mstate.get();
@@ -97,6 +107,11 @@ void Mass<DataTypes>::addDForce(const MechanicalParams*
 template<class DataTypes>
 void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
@@ -108,6 +123,11 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
 template<class DataTypes>
 SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 {
+    if (isComponentStateInvalid())
+    {
+        return 0;
+    }
+
     if (this->mstate)
         return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate.get()));
     return 0.0;
@@ -124,6 +144,11 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
 template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
+    if (isComponentStateInvalid())
+    {
+        return 0;
+    }
+
     if (this->mstate)
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate.get()));
     return 0.0;
@@ -140,6 +165,11 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 template<class DataTypes>
 type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
+    if (isComponentStateInvalid())
+    {
+        return {};
+    }
+
     auto state = this->mstate.get();
     if (state)
         return getMomentum(mparams, *mparams->readX(state), *mparams->readV(state));
@@ -158,6 +188,11 @@ type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, co
 template<class DataTypes>
 void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
         addMToMatrix(r.matrix, mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()), r.offset);
@@ -176,6 +211,11 @@ void Mass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SR
 template<class DataTypes>
 void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     this->ForceField<DataTypes>::addMBKToMatrix(mparams, matrix);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
         addMToMatrix(mparams, matrix);
@@ -184,6 +224,11 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa
 template<class DataTypes>
 void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if(this->mstate)
     {
         DataVecDeriv& v = *vid[this->mstate.get()].write();

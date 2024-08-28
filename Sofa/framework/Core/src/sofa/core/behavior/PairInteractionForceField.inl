@@ -48,6 +48,11 @@ PairInteractionForceField<DataTypes>::~PairInteractionForceField()
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();
     if (state1 && state2)
@@ -63,6 +68,11 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();    
     if (state1 && state2)
@@ -78,6 +88,11 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 template<class DataTypes>
 SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
+    if (isComponentStateInvalid())
+    {
+        return 0;
+    }
+
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();
     if (state1 && state2)

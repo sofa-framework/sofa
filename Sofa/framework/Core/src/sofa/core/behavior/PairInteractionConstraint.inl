@@ -52,6 +52,11 @@ bool PairInteractionConstraint<DataTypes>::isActive() const
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         getConstraintViolation(cParams, v, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()), *cParams->readV(this->mstate1.get()), *cParams->readV(this->mstate2.get()));
@@ -62,6 +67,11 @@ void PairInteractionConstraint<DataTypes>::getConstraintViolation(const Constrai
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()));
@@ -71,6 +81,11 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (cParams)
     {
         storeLambda(cParams, *res[this->mstate1.get()].write(), *res[this->mstate2.get()].write(), *cParams->readJ(this->mstate1.get()), *cParams->readJ(this->mstate2.get()), lambda);
