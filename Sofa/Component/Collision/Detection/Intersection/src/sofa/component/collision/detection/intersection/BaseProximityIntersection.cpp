@@ -66,16 +66,4 @@ int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Out
     return 0;
 }
 
-
-bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    return testIntersection(cube1, cube2, this);
-}
-
-int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    return computeIntersection(cube1, cube2, contacts, this);
-}
-
-
 } // namespace sofa::component::collision::detection::intersection

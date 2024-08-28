@@ -85,17 +85,6 @@ int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
     return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts, currentIntersection);
 }
 
-bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    return testIntersection(cube1, cube2, this );
-}
-
-int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    return computeIntersection(cube1, cube2, contacts, this);
-}
-
-
 bool MinProximityIntersection::getUseSurfaceNormals() const
 {
     return d_useSurfaceNormals.getValue();
