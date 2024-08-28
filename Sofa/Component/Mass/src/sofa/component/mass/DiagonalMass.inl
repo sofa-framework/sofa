@@ -616,16 +616,14 @@ DiagonalMass<DataTypes, GeometricalTypes>::getMomentum ( const core::MechanicalP
 }
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void DiagonalMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     const MassVector &masses= d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;
     AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix> calc;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
     for (unsigned int i = 0; i < masses.size(); i++)
     {
-        calc(r.matrix, masses[i], r.offset + N * i, mFactor);
+        calc(mat, masses[i], offset + N * i, mFact);
     }
 }
 
