@@ -993,14 +993,6 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
 }
 
 template<class DataTypes>
-SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
-                                                             const DataVecCoord&  /* x */) const
-{
-    msg_warning() << "Method getPotentialEnergy not implemented yet.";
-    return 0.0;
-}
-
-template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     auto nbdof = this->mstate->getSize();
@@ -1104,8 +1096,11 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
 }
 
 template<class DataTypes>
-inline SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*) const
+inline SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+
     return m_potentialEnergy;
 }
 
@@ -1133,12 +1128,9 @@ inline void HexahedronFEMForceField<DataTypes>::setMethod(int val)
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
-
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index e { 0 }; //index of the element in the topology
 
@@ -1165,7 +1157,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
 
-                r.matrix->add( r.offset + 3 * node1, r.offset + 3 * node2, tmp * (-kFactor));
+                matrix->add( offset + 3 * node1, offset + 3 * node2, tmp * (-kFact));
             }
         }
     }

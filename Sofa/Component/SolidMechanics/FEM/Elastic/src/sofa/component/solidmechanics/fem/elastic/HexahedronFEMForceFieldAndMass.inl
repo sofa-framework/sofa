@@ -216,7 +216,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;
@@ -225,13 +225,10 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     int node1, node2;
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-
     for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
         const ElementMass &Me = d_elementMasses.getValue()[e];
 
-        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -247,7 +244,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
                         Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, tmp[i][j]*mFactor);
+                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
             }
         }
     }
