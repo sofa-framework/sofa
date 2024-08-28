@@ -154,7 +154,7 @@ public:
         return 0.0;
     }
 
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
