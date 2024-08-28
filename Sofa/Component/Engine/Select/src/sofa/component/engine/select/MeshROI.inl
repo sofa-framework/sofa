@@ -66,9 +66,9 @@ MeshROI<DataTypes>::MeshROI()
         this->d_strict.setValue(false);
     }
 
-    d_X0_i.setParent(&d_roiPositions);
-    d_edges_i.setParent(&d_roiEdges);
-    d_triangles_i.setParent(&d_roiTriangles);
+    d_X0_i.setOriginalData(&d_roiPositions);
+    d_edges_i.setOriginalData(&d_roiEdges);
+    d_triangles_i.setOriginalData(&d_roiTriangles);
 
 }
 

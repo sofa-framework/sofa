@@ -32,6 +32,8 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::lagrangian::solver
 {
 
@@ -61,49 +63,49 @@ public:
     Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<int> maxIt;
+    sofa::core::objectmodel::RenamedData<int> maxIt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<SReal> tolerance;
+    sofa::core::objectmodel::RenamedData<SReal> tolerance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<SReal> sor;
+    sofa::core::objectmodel::RenamedData<SReal> sor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<bool> scaleTolerance;
+    sofa::core::objectmodel::RenamedData<bool> scaleTolerance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<bool> allVerified;
+    sofa::core::objectmodel::RenamedData<bool> allVerified;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<bool> computeGraphs;
+    sofa::core::objectmodel::RenamedData<bool> computeGraphs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<std::map < std::string, sofa::type::vector<SReal> > >  graphErrors;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > >  graphErrors;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<std::map < std::string, sofa::type::vector<SReal> > >  graphConstraints;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > >  graphConstraints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphForces;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > graphForces;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<std::map < std::string, sofa::type::vector<SReal> > > graphViolations;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > graphViolations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<unsigned int> currentNumConstraints;
+    sofa::core::objectmodel::RenamedData<int> currentNumConstraints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<unsigned int> currentNumConstraintGroups;
+    sofa::core::objectmodel::RenamedData<int> currentNumConstraintGroups;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<unsigned int> currentIterations;
+    sofa::core::objectmodel::RenamedData<int> currentIterations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<SReal> currentError;
+    sofa::core::objectmodel::RenamedData<SReal> currentError;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    Data<bool> reverseAccumulateOrder;
+    sofa::core::objectmodel::RenamedData<bool> reverseAccumulateOrder;
 
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm

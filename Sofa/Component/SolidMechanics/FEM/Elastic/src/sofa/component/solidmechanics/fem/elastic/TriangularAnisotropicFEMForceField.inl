@@ -50,11 +50,11 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 
     d_young2.setRequired(true);
 
-    f_young2.setParent(&d_young2);
-    f_theta.setParent(&d_theta);
-    f_fiberCenter.setParent(&d_fiberCenter);
-    showFiber.setParent(&d_showFiber);
-    localFiberDirection.setParent(&d_localFiberDirection);
+    f_young2.setOriginalData(&d_young2);
+    f_theta.setOriginalData(&d_theta);
+    f_fiberCenter.setOriginalData(&d_fiberCenter);
+    showFiber.setOriginalData(&d_showFiber);
+    localFiberDirection.setOriginalData(&d_localFiberDirection);
 
 }
 

@@ -40,7 +40,7 @@ RayCollisionModel::RayCollisionModel(SReal length)
     : d_defaultLength(initData(&d_defaultLength, length, "defaultLength", "The default length for all rays in this collision model"))
 {
     this->contactResponse.setValue("RayContact"); // use RayContact response class
-    defaultLength.setParent(&d_defaultLength);
+    defaultLength.setOriginalData(&d_defaultLength);
 }
 
 void RayCollisionModel::resize(sofa::Size size)

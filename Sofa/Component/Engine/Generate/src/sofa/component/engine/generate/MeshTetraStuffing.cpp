@@ -66,18 +66,18 @@ MeshTetraStuffing::MeshTetraStuffing()
     //addOutput(&outputPoints);
     //addOutput(&outputTetrahedra);
 
-    vbbox.setParent(&d_vbbox);
-    size.setParent(&d_size);
-    inputPoints.setParent(&d_inputPoints);
-    inputTriangles.setParent(&d_inputTriangles);
-    inputQuads.setParent(&d_inputQuads);
-    outputPoints.setParent(&d_outputPoints);
-    outputTetrahedra.setParent(&d_outputTetrahedra);
-    alphaLong.setParent(&d_alphaLong);
-    alphaShort.setParent(&d_alphaShort);
-    bSnapPoints.setParent(&d_bSnapPoints);
-    bSplitTetrahedra.setParent(&d_bSplitTetrahedra);
-    bDraw.setParent(&d_bDraw);
+    vbbox.setOriginalData(&d_vbbox);
+    size.setOriginalData(&d_size);
+    inputPoints.setOriginalData(&d_inputPoints);
+    inputTriangles.setOriginalData(&d_inputTriangles);
+    inputQuads.setOriginalData(&d_inputQuads);
+    outputPoints.setOriginalData(&d_outputPoints);
+    outputTetrahedra.setOriginalData(&d_outputTetrahedra);
+    alphaLong.setOriginalData(&d_alphaLong);
+    alphaShort.setOriginalData(&d_alphaShort);
+    bSnapPoints.setOriginalData(&d_bSnapPoints);
+    bSplitTetrahedra.setOriginalData(&d_bSplitTetrahedra);
+    bDraw.setOriginalData(&d_bDraw);
 
 }
 

@@ -84,23 +84,23 @@ BaseCamera::BaseCamera()
     d_modelViewMatrix.endEdit();
     d_projectionMatrix.endEdit();
 
-    p_position.setParent(&d_position);
-    p_orientation.setParent(&d_orientation);
-    p_lookAt.setParent(&d_lookAt);
-    p_distance.setParent(&d_distance);
-    p_fieldOfView.setParent(&d_fieldOfView);
-    p_zNear.setParent(&d_zNear);
-    p_zFar.setParent(&d_zFar);
-    p_computeZClip.setParent(&d_computeZClip);
-    p_minBBox.setParent(&d_minBBox);
-    p_maxBBox.setParent(&d_maxBBox);
-    p_widthViewport.setParent(&d_widthViewport);
-    p_heightViewport.setParent(&d_heightViewport);
-    p_type.setParent(&d_type);
-    p_activated.setParent(&d_activated);
-    p_fixedLookAtPoint.setParent(&d_fixedLookAtPoint);
-    p_modelViewMatrix.setParent(&d_modelViewMatrix);
-    p_projectionMatrix.setParent(&d_projectionMatrix);
+    p_position.setOriginalData(&d_position);
+    p_orientation.setOriginalData(&d_orientation);
+    p_lookAt.setOriginalData(&d_lookAt);
+    p_distance.setOriginalData(&d_distance);
+    p_fieldOfView.setOriginalData(&d_fieldOfView);
+    p_zNear.setOriginalData(&d_zNear);
+    p_zFar.setOriginalData(&d_zFar);
+    p_computeZClip.setOriginalData(&d_computeZClip);
+    p_minBBox.setOriginalData(&d_minBBox);
+    p_maxBBox.setOriginalData(&d_maxBBox);
+    p_widthViewport.setOriginalData(&d_widthViewport);
+    p_heightViewport.setOriginalData(&d_heightViewport);
+    p_type.setOriginalData(&d_type);
+    p_activated.setOriginalData(&d_activated);
+    p_fixedLookAtPoint.setOriginalData(&d_fixedLookAtPoint);
+    p_modelViewMatrix.setOriginalData(&d_modelViewMatrix);
+    p_projectionMatrix.setOriginalData(&d_projectionMatrix);
 
 }
 

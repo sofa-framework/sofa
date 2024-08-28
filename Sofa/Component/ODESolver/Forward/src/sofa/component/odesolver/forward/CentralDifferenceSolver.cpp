@@ -36,7 +36,7 @@ CentralDifferenceSolver::CentralDifferenceSolver()
     : d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
-    f_rayleighMass.setParent(&d_rayleighMass);
+    f_rayleighMass.setOriginalData(&d_rayleighMass);
 }
 
 /**

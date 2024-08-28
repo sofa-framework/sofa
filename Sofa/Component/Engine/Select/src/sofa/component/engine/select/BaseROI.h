@@ -29,6 +29,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::engine::select
 {
 
@@ -126,7 +128,7 @@ public:
     Data<bool> d_doUpdate; ///< If true, updates the selection at the beginning of simulation steps. (default = true)
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    Data<VecCoord> d_X0;
+    sofa::core::objectmodel::RenamedData<VecCoord> d_X0;
 protected:
     BaseROI();
     ~BaseROI() override = default;

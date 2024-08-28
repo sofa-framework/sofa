@@ -55,15 +55,15 @@ VoxelGridLoader::VoxelGridLoader()
       bpp(8) // bits per pixel
 {
     addAlias(&d_filename,"segmentationFile");
-    voxelSize.setParent(&d_voxelSize);
-    dataResolution.setParent(&d_dataResolution);
-    roi.setParent(&d_roi);
-    headerSize.setParent(&d_headerSize);
-    segmentationHeaderSize.setParent(&d_segmentationHeaderSize);
-    idxInRegularGrid.setParent(&d_idxInRegularGrid);
-    backgroundValue.setParent(&d_backgroundValue);
-    activeValue.setParent(&d_activeValue);
-    generateHexa.setParent(&d_generateHexa);
+    voxelSize.setOriginalData(&d_voxelSize);
+    dataResolution.setOriginalData(&d_dataResolution);
+    roi.setOriginalData(&d_roi);
+    headerSize.setOriginalData(&d_headerSize);
+    segmentationHeaderSize.setOriginalData(&d_segmentationHeaderSize);
+    idxInRegularGrid.setOriginalData(&d_idxInRegularGrid);
+    backgroundValue.setOriginalData(&d_backgroundValue);
+    activeValue.setOriginalData(&d_activeValue);
+    generateHexa.setOriginalData(&d_generateHexa);
 
 
 }

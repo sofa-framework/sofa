@@ -65,12 +65,12 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
 {
     this->addAlias(&d_fileCompliance, "filePrefix");
 
-    m_rotations.setParent(&d_rotations);
-    m_restRotations.setParent(&d_restRotations);
-    recompute.setParent(&d_recompute);
-    debugViewFrameScale.setParent(&d_debugViewFrameScale);
-    f_fileCompliance.setParent(&d_fileCompliance);
-    fileDir.setParent(&d_fileDir);
+    m_rotations.setOriginalData(&d_rotations);
+    m_restRotations.setOriginalData(&d_restRotations);
+    recompute.setOriginalData(&d_recompute);
+    debugViewFrameScale.setOriginalData(&d_debugViewFrameScale);
+    f_fileCompliance.setOriginalData(&d_fileCompliance);
+    fileDir.setOriginalData(&d_fileDir);
 }
 
 template<class DataTypes>

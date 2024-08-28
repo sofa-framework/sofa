@@ -77,19 +77,19 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     d_young.setRequired(true);
     p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
 
-    triangleInfo.setParent(&d_triangleInfo);
-    vertexInfo.setParent(&d_vertexInfo);
-    f_method.setParent(&d_method);
-    f_poisson.setParent(&d_poisson);
-    f_young.setParent(&d_young);
-    m_rotatedInitialElements.setParent(&d_rotatedInitialElements);
-    m_initialTransformation.setParent(&d_initialTransformation);
-    hosfordExponant.setParent(&d_hosfordExponant);
-    criteriaValue.setParent(&d_criteriaValue);
-    showStressValue.setParent(&d_showStressValue);
-    showStressVector.setParent(&d_showStressVector);
-    showFracturableTriangles.setParent(&d_showFracturableTriangles);
-    f_computePrincipalStress.setParent(&d_computePrincipalStress);
+    triangleInfo.setOriginalData(&d_triangleInfo);
+    vertexInfo.setOriginalData(&d_vertexInfo);
+    f_method.setOriginalData(&d_method);
+    f_poisson.setOriginalData(&d_poisson);
+    f_young.setOriginalData(&d_young);
+    m_rotatedInitialElements.setOriginalData(&d_rotatedInitialElements);
+    m_initialTransformation.setOriginalData(&d_initialTransformation);
+    hosfordExponant.setOriginalData(&d_hosfordExponant);
+    criteriaValue.setOriginalData(&d_criteriaValue);
+    showStressValue.setOriginalData(&d_showStressValue);
+    showStressVector.setOriginalData(&d_showStressVector);
+    showFracturableTriangles.setOriginalData(&d_showFracturableTriangles);
+    f_computePrincipalStress.setOriginalData(&d_computePrincipalStress);
 
     }
 

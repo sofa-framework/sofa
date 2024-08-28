@@ -56,7 +56,7 @@ VisualStyle::VisualStyle()
 {
     d_displayFlags.setWidget("widget_displayFlags");
 
-    displayFlags.setParent(&d_displayFlags);
+    displayFlags.setOriginalData(&d_displayFlags);
 }
 
 void VisualStyle::fwdDraw(VisualParams* vparams)

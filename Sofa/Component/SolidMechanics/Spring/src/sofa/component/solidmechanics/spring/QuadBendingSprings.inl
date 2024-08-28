@@ -36,7 +36,7 @@ QuadBendingSprings<DataTypes>::QuadBendingSprings()
     , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    localRange.setParent(&d_localRange);
+    localRange.setOriginalData(&d_localRange);
 }
 
 

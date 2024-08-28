@@ -61,7 +61,7 @@ Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
     m_inputType = geometry::ElementType::HEXAHEDRON;
     m_outputType = geometry::ElementType::TETRAHEDRON;
 
-    swapping.setParent(&d_swapping);
+    swapping.setOriginalData(&d_swapping);
 }
 
 Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()

@@ -29,6 +29,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -123,37 +124,37 @@ protected:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> triangleInfo;
+    sofa::core::objectmodel::RenamedData<type::vector<TriangleRestInformation> > triangleInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> edgeInfo;
+    sofa::core::objectmodel::RenamedData<type::vector<EdgeRestInformation> > edgeInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<VecCoord> _initialPoints;
+    sofa::core::objectmodel::RenamedData<VecCoord> _initialPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<Real> f_poissonRatio;
+    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<Real> f_youngModulus;
+    sofa::core::objectmodel::RenamedData<Real> f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<Real> f_dampingRatio;
+    sofa::core::objectmodel::RenamedData<Real> f_dampingRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<bool> f_useAngularSprings;
+    sofa::core::objectmodel::RenamedData<bool> f_useAngularSprings;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<bool> f_compressible;
+    sofa::core::objectmodel::RenamedData<bool> f_compressible;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<Real> f_stiffnessMatrixRegularizationWeight;
+    sofa::core::objectmodel::RenamedData<Real> f_stiffnessMatrixRegularizationWeight;
 
 
 
     sofa::core::topology::TriangleData<type::vector<TriangleRestInformation> > d_triangleInfo; ///< Internal triangle data
     sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
-    
+
     Data < VecCoord >  d_initialPoints; ///< Initial Position
 
     bool updateMatrix;
@@ -211,7 +212,7 @@ public:
     */
     void applyEdgeCreation(Index edgeIndex,
         EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge, 
+        const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
         const sofa::type::vector< SReal >& coefs);
 

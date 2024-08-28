@@ -49,12 +49,12 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
 
     d_nbRef.setValue(defaultNbRef);
 
-    f_initPos.setParent(&d_initPos);
-    nbRef.setParent(&d_nbRef);
-    f_index.setParent(&d_index);
-    weight.setParent(&d_weight);
-    showFromIndex.setParent(&d_showFromIndex);
-    showWeights.setParent(&d_showWeights);
+    f_initPos.setOriginalData(&d_initPos);
+    nbRef.setOriginalData(&d_nbRef);
+    f_index.setOriginalData(&d_index);
+    weight.setOriginalData(&d_weight);
+    showFromIndex.setOriginalData(&d_showFromIndex);
+    showWeights.setOriginalData(&d_showWeights);
 
 }
 

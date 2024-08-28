@@ -66,9 +66,9 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
 
-    f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&this->d_poissonRatio);
-    hexahedronInfo.setParent(&d_hexahedronInfo);
+    f_method.setOriginalData(&d_method);
+    f_poissonRatio.setOriginalData(&this->d_poissonRatio);
+    hexahedronInfo.setOriginalData(&d_hexahedronInfo);
 
 }
 

@@ -24,6 +24,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mechanicalload
 {
 
@@ -47,7 +49,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data< Real > dampingCoefficient;
+    sofa::core::objectmodel::RenamedData< Real > dampingCoefficient;
 
     /// air drag coefficient.
     Data< Real > d_dampingCoefficient;
