@@ -64,13 +64,13 @@ public:
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// addMDx(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&, SReal) method implemented by the component.
-    void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) override;
+    void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final;
 
     ///                            $ dx = M^-1 f $
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
-    void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
+    void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -82,7 +82,7 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override;
+    void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) final;
 
     ///                         $ e = 1/2  v^t M v $
     ///
@@ -102,14 +102,14 @@ public:
     ///
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
-    type::Vec6 getMomentum( const MechanicalParams* mparams ) const override;
+    type::Vec6 getMomentum( const MechanicalParams* mparams ) const final;
 
     /// @}
 
     /// @name Matrix operations
     /// @{
 
-    void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final;
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///

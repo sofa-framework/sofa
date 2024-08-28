@@ -66,16 +66,16 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
+    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) final;
 
     /// Construct the Jacobian Matrix
     ///
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) final;
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) final;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

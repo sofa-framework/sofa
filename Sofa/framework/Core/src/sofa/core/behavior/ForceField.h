@@ -74,7 +74,7 @@ public:
     /// This method retrieves the force, x and v vector from the MechanicalState
     /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -89,7 +89,7 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final;
 
     //This is required to tell the compiler addClambda is legitimately overloaded,
     //and it does not hide the one from BaseForceField.
@@ -115,7 +115,7 @@ public:
 
     void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final;
 
     /// @}
 

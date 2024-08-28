@@ -80,7 +80,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -95,7 +95,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final;
 
 
     /// Get the potential energy associated to this ForceField.

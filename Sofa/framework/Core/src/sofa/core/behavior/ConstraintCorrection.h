@@ -87,14 +87,10 @@ public:
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
-    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
-
-    /// Compute the corrective motion coming from the motion space force
-   
-    /// @param cparams the ConstraintParams relative to the constraint solver
-    /// @param dx the VecId where to store the corrective motion
-    /// @param f  is the VecId where the motion space force : f = J^t x lambda
-    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) = 0;
+    void computeMotionCorrectionFromLambda(
+        const core::ConstraintParams* cparams,
+        core::MultiVecDerivId dx,
+        const linearalgebra::BaseVector * lambda) final;
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
@@ -103,7 +99,12 @@ public:
     /// @param v is the velocity result VecId
     /// @param dx if the corrective motion result VecId
     /// @param f is the motion space force vector
-    void applyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void applyMotionCorrection(
+        const core::ConstraintParams * cparams,
+        core::MultiVecCoordId x,
+        core::MultiVecDerivId v,
+        core::MultiVecDerivId dx,
+        core::ConstMultiVecDerivId correction) final;
 
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
@@ -111,7 +112,11 @@ public:
     /// @param x is the position result VecId
     /// @param dx id the corrective position result VecId
     /// @param f is the motion space force vector
-    void applyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void applyPositionCorrection(
+        const core::ConstraintParams * cparams,
+        core::MultiVecCoordId x,
+        core::MultiVecDerivId dx,
+        core::ConstMultiVecDerivId correction) final;
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
@@ -119,14 +124,21 @@ public:
     /// @param v is the velocity result VecId
     /// @param dv is the corrective velocity result VecId
     /// @param f is the motion space force vector
-    void applyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+    void applyVelocityCorrection(
+        const core::ConstraintParams * cparams,
+        core::MultiVecDerivId v,
+        core::MultiVecDerivId dv,
+        core::ConstMultiVecDerivId correction) final;
 
     /// Apply predictive constraint force
     ///
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
+    void applyPredictiveConstraintForce(
+        const core::ConstraintParams * cparams,
+        core::MultiVecDerivId f,
+        const linearalgebra::BaseVector *lambda) final;
 
  
     /// Pre-construction check method called by ObjectFactory.
@@ -152,6 +164,15 @@ public:
     }
 
 protected:
+
+    /// Compute the corrective motion coming from the motion space force
+    /// @param cparams the ConstraintParams relative to the constraint solver
+    /// @param dx the VecId where to store the corrective motion
+    /// @param f  is the VecId where the motion space force : f = J^t x lambda
+    virtual void computeMotionCorrection(
+        const core::ConstraintParams* cparams,
+        core::MultiVecDerivId dx,
+        core::MultiVecDerivId f) = 0;
 
     virtual void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > & correction) = 0;
     virtual void applyPositionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data<VecDeriv>& dx,  const Data< VecDeriv > &correction)  = 0;
