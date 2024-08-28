@@ -35,8 +35,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, TetrahedronDiscreteIntersection> TetrahedronDiscreteIntersectors("Ray");
 
-TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteIntersection* object)
-    : intersection(object)
+TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteIntersection* intersection)
 {
     intersection->intersectors.add<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,       TetrahedronDiscreteIntersection>  (this);
     intersection->intersectors.add<RayCollisionModel, TetrahedronCollisionModel,         TetrahedronDiscreteIntersection>  (this);
@@ -166,26 +165,6 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     detection->elem.second = e2;
     detection->id = e1.getIndex();
     return 1;
-}
-
-bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron& t, Point& p)
-{
-    return testIntersection(t, p, intersection);
-}
-
-int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-bool TetrahedronDiscreteIntersection::testIntersection(Ray& r, Tetrahedron& t)
-{
-    return testIntersection(r, t, intersection);
-}
-
-int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

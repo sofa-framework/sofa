@@ -104,23 +104,17 @@ public:
     }
 
 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) = delete;
 
     template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(SphereType1& sph1, SphereType2& sph2)
-    {
-        return testIntersection(sph1, sph2, this);
-    }
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2) = delete;
     template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts)
-    {
-        return computeIntersection(sph1, sph2, contacts, this);
-    }
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts) = delete;
 
 };
 
