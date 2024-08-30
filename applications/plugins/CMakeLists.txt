@@ -16,7 +16,6 @@ sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)
-sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
@@ -73,4 +72,5 @@ else()
     message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
 endif()
 
-sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid)
+sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA
+sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField) # Depends on SofaDistanceGrid
