@@ -45,11 +45,11 @@ EulerImplicitSolver::EulerImplicitSolver()
     , d_solveConstraint(initData(&d_solveConstraint, false, "solveConstraint", "Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
-    f_rayleighStiffness.setParent(&d_rayleighStiffness);
-    f_rayleighMass.setParent(&d_rayleighMass);
-    f_velocityDamping.setParent(&d_velocityDamping);
-    f_firstOrder.setParent(&d_firstOrder);
-    f_solveConstraint.setParent(&d_solveConstraint);
+    f_rayleighStiffness.setOriginalData(&d_rayleighStiffness);
+    f_rayleighMass.setOriginalData(&d_rayleighMass);
+    f_velocityDamping.setOriginalData(&d_velocityDamping);
+    f_firstOrder.setOriginalData(&d_firstOrder);
+    f_solveConstraint.setOriginalData(&d_solveConstraint);
 
 }
 

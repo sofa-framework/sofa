@@ -28,6 +28,8 @@
 
 #include <cmath>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::linearsolver::iterative
 {
 
@@ -43,22 +45,22 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<unsigned> f_maxIter;
+    sofa::core::objectmodel::RenamedData<unsigned> f_maxIter;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<double> f_tolerance;
+    sofa::core::objectmodel::RenamedData<double> f_tolerance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<bool> f_use_precond;
+    sofa::core::objectmodel::RenamedData<bool> f_use_precond;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<unsigned> f_update_step;
+    sofa::core::objectmodel::RenamedData<unsigned> f_update_step;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<bool> f_build_precond;
+    sofa::core::objectmodel::RenamedData<bool> f_build_precond;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<std::map < std::string, sofa::type::vector<double> > >  f_graph;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<double> > >  f_graph;
 
 
     Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop

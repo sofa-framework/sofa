@@ -69,7 +69,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
 
     d_youngModulus.setReadOnly(true);
 
-    m_beamsData.setParent(&d_beamsData);
+    m_beamsData.setOriginalData(&d_beamsData);
 
 }
 

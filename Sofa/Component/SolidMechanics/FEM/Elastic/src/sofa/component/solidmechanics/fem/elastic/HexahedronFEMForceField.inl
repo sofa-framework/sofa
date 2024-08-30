@@ -91,15 +91,15 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 
     _alreadyInit=false;
 
-    f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&this->d_poissonRatio);
-    f_updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
-    _gatherPt.setParent(&d_gatherPt);
-    _gatherBsize.setParent(&d_gatherBsize);
-    f_drawing.setParent(&d_drawing);
-    f_drawPercentageOffset.setParent(&d_drawPercentageOffset);
-    _elementStiffnesses.setParent(&d_elementStiffnesses);
-    _initialPoints.setParent(&d_initialPoints);
+    f_method.setOriginalData(&d_method);
+    f_poissonRatio.setOriginalData(&this->d_poissonRatio);
+    f_updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
+    _gatherPt.setOriginalData(&d_gatherPt);
+    _gatherBsize.setOriginalData(&d_gatherBsize);
+    f_drawing.setOriginalData(&d_drawing);
+    f_drawPercentageOffset.setOriginalData(&d_drawPercentageOffset);
+    _elementStiffnesses.setOriginalData(&d_elementStiffnesses);
+    _initialPoints.setOriginalData(&d_initialPoints);
 
 }
 

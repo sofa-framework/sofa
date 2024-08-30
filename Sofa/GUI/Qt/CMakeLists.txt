@@ -83,9 +83,18 @@ if(Sofa.GL_FOUND)
     option(SOFA_GUI_QT_ENABLE_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
 
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
-        find_package(QGLViewer)
-        if(NOT QGLViewer_FOUND)
-            add_subdirectory(libQGLViewer/QGLViewer)
+
+        find_package(QGLViewer QUIET)
+        if(NOT QGLViewer_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+            message("Sofa.GUI.Qt: DEPENDENCY QGLViewer NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching QGLViewer...")
+            include(FetchContent)
+            FetchContent_Declare(QGLViewer
+                    GIT_REPOSITORY https://github.com/sofa-framework/libQGLViewer/
+                    GIT_TAG v2.8.1_SOFA
+            )
+            FetchContent_MakeAvailable(QGLViewer)
+        elseif (NOT QGLViewer_FOUND)
+            message(FATAL_ERROR "Sofa.GUI.Qt: DEPENDENCY QGLViewer NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install QGLViewer (version=2.8.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
         endif()
     endif()
 else()
@@ -262,11 +271,11 @@ if(Sofa.GL_FOUND)
         list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qt/QtViewer.cpp)
     endif()
 
-    # QGLViewer
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         list(APPEND MOC_HEADER_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.h)
         list(APPEND SOURCE_FILES ${SRC_ROOT}/viewer/qgl/QtGLViewer.cpp)
     endif()
+
 endif()
 
 # QtCharts
@@ -348,6 +357,7 @@ if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
+        include_directories(${PROJECT_NAME} PUBLIC ${qglviewer_SOURCE_DIR})
     endif()
 endif()
 

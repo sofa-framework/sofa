@@ -25,6 +25,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -133,16 +135,16 @@ public:
     //////////////////////////   Data fields    //////////////////////////////////
     /// the list of the springs
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> f_outfilename;
+    sofa::core::objectmodel::DataFileName f_outfilename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> f_infilename;
+    sofa::core::objectmodel::DataFileName f_infilename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<Real> f_period;
+    sofa::core::objectmodel::RenamedData<Real> f_period;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<bool> f_reinit;
+    sofa::core::objectmodel::RenamedData<bool> f_reinit;
 
     sofa::core::objectmodel::DataFileName d_outfilename; ///< output file name
     sofa::core::objectmodel::DataFileName d_infilename; ///< input file containing constant joint force

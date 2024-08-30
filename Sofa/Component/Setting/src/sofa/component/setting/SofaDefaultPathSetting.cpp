@@ -36,6 +36,6 @@ void registerSofaDefaultPathSetting(sofa::core::ObjectFactory* factory)
 SofaDefaultPathSetting::SofaDefaultPathSetting():
         d_gnuplotPath(initData(&d_gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
 {
-    gnuplotPath.setParent(&d_gnuplotPath);
+    gnuplotPath.setOriginalData(&d_gnuplotPath);
 }
 } // namespace sofa::component::setting

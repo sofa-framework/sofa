@@ -42,10 +42,10 @@ ViewerSetting::ViewerSetting()
     , d_cameraMode(initData(&d_cameraMode, {"Perspective", "Orthographic"}, "cameraMode", "Camera mode"))
     , d_objectPickingMethod(initData(&d_objectPickingMethod, {"Ray casting", "Selection buffer"}, "objectPickingMethod", "The method used to pick objects"))
 {
-    resolution.setParent(&d_resolution);
-    fullscreen.setParent (&d_fullscreen);
-    cameraMode.setParent(&d_cameraMode);
-    objectPickingMethod.setParent(&d_objectPickingMethod);
+    resolution.setOriginalData(&d_resolution);
+    fullscreen.setOriginalData (&d_fullscreen);
+    cameraMode.setOriginalData(&d_cameraMode);
+    objectPickingMethod.setOriginalData(&d_objectPickingMethod);
 }
 
 } // namespace sofa::component::setting

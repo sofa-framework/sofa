@@ -24,6 +24,7 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -50,7 +51,7 @@ protected:
 private:
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM()
-    Data<type::fixed_array<sofa::type::Vec3, 2> > box;
+    sofa::core::objectmodel::RenamedData<type::fixed_array<sofa::type::Vec3, 2> > box;
 
     Data<type::fixed_array<sofa::type::Vec3, 2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 

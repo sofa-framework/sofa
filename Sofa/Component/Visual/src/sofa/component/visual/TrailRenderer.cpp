@@ -26,10 +26,13 @@
 namespace sofa::component::visual
 {
 
-int TrailRendererClass = sofa::core::RegisterObject("Render a trail behind particles")
-    .add<TrailRenderer<defaulttype::Vec3Types>>()
-    .add<TrailRenderer<defaulttype::Rigid3Types>>()
-;
+void registerTrailRenderer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Render a trail behind particles.")
+        .add<TrailRenderer<defaulttype::Vec3Types>>()
+        .add<TrailRenderer<defaulttype::Rigid3Types>>()
+    );
+}
 
 template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;

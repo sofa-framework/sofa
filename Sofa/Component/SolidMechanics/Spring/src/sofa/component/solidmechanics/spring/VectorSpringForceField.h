@@ -31,6 +31,7 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -95,19 +96,19 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> springArray;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Spring> > springArray;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> m_filename;
+    sofa::core::objectmodel::DataFileName m_filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<SReal> m_stiffness;
+    sofa::core::objectmodel::RenamedData<SReal> m_stiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<SReal> m_viscosity;
+    sofa::core::objectmodel::RenamedData<SReal> m_viscosity;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<bool> m_useTopology;
+    sofa::core::objectmodel::RenamedData<bool> m_useTopology;
 
 
     /// where the springs information are stored

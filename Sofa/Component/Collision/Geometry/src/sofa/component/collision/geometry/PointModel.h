@@ -27,6 +27,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::collision::geometry
 {
 
@@ -102,7 +104,7 @@ public:
     const Deriv& velocity(sofa::Index index) const;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    Data<bool> bothSide;
+    sofa::core::objectmodel::RenamedData<bool> bothSide;
 
 
     Data<bool> d_bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
@@ -134,10 +136,10 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    Data<bool> computeNormals;
+    sofa::core::objectmodel::RenamedData<bool> computeNormals;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    Data<bool> m_displayFreePosition;
+    sofa::core::objectmodel::RenamedData<bool> m_displayFreePosition;
 
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 

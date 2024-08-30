@@ -79,7 +79,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
     d_parallelODESolving.setGroup("Multithreading");
 
-    m_solveVelocityConstraintFirst.setParent(&d_solveVelocityConstraintFirst);
+    m_solveVelocityConstraintFirst.setOriginalData(&d_solveVelocityConstraintFirst);
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()

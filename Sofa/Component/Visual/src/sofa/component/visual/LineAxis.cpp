@@ -29,9 +29,11 @@
 namespace sofa::component::visual
 {
 
-int LineAxisClass = core::RegisterObject("Display scene axis")
-        .add< LineAxis >()
-        ;
+void registerLineAxis(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display scene axis")
+        .add< LineAxis >());
+}
 
 using namespace sofa::defaulttype;
 
