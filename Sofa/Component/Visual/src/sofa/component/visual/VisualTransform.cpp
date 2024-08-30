@@ -27,8 +27,11 @@
 namespace sofa::component::visual
 {
 
-int VisualTransformClass = sofa::core::RegisterObject("TODO")
-        .add<VisualTransform>();
+void registerVisualTransform(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.")
+        .add< VisualTransform >());
+}
 
 VisualTransform::VisualTransform()
     : d_transform(initData(&d_transform, "transform", "Transformation to apply"))

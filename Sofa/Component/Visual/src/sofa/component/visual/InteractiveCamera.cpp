@@ -29,10 +29,11 @@
 namespace sofa::component::visual
 {
 
-int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
-        .add< InteractiveCamera >()
-        ;
-
+void registerInteractiveCamera(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Camera with mouse and keyboard controls.")
+        .add< InteractiveCamera >());
+}
 
 InteractiveCamera::InteractiveCamera()
     : d_zoomSpeed(initData(&d_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))

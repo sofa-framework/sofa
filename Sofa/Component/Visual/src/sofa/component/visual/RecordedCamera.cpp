@@ -30,10 +30,11 @@
 namespace sofa::component::visual
 {
 
-int RecordedCameraClass = core::RegisterObject("A camera that is moving along a predetermined path.")
-        .add< RecordedCamera >()
-        ;
-
+void registerRecordedCamera(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A camera that is moving along a predetermined path.")
+        .add< RecordedCamera >());
+}
 
 RecordedCamera::RecordedCamera()
     : d_zoomSpeed(initData(&d_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))

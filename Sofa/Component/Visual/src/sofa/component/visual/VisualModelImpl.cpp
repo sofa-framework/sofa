@@ -101,10 +101,12 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 }
 
-int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
+void registerVisualModelImpl(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()
-        .addAlias("VisualModel")
-        ;
+        .addAlias("VisualModel"));
+}
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     : useTopology(false)
