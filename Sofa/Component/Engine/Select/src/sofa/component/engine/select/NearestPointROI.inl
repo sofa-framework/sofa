@@ -184,6 +184,7 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     if (indices1.size() != indices2.size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
 
@@ -194,22 +195,29 @@ void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     auto indices1 = sofa::helper::getReadAccessor(f_indices1);
     auto indices2 = sofa::helper::getReadAccessor(f_indices2);
 
-    if (indices1.empty() || indices2.empty() || d_drawPairs.getValue() == false)
+    if (d_drawPairs.getValue() == false)
         return;
+
+    if (!this->isComponentStateValid() || indices1.empty())
+        return;
+
     
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
     const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
     const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-
+    const SReal nbrIds = SReal(indices1.size());
     for (unsigned int i = 0; i < indices1.size(); ++i)
     {
         auto xId1 = x1[indices1[i]];
         auto xId2 = x2[indices2[i]];
         vertices.emplace_back(sofa::type::Vec3(xId1[0], xId1[1], xId1[2]));
         vertices.emplace_back(sofa::type::Vec3(xId2[0], xId2[1], xId2[2]));
-        colors.emplace_back(sofa::type::RGBAColor(SReal(rand()) / RAND_MAX, SReal(rand()) / RAND_MAX, SReal(rand()) / RAND_MAX, 1._sreal));
+        const SReal col = SReal(i) / nbrIds;
+        colors.emplace_back(sofa::type::RGBAColor(col, 1._sreal, 0.5_sreal, 1._sreal));
     }
 
     vparams->drawTool()->drawLines(vertices, 1, colors);
