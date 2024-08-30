@@ -95,26 +95,45 @@ void AreaMapping<TIn, TOut>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
+    if (!l_topology)
+    {
+        msg_error() << "No topology found";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    const auto nbSurfacePrimitives = l_topology->getNbQuads() + l_topology->getNbTriangles();
+    const auto nbTriangles = l_topology->getNbTriangles();
 
-    if (nbSurfacePrimitives == 0)
+    if (nbTriangles == 0)
     {
-        msg_error() << "No topology component containing surface primitives found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        msg_error() << "No topology component containing triangles found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (l_topology->getNbQuads())
+    {
+        msg_error() << "Quads are found in the topology, but they are not supported in this component. Consider converting them to triangles.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
-    this->getToModel()->resize( nbSurfacePrimitives );
-    jacobian.resizeBlocks(nbSurfacePrimitives, pos.size());
+    this->getToModel()->resize( nbTriangles );
+    jacobian.resizeBlocks(nbTriangles, pos.size());
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
     Inherit1::init();
+
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
 }
 
 template <class TIn, class TOut>
@@ -127,7 +146,6 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
     m_vertices = _in.operator->();
 
     const auto& triangles = l_topology->getTriangles();
-    const auto& quads = l_topology->getQuads();
 
     jacobian.clear();
 
@@ -167,11 +185,6 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
                 jacobian.insertBack(triangleId, vertexId * Nin + d, jacobianValue[d]);
             }
         }
-    }
-
-    if (!quads.empty())
-    {
-        msg_warning() << "Quads are not supported in this Mapping. Convert them to triangles first.";
     }
 
     jacobian.compress();
