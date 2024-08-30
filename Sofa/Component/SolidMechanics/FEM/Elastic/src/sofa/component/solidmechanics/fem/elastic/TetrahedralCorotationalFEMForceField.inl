@@ -81,17 +81,17 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 {
     this->addAlias(&d_assembling, "assembling");
 
-    tetrahedronInfo.setParent(&d_tetrahedronInfo);
-    f_method.setParent(&d_method);
-    _poissonRatio.setParent(&this->d_poissonRatio);
-    _localStiffnessFactor.setParent(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
-    _assembling.setParent(&d_assembling);
-    f_drawing.setParent(&d_drawing);
-    drawColor1.setParent(&d_drawColor1);
-    drawColor2.setParent(&d_drawColor2);
-    drawColor3.setParent(&d_drawColor3);
-    drawColor4.setParent(&d_drawColor4);
+    tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
+    f_method.setOriginalData(&d_method);
+    _poissonRatio.setOriginalData(&this->d_poissonRatio);
+    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
+    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
+    _assembling.setOriginalData(&d_assembling);
+    f_drawing.setOriginalData(&d_drawing);
+    drawColor1.setOriginalData(&d_drawColor1);
+    drawColor2.setOriginalData(&d_drawColor2);
+    drawColor3.setOriginalData(&d_drawColor3);
+    drawColor4.setOriginalData(&d_drawColor4);
 
 
 }

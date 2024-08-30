@@ -40,9 +40,9 @@ StatsSetting::StatsSetting():
     , traceVisitors(initData(&traceVisitors, "traceVisitors", "Trace the time spent by each visitor, and allows to profile precisely one step of a simulation"))
 #endif
 {
-    dumpState.setParent(&d_dumpState);
-    logTime.setParent(&d_logTime);
-    exportState.setParent(&d_exportState);
+    dumpState.setOriginalData(&d_dumpState);
+    logTime.setOriginalData(&d_logTime);
+    exportState.setOriginalData(&d_exportState);
 
 }
 

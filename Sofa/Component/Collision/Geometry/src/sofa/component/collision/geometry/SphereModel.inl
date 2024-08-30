@@ -40,8 +40,8 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
 {
     enum_type = SPHERE_TYPE;
 
-    radius.setParent(&d_radius);
-    defaultRadius.setParent(&d_defaultRadius);
+    radius.setOriginalData(&d_radius);
+    defaultRadius.setOriginalData(&d_defaultRadius);
 }
 
 template<class DataTypes>

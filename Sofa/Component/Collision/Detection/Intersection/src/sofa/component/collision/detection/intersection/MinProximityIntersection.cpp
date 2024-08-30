@@ -51,11 +51,11 @@ MinProximityIntersection::MinProximityIntersection()
     , d_useLinePoint(initData(&d_useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
     , d_useLineLine(initData(&d_useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
 {
-    useSphereTriangle.setParent(&d_useSphereTriangle);
-    usePointPoint.setParent(&d_usePointPoint);
-    useLinePoint.setParent(&d_useLinePoint);
-    useLineLine.setParent(&d_useLineLine);
-    useSurfaceNormals.setParent(&d_useSurfaceNormals);
+    useSphereTriangle.setOriginalData(&d_useSphereTriangle);
+    usePointPoint.setOriginalData(&d_usePointPoint);
+    useLinePoint.setOriginalData(&d_useLinePoint);
+    useLineLine.setOriginalData(&d_useLineLine);
+    useSurfaceNormals.setOriginalData(&d_useSurfaceNormals);
 }
 
 void MinProximityIntersection::init()
@@ -84,17 +84,6 @@ int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
 {
     return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts, currentIntersection);
 }
-
-bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    return testIntersection(cube1, cube2, this );
-}
-
-int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    return computeIntersection(cube1, cube2, contacts, this);
-}
-
 
 bool MinProximityIntersection::getUseSurfaceNormals() const
 {

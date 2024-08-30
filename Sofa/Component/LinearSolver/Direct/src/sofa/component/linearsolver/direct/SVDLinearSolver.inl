@@ -40,9 +40,9 @@ SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
     , d_minSingularValue(initData(&d_minSingularValue, (Real)1.0e-6, "minSingularValue", "Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
     , d_conditionNumber(initData(&d_conditionNumber, (Real)0.0, "conditionNumber", "Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
 {
-    f_verbose.setParent(&d_verbose);
-    f_minSingularValue.setParent(&d_minSingularValue);
-    f_conditionNumber.setParent(&d_conditionNumber);
+    f_verbose.setOriginalData(&d_verbose);
+    f_minSingularValue.setOriginalData(&d_minSingularValue);
+    f_conditionNumber.setOriginalData(&d_conditionNumber);
 
 }
 

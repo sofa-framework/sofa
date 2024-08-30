@@ -35,8 +35,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection> MeshNewProximityIntersectors("Mesh");
 
-MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf)
-    : intersection(object)
+MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersection* intersection, bool addSelf)
 {
     if (addSelf)
     {
@@ -179,6 +178,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
+
     const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal    dist2 = alarmDist*alarmDist;
     const Triangle::Coord& p1 = e1.p1();
@@ -208,7 +208,10 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
     n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, e2.getIndex(), false);
     n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, e2.getIndex(), false);
 
-    if (intersection->d_useLineLine.getValue())
+    // By design, MeshNewProximityIntersection is supposed to work only with NewProximityIntersection
+    const auto* currentMinProxIntersection = static_cast<const NewProximityIntersection*>(currentIntersection);
+
+    if (currentMinProxIntersection->d_useLineLine.getValue())
     {
         if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
             n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex());
@@ -220,7 +223,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
     if (n>0)
     {
-        const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = currentMinProxIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -236,14 +239,14 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 {
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
-        msg_error(intersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
+        msg_error(currentIntersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
             << e1.getIndex() << " on CM " << e1.getCollisionModel()->getName() << " of size " << e1.getCollisionModel()->getSize();
         return 0;
     }
 
     if (e2.getIndex() >= e2.getCollisionModel()->getSize())
     {
-        msg_error(intersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e2 index "
+        msg_error(currentIntersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e2 index "
             << e2.getIndex() << " on CM " << e2.getCollisionModel()->getName() << " of size " << e2.getCollisionModel()->getSize();
         return 0;
     }
@@ -303,7 +306,10 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     if (f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, false, useNormal);
 
-    if (intersection->d_useLineLine.getValue())
+    // By design, MeshNewProximityIntersection is supposed to work only with NewProximityIntersection
+    const auto* currentMinProxIntersection = static_cast<const NewProximityIntersection*>(currentIntersection);
+
+    if (currentMinProxIntersection->d_useLineLine.getValue())
     {
         if (f1&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
         {
@@ -348,74 +354,5 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     return n;
 }
-///////////////////////
-///
-
-bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
-{
-    return testIntersection(pt1, pt2, intersection);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
-{
-    return testIntersection(line, pt, intersection);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
-{
-    return testIntersection(line1, line2, intersection);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
-{
-    return testIntersection(tri, pt, intersection);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
-{
-    return testIntersection(tri, line, intersection);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
-{
-    return testIntersection(tri1, tri2, intersection);
-}
-
-int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-
-int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-
-int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
-{
-    static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
-    
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
 
 } // namespace sofa::component::collision::detection::intersection

@@ -145,8 +145,8 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     time_buf = _timer->getTime();
     timer_iterations = 0;
 
-    forceCoef.setParent(&d_forceCoef);
-    solverTimeout.setParent(&d_solverTimeout);
+    forceCoef.setOriginalData(&d_forceCoef);
+    solverTimeout.setOriginalData(&d_solverTimeout);
 
 }
 

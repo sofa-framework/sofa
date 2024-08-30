@@ -54,10 +54,10 @@ InputEventReader::InputEventReader()
     , oldPedalState(NO_PEDAL)
 {
     filename.setParent(&d_filename);
-    inverseSense.setParent(&d_inverseSense);
-    p_key1.setParent(&d_key1);
-    p_key2.setParent(&d_key2);
-    p_writeEvents.setParent(&d_writeEvents);
+    inverseSense.setOriginalData(&d_inverseSense);
+    p_key1.setOriginalData(&d_key1);
+    p_key2.setOriginalData(&d_key2);
+    p_writeEvents.setOriginalData(&d_writeEvents);
     p_outputFilename.setParent(&d_outputFilename);
 
 

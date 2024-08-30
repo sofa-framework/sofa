@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -131,7 +132,7 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index>  m_beamsData;
+    sofa::core::objectmodel::RenamedData<type::vector<BeamInfo>>  m_beamsData;
 
 
     EdgeData<type::vector<BeamInfo> > d_beamsData; ///< Internal element data

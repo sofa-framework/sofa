@@ -51,7 +51,7 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 
     }, {&d_positions, &d_edges});
 
-    resolution.setParent(&d_resolution);
+    resolution.setOriginalData(&d_resolution);
 }
 
 void StringMeshCreator::doClearBuffers()

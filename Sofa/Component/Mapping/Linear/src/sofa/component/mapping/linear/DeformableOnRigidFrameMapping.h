@@ -26,6 +26,8 @@
 
 #include <sofa/core/Multi2Mapping.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mapping::linear
 {
 
@@ -94,22 +96,22 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<unsigned> index;
+    sofa::core::objectmodel::RenamedData<unsigned> index;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<bool> indexFromEnd;
+    sofa::core::objectmodel::RenamedData<bool> indexFromEnd;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<sofa::type::vector<unsigned int> >  repartition;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<unsigned int> >  repartition;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<std::string> globalToLocalCoords;
+    sofa::core::objectmodel::RenamedData<bool> globalToLocalCoords;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<Real> m_rootAngularForceScaleFactor;
+    sofa::core::objectmodel::RenamedData<Real> m_rootAngularForceScaleFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<Real> m_rootLinearForceScaleFactor;
+    sofa::core::objectmodel::RenamedData<Real> m_rootLinearForceScaleFactor;
 
 
     Data<unsigned int> d_index; ///< input DOF index

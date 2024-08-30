@@ -38,8 +38,8 @@ VisualTransform::VisualTransform()
     , d_recursive(initData(&d_recursive, false, "recursive", "True to apply transform to all nodes below"))
     , nbpush(0)
 {
-    transform.setParent(&d_transform);
-    recursive.setParent(&d_recursive);
+    transform.setOriginalData(&d_transform);
+    recursive.setOriginalData(&d_recursive);
 }
 
 VisualTransform::~VisualTransform()

@@ -51,7 +51,7 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     , d_springs(initData(&d_springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
     , d_elongationOnly(initData(&d_elongationOnly, type::vector<bool>{false}, "elongationOnly", "///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere"))
-    , d_enabled(initData(&d_enabled, type::vector<bool>{false}, "enabled", "///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere"))
+    , d_enabled(initData(&d_enabled, type::vector<bool>{true}, "enabled", "///< List of boolean stating on the fact that the spring is enabled. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, True will be applied everywhere"))
     , maskInUse(false)
 {
     this->addAlias(&fileSprings, "fileSprings");
