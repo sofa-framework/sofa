@@ -26,10 +26,11 @@
 namespace sofa::component::setting
 {
 
-int BackgroundSettingClass = core::RegisterObject("Background setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
+void registerBackgroundSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Background setting.")
+        .add< BackgroundSetting >());
+}
 
 BackgroundSetting::BackgroundSetting():
         d_color(initData(&d_color, "color", "Color of the background")),

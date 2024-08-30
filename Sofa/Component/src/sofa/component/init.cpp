@@ -75,6 +75,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjectsFromPlugin("Sofa.Component.AnimationLoop");
     factory->registerObjectsFromPlugin("Sofa.Component.StateContainer");
+    factory->registerObjectsFromPlugin("Sofa.Component.Setting");
     factory->registerObjectsFromPlugin("Sofa.Component.Visual");
 }
 
