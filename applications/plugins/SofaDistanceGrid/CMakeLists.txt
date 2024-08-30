@@ -88,5 +88,5 @@ sofa_create_package_with_targets(
     RELOCATABLE "plugins"
     )
 
-
+set(PLUGIN_SOFADISTANCEGRID_CUDA ON BOOL STRING "Build the SofaDistanceGrid.CUDA plugin")
 sofa_add_subdirectory(plugin extensions/CUDA SofaDistanceGrid.CUDA)
