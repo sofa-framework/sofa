@@ -21,10 +21,16 @@
 ******************************************************************************/
 #include <vector_types.h>
 #include <sofa/gpu/cuda/mycuda.h>
+#include "cuda.h"
 
-
-namespace sofa::gpu::cuda
+#if defined(__cplusplus) && CUDA_VERSION < 2000
+namespace sofa
 {
+namespace gpu
+{
+namespace cuda
+{
+#endif
 
 extern "C"
 {
@@ -73,4 +79,8 @@ void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests
     {RigidContactMapperCuda3f_setPoints2_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)contacts, (float3*)map); mycudaDebugError("RigidContactMapperCuda3f_setPoints2_kernel");}
 }
 
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 }
+}
+}
+#endif
