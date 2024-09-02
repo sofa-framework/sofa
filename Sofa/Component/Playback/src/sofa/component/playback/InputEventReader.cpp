@@ -33,9 +33,11 @@
 namespace sofa::component::playback
 {
 
-// Register in the Factory
-int InputEventReaderClass = core::RegisterObject("Read events from file")
-        .add< InputEventReader >();
+void registerInputEventReader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read events from file.")
+        .add< InputEventReader >());
+}
 
 InputEventReader::InputEventReader()
     : d_filename(initData(&d_filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
