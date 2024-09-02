@@ -28,25 +28,35 @@ namespace sofa::component::engine::select
 template <class DataTypes>
 MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
     : Inherited()
-    , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-    , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-    , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-    , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-    , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-    , position(initData(&position,"position","Vertices of mesh subset"))
-    , edges(initData(&edges,"edges","edges of mesh subset"))
-    , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-    , quads(initData(&quads,"quads","Quads of mesh subset"))
+    , d_inputPosition(initData(&d_inputPosition,"inputPosition","input vertices"))
+    , d_inputEdges(initData(&d_inputEdges,"inputEdges","input edges"))
+    , d_inputTriangles(initData(&d_inputTriangles,"inputTriangles","input triangles"))
+    , d_inputQuads(initData(&d_inputQuads,"inputQuads","input quads"))
+    , d_indices(initData(&d_indices,"indices","Index lists of the selected vertices"))
+    , d_position(initData(&d_position,"position","Vertices of mesh subset"))
+    , d_edges(initData(&d_edges,"edges","edges of mesh subset"))
+    , d_triangles(initData(&d_triangles,"triangles","Triangles of mesh subset"))
+    , d_quads(initData(&d_quads,"quads","Quads of mesh subset"))
 {
-    addInput(&inputPosition);
-    addInput(&inputEdges);
-    addInput(&inputTriangles);
-    addInput(&inputQuads);
-    addInput(&indices);
-    addOutput(&position);
-    addOutput(&edges);
-    addOutput(&triangles);
-    addOutput(&quads);
+    addInput(&d_inputPosition);
+    addInput(&d_inputEdges);
+    addInput(&d_inputTriangles);
+    addInput(&d_inputQuads);
+    addInput(&d_indices);
+    addOutput(&d_position);
+    addOutput(&d_edges);
+    addOutput(&d_triangles);
+    addOutput(&d_quads);
+
+    inputPosition.setOriginalData(&d_inputPosition);
+    inputEdges.setOriginalData(&d_inputEdges);
+    inputTriangles.setOriginalData(&d_inputTriangles);
+    inputQuads.setOriginalData(&d_inputQuads);
+    indices.setOriginalData(&d_indices);
+    position.setOriginalData(&d_position);
+    edges.setOriginalData(&d_edges);
+    triangles.setOriginalData(&d_triangles);
+    quads.setOriginalData(&d_quads);
 }
 
 template <class DataTypes>

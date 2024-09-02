@@ -51,23 +51,23 @@ struct MeshSubsetEngine_test : public testing::BaseSimulationTest
 
     void testTwoTriangles()
     {
-        m_engine->inputPosition.setValue({{ 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 }});
-        m_engine->inputTriangles.setValue({{ 0, 1, 2 }, { 0, 2, 3 }});
-        m_engine->indices.setValue({0, 3, 2});
+        m_engine->d_inputPosition.setValue({{ 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 }});
+        m_engine->d_inputTriangles.setValue({{ 0, 1, 2 }, { 0, 2, 3 }});
+        m_engine->d_indices.setValue({0, 3, 2});
 
         m_engine->update();
 
-        const auto& position = m_engine->position.getValue();
+        const auto& position = m_engine->d_position.getValue();
         EXPECT_EQ(position.size(), 3);
 
-        const auto& inputPosition = m_engine->inputPosition.getValue();
+        const auto& inputPosition = m_engine->d_inputPosition.getValue();
 
         EXPECT_NE(std::find(position.begin(), position.end(), inputPosition[0]), position.end());
         EXPECT_EQ(std::find(position.begin(), position.end(), inputPosition[1]), position.end());
         EXPECT_NE(std::find(position.begin(), position.end(), inputPosition[2]), position.end());
         EXPECT_NE(std::find(position.begin(), position.end(), inputPosition[3]), position.end());
 
-        const auto& triangles = m_engine->triangles.getValue();
+        const auto& triangles = m_engine->d_triangles.getValue();
 
         EXPECT_EQ(triangles.size(), 1);
 
