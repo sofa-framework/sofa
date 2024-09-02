@@ -118,7 +118,8 @@ void MeshSubsetEngine<DataTypes>::doUpdate()
 
     const auto computeSubset = [&FtoS](const auto& inputElements, auto& subsetElements)
     {
-        extractElements(FtoS, inputElements.getValue(), sofa::helper::getWriteOnlyAccessor(subsetElements).wref());
+        auto accessor = sofa::helper::getWriteOnlyAccessor(subsetElements);
+        extractElements(FtoS, inputElements.getValue(), accessor.wref());
     };
 
     computeSubset(d_inputEdges, d_edges);
