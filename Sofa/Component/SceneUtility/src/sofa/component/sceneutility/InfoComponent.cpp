@@ -25,8 +25,13 @@ using sofa::core::RegisterObject ;
 
 #include <sofa/component/sceneutility/InfoComponent.h>
 
-namespace sofa::component::sceneutility::infocomponent
+namespace sofa::component::sceneutility
 {
-int InfoComponentClass = RegisterObject("This object retain the info/error message")
-        .add< InfoComponent >();
-} // namespace sofa::component::sceneutility::infocomponent
+
+void registerInfoComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This object retain the info/error message.")
+        .add< InfoComponent >());
+}
+
+} // namespace sofa::component::sceneutility
