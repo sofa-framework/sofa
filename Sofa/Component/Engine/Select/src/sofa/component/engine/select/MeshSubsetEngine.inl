@@ -54,6 +54,36 @@ MeshSubsetEngine<DataTypes>::~MeshSubsetEngine()
 {
 }
 
+template <class ElementType>
+sofa::type::vector<ElementType> extractElements(
+    const std::map<core::topology::BaseMeshTopology::PointID, core::topology::BaseMeshTopology::PointID>& indexMapping,
+    const sofa::type::vector<ElementType>& elements)
+{
+    sofa::type::vector<ElementType> subset;
+
+    for (const auto& element : elements)
+    {
+        bool inside = true;
+        ElementType newElement;
+        for (size_t j = 0; j < ElementType::NumberOfNodes; j++)
+        {
+            auto it = indexMapping.find(element[j]);
+            if (it == indexMapping.end())
+            {
+                inside = false;
+                break;
+            }
+            newElement[j] = it->second;
+        }
+        if (inside)
+        {
+            subset.push_back(newElement);
+        }
+    }
+
+    return subset;
+}
+
 template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::doUpdate()
 {
@@ -69,36 +99,17 @@ void MeshSubsetEngine<DataTypes>::doUpdate()
     helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
 
     opos.resize(ind.size());
-    std::map<PointID,PointID> FtoS;
-    for(size_t i=0; i<ind.size(); i++)
+    std::map<PointID, PointID> FtoS;
+    for (size_t i = 0; i < ind.size(); i++)
     {
-        opos[i]=pos[ind[i]];
-        FtoS[ind[i]]=i;
+        opos[i] = pos[ind[i]];
+        FtoS[ind[i]] = i;
     }
-    oedg.clear();
-    for(size_t i=0; i<edg.size(); i++)
-    {
-        bool inside=true;
-        Edge cell;
-        for(size_t j=0; j<2; j++) if(FtoS.find(edg[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[edg[i][j]];
-        if(inside) oedg.push_back(cell);
-    }
-    otri.clear();
-    for(size_t i=0; i<tri.size(); i++)
-    {
-        bool inside=true;
-        Triangle cell;
-        for(size_t j=0; j<3; j++) if(FtoS.find(tri[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[tri[i][j]];
-        if(inside) otri.push_back(cell);
-    }
-    oqd.clear();
-    for(size_t i=0; i<qd.size(); i++)
-    {
-        bool inside=true;
-        Quad cell;
-        for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
-        if(inside) oqd.push_back(cell);
-    }
+
+    oedg.wref() = extractElements(FtoS, edg.ref());
+    otri.wref() = extractElements(FtoS, tri.ref());
+    oqd.wref() = extractElements(FtoS, qd.ref());
+
 }
 
 
