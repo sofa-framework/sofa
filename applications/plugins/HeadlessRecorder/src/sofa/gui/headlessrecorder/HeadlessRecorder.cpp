@@ -398,11 +398,11 @@ void HeadlessRecorder::displayOBJs()
     vparams->sceneBBox() = groot->f_bbox.getValue();
     if (!initTexturesDone)
     {
-        simulation::getSimulation()->initTextures(groot.get());
+        sofa::simulation::node::initTextures(groot.get());
         initTexturesDone = true;
     } else
     {
-        simulation::getSimulation()->draw(vparams,groot.get());
+        sofa::simulation::node::draw(vparams,groot.get());
     }
 }
 
@@ -429,7 +429,7 @@ void HeadlessRecorder::calcProjection()
     double xFactor = 1.0, yFactor = 1.0;
     //double offset;
     //double xForeground, yForeground, zForeground, xBackground, yBackground, zBackground;
-    Vector3 center;
+    Vec3 center;
 
     /// Camera part
     if (!currentCamera)
@@ -483,7 +483,7 @@ void HeadlessRecorder::calcProjection()
         vparams->getProjectionMatrix(projMat.ptr());
         Mat4x4d modelMat;
         vparams->getModelViewMatrix(modelMat.ptr());
-        Vector3 tcenter = (projMat * modelMat).transform(center);
+        Vec3 tcenter = (projMat * modelMat).transform(center);
         if (tcenter[2] < 0.0)
         {
             ratio = static_cast<float>( -300 * (tcenter.norm2()) / tcenter[2] );
@@ -517,9 +517,9 @@ void HeadlessRecorder::paintGL()
 void HeadlessRecorder::step()
 {
     sofa::helper::AdvancedTimer::begin("Animate");
-    getSimulation()->animate(groot.get());
+    sofa::simulation::node::animate(groot.get());
     sofa::helper::AdvancedTimer::end("Animate");
-    getSimulation()->updateVisual(groot.get());
+    sofa::simulation::node::updateVisual(groot.get());
     redraw();
 }
 
