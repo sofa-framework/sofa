@@ -1452,7 +1452,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         if(d!=NULL)
         {
             const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
@@ -1461,7 +1461,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
                 msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
             }
         }
-#endif // defined(SOFA_DEBUG) || !defined(NDEBUG)
+#endif // !defined(NDEBUG)
 
         return d;
     }
