@@ -83,7 +83,6 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 
     tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
     f_method.setOriginalData(&d_method);
-    _poissonRatio.setOriginalData(&this->d_poissonRatio);
     _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
     _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
     _assembling.setOriginalData(&d_assembling);

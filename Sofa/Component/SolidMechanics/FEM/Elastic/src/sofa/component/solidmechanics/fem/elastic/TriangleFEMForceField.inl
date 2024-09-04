@@ -45,8 +45,6 @@ TriangleFEMForceField()
 {
     _initialPoints.setOriginalData(&d_initialPoints);
     f_method.setOriginalData(&d_method);
-    f_poisson.setOriginalData(&this->d_poissonRatio);
-    f_young.setOriginalData(&this->d_young);
     f_thickness.setOriginalData(&d_thickness);
     f_planeStrain.setOriginalData(&d_planeStrain);
 

@@ -92,7 +92,6 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     _alreadyInit=false;
 
     f_method.setOriginalData(&d_method);
-    f_poissonRatio.setOriginalData(&this->d_poissonRatio);
     f_updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
     _gatherPt.setOriginalData(&d_gatherPt);
     _gatherBsize.setOriginalData(&d_gatherBsize);
