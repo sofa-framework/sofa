@@ -134,8 +134,9 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addForce(const cor
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
     const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+
+    //this assumes that the elasticity parameters are constant in the material
+    const auto& [gamma, mu] = computeMuGamma(this->getYoungModulusInElement(0), this->getPoissonRatioInElement(0));
 
     f.resize(x.size());
 
@@ -161,8 +162,9 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const co
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
     const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+
+    //this assumes that the elasticity parameters are constant in the material
+    const auto& [gamma, mu] = computeMuGamma(this->getYoungModulusInElement(0), this->getPoissonRatioInElement(0));
 
     df.resize(dx.size());
 
