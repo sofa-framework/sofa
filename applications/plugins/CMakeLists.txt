@@ -8,6 +8,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
 endif()
 
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
+sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
 sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 

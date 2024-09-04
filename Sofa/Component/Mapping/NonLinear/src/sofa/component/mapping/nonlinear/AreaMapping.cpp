@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,28 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/init.h>
+#define SOFA_COMPONENT_MAPPING_NONLINEAR_AREAMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/AreaMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/gui/component/init.h>
-#include <sofa/gui/common/init.h>
-#include <sofa/gui/batch/init.h>
-#include <sofa/gui/qt/init.h>
-
-namespace sofa::gui
+namespace sofa::component::mapping::nonlinear
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::gui::component::init();
-        sofa::gui::common::init();
-        sofa::gui::batch::init();
-        sofa::gui::qt::init();
-        
-        first = false;
-    }
+using namespace defaulttype;
+
+// Register in the Factory
+int AreaMappingClass = core::RegisterObject("Mapping each triangle in a topology to a scalar value representing its area")
+        .add< AreaMapping< Vec3Types, Vec1Types > >()
+        ;
+
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API AreaMapping< Vec3Types, Vec1Types >;
+
+
 }
-
-} // namespace sofa::gui
