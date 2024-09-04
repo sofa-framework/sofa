@@ -54,7 +54,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , d_showStressVector(initData(&d_showStressVector, false, "showStressVector", "Flag activating rendering of stress directions within each triangle"))
     , d_showFracturableTriangles(initData(&d_showFracturableTriangles, false, "showFracturableTriangles", "Flag activating rendering of triangles to fracture"))
     , d_computePrincipalStress(initData(&d_computePrincipalStress, false, "computePrincipalStress", "Compute principal stress for each triangle"))
-    , l_topology(initLink("topology", "link to the topology container"))
 #ifdef PLOT_CURVE
     , elementID(initData(&elementID, (Real)0, "id", "element id to follow in the graphs"))
     , f_graphStress(initData(&f_graphStress, "graphMaxStress", "Graph of max stress corresponding to the element id"))

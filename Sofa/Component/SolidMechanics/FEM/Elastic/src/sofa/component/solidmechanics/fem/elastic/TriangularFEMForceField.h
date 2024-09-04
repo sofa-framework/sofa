@@ -305,9 +305,6 @@ public:
 
     Data<bool> d_computePrincipalStress; ///< Compute principal stress for each triangle
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TriangularFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
 #ifdef PLOT_CURVE
     //structures to save values for each element along time
     sofa::type::vector<std::map<std::string, sofa::type::vector<double> > > allGraphStress;
