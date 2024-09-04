@@ -44,36 +44,24 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else this->_alreadyInit=true;
 
 
-    this->core::behavior::ForceField<DataTypes>::init();
+    elastic::BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    if (l_topology.empty())
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    this->m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (this->m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-
-    if(this->m_topology->getNbHexahedra()<=0 )
+    if(this->l_topology->getNbHexahedra()<=0 )
     {
         msg_error() << "NonUniformHexahedronFEMForceFieldDensity: object must have a hexahedric MeshTopology.\n"
-                    << this->m_topology->getName() << "\n"
-                    << this->m_topology->getTypeName() << "\n"
-                    << this->m_topology->getNbPoints() << "\n";
+                    << this->l_topology->getName() << "\n"
+                    << this->l_topology->getTypeName() << "\n"
+                    << this->l_topology->getNbPoints() << "\n";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    this->_sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(this->m_topology);
+    this->_sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(this->l_topology.get());
 
 
 
