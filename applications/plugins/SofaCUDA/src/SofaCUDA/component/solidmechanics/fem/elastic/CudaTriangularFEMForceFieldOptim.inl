@@ -74,7 +74,7 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addForce(const cor
 
     VecTriangleState& triState = *d_triangleState.beginEdit();
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
 
     //this assumes that the elasticity parameters are constant in the material
@@ -102,7 +102,7 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const co
 
     const VecTriangleState& triState = d_triangleState.getValue();
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
 
     //this assumes that the elasticity parameters are constant in the material
@@ -132,7 +132,7 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addForce(const cor
 
     VecTriangleState& triState = *d_triangleState.beginEdit();
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
     const Real gamma = this->gamma;
     const Real mu = this->mu;
@@ -159,7 +159,7 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const co
 
     const VecTriangleState& triState = d_triangleState.getValue();
     const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
     const Real gamma = this->gamma;
     const Real mu = this->mu;
