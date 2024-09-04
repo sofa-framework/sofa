@@ -123,50 +123,36 @@ void BaseLinearElasticityFEMForceField<DataTypes>::setYoungModulus(Real val)
 }
 
 template <class DataTypes>
-auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId)
+auto BaseLinearElasticityFEMForceField<DataTypes>::getVecRealInElement(sofa::Size elementId, const Data<VecReal>& data, Real defaultValue) const
 -> Real
 {
-    Real youngModulusElement {};
+    const auto& dataValue = data.getValue();
+    if (dataValue.size() > elementId)
+    {
+        return dataValue[elementId];
+    }
+    if (!dataValue.empty())
+    {
+        return dataValue[0];
+    }
 
-    const auto& youngModulus = d_youngModulus.getValue();
-    if (youngModulus.size() > elementId)
-    {
-        youngModulusElement = youngModulus[elementId];
-    }
-    else if (!youngModulus.empty())
-    {
-        youngModulusElement = youngModulus[0];
-    }
-    else
-    {
-        setYoungModulus(defaultYoungModulusValue);
-        youngModulusElement = youngModulus[0];
-    }
-    return youngModulusElement;
+    msg_warning() << "'" << data.getName() << "' Data field is empty. Using default value " << defaultValue;
+    return defaultValue;
+}
+
+
+template <class DataTypes>
+auto BaseLinearElasticityFEMForceField<DataTypes>::getYoungModulusInElement(sofa::Size elementId) const
+-> Real
+{
+    return getVecRealInElement(elementId, d_youngModulus, defaultYoungModulusValue);
 }
 
 template <class DataTypes>
-typename BaseLinearElasticityFEMForceField<DataTypes>::Real
-BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(
-    sofa::Size elementId)
+auto BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(sofa::Size elementId) const
+-> Real
 {
-    Real poissonRationElement {};
-
-    const auto& poissonRatio = d_poissonRatio.getValue();
-    if (poissonRatio.size() > elementId)
-    {
-        poissonRationElement = poissonRatio[elementId];
-    }
-    else if (!poissonRatio.empty())
-    {
-        poissonRationElement = poissonRatio[0];
-    }
-    else
-    {
-        setPoissonRatio(defaultPoissonRatioValue);
-        poissonRationElement = poissonRatio[0];
-    }
-    return poissonRationElement;
+    return getVecRealInElement(elementId, d_poissonRatio, defaultPoissonRatioValue);
 }
 
 template <class DataTypes>

@@ -55,8 +55,8 @@ public:
     void setPoissonRatio(Real val);
     void setYoungModulus(Real val);
 
-    Real getYoungModulusInElement(sofa::Size elementId);
-    Real getPoissonRatioInElement(sofa::Size elementId);
+    Real getYoungModulusInElement(sofa::Size elementId) const;
+    Real getPoissonRatioInElement(sofa::Size elementId) const;
 
     static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio);
     static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio);
@@ -68,6 +68,8 @@ protected:
 
     void checkPoissonRatio();
     void checkYoungModulus();
+
+    Real getVecRealInElement(sofa::Size elementId, const Data<VecReal>& data, Real defaultValue) const;
 };
 
 //instances of types of materials
