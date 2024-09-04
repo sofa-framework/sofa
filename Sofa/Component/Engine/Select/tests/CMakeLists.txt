@@ -8,6 +8,7 @@ set(SOURCE_FILES
     Engine.Select_DataUpdate_test.cpp
     IndicesFromValues_test.cpp
     MeshROI_test.cpp
+    MeshSubsetEngine_test.cpp
     PlaneROI_test.cpp
     SphereROI_test.cpp
 )

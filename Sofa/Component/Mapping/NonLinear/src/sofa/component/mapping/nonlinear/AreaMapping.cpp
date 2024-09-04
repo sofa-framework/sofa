@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,48 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/sceneutility/PauseAnimationOnEvent.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/PauseEvent.h>
+#define SOFA_COMPONENT_MAPPING_NONLINEAR_AREAMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/AreaMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::sceneutility
+namespace sofa::component::mapping::nonlinear
 {
 
-PauseAnimationOnEvent::PauseAnimationOnEvent() : paused(false)
-{
+using namespace defaulttype;
+
+// Register in the Factory
+int AreaMappingClass = core::RegisterObject("Mapping each triangle in a topology to a scalar value representing its area")
+        .add< AreaMapping< Vec3Types, Vec1Types > >()
+        ;
+
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API AreaMapping< Vec3Types, Vec1Types >;
+
+
 }
-
-
-PauseAnimationOnEvent::~PauseAnimationOnEvent()
-{
-
-}
-
-void PauseAnimationOnEvent::init()
-{
-    PauseAnimation::init();
-    this->f_listening.setValue(true);
-}
-
-bool PauseAnimationOnEvent::isPaused()
-{
-    return paused;
-}
-
-void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
-{
-    if (sofa::simulation::PauseEvent::checkEventType(event))
-    {
-        paused = true;
-        pause();
-    }
-}
-
-void registerPauseAnimationOnEvent(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("This component pauses the simulation when receiving a PauseEvent.")
-        .add< PauseAnimationOnEvent >());
-}
-
-} // namespace sofa::component::sceneutility
