@@ -99,8 +99,6 @@ protected:
     TriangleFEMForceField();
     ~TriangleFEMForceField() override;
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
 public:
 
     void init() override;

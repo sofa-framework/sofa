@@ -204,8 +204,6 @@ public:
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
     /// Get/Set methods
 
     int  getMethod() { return method; }

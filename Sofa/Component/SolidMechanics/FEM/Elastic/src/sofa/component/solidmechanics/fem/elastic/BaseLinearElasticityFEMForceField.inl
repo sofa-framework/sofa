@@ -103,6 +103,15 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
+    if (l_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
+
     checkYoungModulus();
     checkPoissonRatio();
 }

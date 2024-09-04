@@ -245,12 +245,7 @@ public:
     Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
     Data<Real> d_showStressThreshold; ///< Threshold value to render only stress vectors higher to this threshold
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
 protected:
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
 
     static std::pair<Real, Real> computeMuGamma(Real youngModulus, Real poissonRatio);
 };

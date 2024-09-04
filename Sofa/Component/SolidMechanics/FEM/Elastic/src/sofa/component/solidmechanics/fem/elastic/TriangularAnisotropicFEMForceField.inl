@@ -68,7 +68,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<SReal> &)
 {
-    //const Triangle &t = m_topology->getTriangle(triangleIndex);
+    //const Triangle &t = this->l_topology->getTriangle(triangleIndex);
     Index a = t[0];
     Index b = t[1];
     Index c = t[2];
@@ -89,24 +89,15 @@ void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index tri
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    Inherited::init();
 
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     // Create specific handler for TriangleData
-    d_localFiberDirection.createTopologyHandler(m_topology);
+    d_localFiberDirection.createTopologyHandler(this->l_topology);
     d_localFiberDirection.setCreationCallback([this](Index triangleIndex, TriangleFiberDirection& triInfo,
                                                      const core::topology::BaseMeshTopology::Triangle& t,
                                                      const sofa::type::vector< Index >& ancestors,
@@ -115,7 +106,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
         createTriangleInfo(triangleIndex, triInfo, t, ancestors, coefs);
     });
 
-    Inherited::init();
+
     reinit();
 }
 
@@ -127,7 +118,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     type::vector<Real> poiss2;
     const type::vector<Real> & young2Array = d_young2.getValue();
 
-    for (unsigned int i = 0; i < this->m_topology->getNbTriangles(); i++)
+    for (unsigned int i = 0; i < this->l_topology->getNbTriangles(); i++)
     {
         const auto elementYoungModulus = this->getYoungModulusInElement(i);
         const auto elementPoissonRatio = this->getPoissonRatioInElement(i);
@@ -137,7 +128,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     f_poisson2.setValue(poiss2);
 
     type::vector<Deriv>& lfd = *(d_localFiberDirection.beginEdit());
-    lfd.resize(m_topology->getNbTriangles());
+    lfd.resize(this->l_topology->getNbTriangles());
     d_localFiberDirection.endEdit();
     Inherited::reinit();
 }
@@ -152,7 +143,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
     {
         const Deriv& ref = lfd[element];
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        core::topology::BaseMeshTopology::Triangle t = m_topology->getTriangle(element);
+        core::topology::BaseMeshTopology::Triangle t = this->l_topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
     }
     else
@@ -318,23 +309,23 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     type::vector<Deriv>& lfd = *(d_localFiberDirection.beginEdit());
 
-    if (d_showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
+    if (d_showFiber.getValue() && lfd.size() >= (unsigned)this->l_topology->getNbTriangles())
     {
         const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
         constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
         std::vector<sofa::type::Vec3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        const int nbTriangles=m_topology->getNbTriangles();
+        const int nbTriangles=this->l_topology->getNbTriangles();
 
         for(int i=0; i<nbTriangles; ++i)
         {
 
             if ( (unsigned int)i < lfd.size())
             {
-                Index a = m_topology->getTriangle(i)[0];
-                Index b = m_topology->getTriangle(i)[1];
-                Index c = m_topology->getTriangle(i)[2];
+                Index a = this->l_topology->getTriangle(i)[0];
+                Index b = this->l_topology->getTriangle(i)[1];
+                Index c = this->l_topology->getTriangle(i)[2];
 
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];

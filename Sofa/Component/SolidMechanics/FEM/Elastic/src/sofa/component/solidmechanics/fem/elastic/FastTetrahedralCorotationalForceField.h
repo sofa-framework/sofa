@@ -208,8 +208,6 @@ protected :
         const sofa::type::vector<SReal>&);
 
     core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return d_edgeInfo;}
-    
-    sofa::core::topology::BaseMeshTopology* m_topology;    
 
     bool updateMatrix;
 

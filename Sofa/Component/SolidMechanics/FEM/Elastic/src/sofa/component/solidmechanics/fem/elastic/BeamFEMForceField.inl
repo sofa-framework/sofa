@@ -77,22 +77,17 @@ void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
 
-    m_topology = this->l_topology.get();
-    msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if(m_topology->getNbEdges()==0)
+    if(this->l_topology->getNbEdges()==0)
     {
-        msg_error() << "Topology is empty.";
+        msg_error() << "No edge found in the topology " << this->l_topology.getLinkedPath();
         return;
     }
-    m_indexedElements = &m_topology->getEdges();
+    m_indexedElements = &this->l_topology->getEdges();
     if (!d_listSegment.getValue().empty())
     {
         msg_info() << "Forcefield named " << this->getName() << " applies to a subset of edges.";
@@ -113,7 +108,7 @@ void BeamFEMForceField<DataTypes>::init()
         m_partialListSegment = false;
     }
 
-    d_beamsData.createTopologyHandler(m_topology);
+    d_beamsData.createTopologyHandler(this->l_topology);
     d_beamsData.setCreationCallback([this](Index edgeIndex, BeamInfo& ei,
                                            const core::topology::BaseMeshTopology::Edge& edge,
                                            const sofa::type::vector< Index >& ancestors,

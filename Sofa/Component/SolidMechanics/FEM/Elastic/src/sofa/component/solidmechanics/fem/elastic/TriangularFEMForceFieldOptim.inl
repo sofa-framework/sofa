@@ -44,8 +44,6 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_stressMaxValue(initData(&d_stressMaxValue, (Real)0., "stressMaxValue", "Max stress value computed over the triangulation"))
     , d_showStressVector(initData(&d_showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , d_showStressThreshold(initData(&d_showStressThreshold,(Real)0.0,"showStressThreshold","Threshold value to render only stress vectors higher to this threshold"))
-    , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
 {
     d_stressMaxValue.setReadOnly(true);
 }
@@ -66,24 +64,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 {
     this->Inherited::init();
 
-    if (l_topology.empty())
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     // Create specific handler for TriangleData
-    d_triangleInfo.createTopologyHandler(m_topology);
+    d_triangleInfo.createTopologyHandler(this->l_topology);
     d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInfo& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
@@ -92,7 +79,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
         createTriangleInfo(triangleIndex, ti, t, ancestors, coefs);
     });
 
-    d_triangleState.createTopologyHandler(m_topology);
+    d_triangleState.createTopologyHandler(this->l_topology);
     d_triangleState.setCreationCallback([this](Index triangleIndex, TriangleState& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
@@ -101,10 +88,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
         createTriangleState(triangleIndex, ti, t, ancestors, coefs);
     });
 
-    if (m_topology->getNbTriangles() == 0)
+    if (this->l_topology->getNbTriangles() == 0)
     {
         msg_warning() << "No triangles found in linked Topology.";
-        if (m_topology->getNbQuads() != 0)
+        if (this->l_topology->getNbQuads() != 0)
         {
             msg_warning() << "The topology only contains quads while this forcefield only supports triangles." << msgendl;
         }
@@ -142,8 +129,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
     if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
     {
         msg_error() << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t
-            << " | nb points: " << m_topology->getNbPoints()
-            << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
+            << " | nb points: " << this->l_topology->getNbPoints()
+            << " | nb triangles: " << this->l_topology->getNbTriangles() << msgendl;
 
         return;
     }
@@ -172,8 +159,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
     if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
     {
         msg_error() << "INVALID point index >= " << x.size() << " in triangle " << i << " : " << t
-            << " | nb points: " << m_topology->getNbPoints()
-            << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
+            << " | nb points: " << this->l_topology->getNbPoints()
+            << " | nb triangles: " << this->l_topology->getNbTriangles() << msgendl;
 
         return;
     }
@@ -209,8 +196,8 @@ template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 {
     /// prepare to store info in the triangle array
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const  VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const  VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     VecTriangleInfo& triangleInf = *(d_triangleInfo.beginEdit());
@@ -250,8 +237,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
 
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     f.resize(x.size());
 
@@ -344,8 +331,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
 
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
@@ -406,8 +393,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     constexpr auto S = DataTypes::deriv_total_size;
 
@@ -482,8 +469,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavio
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     static constexpr auto S = DataTypes::deriv_total_size;
 
@@ -648,7 +635,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::computePrincipalStress()
 {
-    const VecElement& triangles = m_topology->getTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfos = d_triangleInfo;
 
     Real minStress = 0;
@@ -777,7 +764,7 @@ auto TriangularFEMForceFieldOptim<
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!m_topology || !this->mstate) return;
+    if (!this->l_topology || !this->mstate) return;
 
     if (!vparams->displayFlags().getShowForceFields())
         return;
@@ -787,8 +774,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     using type::Vec4f;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int nbTriangles=m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    unsigned int nbTriangles=this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const Real& stressThresold = d_showStressThreshold.getValue();
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfos = d_triangleInfo;

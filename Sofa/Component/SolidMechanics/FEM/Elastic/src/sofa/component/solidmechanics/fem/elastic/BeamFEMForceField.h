@@ -161,8 +161,6 @@ public:
 
     Quat<SReal>& beamQuat(int i);
 
-    BaseMeshTopology* m_topology;
-
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
     virtual ~BeamFEMForceField();

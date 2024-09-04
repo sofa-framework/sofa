@@ -37,7 +37,6 @@ TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _indexedElements(nullptr)
     , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
-    , m_topology(nullptr)
     , method(LARGE)
     , d_method(initData(&d_method, std::string("large"), "method", "large: large displacements, small: small displacements"))
     , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
@@ -61,38 +60,33 @@ void TriangleFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
 
-    // checking inputs using setter
-    setMethod(d_method.getValue());
-
-    m_topology = this->l_topology.get();
-    msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if (m_topology->getTriangles().empty() && m_topology->getQuads().empty())
+    // checking inputs using setter
+    setMethod(d_method.getValue());
+
+    if (this->l_topology->getTriangles().empty() && this->l_topology->getQuads().empty())
     {
         msg_warning() << "No triangles found in linked Topology.";
-        _indexedElements = &(m_topology->getTriangles());
+        _indexedElements = &(this->l_topology->getTriangles());
     }
-    else if (!m_topology->getTriangles().empty())
+    else if (!this->l_topology->getTriangles().empty())
     {
-        msg_info() << "Init using triangles mesh: " << m_topology->getTriangles().size() << " triangles.";
-        _indexedElements = &(m_topology->getTriangles());
+        msg_info() << "Init using triangles mesh: " << this->l_topology->getTriangles().size() << " triangles.";
+        _indexedElements = &(this->l_topology->getTriangles());
     }
-    else if (m_topology->getNbQuads() > 0)
+    else if (this->l_topology->getNbQuads() > 0)
     {
-        msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
+        msg_info() << "Init using quads mesh: " << this->l_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
-        const int nbcubes = m_topology->getNbQuads();
+        const int nbcubes = this->l_topology->getNbQuads();
         trias->reserve(nbcubes * 2);
         for (int i = 0; i < nbcubes; i++)
         {
-            sofa::core::topology::BaseMeshTopology::Quad q = m_topology->getQuad(i);
+            sofa::core::topology::BaseMeshTopology::Quad q = this->l_topology->getQuad(i);
             trias->push_back(Element(q[0], q[1], q[2]));
             trias->push_back(Element(q[0], q[2], q[3]));
         }

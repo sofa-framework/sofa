@@ -157,7 +157,6 @@ protected:
 
     SReal m_potentialEnergy;
 
-    core::topology::BaseMeshTopology* m_topology;
     const VecElement *_indexedElements;
     bool needUpdateTopology;
 
