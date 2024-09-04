@@ -163,11 +163,14 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     {
         SCOPED_TIMER("setSystemMBKMatrix");
         SReal mFact, kFact, bFact;
-        if (firstOrder) {
+        if (firstOrder)
+        {
             mFact = 1;
             bFact = 0;
             kFact = -h * tr;
-        } else {
+        }
+        else
+        {
             mFact = 1 + tr * h * d_rayleighMass.getValue();
             bFact = -tr * h;
             kFact = -tr * h * (h + d_rayleighStiffness.getValue());
