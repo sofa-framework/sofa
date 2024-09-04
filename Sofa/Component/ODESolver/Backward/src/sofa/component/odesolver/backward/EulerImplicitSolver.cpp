@@ -161,7 +161,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
 
     {
-        SCOPED_TIMER("MBKBuild");
+        SCOPED_TIMER("setSystemMBKMatrix");
         SReal mFact, kFact, bFact;
         if (firstOrder) {
             mFact = 1;
