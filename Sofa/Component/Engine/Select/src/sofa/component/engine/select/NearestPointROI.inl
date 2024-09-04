@@ -209,15 +209,15 @@ void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-    const SReal nbrIds = SReal(indices1.size());
+    const float nbrIds = static_cast<float>(indices1.size());
     for (unsigned int i = 0; i < indices1.size(); ++i)
     {
         auto xId1 = x1[indices1[i]];
         auto xId2 = x2[indices2[i]];
-        vertices.emplace_back(sofa::type::Vec3(xId1[0], xId1[1], xId1[2]));
-        vertices.emplace_back(sofa::type::Vec3(xId2[0], xId2[1], xId2[2]));
-        const SReal col = SReal(i) / nbrIds;
-        colors.emplace_back(sofa::type::RGBAColor(col, 1._sreal, 0.5_sreal, 1._sreal));
+        vertices.emplace_back(xId1[0], xId1[1], xId1[2]);
+        vertices.emplace_back(xId2[0], xId2[1], xId2[2]);
+        const float col = static_cast<float>(i) / nbrIds;
+        colors.emplace_back(col, 1.f, 0.5f, 1f);
     }
 
     vparams->drawTool()->drawLines(vertices, 1, colors);
