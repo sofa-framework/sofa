@@ -27,16 +27,6 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes>
-typename BaseLinearElasticityFEMForceField<DataTypes>::VecReal
-BaseLinearElasticityFEMForceField<DataTypes>::GetDefaultYoungModulusValue()
-{
-    VecReal newY;
-    newY.resize(1);
-    newY[0] = 5000;
-    return newY;
-}
-
-template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
     : d_poissonRatio(initData(&d_poissonRatio, { defaultPoissonRatioValue }, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
     , d_youngModulus(initData(&d_youngModulus, { defaultYoungModulusValue }, "youngModulus", "FEM Young's Modulus in Hooke's law"))
