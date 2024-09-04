@@ -217,7 +217,7 @@ void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vertices.emplace_back(xId1[0], xId1[1], xId1[2]);
         vertices.emplace_back(xId2[0], xId2[1], xId2[2]);
         const float col = static_cast<float>(i) / nbrIds;
-        colors.emplace_back(col, 1.f, 0.5f, 1f);
+        colors.emplace_back(col, 1.f, 0.5f, 1.f);
     }
 
     vparams->drawTool()->drawLines(vertices, 1, colors);
