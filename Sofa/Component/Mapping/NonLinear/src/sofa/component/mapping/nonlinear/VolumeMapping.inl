@@ -81,6 +81,13 @@ void VolumeMapping<TIn, TOut>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
+    if (!l_topology)
+    {
+        msg_error() << "No topology found";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     const auto nbTetrahedra = l_topology->getNbTetrahedra();
@@ -88,6 +95,13 @@ void VolumeMapping<TIn, TOut>::init()
     if (l_topology->getNbTetrahedra() == 0)
     {
         msg_error() << "No topology component containing tetrahedron found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (l_topology->getNbHexahedra())
+    {
+        msg_error() << "Hexahedra are found in the topology, but they are not supported in this component. Consider converting them to tetrahedra.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -101,6 +115,11 @@ void VolumeMapping<TIn, TOut>::init()
     baseMatrices[0] = &jacobian;
 
     Inherit1::init();
+
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
 }
 
 template <class TIn, class TOut>
