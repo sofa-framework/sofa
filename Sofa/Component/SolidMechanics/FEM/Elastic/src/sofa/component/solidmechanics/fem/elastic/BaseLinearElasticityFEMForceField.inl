@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -95,7 +96,10 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
 
     if (l_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology";
+        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath()
+            << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology. "
+            << "The list of available BaseMeshTopology components is: "
+            << core::ObjectFactory::getInstance()->listClassesDerivedFrom<core::topology::BaseMeshTopology>();
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
