@@ -83,37 +83,14 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
-
-    /// Construct the Constraint violations vector of each constraint
-    ///
-    /// \param v is the result vector that contains the whole constraints violations
-    /// \param x1 and x2 are the position vectors used to compute contraint position violation
-    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    ///
-    /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
-            , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2) = 0;
+    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) final;
 
     /// Construct the Jacobian Matrix
     ///
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
-
-    /// Construct the Jacobian Matrix
-    ///
-    /// \param c1 and c2 are the results constraint sparse matrix
-    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param x1 and x2 are the position vectors used for contraint equation computation
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    ///
-    /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
-            , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
-
+    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) final;
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -128,6 +105,31 @@ public:
 
         return obj;
     }
+
+protected:
+
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param x1 and x2 are the position vectors used to compute contraint position violation
+    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
+            , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2) = 0;
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param c1 and c2 are the results constraint sparse matrix
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param x1 and x2 are the position vectors used for contraint equation computation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
+            , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
+
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

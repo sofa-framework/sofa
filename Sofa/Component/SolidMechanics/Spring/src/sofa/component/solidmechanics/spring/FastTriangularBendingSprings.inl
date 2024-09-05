@@ -536,7 +536,7 @@ typename FastTriangularBendingSprings<_DataTypes>::Real  FastTriangularBendingSp
 }
 
 template<class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::addStiffness( sofa::linearalgebra::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
+void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::addStiffness( sofa::linearalgebra::BaseMatrix *bm, unsigned int offset, SReal scale, FastTriangularBendingSprings< _DataTypes>* ff ) const
 {
     StiffnessMatrix K;
     getStiffness( K );

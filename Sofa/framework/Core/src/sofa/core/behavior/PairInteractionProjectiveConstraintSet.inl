@@ -61,6 +61,11 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(co
 template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
     {
@@ -71,6 +76,11 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
 template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
     {
@@ -81,6 +91,11 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
 template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
     {

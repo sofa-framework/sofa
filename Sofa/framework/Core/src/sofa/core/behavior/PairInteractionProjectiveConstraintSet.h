@@ -71,7 +71,7 @@ public:
     /// This method retrieves the dx vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
+    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) final;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
@@ -85,23 +85,14 @@ public:
     /// This method retrieves the v vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
+    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) final;
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&,VecCoord&) method implemented by
     /// the component.
-    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
-
-    /// Project dx to constrained space (dx models an acceleration).
-    virtual void projectResponse(const MechanicalParams* /*mparams*/, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    virtual void projectVelocity(const MechanicalParams* /*mparams*/, DataVecDeriv& v1, DataVecDeriv& v2) = 0;
-
-    /// Project x to constrained space (x models a position).
-    virtual void projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& x1, DataVecCoord& x2) = 0;
+    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) final;
 
     /// @}
 
@@ -171,6 +162,18 @@ public:
 
     using Inherit2::getMechModel1;
     using Inherit2::getMechModel2;
+
+protected:
+
+    /// Project dx to constrained space (dx models an acceleration).
+    virtual void projectResponse(const MechanicalParams* /*mparams*/, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
+
+    /// Project v to constrained space (v models a velocity).
+    virtual void projectVelocity(const MechanicalParams* /*mparams*/, DataVecDeriv& v1, DataVecDeriv& v2) = 0;
+
+    /// Project x to constrained space (x models a position).
+    virtual void projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& x1, DataVecCoord& x2) = 0;
+
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)

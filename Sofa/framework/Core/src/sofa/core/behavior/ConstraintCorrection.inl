@@ -78,6 +78,11 @@ void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const 
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mstate)
     {
         Data< VecCoord > *x_d  = x[mstate].write();
@@ -96,6 +101,11 @@ void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::Constr
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mstate)
     {
         Data< VecCoord > *x_d  = x[mstate].write();
@@ -113,6 +123,11 @@ void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::Cons
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mstate)
     {
         Data< VecDeriv >* v_d  = v[mstate].write();
@@ -133,12 +148,17 @@ void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const cor
     if (mstate)
     {
         addConstraintForceInMotionSpace(cparams, f, cparams->j(), lambda);
-        }
+    }
 }
 
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const linearalgebra::BaseVector * lambda)
 {
+    if (isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (mstate)
     {
         Data< VecDeriv > *f_d = f[mstate].write();

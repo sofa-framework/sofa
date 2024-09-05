@@ -80,20 +80,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
-
-    /// Given the current position and velocity states, update the current force
-    /// vector by computing and adding the forces associated with this
-    /// ForceField.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ f += B v + K x $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::addForce() method.
-
-    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
-
+    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -108,27 +95,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic PairInteractionForceField::addDForce() method.
-    ///
-    /// To support old components that implement the deprecated addForce method
-    /// without scalar coefficients, it defaults to using a temporaty vector to
-    /// compute $ K dx $ and then manually scaling all values by kFactor.
-
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
-
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -139,21 +106,6 @@ public:
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
     SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
-
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to extimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::getPotentialEnergy() method.
-
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
-
-
-
-
-
 
     /// @}
 
@@ -217,6 +169,46 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
+
+protected:
+
+    /// Given the current position and velocity states, update the current force
+    /// vector by computing and adding the forces associated with this
+    /// ForceField.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ f += B v + K x $
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ForceField::addForce() method.
+    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
+
+    /// Compute the force derivative given a small displacement from the
+    /// position and velocity used in the previous call to addForce().
+    ///
+    /// The derivative should be directly derived from the computations
+    /// done by addForce. Any forces neglected in addDForce will be integrated
+    /// explicitly (i.e. using its value at the beginning of the timestep).
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ df += kFactor K dx + bFactor B dx $
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic PairInteractionForceField::addDForce() method.
+    ///
+    /// To support old components that implement the deprecated addForce method
+    /// without scalar coefficients, it defaults to using a temporaty vector to
+    /// compute $ K dx $ and then manually scaling all values by kFactor.
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
+
+    /// Get the potential energy associated to this ForceField.
+    ///
+    /// Used to extimate the total energy of the system by some
+    /// post-stabilization techniques.
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ForceField::getPotentialEnergy() method.
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
 
 };
 

@@ -45,7 +45,11 @@ MixedInteractionForceField<DataTypes1, DataTypes2>::~MixedInteractionForceField(
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
-    
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (this->mstate1 && this->mstate2)
     {
         auto state1 = this->mstate1.get();
@@ -60,6 +64,11 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
     if (this->mstate1 && this->mstate2)
     {
         auto state1 = this->mstate1.get();
@@ -75,6 +84,11 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 template<class DataTypes1, class DataTypes2>
 SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
+    if (this->isComponentStateInvalid())
+    {
+        return 0;
+    }
+
     if (this->mstate1 && this->mstate2)
         return getPotentialEnergy(mparams, *mparams->readX(this->mstate1.get()),*mparams->readX(this->mstate2.get()));
     else return 0;

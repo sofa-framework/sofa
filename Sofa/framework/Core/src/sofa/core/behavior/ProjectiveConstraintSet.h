@@ -80,52 +80,28 @@ public:
     /// This method retrieves the dxId vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&) method implemented by
     /// the component.
-    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
+    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) final;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
+    void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) final;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the vId vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
-    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
+    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) final;
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the xId vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&) method implemented by
     /// the component.
-    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
-
-
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ProjectiveConstraintSet::projectVelocity() method.
-    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& v) = 0;
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ProjectiveConstraintSet::projectPosition() method.
-    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& x) = 0;
-
-    /// Project c to constrained space (c models a constraint).
-    ///
-    /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/, DataMatrixDeriv& cData) = 0;
+    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) final;
 
     /// @}
 
@@ -155,6 +131,33 @@ public:
 
         return BaseObject::canCreate(obj, context, arg);
     }
+
+
+protected:
+
+    /// Project dx to constrained space (dx models an acceleration).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ProjectiveConstraintSet::projectResponse() method.
+    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
+
+    /// Project v to constrained space (v models a velocity).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ProjectiveConstraintSet::projectVelocity() method.
+    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& v) = 0;
+    /// Project x to constrained space (x models a position).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ProjectiveConstraintSet::projectPosition() method.
+    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& x) = 0;
+
+    /// Project c to constrained space (c models a constraint).
+    ///
+    /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
+    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/, DataMatrixDeriv& cData) = 0;
+
+
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
