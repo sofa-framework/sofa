@@ -29,12 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-
-
-int WriteTopologyClass = core::RegisterObject("Write topology containers informations to file at each timestep")
-        .add< WriteTopology >();
-
-
+void registerWriteTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Write topology containers informations to file at each timestep.")
+        .add< WriteTopology >());
+}
 
 WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
     :Visitor(params)

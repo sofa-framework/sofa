@@ -28,8 +28,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-int ReadTopologyClass = core::RegisterObject("Read topology containers informations from file at each timestep")
-        .add< ReadTopology >();
+void registerReadTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read topology containers informations from file at each timestep.")
+        .add< ReadTopology >());
+}
 
 ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
