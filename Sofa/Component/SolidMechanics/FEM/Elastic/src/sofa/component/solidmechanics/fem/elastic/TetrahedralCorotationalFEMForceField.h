@@ -198,8 +198,6 @@ public:
 protected:
     TetrahedralCorotationalFEMForceField();
 
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
 public:
 
     void setMethod(int val) { method = val; }

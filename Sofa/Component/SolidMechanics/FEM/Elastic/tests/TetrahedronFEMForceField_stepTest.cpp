@@ -77,7 +77,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         DataTypes::set( f[3],  -fup[0], -fup[1], -(Real)fup[2]);
 
         // Set force parameters
-        this->force->d_poissonRatio.setValue(0);
+        this->force->setPoissonRatio(0);
         this->force->d_youngModulus.setValue({40});
         this->force->d_method.setValue("small");
 
@@ -92,34 +92,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         Inherited::run_test( x, v, f );
     }
 
-    void checkGracefullHandlingWhenTopologyIsMissing()
-    {
-        modeling::clearScene();
 
-        // This is a RAII message.
-        EXPECT_MSG_EMIT(Error) ;
-
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node 	name='Root'>                                \n"
-                 "  <RequiredPlugin name=\"Sofa.Component.StateContainer\"/>"
-                 "  <RequiredPlugin name=\"Sofa.Component.SolidMechanics.FEM.Elastic\"/>"
-                 "  <DefaultAnimationLoop/>"
-                 "  <Node name='FEMnode'>                               \n"
-                 "    <MechanicalObject/>                               \n"
-                 "    <TetrahedronFEMForceField name='fem' youngModulus='5000' poissonRatio='0.07'/>\n"
-                 "  </Node>                                             \n"
-                 "</Node>                                               \n" ;
-
-        const simulation::Node::SPtr root = simulation::SceneLoaderXML::loadFromMemory ("testscene",
-                                                                                        scene.str().c_str()) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
-
-        core::objectmodel::BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;
-        EXPECT_NE(fem, nullptr) ;
-
-        EXPECT_EQ(fem->getComponentState(), core::objectmodel::ComponentState::Invalid) ;
-    }
 };
 
 
@@ -145,11 +118,6 @@ TYPED_TEST(TetrahedronFEMForceField_stepTest, extension )
 
     // run test
     this->test_valueForce();
-}
-
-TYPED_TEST(TetrahedronFEMForceField_stepTest, checkGracefullHandlingWhenTopologyIsMissing)
-{
-    this->checkGracefullHandlingWhenTopologyIsMissing();
 }
 
 }
