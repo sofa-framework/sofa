@@ -68,10 +68,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<SReal> &)
 {
-    //const Triangle &t = this->l_topology->getTriangle(triangleIndex);
-    Index a = t[0];
-    Index b = t[1];
-    Index c = t[2];
+    const auto& [a, b, c] = t.array();
 
     switch(this->method)
     {
