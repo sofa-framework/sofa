@@ -42,15 +42,18 @@ using type::Quat;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
-    : BeamFEMForceField(0.49, 5000, 0.1, 0.)
+    : BeamFEMForceField(
+        BaseLinearElasticityFEMForceField<DataTypes>::defaultPoissonRatioValue,
+        BaseLinearElasticityFEMForceField<DataTypes>::defaultYoungModulusValue,
+        0.1, 0.)
 {}
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : d_beamsData(initData(&d_beamsData, "beamsData", "Internal element data"))
     , m_indexedElements(nullptr)
-    , d_radius(initData(&d_radius,(Real)radius,"radius","radius of the section"))
-    , d_radiusInner(initData(&d_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
+    , d_radius(initData(&d_radius, radius,"radius","radius of the section"))
+    , d_radiusInner(initData(&d_radiusInner, radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , d_listSegment(initData(&d_listSegment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , m_partialListSegment(false)
