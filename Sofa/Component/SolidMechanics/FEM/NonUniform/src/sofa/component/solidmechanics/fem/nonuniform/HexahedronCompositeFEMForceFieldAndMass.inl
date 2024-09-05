@@ -475,7 +475,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //       //given an elementIndice, find the 8 others from the sparse grid
             //       //compute MaterialStiffness
             MaterialStiffness material;
-            this->computeMaterialStiffness(material, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue());
+            this->computeMaterialStiffness(material, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
 
 
             HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->d_elementStiffnesses.beginEdit())[i], material, nodes, i, this->_sparseGrid->getStiffnessCoef(i )); // classical stiffness
@@ -1044,7 +1044,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
         else
         {
-
+            const auto poissonRatio = this->getPoissonRatioInElement(0);
             for(int i=0; i<27*3; ++i)
             {
                 for(int j=0; j<8*3; ++j)
@@ -1053,7 +1053,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                         WB[i][j] = WBmeca[i][j];
                     else
                     {
-                        WB[i][j] = (Real)(WB[i][j] / fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->d_poissonRatio.getValue() * .3);
+                        WB[i][j] = (Real)(WB[i][j] / fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * poissonRatio * .3);
                     }
                 }
             }

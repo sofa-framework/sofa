@@ -207,7 +207,6 @@ protected:
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
-    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
     topology::container::grid::SparseGridTopology* _sparseGrid;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
@@ -223,7 +222,7 @@ protected:
 protected:
     HexahedronFEMForceField();
 
-    inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
+    inline const VecElement *getIndexedElements(){ return & (this->l_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
                                           const type::Vec<8, Coord> &nodes, const sofa::Index elementIndice,

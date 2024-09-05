@@ -208,7 +208,6 @@ public:
         const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&);
 
 protected:
-    core::topology::BaseMeshTopology* _topology { nullptr };
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };

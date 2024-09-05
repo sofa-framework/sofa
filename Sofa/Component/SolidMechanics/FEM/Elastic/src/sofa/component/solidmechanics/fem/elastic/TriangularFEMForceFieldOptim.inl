@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/behavior/BlocMatrixWriter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -38,19 +38,13 @@ template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data (persistent)"))
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
-    , d_poisson(initData(&d_poisson,(Real)(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
-    , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , d_restScale(initData(&d_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
     , d_computePrincipalStress(initData(&d_computePrincipalStress, false, "computePrincipalStress", "Compute principal stress for each triangle"))
     , d_stressMaxValue(initData(&d_stressMaxValue, (Real)0., "stressMaxValue", "Max stress value computed over the triangulation"))
     , d_showStressVector(initData(&d_showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , d_showStressThreshold(initData(&d_showStressThreshold,(Real)0.0,"showStressThreshold","Threshold value to render only stress vectors higher to this threshold"))
-    , l_topology(initLink("topology", "link to the topology container"))
-    , m_topology(nullptr)
 {
-    d_poisson.setRequired(true);
-    d_young.setRequired(true);
     d_stressMaxValue.setReadOnly(true);
 }
 
@@ -70,24 +64,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 {
     this->Inherited::init();
 
-    if (l_topology.empty())
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     // Create specific handler for TriangleData
-    d_triangleInfo.createTopologyHandler(m_topology);
+    d_triangleInfo.createTopologyHandler(this->l_topology);
     d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInfo& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
@@ -96,7 +79,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
         createTriangleInfo(triangleIndex, ti, t, ancestors, coefs);
     });
 
-    d_triangleState.createTopologyHandler(m_topology);
+    d_triangleState.createTopologyHandler(this->l_topology);
     d_triangleState.setCreationCallback([this](Index triangleIndex, TriangleState& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
@@ -105,10 +88,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
         createTriangleState(triangleIndex, ti, t, ancestors, coefs);
     });
 
-    if (m_topology->getNbTriangles() == 0)
+    if (this->l_topology->getNbTriangles() == 0)
     {
         msg_warning() << "No triangles found in linked Topology.";
-        if (m_topology->getNbQuads() != 0)
+        if (this->l_topology->getNbQuads() != 0)
         {
             msg_warning() << "The topology only contains quads while this forcefield only supports triangles." << msgendl;
         }
@@ -146,8 +129,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
     if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
     {
         msg_error() << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t
-            << " | nb points: " << m_topology->getNbPoints()
-            << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
+            << " | nb points: " << this->l_topology->getNbPoints()
+            << " | nb triangles: " << this->l_topology->getNbTriangles() << msgendl;
 
         return;
     }
@@ -176,8 +159,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
     if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
     {
         msg_error() << "INVALID point index >= " << x.size() << " in triangle " << i << " : " << t
-            << " | nb points: " << m_topology->getNbPoints()
-            << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
+            << " | nb points: " << this->l_topology->getNbPoints()
+            << " | nb triangles: " << this->l_topology->getNbTriangles() << msgendl;
 
         return;
     }
@@ -212,16 +195,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangle
 template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 {
-    // Compute material-dependent constants
-    // mu = (1-p)*y/(1-p^2) = (1-p)*y/((1-p)(1+p)) = y/(1+p)
-    const Real youngModulus = d_young.getValue();
-    const Real poissonRatio = d_poisson.getValue();
-    mu = (youngModulus) / (1+poissonRatio);
-    gamma = (youngModulus * poissonRatio) / (1-poissonRatio*poissonRatio);
-
     /// prepare to store info in the triangle array
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const  VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const  VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     VecTriangleInfo& triangleInf = *(d_triangleInfo.beginEdit());
@@ -261,10 +237,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
 
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     f.resize(x.size());
 
@@ -276,6 +250,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Coord a = x[t[0]];
         Coord ab = x[t[1]] -a;
         Coord ac = x[t[2]] -a;
+
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
 
         computeTriangleRotation(ts.frame, ab, ac);
 
@@ -355,16 +331,16 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
 
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
     for ( Index i=0; i<nbTriangles; i+=1)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -417,15 +393,15 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     constexpr auto S = DataTypes::deriv_total_size;
 
     for ( Index i=0; i<nbTriangles; i+=1)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -493,13 +469,15 @@ void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavio
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    const unsigned int nbTriangles = this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
 
     static constexpr auto S = DataTypes::deriv_total_size;
 
     for (Index i = 0; i < nbTriangles; ++i)
     {
+        const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
+
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
@@ -657,7 +635,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::computePrincipalStress()
 {
-    const VecElement& triangles = m_topology->getTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfos = d_triangleInfo;
 
     Real minStress = 0;
@@ -728,8 +706,7 @@ typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFE
     // (gamma+mu, gamma   ,    0)
     // (gamma   , gamma+mu,    0)
     // (       0,        0, mu/2)
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(elemId), this->getPoissonRatioInElement(elemId));
 
     MaterialStiffness mat;
     mat[0][0] = mat[1][1] = gamma + mu;
@@ -769,6 +746,16 @@ typename TriangularFEMForceFieldOptim<DataTypes>::Real TriangularFEMForceFieldOp
     return triInfo[elemId].ss_factor;
 }
 
+template <class DataTypes>
+auto TriangularFEMForceFieldOptim<
+    DataTypes>::computeMuGamma(Real youngModulus,
+                               Real poissonRatio) -> std::pair<Real, Real>
+{
+    const Real mu = (youngModulus) / (1 + poissonRatio);
+    const Real gamma = (youngModulus * poissonRatio) / (1 - poissonRatio * poissonRatio);
+    return {mu, gamma};
+}
+
 
 // --------------------------------------------------------------------------------------
 // --- Display methods
@@ -777,7 +764,7 @@ typename TriangularFEMForceFieldOptim<DataTypes>::Real TriangularFEMForceFieldOp
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!m_topology || !this->mstate) return;
+    if (!this->l_topology || !this->mstate) return;
 
     if (!vparams->displayFlags().getShowForceFields())
         return;
@@ -787,8 +774,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     using type::Vec4f;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int nbTriangles=m_topology->getNbTriangles();
-    const VecElement& triangles = m_topology->getTriangles();
+    unsigned int nbTriangles=this->l_topology->getNbTriangles();
+    const VecElement& triangles = this->l_topology->getTriangles();
     const Real& stressThresold = d_showStressThreshold.getValue();
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfos = d_triangleInfo;

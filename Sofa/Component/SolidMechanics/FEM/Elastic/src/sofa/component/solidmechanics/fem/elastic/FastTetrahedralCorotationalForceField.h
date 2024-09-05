@@ -196,11 +196,6 @@ public:
     }
     void draw(const core::visual::VisualParams* vparams) override;
 
-    /// compute lambda and mu based on the Young modulus and Poisson ratio
-    static void computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu);
-
-
-
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
@@ -213,8 +208,6 @@ protected :
         const sofa::type::vector<SReal>&);
 
     core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return d_edgeInfo;}
-    
-    sofa::core::topology::BaseMeshTopology* m_topology;    
 
     bool updateMatrix;
 
