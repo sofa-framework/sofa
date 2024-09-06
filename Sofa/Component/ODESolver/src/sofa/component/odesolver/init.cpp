@@ -25,6 +25,7 @@
 #include <sofa/component/odesolver/forward/init.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::odesolver
 {
@@ -65,6 +66,9 @@ void init()
         // force dependencies at compile-time
         sofa::component::odesolver::backward::init();
         sofa::component::odesolver::forward::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         first = false;
     }
