@@ -773,7 +773,9 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"SofaDefaultPath", Dealiased("v24.12","SofaDefaultPathSetting")},
     {"Stats", Dealiased("v24.12","StatsSetting")},
     {"Viewer", Dealiased("v24.12","ViewerSetting")},
-    
+    {"MeshObjLoader", Dealiased("v24.12","MeshOBJLoader")},
+    {"ObjExporter", Dealiased("v24.12","VisualModelOBJExporter")},
+    {"OBJExporter", Dealiased("v24.12","VisualModelOBJExporter")},
 };
 
 } // namespace sofa::helper::lifecycle

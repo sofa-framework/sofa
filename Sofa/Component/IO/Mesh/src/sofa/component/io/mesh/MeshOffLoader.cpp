@@ -31,9 +31,11 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file format.")
-        .add< MeshOffLoader >()
-        ;
+void registerMeshOffLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specific mesh loader for Off file format.")
+        .add< MeshOffLoader >());
+}
 
 bool MeshOffLoader::doLoad()
 {

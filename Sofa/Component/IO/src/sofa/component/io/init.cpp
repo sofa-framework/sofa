@@ -23,6 +23,8 @@
 
 #include <sofa/component/io/mesh/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component::io
 {
 
@@ -45,6 +47,11 @@ const char* getModuleName()
 const char* getModuleVersion()
 {
     return MODULE_VERSION;
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin("Sofa.Component.IO.Mesh");
 }
 
 void init()
