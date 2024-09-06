@@ -24,6 +24,7 @@
 #include <sofa/component/io/mesh/init.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::io
 {
@@ -61,6 +62,9 @@ void init()
     {
         // force dependencies at compile-time
         sofa::component::io::mesh::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         first = false;
     }
