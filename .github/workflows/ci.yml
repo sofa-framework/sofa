@@ -14,9 +14,9 @@ jobs:
           WORKSPACE=$(cat $GITHUB_WORKFLOW_SHA) 
           cd $WORKSPACE
           
-          
+
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
-          mkdir src & cd src 
+          mkdir $WORKSPACE/src && cd $WORKSPACE/src 
           SRC_DIR=$(pwd)
 
           git init
@@ -28,7 +28,7 @@ jobs:
 
 
           echo "Cloning CI"
-          mkdir ci & cd ci 
+          mkdir $WORKSPACE/ci && cd $WORKSPACE/ci 
           CI_DIR=$(pwd)
 
           git init
