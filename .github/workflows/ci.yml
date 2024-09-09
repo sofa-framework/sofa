@@ -5,13 +5,41 @@ on:
   push:
 
 jobs:
-  test_env:
+  setup_build:
     runs-on: [self-hosted, sh-ubuntu]
     steps:
-      - name: Test env
+      - name: Clone SOFA and CI
         shell: bash
         run: |
           WORKSPACE=$(cat $GITHUB_WORKFLOW_SHA) 
           cd $WORKSPACE
-          echo $(pwd)
-          echo $WORKSPACE
+          
+          
+          echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
+          mkdir src & cd src 
+          SRC_DIR=$(pwd)
+
+          git init
+          git remote add origin https://www.github.com/$GITHUB_REPOSITORY_OWNER/sofa.git
+          git fetch origin $GITHUB_WORKFLOW_SHA
+          git checkout FETCH_HEAD
+
+          cd $WORKSPACE
+
+
+          echo "Cloning CI"
+          mkdir ci & cd ci 
+          CI_DIR=$(pwd)
+
+          git init
+          git remote add origin https://www.github.com/sofa-framework/ci.git
+          git fetch origin master
+          git checkout FETCH_HEAD
+
+          cd $WORKSPACE
+
+
+          mkdir build
+
+
+
