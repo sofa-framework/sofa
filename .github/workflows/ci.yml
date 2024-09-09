@@ -1,13 +1,17 @@
 name: Compile SOFA and run Tests
 on:
   workflow_dispatch:
+  pull_request:
   push:
 
 jobs:
-  check_title:
+  test_env:
     runs-on: [self-hosted, sh-ubuntu]
     steps:
       - name: Test env
         shell: bash
         run: |
-          env | grep GITHUB
+          WORKSPACE=$(cat $GITHUB_WORKFLOW_SHA) 
+          cd $WORKSPACE
+          echo $(pwd)
+          echo $WORKSPACE
