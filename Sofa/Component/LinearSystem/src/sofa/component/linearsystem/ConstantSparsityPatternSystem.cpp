@@ -29,7 +29,10 @@ namespace sofa::component::linearsystem
 
 template class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityPatternSystem<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 
-int ConstantSparsityPatternSystemClass = core::RegisterObject("Linear system taking advantage of the constant sparsity pattern of the global matrix to speed up the matrix assembly. Do not use if sparsity pattern is not constant (topological changes, ...).")
-    .add<ConstantSparsityPatternSystem<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal>>>();
+void registerConstantSparsityPatternSystem(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system taking advantage of the constant sparsity pattern of the global matrix to speed up the matrix assembly. Do not use if sparsity pattern is not constant (topological changes, ...).")
+        .add<ConstantSparsityPatternSystem<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal>>>());
+}
 
 }
