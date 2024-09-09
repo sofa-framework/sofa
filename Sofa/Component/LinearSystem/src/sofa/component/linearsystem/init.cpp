@@ -31,6 +31,7 @@ extern void registerCompositeLinearSystem(sofa::core::ObjectFactory* factory);
 extern void registerConstantSparsityPatternSystem(sofa::core::ObjectFactory* factory);
 extern void registerConstantSparsityProjectionMethod(sofa::core::ObjectFactory* factory);
 extern void registerMatrixLinearSystem(sofa::core::ObjectFactory* factory);
+extern void registerMatrixProjectionMethod(sofa::core::ObjectFactory* factory);
 
 void init()
 {
@@ -84,6 +85,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerConstantSparsityPatternSystem(factory);
     registerConstantSparsityProjectionMethod(factory);
     registerMatrixLinearSystem(factory);
+    registerMatrixProjectionMethod(factory);
 }
 
 } // namespace sofa::component::linearsystem
