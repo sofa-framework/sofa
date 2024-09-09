@@ -1,0 +1,13 @@
+name: Compile SOFA and run Tests
+on:
+  workflow_dispatch:
+  commit:
+
+jobs:
+  check_title:
+    runs-on: [self-hosted, sh-ubuntu]
+    steps:
+      - name: Test env
+        shell: bash
+        run: |
+          env | grep GITHUB
