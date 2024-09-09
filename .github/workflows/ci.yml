@@ -1,7 +1,7 @@
 name: Compile SOFA and run Tests
 on:
   workflow_dispatch:
-  commit:
+  push:
 
 jobs:
   check_title:
