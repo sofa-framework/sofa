@@ -37,17 +37,17 @@ SReal ConstantForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const cor
 template <> SOFA_COMPONENT_MECHANICALLOAD_API
 SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 
-
-
-int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
+void registerConstantForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Constant forces applied to given degrees of freedom.")
         .add< ConstantForceField<Vec3Types> >()
         .add< ConstantForceField<Vec2Types> >()
         .add< ConstantForceField<Vec1Types> >()
         .add< ConstantForceField<Vec6Types> >()
         .add< ConstantForceField<Rigid3Types> >()
-        .add< ConstantForceField<Rigid2Types> >()
+        .add< ConstantForceField<Rigid2Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_MECHANICALLOAD_API ConstantForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API ConstantForceField<Vec2Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API ConstantForceField<Vec1Types>;

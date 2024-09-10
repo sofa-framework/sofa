@@ -218,12 +218,14 @@ template <>
 void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/, VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
 {}
 
-
 using namespace sofa::defaulttype;
 
-int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
-                                     .add<SurfacePressureForceField<Vec3Types> >()
-                                     .add<SurfacePressureForceField<Rigid3Types> >();
+void registerSurfacePressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("SurfacePressure.")
+        .add<SurfacePressureForceField<Vec3Types> >()
+        .add<SurfacePressureForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API SurfacePressureForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API SurfacePressureForceField<Rigid3Types>;

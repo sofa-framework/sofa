@@ -30,11 +30,11 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-
-int OscillatingTorsionPressureForceFieldClass = core::RegisterObject("OscillatingTorsionPressure")
-        .add< OscillatingTorsionPressureForceField<Vec3Types> >()
-
-        ;
+void registerOscillatingTorsionPressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("OscillatingTorsionPressure.")
+        .add< OscillatingTorsionPressureForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API OscillatingTorsionPressureForceField<Vec3Types>;
 

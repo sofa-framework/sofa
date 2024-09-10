@@ -30,10 +30,11 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
-        .add< TrianglePressureForceField<Vec3Types> >()
-
-        ;
+void registerTrianglePressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("TrianglePressure.")
+        .add< TrianglePressureForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API TrianglePressureForceField<Vec3Types>;
 

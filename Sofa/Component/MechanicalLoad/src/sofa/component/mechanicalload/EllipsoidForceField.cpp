@@ -30,13 +30,14 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
-
+void registerEllipsoidForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Repulsion applied by an ellipsoid toward the exterior or the interior.")
         .add< EllipsoidForceField<Vec3Types> >()
         .add< EllipsoidForceField<Vec2Types> >()
-        .add< EllipsoidForceField<Vec1Types> >()
+        .add< EllipsoidForceField<Vec1Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<Vec2Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<Vec1Types>;
