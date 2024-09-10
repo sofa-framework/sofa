@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerConicalForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Repulsion applied by a cone toward the exterior.")
+    factory->registerObjects(core::ObjectRegistrationData("Outward repulsion applied by a cone geometry.")
         .add< ConicalForceField<Vec3Types> >());
 }
 
