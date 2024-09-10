@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerTorsionForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Applies a torque to specified points.")
+    factory->registerObjects(core::ObjectRegistrationData("Applies a torque to specified degrees of freedom.")
 		.add< TorsionForceField<Vec3Types> >()
 		.add< TorsionForceField<Rigid3Types> >());
 }

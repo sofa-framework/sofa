@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerTrianglePressureForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("TrianglePressure.")
+    factory->registerObjects(core::ObjectRegistrationData("Pressure applied on a triangular geometry.")
         .add< TrianglePressureForceField<Vec3Types> >());
 }
 

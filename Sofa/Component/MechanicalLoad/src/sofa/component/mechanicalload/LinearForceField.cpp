@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerLinearForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Linearly interpolated force applied to given degrees of freedom.")
+    factory->registerObjects(core::ObjectRegistrationData("Linearly-interpolated force applied to given degrees of freedom.")
         .add< LinearForceField<Vec3Types> >()
         .add< LinearForceField<Vec2Types> >()
         .add< LinearForceField<Vec1Types> >()

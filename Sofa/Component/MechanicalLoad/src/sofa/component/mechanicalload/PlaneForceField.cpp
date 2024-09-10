@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerPlaneForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Repulsion applied by a plane toward the exterior (half-space).")
+    factory->registerObjects(core::ObjectRegistrationData("Repulsion along the normal to a plane.")
         .add< PlaneForceField<Vec3Types> >()
         .add< PlaneForceField<Vec2Types> >()
         .add< PlaneForceField<Vec1Types> >()

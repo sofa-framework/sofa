@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerInteractionEllipsoidForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Repulsion applied by an ellipsoid toward the exterior or the interior.")
+    factory->registerObjects(core::ObjectRegistrationData("Outward / inward repulsion applied by an ellipsoid geometry, which can possibly act on several objects.")
         .add< InteractionEllipsoidForceField<Vec3Types, Rigid3Types> >());
 }
 

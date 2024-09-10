@@ -222,7 +222,7 @@ using namespace sofa::defaulttype;
 
 void registerSurfacePressureForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("SurfacePressure.")
+    factory->registerObjects(core::ObjectRegistrationData("Pressure applied on a generic surface (triangular or quadrangular).")
         .add<SurfacePressureForceField<Vec3Types> >()
         .add<SurfacePressureForceField<Rigid3Types> >());
 }

@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerQuadPressureForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("QuadPressure.")
+    factory->registerObjects(core::ObjectRegistrationData("Pressure applied on a quadrangular geometry.")
         .add< QuadPressureForceField<Vec3Types> >());
 }
 

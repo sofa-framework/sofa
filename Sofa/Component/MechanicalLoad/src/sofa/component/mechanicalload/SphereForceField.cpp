@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerSphereForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Repulsion applied by a sphere toward the exterior.")
+    factory->registerObjects(core::ObjectRegistrationData("Outward repulsion applied by a sphere geometry")
         .add< SphereForceField<Vec3Types> >()
         .add< SphereForceField<Vec2Types> >()
         .add< SphereForceField<Vec1Types> >());
