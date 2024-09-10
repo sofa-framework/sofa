@@ -13,9 +13,13 @@ jobs:
         run: |
           WORKSPACE=$(cat $GITHUB_WORKFLOW_SHA) 
           cd $WORKSPACE
-          
 
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
+          #TODO (for PR) : clone branch against which the PR is compared then merge the PR 
+
+          if [ -d  $WORKSPACE/src ]; then
+            rm -rf $WORKSPACE/src
+          fi
           mkdir $WORKSPACE/src && cd $WORKSPACE/src 
           SRC_DIR=$(pwd)
 
@@ -26,8 +30,12 @@ jobs:
 
           cd $WORKSPACE
 
-
           echo "Cloning CI"
+          #TODO : clone ci branch with same name as the sofa branch against which the PR is compared OR the branch from which the commit comes
+          
+          if [ -d  $WORKSPACE/ci ]; then
+            rm -rf $WORKSPACE/ci
+          fi
           mkdir $WORKSPACE/ci && cd $WORKSPACE/ci 
           CI_DIR=$(pwd)
 
@@ -38,8 +46,23 @@ jobs:
 
           cd $WORKSPACE
 
+          #TODO: transform infos to force-full-build
+          if [ -d  $WORKSPACE/build ]; then
+            rm -rf $WORKSPACE/build
+          fi
+          mkdir $WORKSPACE/build
+          
+          #TODO: transform job-type (PR, commit, nightly) in a set of parameter (core, standard, full)
+          #TODO: transform job-type + infos from messages in a set of tests to run (unit, scenes, regression)
+          #TODO: transform infos from messages in a set of ci-depends-on 
 
-          mkdir build
-
+          #TODO: launch the container if needed (e.g. for ubuntu)
+          #TODO: launch sofa-ci-build-action with parameters : building scope (core, standard, full), 
+          #                                                    OS type, 
+          #                                                    python version,
+          #                                                    tests sets (list taken from {unit, scenes, regression}),
+          #                                                    ci-depends-on,
+          #                                                    OOT cmake option list (empty here)
+          
 
 
