@@ -270,7 +270,7 @@ void VolumeMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
                     {
                         parentForceAccessor[tetra[i]] +=
                             kFactor
-                            * d2Vol_d2x[i][j]
+                            * d2Vol_d2x(i, j)
                             * parentDisplacementAccessor[tetra[j]]
                             * childForceTetra[0];
                     }
@@ -318,7 +318,7 @@ void VolumeMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
             {
                 for (unsigned int j = 0; j < 4; ++j)
                 {
-                    K.addBlock(tetra[i], tetra[j], d2Volume_d2x[i][j] * childForceTri[0]);
+                    K.addBlock(tetra[i], tetra[j], d2Volume_d2x(i, j) * childForceTri[0]);
                 }
             }
         }
@@ -369,7 +369,7 @@ void VolumeMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for (unsigned int j = 0; j < 4; ++j)
                 {
-                    dJdx(tetra[i] * Nin, tetra[j] * Nin) += d2Vol_d2x[i][j] * childForceTri[0];
+                    dJdx(tetra[i] * Nin, tetra[j] * Nin) += d2Vol_d2x(i, j) * childForceTri[0];
                 }
             }
         }
