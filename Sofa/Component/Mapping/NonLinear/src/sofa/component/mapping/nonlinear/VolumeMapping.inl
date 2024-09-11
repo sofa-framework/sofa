@@ -46,28 +46,28 @@ auto VolumeMapping<TIn, TOut>::computeSecondDerivativeVolume(
         tetrahedronVertices[3] - tetrahedronVertices[0]
     };
 
-    const auto H12 = sofa::type::crossProductMatrix(v[1] - v[2]) / 6;
-    const auto H13 = sofa::type::crossProductMatrix(v[2] - v[0]) / 6;
-    const auto H14 = sofa::type::crossProductMatrix(v[0] - v[1]) / 6;
+    const auto H01 = sofa::type::crossProductMatrix(v[1] - v[2]) / 6;
+    const auto H02 = sofa::type::crossProductMatrix(v[2] - v[0]) / 6;
+    const auto H03 = sofa::type::crossProductMatrix(v[0] - v[1]) / 6;
 
-    const auto H23 = sofa::type::crossProductMatrix(-v[2]) / 6;
-    const auto H24 = sofa::type::crossProductMatrix(v[1]) / 6;
-    const auto H34 = sofa::type::crossProductMatrix(-v[0]) / 6;
+    const auto H12 = sofa::type::crossProductMatrix(-v[2]) / 6;
+    const auto H13 = sofa::type::crossProductMatrix(v[1]) / 6;
+    const auto H23 = sofa::type::crossProductMatrix(-v[0]) / 6;
 
     sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, SReal> > hessian;
 
-    hessian(0, 1) = H12;
-    hessian(1, 0) = H12.transposed();
-    hessian(0, 2) = H13;
-    hessian(2, 0) = H13.transposed();
-    hessian(0, 3) = H14;
-    hessian(3, 0) = H14.transposed();
-    hessian(1, 2) = H23;
-    hessian(2, 1) = H23.transposed();
-    hessian(1, 3) = H24;
-    hessian(3, 1) = H24.transposed();
-    hessian(2, 3) = H34;
-    hessian(3, 2) = H34.transposed();
+    hessian(0, 1) = H01;
+    hessian(1, 0) = H01.transposed();
+    hessian(0, 2) = H02;
+    hessian(2, 0) = H02.transposed();
+    hessian(0, 3) = H03;
+    hessian(3, 0) = H03.transposed();
+    hessian(1, 2) = H12;
+    hessian(2, 1) = H12.transposed();
+    hessian(1, 3) = H13;
+    hessian(3, 1) = H13.transposed();
+    hessian(2, 3) = H23;
+    hessian(3, 2) = H23.transposed();
 
     return hessian;
 }
