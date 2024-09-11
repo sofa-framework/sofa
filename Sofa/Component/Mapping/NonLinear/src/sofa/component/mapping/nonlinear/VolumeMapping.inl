@@ -266,12 +266,19 @@ void VolumeMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 
                 for (unsigned int i = 0; i < 4; ++i)
                 {
-                    for (unsigned int j = 0; j < 4; ++j)
+                    for (unsigned int j = i + 1; j < 4; ++j) //diagonal terms are omitted because they are null
                     {
                         parentForceAccessor[tetra[i]] +=
                             kFactor
                             * d2Vol_d2x(i, j)
                             * parentDisplacementAccessor[tetra[j]]
+                            * childForceTetra[0];
+
+                        //transpose
+                        parentForceAccessor[tetra[j]] +=
+                            kFactor
+                            * d2Vol_d2x(j, i)
+                            * parentDisplacementAccessor[tetra[i]]
                             * childForceTetra[0];
                     }
                 }
@@ -316,9 +323,10 @@ void VolumeMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
 
             for (unsigned int i = 0; i < 4; ++i)
             {
-                for (unsigned int j = 0; j < 4; ++j)
+                for (unsigned int j = i+1; j < 4; ++j) //diagonal terms are omitted because they are null
                 {
                     K.addBlock(tetra[i], tetra[j], d2Volume_d2x(i, j) * childForceTri[0]);
+                    K.addBlock(tetra[j], tetra[i], d2Volume_d2x(j, i) * childForceTri[0]);
                 }
             }
         }
@@ -367,9 +375,10 @@ void VolumeMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
             for (unsigned int i = 0; i < 4; ++i)
             {
-                for (unsigned int j = 0; j < 4; ++j)
+                for (unsigned int j = i+1; j < 4; ++j) //diagonal terms are omitted because they are null
                 {
                     dJdx(tetra[i] * Nin, tetra[j] * Nin) += d2Vol_d2x(i, j) * childForceTri[0];
+                    dJdx(tetra[j] * Nin, tetra[i] * Nin) += d2Vol_d2x(j, i) * childForceTri[0];
                 }
             }
         }
