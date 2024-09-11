@@ -92,7 +92,7 @@ void VolumeMapping<TIn, TOut>::init()
 
     const auto nbTetrahedra = l_topology->getNbTetrahedra();
 
-    if (l_topology->getNbTetrahedra() == 0)
+    if (nbTetrahedra == 0)
     {
         msg_error() << "No topology component containing tetrahedron found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
