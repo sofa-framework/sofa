@@ -26,7 +26,8 @@ set(CUDA_SOURCES
 sofa_find_package(SofaDistanceGrid REQUIRED)
 sofa_find_package(SofaCUDA REQUIRED)
 
-cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES})
+
 target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
 target_link_libraries(${PROJECT_NAME} SofaCUDA)
 
