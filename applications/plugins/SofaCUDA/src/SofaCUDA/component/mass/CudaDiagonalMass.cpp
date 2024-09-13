@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/mass/DiagonalMass.inl>
+#include <sofa/component/mass/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
 
