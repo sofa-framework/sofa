@@ -435,7 +435,7 @@ struct UniformMassTest :  public BaseTest
         const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <MechanicalObject position='0 0 0 0 0 0 1'/>                     "
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>      "
                 "</Node>                                                     " ;
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
