@@ -29,6 +29,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -68,10 +70,10 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    Data<bool> f_computeDistance;
+    sofa::core::objectmodel::RenamedData<bool> f_computeDistance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    Data<std::string> f_restLengths;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_restLengths;
 
 
     Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them

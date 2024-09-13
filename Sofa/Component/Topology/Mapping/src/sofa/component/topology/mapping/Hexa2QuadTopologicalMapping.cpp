@@ -61,6 +61,8 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
 {
     m_inputType = geometry::ElementType::HEXAHEDRON;
     m_outputType = geometry::ElementType::QUAD;
+
+    flipNormals.setOriginalData(&d_flipNormals);
 }
 
 void Hexa2QuadTopologicalMapping::init()

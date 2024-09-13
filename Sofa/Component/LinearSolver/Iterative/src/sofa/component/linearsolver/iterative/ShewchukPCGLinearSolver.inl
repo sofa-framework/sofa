@@ -50,12 +50,12 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     first = true;
     this->f_listening.setValue(true);
 
-    f_maxIter.setParent(&d_maxIter);
-    f_tolerance.setParent(&d_tolerance);
-    f_use_precond.setParent(&d_use_precond);
-    f_update_step.setParent(&d_update_step);
-    f_build_precond.setParent(&d_build_precond);
-    f_graph.setParent(&d_graph);
+    f_maxIter.setOriginalData(&d_maxIter);
+    f_tolerance.setOriginalData(&d_tolerance);
+    f_use_precond.setOriginalData(&d_use_precond);
+    f_update_step.setOriginalData(&d_update_step);
+    f_build_precond.setOriginalData(&d_build_precond);
+    f_graph.setOriginalData(&d_graph);
 
 }
 

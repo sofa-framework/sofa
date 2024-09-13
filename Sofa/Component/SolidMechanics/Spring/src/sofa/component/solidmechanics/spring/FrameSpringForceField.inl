@@ -46,9 +46,9 @@ FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* objec
     , d_showLawfulTorsion (initData (&d_showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
     , d_showExtraTorsion (initData (&d_showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
 {
-    springs.setParent(&d_springs);
-    showLawfulTorsion.setParent(&d_showLawfulTorsion);
-    showExtraTorsion.setParent(&d_showExtraTorsion);
+    springs.setOriginalData(&d_springs);
+    showLawfulTorsion.setOriginalData(&d_showLawfulTorsion);
+    showExtraTorsion.setOriginalData(&d_showExtraTorsion);
 
 }
 

@@ -25,6 +25,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::linearsolver::direct
 {
 
@@ -49,13 +51,13 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    Data<bool> f_verbose;
+    sofa::core::objectmodel::RenamedData<bool> f_verbose;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    Data<Real> f_minSingularValue;
+    sofa::core::objectmodel::RenamedData<Real> f_minSingularValue;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    Data<Real> f_conditionNumber;
+    sofa::core::objectmodel::RenamedData<Real> f_conditionNumber;
 
 
     Data<bool> d_verbose; ///< Dump system state at each iteration

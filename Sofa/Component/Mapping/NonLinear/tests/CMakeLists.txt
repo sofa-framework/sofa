@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Mapping.NonLinear_test)
 
 set(SOURCE_FILES
+    AreaMapping_test.cpp
     DistanceMapping_test.cpp
     RigidMapping_test.cpp
     SquareDistanceMapping_test.cpp

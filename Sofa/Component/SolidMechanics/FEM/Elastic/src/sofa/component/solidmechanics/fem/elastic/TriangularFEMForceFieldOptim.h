@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -59,12 +59,12 @@ public:
 */
 
 template<class DataTypes>
-class TriangularFEMForceFieldOptim : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceFieldOptim : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceFieldOptim, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceFieldOptim, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -99,8 +99,6 @@ protected:
 
     virtual ~TriangularFEMForceFieldOptim();
 public:
-    Real getPoisson() { return d_poisson.getValue(); }
-    Real getYoung() { return d_young.getValue(); }
 
     void init() override;
     void reinit() override;
@@ -159,7 +157,6 @@ public:
         }
     };
 
-    Real gamma, mu;
     class TriangleState
     {
     public:
@@ -238,8 +235,6 @@ public:
 public:
 
     /// Forcefield intern paramaters
-    Data<Real> d_poisson;
-    Data<Real> d_young; ///< Young modulus in Hooke's law
     Data<Real> d_damping; ///< Ratio damping/stiffness
     Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
@@ -250,12 +245,9 @@ public:
     Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
     Data<Real> d_showStressThreshold; ///< Threshold value to render only stress vectors higher to this threshold
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
 protected:
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
+
+    static std::pair<Real, Real> computeMuGamma(Real youngModulus, Real poissonRatio);
 };
 
 

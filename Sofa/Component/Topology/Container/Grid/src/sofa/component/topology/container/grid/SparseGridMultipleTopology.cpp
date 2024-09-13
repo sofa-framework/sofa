@@ -40,11 +40,11 @@ SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : Spar
                                                                             d_computeRamifications(initData(&d_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
                                                                             d_erasePreviousCoef(initData(&d_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
-    _fileTopologies.setParent(&d_fileTopologies);
-    _dataStiffnessCoefs.setParent(&d_dataStiffnessCoefs);
-    _dataMassCoefs.setParent(&d_dataMassCoefs);
-    _computeRamifications.setParent(&d_computeRamifications);
-    _erasePreviousCoef.setParent(&d_erasePreviousCoef);
+    _fileTopologies.setOriginalData(&d_fileTopologies);
+    _dataStiffnessCoefs.setOriginalData(&d_dataStiffnessCoefs);
+    _dataMassCoefs.setOriginalData(&d_dataMassCoefs);
+    _computeRamifications.setOriginalData(&d_computeRamifications);
+    _erasePreviousCoef.setOriginalData(&d_erasePreviousCoef);
 }
 
 

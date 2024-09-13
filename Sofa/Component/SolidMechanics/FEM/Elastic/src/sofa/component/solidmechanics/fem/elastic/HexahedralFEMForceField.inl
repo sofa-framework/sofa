@@ -66,9 +66,8 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
 
-    f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&this->d_poissonRatio);
-    hexahedronInfo.setParent(&d_hexahedronInfo);
+    f_method.setOriginalData(&d_method);
+    hexahedronInfo.setOriginalData(&d_hexahedronInfo);
 
 }
 
@@ -84,16 +83,12 @@ void HexahedralFEMForceField<DataTypes>::init()
 {
     BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    _topology = this->l_topology.get();
-
-    if (_topology==nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "Object must have a Topology.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if (_topology->getHexahedra().empty())
+    if (this->l_topology->getHexahedra().empty())
     {
         msg_error() << "Object must have a Topology with hexahedra.";
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -116,15 +111,15 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(d_hexahedronInfo.beginEdit());
 
 
-    hexahedronInf.resize(_topology->getNbHexahedra());
+    hexahedronInf.resize(this->l_topology->getNbHexahedra());
 
-    for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
+    for (size_t i=0; i<this->l_topology->getNbHexahedra(); ++i)
     {
         createHexahedronInformation(i,hexahedronInf[i],
-            _topology->getHexahedron(i),  (const std::vector< Index > )0,
+            this->l_topology->getHexahedron(i),  (const std::vector< Index > )0,
             (const std::vector< SReal >)0);
     }
-    d_hexahedronInfo.createTopologyHandler(_topology);
+    d_hexahedronInfo.createTopologyHandler(this->l_topology);
     d_hexahedronInfo.setCreationCallback([this](Index hexahedronIndex, HexahedronInformation& hexaInfo,
                                                 const core::topology::BaseMeshTopology::Hexahedron& hexa,
                                                 const sofa::type::vector< Index >& ancestors,
@@ -165,7 +160,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     {
     case LARGE :
     {
-        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<this->l_topology->getNbHexahedra(); ++i)
         {
             accumulateForceLarge( _f, _p, i);
         }
@@ -173,7 +168,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     }
     case POLAR :
     {
-        for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
+        for(size_t i = 0 ; i<this->l_topology->getNbHexahedra(); ++i)
         {
             accumulateForcePolar( _f, _p, i);
         }
@@ -194,7 +189,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = d_hexahedronInfo.getValue();
 
-    for(Size i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(Size i = 0 ; i<this->l_topology->getNbHexahedra(); ++i)
     {
         Transformation R_0_2;
         R_0_2.transpose(hexahedronInf[i].rotation);
@@ -204,7 +199,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
         for(int w=0; w<8; ++w)
         {
             Coord x_2;
-            x_2 = R_0_2 * _x[_topology->getHexahedron(i)[w]] * kFactor;
+            x_2 = R_0_2 * _x[this->l_topology->getHexahedron(i)[w]] * kFactor;
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
@@ -214,7 +209,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
         computeForce( F, X, hexahedronInf[i].stiffness );//computeForce( F, X, d_hexahedronInfo[i].stiffness );
 
         for(int w=0; w<8; ++w)
-            _v[_topology->getHexahedron(i)[w]] -= hexahedronInf[i].rotation * Deriv(F[w*3], F[w*3+1], F[w*3+2]);
+            _v[this->l_topology->getHexahedron(i)[w]] -= hexahedronInf[i].rotation * Deriv(F[w*3], F[w*3+1], F[w*3+2]);
     }
 }
 
@@ -395,7 +390,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
 
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (X0)[_topology->getHexahedron(i)[w]];
+        nodes[w] = (X0)[this->l_topology->getHexahedron(i)[w]];
 
 
     Coord horizontal;
@@ -411,7 +406,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i) );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes);
 
     d_hexahedronInfo.endEdit();
@@ -442,7 +437,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
 {
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = p[_topology->getHexahedron(i)[w]];
+        nodes[w] = p[this->l_topology->getHexahedron(i)[w]];
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -475,7 +470,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
     computeForce( F, D, hexahedronInf[i].stiffness ); // computeForce( F, D, hexahedronInf[i].stiffness ); // compute force on element
 
     for(int w=0; w<8; ++w)
-        f[_topology->getHexahedron(i)[w]] += hexahedronInf[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+        f[this->l_topology->getHexahedron(i)[w]] += hexahedronInf[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
 
     d_hexahedronInfo.endEdit();
 }
@@ -495,7 +490,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (X0)[_topology->getHexahedron(i)[j]];
+        nodes[j] = (X0)[this->l_topology->getHexahedron(i)[j]];
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_1, nodes );
@@ -508,7 +503,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
         hexahedronInf[i].rotatedInitialElements[j] = R_0_1 * nodes[j];
     }
 
-    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->d_poissonRatio.getValue() );
+    computeMaterialStiffness(hexahedronInf[i].materialMatrix, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i) );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes );
 
     d_hexahedronInfo.endEdit();
@@ -546,7 +541,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
 {
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = p[_topology->getHexahedron(i)[j]];
+        nodes[j] = p[this->l_topology->getHexahedron(i)[j]];
 
 
     Transformation R_0_2; // Rotation matrix (deformed and displaced Hexahedron/world)
@@ -579,7 +574,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
     computeForce( F, D, hexahedronInf[i].stiffness );
 
     for(int j=0; j<8; ++j)
-        f[_topology->getHexahedron(i)[j]] += hexahedronInf[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+        f[this->l_topology->getHexahedron(i)[j]] += hexahedronInf[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
 
     d_hexahedronInfo.endEdit();
 }
@@ -600,19 +595,19 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = d_hexahedronInfo.getValue();
 
-    for(Size e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    for(Size e=0 ; e<this->l_topology->getNbHexahedra() ; ++e)
     {
         const ElementStiffness &Ke = hexahedronInf[e].stiffness;
 
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
-            node1 = _topology->getHexahedron(e)[n1];
+            node1 = this->l_topology->getHexahedron(e)[n1];
 
             // find index of node 2
             for (n2=0; n2<8; n2++)
             {
-                node2 = _topology->getHexahedron(e)[n2];
+                node2 = this->l_topology->getHexahedron(e)[n2];
                 Mat33 tmp = hexahedronInf[e].rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * hexahedronInf[e].rotation;
@@ -632,9 +627,9 @@ void HexahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
 
-    const auto& hexahedra = _topology->getHexahedra();
+    const auto& hexahedra = this->l_topology->getHexahedra();
 
-    for (Size e = 0; e < _topology->getNbHexahedra(); ++e)
+    for (Size e = 0; e < this->l_topology->getNbHexahedra(); ++e)
     {
         const ElementStiffness& Ke = hexahedronInf[e].stiffness;
 
@@ -682,9 +677,9 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
-    for(size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(size_t i = 0 ; i<this->l_topology->getNbHexahedra(); ++i)
     {
-        const core::topology::BaseMeshTopology::Hexahedron &t=_topology->getHexahedron(i);
+        const core::topology::BaseMeshTopology::Hexahedron &t=this->l_topology->getHexahedron(i);
 
         Index a = t[0];
         Index b = t[1];

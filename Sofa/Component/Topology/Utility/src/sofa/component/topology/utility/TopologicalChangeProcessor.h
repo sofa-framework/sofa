@@ -29,6 +29,9 @@
 
 #include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
+
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
 #endif // SOFAMISCTOPOLOGY_HAVE_ZLIB
@@ -52,55 +55,55 @@ public:
 
     using Index = sofa::Index;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<std::string> m_filename;
+    sofa::core::objectmodel::DataFileName m_filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data < type::vector< type::vector<Index> > > m_listChanges;
+    sofa::core::objectmodel::RenamedData < type::vector< type::vector<Index> > > m_listChanges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<double> m_interval;
+    sofa::core::objectmodel::RenamedData<double> m_interval;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<double> m_shift;
+    sofa::core::objectmodel::RenamedData<double> m_shift;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<bool> m_loop;
+    sofa::core::objectmodel::RenamedData<bool> m_loop;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<bool> m_useDataInputs;
+    sofa::core::objectmodel::RenamedData<bool> m_useDataInputs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<double> m_timeToRemove;
+    sofa::core::objectmodel::RenamedData<double> m_timeToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<sofa::type::vector<Index> >m_pointsToRemove;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> >m_pointsToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<sofa::type::vector<Index> > m_edgesToRemove;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > m_edgesToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<sofa::type::vector<Index> > m_trianglesToRemove;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > m_trianglesToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<sofa::type::vector<Index> > m_quadsToRemove;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > m_quadsToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<sofa::type::vector<Index> > m_tetrahedraToRemove;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > m_tetrahedraToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data <sofa::type::vector<Index> > m_hexahedraToRemove;
+    sofa::core::objectmodel::RenamedData <sofa::type::vector<Index> > m_hexahedraToRemove;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<bool> m_saveIndicesAtInit;
+    sofa::core::objectmodel::RenamedData<bool> m_saveIndicesAtInit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<SReal> m_epsilonSnapPath;
+    sofa::core::objectmodel::RenamedData<SReal> m_epsilonSnapPath;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<SReal> m_epsilonSnapBorder;
+    sofa::core::objectmodel::RenamedData<SReal> m_epsilonSnapBorder;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_UTILITY()
-    Data<bool> m_draw;
+    sofa::core::objectmodel::RenamedData<bool> m_draw;
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < type::vector< type::vector<Index> > > d_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.

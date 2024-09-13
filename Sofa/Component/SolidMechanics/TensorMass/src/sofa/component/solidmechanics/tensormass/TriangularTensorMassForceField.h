@@ -29,6 +29,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::solidmechanics::tensormass
 {
 
@@ -89,7 +91,7 @@ protected:
         }
     };
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    Data <sofa::Index> edgeInfo;
+    sofa::core::objectmodel::RenamedData <sofa::type::vector<EdgeRestInformation>> edgeInfo;
 
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
 
@@ -122,10 +124,10 @@ protected:
     bool updateMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    Data<Real> f_poissonRatio;
+    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    Data<Real> f_youngModulus;
+    sofa::core::objectmodel::RenamedData<Real> f_youngModulus;
 
     Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law

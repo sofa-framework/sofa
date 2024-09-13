@@ -40,8 +40,7 @@ using sofa::core::objectmodel::ComponentState ;
 
 template<class DataTypes>
 TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
-    : m_topology(nullptr)
-    , _indexedElements(nullptr)
+    : _indexedElements(nullptr)
     , needUpdateTopology(false)
     , m_VonMisesColorMap(nullptr)
     , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
@@ -128,7 +127,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
     _initialPoints.setOriginalData(&d_initialPoints);
     f_method.setOriginalData(&d_method);
-    _poissonRatio.setOriginalData(&this->d_poissonRatio);
     _youngModulus.setOriginalData(&this->d_youngModulus);
     _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
     _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
@@ -286,7 +284,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
     const VecReal& localStiffnessFactor = d_localStiffnessFactor.getValue();
     const Real youngModulusElement = this->getYoungModulusInElement(i);
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
-    const Real poissonRatio = this->d_poissonRatio.getValue();
+    const Real poissonRatio = this->getPoissonRatioInElement(i);
 
     materialsStiffnesses[i][0][0] = materialsStiffnesses[i][1][1] = materialsStiffnesses[i][2][2] = 1;
     materialsStiffnesses[i][0][1] = materialsStiffnesses[i][0][2] = materialsStiffnesses[i][1][0]
@@ -825,7 +823,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned 
         return;
     }
 
-    core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = m_topology->getTetrahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = this->l_topology->getTetrahedraAroundVertex(nodeIdx);
 
     R[0][0] = 0.0 ; R[0][1] = 0.0 ; R[0][2] = 0.0 ;
     R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
@@ -1279,7 +1277,7 @@ template <class DataTypes>
 TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 {
     // Need to unaffect a vector to the pointer
-    if (m_topology == nullptr && _indexedElements != nullptr)
+    if (this->l_topology == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
 
     if (m_VonMisesColorMap != nullptr)
@@ -1291,24 +1289,14 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+    BaseLinearElasticityFEMForceField<DataTypes>::init();
+
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        return;
+    }
+
     this->d_componentState.setValue(ComponentState::Invalid) ;
-
-    const VecReal& youngModulus = this->d_youngModulus.getValue();
-    assert(!youngModulus.empty());
-    minYoung=youngModulus[0];
-    maxYoung=youngModulus[0];
-    for (unsigned i=0; i<youngModulus.size(); i++)
-    {
-        if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-        if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
-    }
-
-    const Real& poissonRatio = this->d_poissonRatio.getValue();
-    if (poissonRatio < 0 || poissonRatio >= 0.5)
-    {
-        this->d_poissonRatio.setValue((poissonRatio < 0) ? 0.0 : 0.499);
-        msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
-    }
 
     if (d_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
     {
@@ -1319,18 +1307,19 @@ void TetrahedronFEMForceField<DataTypes>::init()
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
-    BaseLinearElasticityFEMForceField<DataTypes>::init();
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    const VecReal& youngModulus = this->d_youngModulus.getValue();
+    if (youngModulus.empty())
+    {
+        this->setYoungModulus(BaseLinearElasticityFEMForceField<DataTypes>::defaultYoungModulusValue);
+    }
+    assert(!youngModulus.empty());
+    const auto [yMin, yMax] = std::minmax_element(youngModulus.begin(), youngModulus.end());
+    minYoung = *yMin;
+    maxYoung = *yMax;
 
     /// If not possible try to find one in the current context.
-    if (m_topology == nullptr)
+    if (this->l_topology == nullptr)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " object must have a mesh topology. The component is inactivated.  "
-            "To remove this error message please add a topology component to your scene.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-
         // Need to affect a vector to the pointer even if it is empty.
         if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
@@ -1339,7 +1328,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
 
     
-    if (m_topology->getNbTetrahedra()<=0 && m_topology->getNbHexahedra()<=0)
+    if (this->l_topology->getNbTetrahedra()<=0 && this->l_topology->getNbHexahedra()<=0)
     {
         msg_error()     << " object must have a tetrahedric topology. The component is inactivated.  "
                            "To remove this error message please add a tetrahedric topology component to your scene.";
@@ -1353,20 +1342,20 @@ void TetrahedronFEMForceField<DataTypes>::init()
         return;
     }
 
-    if (!m_topology->getTetrahedra().empty())
+    if (!this->l_topology->getTetrahedra().empty())
     {
-        _indexedElements = & (m_topology->getTetrahedra());
+        _indexedElements = & (this->l_topology->getTetrahedra());
     }
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-        const auto nbcubes = m_topology->getNbHexahedra();
+        const auto nbcubes = this->l_topology->getNbHexahedra();
 
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
         {
-            const auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(m_topology);
+            const auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(this->l_topology.get());
             if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
@@ -1378,7 +1367,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         tetrahedra->reserve(size_t(nbcubes)*6);
         for (sofa::Size i=0; i<nbcubes; i++)
         {
-            core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
+            core::topology::BaseMeshTopology::Hexa c = this->l_topology->getHexahedron(i);
             if (!((i%nx)&1))
             {
                 // swap all points on the X edges
@@ -1438,7 +1427,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
-    if (!this->mstate || !m_topology){
+    if (!this->mstate || !this->l_topology){
         // Need to affect a vector to the pointer even if it is empty.
         if (_indexedElements == nullptr)
             _indexedElements = new VecElement();
@@ -1446,9 +1435,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         return;
     }
 
-    if (!m_topology->getTetrahedra().empty())
+    if (!this->l_topology->getTetrahedra().empty())
     {
-        _indexedElements = & (m_topology->getTetrahedra());
+        _indexedElements = & (this->l_topology->getTetrahedra());
     }
 
     setMethod(d_method.getValue() );
@@ -1512,7 +1501,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
+        _rotationIdx.resize(this->l_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -1529,7 +1518,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
+        _rotationIdx.resize(this->l_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -1546,7 +1535,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
+        _rotationIdx.resize(this->l_topology->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -2413,7 +2402,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     /// compute the values of vonMises stress in nodes
     for(Index dof = 0; dof < dofs.size(); dof++) {
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = m_topology->getTetrahedraAroundVertex(dof);
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = this->l_topology->getTetrahedraAroundVertex(dof);
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
@@ -2439,8 +2428,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
     maxVM*=d_showStressAlpha.getValue();
-    vonMisesStressColors.resize(m_topology->getNbPoints());
-    vonMisesStressColorsCoeff.resize(m_topology->getNbPoints());
+    vonMisesStressColors.resize(this->l_topology->getNbPoints());
+    vonMisesStressColorsCoeff.resize(this->l_topology->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
 
     unsigned int i = 0;

@@ -114,8 +114,8 @@ public:
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
         ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.05));
-        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(20000000));
-        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->getYoungModulusInElement(0), static_cast<Real>(20000000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->getPoissonRatioInElement(0), static_cast<Real>(0.49));
     }
 
 
@@ -172,8 +172,8 @@ public:
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
         ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.1));
-        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(5000));
-        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45));
     }
 
 

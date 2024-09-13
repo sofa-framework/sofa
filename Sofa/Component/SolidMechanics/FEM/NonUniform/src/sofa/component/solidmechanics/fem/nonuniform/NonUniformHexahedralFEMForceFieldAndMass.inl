@@ -43,17 +43,14 @@ NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForc
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    elastic::BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    this->getContext()->get(this->_topology);
-
-    if(this->_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "Object must have a HexahedronSetTopology.";
         return;
     }
 
-    _multilevelTopology = dynamic_cast<component::topology::container::dynamic::MultilevelHexahedronSetTopologyContainer*>(this->_topology);
+    _multilevelTopology = dynamic_cast<component::topology::container::dynamic::MultilevelHexahedronSetTopologyContainer*>(this->l_topology.get());
 
     if(_multilevelTopology == nullptr)
     {
@@ -74,21 +71,21 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
         this->setMethod(HexahedralFEMForceFieldT::POLAR);
 
     auto& hexahedronInf = *(this->d_hexahedronInfo.beginEdit());
-    hexahedronInf.resize(this->_topology->getNbHexahedra());
+    hexahedronInf.resize(this->l_topology->getNbHexahedra());
     this->d_hexahedronInfo.endEdit();
 
     type::vector<ElementMass>& elementMasses = *this->d_elementMasses.beginEdit();
-    elementMasses.resize( this->_topology->getNbHexahedra() );
+    elementMasses.resize( this->l_topology->getNbHexahedra() );
     this->d_elementMasses.endEdit();
 
     type::vector<Real>& elementTotalMass = *this->d_elementTotalMass.beginEdit();
-    elementTotalMass.resize( this->_topology->getNbHexahedra() );
+    elementTotalMass.resize( this->l_topology->getNbHexahedra() );
     this->d_elementTotalMass.endEdit();
 
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
 
-    if (!this->_topology->getNbHexahedra())
+    if (!this->l_topology->getNbHexahedra())
     {
         msg_error() << "Topology is empty !";
         return;
@@ -97,13 +94,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     type::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
-        nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
+        nodesCoarse[w] = (X0)[this->l_topology->getHexahedron(0)[w]];
 
     type::Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
         nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
 
-    HexahedralFEMForceFieldT::computeMaterialStiffness(_material.C, this->getYoungModulusInElement(0), this->d_poissonRatio.getValue());
+    HexahedralFEMForceFieldT::computeMaterialStiffness(_material.C, this->getYoungModulusInElement(0), this->getPoissonRatioInElement(0));
     HexahedralFEMForceFieldT::computeElementStiffness(_material.K, _material.C, nodesFine);
 
     //	HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
@@ -166,13 +163,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     {
     case HexahedralFEMForceFieldT::LARGE:
     {
-        for (size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for (size_t i=0; i<this->l_topology->getNbHexahedra(); ++i)
             initLarge(i);
     }
     break;
     case HexahedralFEMForceFieldT::POLAR:
     {
-        for(size_t i=0; i<this->_topology->getNbHexahedra(); ++i)
+        for(size_t i=0; i<this->l_topology->getNbHexahedra(); ++i)
             initPolar(i);
     }
     break;
@@ -185,11 +182,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::topology::Topology* t)
 {
-    if(t != this->_topology)
+    if(t != this->l_topology)
         return;
 #ifdef TODOTOPO
-    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=this->l_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=this->l_topology->endChange();
 
     // handle point events
     //this->d_particleMasses.handleTopologyEvents(itBegin,itEnd);
@@ -254,7 +251,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
     const auto &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
     dmsg_info() << "HEXAHEDRAADDED hexaId: " << hexaModif ;
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     switch(this->method)
     {
@@ -317,7 +314,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
 
     dmsg_info() << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
 
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
     type::vector<Real>&	particleMasses = *this->d_particleMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
@@ -363,7 +360,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
 
     dmsg_info() << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif ;
 
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
@@ -435,7 +432,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (X0)[this->_topology->getHexahedron(i)[w]];
+        nodes[w] = (X0)[this->l_topology->getHexahedron(i)[w]];
 
     // compute initial configuration in order to compute corotationnal deformations
     Coord horizontal;
@@ -470,7 +467,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (X0)[this->_topology->getHexahedron(i)[j]];
+        nodes[j] = (X0)[this->l_topology->getHexahedron(i)[j]];
 
     typename HexahedralFEMForceFieldT::Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     this->computeRotationPolar( R_0_1, nodes );
@@ -939,7 +936,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
     Real kFactor=(Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate.get());
     helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate.get()].write();
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
     const auto& hexahedronInf = this->d_hexahedronInfo.getValue();
 
     // WARNING !  MBK is used not only in the equation matrix, but also in the right-hand term, with different coefficients.

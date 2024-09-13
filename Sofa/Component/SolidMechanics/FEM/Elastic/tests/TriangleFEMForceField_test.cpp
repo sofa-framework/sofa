@@ -232,24 +232,24 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
         }
     }
 
@@ -356,24 +356,24 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
         }
     }
 
