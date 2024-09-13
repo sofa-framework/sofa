@@ -30,6 +30,8 @@
 
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
@@ -184,15 +186,15 @@ public:
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    sofa::core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_poissonRatio;
+    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> hexahedronInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
 
     Data<std::string> d_method; ///< "large" or "polar" displacements
 
@@ -206,7 +208,6 @@ public:
         const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&);
 
 protected:
-    core::topology::BaseMeshTopology* _topology { nullptr };
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };

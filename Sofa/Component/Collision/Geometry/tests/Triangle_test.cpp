@@ -65,14 +65,14 @@ namespace sofa
         }
 
         template <class Intersector>
-        bool rigidTriangle(Intersector& bi);
+        bool rigidTriangle(sofa::component::collision::detection::intersection::BaseProximityIntersection::SPtr intersectionMethod, Intersector& bi);
 
         template <class Intersector>
-        bool softTriangle(Intersector& bi);
+        bool softTriangle(sofa::component::collision::detection::intersection::BaseProximityIntersection::SPtr intersectionMethod, Intersector& bi);
     };
 
 template <class Intersector>
-bool TestTriangle::rigidTriangle(Intersector& bi) {
+bool TestTriangle::rigidTriangle(sofa::component::collision::detection::intersection::BaseProximityIntersection::SPtr intersectionMethod, Intersector& bi) {
     double angles[3];
     int order[3];
     order[0] = 0;
@@ -100,7 +100,7 @@ bool TestTriangle::rigidTriangle(Intersector& bi) {
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if (!bi.computeIntersection(tri, sph, &detectionOUTPUT))
+    if (!bi.computeIntersection(tri, sph, &detectionOUTPUT, intersectionMethod.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -120,7 +120,7 @@ bool TestTriangle::rigidTriangle(Intersector& bi) {
 
 
 template <class Intersector>
-bool TestTriangle::softTriangle(Intersector& bi) {
+bool TestTriangle::softTriangle(sofa::component::collision::detection::intersection::BaseProximityIntersection::SPtr intersectionMethod, Intersector& bi) {
     Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -139,7 +139,7 @@ bool TestTriangle::softTriangle(Intersector& bi) {
     sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if (!bi.computeIntersection(tri, sph, &detectionOUTPUT))
+    if (!bi.computeIntersection(tri, sph, &detectionOUTPUT, intersectionMethod.get()))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -163,9 +163,9 @@ MeshMinProximityIntersection meshMin(minProx.get());
 component::collision::detection::intersection::NewProximityIntersection::SPtr newProx = New<component::collision::detection::intersection::NewProximityIntersection>();
 MeshNewProximityIntersection meshNew(newProx.get());
 
-TEST_F(TestTriangle, rigid_sphere_triangle_min_prox) { ASSERT_TRUE(rigidTriangle<MeshMinProximityIntersection >(meshMin)); }
-TEST_F(TestTriangle, rigid_sphere_triangle_new_prox) { ASSERT_TRUE(rigidTriangle<MeshNewProximityIntersection >(meshNew)); }
-TEST_F(TestTriangle, soft_sphere_triangle_min_prox) { ASSERT_TRUE(softTriangle<MeshMinProximityIntersection >(meshMin)); }
-TEST_F(TestTriangle, soft_sphere_triangle_new_prox) { ASSERT_TRUE(softTriangle<MeshNewProximityIntersection >(meshNew)); }
+TEST_F(TestTriangle, rigid_sphere_triangle_min_prox) { ASSERT_TRUE(rigidTriangle<MeshMinProximityIntersection >(minProx, meshMin)); }
+TEST_F(TestTriangle, rigid_sphere_triangle_new_prox) { ASSERT_TRUE(rigidTriangle<MeshNewProximityIntersection >(newProx, meshNew)); }
+TEST_F(TestTriangle, soft_sphere_triangle_min_prox) { ASSERT_TRUE(softTriangle<MeshMinProximityIntersection >(minProx, meshMin)); }
+TEST_F(TestTriangle, soft_sphere_triangle_new_prox) { ASSERT_TRUE(softTriangle<MeshNewProximityIntersection >(newProx, meshNew)); }
 
 } 

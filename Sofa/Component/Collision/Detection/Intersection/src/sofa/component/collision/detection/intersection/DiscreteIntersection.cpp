@@ -125,45 +125,4 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, O
     return computeIntersectionSphere(sph1, sph2, contacts, currentIntersection->getAlarmDistance(), currentIntersection->getContactDistance());
 }
 
-
-bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    return testIntersection(cube1, cube2, this);
-}
-
-int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    return computeIntersection(cube1, cube2, contacts, this);
-}
-
-bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
-{
-    return testIntersection(sph1, sph2, this);
-}
-
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
-{
-    return computeIntersection(sph1, sph2, contacts, this);
-}
-
-bool DiscreteIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
-{
-    return testIntersection(sph1, sph2, this);
-}
-
-int DiscreteIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    return computeIntersection(sph1, sph2, contacts, this);
-}
-
-bool DiscreteIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
-{
-    return testIntersection(sph1, sph2, this);
-}
-
-int DiscreteIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    return computeIntersection(sph1, sph2, contacts, this);
-}
-
 } // namespace sofa::component::collision::detection::intersection

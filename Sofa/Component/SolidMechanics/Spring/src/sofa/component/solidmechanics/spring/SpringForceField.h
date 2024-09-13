@@ -80,7 +80,7 @@ public:
     Data<type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
     Data<type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
     Data<type::vector<bool> > d_elongationOnly; ///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere
-    Data<type::vector<bool> > d_enabled; ///< List of boolean stating on the fact that the spring is enabled. Must have as same size than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere
+    Data<type::vector<bool> > d_enabled; ///< List of boolean stating on the fact that the spring is enabled. Must have as same size than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, True will be applied everywhere
 
     void init() override;
     void reinit() override;

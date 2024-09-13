@@ -26,6 +26,8 @@
 
 #include <sofa/component/collision/geometry/CubeModel.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::collision::detection::intersection
 {
 
@@ -56,7 +58,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API NewProximityIntersecti
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    Data<bool> useLineLine;
+    sofa::core::objectmodel::RenamedData<bool> useLineLine;
 
     Data<bool> d_useLineLine; ///< Line-line collision detection enabled
 
@@ -76,16 +78,16 @@ public:
     template<typename SphereType1, typename SphereType2>
     int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) = delete;
     template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(SphereType1& sph1, SphereType2& sph2);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2) = delete;
     template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts) = delete;
 protected:
     NewProximityIntersection();
 

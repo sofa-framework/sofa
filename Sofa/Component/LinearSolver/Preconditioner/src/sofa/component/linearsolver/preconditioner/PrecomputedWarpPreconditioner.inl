@@ -63,11 +63,11 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     _rotate = false;
     usePrecond = true;
 
-    jmjt_twostep.setParent(&d_jmjt_twostep);
-    use_file.setParent(&d_use_file);
-    share_matrix.setParent(&d_share_matrix);
-    use_rotations.setParent(&d_use_rotations);
-    draw_rotations_scale.setParent(&d_draw_rotations_scale);
+    jmjt_twostep.setOriginalData(&d_jmjt_twostep);
+    use_file.setOriginalData(&d_use_file);
+    share_matrix.setOriginalData(&d_share_matrix);
+    use_rotations.setOriginalData(&d_use_rotations);
+    draw_rotations_scale.setOriginalData(&d_draw_rotations_scale);
 
 }
 

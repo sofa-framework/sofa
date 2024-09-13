@@ -90,24 +90,24 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     d_surfaceAreaAfterTC.setReadOnly(true);
     this->f_listening.setValue(true);
 
-    m_p0.setParent(&d_p0);
-    m_B.setParent(&d_B);
-    m_gamma.setParent(&d_gamma);
-    m_injectedVolume.setParent(&d_injectedVolume);
-    m_maxInjectionRate.setParent(&d_maxInjectionRate);
-    m_initialVolume.setParent(&d_initialVolume);
-    m_currentInjectedVolume.setParent(&d_currentInjectedVolume);
-    m_v0.setParent(&d_v0);
-    m_currentVolume.setParent(&d_currentVolume);
-    m_currentPressure.setParent(&d_currentPressure);
-    m_currentStiffness.setParent(&d_currentStiffness);
-    m_pressureTriangles.setParent(&d_pressureTriangles);
-    m_initialSurfaceArea.setParent(&d_initialSurfaceArea);
-    m_currentSurfaceArea.setParent(&d_currentSurfaceArea);
-    m_drawForceScale.setParent(&d_drawForceScale);
-    m_drawForceColor.setParent(&d_drawForceColor);
-    m_volumeAfterTC.setParent(&d_volumeAfterTC);
-    m_surfaceAreaAfterTC.setParent(&d_surfaceAreaAfterTC);
+    m_p0.setOriginalData(&d_p0);
+    m_B.setOriginalData(&d_B);
+    m_gamma.setOriginalData(&d_gamma);
+    m_injectedVolume.setOriginalData(&d_injectedVolume);
+    m_maxInjectionRate.setOriginalData(&d_maxInjectionRate);
+    m_initialVolume.setOriginalData(&d_initialVolume);
+    m_currentInjectedVolume.setOriginalData(&d_currentInjectedVolume);
+    m_v0.setOriginalData(&d_v0);
+    m_currentVolume.setOriginalData(&d_currentVolume);
+    m_currentPressure.setOriginalData(&d_currentPressure);
+    m_currentStiffness.setOriginalData(&d_currentStiffness);
+    m_pressureTriangles.setOriginalData(&d_pressureTriangles);
+    m_initialSurfaceArea.setOriginalData(&d_initialSurfaceArea);
+    m_currentSurfaceArea.setOriginalData(&d_currentSurfaceArea);
+    m_drawForceScale.setOriginalData(&d_drawForceScale);
+    m_drawForceColor.setOriginalData(&d_drawForceColor);
+    m_volumeAfterTC.setOriginalData(&d_volumeAfterTC);
+    m_surfaceAreaAfterTC.setOriginalData(&d_surfaceAreaAfterTC);
 
 
 }

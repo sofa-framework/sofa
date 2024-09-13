@@ -293,7 +293,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
     , m_potentialEnergy(0.0)
     , m_topology(nullptr)
 {
-    edgeInfo.setParent(&d_edgeInfo);
+    edgeInfo.setOriginalData(&d_edgeInfo);
 }
 
 template<class DataTypes>

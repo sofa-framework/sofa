@@ -50,12 +50,12 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     d_valuesIndexedInTopology.setDisplayed(false);
     d_idInRegularGrid2IndexInTopo.setDisplayed(false);
 
-    resolution.setParent(&d_resolution);
-    valuesIndexedInRegularGrid.setParent(&d_valuesIndexedInRegularGrid);
-    valuesIndexedInTopology.setParent(&d_valuesIndexedInTopology);
-    idxInRegularGrid.setParent(&d_idxInRegularGrid);
-    idInRegularGrid2IndexInTopo.setParent(&d_idInRegularGrid2IndexInTopo);
-    voxelSize.setParent(&d_voxelSize);
+    resolution.setOriginalData(&d_resolution);
+    valuesIndexedInRegularGrid.setOriginalData(&d_valuesIndexedInRegularGrid);
+    valuesIndexedInTopology.setOriginalData(&d_valuesIndexedInTopology);
+    idxInRegularGrid.setOriginalData(&d_idxInRegularGrid);
+    idInRegularGrid2IndexInTopo.setOriginalData(&d_idInRegularGrid2IndexInTopo);
+    voxelSize.setOriginalData(&d_voxelSize);
 }
 
 void DynamicSparseGridTopologyContainer::init()

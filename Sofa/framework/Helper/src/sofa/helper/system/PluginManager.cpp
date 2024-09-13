@@ -70,6 +70,17 @@ PluginManager::~PluginManager()
     //writeToIniFile();
 }
 
+void PluginManager::cleanup()
+{
+    for (const auto& [key, callback] : m_onPluginCleanupCallbacks)
+    {
+        if(callback)
+        {
+            callback();
+        }
+    }
+}
+
 void PluginManager::readFromIniFile(const std::string& path)
 {
     type::vector<std::string> loadedPlugins;
@@ -233,15 +244,23 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
 
 void PluginManager::addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback)
 {
-    if(m_onPluginLoadedCallbacks.find(key) == m_onPluginLoadedCallbacks.end())
-    {
-        m_onPluginLoadedCallbacks[key] = callback;
-    }
+    m_onPluginLoadedCallbacks.insert({key, callback});
+}
+
+void PluginManager::addOnPluginCleanupCallbacks(const std::string& key, std::function<void()> callback)
+{
+    m_onPluginCleanupCallbacks.insert({key, callback});
 }
 
 void PluginManager::removeOnPluginLoadedCallback(const std::string& key)
 {
     m_onPluginLoadedCallbacks.erase(key);
+}
+
+
+void PluginManager::removeOnPluginCleanupCallbacks(const std::string& key)
+{
+    m_onPluginCleanupCallbacks.erase(key);
 }
 
 std::string PluginManager::GetPluginNameFromPath(const std::string& pluginPath)

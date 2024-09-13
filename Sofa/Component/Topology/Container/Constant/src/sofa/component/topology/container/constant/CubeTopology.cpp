@@ -71,13 +71,13 @@ CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
     , d_max(initData(&d_max, Vec3(1.0_sreal, 1.0_sreal, 1.0_sreal), "max", "Max"))
 {
     setSize();
-    nx.setParent(&d_nx);
-    ny.setParent(&d_ny);
-    nz.setParent(&d_nz);
-    internalPoints.setParent(&d_internalPoints);
-    splitNormals.setParent(&d_splitNormals);
-    min.setParent(&d_min);
-    max.setParent(&d_max);
+    nx.setOriginalData(&d_nx);
+    ny.setOriginalData(&d_ny);
+    nz.setOriginalData(&d_nz);
+    internalPoints.setOriginalData(&d_internalPoints);
+    splitNormals.setOriginalData(&d_splitNormals);
+    min.setOriginalData(&d_min);
+    max.setOriginalData(&d_max);
 }
 
 CubeTopology::CubeTopology()
@@ -87,13 +87,13 @@ CubeTopology::CubeTopology()
     , d_min(initData(&d_min, Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal), "min", "Min"))
     , d_max(initData(&d_max, Vec3(1.0_sreal, 1.0_sreal, 1.0_sreal), "max", "Max"))
 {
-    nx.setParent(&d_nx);
-    ny.setParent(&d_ny);
-    nz.setParent(&d_nz);
-    internalPoints.setParent(&d_internalPoints);
-    splitNormals.setParent(&d_splitNormals);
-    min.setParent(&d_min);
-    max.setParent(&d_max);
+    nx.setOriginalData(&d_nx);
+    ny.setOriginalData(&d_ny);
+    nz.setOriginalData(&d_nz);
+    internalPoints.setOriginalData(&d_internalPoints);
+    splitNormals.setOriginalData(&d_splitNormals);
+    min.setOriginalData(&d_min);
+    max.setOriginalData(&d_max);
 }
 
 void CubeTopology::setSize(int nx, int ny, int nz)

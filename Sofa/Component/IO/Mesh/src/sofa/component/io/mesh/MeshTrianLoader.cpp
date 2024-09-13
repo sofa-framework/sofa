@@ -48,10 +48,10 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
     d_edgesOnBorder.setPersistent(false);
     d_trianglesOnBorderList.setPersistent(false);
 
-    p_trian2.setParent(&d_trian2);
-    neighborTable.setParent(&d_neighborTable);
-    edgesOnBorder.setParent(&d_edgesOnBorder);
-    trianglesOnBorderList.setParent(&d_trianglesOnBorderList);
+    p_trian2.setOriginalData(&d_trian2);
+    neighborTable.setOriginalData(&d_neighborTable);
+    edgesOnBorder.setOriginalData(&d_edgesOnBorder);
+    trianglesOnBorderList.setOriginalData(&d_trianglesOnBorderList);
 
 }
 

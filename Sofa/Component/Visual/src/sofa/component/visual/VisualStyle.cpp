@@ -32,7 +32,9 @@ using namespace sofa::core::visual;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-int VisualStyleClass = core::RegisterObject("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
+void registerVisualStyle(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
 showAll, hideAll,\n\
     showVisual, hideVisual,\n\
         showVisualModels, hideVisualModels,\n\
@@ -49,14 +51,15 @@ showAll, hideAll,\n\
     showOptions hideOptions\n\
         showRendering hideRendering\n\
         showNormals hideNormals\n\
-        showWireframe hideWireframe").add<VisualStyle>();
+        showWireframe hideWireframe").add<VisualStyle>());
+}
 
 VisualStyle::VisualStyle()
     : d_displayFlags(initData(&d_displayFlags, "displayFlags", "Display Flags"))
 {
     d_displayFlags.setWidget("widget_displayFlags");
 
-    displayFlags.setParent(&d_displayFlags);
+    displayFlags.setOriginalData(&d_displayFlags);
 }
 
 void VisualStyle::fwdDraw(VisualParams* vparams)

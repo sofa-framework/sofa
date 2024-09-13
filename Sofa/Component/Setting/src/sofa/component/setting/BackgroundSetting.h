@@ -26,6 +26,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/RGBAColor.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::setting
 {
 
@@ -40,7 +42,7 @@ protected:
 
 public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    Data<sofa::type::RGBAColor> color;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> color;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.

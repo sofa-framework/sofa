@@ -44,8 +44,8 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
 {
     enum_type = LINE_TYPE;
 
-    bothSide.setParent(&d_bothSide);
-    m_displayFreePosition.setParent(&d_displayFreePosition);
+    bothSide.setOriginalData(&d_bothSide);
+    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 

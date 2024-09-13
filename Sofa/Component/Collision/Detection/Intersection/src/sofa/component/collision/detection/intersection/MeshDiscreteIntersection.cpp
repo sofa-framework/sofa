@@ -34,8 +34,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
 
-MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
-    : intersection(object)
+MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* intersection, bool addSelf)
 {
     if (addSelf)
     {
@@ -90,17 +89,6 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     detection->elem.second = e2;
     detection->id = e2.getIndex();
     return 1;
-}
-
-
-bool MeshDiscreteIntersection::testIntersection(Triangle& t, Line& l)
-{
-    return testIntersection(t, l, intersection);
-}
-
-int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

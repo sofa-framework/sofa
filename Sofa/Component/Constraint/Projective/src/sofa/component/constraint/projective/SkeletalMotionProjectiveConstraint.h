@@ -27,6 +27,8 @@
 #include <sofa/type/SVector.h>
 #include <type_traits>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
@@ -104,16 +106,16 @@ protected:
 protected:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<type::SVector<SkeletonJoint<TDataTypes> > > skeletonJoints;
+    sofa::core::objectmodel::RenamedData<type::SVector<SkeletonJoint<TDataTypes> > > skeletonJoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<type::SVector<SkeletonBone> > skeletonBones;
+    sofa::core::objectmodel::RenamedData<type::SVector<SkeletonBone> > skeletonBones;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<float> animationSpeed;
+    sofa::core::objectmodel::RenamedData<float> animationSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<bool> active;
+    sofa::core::objectmodel::RenamedData<bool> active;
 
 
     // every nodes needed in the animation chain

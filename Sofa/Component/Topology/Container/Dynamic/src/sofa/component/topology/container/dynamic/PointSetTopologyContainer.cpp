@@ -61,7 +61,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     , d_nbPoints (initData(&d_nbPoints, npoints, "nbPoints", "Number of points"))
 {
     addAlias(&d_initPoints,"points");
-    nbPoints.setParent(&d_nbPoints);
+    nbPoints.setOriginalData(&d_nbPoints);
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)

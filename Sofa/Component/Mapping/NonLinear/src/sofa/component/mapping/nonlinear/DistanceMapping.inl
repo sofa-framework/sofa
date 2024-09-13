@@ -43,8 +43,8 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    f_computeDistance.setParent(&d_computeDistance);
-    f_restLengths.setParent(&d_restLengths);
+    f_computeDistance.setOriginalData(&d_computeDistance);
+    f_restLengths.setOriginalData(&d_restLengths);
 }
 
 template <class TIn, class TOut>

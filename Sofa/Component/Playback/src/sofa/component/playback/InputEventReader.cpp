@@ -33,9 +33,11 @@
 namespace sofa::component::playback
 {
 
-// Register in the Factory
-int InputEventReaderClass = core::RegisterObject("Read events from file")
-        .add< InputEventReader >();
+void registerInputEventReader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read events from file.")
+        .add< InputEventReader >());
+}
 
 InputEventReader::InputEventReader()
     : d_filename(initData(&d_filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
@@ -54,10 +56,10 @@ InputEventReader::InputEventReader()
     , oldPedalState(NO_PEDAL)
 {
     filename.setParent(&d_filename);
-    inverseSense.setParent(&d_inverseSense);
-    p_key1.setParent(&d_key1);
-    p_key2.setParent(&d_key2);
-    p_writeEvents.setParent(&d_writeEvents);
+    inverseSense.setOriginalData(&d_inverseSense);
+    p_key1.setOriginalData(&d_key1);
+    p_key2.setOriginalData(&d_key2);
+    p_writeEvents.setOriginalData(&d_writeEvents);
     p_outputFilename.setParent(&d_outputFilename);
 
 

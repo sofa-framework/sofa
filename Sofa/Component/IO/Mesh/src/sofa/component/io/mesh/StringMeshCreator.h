@@ -24,6 +24,8 @@
 
 #include <sofa/core/loader/MeshLoader.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::io::mesh
 {
 
@@ -37,7 +39,7 @@ class SOFA_COMPONENT_IO_MESH_API StringMeshCreator : public sofa::core::loader::
 {
 public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< unsigned > resolution;
+    sofa::core::objectmodel::RenamedData< unsigned > resolution;
 
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }

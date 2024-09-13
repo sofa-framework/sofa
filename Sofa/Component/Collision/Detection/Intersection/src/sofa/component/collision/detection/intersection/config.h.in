@@ -38,10 +38,10 @@ namespace sofa::component::collision::detection::intersection
 } // namespace sofa::component::collision::geometry::intersection
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION
-#define SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+#define SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER() \
-    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
+#define SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER() \
+    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter (see PR4916).")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION

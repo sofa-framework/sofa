@@ -33,6 +33,8 @@
 #include <sofa/type/vector.h>
 #include <set>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
@@ -73,16 +75,16 @@ protected:
 
 public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Real> stiffness;
+    sofa::core::objectmodel::RenamedData<Real> stiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< VecCoord > position;
+    sofa::core::objectmodel::RenamedData< VecCoord > position;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< VecCoord > velocity;
+    sofa::core::objectmodel::RenamedData< VecDeriv > velocity;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< VecCoord > old_position;
+    sofa::core::objectmodel::RenamedData< VecCoord > old_position;
 
     Data< Real > d_stiffness; ///< Blending between current pos and target pos.
     Data< VecCoord > d_position; ///< Target positions.

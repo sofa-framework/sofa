@@ -29,6 +29,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mapping::linear
 {
 
@@ -90,7 +92,7 @@ public:
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data< type::vector<unsigned> > indexPairs;
+    sofa::core::objectmodel::RenamedData< type::vector<unsigned> > indexPairs;
 
     Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
 

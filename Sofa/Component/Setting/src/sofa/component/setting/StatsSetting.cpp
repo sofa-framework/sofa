@@ -27,10 +27,11 @@
 namespace sofa::component::setting
 {
 
-int StatsSettingClass = core::RegisterObject("Stats settings")
-        .add< StatsSetting >()
-        .addAlias("Stats")
-        ;
+void registerStatsSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Stats settings.")
+        .add< StatsSetting >());
+}
 
 StatsSetting::StatsSetting():
         d_dumpState(initData(&d_dumpState, false, "dumpState", "Dump state vectors at each time step of the simulation"))
@@ -40,9 +41,9 @@ StatsSetting::StatsSetting():
     , traceVisitors(initData(&traceVisitors, "traceVisitors", "Trace the time spent by each visitor, and allows to profile precisely one step of a simulation"))
 #endif
 {
-    dumpState.setParent(&d_dumpState);
-    logTime.setParent(&d_logTime);
-    exportState.setParent(&d_exportState);
+    dumpState.setOriginalData(&d_dumpState);
+    logTime.setOriginalData(&d_logTime);
+    exportState.setOriginalData(&d_exportState);
 
 }
 

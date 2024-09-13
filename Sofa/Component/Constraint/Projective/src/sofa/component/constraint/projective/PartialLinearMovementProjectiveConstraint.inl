@@ -69,19 +69,19 @@ PartialLinearMovementProjectiveConstraint<DataTypes>::PartialLinearMovementProje
         movedDirection[i] = true;
     d_movedDirections.setValue(movedDirection);
 
-    m_indices.setParent(&d_indices);
-    m_keyTimes.setParent(&d_keyTimes);
-    m_keyMovements.setParent(&d_keyMovements);
-    showMovement.setParent(&d_showMovement);
-    linearMovementBetweenNodesInIndices.setParent(&d_linearMovementBetweenNodesInIndices);
-    mainIndice.setParent(&d_mainIndice);
-    minDepIndice.setParent(&d_minDepIndice);
-    maxDepIndice.setParent(&d_maxDepIndice);
-    m_imposedDisplacmentOnMacroNodes.setParent(&d_imposedDisplacmentOnMacroNodes);
-    X0.setParent(&d_X0);
-    Y0.setParent(&d_Y0);
-    Z0.setParent(&d_Z0);
-    movedDirections.setParent(&d_movedDirections);
+    m_indices.setOriginalData(&d_indices);
+    m_keyTimes.setOriginalData(&d_keyTimes);
+    m_keyMovements.setOriginalData(&d_keyMovements);
+    showMovement.setOriginalData(&d_showMovement);
+    linearMovementBetweenNodesInIndices.setOriginalData(&d_linearMovementBetweenNodesInIndices);
+    mainIndice.setOriginalData(&d_mainIndice);
+    minDepIndice.setOriginalData(&d_minDepIndice);
+    maxDepIndice.setOriginalData(&d_maxDepIndice);
+    m_imposedDisplacmentOnMacroNodes.setOriginalData(&d_imposedDisplacmentOnMacroNodes);
+    X0.setOriginalData(&d_X0);
+    Y0.setOriginalData(&d_Y0);
+    Z0.setOriginalData(&d_Z0);
+    movedDirections.setOriginalData(&d_movedDirections);
 
 }
 

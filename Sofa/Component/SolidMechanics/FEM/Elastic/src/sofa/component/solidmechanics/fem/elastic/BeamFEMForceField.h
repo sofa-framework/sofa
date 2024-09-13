@@ -22,9 +22,10 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -44,10 +45,10 @@ using core::topology::EdgeData;
 /** Compute Finite Element forces based on 6D beam elements.
 */
 template<class DataTypes>
-class BeamFEMForceField : public ForceField<DataTypes>
+class BeamFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField,DataTypes));
 
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;
@@ -131,7 +132,7 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index>  m_beamsData;
+    sofa::core::objectmodel::RenamedData<type::vector<BeamInfo>>  m_beamsData;
 
 
     EdgeData<type::vector<BeamInfo> > d_beamsData; ///< Internal element data
@@ -145,15 +146,10 @@ protected:
     const VecElement *m_indexedElements;
 
 public:
-    Data<Real> d_poissonRatio; ///< Poisson's Ratio
-    Data<Real> d_youngModulus; ///< Young Modulus
     Data<Real> d_radius; ///< radius of the section
     Data<Real> d_radiusInner; ///< inner radius of the section for hollow beams
     Data< BaseMeshTopology::SetIndex > d_listSegment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> d_useSymmetricAssembly; ///< use symmetric assembly of the matrix K
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
  protected:
     //just for draw forces
@@ -165,11 +161,9 @@ public:
 
     Quat<SReal>& beamQuat(int i);
 
-    BaseMeshTopology* m_topology;
-
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
-    virtual ~BeamFEMForceField();
+    ~BeamFEMForceField() override;
 
 public:
 
