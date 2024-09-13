@@ -27,9 +27,6 @@
 namespace sofa::component::mapping::nonlinear
 {
 
-using sofa::type::dyad;
-using sofa::type::dot;
-
 template <class TIn, class TOut>
 VolumeMapping<TIn, TOut>::VolumeMapping()
     : l_topology(initLink("topology", "link to the topology container"))
@@ -38,21 +35,17 @@ VolumeMapping<TIn, TOut>::VolumeMapping()
 template <class TIn, class TOut>
 auto VolumeMapping<TIn, TOut>::computeSecondDerivativeVolume(
     const sofa::type::fixed_array<sofa::type::Vec3, 4>& tetrahedronVertices) ->
-    sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, Real> >
+sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, Real> >
 {
-    const sofa::type::fixed_array<sofa::type::Vec3, 3> v {
-        tetrahedronVertices[1] - tetrahedronVertices[0],
-        tetrahedronVertices[2] - tetrahedronVertices[0],
-        tetrahedronVertices[3] - tetrahedronVertices[0]
-    };
+    using sofa::type::crossProductMatrix;
+    const auto& v = tetrahedronVertices;
 
-    const auto H01 = sofa::type::crossProductMatrix(v[1] - v[2]) / 6;
-    const auto H02 = sofa::type::crossProductMatrix(v[2] - v[0]) / 6;
-    const auto H03 = sofa::type::crossProductMatrix(v[0] - v[1]) / 6;
-
-    const auto H12 = sofa::type::crossProductMatrix(-v[2]) / 6;
-    const auto H13 = sofa::type::crossProductMatrix(v[1]) / 6;
-    const auto H23 = sofa::type::crossProductMatrix(-v[0]) / 6;
+    const auto H01 = crossProductMatrix(v[2] - v[3]) / 6;
+    const auto H02 = crossProductMatrix(v[3] - v[1]) / 6;
+    const auto H03 = crossProductMatrix(v[1] - v[2]) / 6;
+    const auto H12 = crossProductMatrix(v[0] - v[3]) / 6;
+    const auto H13 = crossProductMatrix(v[2] - v[0]) / 6;
+    const auto H23 = crossProductMatrix(v[0] - v[1]) / 6;
 
     sofa::type::Mat<4, 4, sofa::type::Mat<3, 3, SReal> > hessian;
 
