@@ -152,7 +152,8 @@ void VolumeMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
             vertices[3] - vertices[0]
         };
 
-        const auto volume = std::abs(sofa::type::dot(v[0], sofa::type::cross(v[1], v[2]))) / 6;
+        //the volume can be negative if the tetrahedron is inverted
+        const auto volume = sofa::type::dot(v[0], sofa::type::cross(v[1], v[2])) / 6;
 
         _out[tetId] = volume;
 
