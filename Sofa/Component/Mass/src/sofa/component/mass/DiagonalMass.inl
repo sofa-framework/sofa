@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/mass/DiagonalMass.h>
 #include <sofa/component/mass/MeshMatrixMass.inl>
 
 SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/mass/MeshMatrixMass.inl")
