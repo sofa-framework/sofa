@@ -163,7 +163,7 @@ public:
 
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
-    virtual ~BeamFEMForceField();
+    ~BeamFEMForceField() override;
 
 public:
 
