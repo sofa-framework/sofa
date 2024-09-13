@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -32,6 +32,8 @@
 #ifdef PLOT_CURVE
 #include <map>
 #endif
+
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::helper
 {
@@ -54,12 +56,12 @@ namespace sofa::component::solidmechanics::fem::elastic
 * }
 */
 template<class DataTypes>
-class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -185,10 +187,10 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> triangleInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<TriangleInformation>> triangleInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> vertexInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<VertexInformation> > vertexInfo;
 
     /// Topology Data
     core::topology::TriangleData<sofa::type::vector<TriangleInformation> > d_triangleInfo;
@@ -202,16 +204,7 @@ public:
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
     /// Get/Set methods
-    Real getPoisson() { return (d_poisson.getValue())[0]; }
-    void setPoisson(Real val);
-    void setPoissonArray(const type::vector<Real>& values);
-
-    Real getYoung() { return (d_young.getValue())[0]; }
-    void setYoung(Real val);
-    void setYoungArray(const type::vector<Real>& values);
 
     int  getMethod() { return method; }
     void setMethod(int val);
@@ -263,41 +256,39 @@ public:
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    sofa::core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real>> f_poisson;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_poisson;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real>> f_young;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_young;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index > m_rotatedInitialElements;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<type::fixed_array<Coord,3> >  > m_rotatedInitialElements;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> m_initialTransformation;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Transformation> > m_initialTransformation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> hosfordExponant;
+    sofa::core::objectmodel::RenamedData<Real> hosfordExponant;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> criteriaValue;
+    sofa::core::objectmodel::RenamedData<Real> criteriaValue;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showStressValue;
+    sofa::core::objectmodel::RenamedData<bool> showStressValue;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showStressVector;
+    sofa::core::objectmodel::RenamedData<bool> showStressVector;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showFracturableTriangles;
+    sofa::core::objectmodel::RenamedData<bool> showFracturableTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> f_computePrincipalStress;
+    sofa::core::objectmodel::RenamedData<bool> f_computePrincipalStress;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
-    Data<type::vector<Real> > d_poisson; ///< Poisson ratio in Hooke's law (vector)
-    Data<type::vector<Real> > d_young; ///< Young modulus in Hooke's law (vector)
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
     Data< sofa::type::vector<type::fixed_array<Coord,3> > > d_rotatedInitialElements;
@@ -313,9 +304,6 @@ public:
     Data<bool> d_showFracturableTriangles; ///< Flag activating rendering of triangles to fracture
 
     Data<bool> d_computePrincipalStress; ///< Compute principal stress for each triangle
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TriangularFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 #ifdef PLOT_CURVE
     //structures to save values for each element along time

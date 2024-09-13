@@ -78,24 +78,24 @@ SubsetTopologicalMapping::SubsetTopologicalMapping()
     , d_hexahedronS2D(initData(&d_hexahedronS2D, "hexahedronS2D", "Internal source -> destination topology hexahedra map"))
     , d_hexahedronD2S(initData(&d_hexahedronD2S, "hexahedronD2S", "Internal destination -> source topology hexahedra map"))
 {
-    samePoints.setParent(&d_samePoints);
-    handleEdges.setParent(&d_handleEdges);
-    handleTriangles.setParent(&d_handleTriangles);
-    handleQuads.setParent(&d_handleQuads);
-    handleTetrahedra.setParent(&d_handleTetrahedra);
-    handleHexahedra.setParent(&d_handleHexahedra);
-    pointS2D.setParent(&d_pointS2D);
-    pointD2S.setParent(&d_pointD2S);
-    edgeS2D.setParent(&d_edgeS2D);
-    edgeD2S.setParent(&d_edgeD2S);
-    triangleS2D.setParent(&d_triangleS2D);
-    triangleD2S.setParent(&d_triangleD2S);
-    quadS2D.setParent(&d_quadS2D);
-    quadD2S.setParent(&d_quadD2S);
-    tetrahedronS2D.setParent(&d_tetrahedronS2D);
-    tetrahedronD2S.setParent(&d_tetrahedronD2S);
-    hexahedronS2D.setParent(&d_hexahedronS2D);
-    hexahedronD2S.setParent(&d_hexahedronD2S);
+    samePoints.setOriginalData(&d_samePoints);
+    handleEdges.setOriginalData(&d_handleEdges);
+    handleTriangles.setOriginalData(&d_handleTriangles);
+    handleQuads.setOriginalData(&d_handleQuads);
+    handleTetrahedra.setOriginalData(&d_handleTetrahedra);
+    handleHexahedra.setOriginalData(&d_handleHexahedra);
+    pointS2D.setOriginalData(&d_pointS2D);
+    pointD2S.setOriginalData(&d_pointD2S);
+    edgeS2D.setOriginalData(&d_edgeS2D);
+    edgeD2S.setOriginalData(&d_edgeD2S);
+    triangleS2D.setOriginalData(&d_triangleS2D);
+    triangleD2S.setOriginalData(&d_triangleD2S);
+    quadS2D.setOriginalData(&d_quadS2D);
+    quadD2S.setOriginalData(&d_quadD2S);
+    tetrahedronS2D.setOriginalData(&d_tetrahedronS2D);
+    tetrahedronD2S.setOriginalData(&d_tetrahedronD2S);
+    hexahedronS2D.setOriginalData(&d_hexahedronS2D);
+    hexahedronD2S.setOriginalData(&d_hexahedronD2S);
 }
 
 

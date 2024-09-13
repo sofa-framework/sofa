@@ -33,7 +33,7 @@ using std::vector;
 
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -155,10 +155,8 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
-    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -166,18 +164,11 @@ int main(int argc, char** argv)
     string gui = "";
     string verif = "";
 
-#if defined(SOFA_HAVE_DAG)
-    string simulationType = "dag";
-#else
-    string simulationType = "tree";
-#endif
-
     vector<string> plugins;
     vector<string> files;
 
     string colorsStatus = "unset";
     string messageHandler = "auto";
-    bool enableInteraction = false ;
     int width = 800;
     int height = 600;
 
@@ -262,21 +253,10 @@ int main(int argc, char** argv)
         "load most recently opened file"
     );
     argParser->addArgument(
-        cxxopts::value<std::string>(simulationType),
-        "s,simu", 
-        "select the type of simulation (bgl, dag, tree)"
-    );
-    argParser->addArgument(
         cxxopts::value<bool>(temporaryFile)
         ->default_value("false")->implicit_value("true"),
         "tmp",
         "the loaded scene won't appear in history of opened files"
-    );
-    argParser->addArgument(
-        cxxopts::value<bool>(testMode)
-        ->default_value("false")->implicit_value("true"),
-        "test",
-        "select test mode with xml output after N iteration"
     );
     argParser->addArgument(
         cxxopts::value<std::string>(verif)
@@ -298,16 +278,20 @@ int main(int argc, char** argv)
         "select the message formatting to use (auto, clang, sofa, rich, test)"
     );
     argParser->addArgument(
+        cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
+        "argv",
+        "forward extra args to the python interpreter"
+    );
+    
+    // these options are actually read in RealGUI
+    bool enableInteraction = false;
+    unsigned int nbMSSASamples = 1;
+    argParser->addArgument(
         cxxopts::value<bool>(enableInteraction)
         ->default_value("false")
         ->implicit_value("true"),
         "i,interactive",
         "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
-    );
-    argParser->addArgument(
-        cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
-        "argv",
-        "forward extra args to the python interpreter"
     );
     argParser->addArgument(
         cxxopts::value<unsigned int>(nbMSSASamples)
@@ -329,8 +313,6 @@ int main(int argc, char** argv)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
 
-    if (simulationType == "tree")
-        msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
     assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
@@ -540,13 +522,6 @@ int main(int argc, char** argv)
         return err;
     groot = dynamic_cast<Node*>( GUIManager::CurrentSimulation() );
 
-    if (testMode)
-    {
-        string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
-        msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::node::exportInXML(groot.get(), xmlname.c_str());
-    }
-
     if (groot!=nullptr)
         sofa::simulation::node::unload(groot);
 
@@ -555,5 +530,6 @@ int main(int argc, char** argv)
 
     sofa::simulation::common::cleanup();
     sofa::simulation::graph::cleanup();
+
     return 0;
 }

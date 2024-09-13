@@ -28,25 +28,43 @@ namespace sofa::component::engine::select
 template <class DataTypes>
 MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
     : Inherited()
-    , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-    , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-    , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-    , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-    , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-    , position(initData(&position,"position","Vertices of mesh subset"))
-    , edges(initData(&edges,"edges","edges of mesh subset"))
-    , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-    , quads(initData(&quads,"quads","Quads of mesh subset"))
+    , d_inputPosition(initData(&d_inputPosition,"inputPosition","input vertices"))
+    , d_inputEdges(initData(&d_inputEdges,"inputEdges","input edges"))
+    , d_inputTriangles(initData(&d_inputTriangles,"inputTriangles","input triangles"))
+    , d_inputQuads(initData(&d_inputQuads,"inputQuads","input quads"))
+    , d_inputTetrahedra(initData(&d_inputTetrahedra,"inputTetrahedra","input tetrahedra"))
+    , d_inputHexahedra(initData(&d_inputHexahedra,"inputHexahedra","input hexahedra"))
+    , d_indices(initData(&d_indices,"indices","Index lists of the selected vertices"))
+    , d_position(initData(&d_position,"position","Vertices of mesh subset"))
+    , d_edges(initData(&d_edges,"edges","edges of mesh subset"))
+    , d_triangles(initData(&d_triangles,"triangles","Triangles of mesh subset"))
+    , d_quads(initData(&d_quads,"quads","Quads of mesh subset"))
+    , d_tetrahedra(initData(&d_tetrahedra,"tetrahedra","Tetrahedra of mesh subset"))
+    , d_hexahedra(initData(&d_hexahedra,"hexahedra","Hexahedra of mesh subset"))
 {
-    addInput(&inputPosition);
-    addInput(&inputEdges);
-    addInput(&inputTriangles);
-    addInput(&inputQuads);
-    addInput(&indices);
-    addOutput(&position);
-    addOutput(&edges);
-    addOutput(&triangles);
-    addOutput(&quads);
+    addInput(&d_inputPosition);
+    addInput(&d_inputEdges);
+    addInput(&d_inputTriangles);
+    addInput(&d_inputQuads);
+    addInput(&d_inputTetrahedra);
+    addInput(&d_inputHexahedra);
+    addInput(&d_indices);
+    addOutput(&d_position);
+    addOutput(&d_edges);
+    addOutput(&d_triangles);
+    addOutput(&d_quads);
+    addOutput(&d_tetrahedra);
+    addOutput(&d_hexahedra);
+
+    inputPosition.setOriginalData(&d_inputPosition);
+    inputEdges.setOriginalData(&d_inputEdges);
+    inputTriangles.setOriginalData(&d_inputTriangles);
+    inputQuads.setOriginalData(&d_inputQuads);
+    indices.setOriginalData(&d_indices);
+    position.setOriginalData(&d_position);
+    edges.setOriginalData(&d_edges);
+    triangles.setOriginalData(&d_triangles);
+    quads.setOriginalData(&d_quads);
 }
 
 template <class DataTypes>
@@ -54,51 +72,61 @@ MeshSubsetEngine<DataTypes>::~MeshSubsetEngine()
 {
 }
 
+template <class ElementType>
+void extractElements(
+    const std::map<core::topology::BaseMeshTopology::PointID, core::topology::BaseMeshTopology::PointID>& indexMapping,
+    const sofa::type::vector<ElementType>& elements,
+    sofa::type::vector<ElementType>& subsetElements)
+{
+    subsetElements.clear();
+
+    for (const auto& element : elements)
+    {
+        bool inside = true;
+        ElementType newElement;
+        for (size_t j = 0; j < ElementType::NumberOfNodes; j++)
+        {
+            auto it = indexMapping.find(element[j]);
+            if (it == indexMapping.end())
+            {
+                inside = false;
+                break;
+            }
+            newElement[j] = it->second;
+        }
+        if (inside)
+        {
+            subsetElements.push_back(newElement);
+        }
+    }
+}
+
 template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
-    const helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
-    const helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
-    const helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
     const helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
-
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
-    helper::WriteOnlyAccessor<Data< SeqEdges > >  oedg(this->edges);
-    helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
-    helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
 
     opos.resize(ind.size());
-    std::map<PointID,PointID> FtoS;
-    for(size_t i=0; i<ind.size(); i++)
+    std::map<PointID, PointID> FtoS;
+    for (size_t i = 0; i < ind.size(); i++)
     {
-        opos[i]=pos[ind[i]];
-        FtoS[ind[i]]=i;
+        opos[i] = pos[ind[i]];
+        FtoS[ind[i]] = i;
     }
-    oedg.clear();
-    for(size_t i=0; i<edg.size(); i++)
+
+    const auto computeSubset = [&FtoS](const auto& inputElements, auto& subsetElements)
     {
-        bool inside=true;
-        Edge cell;
-        for(size_t j=0; j<2; j++) if(FtoS.find(edg[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[edg[i][j]];
-        if(inside) oedg.push_back(cell);
-    }
-    otri.clear();
-    for(size_t i=0; i<tri.size(); i++)
-    {
-        bool inside=true;
-        Triangle cell;
-        for(size_t j=0; j<3; j++) if(FtoS.find(tri[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[tri[i][j]];
-        if(inside) otri.push_back(cell);
-    }
-    oqd.clear();
-    for(size_t i=0; i<qd.size(); i++)
-    {
-        bool inside=true;
-        Quad cell;
-        for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
-        if(inside) oqd.push_back(cell);
-    }
+        auto accessor = sofa::helper::getWriteOnlyAccessor(subsetElements);
+        extractElements(FtoS, inputElements.getValue(), accessor.wref());
+    };
+
+    computeSubset(d_inputEdges, d_edges);
+    computeSubset(d_inputTriangles, d_triangles);
+    computeSubset(d_inputQuads, d_quads);
+    computeSubset(d_inputTetrahedra, d_tetrahedra);
+    computeSubset(d_inputHexahedra, d_hexahedra);
 }
 
 

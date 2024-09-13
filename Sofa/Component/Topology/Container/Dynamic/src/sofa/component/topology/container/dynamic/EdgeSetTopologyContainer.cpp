@@ -47,7 +47,7 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
     , d_checkConnexity(initData(&d_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
-    m_checkConnexity.setParent(&d_checkConnexity);
+    m_checkConnexity.setOriginalData(&d_checkConnexity);
 }
 
 

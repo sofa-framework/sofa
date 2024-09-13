@@ -35,9 +35,9 @@ StopperLagrangianConstraint<DataTypes>::StopperLagrangianConstraint(MechanicalSt
     , d_min(initData(&d_min, -100.0_sreal, "min", "minimum value accepted"))
     , d_max(initData(&d_max, 100.0_sreal, "max", "maximum value accepted"))
 {
-        index.setParent(&d_index);
-        min.setParent(&d_min);
-        max.setParent(&d_max);
+        index.setOriginalData(&d_index);
+        min.setOriginalData(&d_min);
+        max.setOriginalData(&d_max);
 }
 
 template<class DataTypes>

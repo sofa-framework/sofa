@@ -52,19 +52,19 @@ VTKExporter::VTKExporter()
 {
 
     vtkFilename.setParent(&d_vtkFilename);
-    fileFormat.setParent(&d_fileFormat);
-    position.setParent(&d_position);
-    writeEdges.setParent(&d_writeEdges);
-    writeTriangles.setParent(&d_writeTriangles);
-    writeQuads.setParent(&d_writeQuads);
-    writeTetras.setParent(&d_writeTetras);
-    writeHexas.setParent(&d_writeHexas);
-    dPointsDataFields.setParent(&d_dPointsDataFields);
-    dCellsDataFields.setParent(&d_dCellsDataFields);
-    exportEveryNbSteps.setParent(&d_exportEveryNbSteps);
-    exportAtBegin.setParent(&d_exportAtBegin);
-    exportAtEnd.setParent(&d_exportAtEnd);
-    overwrite.setParent(&d_overwrite);
+    fileFormat.setOriginalData(&d_fileFormat);
+    position.setOriginalData(&d_position);
+    writeEdges.setOriginalData(&d_writeEdges);
+    writeTriangles.setOriginalData(&d_writeTriangles);
+    writeQuads.setOriginalData(&d_writeQuads);
+    writeTetras.setOriginalData(&d_writeTetras);
+    writeHexas.setOriginalData(&d_writeHexas);
+    dPointsDataFields.setOriginalData(&d_dPointsDataFields);
+    dCellsDataFields.setOriginalData(&d_dCellsDataFields);
+    exportEveryNbSteps.setOriginalData(&d_exportEveryNbSteps);
+    exportAtBegin.setOriginalData(&d_exportAtBegin);
+    exportAtEnd.setOriginalData(&d_exportAtEnd);
+    overwrite.setOriginalData(&d_overwrite);
 }
 
 VTKExporter::~VTKExporter()

@@ -30,10 +30,11 @@
 namespace sofa::component::visual
 {
 
-int RecordedCameraClass = core::RegisterObject("A camera that is moving along a predetermined path.")
-        .add< RecordedCamera >()
-        ;
-
+void registerRecordedCamera(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A camera that is moving along a predetermined path.")
+        .add< RecordedCamera >());
+}
 
 RecordedCamera::RecordedCamera()
     : d_zoomSpeed(initData(&d_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
@@ -64,24 +65,24 @@ RecordedCamera::RecordedCamera()
 {
     this->f_listening.setValue(true);
 
-    p_zoomSpeed.setParent(&d_zoomSpeed);
-    p_panSpeed.setParent(&d_panSpeed);
-    p_pivot.setParent(&d_pivot);
-    m_startTime.setParent(&d_startTime);
-    m_endTime.setParent(&d_endTime);
-    m_rotationMode.setParent(&d_rotationMode);
-    m_translationMode.setParent(&d_translationMode);
-    m_navigationMode.setParent(&d_navigationMode);
-    m_rotationSpeed.setParent(&d_rotationSpeed);
-    m_rotationCenter.setParent(&d_rotationCenter);
-    m_rotationStartPoint.setParent(&d_rotationStartPoint);
-    m_rotationLookAt.setParent(&d_rotationLookAt);
-    m_rotationAxis.setParent(&d_rotationAxis);
-    m_cameraUp.setParent(&d_cameraUp);
-    p_drawRotation.setParent(&d_drawRotation);
-    p_drawTranslation.setParent(&d_drawTranslation);
-    m_translationPositions.setParent(&d_translationPositions);
-    m_translationOrientations.setParent(&d_translationOrientations);
+    p_zoomSpeed.setOriginalData(&d_zoomSpeed);
+    p_panSpeed.setOriginalData(&d_panSpeed);
+    p_pivot.setOriginalData(&d_pivot);
+    m_startTime.setOriginalData(&d_startTime);
+    m_endTime.setOriginalData(&d_endTime);
+    m_rotationMode.setOriginalData(&d_rotationMode);
+    m_translationMode.setOriginalData(&d_translationMode);
+    m_navigationMode.setOriginalData(&d_navigationMode);
+    m_rotationSpeed.setOriginalData(&d_rotationSpeed);
+    m_rotationCenter.setOriginalData(&d_rotationCenter);
+    m_rotationStartPoint.setOriginalData(&d_rotationStartPoint);
+    m_rotationLookAt.setOriginalData(&d_rotationLookAt);
+    m_rotationAxis.setOriginalData(&d_rotationAxis);
+    m_cameraUp.setOriginalData(&d_cameraUp);
+    p_drawRotation.setOriginalData(&d_drawRotation);
+    p_drawTranslation.setOriginalData(&d_drawTranslation);
+    m_translationPositions.setOriginalData(&d_translationPositions);
+    m_translationOrientations.setOriginalData(&d_translationOrientations);
 
 }
 

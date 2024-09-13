@@ -48,6 +48,11 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     HexahedronFEMForceFieldT::init();
     MassT::init();
 
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        return;
+    }
+
     _particleMasses.resize( this->d_initialPoints.getValue().size() );
 
     int i=0;

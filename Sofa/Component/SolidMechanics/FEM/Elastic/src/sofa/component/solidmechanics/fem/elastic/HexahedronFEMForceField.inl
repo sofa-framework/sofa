@@ -58,7 +58,6 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , d_drawPercentageOffset(initData(&d_drawPercentageOffset, (Real)0.15, "drawPercentageOffset", "size of the hexa"))
     , needUpdateTopology(false)
     , d_elementStiffnesses(initData(&d_elementStiffnesses, "stiffnessMatrices", "Stiffness matrices per element (K_i)"))
-    , m_topology(nullptr)
     , _sparseGrid(nullptr)
     , d_initialPoints(initData(&d_initialPoints, "initialPoints", "Initial Position"))
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
@@ -91,15 +90,14 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 
     _alreadyInit=false;
 
-    f_method.setParent(&d_method);
-    f_poissonRatio.setParent(&this->d_poissonRatio);
-    f_updateStiffnessMatrix.setParent(&d_updateStiffnessMatrix);
-    _gatherPt.setParent(&d_gatherPt);
-    _gatherBsize.setParent(&d_gatherBsize);
-    f_drawing.setParent(&d_drawing);
-    f_drawPercentageOffset.setParent(&d_drawPercentageOffset);
-    _elementStiffnesses.setParent(&d_elementStiffnesses);
-    _initialPoints.setParent(&d_initialPoints);
+    f_method.setOriginalData(&d_method);
+    f_updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
+    _gatherPt.setOriginalData(&d_gatherPt);
+    _gatherBsize.setOriginalData(&d_gatherBsize);
+    f_drawing.setOriginalData(&d_drawing);
+    f_drawPercentageOffset.setOriginalData(&d_drawPercentageOffset);
+    _elementStiffnesses.setOriginalData(&d_elementStiffnesses);
+    _initialPoints.setOriginalData(&d_initialPoints);
 
 }
 
@@ -115,28 +113,22 @@ void HexahedronFEMForceField<DataTypes>::init()
 
     BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a MeshTopology.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-
-    if ( m_topology->getNbHexahedra() <= 0 )
+    if ( this->l_topology->getNbHexahedra() <= 0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
-                    << " name: " << m_topology->getName() << msgendl
-                    << " typename: " << m_topology->getTypeName() << msgendl
-                    << " nbPoints:" << m_topology->getNbPoints() << msgendl;
+                    << " name: " << this->l_topology->getName() << msgendl
+                    << " typename: " << this->l_topology->getTypeName() << msgendl
+                    << " nbPoints:" << this->l_topology->getNbPoints() << msgendl;
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    _sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(m_topology);
+    _sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(this->l_topology.get());
     m_potentialEnergy = 0;
 
     this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
@@ -704,7 +696,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
-    const auto poissonRatio = this->d_poissonRatio.getValue();
+    const auto poissonRatio = this->getPoissonRatioInElement(i);
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
@@ -966,7 +958,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsigned int nodeIdx)
 {
-    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = m_topology->getHexahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = this->l_topology->getHexahedraAroundVertex(nodeIdx);
 
     R[0][0] = R[1][1] = R[2][2] = 1.0 ;
     R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
@@ -1239,7 +1231,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!d_drawing.getValue()) return;
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) return;
     if (!this->mstate) return;
-    if (!m_topology) return;
+    if (!this->l_topology) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

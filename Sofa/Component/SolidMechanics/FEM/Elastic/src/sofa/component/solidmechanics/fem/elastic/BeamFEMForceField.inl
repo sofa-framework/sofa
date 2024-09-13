@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/BeamFEMForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -42,35 +42,30 @@ using type::Quat;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
-    : BeamFEMForceField(0.49, 5000, 0.1, 0.)
-{
-    d_poissonRatio.setRequired(true);
-    d_youngModulus.setReadOnly(true);
-}
+    : BeamFEMForceField(
+        BaseLinearElasticityFEMForceField<DataTypes>::defaultPoissonRatioValue,
+        BaseLinearElasticityFEMForceField<DataTypes>::defaultYoungModulusValue,
+        0.1, 0.)
+{}
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : d_beamsData(initData(&d_beamsData, "beamsData", "Internal element data"))
     , m_indexedElements(nullptr)
-    , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Poisson's Ratio"))
-    , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
-    , d_radius(initData(&d_radius,(Real)radius,"radius","radius of the section"))
-    , d_radiusInner(initData(&d_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
+    , d_radius(initData(&d_radius, radius,"radius","radius of the section"))
+    , d_radiusInner(initData(&d_radiusInner, radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , d_listSegment(initData(&d_listSegment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , l_topology(initLink("topology", "link to the topology container"))
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
 {
-    d_poissonRatio.setRequired(true);
-    d_youngModulus.setRequired(true);
     d_radius.setRequired(true);
     d_radiusInner.setRequired(true);
 
-    d_youngModulus.setReadOnly(true);
+    m_beamsData.setOriginalData(&d_beamsData);
 
-    m_beamsData.setParent(&d_beamsData);
-
+    this->setPoissonRatio(poissonRatio);
+    this->setYoungModulus(youngModulus);
 }
 
 
@@ -85,28 +80,17 @@ void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
 
-    if (l_topology.empty())
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if(m_topology->getNbEdges()==0)
+    if(this->l_topology->getNbEdges()==0)
     {
-        msg_error() << "Topology is empty.";
+        msg_error() << "No edge found in the topology " << this->l_topology.getLinkedPath();
         return;
     }
-    m_indexedElements = &m_topology->getEdges();
+    m_indexedElements = &this->l_topology->getEdges();
     if (!d_listSegment.getValue().empty())
     {
         msg_info() << "Forcefield named " << this->getName() << " applies to a subset of edges.";
@@ -127,7 +111,7 @@ void BeamFEMForceField<DataTypes>::init()
         m_partialListSegment = false;
     }
 
-    d_beamsData.createTopologyHandler(m_topology);
+    d_beamsData.createTopologyHandler(this->l_topology);
     d_beamsData.setCreationCallback([this](Index edgeIndex, BeamInfo& ei,
                                            const core::topology::BaseMeshTopology::Edge& edge,
                                            const sofa::type::vector< Index >& ancestors,
@@ -167,13 +151,13 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
     const auto& [a, b] = (*m_indexedElements)[i].array();
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    stiffness =  d_youngModulus.getValue() ;
+    stiffness =  this->getYoungModulusInElement(i);
 
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
     radius = d_radius.getValue() ;
     radiusInner = d_radiusInner.getValue();
-    poisson = d_poissonRatio.getValue() ;
+    poisson = this->getPoissonRatioInElement(i) ;
 
 
     setBeam(i, stiffness, length, poisson, radius, radiusInner);

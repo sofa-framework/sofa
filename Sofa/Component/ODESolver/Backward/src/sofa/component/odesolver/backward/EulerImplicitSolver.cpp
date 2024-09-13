@@ -45,11 +45,11 @@ EulerImplicitSolver::EulerImplicitSolver()
     , d_solveConstraint(initData(&d_solveConstraint, false, "solveConstraint", "Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
-    f_rayleighStiffness.setParent(&d_rayleighStiffness);
-    f_rayleighMass.setParent(&d_rayleighMass);
-    f_velocityDamping.setParent(&d_velocityDamping);
-    f_firstOrder.setParent(&d_firstOrder);
-    f_solveConstraint.setParent(&d_solveConstraint);
+    f_rayleighStiffness.setOriginalData(&d_rayleighStiffness);
+    f_rayleighMass.setOriginalData(&d_rayleighMass);
+    f_velocityDamping.setOriginalData(&d_velocityDamping);
+    f_firstOrder.setOriginalData(&d_firstOrder);
+    f_solveConstraint.setOriginalData(&d_solveConstraint);
 
 }
 
@@ -123,59 +123,65 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         SCOPED_TIMER("ComputeForce");
         mop->setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        mop.computeForce(f);
+        mop.computeForce(f);                                                               //f = Kx + Bv
 
         msg_info() << "EulerImplicitSolver, initial f = " << f;
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("ComputeRHTerm");
-    if( firstOrder )
     {
-        b.eq(f);
+        SCOPED_TIMER("ComputeRHTerm");
+
+        if (firstOrder)
+        {
+            b.eq(f);
+        }
+        else
+        {
+            // new more powerful visitors
+
+            // force in the current configuration
+            b.eq(f, 1.0 / tr);                                                                    // b = f
+
+            msg_info() << "EulerImplicitSolver, f = " << f;
+
+            // add the change of force due to stiffness + Rayleigh damping
+            mop.addMBKv(b, -d_rayleighMass.getValue(), 0,
+                        h + d_rayleighStiffness.getValue()); // b =  f + ( rm M + (h+rs) K ) v
+
+            // integration over a time step
+            b.teq(h *
+                  tr);                                                                       // b = h(f + ( rm M + (h+rs) K ) v )
+        }
+
+        msg_info() << "EulerImplicitSolver, b = " << b;
+
+        mop.projectResponse(b);          // b is projected to the constrained space
+
+        msg_info() << "EulerImplicitSolver, projected b = " << b;
     }
-    else
+
     {
-        // new more powerful visitors
-
-        // force in the current configuration
-        b.eq(f,1.0/tr);                                                                         // b = f0
-
-        msg_info() << "EulerImplicitSolver, f = " << f;
-
-        // add the change of force due to stiffness + Rayleigh damping
-        mop.addMBKv(b, -d_rayleighMass.getValue(), 1, h + d_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
-
-        // integration over a time step
-        b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
-    }
-
-    msg_info() << "EulerImplicitSolver, b = " << b;
-
-    mop.projectResponse(b);          // b is projected to the constrained space
-
-    msg_info() << "EulerImplicitSolver, projected b = " << b;
-
-    sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
-
-    SReal mFact, kFact, bFact;
-    if (firstOrder)
-    {
-        mFact = 1;
-        bFact = 0;
-        kFact = -h * tr;
-    }
-    else
-    {
-        mFact = 1 + tr * h * d_rayleighMass.getValue();
-        bFact = -tr * h;
-        kFact = -tr * h * (h + d_rayleighStiffness.getValue());
-    }
-    mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+        SCOPED_TIMER("setSystemMBKMatrix");
+        SReal mFact, kFact, bFact;
+        if (firstOrder)
+        {
+            mFact = 1;
+            bFact = 0;
+            kFact = -h * tr;
+        }
+        else
+        {
+            mFact = 1 + tr * h * d_rayleighMass.getValue();
+            bFact = -tr * h;
+            kFact = -tr * h * (h + d_rayleighStiffness.getValue());
+        }
+        mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode("SystemSolution");
+        simulation::Visitor::printNode("SystemSolution");
 #endif
-    sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
+    }
+
     {
         SCOPED_TIMER("MBKSolve");
 

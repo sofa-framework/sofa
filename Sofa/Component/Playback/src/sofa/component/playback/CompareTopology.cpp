@@ -31,10 +31,11 @@
 namespace sofa::component::playback
 {
 
-
-
-int CompareTopologyClass = core::RegisterObject("Compare Topology containers from a reference frame to the associated Topology")
-        .add< CompareTopology >();
+void registerCompareTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compare Topology containers from a reference frame to the associated Topology.")
+        .add< CompareTopology >());
+}
 
 CompareTopology::CompareTopology(): ReadTopology()
 {

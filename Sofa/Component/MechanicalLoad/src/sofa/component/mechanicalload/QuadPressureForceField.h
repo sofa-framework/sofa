@@ -25,6 +25,8 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mechanicalload
 {
 
@@ -53,22 +55,22 @@ public:
     using Index = sofa::Index;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> pressure;
+    sofa::core::objectmodel::RenamedData<Deriv> pressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<std::string> quadList;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index>> quadList;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> normal;
+    sofa::core::objectmodel::RenamedData<Deriv> normal;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> dmin;
+    sofa::core::objectmodel::RenamedData<Real> dmin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> dmax;
+    sofa::core::objectmodel::RenamedData<Real> dmax;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<bool> p_showForces;
+    sofa::core::objectmodel::RenamedData<bool> p_showForces;
 
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area
@@ -117,7 +119,7 @@ protected:
         }
     };
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<sofa::Index> quadPressureMap;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<QuadPressureInformation> > quadPressureMap;
 
     sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > d_quadPressureMap; ///< Map between quad indices and their pressure
 

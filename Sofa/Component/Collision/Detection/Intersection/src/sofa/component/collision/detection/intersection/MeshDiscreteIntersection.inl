@@ -144,16 +144,4 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
     return 0; // No intersection: passed all tests for intersections !
 }
 
-template<class T>
-bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
-{
-    return testIntersection(sph, triangle, this);
-}
-
-template<class T>
-int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
-{
-    return computeIntersection(sph, triangle, contacts, this);
-}
-
 } // namespace sofa::component::collision::detection::intersection

@@ -27,16 +27,19 @@
 namespace sofa::component::visual
 {
 
-int VisualTransformClass = sofa::core::RegisterObject("TODO")
-        .add<VisualTransform>();
+void registerVisualTransform(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.")
+        .add< VisualTransform >());
+}
 
 VisualTransform::VisualTransform()
     : d_transform(initData(&d_transform, "transform", "Transformation to apply"))
     , d_recursive(initData(&d_recursive, false, "recursive", "True to apply transform to all nodes below"))
     , nbpush(0)
 {
-    transform.setParent(&d_transform);
-    recursive.setParent(&d_recursive);
+    transform.setOriginalData(&d_transform);
+    recursive.setOriginalData(&d_recursive);
 }
 
 VisualTransform::~VisualTransform()

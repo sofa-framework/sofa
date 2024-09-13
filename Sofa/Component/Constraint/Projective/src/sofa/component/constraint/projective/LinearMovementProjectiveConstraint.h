@@ -35,6 +35,8 @@
 #include <type_traits>
 #include <set>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
@@ -76,16 +78,16 @@ protected:
 public :
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< sofa::type::vector< sofa::Index> > m_indices;
+    sofa::core::objectmodel::RenamedData< sofa::type::vector< sofa::Index> > m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<type::vector<Real> >  m_keyTimes;
+    sofa::core::objectmodel::RenamedData<type::vector<Real> >  m_keyTimes;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<VecDeriv > m_keyMovements;
+    sofa::core::objectmodel::RenamedData<VecDeriv > m_keyMovements;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<bool> showMovement;
+    sofa::core::objectmodel::RenamedData<bool> showMovement;
 
     /// indices of the DOFs the constraint is applied to
     SetIndex d_indices;

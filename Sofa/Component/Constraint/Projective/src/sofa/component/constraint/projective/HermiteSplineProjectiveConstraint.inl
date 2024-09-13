@@ -42,15 +42,15 @@ HermiteSplineProjectiveConstraint<DataTypes>::HermiteSplineProjectiveConstraint(
     , d_sx1(initData(&d_sx1, "SX1", "second interpolation vector") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    m_indices.setParent(&d_indices);
-    m_tBegin.setParent(&d_tBegin);
-    m_tEnd.setParent(&d_tEnd);
-    m_x0.setParent(&d_x0);
-    m_dx0.setParent(&d_dx0);
-    m_x1.setParent(&d_x1);
-    m_dx1.setParent(&d_dx1);
-    m_sx0.setParent(&d_sx0);
-    m_sx1.setParent(&d_sx1);
+    m_indices.setOriginalData(&d_indices);
+    m_tBegin.setOriginalData(&d_tBegin);
+    m_tEnd.setOriginalData(&d_tEnd);
+    m_x0.setOriginalData(&d_x0);
+    m_dx0.setOriginalData(&d_dx0);
+    m_x1.setOriginalData(&d_x1);
+    m_dx1.setOriginalData(&d_dx1);
+    m_sx0.setOriginalData(&d_sx0);
+    m_sx1.setOriginalData(&d_sx1);
 }
 
 template <class DataTypes>

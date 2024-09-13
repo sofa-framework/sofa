@@ -45,12 +45,12 @@ SphereROI<DataTypes>::SphereROI()
     this->addAlias(&this->d_positions,"rest_position");
     this->addAlias(&this->d_drawROI, "drawSphere");
 
-    centers.setParent(&d_centers);
-    radii.setParent(&d_radii);
-    direction.setParent(&d_direction);
-    normal.setParent(&d_normal);
-    edgeAngle.setParent(&d_edgeAngle);
-    triAngle.setParent(&d_triAngle);
+    centers.setOriginalData(&d_centers);
+    radii.setOriginalData(&d_radii);
+    direction.setOriginalData(&d_direction);
+    normal.setOriginalData(&d_normal);
+    edgeAngle.setOriginalData(&d_edgeAngle);
+    triAngle.setOriginalData(&d_triAngle);
 }
 
 template <class DataTypes>

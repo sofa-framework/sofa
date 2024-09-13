@@ -39,8 +39,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
 
-RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf)
-    : intersection(object)
+RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* intersection, bool addSelf)
 {
     if (addSelf)
     {
@@ -244,36 +243,8 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
         }
     }
 
-
-
-
-
     return iHit;
 
 }
-
-
-bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
-{
-    return testIntersection(t1,t2, intersection);
-}
-
-int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
-{
-    return computeIntersection(t1,t2, contacts, intersection);
-}
-
-bool RayNewProximityIntersection::testIntersection( Ray& rRay, RigidSphere& rSphere)
-{
-    return testIntersection(rRay,rSphere, intersection);
-}
-
-
-int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector* contacts)
-{
-    return computeIntersection(rRay,rSphere, contacts, intersection);
-}
-
-
 
 } //namespace sofa::component::collision::detection::intersection

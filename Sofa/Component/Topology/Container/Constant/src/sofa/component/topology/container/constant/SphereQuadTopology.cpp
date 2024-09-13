@@ -39,16 +39,16 @@ SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
       d_center(initData(&d_center, Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal), "center", "Center of the sphere")),
       d_radius(initData(&d_radius, 1.0_sreal, "radius", "Radius of the sphere"))
 {
-    center.setParent(&d_center);
-    radius.setParent(&d_radius);
+    center.setOriginalData(&d_center);
+    radius.setOriginalData(&d_radius);
 }
 
 SphereQuadTopology::SphereQuadTopology()
     : d_center(initData(&d_center, Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal), "center", "Center of the sphere")),
       d_radius(initData(&d_radius, 0_sreal, "radius", "Radius of the sphere"))
 {
-    center.setParent(&d_center);
-    radius.setParent(&d_radius);
+    center.setOriginalData(&d_center);
+    radius.setOriginalData(&d_radius);
 }
 
 Vec3 SphereQuadTopology::getPoint(int x, int y, int z) const

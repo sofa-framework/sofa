@@ -30,6 +30,7 @@
 #include <sofa/core/fwd.h>
 #include <sofa/helper/OptionsGroup.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::visual
 {
@@ -67,55 +68,55 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::Vec3> p_position;
+    sofa::core::objectmodel::RenamedData<type::Vec3> p_position;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<Quat> p_orientation;
+    sofa::core::objectmodel::RenamedData<Quat> p_orientation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::Vec3> p_lookAt;
+    sofa::core::objectmodel::RenamedData<type::Vec3> p_lookAt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<double> p_distance;
+    sofa::core::objectmodel::RenamedData<double> p_distance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<double> p_fieldOfView;
+    sofa::core::objectmodel::RenamedData<double> p_fieldOfView;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<double> p_zNear;
+    sofa::core::objectmodel::RenamedData<double> p_zNear;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<double> p_zFar;
+    sofa::core::objectmodel::RenamedData<double> p_zFar;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<bool> p_computeZClip;
+    sofa::core::objectmodel::RenamedData<bool> p_computeZClip;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::Vec3> p_minBBox;
+    sofa::core::objectmodel::RenamedData<type::Vec3> p_minBBox;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::Vec3> p_maxBBox;
+    sofa::core::objectmodel::RenamedData<type::Vec3> p_maxBBox;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<unsigned int> p_widthViewport;
+    sofa::core::objectmodel::RenamedData<unsigned int> p_widthViewport;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<unsigned int> p_heightViewport;
+    sofa::core::objectmodel::RenamedData<unsigned int> p_heightViewport;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<sofa::helper::OptionsGroup> p_type;
+    sofa::core::objectmodel::RenamedData<sofa::helper::OptionsGroup> p_type;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<bool> p_activated;
+    sofa::core::objectmodel::RenamedData<bool> p_activated;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<bool> p_fixedLookAtPoint;
+    sofa::core::objectmodel::RenamedData<bool> p_fixedLookAtPoint;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::vector<SReal> > p_modelViewMatrix;
+    sofa::core::objectmodel::RenamedData<type::vector<SReal> > p_modelViewMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    Data<type::vector<SReal> > p_projectionMatrix;
+    sofa::core::objectmodel::RenamedData<type::vector<SReal> > p_projectionMatrix;
 
 
     Data<type::Vec3> d_position; ///< Camera's position
