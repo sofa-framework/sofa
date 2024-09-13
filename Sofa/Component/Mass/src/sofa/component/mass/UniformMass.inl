@@ -663,11 +663,11 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
 template<class DataTypes>
 void UniformMass<DataTypes>::loadRigidMass( const std::string&  filename)
 {
-    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<
+    msg_error(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<
                          " the current object is not based on a Rigid template. It is thus ignored. " << msgendl <<
-                         "To remove this warning you can: " << msgendl <<
+                         "To fix this error you can: " << msgendl <<
                          "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>." << msgendl <<
-                         "  - use a Rigid mechanical object instead of a VecXX one." ;
+                         "  - use a Rigid mechanical object instead of a Vec one." ;
 }
 
 } // namespace sofa::component::mass
