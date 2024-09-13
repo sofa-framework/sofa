@@ -60,8 +60,6 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
 )
 
-sofa_find_package(Eigen3 3.3.5 REQUIRED)
-
 if (SOFA_OPENMP)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFA_LINEARALGEBRA_HAVE_OPENMP
 endif()
@@ -75,7 +73,7 @@ sofa_find_package(Sofa.Helper REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Helper Eigen3::Eigen)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Helper)
 
 if (SOFA_LINEARALGEBRA_HAVE_OPENMP)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)

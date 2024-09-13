@@ -9,6 +9,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/BoundingBox.h
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
+    ${SOFATYPESRC_ROOT}/EigenMatrixAddons.h
     ${SOFATYPESRC_ROOT}/Frame.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
@@ -69,6 +70,7 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.Config REQUIRED)
+sofa_find_package(Eigen3 3.3.5 REQUIRED)
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
@@ -91,6 +93,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
