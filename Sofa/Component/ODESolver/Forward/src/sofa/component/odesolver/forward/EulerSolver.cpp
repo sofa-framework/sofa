@@ -40,9 +40,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace core::behavior;
 
-int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time integrator")
-        .add< EulerExplicitSolver >()
-        ;
+void registerEulerExplicitSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A simple explicit time integrator.")
+        .add< EulerExplicitSolver >());
+}
 
 EulerExplicitSolver::EulerExplicitSolver()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).") )

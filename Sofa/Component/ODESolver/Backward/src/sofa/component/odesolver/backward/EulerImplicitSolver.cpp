@@ -355,12 +355,10 @@ SReal EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative, SR
         return vect[outputDerivative];
 }
 
-
-int EulerImplicitSolverClass = core::RegisterObject("Time integrator using implicit backward Euler scheme")
-        .add< EulerImplicitSolver >()
-        .addAlias("EulerImplicit")
-        .addAlias("ImplicitEulerSolver")
-        .addAlias("ImplicitEuler")
-        ;
+void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
+        .add< EulerImplicitSolver >());
+}
 
 } // namespace sofa::component::odesolver::backward

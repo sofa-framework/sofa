@@ -398,9 +398,10 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     sofa::helper::AdvancedTimer::valSet("correction", std::sqrt(dx_squared_norm));
 }
 
-
-int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
-    .add< StaticSolver >()
-;
+void registerStaticSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Static ODE Solver.")
+        .add< StaticSolver >());
+}
 
 } // namespace sofa::component::odesolver::backward
