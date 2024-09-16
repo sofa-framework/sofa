@@ -223,8 +223,9 @@ void AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataT
             // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
             const long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
 
+            const sofa::component::constraint::lagrangian::model::AugmentedLagrangianContactParameters params(mu_,epsilon_ );
             // Add contact in unilateral constraint
-            m_constraint->addContact(mu_, epsilon_, o->normal, distance, index1, index2, index, o->id);
+            m_constraint->addContact(params, o->normal, distance, index1, index2, index, o->id);
         }
 
         if (parent!=nullptr)

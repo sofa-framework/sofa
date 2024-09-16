@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
 #include <sofa/component/collision/response/contact/AugmentedLagrangianResponse.inl>
 
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>

@@ -23,6 +23,7 @@
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
 #include <sofa/core/behavior/ConstraintResolution.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralConstraintResolution.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
 #include <map>
@@ -47,36 +48,6 @@ private:
     SReal m_epsilon;
 };
 
-// A little experiment on how to best save the forces for the hot start.
-//  TODO : save as a map (index of the contact <-> force)
-class PreviousForcesContainer
-{
-   public:
-    PreviousForcesContainer() : resetFlag(true) {}
-    SReal popForce()
-    {
-        resetFlag = true;
-        if (forces.empty()) return 0;
-        const SReal f = forces.front();
-        forces.pop_front();
-        return f;
-    }
-
-    void pushForce(SReal f)
-    {
-        if (resetFlag)
-        {
-            forces.clear();
-            resetFlag = false;
-        }
-
-        forces.push_back(f);
-    }
-
-   protected:
-    std::deque<SReal> forces;
-    bool resetFlag;  // We delete all forces that were not read
-};
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianResolutionWithFriction
     : public core::behavior::ConstraintResolution

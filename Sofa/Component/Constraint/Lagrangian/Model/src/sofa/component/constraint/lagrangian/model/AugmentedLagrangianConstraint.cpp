@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_AugmentedLagrangianConstraint_CPP
+#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
 #include <sofa/component/constraint/lagrangian/model/AugmentedLagrangianConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -30,8 +31,7 @@ namespace sofa::component::constraint::lagrangian::model
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-//TODO(dmarchal) What does this TODO mean ?
-int AugmentedLagrangianConstraintClass = core::RegisterObject("TODO-AugmentedLagrangianConstraint")
+int AugmentedLagrangianConstraintClass = core::RegisterObject("AugmentedLagrangianConstraint")
         .add< AugmentedLagrangianConstraint<Vec3Types> >()
 
         ;
@@ -62,8 +62,6 @@ void AugmentedLagrangianResolutionWithFriction::init(int line, SReal** w, SReal*
 
 void AugmentedLagrangianResolutionWithFriction::resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * /*dfree*/)
 {
-    const SReal f = force[line];
-    SReal f_t[2];
     force[line] -= d[line] * _epsilon;
 
     if(force[line] < 0)
@@ -72,16 +70,15 @@ void AugmentedLagrangianResolutionWithFriction::resolution(int line, SReal** /*w
         return;
     }
 
+    const SReal f_t_0 = force[line + 1] - d[line+ 1] * _epsilon;
+    const SReal f_t_1 = force[line + 2] - d[line+ 2] * _epsilon;
 
-    f_t[0] = force[line + 1] - d[line+ 1] * _epsilon;
-    f_t[1] = force[line + 2] - d[line+ 2] * _epsilon;
-
-    SReal criteria =   sqrt(pow(f_t[0],2.0) + pow(f_t[1],2.0)) - _mu * fabs(force[line]);
+    const SReal criteria = sqrt(pow(f_t_0,2.0) + pow(f_t_1,2.0)) - _mu * fabs(force[line]);
 
     if(criteria<0)
     {
-        force[line+1] = f_t[0] ;
-        force[line+2] = f_t[1] ;
+        force[line+1] = f_t_0 ;
+        force[line+2] = f_t_1 ;
     }
     else
     {
