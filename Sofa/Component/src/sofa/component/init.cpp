@@ -82,6 +82,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin("Sofa.Component.Controller");
     factory->registerObjectsFromPlugin("Sofa.Component.Haptics");
     factory->registerObjectsFromPlugin("Sofa.Component.Diffusion");
+    factory->registerObjectsFromPlugin("Sofa.Component.ODESolver");
 }
 
 void init()
