@@ -74,6 +74,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
 
     void SetUp() override 
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
     }
 
