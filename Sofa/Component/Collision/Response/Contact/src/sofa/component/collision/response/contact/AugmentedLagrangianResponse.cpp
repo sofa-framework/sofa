@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
 #include <sofa/component/collision/response/contact/AugmentedLagrangianResponse.inl>
+#include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
@@ -48,6 +49,22 @@ Creator<sofa::core::collision::Contact::Factory, AugmentedLagrangianResponse<Sph
 Creator<sofa::core::collision::Contact::Factory, AugmentedLagrangianResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > LineRigidSphereAugmentedLagrangianResponseClass("AugmentedLagrangianResponseConstraint",true);
 Creator<sofa::core::collision::Contact::Factory, AugmentedLagrangianResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > TriangleRigidSphereAugmentedLagrangianResponseClass("AugmentedLagrangianResponseConstraint",true);
 Creator<sofa::core::collision::Contact::Factory, AugmentedLagrangianResponse<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > RigidSpherePointAugmentedLagrangianResponseClass("AugmentedLagrangianResponseConstraint",true);
+
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<RigidSphereModel, RigidSphereModel,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::AugmentedLagrangianContactParameters>;
 
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API AugmentedLagrangianResponse<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API AugmentedLagrangianResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;

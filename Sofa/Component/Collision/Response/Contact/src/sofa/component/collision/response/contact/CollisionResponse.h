@@ -73,7 +73,6 @@ public :
                 {"ray", "RayContact"},
                 {"default", "PenalityContactForceField"},
                 {"FrictionContact", "FrictionContactConstraint"},
-                {"AugmentedLagrangian", "AugmentedLagrangianContact"},
                 {"registration", "RegistrationContactForceField"},
                 {"stick", "StickContactForceField"},
             };
