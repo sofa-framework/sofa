@@ -69,7 +69,8 @@ public:
 
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_AugmentedLagrangianConstraint_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<defaulttype::Vec3Types>;
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<defaulttype::Vec3Types,AugmentedLagrangianContactParameters>;
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<defaulttype::Vec3Types>;
 #endif
 
 

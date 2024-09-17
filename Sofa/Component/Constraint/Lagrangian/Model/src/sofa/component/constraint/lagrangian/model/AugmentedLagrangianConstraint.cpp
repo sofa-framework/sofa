@@ -37,6 +37,7 @@ int AugmentedLagrangianConstraintClass = core::RegisterObject("AugmentedLagrangi
         ;
 
 
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,AugmentedLagrangianContactParameters>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<Vec3Types>;
 
 
