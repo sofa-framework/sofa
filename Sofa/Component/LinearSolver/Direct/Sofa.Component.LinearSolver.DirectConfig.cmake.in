@@ -5,6 +5,7 @@
 
 find_package(Sofa.Simulation.Core QUIET REQUIRED)
 find_package(Sofa.Component.LinearSolver.Iterative QUIET REQUIRED)
+find_package(Sofa.Component.LinearSolver.Ordering QUIET REQUIRED)
 find_package(Threads QUIET REQUIRED)
 
 set(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS @SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS@)
