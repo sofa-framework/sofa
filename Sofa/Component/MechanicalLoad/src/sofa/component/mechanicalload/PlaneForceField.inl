@@ -92,6 +92,11 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 template<class DataTypes>
 void PlaneForceField<DataTypes>::init()
 {
+    if(this->isComponentStateValid())
+    {
+        msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
+    }
+
     Inherit::init() ;
     if( this->mstate == nullptr ){
         msg_error(this) << "Missing mechanical object.  This component will be considered as not valid and will do nothing.  "
