@@ -50,7 +50,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::init()
 
     if (!l_topologicalMapping)
     {
-        l_topologicalMapping.set(this->getContext()->get<Mesh2PointTopologicalMapping>());
+        l_topologicalMapping.set(this->getContext()->template get<Mesh2PointTopologicalMapping>());
         if (!l_topologicalMapping)
         {
             msg_error() << "Cannot find a component " << l_topologicalMapping->getClassName() << " in the current context";
