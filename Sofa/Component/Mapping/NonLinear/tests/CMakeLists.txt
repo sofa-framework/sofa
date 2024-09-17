@@ -8,6 +8,7 @@ set(SOURCE_FILES
     RigidMapping_test.cpp
     SquareDistanceMapping_test.cpp
     SquareMapping_test.cpp
+    VolumeMapping_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

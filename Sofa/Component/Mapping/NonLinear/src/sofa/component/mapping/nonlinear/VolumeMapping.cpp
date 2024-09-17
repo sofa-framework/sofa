@@ -19,60 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/init.h>
+#define SOFA_COMPONENT_MAPPING_NONLINEAR_VOLUMEMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/VolumeMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::mapping::nonlinear
 {
 
-extern void registerCentralDifferenceSolver(sofa::core::ObjectFactory* factory);
-extern void registerDampVelocitySolver(sofa::core::ObjectFactory* factory);
-extern void registerEulerExplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerRungeKutta2Solver(sofa::core::ObjectFactory* factory);
-extern void registerRungeKutta4Solver(sofa::core::ObjectFactory* factory);
+using namespace defaulttype;
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+// Register in the Factory
+int VolumeMappingClass = core::RegisterObject("Mapping each tetrahedron in a topology to a scalar value representing its volume")
+        .add< VolumeMapping< Vec3Types, Vec1Types > >()
+        ;
+
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API VolumeMapping< Vec3Types, Vec1Types >;
+
+
 }
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerCentralDifferenceSolver(factory);
-    registerDampVelocitySolver(factory);
-    registerEulerExplicitSolver(factory);
-    registerRungeKutta2Solver(factory);
-    registerRungeKutta4Solver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::odesolver::forward
