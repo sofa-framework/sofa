@@ -68,7 +68,6 @@ protected:
                                    const Data<VecDeriv_t<Out> >& childForce) = 0;
 
     SparseMatrixEigen jacobian; ///< Jacobian of the mapping
-    type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
 
     virtual void doUpdateK(
         const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
@@ -92,6 +91,7 @@ protected:
 private:
 
     SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
 };
 
 }
