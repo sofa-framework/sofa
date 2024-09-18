@@ -27,6 +27,7 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
 #include <sofa/component/collision/response/contact/FrictionContact.inl>
+#include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 
 using namespace sofa::core::collision;
 
@@ -78,6 +79,18 @@ template class COLLISIONOBBCAPSULE_API BarycentricPenalityContact<CapsuleCollisi
 template class COLLISIONOBBCAPSULE_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>>;
+
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class COLLISIONOBBCAPSULE_API BaseUnilateralContactResponse<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
 
 template class COLLISIONOBBCAPSULE_API FrictionContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class COLLISIONOBBCAPSULE_API FrictionContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
