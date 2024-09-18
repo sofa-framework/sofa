@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/nonlinear/VolumeMapping.h>
-#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.inl>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.inl>
 #include <sofa/core/BaseLocalMappingMatrix.h>
 
 namespace sofa::component::mapping::nonlinear

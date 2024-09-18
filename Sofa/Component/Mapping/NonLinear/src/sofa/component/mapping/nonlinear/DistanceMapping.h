@@ -23,7 +23,7 @@
 
 #include <sofa/component/mapping/nonlinear/config.h>
 
-#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.h>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.h>
 #include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

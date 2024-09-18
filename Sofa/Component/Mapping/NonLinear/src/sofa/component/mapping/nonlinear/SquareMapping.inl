@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareMapping.h>
-#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.inl>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.inl>
 #include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>

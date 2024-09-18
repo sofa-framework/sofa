@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.h>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
