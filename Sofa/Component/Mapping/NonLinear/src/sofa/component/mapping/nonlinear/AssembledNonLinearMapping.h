@@ -84,8 +84,4 @@ protected:
     };
 };
 
-#if !defined(SOFA_COMPONENT_MAPPING_NONLINEAR_ASSEMBLEDNONLINEARMAPPING_CPP)
-extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API AssembledNonLinearMapping<defaulttype::Vec3Types, defaulttype::Vec1Types, true >;
-#endif
-
 }
