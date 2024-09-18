@@ -69,7 +69,6 @@ protected:
 
     SparseMatrixEigen jacobian; ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
 
     virtual void doUpdateK(
         const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
@@ -89,6 +88,10 @@ protected:
         typename In::CPos jacobianValue;
         bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
     };
+
+private:
+
+    SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
 };
 
 }
