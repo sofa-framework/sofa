@@ -46,10 +46,10 @@ namespace sofa::component::mapping::nonlinear
  * @author Francois Faure
  */
 template <class TIn, class TOut>
-class DistanceMapping : public AssembledNonLinearMapping<TIn, TOut, true>
+class DistanceMapping : public BaseNonLinearMapping<TIn, TOut, true>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DistanceMapping,TIn,TOut), SOFA_TEMPLATE3(AssembledNonLinearMapping,TIn,TOut,true));
+    SOFA_CLASS(SOFA_TEMPLATE2(DistanceMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut,true));
 
     typedef TIn In;
     typedef TOut Out;

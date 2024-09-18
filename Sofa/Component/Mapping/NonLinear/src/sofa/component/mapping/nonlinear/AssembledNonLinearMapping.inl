@@ -28,7 +28,7 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
 init()
 {
     core::Mapping<TIn, TOut>::init();
@@ -38,7 +38,7 @@ init()
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJ(
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJ(
     const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out,
     const DataVecDeriv_t<In>& in)
 {
@@ -51,7 +51,7 @@ void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::appl
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
     const core::MechanicalParams* mparams, DataVecDeriv_t<In>& out,
     const DataVecDeriv_t<Out>& in)
 {
@@ -64,7 +64,7 @@ void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::appl
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
     const core::ConstraintParams* cparams, DataMatrixDeriv_t<In>& out,
     const DataMatrixDeriv_t<Out>& in)
 {
@@ -75,7 +75,7 @@ void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::appl
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyDJT(
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyDJT(
     const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId,
     core::ConstMultiVecDerivId childForceId)
 {
@@ -106,19 +106,19 @@ void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::appl
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-const linearalgebra::BaseMatrix* AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getK()
+const linearalgebra::BaseMatrix* BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getK()
 {
     return &K;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getJs()
 {
     return &baseMatrices;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
 updateK(const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId)
 {
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();

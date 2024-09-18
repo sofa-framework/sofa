@@ -32,10 +32,10 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-class VolumeMapping : public AssembledNonLinearMapping<TIn, TOut, true>
+class VolumeMapping : public BaseNonLinearMapping<TIn, TOut, true>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE3(AssembledNonLinearMapping,TIn,TOut, true));
+    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut, true));
 
     using In = TIn;
     using Out = TOut;

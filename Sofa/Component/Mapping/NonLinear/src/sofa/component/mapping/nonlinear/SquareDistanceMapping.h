@@ -52,10 +52,10 @@ namespace sofa::component::mapping::nonlinear
 // If the rest lengths are not defined, they are set using the initial values.
 // If computeDistance is set to true, the rest lengths are set to 0.
 template <class TIn, class TOut>
-class SquareDistanceMapping : public AssembledNonLinearMapping<TIn, TOut, true>
+class SquareDistanceMapping : public BaseNonLinearMapping<TIn, TOut, true>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SquareDistanceMapping,TIn,TOut), SOFA_TEMPLATE3(AssembledNonLinearMapping,TIn,TOut,true));
+    SOFA_CLASS(SOFA_TEMPLATE2(SquareDistanceMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut,true));
 
     using In = TIn;
     using Out = TOut;

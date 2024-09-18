@@ -60,10 +60,10 @@ struct BaseDistanceFromTargetMapping
  * @author Francois Faure
   */
 template <class TIn, class TOut>
-class DistanceFromTargetMapping : public AssembledNonLinearMapping<TIn, TOut, true>, public BaseDistanceFromTargetMapping
+class DistanceFromTargetMapping : public BaseNonLinearMapping<TIn, TOut, true>, public BaseDistanceFromTargetMapping
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DistanceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE3(AssembledNonLinearMapping,TIn,TOut, true));
+    SOFA_CLASS(SOFA_TEMPLATE2(DistanceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut, true));
 
     using In = TIn;
     using Out = TOut;

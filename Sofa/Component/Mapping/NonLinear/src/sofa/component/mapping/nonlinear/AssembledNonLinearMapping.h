@@ -30,11 +30,11 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-class AssembledNonLinearMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<HasStabilizedGeometricStiffness>
+class BaseNonLinearMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<HasStabilizedGeometricStiffness>
 {
 public:
     SOFA_CLASS(
-        SOFA_TEMPLATE3(AssembledNonLinearMapping,TIn,TOut, HasStabilizedGeometricStiffness),
+        SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut, HasStabilizedGeometricStiffness),
         SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     using In = TIn;
