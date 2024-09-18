@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/nonlinear/VolumeMapping.h>
+#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.inl>
 #include <sofa/core/BaseLocalMappingMatrix.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraintEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -102,10 +102,10 @@ void VolumeMapping<TIn, TOut>::init()
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( nbTetrahedra );
-    jacobian.resizeBlocks(nbTetrahedra, pos.size());
+    this->jacobian.resizeBlocks(nbTetrahedra, pos.size());
 
-    baseMatrices.resize( 1 );
-    baseMatrices[0] = &jacobian;
+    this->baseMatrices.resize( 1 );
+    this->baseMatrices[0] = &this->jacobian;
 
     Inherit1::init();
 
@@ -126,7 +126,7 @@ void VolumeMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
     const auto& tetrahedra = l_topology->getTetrahedra();
 
-    jacobian.clear();
+    this->jacobian.clear();
 
     for (unsigned int tetId = 0; tetId < tetrahedra.size(); ++tetId)
     {
@@ -166,115 +166,74 @@ void VolumeMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
         //insertion in increasing column order
         std::sort(jacobianEntries.begin(), jacobianEntries.end());
 
-        jacobian.beginRow(tetId);
+        this->jacobian.beginRow(tetId);
         for (const auto& [vertexId, jacobianValue] : jacobianEntries)
         {
             for (unsigned d = 0; d < In::spatial_dimensions; ++d)
             {
-                jacobian.insertBack(tetId, vertexId * Nin + d, jacobianValue[d]);
+                this->jacobian.insertBack(tetId, vertexId * Nin + d, jacobianValue[d]);
             }
         }
     }
 
-    jacobian.compress();
+    this->jacobian.compress();
 }
 
 template <class TIn, class TOut>
-void VolumeMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams,
-    DataVecDeriv_t<Out>& out, const DataVecDeriv_t<In>& in)
+void VolumeMapping<TIn, TOut>::matrixFreeApplyDJT(
+    const core::MechanicalParams* mparams, Real kFactor,
+    Data<VecDeriv_t<In>>& parentForce,
+    const Data<VecDeriv_t<In>>& parentDisplacement,
+    const Data<VecDeriv_t<Out>>& childForce)
 {
-    if( jacobian.rowSize() )
-    {
-        auto dOutWa = sofa::helper::getWriteOnlyAccessor(out);
-        auto dInRa = sofa::helper::getReadAccessor(in);
-        jacobian.mult(dOutWa.wref(),dInRa.ref());
-    }
-}
+    SOFA_UNUSED(mparams);
 
-template <class TIn, class TOut>
-void VolumeMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams,
-    DataVecDeriv_t<In>& out, const DataVecDeriv_t<Out>& in)
-{
-    if( jacobian.rowSize() )
-    {
-        auto dOutRa = sofa::helper::getReadAccessor(in);
-        auto dInWa = sofa::helper::getWriteOnlyAccessor(out);
-        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
-    }
-}
-
-template <class TIn, class TOut>
-void VolumeMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams,
-    DataMatrixDeriv_t<In>& out, const DataMatrixDeriv_t<Out>& in)
-{
-    SOFA_UNUSED(cparams);
-    auto childMatRa  = sofa::helper::getReadAccessor(in);
-    auto parentMatWa = sofa::helper::getWriteAccessor(out);
-    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
-}
-
-template <class TIn, class TOut>
-void VolumeMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
-    core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId)
-{
     if (!m_vertices)
     {
         return;
     }
 
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness )
-    {
-        return;
-    }
+    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
 
-    helper::WriteAccessor<Data<VecDeriv_t<In> > > parentForceAccessor(*parentForceId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<VecDeriv_t<In> > > parentDisplacementAccessor(*mparams->readDx(this->fromModel.get()));
-    const SReal kFactor = mparams->kFactor();
-    helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForceAccessor(mparams->readF(this->toModel.get()));
+    helper::WriteAccessor parentForceAccessor(parentForce);
+    helper::ReadAccessor parentDisplacementAccessor(parentDisplacement);
+    helper::ReadAccessor childForceAccessor(childForce);
 
-    if( K.compressedMatrix.nonZeros() )
+    const auto& tetrahedra = l_topology->getTetrahedra();
+    for (unsigned int tetId = 0; tetId < tetrahedra.size(); ++tetId)
     {
-        K.addMult( parentForceAccessor.wref(), parentDisplacementAccessor.ref(), (typename In::Real)kFactor );
-    }
-    else
-    {
-        const auto& tetrahedra = l_topology->getTetrahedra();
-        for (unsigned int tetId = 0; tetId < tetrahedra.size(); ++tetId)
+        const Deriv_t<Out>& childForceTetra = childForceAccessor[tetId];
+
+        if( childForceTetra[0] < 0 || geometricStiffness==1 )
         {
-            const Deriv_t<Out>& childForceTetra = childForceAccessor[tetId];
+            const auto& tetra = tetrahedra[tetId];
 
-            if( childForceTetra[0] < 0 || geometricStiffness==1 )
+            const sofa::type::fixed_array<Coord_t<In>, 4> v{
+                (*m_vertices)[tetra[0]],
+                (*m_vertices)[tetra[1]],
+                (*m_vertices)[tetra[2]],
+                (*m_vertices)[tetra[3]],
+            };
+
+            //it's a 4x4 matrix, where each entry is a 3x3 matrix
+            const auto d2Vol_d2x = computeSecondDerivativeVolume(v);
+
+            for (unsigned int i = 0; i < 4; ++i)
             {
-                const auto& tetra = tetrahedra[tetId];
-
-                const sofa::type::fixed_array<Coord_t<In>, 4> v{
-                    (*m_vertices)[tetra[0]],
-                    (*m_vertices)[tetra[1]],
-                    (*m_vertices)[tetra[2]],
-                    (*m_vertices)[tetra[3]],
-                };
-
-                //it's a 4x4 matrix, where each entry is a 3x3 matrix
-                const auto d2Vol_d2x = computeSecondDerivativeVolume(v);
-
-                for (unsigned int i = 0; i < 4; ++i)
+                for (unsigned int j = i + 1; j < 4; ++j) //diagonal terms are omitted because they are null
                 {
-                    for (unsigned int j = i + 1; j < 4; ++j) //diagonal terms are omitted because they are null
-                    {
-                        parentForceAccessor[tetra[i]] +=
+                    parentForceAccessor[tetra[i]] +=
                             kFactor
                             * d2Vol_d2x(i, j)
                             * parentDisplacementAccessor[tetra[j]]
                             * childForceTetra[0];
 
-                        //transpose
-                        parentForceAccessor[tetra[j]] +=
+                    //transpose
+                    parentForceAccessor[tetra[j]] +=
                             kFactor
                             * d2Vol_d2x(j, i)
                             * parentDisplacementAccessor[tetra[i]]
                             * childForceTetra[0];
-                    }
                 }
             }
         }
@@ -286,14 +245,14 @@ void VolumeMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
     core::ConstMultiVecDerivId childForceId)
 {
     SOFA_UNUSED(mparams);
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { K.resize(0,0); return; }
+    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForce( *childForceId[this->toModel.get()].read() );
 
     {
         unsigned int kSize = this->fromModel->getSize();
-        K.resizeBlocks(kSize, kSize);
+        this->K.resizeBlocks(kSize, kSize);
     }
 
     const auto& tetrahedra = l_topology->getTetrahedra();
@@ -319,27 +278,21 @@ void VolumeMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
             {
                 for (unsigned int j = i+1; j < 4; ++j) //diagonal terms are omitted because they are null
                 {
-                    K.addBlock(tetra[i], tetra[j], d2Volume_d2x(i, j) * childForceTri[0]);
-                    K.addBlock(tetra[j], tetra[i], d2Volume_d2x(j, i) * childForceTri[0]);
+                    this->K.addBlock(tetra[i], tetra[j], d2Volume_d2x(i, j) * childForceTri[0]);
+                    this->K.addBlock(tetra[j], tetra[i], d2Volume_d2x(j, i) * childForceTri[0]);
                 }
             }
         }
     }
 
-    K.compress();
-}
-
-template <class TIn, class TOut>
-const linearalgebra::BaseMatrix* VolumeMapping<TIn, TOut>::getK()
-{
-    return &K;
+    this->K.compress();
 }
 
 template <class TIn, class TOut>
 void VolumeMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    const unsigned& geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness )
     {
         return;
@@ -380,11 +333,5 @@ void VolumeMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
 }
 
-template <class TIn, class TOut>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* VolumeMapping<TIn, TOut>::
-getJs()
-{
-    return &baseMatrices;
-}
 
 }
