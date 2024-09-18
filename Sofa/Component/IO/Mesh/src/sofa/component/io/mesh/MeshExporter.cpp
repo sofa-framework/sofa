@@ -36,17 +36,6 @@ using sofa::core::objectmodel::ComponentState ;
 namespace sofa::component::_meshexporter_
 {
 
-int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
-                                             "Supported format are: " msgendl
-                                             "- vtkxml" msgendl
-                                             "- vtk" msgendl
-                                             "- netgen" msgendl
-                                             "- teten" msgendl
-                                             "- gmsh" msgendl
-                                             "- obj" msgendl)
-
-        .add< MeshExporter >();
-
 MeshExporter::MeshExporter()
     : d_fileFormat( initData(&d_fileFormat, {"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"}, "format", "File format to use"))
     , d_position( initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
@@ -889,3 +878,20 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
 }
 
 } // namespace sofa::component::_meshexporter_
+
+namespace sofa::component::io::mesh
+{
+    void registerMeshExporter(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(core::ObjectRegistrationData("Export topology and positions into file. " msgendl
+            "Supported format are: " msgendl
+            "- vtkxml" msgendl
+            "- vtk" msgendl
+            "- netgen" msgendl
+            "- teten" msgendl
+            "- gmsh" msgendl
+            "- obj" msgendl)
+            .add< MeshExporter >());
+    }
+
+} // namespace sofa::component::io::mesh

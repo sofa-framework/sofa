@@ -34,9 +34,11 @@ namespace sofa::component::io::mesh
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
-        .add< MeshTrianLoader >()
-        ;
+void registerMeshTrianLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specific mesh loader for trian (only triangulations) file format.")
+        .add< MeshTrianLoader >());
+}
 
 MeshTrianLoader::MeshTrianLoader() : MeshLoader()
     , d_trian2(initData(&d_trian2, (bool)false, "trian2", "Set to true if the mesh is a trian2 format."))
