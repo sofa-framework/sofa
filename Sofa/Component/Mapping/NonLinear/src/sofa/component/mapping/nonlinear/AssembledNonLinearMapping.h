@@ -79,7 +79,7 @@ protected:
     struct JacobianEntry
     {
         sofa::Index vertexId;
-        typename In::Coord jacobianValue;
+        typename In::CPos jacobianValue;
         bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
     };
 };
