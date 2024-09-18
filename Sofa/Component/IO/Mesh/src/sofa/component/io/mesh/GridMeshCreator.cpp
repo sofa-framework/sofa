@@ -32,11 +32,11 @@ using namespace sofa::helper;
 using namespace sofa::core::loader;
 using type::vector;
 
-int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-dimensional mesh.")
-        .add< GridMeshCreator >()
-        ;
-
-
+void registerGridMeshCreator(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Procedural creation of a two-dimensional mesh.")
+        .add< GridMeshCreator >());
+}
 
 GridMeshCreator::GridMeshCreator(): MeshLoader()
     , d_resolution(initData(&d_resolution, Vec2i(2, 2), "resolution", "Number of vertices in each direction"))
