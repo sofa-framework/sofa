@@ -55,18 +55,25 @@ public:
     const linearalgebra::BaseMatrix* getK() final;
     const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) final;
+
 protected:
+
+    using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
+
     virtual void matrixFreeApplyDJT(const core::MechanicalParams* mparams,
                                    Real kFactor,
                                    Data<VecDeriv_t<In> >& parentForce,
                                    const Data<VecDeriv_t<In> >& parentDisplacement,
                                    const Data<VecDeriv_t<Out> >& childForce) = 0;
 
-    using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
-
     SparseMatrixEigen jacobian; ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
+
+    virtual void doUpdateK(
+        const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
+        SparseKMatrixEigen& matrix) = 0;
 
     /**
      * @brief Represents an entry in the Jacobian matrix.

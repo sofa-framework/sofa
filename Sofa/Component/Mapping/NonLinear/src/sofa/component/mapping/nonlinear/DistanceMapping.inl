@@ -211,26 +211,24 @@ void DistanceMapping<TIn, TOut>::matrixFreeApplyDJT(
     }
 }
 
-
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
+void DistanceMapping<TIn, TOut>::doUpdateK(
+    const core::MechanicalParams* mparams,
+    const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
 
-    const helper::ReadAccessor childForce( *childForceId[this->toModel.get()].read() );
+    const helper::ReadAccessor childForceAccessor(childForce);
     const SeqEdges& links = l_topology->getEdges();
 
-    unsigned int size = this->fromModel->getSize();
-    this->K.resizeBlocks(size,size);
-    for(size_t i=0; i<links.size(); i++)
+    for (size_t i = 0; i < links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( childForceAccessor[i][0] < 0 || geometricStiffness==1 )
         {
             sofa::type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
 
@@ -241,16 +239,15 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
                     b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
-            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+            b *= childForceAccessor[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
             // Note that 'links' is not sorted so the matrix can not be filled-up in order
-            this->K.addBlock(links[i][0],links[i][0],b);
-            this->K.addBlock(links[i][0],links[i][1],-b);
-            this->K.addBlock(links[i][1],links[i][0],-b);
-            this->K.addBlock(links[i][1],links[i][1],b);
+            matrix.addBlock(links[i][0],links[i][0],b);
+            matrix.addBlock(links[i][0],links[i][1],-b);
+            matrix.addBlock(links[i][1],links[i][0],-b);
+            matrix.addBlock(links[i][1],links[i][1],b);
         }
     }
-    this->K.compress();
 }
 
 template <class TIn, class TOut>

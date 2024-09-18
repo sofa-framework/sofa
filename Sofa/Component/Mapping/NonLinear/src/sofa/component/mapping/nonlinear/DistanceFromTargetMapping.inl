@@ -271,23 +271,22 @@ void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+void DistanceFromTargetMapping<TIn, TOut>::doUpdateK(
+    const core::MechanicalParams* mparams,
+    const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    helper::ReadAccessor childForce( *childForceId[this->toModel.get()].read() );
+    const helper::ReadAccessor childForceAccessor(childForce);
     const helper::ReadAccessor indices(d_indices);
-    helper::ReadAccessor in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
-    K.resizeBlocks(in.size(),in.size());
-    for(size_t i=0; i<indices.size(); i++)
+    for (size_t i = 0; i < indices.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( childForceAccessor[i][0] < 0 || geometricStiffness==1 )
         {
             size_t idx = indices[i];
 
@@ -299,12 +298,11 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
                     b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
-            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+            b *= childForceAccessor[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
-            K.addBlock(idx,idx,b);
+            matrix.addBlock(idx,idx,b);
         }
     }
-    K.compress();
 }
 
 

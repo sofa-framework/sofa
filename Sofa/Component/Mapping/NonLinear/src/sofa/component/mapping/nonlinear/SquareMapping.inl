@@ -88,23 +88,20 @@ void SquareMapping<TIn, TOut>::matrixFreeApplyDJT(
 }
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
+void SquareMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
+    const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
-    helper::ReadAccessor childForce( *childForceId[this->toModel.get()].read() );
-
+    const helper::ReadAccessor childForceAccessor(childForce);
     unsigned int size = this->fromModel->getSize();
-    this->K.resizeBlocks(size,size);
-    this->K.reserve( size );
-    for( size_t i=0 ; i<size ; ++i )
+
+    for (size_t i = 0; i < size; ++i)
     {
-        this->K.beginRow(i);
-        this->K.insertBack( i, i, 2*childForce[i][0] );
+        matrix.beginRow(i);
+        matrix.insertBack( i, i, 2*childForceAccessor[i][0] );
     }
-    this->K.compress();
 }
 
 template <class TIn, class TOut>

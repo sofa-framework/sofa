@@ -178,36 +178,35 @@ void SquareDistanceMapping<TIn, TOut>::matrixFreeApplyDJT(
 }
 
 template <class TIn, class TOut>
-void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
+void SquareDistanceMapping<TIn, TOut>::doUpdateK(
+    const core::MechanicalParams* mparams,
+    const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
-    helper::ReadAccessor childForce( *childForceId[this->toModel.get()].read() );
+    const helper::ReadAccessor childForceAccessor(childForce);
     const SeqEdges& links = l_topology->getEdges();
 
     unsigned int size = this->fromModel->getSize();
-    this->K.resizeBlocks(size,size);
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in an undefinite implicit matrix that causes instabilities
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( childForceAccessor[i][0] < 0 || geometricStiffness==1 )
         {
-            SReal tmp = 2*childForce[i][0];
+            SReal tmp = 2*childForceAccessor[i][0];
 
             for(unsigned k=0; k<In::spatial_dimensions; k++)
             {
-                this->K.add( links[i][0]*Nin+k, links[i][0]*Nin+k, tmp );
-                this->K.add( links[i][0]*Nin+k, links[i][1]*Nin+k, -tmp );
-                this->K.add( links[i][1]*Nin+k, links[i][1]*Nin+k, tmp );
-                this->K.add( links[i][1]*Nin+k, links[i][0]*Nin+k, -tmp );
+                matrix.add( links[i][0]*Nin+k, links[i][0]*Nin+k, tmp );
+                matrix.add( links[i][0]*Nin+k, links[i][1]*Nin+k, -tmp );
+                matrix.add( links[i][1]*Nin+k, links[i][1]*Nin+k, tmp );
+                matrix.add( links[i][1]*Nin+k, links[i][0]*Nin+k, -tmp );
             }
         }
     }
-    this->K.compress();
 }
 
 template <class TIn, class TOut>

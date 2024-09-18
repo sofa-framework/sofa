@@ -238,24 +238,18 @@ void AreaMapping<TIn, TOut>::matrixFreeApplyDJT(
 }
 
 template <class TIn, class TOut>
-void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
-    core::ConstMultiVecDerivId childForceId)
+void AreaMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
+    const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<VecDeriv_t<Out> > > childForce( *childForceId[this->toModel.get()].read() );
-
-    {
-        unsigned int kSize = this->fromModel->getSize();
-        this->K.resizeBlocks(kSize, kSize);
-    }
+    const helper::ReadAccessor childForceAccessor(childForce);
 
     const auto& triangles = l_topology->getTriangles();
     for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
     {
-        const Deriv_t<Out>& childForceTri = childForce[triangleId];
+        const Deriv_t<Out>& childForceTri = childForceAccessor[triangleId];
 
         if( childForceTri[0] < 0 || geometricStiffness==1 )
         {
@@ -274,13 +268,11 @@ void AreaMapping<TIn, TOut>::updateK(const core::MechanicalParams* mparams,
             {
                 for (unsigned int j = 0; j < 3; ++j)
                 {
-                    this->K.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForceTri[0]);
+                    matrix.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForceTri[0]);
                 }
             }
         }
     }
-
-    this->K.compress();
 }
 
 template <class TIn, class TOut>

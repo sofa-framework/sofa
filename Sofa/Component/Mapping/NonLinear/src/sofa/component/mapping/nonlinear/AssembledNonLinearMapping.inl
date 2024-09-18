@@ -114,5 +114,24 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* AssembledNonLinearMapping<
     return &baseMatrices;
 }
 
+template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
+void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
+updateK(const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId)
+{
+    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness ) { this->K.resize(0,0); return; }
+
+    const Data<VecDeriv_t<Out> >& childForce = *childForceId[this->toModel.get()].read();
+
+    {
+        unsigned int kSize = this->fromModel->getSize();
+        K.resizeBlocks(kSize, kSize);
+    }
+
+    doUpdateK(mparams, childForce, K);
+
+    K.compress();
+}
+
 
 }
