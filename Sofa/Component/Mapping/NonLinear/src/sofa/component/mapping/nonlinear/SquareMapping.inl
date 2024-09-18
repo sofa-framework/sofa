@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareMapping.h>
+#include <sofa/component/mapping/nonlinear/AssembledNonLinearMapping.inl>
 #include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
@@ -33,159 +34,84 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-SquareMapping<TIn, TOut>::SquareMapping()
-    : Inherit()
-    , d_useGeometricStiffnessMatrix(initData(&d_useGeometricStiffnessMatrix, true, "useGeometricStiffnessMatrix",
-        "If available (cached), the geometric stiffness matrix is used in order to compute the "
-        "product with the parent displacement. Otherwise, the product is computed directly using "
-        "the available vectors (matrix-free method)."))
-{
-}
-
-template <class TIn, class TOut>
-SquareMapping<TIn, TOut>::~SquareMapping()
-{
-}
-
-
-template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::init()
 {
-    baseMatrices.resize( 1 );
-    baseMatrices[0] = &jacobian;
+    this->baseMatrices.resize( 1 );
+    this->baseMatrices[0] = &this->jacobian;
 
-    this->Inherit::init();
+    Inherit1::init();
 }
 
-
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
+    DataVecCoord_t<Out>& dOut, const DataVecCoord_t<In>& dIn)
 {
-    helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
-    helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
+    helper::WriteOnlyAccessor< DataVecCoord_t<Out> >  out = dOut;
+    const helper::ReadAccessor<DataVecCoord_t<In>> in = dIn;
 
     size_t size = in.size();
     this->getToModel()->resize( size );
-    jacobian.resizeBlocks( size, size );
-    jacobian.reserve( size );
+    this->jacobian.resizeBlocks( size, size );
+    this->jacobian.reserve( size );
 
     for( unsigned i=0 ; i<size ; ++i )
     {
         const Real& x = in[i][0];
         out[i][0] = x*x;
 
-        jacobian.beginRow(i);
-        jacobian.insertBack( i, i, 2.0*x );
+        this->jacobian.beginRow(i);
+        this->jacobian.insertBack( i, i, 2.0*x );
     }
 
-    jacobian.compress();
+    this->jacobian.compress();
 }
 
-
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void SquareMapping<TIn, TOut>::matrixFreeApplyDJT(
+    const core::MechanicalParams* mparams, Real kFactor,
+    Data<VecDeriv_t<In>>& parentForce,
+    const Data<VecDeriv_t<In>>& parentDisplacement,
+    const Data<VecDeriv_t<Out>>& childForce)
 {
-    if( jacobian.rowSize() )
+    helper::WriteAccessor parentForceAccessor(parentForce);
+    helper::ReadAccessor parentDisplacementAccessor(parentDisplacement);
+    helper::ReadAccessor childForceAccessor(childForce);
+
+    const size_t size = parentDisplacementAccessor.size();
+    kFactor *= 2.0;
+
+    for(unsigned i=0; i<size; i++ )
     {
-        auto dOutWa = sofa::helper::getWriteOnlyAccessor(dOut);
-        auto dInRa = sofa::helper::getReadAccessor(dIn);
-        jacobian.mult(dOutWa.wref(),dInRa.ref());
+        parentForceAccessor[i][0] +=
+            parentDisplacementAccessor[i][0] * childForceAccessor[i][0] * kFactor;
     }
 }
-
-template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
-{
-    if( jacobian.rowSize() )
-    {
-        auto dOutRa = sofa::helper::getReadAccessor(dOut);
-        auto dInWa = sofa::helper::getWriteOnlyAccessor(dIn);
-        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
-    }
-}
-
-template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
-{
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) return;
-
-    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
-    SReal kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
-
-    if(d_useGeometricStiffnessMatrix.getValue() && K.compressedMatrix.nonZeros() )
-    {
-        K.addMult( parentForce.wref(), parentDisplacement.ref(), (typename In::Real)kfactor );
-    }
-    else
-    {
-        const size_t size = parentDisplacement.size();
-        kfactor *= 2.0;
-
-        for(unsigned i=0; i<size; i++ )
-        {
-            parentForce[i][0] += parentDisplacement[i][0] * childForce[i][0]*kfactor;
-        }
-    }
-}
-
-template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
-{
-    SOFA_UNUSED(cparams);
-    auto childMatRa  = sofa::helper::getReadAccessor(in);
-    auto parentMatWa = sofa::helper::getWriteAccessor(out);
-    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
-}
-
-
-template <class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getJ()
-{
-    return &jacobian;
-}
-
-template <class TIn, class TOut>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* SquareMapping<TIn, TOut>::getJs()
-{
-    return &baseMatrices;
-}
-
-
 
 template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { K.resize(0,0); return; }
+    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness ) { this->K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
+    helper::ReadAccessor childForce( *childForceId[this->toModel.get()].read() );
 
     unsigned int size = this->fromModel->getSize();
-    K.resizeBlocks(size,size);
-    K.reserve( size );
+    this->K.resizeBlocks(size,size);
+    this->K.reserve( size );
     for( size_t i=0 ; i<size ; ++i )
     {
-        K.beginRow(i);
-        K.insertBack( i, i, 2*childForce[i][0] );
+        this->K.beginRow(i);
+        this->K.insertBack( i, i, 2*childForce[i][0] );
     }
-    K.compress();
-}
-
-template <class TIn, class TOut>
-const linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getK()
-{
-    return &K;
+    this->K.compress();
 }
 
 template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
-    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness )
     {
         return;
