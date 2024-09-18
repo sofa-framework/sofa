@@ -65,7 +65,7 @@ void CenterPointTopologicalMapping::init()
 
 void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if(this->d_componentState.getValue() == core::objectmodel::ComponentState::Valid)
+    if(this->isComponentStateValid())
     {
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
         const std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();

@@ -90,9 +90,11 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::init(){
-    if(this->d_componentState.getValue() == ComponentState::Valid){
-        msg_warning(this) << "Calling an already fully initialized component.  You should use reinit instead." ;
+void PlaneForceField<DataTypes>::init()
+{
+    if(this->isComponentStateValid())
+    {
+        msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
     Inherit::init() ;
