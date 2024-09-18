@@ -372,9 +372,10 @@ void VariationalSymplecticSolver::parse(core::objectmodel::BaseObjectDescription
     OdeSolver::parse(arg);
 }
 
-int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integrator which conserves linear momentum and mechanical energy")
-        .add< VariationalSymplecticSolver >()
-        .addAlias("VariationalSolver")
-        ;
+void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Implicit time integrator which conserves linear momentum and mechanical energy.")
+        .add< VariationalSymplecticSolver >());
+}
 
 } // namespace sofa::component::odesolver::backward

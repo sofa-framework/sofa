@@ -19,27 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
-
-#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl>
+#define SOFA_COMPONENT_MAPPING_NONLINEAR_VOLUMEMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/VolumeMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::diffusion
+namespace sofa::component::mapping::nonlinear
 {
 
-using namespace sofa::defaulttype;
+using namespace defaulttype;
 
-void registerTetrahedronDiffusionFEMForceField(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Isotropic or anisotropic diffusion on Tetrahedral Meshes.")
-        .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
-        .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
-        .add< TetrahedronDiffusionFEMForceField<Vec3Types> >());
+// Register in the Factory
+int VolumeMappingClass = core::RegisterObject("Mapping each tetrahedron in a topology to a scalar value representing its volume")
+        .add< VolumeMapping< Vec3Types, Vec1Types > >()
+        ;
+
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API VolumeMapping< Vec3Types, Vec1Types >;
+
+
 }
-
-template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec1Types>;
-template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec2Types>;
-template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec3Types>;
-
-} // namespace sofa::component::diffusion

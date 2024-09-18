@@ -24,6 +24,9 @@
 #include <sofa/component/odesolver/backward/init.h>
 #include <sofa/component/odesolver/forward/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::odesolver
 {
     
@@ -31,6 +34,7 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -48,6 +52,12 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin("Sofa.Component.ODESolver.Backward");
+    factory->registerObjectsFromPlugin("Sofa.Component.ODESolver.Forward");
+}
+
 void init()
 {
     static bool first = true;
@@ -56,6 +66,9 @@ void init()
         // force dependencies at compile-time
         sofa::component::odesolver::backward::init();
         sofa::component::odesolver::forward::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         first = false;
     }
