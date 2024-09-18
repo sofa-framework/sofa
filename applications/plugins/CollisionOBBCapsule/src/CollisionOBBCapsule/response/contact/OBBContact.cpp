@@ -58,11 +58,6 @@ template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityCon
 template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<collision::geometry::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
-template class COLLISIONOBBCAPSULE_API response::contact::BaseUnilateralContactResponse<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
-template class COLLISIONOBBCAPSULE_API response::contact::BaseUnilateralContactResponse<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
-template class COLLISIONOBBCAPSULE_API response::contact::BaseUnilateralContactResponse<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
-template class COLLISIONOBBCAPSULE_API response::contact::BaseUnilateralContactResponse<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::component::constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
-
 template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
