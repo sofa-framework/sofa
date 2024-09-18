@@ -104,9 +104,6 @@ void VolumeMapping<TIn, TOut>::init()
     this->getToModel()->resize( nbTetrahedra );
     this->jacobian.resizeBlocks(nbTetrahedra, pos.size());
 
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
-
     Inherit1::init();
 
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Invalid)

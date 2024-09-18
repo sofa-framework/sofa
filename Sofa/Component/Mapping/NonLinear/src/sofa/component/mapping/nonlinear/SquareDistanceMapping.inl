@@ -69,9 +69,6 @@ void SquareDistanceMapping<TIn, TOut>::init()
 
     this->getToModel()->resize( links.size() );
 
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
-
     this->Inherit1::init();
 }
 

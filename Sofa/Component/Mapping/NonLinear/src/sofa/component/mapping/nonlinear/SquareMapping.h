@@ -50,8 +50,6 @@ public:
 
     static constexpr auto Nin = In::deriv_total_size;
 
-    void init() override;
-
     void apply(const core::MechanicalParams *mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
     void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 

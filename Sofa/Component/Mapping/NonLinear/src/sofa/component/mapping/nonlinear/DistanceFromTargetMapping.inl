@@ -118,10 +118,6 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
 
     this->getToModel()->resize(d_indices.getValue().size() );
 
-
-    baseMatrices.resize( 1 );
-    baseMatrices[0] = &jacobian;
-
     Inherit1::init();  // applies the mapping, so after the Data init
 }
 
@@ -170,15 +166,15 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 
         for(unsigned j=0; j<Nout; j++)
         {
-            jacobian.beginRow(i*Nout+j);
+            this->jacobian.beginRow(i*Nout+j);
             for(unsigned k=0; k<Nin; k++ )
             {
-                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
+                this->jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
     }
 
-    jacobian.compress();
+    this->jacobian.compress();
 }
 
 template <class TIn, class TOut>

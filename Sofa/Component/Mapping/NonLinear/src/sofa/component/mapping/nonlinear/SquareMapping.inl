@@ -34,15 +34,6 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::init()
-{
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
-
-    Inherit1::init();
-}
-
-template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
     DataVecCoord_t<Out>& dOut, const DataVecCoord_t<In>& dIn)
 {

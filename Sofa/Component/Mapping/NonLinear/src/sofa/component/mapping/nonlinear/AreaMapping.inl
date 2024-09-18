@@ -125,9 +125,6 @@ void AreaMapping<TIn, TOut>::init()
     this->getToModel()->resize( nbTriangles );
     this->jacobian.resizeBlocks(nbTriangles, pos.size());
 
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
-
     Inherit1::init();
 
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Invalid)

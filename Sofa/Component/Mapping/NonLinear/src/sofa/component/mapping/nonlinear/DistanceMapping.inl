@@ -91,9 +91,6 @@ void DistanceMapping<TIn, TOut>::init()
         }
     }
 
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
-
     this->Inherit1::init();  // applies the mapping, so after the Data init
 }
 

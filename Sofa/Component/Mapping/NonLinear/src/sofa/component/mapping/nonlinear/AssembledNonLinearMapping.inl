@@ -32,6 +32,9 @@ void AssembledNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
 init()
 {
     core::Mapping<TIn, TOut>::init();
+
+    this->baseMatrices.resize( 1 );
+    this->baseMatrices[0] = &this->jacobian;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
