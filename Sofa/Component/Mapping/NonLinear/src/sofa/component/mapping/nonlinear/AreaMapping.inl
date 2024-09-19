@@ -137,6 +137,8 @@ template <class TIn, class TOut>
 void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
     DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in)
 {
+    SOFA_UNUSED( mparams );
+
     helper::WriteOnlyAccessor< Data<VecCoord_t<Out>> > _out = out;
     helper::ReadAccessor< Data<VecCoord_t<In> > > _in = in;
 

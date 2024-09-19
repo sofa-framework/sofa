@@ -42,6 +42,7 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJ(
     const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out,
     const DataVecDeriv_t<In>& in)
 {
+    SOFA_UNUSED( mparams );
     if( jacobian.rowSize() )
     {
         auto dOutWa = sofa::helper::getWriteOnlyAccessor(out);
@@ -55,6 +56,7 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
     const core::MechanicalParams* mparams, DataVecDeriv_t<In>& out,
     const DataVecDeriv_t<Out>& in)
 {
+    SOFA_UNUSED( mparams );
     if( jacobian.rowSize() )
     {
         auto dOutRa = sofa::helper::getReadAccessor(in);
@@ -79,6 +81,8 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyDJT(
     const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId,
     core::ConstMultiVecDerivId childForceId)
 {
+    SOFA_UNUSED(childForceId);
+
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness )
     {

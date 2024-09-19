@@ -185,7 +185,6 @@ void SquareDistanceMapping<TIn, TOut>::doUpdateK(
     const helper::ReadAccessor childForceAccessor(childForce);
     const SeqEdges& links = l_topology->getEdges();
 
-    unsigned int size = this->fromModel->getSize();
     for(size_t i=0; i<links.size(); i++)
     {
         // force in compression (>0) can lead to negative eigen values in geometric stiffness

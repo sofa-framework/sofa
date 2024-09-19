@@ -83,7 +83,6 @@ void SquareMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
     const Data<VecDeriv_t<Out>>& childForce, SparseKMatrixEigen& matrix)
 {
     SOFA_UNUSED(mparams);
-    const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
 
     const helper::ReadAccessor childForceAccessor(childForce);
     unsigned int size = this->fromModel->getSize();

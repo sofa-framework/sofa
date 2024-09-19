@@ -184,6 +184,7 @@ void DistanceFromTargetMapping<TIn, TOut>::matrixFreeApplyDJT(
     const Data<VecDeriv_t<In>>& parentDisplacement,
     const Data<VecDeriv_t<Out>>& childForce)
 {
+    SOFA_UNUSED( mparams );
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
 
     helper::WriteAccessor parentForceAccessor(parentForce);
