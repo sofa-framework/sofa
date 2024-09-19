@@ -104,7 +104,7 @@ protected:
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const Coord_t<In>& a, const Coord_t<In>& b );
 
-    using JacobianEntry = Inherit1::JacobianEntry;
+    using JacobianEntry = typename Inherit1::JacobianEntry;
 };
 
 
