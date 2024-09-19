@@ -72,14 +72,14 @@ public:
      void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
 
     bool isDiagonal() const override { return d_useLumpedMass.getValue(); }
 
     using HexahedralFEMForceFieldT::addKToMatrix;
     using MassT::addKToMatrix;
     ///// WARNING this method only add diagonal elements in the given matrix !
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
     void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
@@ -88,6 +88,8 @@ public:
 
      void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
+    using HexahedralFEMForceFieldT::getPotentialEnergy;
+    using MassT::getPotentialEnergy;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
