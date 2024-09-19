@@ -19,19 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/mesh/BlenderExporter.inl>
+#define SOFA_COMPONENT_MAPPING_NONLINEAR_VOLUMEMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/VolumeMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::io::mesh
+namespace sofa::component::mapping::nonlinear
 {
 
 using namespace defaulttype;
 
-void registerBlenderExporter(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Export the simulation result as blender point cache files.")
-        .add< BlenderExporter<Vec3dTypes> >()
-        .add< BlenderExporter<Rigid3Types> >());
-}
+// Register in the Factory
+int VolumeMappingClass = core::RegisterObject("Mapping each tetrahedron in a topology to a scalar value representing its volume")
+        .add< VolumeMapping< Vec3Types, Vec1Types > >()
+        ;
 
-} // namespace sofa::component::io::mesh
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API VolumeMapping< Vec3Types, Vec1Types >;
+
+
+}

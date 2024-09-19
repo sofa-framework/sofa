@@ -184,11 +184,12 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
     }
 }
 
-// Register in the Factory
-int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Keyboard user control on a Mechanical State.")
+void registerMechanicalStateController(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Provides a Mouse & Keyboard user control on a Mechanical State.")
         .add< MechanicalStateController<Vec1Types> >()
-        .add< MechanicalStateController<Rigid3Types> >()
-        ;
+        .add< MechanicalStateController<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1Types>;
 template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3Types>;

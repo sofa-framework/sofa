@@ -34,8 +34,11 @@ using namespace sofa::type;
 namespace sofa::component::io::mesh
 {
 
-int SphereLoaderClass = core::RegisterObject("Loader for sphere model description files")
-        .add<SphereLoader>();
+void registerSphereLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Loader for sphere model description files.")
+        .add< SphereLoader >());
+}
 
 SphereLoader::SphereLoader()
     :BaseLoader(),

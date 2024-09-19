@@ -133,9 +133,11 @@ protected:
 
 } // namespace _blenderexporter_
 
-namespace exporter {
+namespace io::mesh 
+{
     template<class T>
     using BlenderExporter = _blenderexporter_::BlenderExporter<T>;
-} // namespace exporter
+
+} // namespace io::mesh 
 
 } // namespace sofa::component
