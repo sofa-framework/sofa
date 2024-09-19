@@ -1083,8 +1083,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitializationMethod()
         {
             if(d_massDensity.isSet())
             {
-                msg_warning(this) << "totalMass value overriding other mass information (massDensity).\n"
-                                  << "To remove this warning you need to define only one single input data for mass initialization";
+                msg_warning() << "totalMass value overriding other mass information (massDensity).\n"
+                              << "To remove this warning you need to define only one single input data for mass initialization";
             }
             m_initMethod = InitMethod::TOTALMASS;
             d_vertexMass.setReadOnly(true);
@@ -1099,11 +1099,20 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::massInitializationMethod()
             d_edgeMass.setReadOnly(true);
             d_totalMass.setReadOnly(true);
         }
+
+        if(d_vertexMass.isSet())
+        {
+            msg_warning() << "vertexMass can not be used for initialization anymore: use either totalMass or massDensity";
+        }
+        if(d_edgeMass.isSet())
+        {
+            msg_warning() << "edgeMass can not be used for initialization anymore: use either totalMass or massDensity";
+        }
     }
     // if no mass information provided
     else
     {
-        msg_error() << "No mass information is given as input, please set totalMass or massDensity";
+        msg_error() << "No mass information is given as input, please set either totalMass or massDensity";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
