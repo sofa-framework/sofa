@@ -69,7 +69,7 @@ protected:
 
     const VecCoord_t<In>* m_vertices{nullptr};
 
-    using Inherit1::JacobianEntry;
+    using JacobianEntry = Inherit1::JacobianEntry;
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_NONLINEAR_VOLUMEMAPPING_CPP)
