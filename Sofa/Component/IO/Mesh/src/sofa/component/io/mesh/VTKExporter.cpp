@@ -30,9 +30,6 @@
 namespace sofa::component::_vtkexporter_
 {
 
-int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
-        .add< VTKExporter >();
-
 VTKExporter::VTKExporter()
     : m_stepCounter(0), outfile(nullptr)
     , d_vtkFilename(initData(&d_vtkFilename, "filename", "output VTK file name"))
@@ -1015,3 +1012,14 @@ void VTKExporter::cleanup()
 }
 
 } // namespace sofa::component::_vtkexporter_
+
+namespace sofa::component::io::mesh
+{
+
+void registerVTKExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Export a given mesh in a VTK file.")
+        .add< VTKExporter >());
+}
+
+} // namespace sofa::component::io::mesh

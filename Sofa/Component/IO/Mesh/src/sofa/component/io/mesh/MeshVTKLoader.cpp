@@ -1257,13 +1257,10 @@ bool XMLVTKReader::loadImageData(tinyxml2::XMLHandle datasetFormatHandle)
     return false;
 }
 
-
-//////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
-/// Registering the component
-/// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
-/// 2-RegisterObject("description") + .add<> : Register the component
-int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK/VTU file format.")
-        .add< MeshVTKLoader >();
+void registerMeshVTKLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mesh loader for the VTK/VTU file format.")
+        .add< MeshVTKLoader >());
+}
 
 } /// namespace sofa::component::io::mesh
-
