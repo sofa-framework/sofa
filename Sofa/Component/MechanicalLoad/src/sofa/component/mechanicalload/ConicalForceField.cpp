@@ -29,11 +29,11 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-
-int ConicalForceFieldClass = core::RegisterObject("Repulsion applied by a cone toward the exterior")
-        .add< ConicalForceField<Vec3Types> >()
-
-        ;
+void registerConicalForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Outward repulsion applied by a cone geometry.")
+        .add< ConicalForceField<Vec3Types> >());
+}
 
 template class ConicalForceField<Vec3Types>;
 

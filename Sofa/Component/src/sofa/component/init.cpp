@@ -79,6 +79,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin("Sofa.Component.Visual");
     factory->registerObjectsFromPlugin("Sofa.Component.Playback");
     factory->registerObjectsFromPlugin("Sofa.Component.SceneUtility");
+    factory->registerObjectsFromPlugin("Sofa.Component.MechanicalLoad");
     factory->registerObjectsFromPlugin("Sofa.Component.LinearSystem");
     factory->registerObjectsFromPlugin("Sofa.Component.IO");
     factory->registerObjectsFromPlugin("Sofa.Component.Controller");

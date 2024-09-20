@@ -45,6 +45,8 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 
+#include <sofa/simpleapi/SimpleApi.h>
+
 #include <map>
 
 #include <sofa/helper/BackTrace.h>
@@ -114,7 +116,12 @@ struct PlaneForceField_test : public BaseSimulationTest
      * by the plane force field.
      * In the special case where : stiffness = 500, damping = 5 and maxForce = 0 (default values)
     */
-    void SetUp() override {}
+    void SetUp() override 
+    {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
+    }
+
     void TearDown() override {}
 
     void setupDefaultScene()
